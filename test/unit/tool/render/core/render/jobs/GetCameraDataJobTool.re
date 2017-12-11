@@ -1,1 +1,1 @@
-let getJob = (configData, state) => GetCameraDataJobUtils.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);
+let getJob = (configData, state) => GetCameraDataJob.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);

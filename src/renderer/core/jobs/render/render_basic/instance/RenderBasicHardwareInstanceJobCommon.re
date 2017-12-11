@@ -103,7 +103,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicUtils.render(gl, uid);
+  let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
   let extension = GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
   let transformData = TransformAdmin.getTransformData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);

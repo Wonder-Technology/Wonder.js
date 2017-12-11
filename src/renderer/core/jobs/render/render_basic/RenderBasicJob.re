@@ -36,9 +36,9 @@ let _render = (gl, state: StateDataType.state) => {
          (
            (state, uid: int) =>
              if (InstanceUtils.isSourceInstance(uid, state)) {
-               RenderBasicInstanceUtils.render(gl, uid, state)
+               RenderBasicInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, mappedGeometryIndex) = state |> RenderBasicUtils.render(gl, uid);
+               let (state, _, mappedGeometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
                GLSLSenderDrawUtils.drawElement(
                  GeometryAdmin.getDrawMode(gl),
                  GeometryAdmin.getIndexType(gl),

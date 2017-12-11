@@ -1,1 +1,1 @@
-let getJob = (configData, state) => RenderBasicJobUtils.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);
+let getJob = (configData, state) => RenderBasicJob.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);
