@@ -17,7 +17,18 @@ let handleAddComponent = TransformAddComponentCommon.handleAddComponent;
 let isAlive = (transform: transform, state: StateDataType.state) =>
   TransformDisposeComponentCommon.isAlive(transform, state);
 
-let create = (state: StateDataType.state) => TransformUtils.create(state);
+let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) => {
+  let {localToWorldMatrixMap} =
+    TransformOperateCommon.update(transform, state) |> getTransformData;
+  TransformOperateCommon.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
+};
+
+let create = (state: StateDataType.state) => {
+  let data = getTransformData(state);
+  let index = TransformCreateCommon.create(data);
+  TransformDirtyCommon.mark(index, false, data) |> ignore;
+  (state, index)
+};
 
 let getParent = (child: transform, state: StateDataType.state) =>
   TransformHierachyCommon.getParent(child, getTransformData(state));
@@ -93,9 +104,6 @@ let setPositionByTuple = (transform: transform, position: position, state: State
   |> ignore;
   state
 };
-
-let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) =>
-  TransformUtils.getLocalToWorldMatrixTypeArray(transform, state);
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
   TransformGameObjectCommon.getGameObject(transform, getTransformData(state));

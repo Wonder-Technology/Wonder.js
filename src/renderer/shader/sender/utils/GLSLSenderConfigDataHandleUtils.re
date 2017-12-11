@@ -116,7 +116,7 @@ let _getModelMMatrixData =
   [@bs]
   (
     (transform, state: StateDataType.state) =>
-      TransformUtils.getLocalToWorldMatrixTypeArray(transform, state)
+      TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
   );
 
 let addUniformSendData =

@@ -117,7 +117,7 @@ let getGameObject = (cameraController: cameraController, state: StateDataType.st
   );
 
 let _getCameraToWorldMatrixByTransform = (transform, state: StateDataType.state) =>
-  TransformUtils.getLocalToWorldMatrixTypeArray(transform, state);
+  TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
 
 let _getCameraToWorldMatrix = (transform, state: StateDataType.state) =>
   _getCameraToWorldMatrixByTransform(transform, state);
