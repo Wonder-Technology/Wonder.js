@@ -73,9 +73,3 @@ let scheduleLoop = (taskFunc, state: state) => {
   data.count = succ(data.count);
   state
 };
-
-let initData = () => {
-  count: 0,
-  funcRecordArray: WonderCommonlib.ArraySystem.createEmpty(),
-  isFinishMap: WonderCommonlib.SparseMapSystem.createEmpty()
-};

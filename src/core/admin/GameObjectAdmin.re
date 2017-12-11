@@ -11,7 +11,7 @@ let init = (state: StateDataType.state) =>
 
 /*  */
 let initDataFromState = (state: StateDataType.state) =>
-  state |> TransformSystem.initData |> MaterialAdmin.initData |> GeometrySystem.initData;
+  state |> TransformHelper.initData |> MaterialAdmin.initData |> GeometryHelper.initData;
 
 let update = (elapsed: float, state: StateDataType.state) =>
   state |> CameraControllerSystem.update;

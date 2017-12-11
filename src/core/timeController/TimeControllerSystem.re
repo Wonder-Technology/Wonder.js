@@ -56,12 +56,3 @@ let computeElapseTime = (time: float, state: StateDataType.state) => {
          Contract.Operators.(test({j|elapsed should >= 0, but actual is $r|j}, () => r >=. 0.))
      )
 };
-
-let initData = () => {
-  elapsed: 0.,
-  startTime: 0.,
-  deltaTime: 0.,
-  lastTime: None,
-  gameTime: 0.,
-  fps: 0.
-};

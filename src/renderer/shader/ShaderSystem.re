@@ -73,9 +73,3 @@ let getPrecisionSource = (state: StateDataType.state) =>
 let initMaterialShader =
     (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
   _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
-
-let initData = () => {
-  index: 0,
-  shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  glslData: {precision: None}
-};

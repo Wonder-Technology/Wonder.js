@@ -119,8 +119,3 @@ let use = (gl, program: program, state: StateDataType.state) => {
     state |> GLSLSenderSystem.disableVertexAttribArray(gl)
   }
 };
-
-let initData = () => {
-  programMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  lastUsedProgram: None
-};

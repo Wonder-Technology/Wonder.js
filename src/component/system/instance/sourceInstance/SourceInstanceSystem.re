@@ -55,13 +55,3 @@ let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state)
 let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic;
 
 let isModelMatrixIsStatic = SourceInstanceStaticCommon.isModelMatrixIsStatic;
-
-let initData = () => {
-  index: 0,
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  objectInstanceListMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  modelMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  modelMatrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  isModelMatrixStaticMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  isSendModelMatrixDataMap: WonderCommonlib.SparseMapSystem.createEmpty()
-};

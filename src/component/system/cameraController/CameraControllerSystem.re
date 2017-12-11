@@ -157,16 +157,3 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
   CameraControllerDisposeComponentCommon.isAlive(cameraController, state);
-
-let initData = () => {
-  index: 0,
-  cameraArray: WonderCommonlib.ArraySystem.createEmpty(),
-  dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
-  /* worldToCameraMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
-  pMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  /* dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
-  updateCameraFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  perspectiveCameraData: PerspectiveCameraSystem.initData(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
-};

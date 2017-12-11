@@ -6,7 +6,7 @@ let pregetGLSLData = (gl, state: StateDataType.state) => {
   state
 };
 
-let initData = (state: StateDataType.state) => MaterialSystem.initData(state);
+let initData = (state: StateDataType.state) => MaterialHelper.initData(state);
 
 let unsafeGetShaderIndex = MaterialSystem.unsafeGetShaderIndex;
 

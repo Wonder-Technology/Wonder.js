@@ -59,15 +59,3 @@ let isAlive = (material: material, state: StateDataType.state) =>
      let count = getTotalMaterialBufferCount(state);
      _createTypeArrays(buffer, count) |> _setDefaultTypeArrData(state, count)
    }; */
-let initData = (state: StateDataType.state) => {
-  /* let (buffer, shaderIndices) = _initBufferData(state); */
-  state.materialData =
-    Some({
-      index: 0,
-      /* buffer, */
-      shaderIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
-    });
-  state
-};

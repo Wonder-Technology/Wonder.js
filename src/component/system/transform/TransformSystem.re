@@ -99,25 +99,3 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
   TransformGameObjectCommon.getGameObject(transform, getTransformData(state));
-
-let initData = (state: StateDataType.state) => {
-  /* let maxCount = TransformBufferCommon.getMaxCount(state); */
-  /* let (buffer, localPositions, localToWorldMatrices) =
-     TransformBufferCommon.initBufferData(maxCount); */
-  state.transformData =
-    Some
-      /* buffer,
-         localToWorldMatrices,
-         localPositions, */
-      ({
-        index: 0,
-        parentMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        childMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        localToWorldMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        localPositionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
-      });
-  state
-};
