@@ -1,5 +1,3 @@
-open StateUtils;
-
 open StateDataType;
 
 open DomType;
@@ -10,14 +8,16 @@ external mainConfigTypeContextConfigDataToStateDataTypeContextConfigData :
   MainConfigType.contextConfig => StateDataType.contextConfig =
   "%identity";
 
-let getCanvas = (state: state) => state.viewData.canvas |> getOptionValueFromState;
+let _getOptionValueFromState = (value) => Js.Option.getExn(value);
+
+let getCanvas = (state: state) => state.viewData.canvas |> _getOptionValueFromState;
 
 let setCanvas = (~canvas: htmlElement, state: state) => {
   ...state,
   viewData: {...state.viewData, canvas: Some(canvas)}
 };
 
-let getContextConfig = (state: state) => getOptionValueFromState(state.viewData.contextConfig);
+let getContextConfig = (state: state) => _getOptionValueFromState(state.viewData.contextConfig);
 
 let setContextConfig = (~contextConfig: MainConfigType.contextConfig, state: state) => {
   ...state,

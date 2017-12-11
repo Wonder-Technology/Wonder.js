@@ -1,1 +1,0 @@
-let getOptionValueFromState = (value) => Js.Option.getExn(value);

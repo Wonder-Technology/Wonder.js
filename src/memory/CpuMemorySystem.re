@@ -18,7 +18,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         materialMap,
         cameraControllerMap
       } as data =
-    GameObjectAci.getData(state);
+    GameObjectAdminAci.getData(state);
   let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newMeshRendererMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();
@@ -78,7 +78,7 @@ let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, off
   Array.unsafe_set(
     newInfoArray,
     newIndex,
-    GeometryAci.buildInfo(offset, offset + increment)
+    GeometryAdminAci.buildInfo(offset, offset + increment)
   );
   newInfoArray
 };
@@ -99,7 +99,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         isInitMap,
         groupCountMap
       } as geometryData =
-    GeometryAci.getData(state);
+    GeometryAdminAci.getData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
     VboBufferStateUtils.getVboBufferData(state);
   let newIndex = ref(0);
@@ -125,11 +125,11 @@ let reAllocateGeometry = (state: StateDataType.state) => {
        [@bs]
        (
          (index) => {
-           let verticesInfo = GeometryAci.getInfo(verticesInfoArray, newIndex^);
-           let indicesInfo = GeometryAci.getInfo(indicesInfoArray, newIndex^);
-           GeometryAci.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
-           _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^);
-           _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^);
+           let verticesInfo = GeometryAdminAci.getInfo(verticesInfoArray, newIndex^);
+           let indicesInfo = GeometryAdminAci.getInfo(indicesInfoArray, newIndex^);
+           GeometryAdminAci.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
+           _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^) |> ignore;
+           _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^) |> ignore;
            newVerticesOffset :=
              TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
                vertices,
