@@ -149,6 +149,21 @@ let _ =
                 CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1)
               };
               test(
+                "not collect dispose index",
+                () => {
+                  open StateDataType;
+                  let (state, _, _, clonedGameObjectArr, clonedGeometryArr) = _prepare(state^);
+                  let state =
+                    state
+                    |> GeometryTool.disposeGeometryByCloseContractCheck(
+                         clonedGameObjectArr[0],
+                         clonedGeometryArr[0]
+                       );
+                  let {disposedIndexArray} = GeometryTool.getGeometryData(state);
+                  disposedIndexArray |> expect == [||]
+                }
+              );
+              test(
                 "dispose all cloned geometry shouldn't cause really dispose",
                 () => {
                   open StateDataType;
@@ -191,6 +206,20 @@ let _ =
                 let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
                 CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1)
               };
+              test(
+                "not collect dispose index",
+                () => {
+                  open StateDataType;
+                  let (state, _, _, clonedGameObjectArr, clonedGeometryArr) = _prepare(state^);
+                  let state =
+                    state
+                    |> GeometryTool.batchDisposeGeometryByCloseContractCheck([|
+                         clonedGameObjectArr[0]
+                       |]);
+                  let {disposedIndexArray} = GeometryTool.getGeometryData(state);
+                  disposedIndexArray |> expect == [||]
+                }
+              );
               test(
                 "dispose all cloned geometry shouldn't cause really dispose",
                 () => {

@@ -6,8 +6,33 @@ open GeometryStateCommon;
 
 open Contract;
 
+open ComponentDisposeComponentCommon;
+
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
-  ! (getGeometryData(state).disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry));
+  ComponentDisposeComponentCommon.isAlive(geometry, getGeometryData(state).disposedIndexArray);
+
+let _disposeData = (geometry: geometry, state: StateDataType.state) => {
+  let {
+    verticesMap,
+    indicesMap,
+    configDataMap,
+    isInitMap,
+    computeDataFuncMap,
+    groupCountMap,
+    gameObjectMap
+  } =
+    getGeometryData(state);
+  VboBufferDisposeSystem.disposeData(geometry, state) |> ignore;
+  groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0);
+  disposeSparseMapData(geometry, verticesMap) |> ignore;
+  disposeSparseMapData(geometry, indicesMap) |> ignore;
+  disposeSparseMapData(geometry, configDataMap) |> ignore;
+  disposeSparseMapData(geometry, isInitMap) |> ignore;
+  disposeSparseMapData(geometry, computeDataFuncMap) |> ignore;
+  disposeSparseMapData(geometry, groupCountMap) |> ignore;
+  disposeSparseMapData(geometry, gameObjectMap) |> ignore;
+  state
+};
 
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
@@ -16,11 +41,11 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
         ComponentDisposeComponentCommon.checkComponentShouldAlive(geometry, isAlive, state)
       )
   );
+  let {disposedIndexArray} = getGeometryData(state);
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
   | false =>
-    let state = VboBufferSystem.addBufferToPool(geometry, state);
-    let {disposedIndexMap} as data = getGeometryData(state);
-    disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
+    let state = VboBufferSystem.addBufferToPool(geometry, state) |> _disposeData(geometry);
+    disposedIndexArray |> Js.Array.push(geometry) |> ignore;
     state
   | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
   }
@@ -47,7 +72,7 @@ let handleBatchDisposeComponent =
                )
           )
       );
-      let {disposedIndexMap} as data = getGeometryData(state);
+      let {disposedIndexArray} as data = getGeometryData(state);
       geometryArray
       |> ArraySystem.reduceState(
            [@bs]
@@ -55,9 +80,8 @@ let handleBatchDisposeComponent =
              (state, geometry) =>
                switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
                | false =>
-                 disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
-                 let state = VboBufferSystem.addBufferToPool(geometry, state);
-                 state
+                 disposedIndexArray |> Js.Array.push(geometry) |> ignore;
+                 VboBufferSystem.addBufferToPool(geometry, state) |> _disposeData(geometry)
                | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
                }
            ),
@@ -66,4 +90,4 @@ let handleBatchDisposeComponent =
     }
   );
 
-let isNotDisposed = ({disposedIndexMap}) => disposedIndexMap |> SparseMapSystem.length === 0;
+let isNotDisposed = ({disposedIndexArray}) => disposedIndexArray |> Js.Array.length == 0;

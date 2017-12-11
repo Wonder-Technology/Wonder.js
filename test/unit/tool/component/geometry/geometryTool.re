@@ -75,6 +75,8 @@ let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) 
 
 let isGeometryDisposed = (geometry, state) => {
   open StateDataType;
-  let {disposedIndexMap} as data = GeometrySystem.getGeometryData(state);
-  disposedIndexMap |> WonderCommonlib.SparseMapSystem.get(geometry) |> Js.Option.isSome
+  let {disposedIndexArray} as data = GeometrySystem.getGeometryData(state);
+  disposedIndexArray |> Js.Array.includes(geometry)
 };
+
+let getGroupCount = (geometry, state) => GeometryGroupCommon.getGroupCount(geometry, state);

@@ -9,7 +9,7 @@ let initData = (state: StateDataType.state) => {
       configDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       computeDataFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      disposedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
       isInitMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty()
     });

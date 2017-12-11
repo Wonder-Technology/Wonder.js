@@ -11,11 +11,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  [@bs]
-  unsafeGetVertices(
-geometry,
-    state
-  )
+  [@bs] unsafeGetVertices(geometry, state)
 };
 
 let setGeometryVertices =
@@ -23,22 +19,14 @@ let setGeometryVertices =
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  setVertices(
-    geometry,
-    data,
-    state
-  )
+  setVertices(geometry, data, state)
 };
 
 let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  [@bs]
-  unsafeGetIndices(
-    geometry,
-    state
-  )
+  [@bs] unsafeGetIndices(geometry, state)
 };
 
 let setGeometryIndices =
@@ -46,31 +34,19 @@ let setGeometryIndices =
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  setIndices(
-    geometry,
-    data,
-    state
-  )
+  setIndices(geometry, data, state)
 };
 
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  getConfigData(
-    geometry,
-    state
-  )
-  |> Js.Option.getExn
+  getConfigData(geometry, state) |> Js.Option.getExn
 };
 
 let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  getGameObject(
-    geometry,
-    state
-  )
-  |> Js.Option.getExn
+  getGameObject(geometry, state) |> Js.Option.getExn
 };

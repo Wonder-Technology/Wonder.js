@@ -250,7 +250,7 @@ and geometryData = {
   mutable computeDataFuncMap: array(((int, state) => geometryComputeData)),
   mutable configDataMap: geometryConfigDataMap,
   mutable gameObjectMap,
-  mutable disposedIndexMap: geometryDisposeIndexMap,
+  mutable disposedIndexArray: geometryDisposedIndexArray,
   mutable isInitMap: geometryIsInitMap,
   mutable groupCountMap: geometryGroupCountMap
 }

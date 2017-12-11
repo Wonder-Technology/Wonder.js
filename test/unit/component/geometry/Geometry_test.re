@@ -19,7 +19,8 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(~sandbox,
+            TestTool.init(
+              ~sandbox,
               ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
               ()
             )
@@ -120,6 +121,103 @@ let _ =
         "disposeComponent",
         () => {
           describe(
+            "dispose data",
+            () =>{
+              test(
+                "remove from verticesMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
+                () => {
+                open StateDataType;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  let {verticesMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap} =  GeometryTool.getGeometryData(state) ;
+
+                  (
+                  verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  indicesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  configDataMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  isInitMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  computeDataFuncMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  gameObjectMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                  ) 
+                  |> expect == (false, false, false, false, false, false)
+                }
+              );
+              test(
+                "reset group count",
+                () => {
+                  let (state, geometry1) = createBoxGeometry(state^);
+                  let (state, gameObject1) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectGeometryComponent(gameObject1, geometry1);
+                  let (state, gameObject2) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectGeometryComponent(gameObject2, geometry1);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  GeometryTool.getGroupCount(geometry1, state) |> expect == 0
+                }
+              );
+              test
+              ("remove from buffer map", 
+              (
+              () => {
+                open VboBufferType;
+
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+
+                  let {vertexBufferMap, elementArrayBufferMap} =  VboBufferTool.getVboBufferData(state);
+
+                  (
+                  vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                  elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                  ) 
+                  |> expect == (false, false)
+             
+              })
+              );
+              }
+          );
+          describe(
+            "test add new one after dispose old one",
+            () => {
+              test(
+                "use disposed index as new index firstly",
+                () => {
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  let (state, geometry2) = createBoxGeometry(state);
+                  geometry2 |> expect == geometry1
+                }
+              );
+              test(
+                "if has no disposed index, get index from geometryData.index",
+                () => {
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  let (state, geometry2) = createBoxGeometry(state);
+                  let (state, geometry3) = createBoxGeometry(state);
+                  (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
+                }
+              )
+            }
+          );
+          describe(
             "contract check",
             () =>
               test(
@@ -147,7 +245,7 @@ let _ =
       );
       describe(
         "contract check",
-        () => {
+        () =>
           describe(
             "check is alive",
             () =>
@@ -197,23 +295,22 @@ let _ =
                 }
               )
           )
-          /* describe(
-               "check getGeometryConfigData",
-               () =>
-                 test(
-                   "cloned geometry have no config data, shouldn't get it",
-                   () => {
-                     open StateDataType;
-                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                     let state = state |> GeometryTool.initGeometrys;
-                     let (state, _, _, _, clonedGeometryArr) =
-                       CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
-                     expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
-                     |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
-                   }
-                 )
-             ) */
-        }
       )
+      /* describe(
+           "check getGeometryConfigData",
+           () =>
+             test(
+               "cloned geometry have no config data, shouldn't get it",
+               () => {
+                 open StateDataType;
+                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                 let state = state |> GeometryTool.initGeometrys;
+                 let (state, _, _, _, clonedGeometryArr) =
+                   CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
+                 expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
+                 |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
+               }
+             )
+         ) */
     }
   );

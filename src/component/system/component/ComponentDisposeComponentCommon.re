@@ -10,3 +10,8 @@ let checkComponentShouldAlive = (component, isAlive, state: StateDataType.state)
     "shouldn't dispose the component which isn't alive",
     () => isAlive(component, state) |> assertTrue
   );
+
+let disposeSparseMapData = (component: int, map) => {
+  map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(component);
+  map
+};

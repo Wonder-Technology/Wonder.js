@@ -2,8 +2,11 @@ open GeometryStateCommon;
 
 open StateDataType;
 
+open ComponentSystem;
+
 let create = (state: StateDataType.state) => {
-  let {index} as data = getGeometryData(state);
-  data.index = succ(index);
+  let {index, disposedIndexArray} as data = getGeometryData(state);
+  let (index, newIndex) = generateIndex(index, disposedIndexArray);
+  data.index = newIndex;
   (state, index)
 };
