@@ -29,11 +29,6 @@ let _ =
                   let (state, gameObject, sourceInstance) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
-                      sourceInstance,
-                      state
-                    );
-                  let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(
                          gameObject,
@@ -68,11 +63,6 @@ let _ =
                   let (state, gameObject, sourceInstance) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
-                      sourceInstance,
-                      state
-                    );
-                  let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(
                          gameObject,
@@ -83,6 +73,80 @@ let _ =
                   |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
                   |> expect == false
                 }
+              );
+              describe(
+                "dispose all objectInstance gameObjects",
+                () =>
+                  describe(
+                    "should dispose all components",
+                    () => {
+                      test(
+                        "dispose transform component",
+                        () => {
+                          open TransformType;
+                          let (
+                            state,
+                            gameObject,
+                            sourceInstance,
+                            objectInstanceGameObjectArr,
+                            objectInstanceArr
+                          ) =
+                            ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state^);
+                          let objectInstanceGameObject1 = objectInstanceGameObjectArr[0];
+                          let objectInstanceGameObject2 = objectInstanceGameObjectArr[1];
+                          let transform1 =
+                            GameObject.getGameObjectTransformComponent(
+                              objectInstanceGameObject1,
+                              state
+                            );
+                          let transform2 =
+                            GameObject.getGameObjectTransformComponent(
+                              objectInstanceGameObject2,
+                              state
+                            );
+                          let state =
+                            state
+                            |> GameObject.disposeGameObjectSourceInstanceComponent(
+                                 gameObject,
+                                 sourceInstance
+                               );
+                          (
+                            TransformTool.isDisposed(transform1, state),
+                            TransformTool.isDisposed(transform2, state)
+                          )
+                          |> expect == (true, true)
+                        }
+                      );
+                      test(
+                        "dispose objectInstance component",
+                        () => {
+                          open TransformType;
+                          let (
+                            state,
+                            gameObject,
+                            sourceInstance,
+                            objectInstanceGameObjectArr,
+                            objectInstanceArr
+                          ) =
+                            ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state^);
+                          let objectInstanceGameObject1 = objectInstanceGameObjectArr[0];
+                          let objectInstanceGameObject2 = objectInstanceGameObjectArr[1];
+                          let objectInstance1 = objectInstanceArr[0];
+                          let objectInstance2 = objectInstanceArr[1];
+                          state
+                          |> GameObject.disposeGameObjectSourceInstanceComponent(
+                               gameObject,
+                               sourceInstance
+                             );
+                          (
+                            ObjectInstanceTool.isDisposed(objectInstance1, state),
+                            ObjectInstanceTool.isDisposed(objectInstance2, state)
+                          )
+                          |> expect == (true, true)
+                        }
+                      )
+                    }
+                  )
               )
             }
           );
@@ -95,11 +159,6 @@ let _ =
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
-                      sourceInstance1,
-                      state
-                    );
                   let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(
@@ -117,11 +176,6 @@ let _ =
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
-                      sourceInstance1,
-                      state
-                    );
                   let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(
@@ -147,11 +201,6 @@ let _ =
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
-                      sourceInstance1,
-                      state
-                    );
                   let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(

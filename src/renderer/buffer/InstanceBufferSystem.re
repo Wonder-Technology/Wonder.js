@@ -7,8 +7,8 @@ open Contract;
 /*! start with a maximum of 64 instances */
 let _getDefaultCapacity = () => 64 * 16 * 4;
 
-let createBuffer = (gl, capacity: int) => {
-  let buffer = VboBufferPoolCommon.getInstanceBuffer(gl);
+let createBuffer = (gl, capacity: int, state: StateDataType.state) => {
+  let buffer = VboBufferPoolCommon.getInstanceBuffer(gl, state);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   bufferFloat32DataWithCapacity(getArrayBuffer(gl), capacity, getDynamicDraw(gl), gl);
   buffer
@@ -36,11 +36,12 @@ let _setCapacity = (sourceInstance, capacity, capacityMap) => {
   capacityMap
 };
 
-let getOrCreateBuffer = (gl, sourceInstance: int, capacityMap, bufferMap) =>
+let getOrCreateBuffer =
+    (gl, sourceInstance: int, capacityMap, bufferMap, state: StateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
-    let buffer = createBuffer(gl, _getCapacity(sourceInstance, capacityMap));
+    let buffer = createBuffer(gl, _getCapacity(sourceInstance, capacityMap), state);
     bufferMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, buffer) |> ignore;
     buffer
   };
@@ -66,7 +67,8 @@ let setCapacityAndUpdateBufferAndTypeArray =
       modelMatrixFloat32Array,
       bufferMap,
       modelMatrixFloat32ArrayMap,
-      capacityMap
+      capacityMap,
+      state
     ) => {
   let currentCapacity = ref(_getCapacity(sourceInstance, capacityMap));
   let needIncreaseCapacity = ref(false);
@@ -77,7 +79,7 @@ let setCapacityAndUpdateBufferAndTypeArray =
   if (needIncreaseCapacity^) {
     _setCapacity(sourceInstance, currentCapacity^, capacityMap) |> ignore;
     gl |> deleteBuffer(buffer);
-    let buffer = createBuffer(gl, currentCapacity^);
+    let buffer = createBuffer(gl, currentCapacity^, state);
     bufferMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, buffer) |> ignore;
     let modelMatrixFloat32Array = _createModelMatrixFloat32Array(currentCapacity^);
     modelMatrixFloat32ArrayMap

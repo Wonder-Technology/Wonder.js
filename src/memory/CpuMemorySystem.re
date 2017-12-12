@@ -12,7 +12,9 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         meshRendererMap,
         geometryMap,
         materialMap,
-        cameraControllerMap
+        cameraControllerMap,
+        sourceInstanceMap,
+        objectInstanceMap
       } as data =
     GameObjectAdminAci.getData(state);
   let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
@@ -20,6 +22,8 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newCameraControllerMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newMaterialMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  let newSourceInstanceMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  let newObjectInstanceMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
@@ -55,6 +59,20 @@ let reAllocateGameObject = (state: StateDataType.state) => {
              newCameraControllerMap
              |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
              |> ignore
+           };
+           switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => ()
+           | Some(sourceInstance) =>
+             newSourceInstanceMap
+             |> WonderCommonlib.SparseMapSystem.set(uid, sourceInstance)
+             |> ignore
+           };
+           switch (objectInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => ()
+           | Some(objectInstance) =>
+             newObjectInstanceMap
+             |> WonderCommonlib.SparseMapSystem.set(uid, objectInstance)
+             |> ignore
            }
          }
        )
@@ -66,5 +84,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   data.geometryMap = newGeometryMap;
   data.materialMap = newMaterialMap;
   data.cameraControllerMap = newCameraControllerMap;
+  data.sourceInstanceMap = newSourceInstanceMap;
+  data.objectInstanceMap = newObjectInstanceMap;
   state
 };

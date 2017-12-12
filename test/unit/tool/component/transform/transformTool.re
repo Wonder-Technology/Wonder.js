@@ -40,3 +40,8 @@ let dispose = (transform, state) => {
   TestTool.openContractCheck();
   state
 };
+
+let isDisposed = (transform, state) => {
+  let {localToWorldMatrixMap} = getTransformData(state);
+  ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform))
+};

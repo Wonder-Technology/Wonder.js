@@ -24,9 +24,13 @@ let _disposeFromParentAndChildMap = (transform, data) => {
 };
 
 let _disposeData = (transform: transform, state: StateDataType.state) => {
-  let {dirtyMap, gameObjectMap} as data =
+  let {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as data =
     getTransformData(state);
   _disposeFromParentAndChildMap(transform, data) |> ignore;
+  disposeSparseMapData(transform, localToWorldMatrixMap) |> ignore;
+  disposeSparseMapData(transform, localPositionMap) |> ignore;
+  disposeSparseMapData(transform, parentMap) |> ignore;
+  disposeSparseMapData(transform, childMap) |> ignore;
   disposeSparseMapData(transform, dirtyMap) |> ignore;
   disposeSparseMapData(transform, gameObjectMap) |> ignore;
   state

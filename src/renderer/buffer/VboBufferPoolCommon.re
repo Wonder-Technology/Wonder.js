@@ -18,7 +18,10 @@ let getElementArrayBuffer = (gl, state: StateDataType.state) => {
   _getBufferAndSetBufferMap(gl, elementArrayBufferPool)
 };
 
-let getInstanceBuffer = (gl) => Gl.createBuffer(gl);
+let getInstanceBuffer = (gl, state: StateDataType.state) => {
+  let {modelMatrixInstanceBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  _getBufferAndSetBufferMap(gl, modelMatrixInstanceBufferPool)
+};
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, bufferMap)

@@ -787,19 +787,31 @@ let _ =
             "dispose map data",
             () =>
               test(
-                "remove from dirtyMap, gameObjectMap",
+                "remove from localToWorldMatrixMap, localPositionMap,parentMap, childMap,  dirtyMap, gameObjectMap",
                 () => {
                   open TransformType;
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
                     |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
-                  let {dirtyMap, gameObjectMap} = TransformTool.getTransformData(state);
+                  let {
+                    localToWorldMatrixMap,
+                    localPositionMap,
+                    parentMap,
+                    childMap,
+                    dirtyMap,
+                    gameObjectMap
+                  } =
+                    TransformTool.getTransformData(state);
                   (
+                    localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform1),
+                    localPositionMap |> WonderCommonlib.SparseMapSystem.has(transform1),
+                    parentMap |> WonderCommonlib.SparseMapSystem.has(transform1),
+                    childMap |> WonderCommonlib.SparseMapSystem.has(transform1),
                     dirtyMap |> WonderCommonlib.SparseMapSystem.has(transform1),
                     gameObjectMap |> WonderCommonlib.SparseMapSystem.has(transform1)
                   )
-                  |> expect == (false, false)
+                  |> expect == (false, false, false, false, false, false)
                 }
               )
           );

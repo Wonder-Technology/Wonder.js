@@ -38,7 +38,8 @@ let _sendModelMatrixData =
       gl,
       sourceInstance,
       modelMatrixInstanceBufferCapacityMap,
-      modelMatrixInstanceBufferMap
+      modelMatrixInstanceBufferMap,
+      state
     );
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
   let stride = 64;
@@ -57,7 +58,8 @@ let _sendModelMatrixData =
       matricesArrayForInstance,
       modelMatrixInstanceBufferMap,
       modelMatrixFloat32ArrayMap,
-      modelMatrixInstanceBufferCapacityMap
+      modelMatrixInstanceBufferCapacityMap,
+      state
     );
   let offset = ref(0);
   let state =
@@ -104,7 +106,8 @@ let render = (gl, uid, state: StateDataType.state) => {
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
-  let extension = GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
+  let extension =
+    GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
   let transformData = TransformAdmin.getTransformData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
@@ -114,7 +117,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;
   let state =
     SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
-    SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
+      SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
         state :
         _sendModelMatrixData(
           gl,

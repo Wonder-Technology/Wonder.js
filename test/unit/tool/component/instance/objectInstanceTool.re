@@ -1,6 +1,8 @@
 let createObjectInstanceGameObject = (state: StateDataType.state) => {
   let (state, gameObject) = GameObject.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
+  let state =
+    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
   let (state, objectInstanceGameObject) = SourceInstance.createInstance(sourceInstance, state);
   (
     state,
@@ -15,6 +17,8 @@ let createObjectInstanceGameObject = (state: StateDataType.state) => {
 let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
   let (state, gameObject) = GameObject.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
+  let state =
+    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
   let objectInstanceGameObjectArr = [||];
   for (i in 0 to count - 1) {
     let (state, objectInstanceGameObject) = SourceInstance.createInstance(sourceInstance, state);
@@ -35,3 +39,9 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
 };
 
 let getObjectInstanceData = ObjectInstanceStateCommon.getObjectInstanceData;
+
+let isDisposed = (objectInstance, state) => {
+  open ObjectInstanceType;
+  let {sourceInstanceMap} = getObjectInstanceData(state);
+  ! (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(objectInstance))
+};

@@ -83,7 +83,7 @@ let create = (state: StateDataType.state) => {
   (addTransformComponent(uid, transform, state), uid)
 };
 
-let dispose = (uid: int, state: StateDataType.state) => {
+let rec dispose = (uid: int, state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
@@ -110,6 +110,16 @@ let dispose = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getCameraControllerComponent(uid, state)) {
     | Some(cameraController) => disposeCameraControllerComponent(uid, cameraController, state)
+    | None => state
+    };
+  let state =
+    switch (getSourceInstanceComponent(uid, state)) {
+    | Some(sourceInstance) => disposeSourceInstanceComponent(uid, sourceInstance, dispose, state)
+    | None => state
+    };
+  let state =
+    switch (getObjectInstanceComponent(uid, state)) {
+    | Some(objectInstance) => disposeObjectInstanceComponent(uid, objectInstance, state)
     | None => state
     };
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
@@ -140,7 +150,11 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
     |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetSourceInstanceComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeSourceInstanceComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchDisposeSourceInstanceComponent(
+         disposedUidMap,
+         state,
+         dispose
+       )
     |> GameObjectComponentCommon.batchGetObjectInstanceComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeObjectInstanceComponent(disposedUidMap, state);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {

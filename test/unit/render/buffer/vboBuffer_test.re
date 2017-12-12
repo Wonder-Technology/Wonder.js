@@ -13,7 +13,8 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(~sandbox,
+            TestTool.init(
+              ~sandbox,
               ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
               ()
             )
@@ -22,7 +23,7 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "test buffer pool",
-        () =>
+        () => {
           describe(
             "test create geometry after dispose one",
             () => {
@@ -64,7 +65,49 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "test create souceInstance gameObject after dispose one",
+            () => {
+              let _prepare = RenderBasicHardwareInstanceTool.prepare;
+              let _render = RenderBasicHardwareInstanceTool.render;
+              test(
+                "getOrCreateBuffer should use old one(created buffer previously) in pool",
+                () => {
+                  open StateDataType;
+                  let (state, gameObject1, (_, _, _, sourceInstance1, _)) =
+                    _prepare(sandbox, state^);
+                  let buffer1 = Obj.magic(0);
+                  let buffer2 = Obj.magic(1);
+                  let buffer3 = Obj.magic(2);
+                  let buffer4 = Obj.magic(3);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  createBuffer |> onCall(0) |> returns(buffer1);
+                  createBuffer |> onCall(1) |> returns(buffer2);
+                  createBuffer |> onCall(2) |> returns(buffer3);
+                  createBuffer |> onCall(3) |> returns(buffer4);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                  let instanceBuffer1 =
+                    VboBufferTool.getOrCreateInstanceBuffer(sourceInstance1, state);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                         gameObject1,
+                         sourceInstance1
+                       );
+                  let (state, gameObject2, (_, _, _, sourceInstance2, _)) =
+                    RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
+                  let instanceBuffer2 =
+                    VboBufferTool.getOrCreateInstanceBuffer(sourceInstance2, state);
+                  instanceBuffer1 |> expect == instanceBuffer2
+                }
+              )
+            }
           )
+        }
       )
     }
   );

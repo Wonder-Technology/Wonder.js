@@ -18,6 +18,15 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
     state
   );
 
+let getOrCreateInstanceBuffer = (sourceInstanceIndex: int, state: StateDataType.state) =>
+  InstanceBufferSystem.getOrCreateBuffer(
+    [@bs] DeviceManagerSystem.getGl(state),
+    sourceInstanceIndex,
+    SourceInstanceAdmin.getSourceInstanceData(state).modelMatrixInstanceBufferCapacityMap,
+    VboBufferStateUtils.getVboBufferData(state).modelMatrixInstanceBufferMap,
+    state
+  );
+
 let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: StateDataType.state) => {
   open VboBufferType;
   let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);

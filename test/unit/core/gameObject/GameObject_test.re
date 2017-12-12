@@ -398,6 +398,33 @@ let _ =
                   )
                   |> expect == (true, false)
                 }
+              );
+              test(
+                "dispose sourceInstance component",
+                () => {
+                  open SourceInstanceType;
+                  let (state, gameObject, sourceInstance) =
+                    SourceInstanceTool.createSourceInstanceGameObject(state^);
+                  let state =
+                    state
+                    |> VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                         sourceInstance
+                       );
+                  let state = state |> disposeGameObject(gameObject);
+                  let {disposedIndexArray} = state |> SourceInstanceTool.getSourceInstanceData;
+                  disposedIndexArray |> expect == [|sourceInstance|]
+                }
+              );
+              test(
+                "dispose objectInstance component",
+                () => {
+                  open ObjectInstanceType;
+                  let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
+                    ObjectInstanceTool.createObjectInstanceGameObject(state^);
+                  let state = state |> disposeGameObject(objectInstanceGameObject);
+                  let {disposedIndexArray} = state |> ObjectInstanceTool.getObjectInstanceData;
+                  disposedIndexArray |> expect == [|objectInstance|]
+                }
               )
             }
           );
@@ -529,6 +556,44 @@ let _ =
                             cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
+                        }
+                      );
+                      test(
+                        "new sourceInstanceMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                          let (state, gameObject1, _) =
+                            SourceInstanceTool.createSourceInstanceGameObject(state);
+                          let (state, gameObject2, _) =
+                            SourceInstanceTool.createSourceInstanceGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let {sourceInstanceMap} = GameObjectTool.getData(state);
+                          (
+                            sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject2)
+                          )
+                          |> expect == (false, true)
+                        }
+                      );
+                      test(
+                        "new objectInstanceMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                          let (state, _, _, objectInstanceGameObject1, _) =
+                            ObjectInstanceTool.createObjectInstanceGameObject(state);
+                          let (state, _, _, objectInstanceGameObject2, _) =
+                            ObjectInstanceTool.createObjectInstanceGameObject(state);
+                          let state = state |> disposeGameObject(objectInstanceGameObject1);
+                          let {objectInstanceMap} = GameObjectTool.getData(state);
+                          (
+                            objectInstanceMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceGameObject1),
+                            objectInstanceMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceGameObject2)
+                          )
+                          |> expect == (false, true)
                         }
                       )
                     }

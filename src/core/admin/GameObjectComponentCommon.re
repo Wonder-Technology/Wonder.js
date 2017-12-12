@@ -49,8 +49,13 @@ let addSourceInstanceComponent = (uid: int, component: component, state: StateDa
   [@bs] SourceInstanceAddComponentCommon.handleAddComponent(component, uid, state)
 };
 
-let disposeSourceInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
-  SourceInstanceDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeSourceInstanceComponent =
+    (uid: int, component: component, disposeGameObjectFunc, state: StateDataType.state) =>
+  SourceInstanceDisposeComponentCommon.handleDisposeComponent(
+    component,
+    disposeGameObjectFunc,
+    state
+  );
 
 let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _getComponent(uid);
@@ -256,18 +261,15 @@ let batchGetSourceInstanceComponent = (uidArray: array(int), state: StateDataTyp
   );
 
 let batchDisposeSourceInstanceComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  /* switch (componentArray |> Js.Array.length) {
-     | 0 => state
-     | _ => */
-  _batchDisposeComponent(
+    (uidMap, state: StateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
+  [@bs]
+  SourceInstanceDisposeComponentCommon.handleBatchDisposeComponent(
+    componentArray,
     uidMap,
-    state,
-    SourceInstanceDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
+    disposeGameObjectFunc,
+    state
   );
 
-/* }; */
 let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
