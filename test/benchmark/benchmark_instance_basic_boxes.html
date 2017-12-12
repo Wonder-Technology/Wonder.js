@@ -56,12 +56,15 @@
             initSample(state);
 
 
-            function createBoxes(count, state) {
+            function createBoxes(sourceInstanceGameObjectCount, objectInstanceGameObjectCount, state) {
                 var boxes = [];
 
-                var [state, box, objectInstanceArr] = createBox(count, state);
+                for (let i = 0; i < sourceInstanceGameObjectCount; i++) {
+                    var [state, box, objectInstanceArr] = createBox(objectInstanceGameObjectCount, state);
 
-                boxes.push(box);
+                    boxes.push(box);
+                }
+
 
                 return [state, boxes, objectInstanceArr];
             }
@@ -123,7 +126,12 @@
 
                 boxes.push(box1, box2);
 
-                return [state, boxes];
+
+                var objectInstanceArr = [];
+
+                objectInstanceArr.concat(objectInstanceArr1, objectInstanceArr2);
+
+                return [state, boxes, objectInstanceArr];
             }
 
 
@@ -169,8 +177,8 @@
 
             function initSample(state) {
                 // var [state, boxes] = createBoxes(60000, state);
-                var [state, boxes] = createBoxes(60, state);
-                // var [state, boxes] = createBoxesWithHierachy(30000, state);
+                var [state, boxes, objectInstanceArr] = createBoxes(1, 1, state);
+                // var [state, boxes, objectInstanceArr] = createBoxesWithHierachy(30000, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -270,16 +278,16 @@
                 window.boxes = [];
 
                 return scheduleLoop((elapsed, state) => {
-                    for(let i = 0, len = window.boxes.length; i < len; i++){
-                        let box = window.boxes[i];
-                        state = disposeGameObject(box, state);
-                    }
+                    // for (let i = 0, len = window.boxes.length; i < len; i++) {
+                    //     let box = window.boxes[i];
+                    //     state = disposeGameObject(box, state);
+                    // }
 
-                    // var state = batchDisposeGameObject(window.boxes, state);
+                    var state = batchDisposeGameObject(window.boxes, state);
 
 
 
-                    var [state, newBoxes] = createBoxes(5000, state);
+                    var [state, newBoxes, objectInstanceArr] = createBoxes(500, 10, state);
 
 
                     var [state, newBoxes] = setPosition(newBoxes, state);
