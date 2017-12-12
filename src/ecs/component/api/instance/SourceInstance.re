@@ -6,7 +6,6 @@ open Contract;
 
 let createSourceInstance = (state: StateDataType.state) => create(state);
 
-/* todo check alive */
 let createSourceInstanceObjectInstance = (sourceInstance, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(sourceInstance, isAlive, state))

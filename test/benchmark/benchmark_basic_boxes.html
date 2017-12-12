@@ -207,30 +207,11 @@
             window.newBoxes$ = null;
 
             function createAndDisposeGameObjects(boxes, state) {
-                // var state = boxes.reduce((state, box) => {
-                //     return disposeGameObject(box, state);
-                // }, state);
-
-                // window.newBoxes$ = boxes;
-                // window.boxes = boxes.slice(0, 1000);
                 window.sourceBox = boxes[0];
                 window.boxes = [];
 
-                // var index = 0;
 
                 return scheduleLoop((elapsed, state) => {
-
-                    // var state = window.boxes.reduce((state, box) => {
-                    //     // if(index > 1000){
-                    //     //     return state;
-                    //     // }
-                    //     // index += 1;
-                    //     return disposeGameObject(box, state);
-                    // }, state);
-
-
-                    // var state = state;
-
                     for(let i = 0, len = window.boxes.length; i < len; i++){
                         let box = window.boxes[i];
                         state = disposeGameObject(box, state);
@@ -238,16 +219,6 @@
 
                     // var state = batchDisposeGameObject(window.boxes, state);
 
-
-                    // var state = window.boxes.reduce((state, box) => {
-                    //     // if(index > 1000){
-                    //     //     return state;
-                    //     // }
-                    //     // index += 1;
-                    //     return disposeGameObject(box, state);
-                    // }, state);
-
-                    // todo fix!
 
                     var [state, newBoxes] = createBoxesWithoutClone(2000, state);
 
@@ -266,10 +237,6 @@
 
 
                     window.boxes = newBoxes;
-
-                    // return newBoxes.reduce((state, box) => {
-                    //     return initGameObject(box, state);
-                    // }, state);
 
 
 
@@ -302,7 +269,6 @@
                     depth: 5
                 }, state);
 
-                // state = setGeometryGroup(geometry, 1, state);
 
 
 

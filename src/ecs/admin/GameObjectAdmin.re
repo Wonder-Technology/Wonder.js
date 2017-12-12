@@ -12,7 +12,6 @@ let initDataFromState = (state: StateDataType.state) =>
 let update = (elapsed: float, state: StateDataType.state) =>
   state |> CameraControllerSystem.update;
 
-/* todo dispose instance */
 let hasSourceInstanceComponent = GameObjectComponentCommon.hasSourceInstanceComponent;
 
 let getSourceInstanceComponent = GameObjectComponentCommon.getSourceInstanceComponent;

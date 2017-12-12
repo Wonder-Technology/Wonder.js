@@ -4,7 +4,6 @@ open GlType;
 
 open GPUDetectType;
 
-/* todo test */
 let _getExtension = (name: string, gl) =>
   (
     switch name {
