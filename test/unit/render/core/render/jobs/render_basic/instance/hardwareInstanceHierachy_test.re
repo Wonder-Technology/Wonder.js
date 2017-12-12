@@ -46,11 +46,11 @@ let _ =
           let pos2 = (5., 10., 30.);
           let state =
             state
-            |> setTransformLocalPositionByTuple(sourceTransform1, pos1)
-            |> setTransformLocalPositionByTuple(objectInstanceTransform1, pos2);
+            |> setTransformLocalPosition(sourceTransform1, pos1)
+            |> setTransformLocalPosition(objectInstanceTransform1, pos2);
           (
-            state |> getTransformPositionTuple(sourceTransform2),
-            state |> getTransformPositionTuple(objectInstanceGameObject2)
+            state |> getTransformPosition(sourceTransform2),
+            state |> getTransformPosition(objectInstanceGameObject2)
           )
           |> expect == (pos1, pos2)
         }

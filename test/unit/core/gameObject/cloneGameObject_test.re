@@ -239,12 +239,12 @@ let _ =
                       let (state, gameObject1, transform1) =
                         GameObjectTool.createGameObject(state^);
                       let pos1 = (1., 2., 3.);
-                      let state = state |> setTransformLocalPositionByTuple(transform1, pos1);
+                      let state = state |> setTransformLocalPosition(transform1, pos1);
                       let (_, clonedTransformArr) =
                         _getClonedTransformDataArr(gameObject1, 2, state);
                       clonedTransformArr
                       |> Js.Array.map(
-                           (transform) => getTransformLocalPositionTuple(transform, state)
+                           (transform) => getTransformLocalPosition(transform, state)
                          )
                       |> expect == [|pos1, pos1|]
                     }
@@ -259,17 +259,17 @@ let _ =
                           let (state, gameObject1, transform1) =
                             GameObjectTool.createGameObject(state^);
                           let pos1 = (1., 2., 3.);
-                          let state = state |> setTransformLocalPositionByTuple(transform1, pos1);
+                          let state = state |> setTransformLocalPosition(transform1, pos1);
                           let (_, clonedTransformArr) =
                             _getClonedTransformDataArr(gameObject1, 2, state);
                           let pos2 = (2., 4., 6.);
                           let state =
-                            state |> setTransformLocalPositionByTuple(clonedTransformArr[1], pos2);
+                            state |> setTransformLocalPosition(clonedTransformArr[1], pos2);
                           (
-                            getTransformLocalPositionTuple(transform1, state),
+                            getTransformLocalPosition(transform1, state),
                             clonedTransformArr
                             |> Js.Array.map(
-                                 (transform) => getTransformLocalPositionTuple(transform, state)
+                                 (transform) => getTransformLocalPosition(transform, state)
                                )
                           )
                           |> expect == (pos1, [|pos1, pos2|])
@@ -580,14 +580,14 @@ let _ =
                       let pos2 = (2., 2., 3.);
                       let pos3 = (3., 20., 3.);
                       let pos4 = (4., 2., 3.);
-                      let state = state |> setTransformLocalPositionByTuple(transform1, pos1);
-                      let state = state |> setTransformLocalPositionByTuple(transform2, pos2);
-                      let state = state |> setTransformLocalPositionByTuple(transform3, pos3);
-                      let state = state |> setTransformLocalPositionByTuple(transform4, pos4);
+                      let state = state |> setTransformLocalPosition(transform1, pos1);
+                      let state = state |> setTransformLocalPosition(transform2, pos2);
+                      let state = state |> setTransformLocalPosition(transform3, pos3);
+                      let state = state |> setTransformLocalPosition(transform4, pos4);
                       let (clonedGameObjectArr, clonedTransformArr) =
                         _getClonedTransformDataArr(gameObject1, 1, state);
                       clonedTransformArr
-                      |> Js.Array.map((transform) => getTransformPositionTuple(transform, state))
+                      |> Js.Array.map((transform) => getTransformPosition(transform, state))
                       |>
                       expect == [|
                                   pos1,

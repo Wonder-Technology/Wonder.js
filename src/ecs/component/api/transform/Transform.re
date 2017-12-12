@@ -42,59 +42,53 @@ let getTransformChildren = (transform: transform, state: StateDataType.state) =>
   getChildren(transform, state)
 };
 
-let getTransformLocalPositionTypeArray = (transform: transform, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
-  );
-  getLocalPositionTypeArray(transform, state)
-};
-
-let getTransformLocalPositionTuple = (transform: transform, state: StateDataType.state) => {
+/* let getTransformLocalPositionTypeArray = (transform: transform, state: StateDataType.state) => {
+     requireCheck(
+       () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
+     );
+     getLocalPositionTypeArray(transform, state)
+   }; */
+let getTransformLocalPosition = (transform: transform, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
   );
   getLocalPositionTuple(transform, state)
 };
 
-let setTransformLocalPositionByTypeArray =
-    (transform: transform, localPosition, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
-  );
-  setLocalPositionByTypeArray(transform, localPosition, state)
-};
-
-let setTransformLocalPositionByTuple =
-    (transform: transform, localPosition, state: StateDataType.state) => {
+/* let setTransformLocalPositionByTypeArray =
+       (transform: transform, localPosition, state: StateDataType.state) => {
+     requireCheck(
+       () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
+     );
+     setLocalPositionByTypeArray(transform, localPosition, state)
+   }; */
+let setTransformLocalPosition = (transform: transform, localPosition, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
   );
   setLocalPositionByTuple(transform, localPosition, state)
 };
 
-let getTransformPositionTypeArray = (transform: transform, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
-  );
-  getPositionTypeArray(transform, state)
-};
-
-let getTransformPositionTuple = (transform: transform, state: StateDataType.state) => {
+/* let getTransformPositionTypeArray = (transform: transform, state: StateDataType.state) => {
+     requireCheck(
+       () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
+     );
+     getPositionTypeArray(transform, state)
+   }; */
+let getTransformPosition = (transform: transform, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
   );
   getPositionTuple(transform, state)
 };
 
-let setTransformPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
-  );
-  setPositionByTypeArray(transform, position, state)
-};
-
-let setTransformPositionByTuple =
-    (transform: transform, position: position, state: StateDataType.state) => {
+/* let setTransformPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
+     requireCheck(
+       () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
+     );
+     setPositionByTypeArray(transform, position, state)
+   }; */
+let setTransformPosition = (transform: transform, position: position, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state))
   );

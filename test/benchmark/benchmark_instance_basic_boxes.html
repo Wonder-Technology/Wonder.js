@@ -28,7 +28,7 @@
         import { createBasicMaterial } from "../../lib/es6_global/src/ecs/component/api/material/BasicMaterial.js";
 
 
-        import { setTransformParent, getTransformLocalPositionTuple, getTransformPositionTypeArray, getTransformPositionTuple, getTransformLocalPositionTypeArray, setTransformLocalPositionByTypeArray, setTransformLocalPositionByTuple, setTransformPositionByTuple, setTransformPositionByTypeArray } from "../../lib/es6_global/src/ecs/component/api/transform/Transform.js";
+        import { setTransformParent, getTransformLocalPosition, getTransformPosition, setTransformLocalPosition, setTransformPosition } from "../../lib/es6_global/src/ecs/component/api/transform/Transform.js";
 
 
         import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/ecs/component/api/cameraController/CameraController.js";
@@ -107,21 +107,21 @@
 
                 // var t1 = getGameObjectTransformComponent(box1, state);
 
-                //                     state = setTransformLocalPositionByTuple(t1, [50,0,0], state);
+                //                     state = setTransformLocalPosition(t1, [50,0,0], state);
 
 
                 // var t2 = getGameObjectTransformComponent(box2, state);
 
-                //                     state = setTransformLocalPositionByTuple(t2, [100,0,0], state);
+                //                     state = setTransformLocalPosition(t2, [100,0,0], state);
 
 
                 // // var o1 = getGameObjectTransformComponent(objectInstanceArr1[0], state);
 
-                // //                     state = setTransformLocalPositionByTuple(o1, [0,50,0], state);
+                // //                     state = setTransformLocalPosition(o1, [0,50,0], state);
 
                 // var o2 = getGameObjectTransformComponent(objectInstanceArr2[0], state);
 
-                //                     state = setTransformLocalPositionByTuple(o2, [0,100,0], state);
+                //                     state = setTransformLocalPosition(o2, [0,100,0], state);
 
 
 
@@ -156,13 +156,13 @@
                         var transform = getGameObjectTransformComponent(objectInstance, state);
 
 
-                        // var pos = getTransformPositionTuple(transform, state);
+                        // var pos = getTransformPosition(transform, state);
 
-                        var localPos = getTransformLocalPositionTypeArray(transform, state);
+                        var localPos = getTransformLocalPosition(transform, state);
 
-                        state = setTransformLocalPositionByTuple(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+                        state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
 
-                        // state = setTransformLocalPositionByTuple(transform, [0,0,0], state);
+                        // state = setTransformLocalPosition(transform, [0,0,0], state);
 
 
                         // console.log(getTransformLocalPositionTypeArayr(transform, state));
@@ -220,29 +220,29 @@
                         var transform = getGameObjectTransformComponent(objectInstance, state);
 
 
-                        var pos = getTransformPositionTuple(transform, state);
+                        var pos = getTransformPosition(transform, state);
 
-                        var localPos = getTransformLocalPositionTypeArray(transform, state);
+                        var localPos = getTransformLocalPosition(transform, state);
 
                         if (pos[0] >= 500) {
-                            state = setTransformLocalPositionByTuple(transform, [100, localPos[1], localPos[2]], state);
+                            state = setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
 
                         }
                         else if (pos[0] < 500) {
-                            state = setTransformPositionByTuple(transform, [pos[0] + 10, pos[1], pos[2]], state);
+                            state = setTransformPosition(transform, [pos[0] + 10, pos[1], pos[2]], state);
                         }
 
 
-                        // var pos = getTransformPositionTypeArray(transform, state);
+                        // var pos = getTransformPosition(transform, state);
 
-                        // var localPos = getTransformLocalPositionTypeArray(transform, state);
+                        // var localPos = getTransformLocalPosition(transform, state);
 
                         // if (pos[0] >= 500) {
-                        //     state = setTransformLocalPositionByTypeArray(transform, [100, localPos[1], localPos[2]], state);
+                        //     state = setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
 
                         // }
                         // else if (pos[0] < 500) {
-                        //     state = setTransformPositionByTypeArray(transform, [pos[0] + 10, pos[1], pos[2]], state);
+                        //     state = setTransformPosition(transform, [pos[0] + 10, pos[1], pos[2]], state);
                         // }
                     }
                 }
@@ -445,7 +445,7 @@
 
                 var transform = getGameObjectTransformComponent(obj, state);
 
-                state = setTransformLocalPositionByTuple(transform, [0, 0, 1500], state);
+                state = setTransformLocalPosition(transform, [0, 0, 1500], state);
 
                 return [state, obj];
             }

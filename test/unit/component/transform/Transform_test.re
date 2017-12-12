@@ -14,10 +14,10 @@ let _ =
       let _judgeOneToOne =
           ((parent, child), (parentLocalPos, parentPos), (childLocalPos, childPos), state) =>
         (
-          state |> getTransformLocalPositionTuple(parent),
-          state |> getTransformPositionTuple(parent),
-          state |> getTransformLocalPositionTuple(child),
-          state |> getTransformPositionTuple(child)
+          state |> getTransformLocalPosition(parent),
+          state |> getTransformPosition(parent),
+          state |> getTransformLocalPosition(child),
+          state |> getTransformPosition(child)
         )
         |> expect == (parentLocalPos, parentPos, childLocalPos, childPos);
       let _judgeOneToTwo =
@@ -29,12 +29,12 @@ let _ =
             state
           ) =>
         (
-          state |> getTransformLocalPositionTuple(parent),
-          state |> getTransformPositionTuple(parent),
-          state |> getTransformLocalPositionTuple(child1),
-          state |> getTransformPositionTuple(child1),
-          state |> getTransformLocalPositionTuple(child2),
-          state |> getTransformPositionTuple(child2)
+          state |> getTransformLocalPosition(parent),
+          state |> getTransformPosition(parent),
+          state |> getTransformLocalPosition(child1),
+          state |> getTransformPosition(child1),
+          state |> getTransformLocalPosition(child2),
+          state |> getTransformPosition(child2)
         )
         |>
         expect == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos);
@@ -42,7 +42,7 @@ let _ =
         let (state, transform) = createTransform(state^);
         let pos1 = (1., 2., 3.);
         let pos2 = (5., 10., 30.);
-        let state = setTransformPositionByTuple(transform, pos1, state);
+        let state = setTransformPosition(transform, pos1, state);
         (state, transform, pos1, pos2)
       };
       beforeEach(
@@ -110,10 +110,10 @@ let _ =
                  let pos = (1., 2., 3.);
                  let state =
                    state
-                   |> setTransformLocalPositionByTuple(parent, pos)
+                   |> setTransformLocalPosition(parent, pos)
                    |> setTransformParent(Js.Nullable.return(parent), child);
                  let state = state |> TransformTool.init;
-                 state |> getTransformPositionTuple(child) |> expect == pos
+                 state |> getTransformPosition(child) |> expect == pos
                }
              )
          ); */
@@ -142,7 +142,7 @@ let _ =
                   let pos = (1., 2., 3.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(parent, pos)
+                    |> setTransformLocalPosition(parent, pos)
                     |> setTransformParent(Js.Nullable.return(parent), child);
                   state
                   |> _judgeOneToOne(
@@ -164,11 +164,11 @@ let _ =
                   let pos2 = (10., 20., 30.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(parent, pos1)
+                    |> setTransformLocalPosition(parent, pos1)
                     |> setTransformParent(Js.Nullable.return(parent), child1);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(child2, pos2)
+                    |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
                   state
                   |> _judgeOneToTwo(
@@ -193,7 +193,7 @@ let _ =
                     let pos = (1., 2., 3.);
                     let state =
                       state
-                      |> setTransformLocalPositionByTuple(parent, pos)
+                      |> setTransformLocalPosition(parent, pos)
                       |> setTransformParent(Js.Nullable.return(parent), child);
                     let state = state |> setTransformParent(Js.Nullable.null, child);
                     (state, parent, child, pos)
@@ -229,11 +229,11 @@ let _ =
                   let pos2 = (10., 20., 30.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(parent, pos1)
+                    |> setTransformLocalPosition(parent, pos1)
                     |> setTransformParent(Js.Nullable.return(parent), child1);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(child2, pos2)
+                    |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
                   let state = state |> setTransformParent(Js.Nullable.null, child2);
                   state
@@ -257,7 +257,7 @@ let _ =
                   let (state, child) = createTransform(state);
                   let pos = (1., 2., 3.);
                   let state =
-                    setTransformLocalPositionByTuple(parent, pos, state)
+                    setTransformLocalPosition(parent, pos, state)
                     |> setTransformParent(Js.Nullable.return(parent), child);
                   let state = state |> setTransformParent(Js.Nullable.return(parent), child);
                   state |> getTransformParent(child) |> expect == Js.Nullable.return(parent)
@@ -272,10 +272,10 @@ let _ =
                   let pos1 = (1., 2., 3.);
                   let pos2 = (300., 20., 30.);
                   let state =
-                    setTransformLocalPositionByTuple(parent1, pos1, state)
+                    setTransformLocalPosition(parent1, pos1, state)
                     |> setTransformParent(Js.Nullable.return(parent1), child);
                   let state =
-                    setTransformLocalPositionByTuple(parent2, pos2, state)
+                    setTransformLocalPosition(parent2, pos2, state)
                     |> setTransformParent(Js.Nullable.return(parent2), child);
                   state |> getTransformParent(child) |> expect == Js.Nullable.return(parent2)
                 }
@@ -303,15 +303,15 @@ let _ =
                   let data = TransformTool.getTransformData(state);
                   let state =
                     state
-                    |> Transform.setTransformLocalPositionByTuple(transform1, pos1)
-                    |> Transform.setTransformLocalPositionByTuple(transform2, pos2)
-                    |> Transform.setTransformLocalPositionByTuple(transform3, pos3)
-                    |> Transform.setTransformLocalPositionByTuple(transform4, pos4);
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2)
+                    |> Transform.setTransformLocalPosition(transform3, pos3)
+                    |> Transform.setTransformLocalPosition(transform4, pos4);
                   (
-                    state |> Transform.getTransformPositionTuple(transform1),
-                    state |> Transform.getTransformPositionTuple(transform2),
-                    state |> Transform.getTransformPositionTuple(transform3),
-                    state |> Transform.getTransformPositionTuple(transform4)
+                    state |> Transform.getTransformPosition(transform1),
+                    state |> Transform.getTransformPosition(transform2),
+                    state |> Transform.getTransformPosition(transform3),
+                    state |> Transform.getTransformPosition(transform4)
                   )
                   |>
                   expect == (
@@ -341,7 +341,7 @@ let _ =
           )
       );
       describe(
-        "setTransformLocalPositionByTuple",
+        "setTransformLocalPosition",
         () => {
           open Vector3System;
           open Vector3Type;
@@ -353,15 +353,15 @@ let _ =
             let state = setTransformParent(Js.Nullable.return(parent), child, state);
             let state =
               state
-              |> setTransformLocalPositionByTuple(parent, pos1)
-              |> setTransformLocalPositionByTuple(child, pos2);
+              |> setTransformLocalPosition(parent, pos1)
+              |> setTransformLocalPosition(child, pos2);
             (state, parent, child, pos1, pos2)
           };
           test(
             "change parent's localPosition should affect children",
             () => {
               let (state, parent, child, _, pos2) = _prepare();
-              let state = setTransformLocalPositionByTuple(parent, pos2, state);
+              let state = setTransformLocalPosition(parent, pos2, state);
               state
               |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
             }
@@ -370,7 +370,7 @@ let _ =
             "change child's localPosition shouldn't affect parent",
             () => {
               let (state, parent, child, pos1, _) = _prepare();
-              let state = setTransformLocalPositionByTuple(child, pos1, state);
+              let state = setTransformLocalPosition(child, pos1, state);
               state
               |> _judgeOneToOne((parent, child), (pos1, pos1), (pos1, add(Float, pos1, pos1)))
             }
@@ -378,7 +378,7 @@ let _ =
         }
       );
       describe(
-        "setTransformLocalPositionByTypeArray",
+        "TransformTool.setTransformLocalPositionByTypeArray",
         () => {
           open Vector3System;
           open Vector3Type;
@@ -393,8 +393,8 @@ let _ =
             let state = setTransformParent(Js.Nullable.return(parent), child, state);
             let state =
               state
-              |> setTransformLocalPositionByTypeArray(parent, pos1)
-              |> setTransformLocalPositionByTypeArray(child, pos2);
+              |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos1)
+              |> TransformTool.setTransformLocalPositionByTypeArray(child, pos2);
             (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple)
           };
           let _changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);
@@ -402,12 +402,12 @@ let _ =
             "change parent's localPosition should affect children",
             () => {
               let (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple) = _prepare();
-              let state = setTransformLocalPositionByTypeArray(parent, pos2, state);
+              let state = TransformTool.setTransformLocalPositionByTypeArray(parent, pos2, state);
               (
-                state |> getTransformLocalPositionTypeArray(parent),
-                state |> getTransformPositionTypeArray(parent),
-                state |> getTransformLocalPositionTypeArray(child),
-                state |> getTransformPositionTypeArray(child)
+                state |> TransformTool.getTransformLocalPositionTypeArray(parent),
+                state |> TransformTool.getTransformPositionTypeArray(parent),
+                state |> TransformTool.getTransformLocalPositionTypeArray(child),
+                state |> TransformTool.getTransformPositionTypeArray(child)
               )
               |>
               expect == (
@@ -421,14 +421,14 @@ let _ =
         }
       );
       describe(
-        "getTransformPositionTuple",
+        "getTransformPosition",
         () => {
           test(
             "default value should be (0.,0.,0.)",
             () => {
               let (state, transform) = createTransform(state^);
               state
-              |> getTransformPositionTuple(transform)
+              |> getTransformPosition(transform)
               |> expect == TransformTool.getDefaultPosition()
             }
           );
@@ -440,15 +440,15 @@ let _ =
               let pos = (1., 2., 3.);
               let state =
                 state
-                |> setTransformLocalPositionByTuple(parent, pos)
+                |> setTransformLocalPosition(parent, pos)
                 |> setTransformParent(Js.Nullable.return(parent), child);
-              state |> getTransformPositionTuple(child) |> expect == pos
+              state |> getTransformPosition(child) |> expect == pos
             }
           )
         }
       );
       describe(
-        "setTransformPositionByTuple",
+        "setTransformPosition",
         () =>
           describe(
             "set position in world coordinate system",
@@ -463,9 +463,9 @@ let _ =
                   let pos1 = (1., 2., 3.);
                   let pos2 = (5., 10., 30.);
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
-                  let state = setTransformLocalPositionByTuple(parent, pos1, state);
-                  let state = setTransformLocalPositionByTuple(child, pos2, state);
-                  let state = state |> setTransformPositionByTuple(parent, pos2);
+                  let state = setTransformLocalPosition(parent, pos1, state);
+                  let state = setTransformLocalPosition(child, pos2, state);
+                  let state = state |> setTransformPosition(parent, pos2);
                   state
                   |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
                 }
@@ -479,9 +479,9 @@ let _ =
                   let pos2 = (5., 10., 30.);
                   let pos3 = (2., 3., 4.);
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
-                  let state = setTransformLocalPositionByTuple(parent, pos1, state);
-                  let state = setTransformLocalPositionByTuple(child, pos2, state);
-                  let state = state |> setTransformPositionByTuple(child, pos3);
+                  let state = setTransformLocalPosition(parent, pos1, state);
+                  let state = setTransformLocalPosition(child, pos2, state);
+                  let state = state |> setTransformPosition(child, pos3);
                   state |> _judgeOneToOne((parent, child), (pos1, pos1), ((1., 1., 1.), pos3))
                 }
               )
@@ -499,8 +499,8 @@ let _ =
                    () => {
                      let (state, transform, pos1, pos2) = _prepareOne();
                      let state = state |> TransformTool.update;
-                     let state = setTransformPositionByTuple(transform, pos2, state);
-                     state |> getTransformPositionTuple(transform) |> expect == pos1
+                     let state = setTransformPosition(transform, pos2, state);
+                     state |> getTransformPosition(transform) |> expect == pos1
                    }
                  )
              );
@@ -512,8 +512,8 @@ let _ =
                    () => {
                      let (state, transform, _, pos2) = _prepareOne();
                      let state = state |> TransformTool.update;
-                     let state = setTransformLocalPositionByTuple(transform, pos2, state);
-                     state |> getTransformLocalPositionTuple(transform) |> expect == pos2
+                     let state = setTransformLocalPosition(transform, pos2, state);
+                     state |> getTransformLocalPosition(transform) |> expect == pos2
                    }
                  )
              )
@@ -528,14 +528,14 @@ let _ =
                  let (state, child) = createTransform(state^);
                  let (state, parent) = createTransform(state);
                  let pos = (1., 2., 3.);
-                 let state = state |> setTransformLocalPositionByTuple(child, pos);
+                 let state = state |> setTransformLocalPosition(child, pos);
                  let state =
                    state
-                   |> setTransformLocalPositionByTuple(parent, pos)
+                   |> setTransformLocalPosition(parent, pos)
                    |> setTransformParent(Js.Nullable.return(parent), child);
                  /* let state = state |> TransformTool.init; */
                  let state = state |> TransformTool.update;
-                 (getTransformPositionTuple(child, state), getTransformPositionTuple(parent, state))
+                 (getTransformPosition(child, state), getTransformPosition(parent, state))
                  |> expect == (Vector3System.add(Float, pos, pos), pos)
                }
              );
@@ -582,7 +582,7 @@ let _ =
                      open GameObject;
                      let (state, transform1) = createTransform(state^);
                      let pos1 = (1., 2., 3.);
-                     let state = state |> setTransformLocalPositionByTuple(transform1, pos1);
+                     let state = state |> setTransformLocalPosition(transform1, pos1);
                      let mat1 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
                      let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
                      mat1 |> expect == mat2
@@ -595,7 +595,7 @@ let _ =
                        open GameObject;
                        let (state, transform1) = createTransform(state^);
                        let pos1 = (1., 2., 3.);
-                       let state = state |> setTransformLocalPositionByTuple(transform1, pos1);
+                       let state = state |> setTransformLocalPosition(transform1, pos1);
                        let mat1 =
                          TransformTool.getLocalToWorldMatrixTypeArray(transform1, state)
                          |> Js.Typed_array.Float32Array.copy;
@@ -606,7 +606,7 @@ let _ =
                        () => {
                          let (state, transform1, mat1) = _prepare(state);
                          let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformLocalPositionByTuple(transform1, pos2);
+                         let state = state |> setTransformLocalPosition(transform1, pos2);
                          let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
                          mat1 |> expect |> not_ |> toEqual(mat2)
                        }
@@ -616,7 +616,7 @@ let _ =
                        () => {
                          let (state, transform1, mat1) = _prepare(state);
                          let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformPositionByTuple(transform1, pos2);
+                         let state = state |> setTransformPosition(transform1, pos2);
                          let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
                          mat1 |> expect |> not_ |> toEqual(mat2)
                        }
@@ -626,8 +626,8 @@ let _ =
                        () => {
                          let (state, transform1, mat1) = _prepare(state);
                          let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformLocalPositionByTuple(transform1, pos2);
-                         let _ = state |> getTransformPositionTuple(transform1);
+                         let state = state |> setTransformLocalPosition(transform1, pos2);
+                         let _ = state |> getTransformPosition(transform1);
                          let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
                          mat1 |> expect |> not_ |> toEqual(mat2)
                        }
@@ -659,10 +659,10 @@ let _ =
                   let pos2 = (5., 10., 30.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(transform1, pos1)
-                    |> setTransformLocalPositionByTuple(transform2, pos2);
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
                   let state = state |> dispose(transform1);
-                  state |> getTransformLocalPositionTuple(transform2) |> expect == pos2
+                  state |> getTransformLocalPosition(transform2) |> expect == pos2
                 }
               )
           );
@@ -678,10 +678,10 @@ let _ =
                   let pos2 = (5., 10., 30.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(transform1, pos1)
-                    |> setTransformLocalPositionByTuple(transform2, pos2);
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
                   let state = state |> dispose(transform1);
-                  state |> getTransformLocalPositionTuple(transform2) |> expect == pos2
+                  state |> getTransformLocalPosition(transform2) |> expect == pos2
                 }
               )
           );
@@ -710,10 +710,10 @@ let _ =
                       let pos2 = (5., 10., 30.);
                       let state =
                         state
-                        |> setTransformLocalPositionByTuple(transform1, pos1)
-                        |> setTransformLocalPositionByTuple(transform2, pos2);
+                        |> setTransformLocalPosition(transform1, pos1)
+                        |> setTransformLocalPosition(transform2, pos2);
                       let state = state |> dispose(transform1);
-                      state |> getTransformPositionTuple(transform2) |> expect == pos2
+                      state |> getTransformPosition(transform2) |> expect == pos2
                     }
                   );
                   test(
@@ -730,13 +730,13 @@ let _ =
                       let pos2 = (5., 10., 30.);
                       let state =
                         state
-                        |> setTransformLocalPositionByTuple(transform0, pos0)
-                        |> setTransformLocalPositionByTuple(transform1, pos1)
-                        |> setTransformLocalPositionByTuple(transform2, pos2);
+                        |> setTransformLocalPosition(transform0, pos0)
+                        |> setTransformLocalPosition(transform1, pos1)
+                        |> setTransformLocalPosition(transform2, pos2);
                       let state = state |> dispose(transform2);
                       (
-                        state |> getTransformPositionTuple(transform0),
-                        state |> getTransformPositionTuple(transform1)
+                        state |> getTransformPosition(transform0),
+                        state |> getTransformPosition(transform1)
                       )
                       |> expect == (pos0, add(Float, pos0, pos1))
                     }
@@ -770,13 +770,13 @@ let _ =
                   let pos2 = (5., 10., 30.);
                   let state =
                     state
-                    |> setTransformLocalPositionByTuple(transform0, pos0)
-                    |> setTransformLocalPositionByTuple(transform1, pos1)
-                    |> setTransformLocalPositionByTuple(transform2, pos2);
+                    |> setTransformLocalPosition(transform0, pos0)
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
                   let state = state |> dispose(transform0);
                   (
-                    state |> getTransformPositionTuple(transform1),
-                    state |> getTransformPositionTuple(transform2)
+                    state |> getTransformPosition(transform1),
+                    state |> getTransformPosition(transform2)
                   )
                   |> expect == (pos1, add(Float, pos1, pos2))
                 }
@@ -839,7 +839,7 @@ let _ =
                       let state = state |> dispose(transform1);
                       let (state, transform2) = createTransform(state);
                       state
-                      |> getTransformLocalPositionTuple(transform2)
+                      |> getTransformLocalPosition(transform2)
                       |> expect == TransformTool.getDefaultPosition()
                     }
                   )
@@ -861,8 +861,8 @@ let _ =
                     () => {
                       let (state, transform1, transform2) = _prepare();
                       let state =
-                        state |> setTransformLocalPositionByTuple(transform1, (0., 1., 2.));
-                      let _ = state |> getTransformPositionTuple(transform1);
+                        state |> setTransformLocalPosition(transform1, (0., 1., 2.));
+                      let _ = state |> getTransformPosition(transform1);
 
 
                       let state = state |> dispose(transform1);
@@ -872,8 +872,8 @@ let _ =
 
 
 (
-  state |> getTransformLocalPositionTuple(transform3),
-  state |> getTransformPositionTuple(transform3)
+  state |> getTransformLocalPosition(transform3),
+  state |> getTransformPosition(transform3)
 )                       |> expect == (
 TransformTool.getDefaultPosition(),
 TransformTool.getDefaultPosition()
@@ -928,20 +928,12 @@ TransformTool.getDefaultPosition()
                 |> toThrowMessage("component should alive")
               };
               test(
-                "getTransformPositionTypeArray should error",
-                () => _testGetFunc(getTransformPositionTypeArray)
+                "getTransformPosition should error",
+                () => _testGetFunc(getTransformPosition)
               );
               test(
-                "getTransformPositionTuple should error",
-                () => _testGetFunc(getTransformPositionTuple)
-              );
-              test(
-                "getTransformLocalPositionTypeArray should error",
-                () => _testGetFunc(getTransformLocalPositionTypeArray)
-              );
-              test(
-                "getTransformLocalPositionTuple should error",
-                () => _testGetFunc(getTransformLocalPositionTuple)
+                "getTransformLocalPosition should error",
+                () => _testGetFunc(getTransformLocalPosition)
               );
               test("getTransformParent should error", () => _testGetFunc(getTransformParent));
               test("getTransformChildren should error", () => _testGetFunc(getTransformChildren));
@@ -950,20 +942,12 @@ TransformTool.getDefaultPosition()
                 () => _testGetFunc(getTransformGameObject)
               );
               test(
-                "setTransformPositionByTypeArray should error",
-                () => _testSetFunc(setTransformPositionByTypeArray)
+                "setTransformPosition should error",
+                () => _testSetFunc(setTransformPosition)
               );
               test(
-                "setTransformPositionByTuple should error",
-                () => _testSetFunc(setTransformPositionByTuple)
-              );
-              test(
-                "setTransformLocalPositionByTypeArray should error",
-                () => _testSetFunc(setTransformLocalPositionByTypeArray)
-              );
-              test(
-                "setTransformLocalPositionByTuple should error",
-                () => _testSetFunc(setTransformLocalPositionByTuple)
+                "setTransformLocalPosition should error",
+                () => _testSetFunc(setTransformLocalPosition)
               );
               test("setTransformParent should error", () => _testSetFunc(setTransformParent))
             }
@@ -987,9 +971,9 @@ TransformTool.getDefaultPosition()
             () => {
               let (state, transform0) = createTransform(state^);
               let pos0 = (0.1, 0., 0.);
-              let state = state |> setTransformLocalPositionByTuple(transform0, pos0);
+              let state = state |> setTransformLocalPosition(transform0, pos0);
               state
-              |> getTransformLocalPositionTuple(transform0)
+              |> getTransformLocalPosition(transform0)
               |> expect == (0.10000000149011612, 0., 0.)
             }
           )

@@ -335,10 +335,10 @@ let _ =
                   let pos2 = (2., 3., 4.);
                   let state =
                     state
-                    |> Transform.setTransformLocalPositionByTuple(transform1, pos1)
-                    |> Transform.setTransformLocalPositionByTuple(transform2, pos2);
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2);
                   let state = state |> disposeGameObject(gameObject1);
-                  state |> Transform.getTransformPositionTuple(transform2) |> expect == pos2
+                  state |> Transform.getTransformPosition(transform2) |> expect == pos2
                 }
               );
               test(
@@ -698,11 +698,11 @@ let _ =
                   let pos3 = (4., 3., 4.);
                   let state =
                     state
-                    |> Transform.setTransformLocalPositionByTuple(transform1, pos1)
-                    |> Transform.setTransformLocalPositionByTuple(transform2, pos2)
-                    |> Transform.setTransformLocalPositionByTuple(transform3, pos3);
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2)
+                    |> Transform.setTransformLocalPosition(transform3, pos3);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  state |> Transform.getTransformPositionTuple(transform3) |> expect == pos3
+                  state |> Transform.getTransformPosition(transform3) |> expect == pos3
                 }
               );
               test(

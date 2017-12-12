@@ -400,8 +400,8 @@ let _ =
                       let pos2 = (2., 4., 5.);
                       let state =
                         state
-                        |> Transform.setTransformLocalPositionByTuple(sourceTransform, pos1)
-                        |> Transform.setTransformLocalPositionByTuple(objectInstanceGameObject, pos2);
+                        |> Transform.setTransformLocalPosition(sourceTransform, pos1)
+                        |> Transform.setTransformLocalPosition(objectInstanceGameObject, pos2);
                       let array_buffer = 1;
                       let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =

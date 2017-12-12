@@ -45,3 +45,11 @@ let isDisposed = (transform, state) => {
   let {localToWorldMatrixMap} = getTransformData(state);
   ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform))
 };
+
+let getTransformLocalPositionTypeArray = TransformSystem.getLocalPositionTypeArray;
+
+let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray;
+
+let getTransformPositionTypeArray = TransformSystem.getPositionTypeArray;
+
+let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray;
