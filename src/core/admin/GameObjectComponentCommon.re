@@ -50,10 +50,10 @@ let addSourceInstanceComponent = (uid: int, component: component, state: StateDa
 };
 
 let disposeSourceInstanceComponent =
-    (uid: int, component: component, disposeGameObjectFunc, state: StateDataType.state) =>
+    (uid: int, component: component, batchDisposeGameObjectFunc, state: StateDataType.state) =>
   SourceInstanceDisposeComponentCommon.handleDisposeComponent(
     component,
-    disposeGameObjectFunc,
+    batchDisposeGameObjectFunc,
     state
   );
 

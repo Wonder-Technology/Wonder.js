@@ -83,7 +83,42 @@ let create = (state: StateDataType.state) => {
   (addTransformComponent(uid, transform, state), uid)
 };
 
-let rec dispose = (uid: int, state: StateDataType.state) => {
+let rec batchDispose = (uidArray: array(int), state: StateDataType.state) => {
+  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
+  uidArray
+  |> WonderCommonlib.ArraySystem.forEach(
+       [@bs] ((uid) => disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore)
+     );
+  data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
+  let state =
+    state
+    |> GameObjectComponentCommon.batchGetMeshRendererComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeMeshRendererComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetTransformComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeTransformComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetMaterialComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeMaterialComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetSourceInstanceComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeSourceInstanceComponent(
+         disposedUidMap,
+         state,
+         batchDispose
+       )
+    |> GameObjectComponentCommon.batchGetObjectInstanceComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeObjectInstanceComponent(disposedUidMap, state);
+  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
+    data.disposeCount = 0;
+    CpuMemorySystem.reAllocateGameObject(state)
+  } else {
+    state
+  }
+};
+
+let dispose = (uid: int, state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
@@ -114,7 +149,7 @@ let rec dispose = (uid: int, state: StateDataType.state) => {
     };
   let state =
     switch (getSourceInstanceComponent(uid, state)) {
-    | Some(sourceInstance) => disposeSourceInstanceComponent(uid, sourceInstance, dispose, state)
+    | Some(sourceInstance) => disposeSourceInstanceComponent(uid, sourceInstance, batchDispose, state)
     | None => state
     };
   let state =
@@ -130,40 +165,7 @@ let rec dispose = (uid: int, state: StateDataType.state) => {
   }
 };
 
-let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
-  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
-  uidArray
-  |> WonderCommonlib.ArraySystem.forEach(
-       [@bs] ((uid) => disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore)
-     );
-  data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
-  let state =
-    state
-    |> GameObjectComponentCommon.batchGetMeshRendererComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeMeshRendererComponent(disposedUidMap, state)
-    |> GameObjectComponentCommon.batchGetTransformComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeTransformComponent(disposedUidMap, state)
-    |> GameObjectComponentCommon.batchGetMaterialComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeMaterialComponent(disposedUidMap, state)
-    |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
-    |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state)
-    |> GameObjectComponentCommon.batchGetSourceInstanceComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeSourceInstanceComponent(
-         disposedUidMap,
-         state,
-         dispose
-       )
-    |> GameObjectComponentCommon.batchGetObjectInstanceComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeObjectInstanceComponent(disposedUidMap, state);
-  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
-    data.disposeCount = 0;
-    CpuMemorySystem.reAllocateGameObject(state)
-  } else {
-    state
-  }
-};
+
 
 /* {
                    cloneChildren:true,

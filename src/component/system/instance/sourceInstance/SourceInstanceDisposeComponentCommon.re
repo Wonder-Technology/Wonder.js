@@ -13,26 +13,22 @@ let isAlive = (sourceInstance: sourceInstance, state: StateDataType.state) =>
   );
 
 let _disposeObjectInstanceGameObject =
-    (sourceInstance: sourceInstance, disposeGameObjectFunc, state) =>
-  SourceInstanceObjectInstanceListCommon.unsafeGetObjectInstanceList(
-    sourceInstance,
-    getSourceInstanceData(state).objectInstanceListMap
-  )
-  |> Js.Array.copy
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, objectInstanceGameObject) => disposeGameObjectFunc(objectInstanceGameObject, state)
-       ),
-       state
-     );
+    (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, state) => {
+  let objectInstanceGameObjectArr =
+    SourceInstanceObjectInstanceListCommon.unsafeGetObjectInstanceList(
+      sourceInstance,
+      getSourceInstanceData(state).objectInstanceListMap
+    )
+    |> Js.Array.copy;
+  batchDisposeGameObjectFunc(objectInstanceGameObjectArr, state)
+};
 
 let _disposeData =
-    (sourceInstance: sourceInstance, disposeGameObjectFunc, state: StateDataType.state) => {
+    (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, state: StateDataType.state) => {
   let state =
     state
     |> VboBufferDisposeSystem.disposeInstanceBufferData(sourceInstance)
-    |> _disposeObjectInstanceGameObject(sourceInstance, disposeGameObjectFunc);
+    |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
   let {
     objectInstanceListMap,
     modelMatrixFloat32ArrayMap,
@@ -52,7 +48,7 @@ let _disposeData =
 };
 
 let handleDisposeComponent =
-    (sourceInstance: sourceInstance, disposeGameObjectFunc, state: StateDataType.state) => {
+    (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -62,7 +58,7 @@ let handleDisposeComponent =
   let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
   disposedIndexArray |> Js.Array.push(sourceInstance) |> ignore;
   VboBufferSystem.addInstanceBufferToPool(sourceInstance, state)
-  |> _disposeData(sourceInstance, disposeGameObjectFunc)
+  |> _disposeData(sourceInstance, batchDisposeGameObjectFunc)
 };
 
 let handleBatchDisposeComponent =
@@ -71,7 +67,7 @@ let handleBatchDisposeComponent =
     (
       sourceInstanceArray: array(sourceInstance),
       gameSourceUidMap: array(bool),
-      disposeGameObjectFunc,
+      batchDisposeGameObjectFunc,
       state: StateDataType.state
     ) => {
       requireCheck(
@@ -100,7 +96,10 @@ let handleBatchDisposeComponent =
              (state, sourceInstance) =>
                state
                |> VboBufferSystem.addInstanceBufferToPool(sourceInstance)
-               |> _disposeData(sourceInstance, disposeGameObjectFunc)
+               |> _disposeData(
+                    sourceInstance,
+                    batchDisposeGameObjectFunc
+                  )
            ),
            state
          )

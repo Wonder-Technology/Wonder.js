@@ -1,3 +1,5 @@
+open GameObjectType;
+
 open ObjectInstanceType;
 
 open StateDataType;
