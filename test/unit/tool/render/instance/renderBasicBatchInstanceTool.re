@@ -10,7 +10,7 @@ let createSourceInstanceGameObject = (sandbox, count, state) => {
          (
            ((state, objectInstanceGameObjectList), _) => {
              let (state, objectInstanceGameObject) =
-               SourceInstance.createInstance(sourceInstance, state);
+               SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
              (state, [objectInstanceGameObject, ...objectInstanceGameObjectList])
            }
          ),

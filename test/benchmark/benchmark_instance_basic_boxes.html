@@ -35,7 +35,7 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/ecs/component/api/cameraController/PerspectiveCamera.js";
 
 
-        import { markModelMatrixIsStatic, getObjectInstanceList, createSourceInstance, createInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
+        import { markSourceInstanceModelMatrixIsStatic, getSourceInstanceObjectInstanceList, createSourceInstance, createSourceInstanceObjectInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
 
 
 
@@ -146,7 +146,7 @@
 
                     let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-                    let objectInstanceList = getObjectInstanceList(sourceInstance, state);
+                    let objectInstanceList = getSourceInstanceObjectInstanceList(sourceInstance, state);
 
 
 
@@ -177,8 +177,8 @@
             }
 
             function initSample(state) {
-                var [state, boxes, objectInstanceArr] = createBoxes(1, 60000, state);
-                // var [state, boxes, objectInstanceArr] = createBoxes(1, 1, state);
+                // var [state, boxes, objectInstanceArr] = createBoxes(1, 60000, state);
+                var [state, boxes, objectInstanceArr] = createBoxes(1, 1, state);
                 // var [state, boxes, objectInstanceArr] = createBoxesWithHierachy(30000, state);
 
 
@@ -190,7 +190,7 @@
                 var [state, camera] = createCamera(state);
 
                 // state = setData(boxes, state);
-                // state = createAndDisposeSourceInstanceGameObjects(boxes, state);
+                state = createAndDisposeSourceInstanceGameObjects(boxes, state);
                 // state = createAndDisposeObjectInstanceGameObjects(boxes, state);
 
 
@@ -210,7 +210,7 @@
 
                     let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-                    let objectInstanceList = getObjectInstanceList(sourceInstance, state);
+                    let objectInstanceList = getSourceInstanceObjectInstanceList(sourceInstance, state);
 
 
 
@@ -378,12 +378,12 @@
                 var [state, sourceInstance] = createSourceInstance(state);
 
 
-                var state = markModelMatrixIsStatic(sourceInstance, false, state);
+                var state = markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state);
 
                 // setTimeout(() => {
 
                 //     scheduleLoop((elapsed, state) => {
-                //         return markModelMatrixIsStatic(sourceInstance, false, state)
+                //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state)
                 //     }, state);
 
                 // }, 1000);
@@ -392,7 +392,7 @@
                 // setTimeout(() => {
 
                 //     scheduleLoop((elapsed, state) => {
-                //         return markModelMatrixIsStatic(sourceInstance, true, state)
+                //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, true, state)
                 //     }, state);
 
                 // }, 3000);
@@ -411,7 +411,7 @@
 
 
                     var [state, objectInstanceGameObject] =
-                        createInstance(sourceInstance, state);
+                        createSourceInstanceObjectInstance(sourceInstance, state);
 
                     objectInstanceGameObjectArr.push(objectInstanceGameObject);
                 }

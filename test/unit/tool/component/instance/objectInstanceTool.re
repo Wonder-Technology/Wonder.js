@@ -3,7 +3,7 @@ let createObjectInstanceGameObject = (state: StateDataType.state) => {
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =
     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
-  let (state, objectInstanceGameObject) = SourceInstance.createInstance(sourceInstance, state);
+  let (state, objectInstanceGameObject) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
   (
     state,
     gameObject,
@@ -21,7 +21,7 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
   let objectInstanceGameObjectArr = [||];
   for (i in 0 to count - 1) {
-    let (state, objectInstanceGameObject) = SourceInstance.createInstance(sourceInstance, state);
+    let (state, objectInstanceGameObject) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
     objectInstanceGameObjectArr |> Js.Array.push(objectInstanceGameObject) |> ignore
   };
   (

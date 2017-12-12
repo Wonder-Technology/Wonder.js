@@ -1,6 +1,7 @@
 open SourceInstanceType;
 
-open Contract;
+let isAlive = (sourceInstance: sourceInstance, state: StateDataType.state) =>
+  SourceInstanceDisposeComponentCommon.isAlive(sourceInstance, state);
 
 let create = (state: StateDataType.state) => SourceInstanceCreateCommon.create(state);
 

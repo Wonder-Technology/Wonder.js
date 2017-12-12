@@ -430,7 +430,7 @@ let _ =
                           _prepare(sandbox, state);
                         for (i in 0 to 62) {
                           let (state, objectInstanceGameObject) =
-                            SourceInstance.createInstance(sourceInstance, state);
+                            SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
                           ()
                         };
                         (state, gameObject, sourceInstance, objectInstanceGameObject)
@@ -873,7 +873,7 @@ let _ =
                         ) =
                           _prepare(sandbox, state^);
                         let state =
-                          SourceInstance.markModelMatrixIsStatic(sourceInstance, isStatic, state);
+                          SourceInstance.markSourceInstanceModelMatrixIsStatic(sourceInstance, isStatic, state);
                         let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
                         let state =
                           state
@@ -930,7 +930,7 @@ let _ =
                                     _prepare(sandbox, Js.false_, state);
                                   let state = state |> _render;
                                   let state =
-                                    SourceInstance.markModelMatrixIsStatic(
+                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
                                       sourceInstance,
                                       Js.false_,
                                       state
@@ -955,7 +955,7 @@ let _ =
                                     _prepare(sandbox, Js.false_, state);
                                   let state = state |> _render;
                                   let state =
-                                    SourceInstance.markModelMatrixIsStatic(
+                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
                                       sourceInstance,
                                       Js.true_,
                                       state
@@ -981,14 +981,14 @@ let _ =
                                     _prepare(sandbox, Js.false_, state);
                                   let state = state |> _render;
                                   let state =
-                                    SourceInstance.markModelMatrixIsStatic(
+                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
                                       sourceInstance,
                                       Js.false_,
                                       state
                                     );
                                   let state = state |> _render;
                                   let state =
-                                    SourceInstance.markModelMatrixIsStatic(
+                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
                                       sourceInstance,
                                       Js.true_,
                                       state

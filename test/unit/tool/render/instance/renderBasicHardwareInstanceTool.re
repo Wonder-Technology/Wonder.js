@@ -2,7 +2,7 @@ let createSourceInstanceGameObject = (sandbox, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
     RenderJobsTool.prepareGameObject(sandbox, state);
   let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
-  let (state, objectInstanceGameObject) = SourceInstance.createInstance(sourceInstance, state);
+  let (state, objectInstanceGameObject) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
   let state = state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
   (state, gameObject, (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject))
 };
