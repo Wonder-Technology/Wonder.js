@@ -2,9 +2,19 @@ open GeometryType;
 
 open VboBufferType;
 
-let disposeData = (geometry: geometry, state: StateDataType.state) => {
+open SourceInstanceType;
+
+open ComponentAdmin;
+
+let disposeGeometryBufferData = (geometry: geometry, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
-  vertexBufferMap |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(geometry);
-  elementArrayBufferMap |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(geometry);
+  disposeSparseMapData(geometry, vertexBufferMap) |> ignore;
+  disposeSparseMapData(geometry, elementArrayBufferMap) |> ignore;
+  state
+};
+
+let disposeInstanceBufferData = (sourceInstance: sourceInstance, state: StateDataType.state) => {
+  let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  disposeSparseMapData(sourceInstance, modelMatrixInstanceBufferMap) |> ignore;
   state
 };

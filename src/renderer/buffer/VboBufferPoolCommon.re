@@ -20,19 +20,19 @@ let getElementArrayBuffer = (gl, state: StateDataType.state) => {
 
 let getInstanceBuffer = (gl) => Gl.createBuffer(gl);
 
-let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(geometryIndex, bufferMap)
+let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
+  WonderCommonlib.SparseMapSystem.unsafeGet(index, bufferMap)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "buffer should exist in bufferMap",
-             () => WonderCommonlib.SparseMapSystem.has(geometryIndex, bufferMap) |> assertTrue
+             () => WonderCommonlib.SparseMapSystem.has(index, bufferMap) |> assertTrue
            )
          )
      );
 
-let addBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
+let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap, vertexArrayBufferPool, elementArrayBufferPool} =
     VboBufferStateUtils.getVboBufferData(state);
   vertexArrayBufferPool
@@ -40,6 +40,17 @@ let addBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
   |> ignore;
   elementArrayBufferPool
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, elementArrayBufferMap))
+  |> ignore;
+  state
+};
+
+let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) => {
+  let {modelMatrixInstanceBufferMap, modelMatrixInstanceBufferPool} =
+    VboBufferStateUtils.getVboBufferData(state);
+  modelMatrixInstanceBufferPool
+  |> Js.Array.push(
+       _unsafeGetBufferFromBufferMap(sourceInstanceIndex, modelMatrixInstanceBufferMap)
+     )
   |> ignore;
   state
 };

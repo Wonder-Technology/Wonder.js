@@ -19,6 +19,6 @@ type sourceInstanceData = {
   modelMatrixInstanceBufferCapacityMap,
   isModelMatrixStaticMap,
   isSendModelMatrixDataMap,
-  disposedIndexArray: array(sourceInstance),
+  mutable disposedIndexArray: array(sourceInstance),
   gameObjectMap
 };

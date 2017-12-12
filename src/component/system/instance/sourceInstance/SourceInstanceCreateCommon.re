@@ -1,10 +1,13 @@
+open ComponentSystem;
+
 open SourceInstanceType;
 
 open SourceInstanceStateCommon;
 
 let create = (state: StateDataType.state) => {
-  let {index, objectInstanceListMap} as data = getSourceInstanceData(state);
-  data.index = succ(index);
+  let {index, objectInstanceListMap, disposedIndexArray} as data = getSourceInstanceData(state);
+  let (index, newIndex) = generateIndex(index, disposedIndexArray);
+  data.index = newIndex;
   objectInstanceListMap
   |> WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty());
   let state =

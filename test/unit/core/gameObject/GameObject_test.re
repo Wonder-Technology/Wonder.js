@@ -771,6 +771,77 @@ let _ =
                       )
                   )
                 }
+              );
+              describe(
+                "batch dispose sourceInstance componets",
+                () =>
+                  describe(
+                    "dispose data",
+                    () => {
+                      test(
+                        "remove from map",
+                        () => {
+                          open SourceInstanceType;
+                          let (state, gameObjectArr, sourceInstanceArr) =
+                            SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
+                          let state =
+                            sourceInstanceArr
+                            |> ArraySystem.reduceState(
+                                 [@bs]
+                                 (
+                                   (state, sourceInstance) =>
+                                     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                                       sourceInstance,
+                                       state
+                                     )
+                                 ),
+                                 state
+                               );
+                          let state = state |> batchDisposeGameObject(gameObjectArr);
+                          let {objectInstanceListMap} =
+                            SourceInstanceTool.getSourceInstanceData(state);
+                          (
+                            objectInstanceListMap
+                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
+                            objectInstanceListMap
+                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
+                          )
+                          |> expect == (false, false)
+                        }
+                      );
+                      test(
+                        "remove from buffer map",
+                        () => {
+                          open VboBufferType;
+                          let (state, gameObjectArr, sourceInstanceArr) =
+                            SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
+                          let state =
+                            sourceInstanceArr
+                            |> ArraySystem.reduceState(
+                                 [@bs]
+                                 (
+                                   (state, sourceInstance) =>
+                                     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                                       sourceInstance,
+                                       state
+                                     )
+                                 ),
+                                 state
+                               );
+                          let state = state |> batchDisposeGameObject(gameObjectArr);
+                          let {modelMatrixInstanceBufferMap} =
+                            VboBufferTool.getVboBufferData(state);
+                          (
+                            modelMatrixInstanceBufferMap
+                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
+                            modelMatrixInstanceBufferMap
+                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
+                          )
+                          |> expect == (false, false)
+                        }
+                      )
+                    }
+                  )
               )
             }
           );

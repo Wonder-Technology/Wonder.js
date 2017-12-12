@@ -17,5 +17,8 @@ let getOrCreateBuffer =
     buffer
   };
 
-let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
-  VboBufferPoolCommon.addBufferToPool(geometryIndex, state);
+let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
+  VboBufferPoolCommon.addGeometryBufferToPool(geometryIndex, state);
+
+let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) =>
+  VboBufferPoolCommon.addInstanceBufferToPool(sourceInstanceIndex, state);

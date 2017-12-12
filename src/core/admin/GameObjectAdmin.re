@@ -22,6 +22,9 @@ let hasSourceInstanceComponent = GameObjectComponentCommon.hasSourceInstanceComp
 let getSourceInstanceComponent = GameObjectComponentCommon.getSourceInstanceComponent;
 
 let addSourceInstanceComponent = GameObjectComponentCommon.addSourceInstanceComponent;
+
+let disposeSourceInstanceComponent = GameObjectComponentCommon.disposeSourceInstanceComponent;
+
 let getObjectInstanceComponent = GameObjectComponentCommon.getObjectInstanceComponent;
 
 let addObjectInstanceComponent = GameObjectComponentCommon.addObjectInstanceComponent;
@@ -136,6 +139,8 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
     |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetSourceInstanceComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeSourceInstanceComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetObjectInstanceComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeObjectInstanceComponent(disposedUidMap, state);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {

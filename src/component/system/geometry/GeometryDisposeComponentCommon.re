@@ -12,7 +12,7 @@ let isAlive = (geometry: geometry, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(geometry, getGeometryData(state).disposedIndexArray);
 
 let _disposeData = (geometry: geometry, state: StateDataType.state) => {
-  let state = VboBufferDisposeSystem.disposeData(geometry, state);
+  let state = VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state);
   let {
     verticesMap,
     indicesMap,
@@ -44,7 +44,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   let {disposedIndexArray} = getGeometryData(state);
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
   | false =>
-    let state = VboBufferSystem.addBufferToPool(geometry, state) |> _disposeData(geometry);
+    let state = VboBufferSystem.addGeometryBufferToPool(geometry, state) |> _disposeData(geometry);
     disposedIndexArray |> Js.Array.push(geometry) |> ignore;
     state
   | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
@@ -81,7 +81,7 @@ let handleBatchDisposeComponent =
                switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
                | false =>
                  disposedIndexArray |> Js.Array.push(geometry) |> ignore;
-                 VboBufferSystem.addBufferToPool(geometry, state) |> _disposeData(geometry)
+                 VboBufferSystem.addGeometryBufferToPool(geometry, state) |> _disposeData(geometry)
                | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
                }
            ),

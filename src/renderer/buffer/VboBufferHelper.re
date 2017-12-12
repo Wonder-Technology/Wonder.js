@@ -5,5 +5,6 @@ let initData = () => {
   elementArrayBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   modelMatrixInstanceBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   vertexArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
-  elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty()
+  elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
+  modelMatrixInstanceBufferPool: WonderCommonlib.ArraySystem.createEmpty()
 };

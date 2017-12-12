@@ -49,6 +49,9 @@ let addSourceInstanceComponent = (uid: int, component: component, state: StateDa
   [@bs] SourceInstanceAddComponentCommon.handleAddComponent(component, uid, state)
 };
 
+let disposeSourceInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
+  SourceInstanceDisposeComponentCommon.handleDisposeComponent(component, state);
+
 let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _getComponent(uid);
 
@@ -245,6 +248,26 @@ let batchDisposeCameraControllerComponent =
     componentArray
   );
 
+let batchGetSourceInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap,
+    state
+  );
+
+let batchDisposeSourceInstanceComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  /* switch (componentArray |> Js.Array.length) {
+     | 0 => state
+     | _ => */
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    SourceInstanceDisposeComponentCommon.handleBatchDisposeComponent,
+    componentArray
+  );
+
+/* }; */
 let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,

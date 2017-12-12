@@ -26,4 +26,16 @@ let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: State
   state
 };
 
+let passBufferShouldExistCheckWhenDisposeSourceInstance =
+    (sourceInstanceIndex, state: StateDataType.state) => {
+  open VboBufferType;
+  let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  WonderCommonlib.SparseMapSystem.set(
+    sourceInstanceIndex,
+    Obj.magic(0),
+    modelMatrixInstanceBufferMap
+  );
+  state
+};
+
 let getVboBufferData = VboBufferStateUtils.getVboBufferData;
