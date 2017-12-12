@@ -13,11 +13,11 @@ let createSourceInstanceObjectInstance = (sourceInstance, state: StateDataType.s
   createInstance(sourceInstance, state)
 };
 
-let getSourceInstanceObjectInstanceList = (sourceInstance, state: StateDataType.state) => {
+let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(sourceInstance, isAlive, state))
   );
-  getObjectInstanceList(sourceInstance, state)
+  getObjectInstanceArray(sourceInstance, state)
 };
 
 let markSourceInstanceModelMatrixIsStatic =

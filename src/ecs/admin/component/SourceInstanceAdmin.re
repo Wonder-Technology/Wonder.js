@@ -1,6 +1,6 @@
 let getSourceInstanceData = SourceInstanceSystem.getSourceInstanceData;
 
-let getObjectInstanceList = SourceInstanceSystem.getObjectInstanceList;
+let getObjectInstanceArray = SourceInstanceSystem.getObjectInstanceArray;
 
 let isModelMatrixIsStatic = SourceInstanceSystem.isModelMatrixIsStatic;
 

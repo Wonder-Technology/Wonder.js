@@ -15,7 +15,8 @@
   "coveragePathIgnorePatterns":[
     "<rootDir>/lib/es6_global/src/.+/Director.*",
     "<rootDir>/lib/es6_global/src/utils/",
-    "<rootDir>/lib/es6_global/src/definition/"
+    "<rootDir>/lib/es6_global/src/definition/",
+    "<rootDir>/lib/es6_global/src/structure/"
   ],
   "collectCoverageFrom" : ["lib/es6_global/src/**/*.{js}", "!**/node_modules/**", "!**/vendor/**"]
 }

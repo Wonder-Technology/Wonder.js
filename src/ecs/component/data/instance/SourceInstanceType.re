@@ -2,7 +2,7 @@ open ComponentType;
 
 type sourceInstance = int;
 
-type objectInstanceListMap = array(array(int));
+type objectInstanceArrayMap = array(array(int));
 
 type modelMatrixFloat32ArrayMap = array(Js.Typed_array.Float32Array.t);
 
@@ -14,7 +14,7 @@ type isSendModelMatrixDataMap = array(bool);
 
 type sourceInstanceData = {
   mutable index: int,
-  mutable objectInstanceListMap,
+  mutable objectInstanceArrayMap,
   modelMatrixFloat32ArrayMap,
   modelMatrixInstanceBufferCapacityMap,
   isModelMatrixStaticMap,

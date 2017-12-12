@@ -25,4 +25,4 @@ let createSourceInstanceGameObjectArr = (count, state: StateDataType.state) =>
 
 let getSourceInstanceData = SourceInstanceStateCommon.getSourceInstanceData;
 
-let getSourceInstanceObjectInstanceList = SourceInstanceSystem.getObjectInstanceList;
+let getSourceInstanceObjectInstanceArray = SourceInstanceSystem.getObjectInstanceArray;

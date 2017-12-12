@@ -25,7 +25,7 @@ let _sendModelMatrixData =
       extension,
       sourceInstance,
       shaderIndex,
-      objectInstanceList,
+      objectInstanceArray,
       instanceRenderListCount,
       modelMatrixInstanceBufferCapacityMap,
       modelMatrixInstanceBufferMap,
@@ -66,7 +66,7 @@ let _sendModelMatrixData =
     state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^, transformData);
   offset := offset^ + 16;
   let state =
-    objectInstanceList
+    objectInstanceArray
     |> ArraySystem.reduceState(
          [@bs]
          (
@@ -113,8 +113,8 @@ let render = (gl, uid, state: StateDataType.state) => {
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceAdmin.getSourceInstanceData(state);
   let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceList = SourceInstanceAdmin.getObjectInstanceList(sourceInstance, state);
-  let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;
+  let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
+  let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
   let state =
     SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
       SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
@@ -125,7 +125,7 @@ let render = (gl, uid, state: StateDataType.state) => {
           extension,
           sourceInstance,
           shaderIndex,
-          objectInstanceList,
+          objectInstanceArray,
           instanceRenderListCount,
           modelMatrixInstanceBufferCapacityMap,
           modelMatrixInstanceBufferMap,
@@ -142,7 +142,7 @@ let render = (gl, uid, state: StateDataType.state) => {
            extension,
            sourceInstance,
            shaderIndex,
-           objectInstanceList,
+           objectInstanceArray,
            instanceRenderListCount,
            modelMatrixInstanceBufferCapacityMap,
            modelMatrixInstanceBufferMap,

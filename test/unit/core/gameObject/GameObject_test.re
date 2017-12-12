@@ -788,7 +788,7 @@ let _ =
                         }
                       );
                       test(
-                        "remove from sourceInstance->objectInstanceListMap",
+                        "remove from sourceInstance->objectInstanceArrayMap",
                         () => {
                           open SourceInstanceType;
                           let (
@@ -800,9 +800,9 @@ let _ =
                           ) =
                             ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state^);
                           let state = state |> batchDisposeGameObject(objectInstanceGameObjectArr);
-                          let {objectInstanceListMap} =
+                          let {objectInstanceArrayMap} =
                             SourceInstanceTool.getSourceInstanceData(state);
-                          objectInstanceListMap
+                          objectInstanceArrayMap
                           |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
                           |> expect == [||]
                         }
@@ -865,12 +865,12 @@ let _ =
                                  state
                                );
                           let state = state |> batchDisposeGameObject(gameObjectArr);
-                          let {objectInstanceListMap} =
+                          let {objectInstanceArrayMap} =
                             SourceInstanceTool.getSourceInstanceData(state);
                           (
-                            objectInstanceListMap
+                            objectInstanceArrayMap
                             |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
-                            objectInstanceListMap
+                            objectInstanceArrayMap
                             |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
                           )
                           |> expect == (false, false)

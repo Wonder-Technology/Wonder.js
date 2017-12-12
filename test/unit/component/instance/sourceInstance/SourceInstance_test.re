@@ -17,6 +17,19 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
+        "getSourceInstanceObjectInstanceArray",
+        () =>
+          test(
+            "get objectInstanceArray",
+            () => {
+              let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
+                ObjectInstanceTool.createObjectInstanceGameObject(state^);
+              SourceInstance.getSourceInstanceObjectInstanceArray(sourceInstance, state)
+              |> expect == [|objectInstanceGameObject|]
+            }
+          )
+      );
+      describe(
         "dispose component",
         () => {
           describe(
@@ -35,7 +48,7 @@ let _ =
                          sourceInstance
                        );
                   let {
-                    objectInstanceListMap,
+                    objectInstanceArrayMap,
                     modelMatrixFloat32ArrayMap,
                     modelMatrixInstanceBufferCapacityMap,
                     isModelMatrixStaticMap,
@@ -44,7 +57,7 @@ let _ =
                   } =
                     SourceInstanceTool.getSourceInstanceData(state);
                   (
-                    objectInstanceListMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
+                    objectInstanceArrayMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
                     modelMatrixFloat32ArrayMap
                     |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
                     modelMatrixInstanceBufferCapacityMap

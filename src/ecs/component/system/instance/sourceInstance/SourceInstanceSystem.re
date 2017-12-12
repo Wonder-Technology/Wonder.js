@@ -11,12 +11,12 @@ let isSendModelMatrix = SourceInstanceStaticCommon.isSendModelMatrix;
 
 let markSendModelMatrix = SourceInstanceStaticCommon.markSendModelMatrix;
 
-let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
-  SourceInstanceObjectInstanceListCommon.getObjectInstanceList(sourceInstance, state);
+let getObjectInstanceArray = (sourceInstance, state: StateDataType.state) =>
+  SourceInstanceObjectInstanceArrayCommon.getObjectInstanceArray(sourceInstance, state);
 
-let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
-  objectInstanceListMap
-  |> SourceInstanceObjectInstanceListCommon.unsafeGetObjectInstanceList(sourceInstance)
+let _addObjectInstnace = (sourceInstance, uid, {objectInstanceArrayMap} as data) => {
+  objectInstanceArrayMap
+  |> SourceInstanceObjectInstanceArrayCommon.unsafeGetObjectInstanceArray(sourceInstance)
   |> Js.Array.push(uid)
   |> ignore;
   data

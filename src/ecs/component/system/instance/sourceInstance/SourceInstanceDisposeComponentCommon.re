@@ -15,9 +15,9 @@ let isAlive = (sourceInstance: sourceInstance, state: StateDataType.state) =>
 let _disposeObjectInstanceGameObject =
     (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, state) => {
   let objectInstanceGameObjectArr =
-    SourceInstanceObjectInstanceListCommon.unsafeGetObjectInstanceList(
+    SourceInstanceObjectInstanceArrayCommon.unsafeGetObjectInstanceArray(
       sourceInstance,
-      getSourceInstanceData(state).objectInstanceListMap
+      getSourceInstanceData(state).objectInstanceArrayMap
     )
     |> Js.Array.copy;
   batchDisposeGameObjectFunc(objectInstanceGameObjectArr, state)
@@ -30,7 +30,7 @@ let _disposeData =
     |> VboBufferDisposeSystem.disposeInstanceBufferData(sourceInstance)
     |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
   let {
-    objectInstanceListMap,
+    objectInstanceArrayMap,
     modelMatrixFloat32ArrayMap,
     modelMatrixInstanceBufferCapacityMap,
     isModelMatrixStaticMap,
@@ -38,7 +38,7 @@ let _disposeData =
     gameObjectMap
   } =
     getSourceInstanceData(state);
-  disposeSparseMapData(sourceInstance, objectInstanceListMap) |> ignore;
+  disposeSparseMapData(sourceInstance, objectInstanceArrayMap) |> ignore;
   disposeSparseMapData(sourceInstance, modelMatrixFloat32ArrayMap) |> ignore;
   disposeSparseMapData(sourceInstance, modelMatrixInstanceBufferCapacityMap) |> ignore;
   disposeSparseMapData(sourceInstance, isModelMatrixStaticMap) |> ignore;

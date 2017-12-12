@@ -35,7 +35,7 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/ecs/component/api/cameraController/PerspectiveCamera.js";
 
 
-        import { markSourceInstanceModelMatrixIsStatic, getSourceInstanceObjectInstanceList, createSourceInstance, createSourceInstanceObjectInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
+        import { markSourceInstanceModelMatrixIsStatic, getSourceInstanceObjectInstanceArray, createSourceInstance, createSourceInstanceObjectInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
 
 
 
@@ -146,12 +146,12 @@
 
                     let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-                    let objectInstanceList = getSourceInstanceObjectInstanceList(sourceInstance, state);
+                    let objectInstanceArray = getSourceInstanceObjectInstanceArray(sourceInstance, state);
 
 
 
-                    for (let i = 0, len = objectInstanceList.length; i < len; i++) {
-                        let objectInstance = objectInstanceList[i];
+                    for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
+                        let objectInstance = objectInstanceArray[i];
 
                         var transform = getGameObjectTransformComponent(objectInstance, state);
 
@@ -210,12 +210,12 @@
 
                     let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-                    let objectInstanceList = getSourceInstanceObjectInstanceList(sourceInstance, state);
+                    let objectInstanceArray = getSourceInstanceObjectInstanceArray(sourceInstance, state);
 
 
 
-                    for (let i = 0, len = objectInstanceList.length; i < len; i++) {
-                        let objectInstance = objectInstanceList[i];
+                    for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
+                        let objectInstance = objectInstanceArray[i];
 
                         var transform = getGameObjectTransformComponent(objectInstance, state);
 

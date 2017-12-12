@@ -50,14 +50,15 @@ let setVerticesWithArray = (index: int, data: array(float), state: StateDataType
     verticesMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
     state
   | Some(vertices) =>
-    TypeArrayUtils.fillFloat32Array(vertices, data, 0);
+    TypeArrayUtils.fillFloat32Array(vertices, data, 0) |> ignore;
     state
   }
 };
 
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
   let {verticesMap} = getGeometryData(state);
-  verticesMap |> WonderCommonlib.SparseMapSystem.set(index, data)
+  verticesMap |> WonderCommonlib.SparseMapSystem.set(index, data);
+  state
 };
 
 let getIndices = (index: int, state: StateDataType.state) => {
@@ -107,5 +108,6 @@ let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.st
 
 let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
   let {indicesMap} = getGeometryData(state);
-  indicesMap |> WonderCommonlib.SparseMapSystem.set(index, data)
+  indicesMap |> WonderCommonlib.SparseMapSystem.set(index, data);
+  state
 };

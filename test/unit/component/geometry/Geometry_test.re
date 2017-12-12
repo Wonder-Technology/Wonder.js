@@ -91,6 +91,66 @@ let _ =
         }
       );
       describe(
+        "set vertices with array",
+        () =>
+          test(
+            "if vertices already exist, fill new data in it",
+            () => {
+              open GameObject;
+              let (state, geometry) = createBoxGeometry(state^);
+              let state = state |> GeometryTool.setVerticesWithArray(geometry, [|1., 2., 3.|]);
+              let newData = [|3., 3., 5.|];
+              let state = state |> GeometryTool.setVerticesWithArray(geometry, newData);
+              getGeometryVertices(geometry, state) |> expect == Float32Array.make(newData)
+            }
+          )
+      );
+      describe(
+        "set vertices with type array",
+        () =>
+          test(
+            "directly set it",
+            () => {
+              open GameObject;
+              let (state, geometry) = createBoxGeometry(state^);
+              let state = state |> GeometryTool.setVerticesWithArray(geometry, [|1., 2., 3.|]);
+              let newData = Float32Array.make([|3., 5., 5.|]);
+              let state = state |> setGeometryVertices(geometry, newData);
+              getGeometryVertices(geometry, state) |> expect == newData
+            }
+          )
+      );
+      describe(
+        "set indices with array",
+        () =>
+          test(
+            "if indices already exist, fill new data in it",
+            () => {
+              open GameObject;
+              let (state, geometry) = createBoxGeometry(state^);
+              let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
+              let newData = [|3, 3, 5|];
+              let state = state |> GeometryTool.setIndicesWithArray(geometry, newData);
+              getGeometryIndices(geometry, state) |> expect == Uint16Array.make(newData)
+            }
+          )
+      );
+      describe(
+        "set indices with type array",
+        () =>
+          test(
+            "directly set it",
+            () => {
+              open GameObject;
+              let (state, geometry) = createBoxGeometry(state^);
+              let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
+              let newData = Uint16Array.make([|3, 5, 5|]);
+              let state = state |> setGeometryIndices(geometry, newData);
+              getGeometryIndices(geometry, state) |> expect == newData
+            }
+          )
+      );
+      describe(
         "getDrawMode",
         () =>
           test(

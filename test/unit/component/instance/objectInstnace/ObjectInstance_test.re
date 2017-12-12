@@ -44,7 +44,7 @@ let _ =
                 }
               );
               test(
-                "remove from sourceInstance->objectInstanceListMap",
+                "remove from sourceInstance->objectInstanceArrayMap",
                 () => {
                   open ObjectInstanceType;
                   open SourceInstanceType;
@@ -56,8 +56,8 @@ let _ =
                          gameObject,
                          objectInstance
                        );
-                  let {objectInstanceListMap} = SourceInstanceTool.getSourceInstanceData(state);
-                  objectInstanceListMap
+                  let {objectInstanceArrayMap} = SourceInstanceTool.getSourceInstanceData(state);
+                  objectInstanceArrayMap
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
                   |> WonderCommonlib.SparseMapSystem.has(objectInstance)
                   |> expect == false

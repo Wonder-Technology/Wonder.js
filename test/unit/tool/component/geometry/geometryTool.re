@@ -75,8 +75,12 @@ let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) 
 
 let isGeometryDisposed = (geometry, state) => {
   open StateDataType;
-  let {disposedIndexArray} as data = GeometrySystem.getGeometryData(state);
+  let {disposedIndexArray} = GeometrySystem.getGeometryData(state);
   disposedIndexArray |> Js.Array.includes(geometry)
 };
 
 let getGroupCount = (geometry, state) => GeometryGroupCommon.getGroupCount(geometry, state);
+
+let setVerticesWithArray = GeometryOperateCommon.setVerticesWithArray;
+
+let setIndicesWithArray = GeometryOperateCommon.setIndicesWithArray;
