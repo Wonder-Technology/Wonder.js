@@ -189,7 +189,10 @@
                 var [state, camera] = createCamera(state);
 
                 // state = setData(boxes, state);
-                state = createAndDisposeSourceInstanceGameObjects(boxes, state);
+                // state = createAndDisposeSourceInstanceGameObjects(boxes, state);
+                state = createAndDisposeObjectInstanceGameObjects(boxes, state);
+
+
 
                 startDirector(state);
             }
@@ -274,7 +277,6 @@
             window.newBoxes$ = null;
 
             function createAndDisposeSourceInstanceGameObjects(boxes, state) {
-                window.sourceBox = boxes[0];
                 window.boxes = [];
 
                 return scheduleLoop((elapsed, state) => {
@@ -307,6 +309,42 @@
 
                 }, state)
             }
+
+
+            function createAndDisposeObjectInstanceGameObjects(boxes, state) {
+                window.boxes = [];
+
+                return scheduleLoop((elapsed, state) => {
+                    for (let i = 0, len = window.boxes.length; i < len; i++) {
+                        let box = window.boxes[i];
+                        state = disposeGameObject(box, state);
+                    }
+
+                    // var state = batchDisposeGameObject(window.boxes, state);
+
+
+
+                    var [state, newBoxes, objectInstanceArr] = createBoxes(1, 10000, state);
+
+
+                    var [state, newBoxes] = setPosition(newBoxes, state);
+
+
+
+                    window.boxes = newBoxes;
+
+
+
+                    for (let i = 0, len = newBoxes.length; i < len; i++) {
+                        let box = newBoxes[i];
+                        state = initGameObject(box, state);
+                    }
+
+                    return state;
+
+                }, state)
+            }
+
 
             function createBox(count, state) {
                 var [state, material] = createBasicMaterial(state);
