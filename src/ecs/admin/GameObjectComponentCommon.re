@@ -57,6 +57,9 @@ let disposeSourceInstanceComponent =
     state
   );
 
+let hasObjectInstanceComponent = (uid: int, state: StateDataType.state) : bool =>
+  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _hasComponent(uid);
+
 let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _getComponent(uid);
 

@@ -47,6 +47,29 @@ let _ =
         "clone components",
         () => {
           describe(
+            "contract check",
+            () => {
+              test(
+                "shouldn't clone sourceInstance gameObject",
+                () => {
+                  let (state, gameObject, sourceInstance) =
+                    SourceInstanceTool.createSourceInstanceGameObject(state^);
+                  expect(() => cloneGameObject(gameObject, 2, state) |> ignore)
+                  |> toThrowMessage("shouldn't clone sourceInstance gameObject")
+                }
+              );
+              test(
+                "shouldn't clone objectInstance gameObject",
+                () => {
+                  let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
+                    ObjectInstanceTool.createObjectInstanceGameObject(state^);
+                  expect(() => cloneGameObject(objectInstanceGameObject, 2, state) |> ignore)
+                  |> toThrowMessage("shouldn't clone objectInstance gameObject")
+                }
+              )
+            }
+          );
+          describe(
             "test clone meshRenderer component",
             () => {
               test(

@@ -1,8 +1,4 @@
-open UidUtils;
-
-open ComponentType;
-
-open StateDataType;
+open Contract;
 
 open GameObjectType;
 
@@ -24,6 +20,8 @@ let getSourceInstanceComponent = GameObjectComponentCommon.getSourceInstanceComp
 let addSourceInstanceComponent = GameObjectComponentCommon.addSourceInstanceComponent;
 
 let disposeSourceInstanceComponent = GameObjectComponentCommon.disposeSourceInstanceComponent;
+
+let hasObjectInstanceComponent = GameObjectComponentCommon.hasObjectInstanceComponent;
 
 let getObjectInstanceComponent = GameObjectComponentCommon.getObjectInstanceComponent;
 
@@ -169,6 +167,19 @@ let dispose = (uid: int, state: StateDataType.state) => {
                    ////shareGeometry:false
    } */
 let clone = (uid: int, count: int, state: StateDataType.state) => {
+  requireCheck(
+    () => {
+      open Contract.Operators;
+      test(
+        "shouldn't clone sourceInstance gameObject",
+        () => hasSourceInstanceComponent(uid, state) |> assertFalse
+      );
+      test(
+        "shouldn't clone objectInstance gameObject",
+        () => hasObjectInstanceComponent(uid, state) |> assertFalse
+      )
+    }
+  );
   let countRangeArr = ArraySystem.range(0, count - 1);
   let totalClonedGameObjectArr = [||];
   let rec _clone =
