@@ -118,7 +118,7 @@ let _ =
           )
       );
       describe(
-        "disposeComponent",
+        "dispose component",
         () => {
           describe(
             "dispose data",

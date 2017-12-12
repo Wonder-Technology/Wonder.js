@@ -49,6 +49,22 @@ let addSourceInstanceComponent = (uid: int, component: component, state: StateDa
   [@bs] SourceInstanceAddComponentCommon.handleAddComponent(component, uid, state)
 };
 
+let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _getComponent(uid);
+
+let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _unsafeGetComponent(uid);
+
+let addObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) => {
+  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap
+  |> _addComponent(uid, component)
+  |> ignore;
+  [@bs] ObjectInstanceAddComponentCommon.handleAddComponent(component, uid, state)
+};
+
+let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
+  ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state);
+
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).cameraControllerMap |> _hasComponent(uid);
 
@@ -228,6 +244,26 @@ let batchDisposeCameraControllerComponent =
     CameraControllerDisposeComponentCommon.handleBatchDisposeComponent,
     componentArray
   );
+
+let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).objectInstanceMap,
+    state
+  );
+
+let batchDisposeObjectInstanceComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  switch (componentArray |> Js.Array.length) {
+  | 0 => state
+  | _ =>
+    _batchDisposeComponent(
+      uidMap,
+      state,
+      ObjectInstanceDisposeComponentCommon.handleBatchDisposeComponent,
+      componentArray
+    )
+  };
 
 let _batchAddComponent =
     (

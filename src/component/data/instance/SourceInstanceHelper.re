@@ -7,5 +7,6 @@ let initData = () => {
   modelMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   modelMatrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   isModelMatrixStaticMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  isSendModelMatrixDataMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  isSendModelMatrixDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
 };

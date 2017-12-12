@@ -7,20 +7,13 @@ open MeshRendererStateCommon;
 open Contract;
 
 let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
-  let index = renderGameObjectArray |> Js.Array.indexOf(disposedGameObjectUid);
-  let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
-  renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex);
+  removeFromArray(disposedGameObjectUid, renderGameObjectArray) |> ignore;
   data
 };
 
 let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectArray} as data) => {
   data.renderGameObjectArray =
-    renderGameObjectArray
-    |> Js.Array.filter(
-         (renderGameObject) =>
-           disposedGameObjectUidMap
-           |> WonderCommonlib.SparseMapSystem.has(renderGameObject) == false
-       );
+    batchRemoveFromArray(disposedGameObjectUidMap, renderGameObjectArray);
   data
 };
 

@@ -185,10 +185,9 @@ let _ =
                         () => {
                           let (state, shaderSource, gameObject) =
                             InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
+                          let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
                           let state =
-                            state
-                            |> InstanceTool.addSourceInstance(gameObject)
-                            |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
+                            state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
                           let state = state |> InitBasicMaterialJobTool.exec;
                           GlslTool.containMultiline(
                             GlslTool.getVsSource(shaderSource),
@@ -208,10 +207,8 @@ let _ =
                         () => {
                           let (state, shaderSource, gameObject) =
                             InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
-                          let state =
-                            state
-                            |> InstanceTool.addSourceInstance(gameObject)
-                            |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+                          let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                          let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
                           let state = state |> InitBasicMaterialJobTool.exec;
                           GlslTool.containMultiline(
                             GlslTool.getVsSource(shaderSource),

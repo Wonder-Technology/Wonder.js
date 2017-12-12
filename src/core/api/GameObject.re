@@ -141,6 +141,23 @@ let hasGameObjectSourceInstanceComponent = (gameObject: gameObject, state: State
   hasSourceInstanceComponent(gameObject, state)
 };
 
+let addGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  addObjectInstanceComponent(gameObject, component, state)
+};
+
+let getGameObjectObjectInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  getObjectInstanceComponent(gameObject, state)
+};
+
+let disposeGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  disposeObjectInstanceComponent(gameObject, component, state)
+};
+
 let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
   isAlive(gameObject, state);
 

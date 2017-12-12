@@ -14,10 +14,11 @@ type isSendModelMatrixDataMap = array(bool);
 
 type sourceInstanceData = {
   mutable index: int,
-  objectInstanceListMap,
+  mutable objectInstanceListMap,
   modelMatrixFloat32ArrayMap,
   modelMatrixInstanceBufferCapacityMap,
   isModelMatrixStaticMap,
   isSendModelMatrixDataMap,
+  disposedIndexArray: array(sourceInstance),
   gameObjectMap
 };

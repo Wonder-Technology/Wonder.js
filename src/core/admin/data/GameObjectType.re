@@ -10,6 +10,8 @@ open MaterialType;
 
 open SourceInstanceType;
 
+open ObjectInstanceType;
+
 type gameObject = int;
 
 type gameObjectDisposedUidMap = array(bool);
@@ -30,6 +32,8 @@ type gameObjectMaterialMap = array(material);
 
 type gameObjectSourceInstanceMap = array(sourceInstance);
 
+type gameObjectObjectInstanceMap = array(objectInstance);
+
 type gameObjectData = {
   mutable uid: int,
   mutable disposeCount: int,
@@ -40,5 +44,6 @@ type gameObjectData = {
   mutable geometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable materialMap: gameObjectMaterialMap,
-  mutable sourceInstanceMap: gameObjectSourceInstanceMap
+  mutable sourceInstanceMap: gameObjectSourceInstanceMap,
+  mutable objectInstanceMap: gameObjectObjectInstanceMap
 };

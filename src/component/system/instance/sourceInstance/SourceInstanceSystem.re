@@ -10,30 +10,14 @@ let isSendModelMatrix = SourceInstanceStaticCommon.isSendModelMatrix;
 
 let markSendModelMatrix = SourceInstanceStaticCommon.markSendModelMatrix;
 
-let _getObjectInstanceList = (sourceInstance, objectInstanceListMap) =>
-  objectInstanceListMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             {j|objectInstanceList of sourceInstance:$sourceInstance should exist|j},
-             () =>
-               objectInstanceListMap
-               |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
-               |> assertExist
-           )
-         )
-     );
-
 let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
-  _getObjectInstanceList(
-    sourceInstance,
-    SourceInstanceStateCommon.getSourceInstanceData(state).objectInstanceListMap
-  );
+  SourceInstanceObjectInstanceListCommon.getObjectInstanceList(sourceInstance, state);
 
 let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
-  objectInstanceListMap |> _getObjectInstanceList(sourceInstance) |> Js.Array.push(uid) |> ignore;
+  objectInstanceListMap
+  |> SourceInstanceObjectInstanceListCommon.unsafeGetObjectInstanceList(sourceInstance)
+  |> Js.Array.push(uid)
+  |> ignore;
   data
 };
 
@@ -43,8 +27,12 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
   _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getSourceInstanceData(state))
   |> ignore;
   let (state, transform) = TransformSystem.create(state);
-  /* todo add ObjectInstance to instance */
-  (addTransformComponent(uid, transform, state), uid)
+  let (state, objectInstance) = ObjectInstanceSystem.create(sourceInstance, uid, state);
+  let state =
+    state
+    |> addTransformComponent(uid, transform)
+    |> addObjectInstanceComponent(uid, objectInstance);
+  (state, uid)
 };
 
 let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state) =>

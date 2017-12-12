@@ -36,6 +36,8 @@ open GPUDetectType;
 
 open SourceInstanceType;
 
+open ObjectInstanceType;
+
 open GlobalTempType;
 
 type contextConfig = {
@@ -260,6 +262,7 @@ and state = {
   renderConfig,
   gpuDetectData,
   sourceInstanceData,
+  objectInstanceData,
   viewData,
   initConfig,
   deviceManagerData,

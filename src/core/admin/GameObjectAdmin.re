@@ -22,6 +22,11 @@ let hasSourceInstanceComponent = GameObjectComponentCommon.hasSourceInstanceComp
 let getSourceInstanceComponent = GameObjectComponentCommon.getSourceInstanceComponent;
 
 let addSourceInstanceComponent = GameObjectComponentCommon.addSourceInstanceComponent;
+let getObjectInstanceComponent = GameObjectComponentCommon.getObjectInstanceComponent;
+
+let addObjectInstanceComponent = GameObjectComponentCommon.addObjectInstanceComponent;
+
+let disposeObjectInstanceComponent = GameObjectComponentCommon.disposeObjectInstanceComponent;
 
 let hasCameraControllerComponent = GameObjectComponentCommon.hasCameraControllerComponent;
 
@@ -130,7 +135,9 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
     |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state);
+    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetObjectInstanceComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeObjectInstanceComponent(disposedUidMap, state);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)
@@ -285,11 +292,7 @@ let isAlive = (uid: int, state: StateDataType.state) => {
 let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getGeometryComponent(uid, state)) {
-    | Some(geometry) =>
-      GeometrySystem.handleInitComponent(
-        geometry,
-        state
-      )
+    | Some(geometry) => GeometrySystem.handleInitComponent(geometry, state)
     | None => state
     };
   let state =
@@ -299,17 +302,4 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     | None => state
     };
   state
-};
-
-let initData = () => {
-  uid: 0,
-  disposeCount: 0,
-  disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  aliveUidArray: WonderCommonlib.ArraySystem.createEmpty(),
-  transformMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  cameraControllerMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  geometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  materialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

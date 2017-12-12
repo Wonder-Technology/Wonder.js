@@ -685,6 +685,92 @@ let _ =
                   )
                   |> expect == (true, true)
                 }
+              );
+              describe(
+                "batch dispose objectInstance componets",
+                () => {
+                  describe(
+                    "dispose data",
+                    () => {
+                      test(
+                        "remove from sourceInstanceMap, gameObjectMap",
+                        () => {
+                          open ObjectInstanceType;
+                          let (
+                            state,
+                            gameObject,
+                            sourceInstance,
+                            objectInstanceGameObjectArr,
+                            objectInstanceArr
+                          ) =
+                            ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state^);
+                          let state = state |> batchDisposeGameObject(objectInstanceGameObjectArr);
+                          let {sourceInstanceMap, gameObjectMap} =
+                            ObjectInstanceTool.getObjectInstanceData(state);
+                          (
+                            sourceInstanceMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[0]),
+                            sourceInstanceMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[1]),
+                            gameObjectMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[0]),
+                            sourceInstanceMap
+                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[1])
+                          )
+                          |> expect == (false, false, false, false)
+                        }
+                      );
+                      test(
+                        "remove from sourceInstance->objectInstanceListMap",
+                        () => {
+                          open SourceInstanceType;
+                          let (
+                            state,
+                            gameObject,
+                            sourceInstance,
+                            objectInstanceGameObjectArr,
+                            objectInstanceArr
+                          ) =
+                            ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state^);
+                          let state = state |> batchDisposeGameObject(objectInstanceGameObjectArr);
+                          let {objectInstanceListMap} =
+                            SourceInstanceTool.getSourceInstanceData(state);
+                          objectInstanceListMap
+                          |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
+                          |> expect == [||]
+                        }
+                      )
+                    }
+                  );
+                  describe(
+                    "contract check",
+                    () =>
+                      test(
+                        "all objectInstance should belong to the same sourceInstance",
+                        () => {
+                          open ObjectInstanceType;
+                          let (state, _, _, objectInstanceGameObject1, _) =
+                            ObjectInstanceTool.createObjectInstanceGameObject(state^);
+                          let (state, _, _, objectInstanceGameObject2, _) =
+                            ObjectInstanceTool.createObjectInstanceGameObject(state);
+                          expect(
+                            () => {
+                              let state =
+                                state
+                                |> batchDisposeGameObject([|
+                                     objectInstanceGameObject1,
+                                     objectInstanceGameObject2
+                                   |]);
+                              ()
+                            }
+                          )
+                          |> toThrowMessage(
+                               "all objectInstance should belong to the same sourceInstance"
+                             )
+                        }
+                      )
+                  )
+                }
               )
             }
           );
