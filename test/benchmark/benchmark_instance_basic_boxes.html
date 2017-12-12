@@ -177,8 +177,8 @@
             }
 
             function initSample(state) {
-                // var [state, boxes] = createBoxes(60000, state);
-                var [state, boxes, objectInstanceArr] = createBoxes(1, 1, state);
+                var [state, boxes, objectInstanceArr] = createBoxes(1, 60000, state);
+                // var [state, boxes, objectInstanceArr] = createBoxes(1, 1, state);
                 // var [state, boxes, objectInstanceArr] = createBoxesWithHierachy(30000, state);
 
 
@@ -191,7 +191,7 @@
 
                 // state = setData(boxes, state);
                 // state = createAndDisposeSourceInstanceGameObjects(boxes, state);
-                state = createAndDisposeObjectInstanceGameObjects(boxes, state);
+                // state = createAndDisposeObjectInstanceGameObjects(boxes, state);
 
 
 

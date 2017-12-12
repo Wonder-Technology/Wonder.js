@@ -93,7 +93,7 @@ let shader_libs = {|
       "uniforms": [
         {
           "name": "u_mMatrix",
-          "field": "mMatrix",
+          "field": "instance_mMatrix",
           "type": "mat4",
           "from": "model"
         }

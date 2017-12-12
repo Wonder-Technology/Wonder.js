@@ -225,11 +225,17 @@ and shaderUniformSendData = {
   getArrayDataFunc: [@bs] (state => Float32Array.t),
   sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
+and instanceUniformSendData = {
+  pos: uniformLocation,
+  getArrayDataFunc: [@bs] ((transform, state) => Float32Array.t),
+  sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+}
 and glslSenderData = {
   attributeSendDataMap: array(array(attributeSendData)),
   instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
   uniformSendDataMap: array(array(uniformSendData)),
   shaderUniformSendDataMap: array(array(shaderUniformSendData)),
+  instanceUniformSendDataMap: array(array(instanceUniformSendData)),
   drawPointsFuncMap: array((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendArrayBuffer: option(buffer),
