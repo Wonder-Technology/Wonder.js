@@ -85,10 +85,7 @@ let create = (state: StateDataType.state) => {
 
 let rec batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
-  uidArray
-  |> WonderCommonlib.ArraySystem.forEach(
-       [@bs] ((uid) => disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore)
-     );
+  let disposedUidMap = ECSDisposeUtils.buildMapFromArray(uidArray, disposedUidMap);
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let state =
     state
@@ -149,7 +146,8 @@ let dispose = (uid: int, state: StateDataType.state) => {
     };
   let state =
     switch (getSourceInstanceComponent(uid, state)) {
-    | Some(sourceInstance) => disposeSourceInstanceComponent(uid, sourceInstance, batchDispose, state)
+    | Some(sourceInstance) =>
+      disposeSourceInstanceComponent(uid, sourceInstance, batchDispose, state)
     | None => state
     };
   let state =
@@ -164,8 +162,6 @@ let dispose = (uid: int, state: StateDataType.state) => {
     state
   }
 };
-
-
 
 /* {
                    cloneChildren:true,

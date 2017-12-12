@@ -99,21 +99,17 @@ let handleBatchDisposeComponent =
       );
       let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(objectInstanceArray);
-      let disposedUidMap = WonderCommonlib.SparseMapSystem.createEmpty();
       let disposedUidArr =
         objectInstanceArray
         |> Js.Array.map(
              (objectInstance) =>
                ObjectInstanceGameObjectCommon.unsafeGetGameObject(objectInstance, state)
            );
-      disposedUidArr
-      |> WonderCommonlib.ArraySystem.forEach(
-           [@bs]
-           (
-             (disposedUid) =>
-               disposedUidMap |> WonderCommonlib.SparseMapSystem.set(disposedUid, true) |> ignore
-           )
-         );
+      let disposedUidMap =
+        ECSDisposeUtils.buildMapFromArray(
+          disposedUidArr,
+          WonderCommonlib.SparseMapSystem.createEmpty()
+        );
       let sourceInstance = _getSourceInstance(objectInstanceArray[0], data);
       let state =
         InstanceDisposeComponentUtils.batchDisposeObjectInstance(
