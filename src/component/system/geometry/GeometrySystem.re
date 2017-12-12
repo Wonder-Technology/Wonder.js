@@ -46,12 +46,12 @@ let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) =
   GeometryOperateCommon.setIndices(index, data, state);
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.unsafeGetIndices(index, state) |> Uint16Array.length;
+  GeometryOperateCommon.getIndicesCount(index, state);
 
 let hasIndices = (index: int, state: StateDataType.state) => getIndicesCount(index, state) > 0;
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.unsafeGetVertices(index, state) |> Float32Array.length;
+  GeometryOperateCommon.getVerticesCount(index, state);
 
 let getDrawMode = (gl) => getTriangles(gl);
 

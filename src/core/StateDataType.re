@@ -254,7 +254,9 @@ and geometryData = {
   mutable gameObjectMap,
   mutable disposedIndexArray: geometryDisposedIndexArray,
   mutable isInitMap: geometryIsInitMap,
-  mutable groupCountMap: geometryGroupCountMap
+  mutable groupCountMap: geometryGroupCountMap,
+  float32ArrayPoolMap: geometryFloat32ArrayPoolMap,
+  uint16ArrayPoolMap: geometryUint16ArrayPoolMap
 }
 and state = {
   bufferConfig: option(bufferConfig),

@@ -374,6 +374,7 @@ let _ =
                   open StateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> GeometryTool.initGeometrys;
                   let state = state |> disposeGameObject(gameObject1);
                   (
                     GeometryTool.isGeometryDisposed(geometry1, state),
@@ -726,6 +727,7 @@ let _ =
                   open StateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> GeometryTool.initGeometrys;
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   (
                     GeometryTool.isGeometryDisposed(geometry1, state),

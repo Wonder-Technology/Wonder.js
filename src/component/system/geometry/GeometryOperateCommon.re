@@ -30,11 +30,24 @@ let unsafeGetVertices = (index: int, state: StateDataType.state) => {
      )
 };
 
+let getVerticesCount = (index: int, state: StateDataType.state) =>
+  unsafeGetVertices(index, state) |> Float32Array.length;
+
 let setVerticesWithArray = (index: int, data: array(float), state: StateDataType.state) => {
-  let {verticesMap} = getGeometryData(state);
+  let {verticesMap} as geometryData = getGeometryData(state);
   switch (getVertices(index, state)) {
   | None =>
-    verticesMap |> WonderCommonlib.SparseMapSystem.set(index, Float32Array.make(data));
+    let typeArr =
+      switch (
+        GeometryTypeArrayPoolCommon.getFloat32TypeArrayFromPool(
+          data |> Js.Array.length,
+          geometryData.float32ArrayPoolMap
+        )
+      ) {
+      | None => Float32Array.make(data)
+      | Some(typeArr) => fillFloat32Array(typeArr, data, 0)
+      };
+    verticesMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
     state
   | Some(vertices) =>
     TypeArrayUtils.fillFloat32Array(vertices, data, 0);
@@ -67,11 +80,24 @@ let unsafeGetIndices = (index: int, state: StateDataType.state) => {
      )
 };
 
+let getIndicesCount = (index: int, state: StateDataType.state) =>
+  unsafeGetIndices(index, state) |> Uint16Array.length;
+
 let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.state) => {
-  let {indicesMap} = getGeometryData(state);
+  let {indicesMap} as geometryData = getGeometryData(state);
   switch (getIndices(index, state)) {
   | None =>
-    indicesMap |> WonderCommonlib.SparseMapSystem.set(index, Uint16Array.make(data));
+    let typeArr =
+      switch (
+        GeometryTypeArrayPoolCommon.getUint16TypeArrayFromPool(
+          data |> Js.Array.length,
+          geometryData.uint16ArrayPoolMap
+        )
+      ) {
+      | None => Uint16Array.make(data)
+      | Some(typeArr) => fillUint16Array(typeArr, data, 0)
+      };
+    indicesMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
     state
   | Some(indices) =>
     TypeArrayUtils.fillUint16Array(indices, data, 0);

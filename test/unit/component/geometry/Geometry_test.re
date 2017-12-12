@@ -78,14 +78,13 @@ let _ =
                   let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
-                  let state = state |> GeometryTool.dispose(geometry1);
                   expect(
                     () => {
-                      let state = state |> GeometryTool.initGeometrys;
+                      let state = state |> GeometryTool.dispose(geometry1);
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose any geometry before init")
+                  |> toThrowMessage("vertices should exist")
                 }
               )
           )
@@ -122,26 +121,34 @@ let _ =
         () => {
           describe(
             "dispose data",
-            () =>{
+            () => {
               test(
                 "remove from verticesMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
                 () => {
-                open StateDataType;
+                  open StateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                  let state = state |> GeometryTool.initGeometrys;
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-                  let {verticesMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap} =  GeometryTool.getGeometryData(state) ;
-
+                  let {
+                    verticesMap,
+                    indicesMap,
+                    configDataMap,
+                    isInitMap,
+                    computeDataFuncMap,
+                    gameObjectMap
+                  } =
+                    GeometryTool.getGeometryData(state);
                   (
-                  verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  indicesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  configDataMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  isInitMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  computeDataFuncMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  gameObjectMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
-                  ) 
+                    verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    indicesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    configDataMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    isInitMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    computeDataFuncMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                  )
                   |> expect == (false, false, false, false, false, false)
                 }
               );
@@ -160,30 +167,26 @@ let _ =
                   GeometryTool.getGroupCount(geometry1, state) |> expect == 0
                 }
               );
-              test
-              ("remove from buffer map", 
-              (
-              () => {
-                open VboBufferType;
-
+              test(
+                "remove from buffer map",
+                () => {
+                  open VboBufferType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
-
+                  let state = state |> GeometryTool.initGeometrys;
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-
-                  let {vertexBufferMap, elementArrayBufferMap} =  VboBufferTool.getVboBufferData(state);
-
+                  let {vertexBufferMap, elementArrayBufferMap} =
+                    VboBufferTool.getVboBufferData(state);
                   (
-                  vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                  elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
-                  ) 
+                    vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                  )
                   |> expect == (false, false)
-             
-              })
-              );
-              }
+                }
+              )
+            }
           );
           describe(
             "test add new one after dispose old one",
@@ -214,6 +217,155 @@ let _ =
                   let (state, geometry3) = createBoxGeometry(state);
                   (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
                 }
+              );
+              describe(
+                "fix bug",
+                () =>
+                  test(
+                    "new one after init should has its own geometry point data",
+                    () => {
+                      let (state, gameObject1, geometry1) =
+                        BoxGeometryTool.createGameObject(state^);
+                      let state = state |> GameObject.initGameObject(gameObject1);
+                      let state =
+                        VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                          geometry1,
+                          state
+                        );
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                      let (state, geometry2) = createBoxGeometry(state);
+                      let state =
+                        state
+                        |> setBoxGeometryConfigData(
+                             geometry2,
+                             GeometryTool.buildBoxGeometryConfigDataJsObj(
+                               ~width=Js.Nullable.return(20.),
+                               ~height=Js.Nullable.return(30.),
+                               ~depth=Js.Nullable.return(40.),
+                               ()
+                             )
+                           );
+                      let state = state |> GeometryTool.initGeometry(geometry2);
+                      (getGeometryVertices(geometry2, state), getGeometryIndices(geometry2, state))
+                      |>
+                      expect == (
+                                  Float32Array.make([|
+                                    (-20.),
+                                    (-30.),
+                                    40.,
+                                    (-20.),
+                                    30.,
+                                    40.,
+                                    20.,
+                                    (-30.),
+                                    40.,
+                                    20.,
+                                    30.,
+                                    40.,
+                                    20.,
+                                    (-30.),
+                                    (-40.),
+                                    20.,
+                                    30.,
+                                    (-40.),
+                                    (-20.),
+                                    (-30.),
+                                    (-40.),
+                                    (-20.),
+                                    30.,
+                                    (-40.),
+                                    (-20.),
+                                    30.,
+                                    40.,
+                                    (-20.),
+                                    30.,
+                                    (-40.),
+                                    20.,
+                                    30.,
+                                    40.,
+                                    20.,
+                                    30.,
+                                    (-40.),
+                                    20.,
+                                    (-30.),
+                                    40.,
+                                    20.,
+                                    (-30.),
+                                    (-40.),
+                                    (-20.),
+                                    (-30.),
+                                    40.,
+                                    (-20.),
+                                    (-30.),
+                                    (-40.),
+                                    20.,
+                                    (-30.),
+                                    40.,
+                                    20.,
+                                    30.,
+                                    40.,
+                                    20.,
+                                    (-30.),
+                                    (-40.),
+                                    20.,
+                                    30.,
+                                    (-40.),
+                                    (-20.),
+                                    (-30.),
+                                    (-40.),
+                                    (-20.),
+                                    30.,
+                                    (-40.),
+                                    (-20.),
+                                    (-30.),
+                                    40.,
+                                    (-20.),
+                                    30.,
+                                    40.
+                                  |]),
+                                  Uint16Array.make([|
+                                    0,
+                                    2,
+                                    1,
+                                    2,
+                                    3,
+                                    1,
+                                    4,
+                                    6,
+                                    5,
+                                    6,
+                                    7,
+                                    5,
+                                    8,
+                                    10,
+                                    9,
+                                    10,
+                                    11,
+                                    9,
+                                    12,
+                                    14,
+                                    13,
+                                    14,
+                                    15,
+                                    13,
+                                    16,
+                                    18,
+                                    17,
+                                    18,
+                                    19,
+                                    17,
+                                    20,
+                                    22,
+                                    21,
+                                    22,
+                                    23,
+                                    21
+                                  |])
+                                )
+                    }
+                  )
               )
             }
           );

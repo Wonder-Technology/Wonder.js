@@ -19,3 +19,7 @@ type geometryDisposedIndexArray = array(geometry);
 type geometryIsInitMap = array(bool);
 
 type geometryGroupCountMap = array(int);
+
+type geometryFloat32ArrayPoolMap = array(Float32Array.t);
+
+type geometryUint16ArrayPoolMap = array(Uint16Array.t);

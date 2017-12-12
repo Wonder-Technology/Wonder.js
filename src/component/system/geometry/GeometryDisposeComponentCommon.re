@@ -11,8 +11,33 @@ open ComponentDisposeComponentCommon;
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(geometry, getGeometryData(state).disposedIndexArray);
 
+let _addTypeArrayToPool =
+    (
+      geometry: geometry,
+      verticesMap,
+      indicesMap,
+      float32ArrayPoolMap,
+      uint16ArrayPoolMap,
+      state: StateDataType.state
+    ) => {
+  /* let verticesTypeArray = verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry);
+     let indicesTypeArray = indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry); */
+  GeometryTypeArrayPoolCommon.addFloat32TypeArrayToPool(
+    GeometryOperateCommon.getVerticesCount(geometry, state),
+    verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    float32ArrayPoolMap
+  )
+  |> ignore;
+  GeometryTypeArrayPoolCommon.addUint16TypeArrayToPool(
+    GeometryOperateCommon.getIndicesCount(geometry, state),
+    indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    uint16ArrayPoolMap
+  )
+  |> ignore;
+  state
+};
+
 let _disposeData = (geometry: geometry, state: StateDataType.state) => {
-  let state = VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state);
   let {
     verticesMap,
     indicesMap,
@@ -20,9 +45,20 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     isInitMap,
     computeDataFuncMap,
     groupCountMap,
-    gameObjectMap
+    gameObjectMap,
+    float32ArrayPoolMap,
+    uint16ArrayPoolMap
   } =
     getGeometryData(state);
+  let state =
+    VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state)
+    |> _addTypeArrayToPool(
+         geometry,
+         verticesMap,
+         indicesMap,
+         float32ArrayPoolMap,
+         uint16ArrayPoolMap
+       );
   groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0);
   disposeSparseMapData(geometry, verticesMap) |> ignore;
   disposeSparseMapData(geometry, indicesMap) |> ignore;

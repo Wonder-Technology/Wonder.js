@@ -231,12 +231,12 @@
 
                     // var state = state;
 
-                    // for(let i = 0, len = window.boxes.length; i < len; i++){
-                    //     let box = window.boxes[i];
-                    //     state = disposeGameObject(box, state);
-                    // }
+                    for(let i = 0, len = window.boxes.length; i < len; i++){
+                        let box = window.boxes[i];
+                        state = disposeGameObject(box, state);
+                    }
 
-                    var state = batchDisposeGameObject(window.boxes, state);
+                    // var state = batchDisposeGameObject(window.boxes, state);
 
 
                     // var state = window.boxes.reduce((state, box) => {
