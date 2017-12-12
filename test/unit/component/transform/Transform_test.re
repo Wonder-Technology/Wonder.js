@@ -852,6 +852,36 @@ let _ =
                   let (state, transform3) = createTransform(state);
                   transform3 |> expect == transform2 + 1
                 }
+              );
+              describe(
+                "fix bug",
+                () =>
+                  test(
+                    "new one should has default transform data",
+                    () => {
+                      let (state, transform1, transform2) = _prepare();
+                      let state =
+                        state |> setTransformLocalPositionByTuple(transform1, (0., 1., 2.));
+                      let _ = state |> getTransformPositionTuple(transform1);
+
+
+                      let state = state |> dispose(transform1);
+                      /* let state = state |> dispose(transform2); */
+                      let (state, transform3) = createTransform(state);
+
+
+
+(
+  state |> getTransformLocalPositionTuple(transform3),
+  state |> getTransformPositionTuple(transform3)
+)                       |> expect == (
+TransformTool.getDefaultPosition(),
+TransformTool.getDefaultPosition()
+)
+                      /* let (state, transform4) = createTransform(state); */
+                      /* (transform3, transform4) |> expect == (transform2, transform1) */
+                    }
+                  )
               )
             }
           );

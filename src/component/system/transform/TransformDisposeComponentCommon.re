@@ -23,10 +23,46 @@ let _disposeFromParentAndChildMap = (transform, data) => {
   data
 };
 
+let _addTypeArrayToPool =
+    (
+      transform: transform,
+      localToWorldMatrixMap,
+      localPositionMap,
+      localToWorldMatrixTypeArrayPool,
+      localPositionTypeArrayPool
+    ) => {
+  TransformTypeArrayPoolCommon.addFloat32TypeArrayToPool(
+    localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
+    localToWorldMatrixTypeArrayPool
+  )
+  |> ignore;
+  TransformTypeArrayPoolCommon.addFloat32TypeArrayToPool(
+    localPositionMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
+    localPositionTypeArrayPool
+  )
+  |> ignore
+};
+
 let _disposeData = (transform: transform, state: StateDataType.state) => {
-  let {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as data =
+  let {
+        localToWorldMatrixMap,
+        localPositionMap,
+        localToWorldMatrixTypeArrayPool,
+        localPositionTypeArrayPool,
+        parentMap,
+        childMap,
+        dirtyMap,
+        gameObjectMap
+      } as data =
     getTransformData(state);
   _disposeFromParentAndChildMap(transform, data) |> ignore;
+  _addTypeArrayToPool(
+    transform,
+    localToWorldMatrixMap,
+    localPositionMap,
+    localToWorldMatrixTypeArrayPool,
+    localPositionTypeArrayPool
+  );
   disposeSparseMapData(transform, localToWorldMatrixMap) |> ignore;
   disposeSparseMapData(transform, localPositionMap) |> ignore;
   disposeSparseMapData(transform, parentMap) |> ignore;
