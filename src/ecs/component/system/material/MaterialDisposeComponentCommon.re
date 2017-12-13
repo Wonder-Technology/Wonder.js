@@ -10,9 +10,10 @@ let isAlive = (material: material, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(material, getMaterialData(state).disposedIndexArray);
 
 let _disposeData = (material: material, state: StateDataType.state) => {
-  let {shaderIndexMap, gameObjectMap} as data = getMaterialData(state);
-  disposeSparseMapData(material, gameObjectMap) |> ignore;
+  let {shaderIndexMap, groupCountMap, gameObjectMap} as data = getMaterialData(state);
+  groupCountMap |> WonderCommonlib.SparseMapSystem.set(material, 0);
   disposeSparseMapData(material, shaderIndexMap) |> ignore;
+  disposeSparseMapData(material, gameObjectMap) |> ignore;
   state
 };
 
@@ -24,8 +25,12 @@ let handleDisposeComponent = (material: material, state: StateDataType.state) =>
       )
   );
   let {disposedIndexArray} = getMaterialData(state);
-  disposedIndexArray |> Js.Array.push(material) |> ignore;
-  _disposeData(material, state)
+  switch (MaterialGroupCommon.isGroupMaterial(material, state)) {
+  | false =>
+    disposedIndexArray |> Js.Array.push(material) |> ignore;
+    state |> _disposeData(material)
+  | true => MaterialGroupCommon.decreaseGroupCount(material, state)
+  }
 };
 
 let handleBatchDisposeComponent =
@@ -50,10 +55,18 @@ let handleBatchDisposeComponent =
           )
       );
       let {disposedIndexArray} as data = getMaterialData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(materialArray);
       materialArray
       |> ArraySystem.reduceState(
-           [@bs] ((state, material) => state |> _disposeData(material)),
+           [@bs]
+           (
+             (state, material) =>
+               switch (MaterialGroupCommon.isGroupMaterial(material, state)) {
+               | false =>
+                 disposedIndexArray |> Js.Array.push(material) |> ignore;
+                 state |> _disposeData(material)
+               | true => MaterialGroupCommon.decreaseGroupCount(material, state)
+               }
+           ),
            state
          )
     }

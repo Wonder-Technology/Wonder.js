@@ -16,7 +16,7 @@ open Gl;
 
 let getGeometryData = GeometryStateCommon.getGeometryData;
 
-let increaseGroupCount = GeometryGroupCommon.increaseGroupCount;
+/* let increaseGroupCount = GeometryGroupCommon.increaseGroupCount; */
 
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
 

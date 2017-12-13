@@ -21,3 +21,18 @@ let dispose = (material, state: StateDataType.state) =>
 
 let prepareForInit = (state) =>
   state |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state));
+
+let initMaterial = (materialIndex, state) =>
+  MaterialInitComponentCommon.initMaterial(
+    [@bs] DeviceManagerSystem.getGl(state),
+    materialIndex,
+    state
+  );
+
+let isMaterialDisposed = (material, state) => {
+  open MaterialType;
+  let {disposedIndexArray} = MaterialSystem.getMaterialData(state);
+  disposedIndexArray |> Js.Array.includes(material)
+};
+
+let getGroupCount = (material, state) => MaterialGroupCommon.getGroupCount(material, state);

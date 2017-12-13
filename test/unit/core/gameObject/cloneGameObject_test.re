@@ -11,8 +11,10 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
+      let _cloneGameObject = (gameObject, count, state) =>
+        CloneTool.cloneGameObject(gameObject, count, false, state);
       let _getClonedTransformDataArr = (gameObject, count, state) => {
-        let (state, clonedGameObjectArr) = cloneGameObject(gameObject, count, state);
+        let (state, clonedGameObjectArr) = _cloneGameObject(gameObject, count, state);
         (
           clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
           clonedGameObjectArr
@@ -39,7 +41,7 @@ let _ =
         () => {
           open GameObjectType;
           let (state, gameObject1) = createGameObject(state^);
-          let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+          let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
           clonedGameObjectArr |> expect == [|[|1, 2|]|]
         }
       );
@@ -54,7 +56,7 @@ let _ =
                 () => {
                   let (state, gameObject, sourceInstance) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  expect(() => cloneGameObject(gameObject, 2, state) |> ignore)
+                  expect(() => _cloneGameObject(gameObject, 2, state) |> ignore)
                   |> toThrowMessage("shouldn't clone sourceInstance gameObject")
                 }
               );
@@ -63,7 +65,7 @@ let _ =
                 () => {
                   let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
-                  expect(() => cloneGameObject(objectInstanceGameObject, 2, state) |> ignore)
+                  expect(() => _cloneGameObject(objectInstanceGameObject, 2, state) |> ignore)
                   |> toThrowMessage("shouldn't clone objectInstance gameObject")
                 }
               )
@@ -78,7 +80,7 @@ let _ =
                   open GameObjectType;
                   let (state, gameObject1, meshRenderer1) =
                     MeshRendererTool.createGameObject(state^);
-                  let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                  let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   clonedGameObjectArr
                   |> CloneTool.getFlattenClonedGameObjectArr
                   |> Js.Array.map(
@@ -95,7 +97,7 @@ let _ =
                   open GameObjectType;
                   let (state, gameObject1, meshRenderer1) =
                     MeshRendererTool.createGameObject(state^);
-                  let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                  let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   state
                   |> MeshRendererTool.getRenderArray
                   |>
@@ -137,7 +139,7 @@ let _ =
               let _prepare = () => {
                 let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                 let state = state |> MaterialTool.setShaderIndex(material1, 0);
-                let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                 (
                   state,
                   gameObject1,
@@ -199,7 +201,7 @@ let _ =
                     () => {
                       let (state, gameObject1, material1) =
                         BasicMaterialTool.createGameObject(state^);
-                      let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 1, state);
+                      let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 1, state);
                       let clonedMaterialArr =
                         clonedGameObjectArr
                         |> CloneTool.getFlattenClonedGameObjectArr
@@ -243,9 +245,7 @@ let _ =
                       let (_, clonedTransformArr) =
                         _getClonedTransformDataArr(gameObject1, 2, state);
                       clonedTransformArr
-                      |> Js.Array.map(
-                           (transform) => getTransformLocalPosition(transform, state)
-                         )
+                      |> Js.Array.map((transform) => getTransformLocalPosition(transform, state))
                       |> expect == [|pos1, pos1|]
                     }
                   );
@@ -298,7 +298,7 @@ let _ =
                 open GameObjectType;
                 let (state, gameObject1, _, cameraController1) =
                   CameraControllerTool.createCameraGameObject(state);
-                let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                 (
                   state,
                   gameObject1,
@@ -398,7 +398,7 @@ let _ =
                   let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
                   let state =
                     state |> setTransformParent(Js.Nullable.return(transform1), transform2);
-                  let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                  let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   clonedGameObjectArr |> expect == [|[|2, 3|], [|4, 5|]|]
                 }
               )
@@ -425,7 +425,7 @@ let _ =
                     _createMeshRendererGameObject(state);
                   let state =
                     state |> setTransformParent(Js.Nullable.return(transform1), transform2);
-                  let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                  let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   clonedGameObjectArr
                   |> CloneTool.getFlattenClonedGameObjectArr
                   |> Js.Array.map(
@@ -452,7 +452,7 @@ let _ =
                       let state =
                         state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                       let state = state |> GeometryTool.initGeometrys;
-                      let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                      let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                       clonedGameObjectArr
                       |> CloneTool.getFlattenClonedGameObjectArr
                       |> Js.Array.map(
@@ -481,7 +481,7 @@ let _ =
                       let transform2 = getGameObjectTransformComponent(gameObject2, state);
                       let state =
                         state |> setTransformParent(Js.Nullable.return(transform1), transform2);
-                      let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                      let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                       clonedGameObjectArr
                       |> CloneTool.getFlattenClonedGameObjectArr
                       |> Js.Array.map(

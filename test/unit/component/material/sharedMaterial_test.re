@@ -1,0 +1,193 @@
+open Wonder_jest;
+
+let _ =
+  describe(
+    "test shared material",
+    () => {
+      open Expect;
+      open Expect.Operators;
+      open Sinon;
+      let sandbox = getSandboxDefaultVal();
+      let state = ref(StateSystem.createState());
+      beforeEach(
+        () => {
+          sandbox := createSandbox();
+          state := TestTool.init(~sandbox, ())
+        }
+      );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      test(
+        "shared material can be added to gameObject",
+        () => {
+          /* let (state, gameObject1, material1, gameObject2, material2) = _createAndInit(state^); */
+          let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+          let (state, gameObject2, material2) =
+            MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
+          state |> GameObject.getGameObjectMaterialComponent(gameObject2) |> expect == material1
+        }
+      );
+      test(
+        "shared material can get the same gameObject(first gameObject)",
+        () => {
+          let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+          let (state, gameObject2, material2) =
+            MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
+          (
+            state |> Material.getMaterialGameObject(material1),
+            state |> Material.getMaterialGameObject(material2)
+          )
+          |> expect == (gameObject1, gameObject1)
+        }
+      );
+      describe(
+        "test clone material component(share material)",
+        () => {
+          let _createGameObject = (state) => {
+            let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state);
+            (state, gameObject1, material1)
+          };
+          let _prepare = (count, state) => {
+            open GameObjectType;
+            let (state, gameObject1, material1) = _createGameObject(state);
+            CloneTool.cloneWithMaterial(state, gameObject1, material1, count, true)
+          };
+          open GameObject;
+          test(
+            "cloned materials share material with source material",
+            () => {
+              let (_, _, material, _, clonedMaterialArr) = _prepare(2, state^);
+              clonedMaterialArr |> expect == [|material, material|]
+            }
+          );
+          describe(
+            "test init cloned material",
+            () => {
+              let _createAndInitGameObject = (state) => {
+                let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state);
+                let state = state |> initGameObject(gameObject1);
+                (state, gameObject1, material1)
+              };
+              let _prepare = (state) => {
+                open GameObjectType;
+                let state = MaterialTool.prepareForInit(state);
+                let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
+                let (state, gameObject1, material1) = _createAndInitGameObject(state);
+                (
+                  CloneTool.cloneWithMaterial(state, gameObject1, material1, 2, true),
+                  createProgram
+                )
+              };
+              let _initClonedMaterials = (clonedMaterialArr, state) =>
+                clonedMaterialArr
+                |> ArraySystem.reduceState(
+                     [@bs]
+                     ((state, clonedMaterial) => MaterialTool.initMaterial(clonedMaterial, state)),
+                     state
+                   );
+              test(
+                "not init cloned material shader",
+                () => {
+                  open MaterialType;
+                  let ((state, _, material1, _, clonedMaterialArr), createProgram) =
+                    _prepare(state^);
+                  let callCount = createProgram |> getCallCount;
+                  let state = state |> _initClonedMaterials(clonedMaterialArr);
+                  createProgram |> getCallCount |> expect == callCount
+                }
+              )
+            }
+          );
+          describe(
+            "test dispose cloned material",
+            () => {
+              test(
+                "not collect dispose index",
+                () => {
+                  open MaterialType;
+                  let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
+                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
+                  let {disposedIndexArray} = MaterialTool.getMaterialData(state);
+                  disposedIndexArray |> expect == [||]
+                }
+              );
+              test(
+                "dispose all cloned material shouldn't cause really dispose",
+                () => {
+                  open MaterialType;
+                  let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
+                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
+                  let {gameObjectMap} = MaterialTool.getMaterialData(state);
+                  gameObjectMap |> expect == [|0|]
+                }
+              );
+              test(
+                "dispose all cloned material and source material should cause really dispose",
+                () => {
+                  open MaterialType;
+                  let (state, gameObject1, material1, clonedGameObjectArr, clonedMaterialArr) =
+                    _prepare(1, state^);
+                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
+                  let state = state |> MaterialTool.dispose(material1);
+                  state |> MaterialTool.isMaterialDisposed(material1) |> expect == true
+                }
+              )
+            }
+          );
+          describe(
+            "test batch dispose cloned material",
+            () => {
+              test(
+                "not collect dispose index",
+                () => {
+                  open MaterialType;
+                  let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
+                  let state =
+                    state |> GameObject.batchDisposeGameObject([|clonedGameObjectArr[0]|]);
+                  let {disposedIndexArray} = MaterialTool.getMaterialData(state);
+                  disposedIndexArray |> expect == [||]
+                }
+              );
+              test(
+                "dispose all cloned material shouldn't cause really dispose",
+                () => {
+                  open MaterialType;
+                  let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
+                  let state =
+                    state |> GameObject.batchDisposeGameObject([|clonedGameObjectArr[0]|]);
+                  let {gameObjectMap} = MaterialTool.getMaterialData(state);
+                  gameObjectMap |> expect == [|0|]
+                }
+              );
+              test(
+                "dispose all cloned material and source material should cause really dispose",
+                () => {
+                  open MaterialType;
+                  let (state, gameObject1, material1, clonedGameObjectArr, clonedMaterialArr) =
+                    _prepare(1, state^);
+                  let state =
+                    state
+                    |> GameObject.batchDisposeGameObject([|gameObject1, clonedGameObjectArr[0]|]);
+                  state |> MaterialTool.isMaterialDisposed(material1) |> expect == true
+                }
+              )
+            }
+          );
+          test(
+            "source material's gameObject is cloned material's gameObject",
+            () => {
+              let (state, gameObject, _, clonedGameObjectArr, clonedMaterialArr) =
+                _prepare(2, state^);
+              (
+                Material.getMaterialGameObject(clonedMaterialArr[0], state),
+                Material.getMaterialGameObject(clonedMaterialArr[1], state)
+              )
+              |> expect == (gameObject, gameObject)
+            }
+          )
+        }
+      )
+    }
+  );

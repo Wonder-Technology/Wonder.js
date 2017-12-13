@@ -125,7 +125,7 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   |> _addComponent(uid, component)
   |> ignore;
   switch (GeometryGameObjectCommon.getGameObject(component, state)) {
-  | Some(_) => GeometryGroupCommon.increaseGroupCount(component, state)
+  | Some(_) => [@bs] GeometryGroupCommon.increaseGroupCount(component, state)
   | _ => [@bs] GeometryAddComponentCommon.handleAddComponent(component, uid, state)
   }
 };
@@ -162,7 +162,10 @@ let addMaterialComponent = (uid: int, component: component, state: StateDataType
   GameObjectStateCommon.getGameObjectData(state).materialMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] MaterialAddComponentCommon.handleAddComponent(component, uid, state)
+  switch (MaterialGameObjectCommon.getGameObject(component, state)) {
+  | Some(_) => [@bs] MaterialGroupCommon.increaseGroupCount(component, state)
+  | _ => [@bs] MaterialAddComponentCommon.handleAddComponent(component, uid, state)
+  }
 };
 
 let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
@@ -324,6 +327,37 @@ let _batchAddComponent =
      )
 };
 
+let _batchAddSharableComponent =
+    (
+      uidArray: array(int),
+      componentArr: array(component),
+      componentMap,
+      increaseGroupCountFunc,
+      state: StateDataType.state
+    ) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "one gameObject should add one component",
+          () => uidArray |> Js.Array.length == (componentArr |> Js.Array.length)
+        )
+      )
+  );
+  uidArray
+  |> ArraySystem.reduceOneParami(
+       [@bs]
+       (
+         (state, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           _addComponent(uid, component, componentMap);
+           [@bs] increaseGroupCountFunc(component, state)
+         }
+       ),
+       state
+     )
+};
+
 let batchAddTransformComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
@@ -345,41 +379,39 @@ let batchAddMeshRendererComponentForClone =
   );
 
 let batchAddGeometryComponentForClone =
-    (uidArray: array(int), componentArr: array(component), state: StateDataType.state) => {
-  let componentMap = GameObjectStateCommon.getGameObjectData(state).geometryMap;
-  requireCheck(
-    () =>
-      Contract.Operators.(
-        test(
-          "one gameObject should add one component",
-          () => uidArray |> Js.Array.length == (componentArr |> Js.Array.length)
-        )
-      )
-  );
-  uidArray
-  |> ArraySystem.reduceOneParami(
-       [@bs]
-       (
-         (state, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           _addComponent(uid, component, componentMap);
-           GeometryGroupCommon.increaseGroupCount(component, state);
-           state
-         }
-       ),
-       state
-     )
-};
-
-let batchAddMaterialComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddComponent(
+  _batchAddSharableComponent(
     uidArray,
     componentArr,
-    GameObjectStateCommon.getGameObjectData(state).materialMap,
-    MaterialAddComponentCommon.handleAddComponent,
+    GameObjectStateCommon.getGameObjectData(state).geometryMap,
+    GeometryGroupCommon.increaseGroupCount,
     state
   );
+
+let batchAddMaterialComponentForClone =
+    (
+      uidArray: array(int),
+      componentArr: array(component),
+      isShareMaterial,
+      state: StateDataType.state
+    ) => {
+  let componentMap = GameObjectStateCommon.getGameObjectData(state).materialMap;
+  isShareMaterial ?
+    _batchAddSharableComponent(
+      uidArray,
+      componentArr,
+      componentMap,
+      MaterialGroupCommon.increaseGroupCount,
+      state
+    ) :
+    _batchAddComponent(
+      uidArray,
+      componentArr,
+      componentMap,
+      MaterialAddComponentCommon.handleAddComponent,
+      state
+    )
+};
 
 let batchAddCameraControllerComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
@@ -404,8 +436,18 @@ let cloneGeometryComponent =
   GeometryCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
 
 let cloneMaterialComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  MaterialCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
+    (
+      sourceComponent: component,
+      countRangeArr: array(int),
+      isShareMaterial: bool,
+      state: StateDataType.state
+    ) =>
+  MaterialCloneComponentCommon.handleCloneComponent(
+    sourceComponent,
+    countRangeArr,
+    isShareMaterial,
+    state
+  );
 
 let cloneCameraControllerComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>

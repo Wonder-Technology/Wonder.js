@@ -39,7 +39,7 @@ let _ =
         () => {
           describe(
             "dispose data",
-            () =>
+            () => {
               test(
                 "remove from shaderIndexMap, gameObjectMap",
                 () => {
@@ -54,7 +54,23 @@ let _ =
                   )
                   |> expect == (false, false)
                 }
+              );
+              test(
+                "reset group count",
+                () => {
+                  let (state, material1) = createBasicMaterial(state^);
+                  let (state, gameObject1) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectMaterialComponent(gameObject1, material1);
+                  let (state, gameObject2) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectMaterialComponent(gameObject2, material1);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  MaterialTool.getGroupCount(material1, state) |> expect == 0
+                }
               )
+            }
           );
           describe(
             "test add new one after dispose old one",

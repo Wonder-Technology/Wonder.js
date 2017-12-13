@@ -37,11 +37,15 @@ let getGroupCount = (geometry: geometry, state: StateDataType.state) =>
 let isGroupGeometry = (geometry: geometry, state: StateDataType.state) =>
   getGroupCount(geometry, state) > 0;
 
-let increaseGroupCount = (geometry: geometry, state: StateDataType.state) => {
-  getGeometryData(state).groupCountMap
-  |> WonderCommonlib.SparseMapSystem.set(geometry, getGroupCount(geometry, state) |> succ);
-  state
-};
+let increaseGroupCount =
+  [@bs]
+  (
+    (geometry: geometry, state: StateDataType.state) => {
+      getGeometryData(state).groupCountMap
+      |> WonderCommonlib.SparseMapSystem.set(geometry, getGroupCount(geometry, state) |> succ);
+      state
+    }
+  );
 
 let decreaseGroupCount = (geometry: geometry, state: StateDataType.state) => {
   getGeometryData(state).groupCountMap

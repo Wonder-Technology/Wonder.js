@@ -165,7 +165,7 @@ let dispose = (uid: int, state: StateDataType.state) => {
                    cloneGeometry:true
                    ////shareGeometry:false
    } */
-let clone = (uid: int, count: int, state: StateDataType.state) => {
+let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.state) => {
   requireCheck(
     () => {
       open Contract.Operators;
@@ -233,11 +233,17 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getMaterialComponent(uid, state)) {
       | Some(meshRenderer) =>
         let (state, clonedMaterialArr) =
-          GameObjectComponentCommon.cloneMaterialComponent(meshRenderer, countRangeArr, state);
+          GameObjectComponentCommon.cloneMaterialComponent(
+            meshRenderer,
+            countRangeArr,
+            isShareMaterial,
+            state
+          );
         state
         |> GameObjectComponentCommon.batchAddMaterialComponentForClone(
              clonedGameObjectArr,
-             clonedMaterialArr
+             clonedMaterialArr,
+             isShareMaterial
            )
       | None => state
       };
