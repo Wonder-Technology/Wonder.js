@@ -2,29 +2,22 @@ open MaterialType;
 
 open MaterialStateCommon;
 
-open Contract;
-
 let getGroupCount = (material: material, state: StateDataType.state) =>
-  switch (getMaterialData(state).groupCountMap |> WonderCommonlib.SparseMapSystem.get(material)) {
-  | None => 0
-  | Some(count) => count
-  };
+  GroupUtils.getGroupCount(material, getMaterialData(state).groupCountMap);
 
 let isGroupMaterial = (material: material, state: StateDataType.state) =>
-  getGroupCount(material, state) > 0;
+  GroupUtils.isGroupComponent(material, getMaterialData(state).groupCountMap);
 
 let increaseGroupCount =
   [@bs]
   (
     (material: material, state: StateDataType.state) => {
-      getMaterialData(state).groupCountMap
-      |> WonderCommonlib.SparseMapSystem.set(material, getGroupCount(material, state) |> succ);
+      GroupUtils.increaseGroupCount(material, getMaterialData(state).groupCountMap) |> ignore;
       state
     }
   );
 
 let decreaseGroupCount = (material: material, state: StateDataType.state) => {
-  getMaterialData(state).groupCountMap
-  |> WonderCommonlib.SparseMapSystem.set(material, getGroupCount(material, state) |> pred);
+  GroupUtils.decreaseGroupCount(material, getMaterialData(state).groupCountMap) |> ignore;
   state
 };
