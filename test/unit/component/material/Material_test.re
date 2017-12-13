@@ -41,7 +41,7 @@ let _ =
             "test default color",
             () => {
               let (state, material) = createBasicMaterial(state^);
-              getMaterialColor(material, state) |> expect == (0., 0., 0.)
+              getMaterialColor(material, state) |> expect == (1., 1., 1.)
             }
           )
       );

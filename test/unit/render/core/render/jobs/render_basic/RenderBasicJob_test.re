@@ -734,7 +734,7 @@ let _ =
                           |> RenderJobsTool.initSystemAndRender
                           |> RenderJobsTool.updateSystem
                           |> _render;
-                        let defaultData = [0., 0., 0.];
+                        let defaultData = [1., 1., 1.];
                         uniform3f
                         |> withOneArg(pos)
                         |> getCall(1)
