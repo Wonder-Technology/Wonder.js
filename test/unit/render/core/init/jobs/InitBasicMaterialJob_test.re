@@ -250,7 +250,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getFsSource(shaderSource)
                   |> expect
-                  |> toContainString({|gl_FragColor = vec4(1.0,0.5,1.0,1.0);|})
+                  |> toContainString({|gl_FragColor = vec4(totalColor.rgb, totalColor.a);|})
                 }
               )
               /* test(

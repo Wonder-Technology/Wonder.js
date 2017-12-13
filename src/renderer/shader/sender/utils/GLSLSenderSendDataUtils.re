@@ -41,3 +41,45 @@ let sendMatrix4 =
     (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
       uniformMatrix4fv(pos, Js.false_, data, gl)
   );
+
+let _getCache = (shaderCacheMap, name: string) =>
+  shaderCacheMap |> WonderCommonlib.HashMapSystem.get(name);
+
+let _setCache = (shaderCacheMap, name: string, data) =>
+  shaderCacheMap |> WonderCommonlib.HashMapSystem.set(name, data);
+
+let getCacheMap = (shaderIndex: int, {uniformCacheMap}) =>
+  uniformCacheMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
+
+let _isNotCacheVector3 = (shaderCacheMap, name: string, x: float, y: float, z: float) =>
+  switch (_getCache(shaderCacheMap, name)) {
+  | None =>
+    _setCache(shaderCacheMap, name, [|x, y, z|]) |> ignore;
+    true
+  | Some(cache) =>
+    let isNotCached = ref(false);
+    if (Array.unsafe_get(cache, 0) !== x) {
+      Array.unsafe_set(cache, 0, x);
+      isNotCached := true
+    };
+    if (Array.unsafe_get(cache, 1) !== y) {
+      Array.unsafe_set(cache, 1, y);
+      isNotCached := true
+    };
+    if (Array.unsafe_get(cache, 2) !== z) {
+      Array.unsafe_set(cache, 2, z);
+      isNotCached := true
+    };
+    isNotCached^
+  };
+
+let sendVector3 =
+  [@bs]
+  (
+    (gl, shaderCacheMap, name: string, pos: uniformLocation, (x: float, y: float, z: float)) =>
+      if (_isNotCacheVector3(shaderCacheMap, name, x, y, z)) {
+        uniform3f(pos, x, y, z, gl)
+      } else {
+        ()
+      }
+  );

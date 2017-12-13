@@ -26,7 +26,7 @@ let _join = (array) => {
   output^
 };
 
-let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
+let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> Obj.magic |> _join;
 
 let _init =
     (

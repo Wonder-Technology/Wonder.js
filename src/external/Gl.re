@@ -25,6 +25,7 @@ open Js.Typed_array;
 [@bs.get] external getFloat : webgl1Context => int = "FLOAT";
 
 [@bs.get] external getStaticDraw : webgl1Context => int = "STATIC_DRAW";
+
 [@bs.get] external getDynamicDraw : webgl1Context => int = "DYNAMIC_DRAW";
 
 [@bs.get] external getTriangles : webgl1Context => int = "TRIANGLES";
@@ -108,9 +109,9 @@ external getUniformLocation : (program, string) => uniformLocation =
 [@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit =
   "bufferData";
 
-[@bs.send.pipe : webgl1Context] external bufferSubFloat32Data : (int, int, Float32Array.t) => unit =
+[@bs.send.pipe : webgl1Context]
+external bufferSubFloat32Data : (int, int, Float32Array.t) => unit =
   "bufferSubData";
-
 
 [@bs.send.pipe : webgl1Context]
 external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, int) => unit =
@@ -120,6 +121,10 @@ external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, in
 
 [@bs.send.pipe : webgl1Context]
 external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
+  "";
+
+[@bs.send.pipe : webgl1Context]
+external uniform3f : (uniformLocation, float, float, float) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external drawElements : (int, int, int, int) => unit = "";

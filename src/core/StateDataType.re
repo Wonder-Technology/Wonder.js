@@ -20,6 +20,8 @@ open ProgramType;
 
 open GLSLLocationType;
 
+open GLSLSenderType;
+
 open ShaderChunkType;
 
 open RenderDataType;
@@ -213,18 +215,27 @@ and attributeSendData = {
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
 and instanceAttributeSendData = {pos: attributeLocation}
-and uniformSendData = {
+/* todo rename Array to Matrix */
+and uniformSendArrayData = {
   pos: uniformLocation,
-  getArrayDataFunc: [@bs] ((transform, state) => Float32Array.t),
+  getArrayDataFunc: [@bs] ((component, state) => Float32Array.t),
   sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
-  /* sendFloat32DataFunc: float => unit;
-     sendIntDataFunc: int => unit; */
 }
+and uniformSendVector3Data = {
+  shaderCacheMap,
+  name: string,
+  pos: uniformLocation,
+  getVector3DataFunc: [@bs] ((component, state) => (float, float, float)),
+  sendVector3DataFunc: [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, (float, float, float)) => unit)
+}
+/* todo add SendVector3? */
+/* todo rename to SendMatrixData? */
 and shaderUniformSendData = {
   pos: uniformLocation,
   getArrayDataFunc: [@bs] (state => Float32Array.t),
   sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
+/* todo rename to SendMatrixData? */
 and instanceUniformSendData = {
   pos: uniformLocation,
   getArrayDataFunc: [@bs] ((transform, state) => Float32Array.t),
@@ -233,7 +244,9 @@ and instanceUniformSendData = {
 and glslSenderData = {
   attributeSendDataMap: array(array(attributeSendData)),
   instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
-  uniformSendDataMap: array(array(uniformSendData)),
+  uniformCacheMap,
+  uniformSendArrayDataMap: array(array(uniformSendArrayData)),
+  uniformSendVector3DataMap: array(array(uniformSendVector3Data)),
   shaderUniformSendDataMap: array(array(shaderUniformSendData)),
   instanceUniformSendDataMap: array(array(instanceUniformSendData)),
   drawPointsFuncMap: array((webgl1Context => unit)),

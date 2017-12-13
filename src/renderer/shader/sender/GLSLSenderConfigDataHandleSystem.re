@@ -14,6 +14,12 @@ open GLSLSenderSendDataUtils;
 
 open GLSLSenderDrawUtils;
 
+let _getOrCreateHashMap = (map) =>
+  switch map {
+  | None => WonderCommonlib.HashMapSystem.createEmpty()
+  | Some(map) => map
+  };
+
 let addAttributeSendData =
     (
       gl,
@@ -35,10 +41,7 @@ let addAttributeSendData =
       )
   );
   let attributeLocationMap =
-    switch (state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex)) {
-    | None => WonderCommonlib.HashMapSystem.createEmpty()
-    | Some(map) => map
-    };
+    _getOrCreateHashMap(state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex));
   let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   let instanceSendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
@@ -119,6 +122,31 @@ let _getModelMMatrixData =
       TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
   );
 
+let _addUniformSendDataByType =
+    (sendArrayDataArr, sendVector3DataArr, type_, shaderCacheMap, name, pos, getDataFunc) =>
+  /* todo remove Obj.magic? */
+  switch type_ {
+  | "mat4" =>
+    sendArrayDataArr
+    |> Js.Array.push(
+         {pos, sendArrayDataFunc: sendMatrix4, getArrayDataFunc: getDataFunc |> Obj.magic}: uniformSendArrayData
+       )
+    |> ignore
+  | "vec3" =>
+    sendVector3DataArr
+    |> Js.Array.push(
+         {
+           shaderCacheMap,
+           name,
+           pos,
+           sendVector3DataFunc: sendVector3,
+           getVector3DataFunc: getDataFunc |> Obj.magic
+         }: uniformSendVector3Data
+       )
+    |> ignore
+  | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
+  };
+
 let addUniformSendData =
     (
       gl,
@@ -134,18 +162,26 @@ let addUniformSendData =
         test(
           "shouldn't be added before",
           () =>
-            getGLSLSenderData(state).uniformSendDataMap
+            getGLSLSenderData(state).uniformSendArrayDataMap
             |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
   );
+  let {
+        uniformSendArrayDataMap,
+        uniformSendVector3DataMap,
+        shaderUniformSendDataMap,
+        instanceUniformSendDataMap
+      } as data =
+    getGLSLSenderData(state);
   let uniformLocationMap =
-    switch (state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex)) {
-    | None => WonderCommonlib.HashMapSystem.createEmpty()
-    | Some(map) => map
-    };
-  let sendDataArr: array(uniformSendData) = WonderCommonlib.ArraySystem.createEmpty();
+    _getOrCreateHashMap(state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex));
+  let uniformCacheMap =
+    _getOrCreateHashMap(data |> GLSLSenderSendDataUtils.getCacheMap(shaderIndex));
+  let sendArrayDataArr: array(uniformSendArrayData) = WonderCommonlib.ArraySystem.createEmpty();
+  let sendVector3DataArr: array(uniformSendVector3Data) =
+    WonderCommonlib.ArraySystem.createEmpty();
   let shaderSendDataArr: array(shaderUniformSendData) = WonderCommonlib.ArraySystem.createEmpty();
   let instanceSendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
@@ -171,18 +207,15 @@ let addUniformSendData =
                             uniformLocationMap,
                             gl
                           );
-                        let sendArrayDataFunc =
-                          switch type_ {
-                          | "mat4" => sendMatrix4
-                          | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
-                          };
+                        /* todo refactor: rename */
                         switch from {
                         | "camera" =>
+                          /* todo refactor */
                           shaderSendDataArr
                           |> Js.Array.push(
                                {
                                  pos,
-                                 sendArrayDataFunc,
+                                 sendArrayDataFunc: sendMatrix4,
                                  getArrayDataFunc:
                                    switch field {
                                    | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
@@ -193,18 +226,53 @@ let addUniformSendData =
                                }: shaderUniformSendData
                              )
                           |> ignore
+                        | "material" =>
+                          switch field {
+                          | "color" =>
+                            _addUniformSendDataByType(
+                              sendArrayDataArr,
+                              sendVector3DataArr,
+                              type_,
+                              uniformCacheMap,
+                              name,
+                              pos,
+                              MaterialAdminAci.unsafeGetColor
+                            )
+                          | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+                          }
                         | "model" =>
                           switch field {
                           | "mMatrix" =>
-                            sendDataArr
-                            |> Js.Array.push(
-                                 {pos, sendArrayDataFunc, getArrayDataFunc: _getModelMMatrixData}: uniformSendData
-                               )
-                            |> ignore
+                            _addUniformSendDataByType(
+                              sendArrayDataArr,
+                              sendVector3DataArr,
+                              type_,
+                              uniformCacheMap,
+                              name,
+                              pos,
+                              _getModelMMatrixData
+                            )
+                          /*
+
+                           sendArrayDataArr
+                           |> Js.Array.push(
+                                {
+                                  pos,
+
+                                sendArrayDataFunc: _getSendArrayDataFunc,
+                                  getArrayDataFunc: _getModelMMatrixData
+                                }: uniformSendArrayData
+                              )
+                           |> ignore */
                           | "instance_mMatrix" =>
+                            /* todo refactor */
                             instanceSendDataArr
                             |> Js.Array.push(
-                                 {pos, sendArrayDataFunc, getArrayDataFunc: _getModelMMatrixData}: instanceUniformSendData
+                                 {
+                                   pos,
+                                   sendArrayDataFunc: sendMatrix4,
+                                   getArrayDataFunc: _getModelMMatrixData
+                                 }: instanceUniformSendData
                                )
                             |> ignore
                           | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
@@ -217,9 +285,12 @@ let addUniformSendData =
            }
        )
      );
-  let {uniformSendDataMap, shaderUniformSendDataMap, instanceUniformSendDataMap} as data =
-    getGLSLSenderData(state);
-  uniformSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr) |> ignore;
+  uniformSendArrayDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendArrayDataArr)
+  |> ignore;
+  uniformSendVector3DataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendVector3DataArr)
+  |> ignore;
   shaderUniformSendDataMap
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendDataArr)
   |> ignore;
@@ -269,25 +340,24 @@ let getInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state
      )
 };
 
-let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
-  let {uniformSendDataMap} = getGLSLSenderData(state);
-  uniformSendDataMap
+let _getUniformSendData = (shaderIndex: int, map) =>
+  map
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "uniform send data should exist",
-             () => {
-               let {uniformSendDataMap} = getGLSLSenderData(state);
-               uniformSendDataMap
-               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-               |> assertExist
-             }
+             () => map |> WonderCommonlib.SparseMapSystem.get(shaderIndex) |> assertExist
            )
          )
-     )
-};
+     );
+
+let getUniformSendArrayData = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendArrayDataMap);
+
+let getUniformSendVector3Data = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendVector3DataMap);
 
 let getShaderUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {shaderUniformSendDataMap} = getGLSLSenderData(state);

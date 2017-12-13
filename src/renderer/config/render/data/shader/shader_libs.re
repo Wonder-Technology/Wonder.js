@@ -118,8 +118,22 @@ let shader_libs = {|
       {
         "type": "vs",
         "name": "webgl1_basic_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_basic_fragment"
       }
-    ]
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_color",
+          "field": "color",
+          "type": "vec3",
+          "from": "material"
+        }
+      ]
+    }
   },
   {
     "name": "basic_end",

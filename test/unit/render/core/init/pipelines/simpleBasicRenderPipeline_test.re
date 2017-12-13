@@ -27,7 +27,7 @@ let _ =
                   let shaderSource = SimpleBasicRenderPipelineTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getFsSource(shaderSource)
                   |> expect
-                  |> toContainString({|gl_FragColor = vec4(1.0,0.5,1.0,1.0);|})
+                  |> toContainString({|gl_FragColor = vec4(totalColor.rgb, totalColor.a);|})
                 }
               )
           )

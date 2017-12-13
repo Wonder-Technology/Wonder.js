@@ -1,0 +1,1 @@
+let initBasicMaterial = BasicMaterialSystem.init;

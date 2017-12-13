@@ -16,6 +16,16 @@ let setShaderIndex = MaterialShaderIndexCommon.setShaderIndex;
 let isAlive = (material: material, state: StateDataType.state) =>
   MaterialDisposeComponentCommon.isAlive(material, state);
 
+let getColor = (material: material, state: StateDataType.state) =>
+  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.get(material);
+
+let unsafeGetColor = (material: material, state: StateDataType.state) =>
+  MaterialOperateCommon.unsafeGetColor(material, state);
+
+let setColor = (material: material, color, state: StateDataType.state) => {
+  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.set(material, color);
+  state
+};
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */

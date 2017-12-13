@@ -247,6 +247,20 @@ precision highp int;
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 |}))
 
+|> set("webgl1_basic_fragment", _buildChunk({|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+vec4 totalColor = vec4(u_color, 1.0);
+|}))
+
 |> set("webgl1_basic_end_fragment", _buildChunk({|
 
 |},{|
@@ -258,7 +272,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 |},{|
 
 |},{|
-gl_FragColor = vec4(1.0,0.5,1.0,1.0);
+gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 |}))
 
   };
