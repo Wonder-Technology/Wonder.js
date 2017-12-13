@@ -199,7 +199,7 @@ let _ =
                   let _prepare = () => {
                     let (state, gameObject1, material1) =
                       BasicMaterialTool.createGameObject(state^);
-                    let state = state |> MaterialTool.setShaderIndex(material1, 0);
+                    /* let state = state |> MaterialTool.setShaderIndex(material1, 0); */
                     (state, gameObject1, material1)
                   };
                   let _clone = (gameObject, state) => {

@@ -700,7 +700,50 @@ let _ =
             "u_color",
             ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
               state |> Material.setMaterialColor(material, (0., 1., 0.2)),
-            [0., 1., 0.2]
+            [0., 1., 0.2],
+            ~testFunc=
+              (_prepareSendUinformData) =>
+                describe(
+                  "test two gameObjects",
+                  () =>
+                    test(
+                      "if only set first one's color, second one's sended u_color data shouldn't be affect",
+                      () => {
+                        let name = "u_color";
+                        let (state, _, (_, material1), _, _) =
+                          _prepareSendUinformData(sandbox, state^);
+                        let (state, gameObject2, _, material2, _) =
+                          RenderJobsTool.prepareGameObject(sandbox, state);
+                        let state = state |> Material.setMaterialColor(material1, (0., 1., 0.2));
+                        let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                        let pos = 0;
+                        let getUniformLocation =
+                          GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~uniform3f,
+                                 ~getUniformLocation,
+                                 ()
+                               )
+                             );
+                        let state =
+                          state
+                          |> RenderJobsTool.initSystemAndRender
+                          |> RenderJobsTool.updateSystem
+                          |> _render;
+                        let defaultData = [0., 0., 0.];
+                        uniform3f
+                        |> withOneArg(pos)
+                        |> getCall(1)
+                        |> getArgs
+                        |> expect == [pos, ...defaultData |> Obj.magic]
+                      }
+                    )
+                ),
+            ()
           )
         }
       );

@@ -75,7 +75,7 @@ module JudgeSendUniformData = {
         )
       )
     );
-  let testSendVector3 = (sandbox, name, setFunc, targetData) =>
+  let testSendVector3 = (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
     Wonder_jest.(
       Expect.(
         Expect.Operators.(
@@ -136,7 +136,8 @@ module JudgeSendUniformData = {
                     |> getArgs
                     |> expect == [pos, ...targetData |> Obj.magic]
                   }
-                )
+                );
+                testFunc(_prepareSendUinformData)
               }
             )
           )

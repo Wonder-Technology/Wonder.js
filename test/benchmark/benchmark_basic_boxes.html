@@ -26,6 +26,8 @@
 
         import { createMeshRenderer } from "../../lib/es6_global/src/ecs/component/api/meshRenderer/MeshRenderer.js";
 
+        import { setMaterialColor } from "../../lib/es6_global/src/ecs/component/api/material/Material.js";
+
         import { createBasicMaterial } from "../../lib/es6_global/src/ecs/component/api/material/BasicMaterial.js";
 
 
@@ -139,8 +141,8 @@
             }
 
             function initSample(state) {
-                // var [state, boxes] = createBoxes(19997, state);
-                var [state, boxes] = createBoxes(2, state);
+                var [state, boxes] = createBoxes(19997, state);
+                // var [state, boxes] = createBoxes(2, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -152,7 +154,7 @@
 
                 // state = setData(boxes, state);
                 // state = setParent(boxes, state);
-                state = createAndDisposeGameObjects(boxes, state);
+                // state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
@@ -254,6 +256,8 @@
 
             function createBox(state) {
                 var [state, material] = createBasicMaterial(state);
+
+                state = setMaterialColor(material, [0.0, 0.5, 0.2], state);
 
                 var [state, meshRenderer] = createMeshRenderer(state);
 

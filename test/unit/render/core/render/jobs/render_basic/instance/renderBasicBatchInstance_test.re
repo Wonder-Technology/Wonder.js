@@ -124,7 +124,8 @@ let _ =
             "u_color",
             ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
               state |> Material.setMaterialColor(material, (0., 1., 0.2)),
-            [0., 1., 0.2]
+            [0., 1., 0.2],
+            ()
           );
           describe(
             "send object instance gameObject's data",

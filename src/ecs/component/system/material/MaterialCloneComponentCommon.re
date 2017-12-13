@@ -30,11 +30,9 @@ let handleCloneComponent =
                (state, _) => {
                  let (state, index) = createFunc(state);
                  componentArr |> Js.Array.push(index) |> ignore;
+                 let state = state |> MaterialOperateCommon.setColor(index, color);
                  hasShaderIndex ?
-                   state
-                   |> MaterialOperateCommon.setColor(index, color)
-                   |> MaterialShaderIndexCommon.setShaderIndex(index, shaderIndex) :
-                   state
+                   state |> MaterialShaderIndexCommon.setShaderIndex(index, shaderIndex) : state
                }
              ),
              state
