@@ -73,29 +73,21 @@ let _ =
       );
       describe(
         "test get uniform location",
-        () =>
+        () => {
+          let _testGetLocation = (name) => {
+            let (state, gameObject, geometry, material) =
+              InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+            let getUniformLocation = GlslLocationTool.getUniformLocation(sandbox, name);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ()));
+            let state = state |> InitBasicMaterialJobTool.exec;
+            getUniformLocation |> withTwoArgs(matchAny, name) |> expect |> toCalledOnce
+          };
           describe(
             "test get u_mMatrix location",
             () => {
-              test(
-                "test get location",
-                () => {
-                  let (state, gameObject, geometry, material) =
-                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-                  let getUniformLocation =
-                    GlslLocationTool.getUniformLocation(sandbox, "u_mMatrix");
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ())
-                       );
-                  let state = state |> InitBasicMaterialJobTool.exec;
-                  getUniformLocation
-                  |> withTwoArgs(matchAny, "u_mMatrix")
-                  |> expect
-                  |> toCalledOnce
-                }
-              );
+              test("test get location", () => _testGetLocation("u_mMatrix"));
               describe(
                 "test cache",
                 () =>
@@ -122,7 +114,9 @@ let _ =
                   )
               )
             }
-          )
+          );
+          test("test get u_color location", () => _testGetLocation("u_color"))
+        }
       );
       describe(
         "test glsl",
@@ -231,17 +225,36 @@ let _ =
 |})
                 }
               );
-              test(
+              describe(
                 "test basic shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.getVsSource(shaderSource)
-                  |> expect
-                  |> toContainString(
-                       {|
+                  test(
+                    "test vs glsl",
+                    () => {
+                      let shaderSource =
+                        InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                      GlslTool.getVsSource(shaderSource)
+                      |> expect
+                      |> toContainString(
+                           {|
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 |}
-                     )
+                         )
+                    }
+                  );
+                  test(
+                    "test fs glsl",
+                    () => {
+                      let shaderSource =
+                        InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                      GlslTool.containMultiline(
+                        GlslTool.getFsSource(shaderSource),
+                        [{|uniform vec3 u_color;|}, {|vec4 totalColor = vec4(u_color, 1.0);
+|}]
+                      )
+                      |> expect == true
+                    }
+                  )
                 }
               );
               test(

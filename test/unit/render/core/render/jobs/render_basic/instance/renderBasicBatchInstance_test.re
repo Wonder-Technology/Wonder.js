@@ -119,6 +119,13 @@ let _ =
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           );
+          GlslSenderTool.JudgeSendUniformData.testSendVector3(
+            sandbox,
+            "u_color",
+            ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
+              state |> Material.setMaterialColor(material, (0., 1., 0.2)),
+            [0., 1., 0.2]
+          );
           describe(
             "send object instance gameObject's data",
             () =>

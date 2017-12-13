@@ -96,7 +96,7 @@ let _ =
       );
       describe(
         "send uniform data",
-        () =>
+        () => {
           test(
             "send shader uniform data only once per shader",
             () => {
@@ -120,7 +120,15 @@ let _ =
                 |> _render;
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
+          );
+          GlslSenderTool.JudgeSendUniformData.testSendVector3(
+            sandbox,
+            "u_color",
+            ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
+              state |> Material.setMaterialColor(material, (0., 1., 0.2)),
+            [0., 1., 0.2]
           )
+        }
       );
       describe(
         "send instance data",
@@ -196,7 +204,10 @@ let _ =
                           _prepare(sandbox, state);
                         for (i in 0 to 62) {
                           let (state, objectInstanceGameObject) =
-                            SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+                            SourceInstance.createSourceInstanceObjectInstance(
+                              sourceInstance,
+                              state
+                            );
                           ()
                         };
                         (state, gameObject, sourceInstance, objectInstanceGameObject)
@@ -639,7 +650,11 @@ let _ =
                         ) =
                           _prepare(sandbox, state^);
                         let state =
-                          SourceInstance.markSourceInstanceModelMatrixIsStatic(sourceInstance, isStatic, state);
+                          SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                            sourceInstance,
+                            isStatic,
+                            state
+                          );
                         let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
                         let state =
                           state

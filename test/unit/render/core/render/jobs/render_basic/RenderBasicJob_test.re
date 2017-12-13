@@ -580,7 +580,7 @@ let _ =
                 test(
                   "if not do any transform operation, should still send identity matrix value on the first send",
                   () => {
-                    let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+                    let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
                       _prepareSendUinformData(sandbox, state^);
                     let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
@@ -616,7 +616,7 @@ let _ =
                     test(
                       "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
                       () => {
-                        let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+                        let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
                           _prepareSendUinformData(sandbox, state^);
                         let (state, gameObject2, _, _, _) =
                           RenderJobsTool.prepareGameObject(sandbox, state);
@@ -694,6 +694,13 @@ let _ =
               (_prepareSendUinformData) =>
                 testSendShaderUniformDataOnlyOnce("u_pMatrix", _prepareSendUinformData),
             ()
+          );
+          GlslSenderTool.JudgeSendUniformData.testSendVector3(
+            sandbox,
+            "u_color",
+            ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
+              state |> Material.setMaterialColor(material, (0., 1., 0.2)),
+            [0., 1., 0.2]
           )
         }
       );
