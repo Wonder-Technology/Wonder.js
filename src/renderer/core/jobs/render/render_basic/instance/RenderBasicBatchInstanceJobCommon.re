@@ -2,7 +2,7 @@ open StateDataType;
 
 let render = (gl, uid, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
-  let instanceUniformSendData =
+  let instanceUniformSendMatrixData =
     state |> GLSLSenderConfigDataHandleSystem.getInstanceUniformSendData(shaderIndex);
   let drawMode = GeometryAdmin.getDrawMode(gl);
   let indexType = GeometryAdmin.getIndexType(gl);
@@ -16,17 +16,17 @@ let render = (gl, uid, state: StateDataType.state) => {
        (
          (state, uid) => {
            let state =
-             instanceUniformSendData
+             instanceUniformSendMatrixData
              |> ArraySystem.reduceState(
                   [@bs]
                   (
-                    (state, {pos, getArrayDataFunc, sendArrayDataFunc}: instanceUniformSendData) => {
+                    (state, {pos, getMatrixDataFunc, sendMatrixDataFunc}: instanceUniformSendMatrixData) => {
                       [@bs]
-                      sendArrayDataFunc(
+                      sendMatrixDataFunc(
                         gl,
                         pos,
                         [@bs]
-                        getArrayDataFunc(
+                        getMatrixDataFunc(
                           GameObjectAdmin.unsafeGetTransformComponent(uid, state),
                           state
                         )

@@ -215,11 +215,10 @@ and attributeSendData = {
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
 and instanceAttributeSendData = {pos: attributeLocation}
-/* todo rename Array to Matrix */
-and uniformSendArrayData = {
+and uniformSendMatrixData = {
   pos: uniformLocation,
-  getArrayDataFunc: [@bs] ((component, state) => Float32Array.t),
-  sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getMatrixDataFunc: [@bs] ((component, state) => Float32Array.t),
+  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
 and uniformSendVector3Data = {
   shaderCacheMap,
@@ -228,27 +227,24 @@ and uniformSendVector3Data = {
   getVector3DataFunc: [@bs] ((component, state) => (float, float, float)),
   sendVector3DataFunc: [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, (float, float, float)) => unit)
 }
-/* todo add SendVector3? */
-/* todo rename to SendMatrixData? */
-and shaderUniformSendData = {
+and shaderUniformSendMatrixData = {
   pos: uniformLocation,
-  getArrayDataFunc: [@bs] (state => Float32Array.t),
-  sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getMatrixDataFunc: [@bs] (state => Float32Array.t),
+  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
-/* todo rename to SendMatrixData? */
-and instanceUniformSendData = {
+and instanceUniformSendMatrixData = {
   pos: uniformLocation,
-  getArrayDataFunc: [@bs] ((transform, state) => Float32Array.t),
-  sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getMatrixDataFunc: [@bs] ((transform, state) => Float32Array.t),
+  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
 and glslSenderData = {
   attributeSendDataMap: array(array(attributeSendData)),
   instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
   uniformCacheMap,
-  uniformSendArrayDataMap: array(array(uniformSendArrayData)),
+  uniformSendMatrixDataMap: array(array(uniformSendMatrixData)),
   uniformSendVector3DataMap: array(array(uniformSendVector3Data)),
-  shaderUniformSendDataMap: array(array(shaderUniformSendData)),
-  instanceUniformSendDataMap: array(array(instanceUniformSendData)),
+  shaderUniformSendMatrixDataMap: array(array(shaderUniformSendMatrixData)),
+  instanceUniformSendMatrixDataMap: array(array(instanceUniformSendMatrixData)),
   drawPointsFuncMap: array((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendArrayBuffer: option(buffer),

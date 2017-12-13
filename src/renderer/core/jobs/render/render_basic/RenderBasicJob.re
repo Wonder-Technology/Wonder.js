@@ -13,8 +13,8 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            |> ArraySystem.reduceState(
                 [@bs]
                 (
-                  (state, {pos, getArrayDataFunc, sendArrayDataFunc}: shaderUniformSendData) => {
-                    [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(state));
+                  (state, {pos, getMatrixDataFunc, sendMatrixDataFunc}: shaderUniformSendMatrixData) => {
+                    [@bs] sendMatrixDataFunc(gl, pos, [@bs] getMatrixDataFunc(state));
                     state
                   }
                 ),
