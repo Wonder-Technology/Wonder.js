@@ -20,6 +20,7 @@ let handleCloneComponent =
         } else {
           ExceptionHandleSystem.throwMessage({j|unknown material:$sourceComponent|j})
         };
+      let color = MaterialOperateCommon.unsafeGetColor(sourceComponent, state);
       let componentArr: array(int) = [||];
       let state =
         countRangeArr
@@ -30,7 +31,9 @@ let handleCloneComponent =
                  let (state, index) = createFunc(state);
                  componentArr |> Js.Array.push(index) |> ignore;
                  hasShaderIndex ?
-                   state |> MaterialShaderIndexCommon.setShaderIndex(sourceComponent, shaderIndex) :
+                   state
+                   |> MaterialOperateCommon.setColor(index, color)
+                   |> MaterialShaderIndexCommon.setShaderIndex(index, shaderIndex) :
                    state
                }
              ),

@@ -138,7 +138,7 @@ let _ =
             () => {
               let _prepare = () => {
                 let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
-                let state = state |> MaterialTool.setShaderIndex(material1, 0);
+                let state = state |> MaterialTool.setShaderIndex(material1, 1);
                 let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                 (
                   state,
@@ -178,7 +178,7 @@ let _ =
                         MaterialTool.unsafeGetShaderIndex(clonedMaterialArr[0], state),
                         MaterialTool.unsafeGetShaderIndex(clonedMaterialArr[1], state)
                       )
-                      |> expect == (0, 0)
+                      |> expect == (1, 1)
                     }
                   )
               );
@@ -191,6 +191,47 @@ let _ =
                     Material.getMaterialGameObject(clonedMaterialArr[1], state)
                   )
                   |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1])
+                }
+              );
+              describe(
+                "set cloned material data",
+                () => {
+                  let _prepare = () => {
+                    let (state, gameObject1, material1) =
+                      BasicMaterialTool.createGameObject(state^);
+                    let state = state |> MaterialTool.setShaderIndex(material1, 0);
+                    (state, gameObject1, material1)
+                  };
+                  let _clone = (gameObject, state) => {
+                    let (state, clonedGameObjectArr) = _cloneGameObject(gameObject, 2, state);
+                    (
+                      state,
+                      clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+                      clonedGameObjectArr
+                      |> CloneTool.getFlattenClonedGameObjectArr
+                      |> Js.Array.map(
+                           (clonedGameObject) =>
+                             getGameObjectMaterialComponent(clonedGameObject, state)
+                         )
+                    )
+                  };
+                  test(
+                    "set color",
+                    () => {
+                      let (state, gameObject, material) = _prepare();
+                      let color = (1., 0.2, 0.3);
+                      let state = state |> Material.setMaterialColor(material, color);
+                      let (state, _, clonedMaterialArr) = _clone(gameObject, state);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state = MaterialTool.prepareForInit(state);
+                      (
+                        Material.getMaterialColor(clonedMaterialArr[0], state),
+                        Material.getMaterialColor(clonedMaterialArr[1], state)
+                      )
+                      |> expect == (color, color)
+                    }
+                  )
                 }
               );
               describe(

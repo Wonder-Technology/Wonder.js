@@ -35,24 +35,50 @@ let _ =
           )
       );
       describe(
+        "getMaterialColor",
+        () =>
+          test(
+            "test default color",
+            () => {
+              let (state, material) = createBasicMaterial(state^);
+              getMaterialColor(material, state) |> expect == (0., 0., 0.)
+            }
+          )
+      );
+      describe(
+        "setMaterialColor",
+        () =>
+          test(
+            "test set color",
+            () => {
+              let (state, material) = createBasicMaterial(state^);
+              let color = (0.2, 0.3, 0.5);
+              let state = state |> setMaterialColor(material, color);
+              getMaterialColor(material, state) |> expect == color
+            }
+          )
+      );
+      describe(
         "disposeComponent",
         () => {
           describe(
             "dispose data",
             () => {
               test(
-                "remove from shaderIndexMap, gameObjectMap",
+                "remove from colorMap, shaderIndexMap, gameObjectMap",
                 () => {
                   open MaterialType;
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let state =
                     state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
-                  let {shaderIndexMap, gameObjectMap} = MaterialTool.getMaterialData(state);
+                  let {colorMap, shaderIndexMap, gameObjectMap} =
+                    MaterialTool.getMaterialData(state);
                   (
+                    colorMap |> WonderCommonlib.SparseMapSystem.has(material1),
                     shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
                     gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
                   )
-                  |> expect == (false, false)
+                  |> expect == (false, false, false)
                 }
               );
               test(

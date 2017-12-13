@@ -2,6 +2,12 @@ open MaterialType;
 
 open StateDataType;
 
+open MaterialStateCommon;
+
 let unsafeGetColor = (material: material, state: StateDataType.state) =>
-  MaterialStateCommon.getMaterialData(state).colorMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(material);
+  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.unsafeGet(material);
+
+let setColor = (material: material, color, state: StateDataType.state) => {
+  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.set(material, color);
+  state
+};
