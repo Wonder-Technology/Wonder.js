@@ -78,7 +78,7 @@
 
 
 
-                var [state, newBoxes] = cloneGameObject(box, count, state);
+                var [state, newBoxes] = cloneGameObject(box, count, false, state);
 
 
                 let flatten = (arr) => {
@@ -214,24 +214,24 @@
 
 
                 return scheduleLoop((elapsed, state) => {
-                    for(let i = 0, len = window.boxes.length; i < len; i++){
-                        let box = window.boxes[i];
-                        state = disposeGameObject(box, state);
-                    }
+                    // for(let i = 0, len = window.boxes.length; i < len; i++){
+                    //     let box = window.boxes[i];
+                    //     state = disposeGameObject(box, state);
+                    // }
 
-                    // var state = batchDisposeGameObject(window.boxes, state);
+                    var state = batchDisposeGameObject(window.boxes, state);
 
 
-                    var [state, newBoxes] = createBoxesWithoutClone(2000, state);
+                    // var [state, newBoxes] = createBoxesWithoutClone(2000, state);
 
-                    // var [state, newBoxes] = cloneGameObject(window.sourceBox, 5000, state);
-                    // let flatten = (arr) => {
-                    //     return arr.reduce((a, b) => {
-                    //         let arr = a.concat(b);
-                    //         return arr;
-                    //     }, []);
-                    // };
-                    // newBoxes = flatten(newBoxes);
+                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 5000, true, state);
+                    let flatten = (arr) => {
+                        return arr.reduce((a, b) => {
+                            let arr = a.concat(b);
+                            return arr;
+                        }, []);
+                    };
+                    newBoxes = flatten(newBoxes);
 
 
                     var [state, newBoxes] = setPosition(newBoxes, state);
