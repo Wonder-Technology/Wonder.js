@@ -19,7 +19,6 @@ let _ =
       test(
         "shared material can be added to gameObject",
         () => {
-          /* let (state, gameObject1, material1, gameObject2, material2) = _createAndInit(state^); */
           let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
           let (state, gameObject2, material2) =
             MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
@@ -185,6 +184,70 @@ let _ =
                 Material.getMaterialGameObject(clonedMaterialArr[1], state)
               )
               |> expect == (gameObject, gameObject)
+            }
+          );
+          describe(
+            "should send shared materials' uniform cacheable data only once",
+            () => {
+              let _prepareSendUinformData = (sandbox, state) => {
+                let (state, gameObject, _, material, _) =
+                  RenderJobsTool.prepareGameObject(sandbox, state);
+                let (state, _, cameraTransform, cameraController) =
+                  CameraControllerTool.createCameraGameObject(state);
+                (
+                  state,
+                  gameObject,
+                  (GameObject.getGameObjectTransformComponent(gameObject, state), material),
+                  cameraTransform,
+                  cameraController
+                )
+              };
+              let _prepareGameObject = (material, state) => {
+                open GameObject;
+                open BasicMaterial;
+                open BoxGeometry;
+                open MeshRenderer;
+                open Sinon;
+                let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+                let (state, meshRenderer) = createMeshRenderer(state);
+                let (state, gameObject) = state |> createGameObject;
+                let state =
+                  state
+                  |> addGameObjectMaterialComponent(gameObject, material)
+                  |> addGameObjectGeometryComponent(gameObject, geometry)
+                  |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                (state, gameObject, geometry, meshRenderer)
+              };
+              let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
+              test(
+                "test send u_color",
+                () => {
+                  let name = "u_color";
+                  let (state, _, (_, material1), _, _) = _prepareSendUinformData(sandbox, state^);
+                  let (state, gameObject2, _, _) = _prepareGameObject(material1, state);
+                  let color = [|0., 1., 0.2|];
+                  let state = state |> Material.setMaterialColor(material1, color);
+                  let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                  let pos = 0;
+                  let getUniformLocation =
+                    GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
+                       );
+                  let state =
+                    state
+                    |> RenderJobsTool.initSystemAndRender
+                    |> RenderJobsTool.updateSystem
+                    |> _render;
+                  (
+                    uniform3f |> withOneArg(pos) |> getCallCount,
+                    uniform3f |> withOneArg(pos) |> getCall(0) |> getArgs
+                  )
+                  |> expect == (1, [pos, ...color |> Array.to_list |> Obj.magic])
+                }
+              )
             }
           )
         }

@@ -9,7 +9,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
-  (
+  let state =
     state
     |> ProgramSystem.use(gl, program)
     |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
@@ -46,35 +46,45 @@ let render = (gl, uid, state: StateDataType.state) => {
     |> ArraySystem.reduceState(
          [@bs]
          (
-           (state, {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: uniformSendNoCacheableData) => {
-             [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(transformIndex, state));
-             state
-           }
-         ),
-         state
-       )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendCacheableData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
            (
              state,
-             {shaderCacheMap, name, pos, getCacheableDataFunc, sendCacheableDataFunc}: uniformSendCacheableData
+             {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: uniformSendNoCacheableData
            ) => {
              [@bs]
-             sendCacheableDataFunc(
-               gl,
-               shaderCacheMap,
-               name,
-               pos,
-               [@bs] getCacheableDataFunc(materialIndex, state)
-             );
+             sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(transformIndex, state));
              state
            }
          ),
          state
-       ),
-    shaderIndex,
-    geometryIndex
-  )
+       );
+  let {lastSendMaterial} as data = GLSLSenderSystem.getGLSLSenderData(state);
+  let state =
+    switch lastSendMaterial {
+    | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
+    | _ =>
+      data.lastSendMaterial = Some(materialIndex);
+      state
+      |> GLSLSenderConfigDataHandleSystem.getUniformSendCacheableData(shaderIndex)
+      |> ArraySystem.reduceState(
+           [@bs]
+           (
+             (
+               state,
+               {shaderCacheMap, name, pos, getCacheableDataFunc, sendCacheableDataFunc}: uniformSendCacheableData
+             ) => {
+               [@bs]
+               sendCacheableDataFunc(
+                 gl,
+                 shaderCacheMap,
+                 name,
+                 pos,
+                 [@bs] getCacheableDataFunc(materialIndex, state)
+               );
+               state
+             }
+           ),
+           state
+         )
+    };
+  (state, shaderIndex, geometryIndex)
 };

@@ -11,5 +11,6 @@ let initData = () => {
   drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
   lastSendArrayBuffer: None,
-  lastSendElementArrayBuffer: None
+  lastSendElementArrayBuffer: None,
+  lastSendMaterial: None
 };

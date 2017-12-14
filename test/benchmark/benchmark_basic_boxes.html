@@ -80,7 +80,7 @@
 
 
 
-                var [state, newBoxes] = cloneGameObject(box, count, false, state);
+                var [state, newBoxes] = cloneGameObject(box, count, true, state);
 
 
                 let flatten = (arr) => {
@@ -141,8 +141,8 @@
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(19997, state);
-                // var [state, boxes] = createBoxes(2, state);
+                // var [state, boxes] = createBoxes(19997, state);
+                var [state, boxes] = createBoxes(2, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
