@@ -47,10 +47,10 @@ let _detectPrecision = (gl, gpuDetectData) => {
     && fragmentShaderPrecisionMediumpFloat##precision > 0;
   if (! highpAvailable) {
     if (mediumpAvailable) {
-      LogUtils.warn("not support highp, using mediump instead");
+      WonderCommonlib.LogUtils.warn("not support highp, using mediump instead");
       {...gpuDetectData, precision: Some(MEDIUMP)}
     } else {
-      LogUtils.warn("not support highp and mediump, using lowp instead");
+      WonderCommonlib.LogUtils.warn("not support highp and mediump, using lowp instead");
       {...gpuDetectData, precision: Some(LOWP)}
     }
   } else {
@@ -62,7 +62,8 @@ let _detectCapabilty = (gl, gpuDetectData) => _detectPrecision(gl, gpuDetectData
 
 let detect = (gl, state: StateDataType.state) => {
   ...state,
-  gpuDetectData: GPUStateUtils.getGpuDetectData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
+  gpuDetectData:
+    GPUStateUtils.getGpuDetectData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
 };
 
 let hasExtension = (extension) => Js.Option.isSome(extension);

@@ -290,7 +290,12 @@ let _ =
                 () => {
                   let _prepare = (sandbox) => {
                     open GPUDetectType;
-                    let warn = createMethodStubWithJsObjSandbox(sandbox, LogUtils.console, "warn");
+                    let warn =
+                      createMethodStubWithJsObjSandbox(
+                        sandbox,
+                        WonderCommonlib.LogUtils.console,
+                        "warn"
+                      );
                     let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                     let vertexShader = 0;
                     let fragmentShader = 1;
