@@ -5,7 +5,7 @@ open MaterialType;
 open ComponentSystem;
 
 let _setDefaultColor = (index: int, colorMap) => {
-  colorMap |> WonderCommonlib.SparseMapSystem.set(index, (1., 1., 1.));
+  colorMap |> WonderCommonlib.SparseMapSystem.set(index, [| 1., 1., 1. |]);
   colorMap
 };
 

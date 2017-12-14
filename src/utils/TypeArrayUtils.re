@@ -2,10 +2,6 @@ open Js.Typed_array;
 
 open Contract;
 
-let getMatrix4DataSize = () => 16;
-
-let getVector3DataSize = () => 3;
-
 let getFloat3 = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index),
   Float32Array.unsafe_get(typeArray, index + 1),

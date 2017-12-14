@@ -43,7 +43,7 @@ let addAttributeSendData =
   let attributeLocationMap =
     _getOrCreateHashMap(state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex));
   let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
-  let instanceSendMatrixDataArr = WonderCommonlib.ArraySystem.createEmpty();
+  let instanceSendNoCacheableDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
@@ -64,7 +64,7 @@ let addAttributeSendData =
                         | (Some(name), Some(type_)) =>
                           switch buffer {
                           | "instance" =>
-                            instanceSendMatrixDataArr
+                            instanceSendNoCacheableDataArr
                             |> Js.Array.push({
                                  pos:
                                    GLSLLocationSystem.getAttribLocation(
@@ -110,12 +110,12 @@ let addAttributeSendData =
   let {attributeSendDataMap, instanceAttributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr) |> ignore;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendMatrixDataArr)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCacheableDataArr)
   |> ignore;
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
 
-let _getModelMMatrixData =
+let _getModelMNoCacheableData =
   [@bs]
   (
     (transform, state: StateDataType.state) =>
@@ -123,47 +123,47 @@ let _getModelMMatrixData =
   );
 
 let _addUniformSendDataByType =
-    (sendMatrixDataArr, sendVector3DataArr, type_, shaderCacheMap, name, pos, getDataFunc) =>
+    (sendNoCacheableDataArr, sendCacheableDataArr, type_, shaderCacheMap, name, pos, getDataFunc) =>
   /* todo remove Obj.magic? */
   switch type_ {
   | "mat4" =>
-    sendMatrixDataArr
+    sendNoCacheableDataArr
     |> Js.Array.push(
-         {pos, sendMatrixDataFunc: sendMatrix4, getMatrixDataFunc: getDataFunc |> Obj.magic}: uniformSendMatrixData
+         {pos, sendNoCacheableDataFunc: sendMatrix4, getNoCacheableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCacheableData
        )
     |> ignore
   | "vec3" =>
-    sendVector3DataArr
+    sendCacheableDataArr
     |> Js.Array.push(
          {
            shaderCacheMap,
            name,
            pos,
-           sendVector3DataFunc: sendVector3,
-           getVector3DataFunc: getDataFunc |> Obj.magic
-         }: uniformSendVector3Data
+           sendCacheableDataFunc: sendFloat3,
+           getCacheableDataFunc: getDataFunc |> Obj.magic
+         }: uniformSendCacheableData
        )
     |> ignore
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
   };
 
-let _addShaderUniformSendDataByType = (sendMatrixDataArr, type_, pos, getDataFunc) =>
+let _addShaderUniformSendDataByType = (sendNoCacheableDataArr, type_, pos, getDataFunc) =>
   switch type_ {
   | "mat4" =>
-    sendMatrixDataArr
+    sendNoCacheableDataArr
     |> Js.Array.push(
-         {pos, sendMatrixDataFunc: sendMatrix4, getMatrixDataFunc: getDataFunc}: shaderUniformSendMatrixData
+         {pos, sendNoCacheableDataFunc: sendMatrix4, getNoCacheableDataFunc: getDataFunc}: shaderUniformSendNoCacheableData
        )
     |> ignore
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
   };
 
-let _addInstanceUniformSendDataByType = (sendMatrixDataArr, type_, pos, getDataFunc) =>
+let _addInstanceUniformSendDataByType = (sendNoCacheableDataArr, type_, pos, getDataFunc) =>
   switch type_ {
   | "mat4" =>
-    sendMatrixDataArr
+    sendNoCacheableDataArr
     |> Js.Array.push(
-         {pos, sendMatrixDataFunc: sendMatrix4, getMatrixDataFunc: getDataFunc}: instanceUniformSendMatrixData
+         {pos, sendNoCacheableDataFunc: sendMatrix4, getNoCacheableDataFunc: getDataFunc}: instanceUniformSendNoCacheableData
        )
     |> ignore
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
@@ -184,29 +184,29 @@ let addUniformSendData =
         test(
           "shouldn't be added before",
           () =>
-            getGLSLSenderData(state).uniformSendMatrixDataMap
+            getGLSLSenderData(state).uniformSendNoCacheableDataMap
             |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
   );
   let {
-        uniformSendMatrixDataMap,
-        uniformSendVector3DataMap,
-        shaderUniformSendMatrixDataMap,
-        instanceUniformSendMatrixDataMap
+        uniformSendNoCacheableDataMap,
+        uniformSendCacheableDataMap,
+        shaderUniformSendNoCacheableDataMap,
+        instanceUniformSendNoCacheableDataMap
       } as data =
     getGLSLSenderData(state);
   let uniformLocationMap =
     _getOrCreateHashMap(state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex));
   let uniformCacheMap =
     _getOrCreateHashMap(data |> GLSLSenderSendDataUtils.getCacheMap(shaderIndex));
-  let sendMatrixDataArr: array(uniformSendMatrixData) = WonderCommonlib.ArraySystem.createEmpty();
-  let sendVector3DataArr: array(uniformSendVector3Data) =
+  let sendNoCacheableDataArr: array(uniformSendNoCacheableData) = WonderCommonlib.ArraySystem.createEmpty();
+  let sendCacheableDataArr: array(uniformSendCacheableData) =
     WonderCommonlib.ArraySystem.createEmpty();
-  let shaderSendMatrixDataArr: array(shaderUniformSendMatrixData) =
+  let shaderSendNoCacheableDataArr: array(shaderUniformSendNoCacheableData) =
     WonderCommonlib.ArraySystem.createEmpty();
-  let instanceSendMatrixDataArr = WonderCommonlib.ArraySystem.createEmpty();
+  let instanceSendNoCacheableDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
@@ -235,14 +235,14 @@ let addUniformSendData =
                           switch field {
                           | "vMatrix" =>
                             _addShaderUniformSendDataByType(
-                              shaderSendMatrixDataArr,
+                              shaderSendNoCacheableDataArr,
                               type_,
                               pos,
                               RenderDataSystem.getCameraVMatrixDataFromState
                             )
                           | "pMatrix" =>
                             _addShaderUniformSendDataByType(
-                              shaderSendMatrixDataArr,
+                              shaderSendNoCacheableDataArr,
                               type_,
                               pos,
                               RenderDataSystem.getCameraPMatrixDataFromState
@@ -253,8 +253,8 @@ let addUniformSendData =
                           switch field {
                           | "color" =>
                             _addUniformSendDataByType(
-                              sendMatrixDataArr,
-                              sendVector3DataArr,
+                              sendNoCacheableDataArr,
+                              sendCacheableDataArr,
                               type_,
                               uniformCacheMap,
                               name,
@@ -267,20 +267,20 @@ let addUniformSendData =
                           switch field {
                           | "mMatrix" =>
                             _addUniformSendDataByType(
-                              sendMatrixDataArr,
-                              sendVector3DataArr,
+                              sendNoCacheableDataArr,
+                              sendCacheableDataArr,
                               type_,
                               uniformCacheMap,
                               name,
                               pos,
-                              _getModelMMatrixData
+                              _getModelMNoCacheableData
                             )
                           | "instance_mMatrix" =>
                             _addInstanceUniformSendDataByType(
-                              instanceSendMatrixDataArr,
+                              instanceSendNoCacheableDataArr,
                               type_,
                               pos,
-                              _getModelMMatrixData
+                              _getModelMNoCacheableData
                             )
                           | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
                           }
@@ -292,17 +292,17 @@ let addUniformSendData =
            }
        )
      );
-  uniformSendMatrixDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendMatrixDataArr)
+  uniformSendNoCacheableDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendNoCacheableDataArr)
   |> ignore;
-  uniformSendVector3DataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendVector3DataArr)
+  uniformSendCacheableDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendCacheableDataArr)
   |> ignore;
-  shaderUniformSendMatrixDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendMatrixDataArr)
+  shaderUniformSendNoCacheableDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendNoCacheableDataArr)
   |> ignore;
-  instanceUniformSendMatrixDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendMatrixDataArr)
+  instanceUniformSendNoCacheableDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCacheableDataArr)
   |> ignore;
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
@@ -360,14 +360,14 @@ let _getUniformSendData = (shaderIndex: int, map) =>
          )
      );
 
-let getUniformSendMatrixData = (shaderIndex: int, state: StateDataType.state) =>
-  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendMatrixDataMap);
+let getUniformSendNoCacheableData = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendNoCacheableDataMap);
 
-let getUniformSendVector3Data = (shaderIndex: int, state: StateDataType.state) =>
-  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendVector3DataMap);
+let getUniformSendCacheableData = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).uniformSendCacheableDataMap);
 
-let getShaderUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
-  _getUniformSendData(shaderIndex, getGLSLSenderData(state).shaderUniformSendMatrixDataMap);
+let getShaderUniformSendNoCacheableData = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).shaderUniformSendNoCacheableDataMap);
 
-let getInstanceUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
-  _getUniformSendData(shaderIndex, getGLSLSenderData(state).instanceUniformSendMatrixDataMap);
+let getInstanceUniformSendNoCacheableData = (shaderIndex: int, state: StateDataType.state) =>
+  _getUniformSendData(shaderIndex, getGLSLSenderData(state).instanceUniformSendNoCacheableDataMap);

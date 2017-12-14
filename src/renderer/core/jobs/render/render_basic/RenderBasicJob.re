@@ -9,12 +9,12 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
            state
            |> ProgramSystem.use(gl, program)
-           |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendData(shaderIndex)
+           |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendNoCacheableData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (
-                  (state, {pos, getMatrixDataFunc, sendMatrixDataFunc}: shaderUniformSendMatrixData) => {
-                    [@bs] sendMatrixDataFunc(gl, pos, [@bs] getMatrixDataFunc(state));
+                  (state, {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: shaderUniformSendNoCacheableData) => {
+                    [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(state));
                     state
                   }
                 ),

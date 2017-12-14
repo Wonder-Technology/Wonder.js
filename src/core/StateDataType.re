@@ -215,36 +215,36 @@ and attributeSendData = {
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
 and instanceAttributeSendData = {pos: attributeLocation}
-and uniformSendMatrixData = {
+and uniformSendNoCacheableData = {
   pos: uniformLocation,
-  getMatrixDataFunc: [@bs] ((component, state) => Float32Array.t),
-  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getNoCacheableDataFunc: [@bs] ((component, state) => Float32Array.t),
+  sendNoCacheableDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
-and uniformSendVector3Data = {
+and uniformSendCacheableData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
-  getVector3DataFunc: [@bs] ((component, state) => (float, float, float)),
-  sendVector3DataFunc: [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, (float, float, float)) => unit)
+  getCacheableDataFunc: [@bs] ((component, state) => array(float)),
+  sendCacheableDataFunc: [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, array(float)) => unit)
 }
-and shaderUniformSendMatrixData = {
+and shaderUniformSendNoCacheableData = {
   pos: uniformLocation,
-  getMatrixDataFunc: [@bs] (state => Float32Array.t),
-  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getNoCacheableDataFunc: [@bs] (state => Float32Array.t),
+  sendNoCacheableDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
-and instanceUniformSendMatrixData = {
+and instanceUniformSendNoCacheableData = {
   pos: uniformLocation,
-  getMatrixDataFunc: [@bs] ((transform, state) => Float32Array.t),
-  sendMatrixDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getNoCacheableDataFunc: [@bs] ((transform, state) => Float32Array.t),
+  sendNoCacheableDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
 and glslSenderData = {
   attributeSendDataMap: array(array(attributeSendData)),
   instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
   uniformCacheMap,
-  uniformSendMatrixDataMap: array(array(uniformSendMatrixData)),
-  uniformSendVector3DataMap: array(array(uniformSendVector3Data)),
-  shaderUniformSendMatrixDataMap: array(array(shaderUniformSendMatrixData)),
-  instanceUniformSendMatrixDataMap: array(array(instanceUniformSendMatrixData)),
+  uniformSendNoCacheableDataMap: array(array(uniformSendNoCacheableData)),
+  uniformSendCacheableDataMap: array(array(uniformSendCacheableData)),
+  shaderUniformSendNoCacheableDataMap: array(array(shaderUniformSendNoCacheableData)),
+  instanceUniformSendNoCacheableDataMap: array(array(instanceUniformSendNoCacheableData)),
   drawPointsFuncMap: array((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendArrayBuffer: option(buffer),

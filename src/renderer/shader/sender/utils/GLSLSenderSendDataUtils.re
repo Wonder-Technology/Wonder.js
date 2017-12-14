@@ -73,10 +73,10 @@ let _isNotCacheVector3 = (shaderCacheMap, name: string, x: float, y: float, z: f
     isNotCached^
   };
 
-let sendVector3 =
+let sendFloat3 =
   [@bs]
   (
-    (gl, shaderCacheMap, name: string, pos: uniformLocation, (x: float, y: float, z: float)) =>
+    (gl, shaderCacheMap, name: string, pos: uniformLocation, [|x, y, z|]) =>
       if (_isNotCacheVector3(shaderCacheMap, name, x, y, z)) {
         uniform3f(pos, x, y, z, gl)
       } else {

@@ -42,32 +42,32 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendMatrixData(shaderIndex)
+    |> GLSLSenderConfigDataHandleSystem.getUniformSendNoCacheableData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (
-           (state, {pos, getMatrixDataFunc, sendMatrixDataFunc}: uniformSendMatrixData) => {
-             [@bs] sendMatrixDataFunc(gl, pos, [@bs] getMatrixDataFunc(transformIndex, state));
+           (state, {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: uniformSendNoCacheableData) => {
+             [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(transformIndex, state));
              state
            }
          ),
          state
        )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendVector3Data(shaderIndex)
+    |> GLSLSenderConfigDataHandleSystem.getUniformSendCacheableData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (
            (
              state,
-             {shaderCacheMap, name, pos, getVector3DataFunc, sendVector3DataFunc}: uniformSendVector3Data
+             {shaderCacheMap, name, pos, getCacheableDataFunc, sendCacheableDataFunc}: uniformSendCacheableData
            ) => {
              [@bs]
-             sendVector3DataFunc(
+             sendCacheableDataFunc(
                gl,
                shaderCacheMap,
                name,
                pos,
-               [@bs] getVector3DataFunc(materialIndex, state)
+               [@bs] getCacheableDataFunc(materialIndex, state)
              );
              state
            }

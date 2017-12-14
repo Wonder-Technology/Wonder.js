@@ -219,7 +219,7 @@ let _ =
                     "set color",
                     () => {
                       let (state, gameObject, material) = _prepare();
-                      let color = (1., 0.2, 0.3);
+                      let color = [| 1., 0.2, 0.3 |];
                       let state = state |> Material.setMaterialColor(material, color);
                       let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                       let state =
