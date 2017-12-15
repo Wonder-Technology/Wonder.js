@@ -11,8 +11,6 @@ let deepCopyState = ({transformData} as state) => {
     index,
     localToWorldMatrixMap,
     localPositionMap,
-    localToWorldMatrixTypeArrayPool,
-    localPositionTypeArrayPool,
     parentMap,
     childMap,
     dirtyMap,
@@ -27,13 +25,27 @@ let deepCopyState = ({transformData} as state) => {
         index,
         localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
         localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-        localToWorldMatrixTypeArrayPool,
-        localPositionTypeArrayPool,
+        localToWorldMatrixTypeArrayPool: [||],
+        localPositionTypeArrayPool: [||],
         parentMap: parentMap |> SparseMapSystem.copy,
         childMap: childMap |> SparseMapSystem.copy,
         dirtyMap: dirtyMap |> SparseMapSystem.copy,
         gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy
+      })
+  }
+};
+
+let restoreFromState = (currentState, targetState) => {
+  let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
+    getTransformData(currentState);
+  {
+    ...targetState,
+    transformData:
+      Some({
+        ...getTransformData(targetState),
+        localToWorldMatrixTypeArrayPool,
+        localPositionTypeArrayPool
       })
   }
 };

@@ -34,7 +34,6 @@ let _ =
         (state, gameObject1, gameObject2, gameObject3, transform1, transform2, transform3)
       };
       let _prepareCameraControllerState = (state) => {
-        /* open CameraController; */
         open PerspectiveCamera;
         let (state, gameObject1, _, cameraController1) =
           CameraControllerTool.createCameraGameObject(state^);
@@ -89,8 +88,8 @@ let _ =
                     meshRenderer3
                   ) =
                     _prepareMeshRendererState(state);
-                  let copyState = StateTool.deepCopyState(state);
-                  MeshRendererTool.getMeshRendererData(copyState)
+                  let copiedState = StateTool.deepCopyState(state);
+                  MeshRendererTool.getMeshRendererData(copiedState)
                   |>
                   expect == {
                               index: 3,
@@ -118,8 +117,8 @@ let _ =
                     meshRenderer3
                   ) =
                     _prepareMeshRendererState(state);
-                  let copyState = StateTool.deepCopyState(state);
-                  let data = MeshRendererTool.getMeshRendererData(copyState);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = MeshRendererTool.getMeshRendererData(copiedState);
                   data.index = 0;
                   data.renderGameObjectArray |> Js.Array.pop |> ignore;
                   data.gameObjectMap
@@ -144,28 +143,28 @@ let _ =
           );
           describe(
             "deep copy transform data",
-            () => {
-              test(
-                "copied data should equal to source data",
-                () => {
-                  open TransformType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    transform1,
-                    transform2,
-                    transform3
-                  ) =
-                    _prepareTransformState(state);
-                  let _ = Transform.getTransformPosition(transform2, state);
-                  let transformData = TransformTool.getTransformData(state);
-                  let copyState = StateTool.deepCopyState(state);
-                  TransformTool.getTransformData(copyState)
-                  |> expect == TransformTool.getTransformData(state)
-                }
-              );
+            () =>
+              /* test(
+                   "copied data should equal to source data",
+                   () => {
+                     open TransformType;
+                     let (
+                       state,
+                       gameObject1,
+                       gameObject2,
+                       gameObject3,
+                       transform1,
+                       transform2,
+                       transform3
+                     ) =
+                       _prepareTransformState(state);
+                     let _ = Transform.getTransformPosition(transform2, state);
+                     let transformData = TransformTool.getTransformData(state);
+                     let copiedState = StateTool.deepCopyState(state);
+                     TransformTool.getTransformData(copiedState)
+                     |> expect == TransformTool.getTransformData(state)
+                   }
+                 ); */
               describe(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -184,8 +183,8 @@ let _ =
                       ) =
                         _prepareTransformState(state);
                       let _ = Transform.getTransformPosition(transform2, state);
-                      let copyState = StateTool.deepCopyState(state);
-                      let data = TransformTool.getTransformData(copyState);
+                      let copiedState = StateTool.deepCopyState(state);
+                      let data = TransformTool.getTransformData(copiedState);
                       data.localPositionMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
@@ -205,7 +204,7 @@ let _ =
                     }
                   );
                   test(
-                    "not copy localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
+                    "clean localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
                     () => {
                       open TransformType;
                       let (
@@ -219,27 +218,15 @@ let _ =
                       ) =
                         _prepareTransformState(state);
                       let _ = Transform.getTransformPosition(transform2, state);
-                      let copyState = StateTool.deepCopyState(state);
-                      let data = TransformTool.getTransformData(copyState);
-                      data.localToWorldMatrixTypeArrayPool
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
-                      data.localPositionTypeArrayPool
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(transform1);
+                      let copiedState = StateTool.deepCopyState(state);
                       let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
-                        TransformTool.getTransformData(state);
+                        TransformTool.getTransformData(copiedState);
                       (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
-                      |>
-                      expect == (
-                                  data.localToWorldMatrixTypeArrayPool,
-                                  data.localPositionTypeArrayPool
-                                )
+                      |> expect == ([||], [||])
                     }
                   )
                 }
               )
-            }
           );
           describe(
             "deep copy cameraController data",
@@ -259,8 +246,8 @@ let _ =
                   ) =
                     _prepareCameraControllerState(state);
                   let cameraControllerData = CameraControllerTool.getCameraControllerData(state);
-                  let copyState = StateTool.deepCopyState(state);
-                  CameraControllerTool.getCameraControllerData(copyState)
+                  let copiedState = StateTool.deepCopyState(state);
+                  CameraControllerTool.getCameraControllerData(copiedState)
                   |> expect == CameraControllerTool.getCameraControllerData(state)
                 }
               );
@@ -278,9 +265,9 @@ let _ =
                     cameraController3
                   ) =
                     _prepareCameraControllerState(state);
-                  let copyState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyState(state);
                   let {perspectiveCameraData} as data =
-                    CameraControllerTool.getCameraControllerData(copyState);
+                    CameraControllerTool.getCameraControllerData(copiedState);
                   data.cameraArray
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(cameraController2);
@@ -321,7 +308,7 @@ let _ =
                 let (state, _, _, _, _, _, _) = _prepareState(state);
                 let (currentState, _, _) =
                   GameObjectTool.createGameObject(StateTool.createNewCompleteState());
-                let currentState = StateTool.restoreFromState(currentState, state);
+                let state = StateTool.restoreFromState(currentState, state);
                 StateTool.getState() |> expect == state
               };
               describe(
@@ -395,9 +382,28 @@ let _ =
                   )
                 }
               );
-              test(
+              describe(
                 "restore transform data to target state",
-                () => _test(_prepareTransformState, state)
+                () =>
+                  test(
+                    "remain current transformData->localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool\n                ",
+                    () => {
+                      open TransformType;
+                      let (state, _, _, _, _, _, _) = _prepareTransformState(state);
+                      let (currentState, _, _) =
+                        GameObjectTool.createGameObject(StateTool.createNewCompleteState());
+                      let state = StateTool.restoreFromState(currentState, state);
+                      let currentData = currentState |> TransformTool.getTransformData;
+                      let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
+                        StateTool.getState() |> TransformTool.getTransformData;
+                      (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
+                      |>
+                      expect == (
+                                  currentData.localToWorldMatrixTypeArrayPool,
+                                  currentData.localPositionTypeArrayPool
+                                )
+                    }
+                  )
               );
               test(
                 "restore cameraController data to target state",
