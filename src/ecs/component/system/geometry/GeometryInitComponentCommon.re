@@ -2,7 +2,7 @@ open GeometryType;
 
 open StateDataType;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 open GeometryOperateCommon;
 

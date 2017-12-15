@@ -2,11 +2,9 @@ open VboBufferType;
 
 open StateDataType;
 
-let getVboBufferData = (state: StateDataType.state) => state.vboBufferData;
+open VboBufferGetStateDataUtils;
 
 let deepCopyState = (state: StateDataType.state) => {
-  /* let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
-     state |> getVboBufferData; */
   ...state,
   vboBufferData: {
     vertexBufferMap: [||],
@@ -21,6 +19,8 @@ let deepCopyState = (state: StateDataType.state) => {
 let restoreFromState = (currentState, targetState) => {
   let {vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool} =
     getVboBufferData(currentState);
+  let (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool) =
+    VboBufferPoolCommon.addAllBufferToPool(currentState);
   {
     ...targetState,
     vboBufferData: {

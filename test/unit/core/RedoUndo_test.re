@@ -61,6 +61,37 @@ let _ =
           cameraController3
         )
       };
+      let _prepareGeometryState = (state) => {
+        open Geometry;
+        open Js.Typed_array;
+        let (state, gameObject1, geometry1) =
+          BoxGeometryTool.createGameObject(state^);
+
+        let (state, gameObject2, geometry2) =
+          BoxGeometryTool.createGameObject(state);
+        let (state, gameObject3, geometry3) =
+          BoxGeometryTool.createGameObject(state);
+        let state = state |> setGeometryVertices(geometry2, Float32Array.make([|3., 5., 5.|]));
+        let state = state |> setGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
+        /* let state = state |> setPerspectiveCameraFar(cameraController2, 100.);
+        let state = state |> setPerspectiveCameraFar(cameraController3, 100.);
+        let state = state |> setPerspectiveCameraAspect(cameraController1, 1.);
+        let state = state |> setPerspectiveCameraAspect(cameraController2, 2.);
+        let state = state |> setPerspectiveCameraFovy(cameraController2, 60.);
+        let state = state |> CameraControllerTool.update; */
+        /* let state =
+          state
+          |> GameObject.disposeGameObjectCameraControllerComponent(gameObject3, cameraController3); */
+        (
+          state,
+          gameObject1,
+          gameObject2,
+          gameObject3,
+          geometry1,
+          geometry2,
+          geometry3
+        )
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -144,27 +175,6 @@ let _ =
           describe(
             "deep copy transform data",
             () =>
-              /* test(
-                   "copied data should equal to source data",
-                   () => {
-                     open TransformType;
-                     let (
-                       state,
-                       gameObject1,
-                       gameObject2,
-                       gameObject3,
-                       transform1,
-                       transform2,
-                       transform3
-                     ) =
-                       _prepareTransformState(state);
-                     let _ = Transform.getTransformPosition(transform2, state);
-                     let transformData = TransformTool.getTransformData(state);
-                     let copiedState = StateTool.deepCopyState(state);
-                     TransformTool.getTransformData(copiedState)
-                     |> expect == TransformTool.getTransformData(state)
-                   }
-                 ); */
               describe(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -228,6 +238,72 @@ let _ =
                 }
               )
           );
+          /* describe(
+            "deep copy geometry data",
+            () =>
+              describe(
+                "change copied state shouldn't affect source state",
+                () => {
+                  test(
+                    "test copied data",
+                    () => {
+                      open GeometryType;
+                      let (
+                        state,
+                        gameObject1,
+                        gameObject2,
+                        gameObject3,
+                        geometry1,
+                        geometry2,
+                        geometry3
+                      ) =
+                        _prepareGeometryState(state);
+                      /* let _ = Geometry.getGeometryPosition(geometry2, state); */
+                      let copiedState = StateTool.deepCopyState(state);
+                      let data = GeometryTool.getGeometryData(copiedState);
+                      data.localPositionMap
+                      |> Obj.magic
+                      |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                      GeometryTool.getGeometryData(state).localPositionMap
+                      |>
+                      expect == [|
+                                  GeometryTool.getGeometryLocalPositionTypeArray(
+                                    geometry1,
+                                    state
+                                  ),
+                                  GeometryTool.getGeometryLocalPositionTypeArray(
+                                    geometry2,
+                                    state
+                                  ),
+                                  Js.Undefined.empty |> Obj.magic
+                                |]
+                    }
+                  );
+                  /* test(
+                    "clean localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
+                    () => {
+                      open GeometryType;
+                      let (
+                        state,
+                        gameObject1,
+                        gameObject2,
+                        gameObject3,
+                        geometry1,
+                        geometry2,
+                        geometry3
+                      ) =
+                        _prepareGeometryState(state);
+                      let _ = Geometry.getGeometryPosition(geometry2, state);
+                      let copiedState = StateTool.deepCopyState(state);
+                      let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
+                        GeometryTool.getGeometryData(copiedState);
+                      (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
+                      |> expect == ([||], [||])
+                    }
+                  ) */
+                }
+              )
+          ); */
           describe(
             "deep copy cameraController data",
             () => {
@@ -386,7 +462,7 @@ let _ =
                 "restore transform data to target state",
                 () =>
                   test(
-                    "remain current transformData->localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool\n                ",
+                    "remain current transformData->localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
                     () => {
                       open TransformType;
                       let (state, _, _, _, _, _, _) = _prepareTransformState(state);

@@ -1,0 +1,1 @@
+let getGeometryData = (state: StateDataType.state) => Js.Option.getExn(state.geometryData);

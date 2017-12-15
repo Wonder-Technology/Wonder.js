@@ -1,4 +1,4 @@
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 open BoxGeometryType;
 

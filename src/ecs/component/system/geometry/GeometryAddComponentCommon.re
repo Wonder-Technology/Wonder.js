@@ -1,6 +1,6 @@
 open GeometryType;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 let handleAddComponent =
   [@bs]

@@ -1,6 +1,6 @@
 open Contract;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
 
@@ -39,7 +39,7 @@ let setVerticesWithArray = (index: int, data: array(float), state: StateDataType
   | None =>
     let typeArr =
       switch (
-        GeometryTypeArrayPoolCommon.getFloat32TypeArrayFromPool(
+        TypeArrayPoolCommonUtils.getFloat32TypeArrayFromPool(
           data |> Js.Array.length,
           geometryData.float32ArrayPoolMap
         )
@@ -90,7 +90,7 @@ let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.st
   | None =>
     let typeArr =
       switch (
-        GeometryTypeArrayPoolCommon.getUint16TypeArrayFromPool(
+        TypeArrayPoolCommonUtils.getUint16TypeArrayFromPool(
           data |> Js.Array.length,
           geometryData.uint16ArrayPoolMap
         )

@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getGeometryData = (state: StateDataType.state) => Js.Option.getExn(state.geometryData);
+open GeometryGetStateDataCommon;
 
 let deepCopyState = (state: StateDataType.state) => {
   let {
@@ -35,7 +35,16 @@ let deepCopyState = (state: StateDataType.state) => {
 };
 
 let restoreFromState = (currentState, targetState) => {
-  let {float32ArrayPoolMap, uint16ArrayPoolMap} = getGeometryData(currentState);
+  let {verticesMap, indicesMap, float32ArrayPoolMap, uint16ArrayPoolMap} =
+    getGeometryData(currentState);
+  let (float32ArrayPoolMap, uint16ArrayPoolMap) =
+    GeometryTypeArrayPoolCommon.addAllTypeArrayToPool(
+      verticesMap,
+      indicesMap,
+      float32ArrayPoolMap,
+      uint16ArrayPoolMap,
+      currentState
+    );
   {
     ...targetState,
     geometryData: Some({...getGeometryData(targetState), float32ArrayPoolMap, uint16ArrayPoolMap})

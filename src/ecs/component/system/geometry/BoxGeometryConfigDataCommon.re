@@ -2,7 +2,7 @@ open GeometryType;
 
 open BoxGeometryType;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 let setConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {

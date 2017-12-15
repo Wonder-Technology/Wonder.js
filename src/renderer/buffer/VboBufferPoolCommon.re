@@ -9,17 +9,17 @@ let _getBufferAndSetBufferMap = (gl, bufferPool) =>
   };
 
 let getArrayBuffer = (gl, state: StateDataType.state) => {
-  let {vertexArrayBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  let {vertexArrayBufferPool} = VboBufferGetStateDataUtils.getVboBufferData(state);
   _getBufferAndSetBufferMap(gl, vertexArrayBufferPool)
 };
 
 let getElementArrayBuffer = (gl, state: StateDataType.state) => {
-  let {elementArrayBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  let {elementArrayBufferPool} = VboBufferGetStateDataUtils.getVboBufferData(state);
   _getBufferAndSetBufferMap(gl, elementArrayBufferPool)
 };
 
 let getInstanceBuffer = (gl, state: StateDataType.state) => {
-  let {modelMatrixInstanceBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  let {modelMatrixInstanceBufferPool} = VboBufferGetStateDataUtils.getVboBufferData(state);
   _getBufferAndSetBufferMap(gl, modelMatrixInstanceBufferPool)
 };
 
@@ -37,7 +37,7 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
 
 let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap, vertexArrayBufferPool, elementArrayBufferPool} =
-    VboBufferStateUtils.getVboBufferData(state);
+    VboBufferGetStateDataUtils.getVboBufferData(state);
   vertexArrayBufferPool
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, vertexBufferMap))
   |> ignore;
@@ -47,9 +47,34 @@ let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) =
   state
 };
 
+let addAllBufferToPool = (state: StateDataType.state) => {
+  let {
+    vertexBufferMap,
+    elementArrayBufferMap,
+    modelMatrixInstanceBufferMap,
+    vertexArrayBufferPool,
+    elementArrayBufferPool,
+    modelMatrixInstanceBufferPool
+  } =
+    VboBufferGetStateDataUtils.getVboBufferData(state);
+  vertexBufferMap
+  |> SparseMapSystem.forEachValid(
+       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
+  elementArrayBufferMap
+  |> SparseMapSystem.forEachValid(
+       [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
+  modelMatrixInstanceBufferMap
+  |> SparseMapSystem.forEachValid(
+       [@bs] ((buffer) => modelMatrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
+  (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool)
+};
+
 let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) => {
   let {modelMatrixInstanceBufferMap, modelMatrixInstanceBufferPool} =
-    VboBufferStateUtils.getVboBufferData(state);
+    VboBufferGetStateDataUtils.getVboBufferData(state);
   modelMatrixInstanceBufferPool
   |> Js.Array.push(
        _unsafeGetBufferFromBufferMap(sourceInstanceIndex, modelMatrixInstanceBufferMap)

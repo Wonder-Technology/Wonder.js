@@ -7,7 +7,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let materialIndex: int = GameObjectAdmin.unsafeGetMaterialComponent(uid, state);
   let shaderIndex = MaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
-  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  let {vertexBufferMap, elementArrayBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   let state =
     state

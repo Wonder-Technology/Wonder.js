@@ -13,7 +13,7 @@ let _setDefaultLocalToWorldMatrix =
   let defaultMatrixArr = [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|];
   let defaultMatrixTypeArr =
     switch (
-      TransformTypeArrayPoolCommon.getFloat32TypeArrayFromPool(localToWorldMatrixTypeArrayPool)
+      TypeArrayPoolCommonUtils.getFloat32TypeArrayFromPool(index, localToWorldMatrixTypeArrayPool)
     ) {
     | None => Js.Typed_array.Float32Array.make(defaultMatrixArr)
     | Some(typeArr) => TypeArrayUtils.setFloat16(0, defaultMatrixArr, typeArr)
@@ -25,7 +25,7 @@ let _setDefaultLocalToWorldMatrix =
 let _setDefaultLocalPosition = (index: int, localPositionMap, localPositionTypeArrayPool) => {
   let defaultLocalPositionArr = [|0., 0., 0.|];
   let defaultLocalPositionTypeArr =
-    switch (TransformTypeArrayPoolCommon.getFloat32TypeArrayFromPool(localPositionTypeArrayPool)) {
+    switch (TypeArrayPoolCommonUtils.getFloat32TypeArrayFromPool(index, localPositionTypeArrayPool)) {
     | None => Js.Typed_array.Float32Array.make(defaultLocalPositionArr)
     | Some(typeArr) => TypeArrayUtils.setFloat3(0, defaultLocalPositionArr, typeArr)
     };

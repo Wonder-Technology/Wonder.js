@@ -37,8 +37,20 @@ let deepCopyState = (state: StateDataType.state) => {
 };
 
 let restoreFromState = (currentState, targetState) => {
-  let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
+  let {
+    localToWorldMatrixMap,
+    localPositionMap,
+    localToWorldMatrixTypeArrayPool,
+    localPositionTypeArrayPool
+  } =
     getTransformData(currentState);
+  let (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool) =
+    TransformTypeArrayPoolCommon.addAllTypeArrayToPool(
+      localToWorldMatrixMap,
+      localPositionMap,
+      localToWorldMatrixTypeArrayPool,
+      localPositionTypeArrayPool
+    );
   {
     ...targetState,
     transformData:

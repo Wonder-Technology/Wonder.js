@@ -1,17 +1,62 @@
-open Js.Typed_array;
+open GeometryType;
 
-let addFloat32TypeArrayToPool = (count, typeArray: Float32Array.t, poolMap) => {
-  poolMap |> WonderCommonlib.SparseMapSystem.set(count, typeArray);
-  poolMap
+let addTypeArrayToPool =
+    (
+      geometry: geometry,
+      verticesMap,
+      indicesMap,
+      float32ArrayPoolMap,
+      uint16ArrayPoolMap,
+      state: StateDataType.state
+    ) => {
+  TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
+    GeometryOperateCommon.getVerticesCount(geometry, state),
+    verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    float32ArrayPoolMap
+  )
+  |> ignore;
+  TypeArrayPoolCommonUtils.addUint16TypeArrayToPool(
+    GeometryOperateCommon.getIndicesCount(geometry, state),
+    indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    uint16ArrayPoolMap
+  )
+  |> ignore;
+  state
 };
 
-let getFloat32TypeArrayFromPool = (count, poolMap) =>
-  poolMap |> WonderCommonlib.SparseMapSystem.get(count);
-
-let addUint16TypeArrayToPool = (count, typeArray: Uint16Array.t, poolMap) => {
-  poolMap |> WonderCommonlib.SparseMapSystem.set(count, typeArray);
-  poolMap
+let addAllTypeArrayToPool =
+    (
+      verticesMap,
+      indicesMap,
+      float32ArrayPoolMap,
+      uint16ArrayPoolMap,
+      state: StateDataType.state
+    ) => {
+  float32ArrayPoolMap
+  |> SparseMapSystem.forEachiValid(
+       [@bs]
+       (
+         (typeArray, geometry) =>
+           TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
+             GeometryOperateCommon.getVerticesCount(geometry, state),
+             verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+             float32ArrayPoolMap
+           )
+           |> ignore
+       )
+     );
+  uint16ArrayPoolMap
+  |> SparseMapSystem.forEachiValid(
+       [@bs]
+       (
+         (typeArray, geometry) =>
+           TypeArrayPoolCommonUtils.addUint16TypeArrayToPool(
+             GeometryOperateCommon.getIndicesCount(geometry, state),
+             indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+             uint16ArrayPoolMap
+           )
+           |> ignore
+       )
+     );
+  (float32ArrayPoolMap, uint16ArrayPoolMap)
 };
-
-let getUint16TypeArrayFromPool = (count, poolMap) =>
-  poolMap |> WonderCommonlib.SparseMapSystem.get(count);

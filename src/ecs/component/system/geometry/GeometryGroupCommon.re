@@ -1,6 +1,6 @@
 open GeometryType;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 let getGroupCount = (geometry: geometry, state: StateDataType.state) =>
   GroupUtils.getGroupCount(geometry, getGeometryData(state).groupCountMap);

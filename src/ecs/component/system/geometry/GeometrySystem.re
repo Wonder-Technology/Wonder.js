@@ -6,7 +6,7 @@ open Contract;
 
 open TypeArrayUtils;
 
-open GeometryStateCommon;
+open GeometryGetStateDataCommon;
 
 open GeometryType;
 
@@ -14,7 +14,7 @@ open StateDataType;
 
 open Gl;
 
-let getGeometryData = GeometryStateCommon.getGeometryData;
+let getGeometryData = GeometryGetStateDataCommon.getGeometryData;
 
 /* let increaseGroupCount = GeometryGroupCommon.increaseGroupCount; */
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;

@@ -1,7 +1,7 @@
 let getOrCreateBuffer = (sourceInstance, state) => {
   open VboBufferType;
   open SourceInstanceType;
-  let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
   let {modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateCommon.getSourceInstanceData(state);
   InstanceBufferSystem.getOrCreateBuffer(

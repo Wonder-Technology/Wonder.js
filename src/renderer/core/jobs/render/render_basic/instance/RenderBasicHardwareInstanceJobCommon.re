@@ -109,7 +109,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let extension =
     GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
   let transformData = TransformAdmin.getTransformData(state);
-  let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceAdmin.getSourceInstanceData(state);
   let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
