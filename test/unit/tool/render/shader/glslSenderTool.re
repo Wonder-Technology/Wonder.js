@@ -29,7 +29,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateSystem.createState());
+                let state = ref(StateTool.createState());
                 beforeEach(
                   () => state := RenderJobsTool.initWithRenderConfigWithoutBuildFakeDom(sandbox)
                 );
@@ -83,7 +83,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateSystem.createState());
+                let state = ref(StateTool.createState());
                 let _prepare = (sandbox, state) => {
                   let (
                     state,

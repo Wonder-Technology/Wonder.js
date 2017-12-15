@@ -18,7 +18,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       beforeEach(
         () => {
           sandbox := createSandbox();

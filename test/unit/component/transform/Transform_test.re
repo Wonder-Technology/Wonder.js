@@ -10,7 +10,7 @@ let _ =
       open! Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _judgeOneToOne =
           ((parent, child), (parentLocalPos, parentPos), (childLocalPos, childPos), state) =>
         (

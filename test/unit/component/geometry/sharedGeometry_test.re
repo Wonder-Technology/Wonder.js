@@ -8,7 +8,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _createAndInit = (state) => {
         let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
         let (state, gameObject2, geometry2) =

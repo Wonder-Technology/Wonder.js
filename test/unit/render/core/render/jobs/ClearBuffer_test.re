@@ -8,7 +8,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _render = (~flags=[|"COLOR_BUFFER"|], state: StateDataType.state) =>
         state |> ClearBufferJobTool.getJob(RenderJobsTool.buildConfigData(~flags=Some(flags), ()));
       beforeEach(

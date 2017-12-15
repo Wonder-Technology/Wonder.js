@@ -10,17 +10,11 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _prepareOne = (state) => MeshRendererTool.createGameObject(state);
-      let _prepareTwo = () => {
-        let (state, meshRenderer1) = createMeshRenderer(state^);
-        let (state, gameObject1) = state |> GameObject.createGameObject;
-        let state =
-          state |> GameObject.addGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-        let (state, meshRenderer2) = createMeshRenderer(state);
-        let (state, gameObject2) = state |> GameObject.createGameObject;
-        let state =
-          state |> GameObject.addGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
+      let _prepareTwo = (state) => {
+        let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state);
+        let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
         (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2)
       };
       beforeEach(
@@ -36,7 +30,7 @@ let _ =
           test(
             "get array of gameObject which has MeshRenderer component",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
+              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               state |> MeshRendererTool.getRenderArray |> expect == [|gameObject1, gameObject2|]
             }
           )
@@ -72,7 +66,7 @@ let _ =
                     "test getRenderArray",
                     () => {
                       let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
-                        _prepareTwo();
+                        _prepareTwo(state^);
                       let state =
                         state
                         |> GameObject.disposeGameObjectMeshRendererComponent(
@@ -103,7 +97,7 @@ let _ =
           test(
             "the disposed meshRenderer shouldn't affect other alive ones' data",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
+              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               let state =
                 state
                 |> GameObject.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
@@ -119,7 +113,7 @@ let _ =
                 "use disposed index as new index firstly",
                 () => {
                   let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
-                    _prepareTwo();
+                    _prepareTwo(state^);
                   let state =
                     state
                     |> GameObject.disposeGameObjectMeshRendererComponent(
@@ -134,7 +128,7 @@ let _ =
                 "if has no disposed index, get index from meshRendererData.index",
                 () => {
                   let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
-                    _prepareTwo();
+                    _prepareTwo(state^);
                   let state =
                     state
                     |> GameObject.disposeGameObjectMeshRendererComponent(
@@ -155,7 +149,7 @@ let _ =
                 "shouldn't dispose the component which isn't alive",
                 () => {
                   let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
-                    _prepareTwo();
+                    _prepareTwo(state^);
                   let state =
                     state
                     |> GameObject.disposeGameObjectMeshRendererComponent(

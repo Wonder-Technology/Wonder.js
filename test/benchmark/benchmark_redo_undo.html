@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <script type="module">
+        import { scheduleLoop } from "../../lib/es6_global/src/core/api/Scheduler.js";
+
+
+        import { setMainConfig } from "../../lib/es6_global/src/core/api/Main.js";
+
+        import { startDirector } from "../../lib/es6_global/src/core/api/Director.js";
+
+
+        import { deepCopyState, restoreFromState } from "../../lib/es6_global/src/core/api/State.js";
+
+
+
+
+        import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/ecs/component/api/geometry/BoxGeometry.js";
+
+
+
+
+        import { createMeshRenderer } from "../../lib/es6_global/src/ecs/component/api/meshRenderer/MeshRenderer.js";
+
+        import { setMaterialColor } from "../../lib/es6_global/src/ecs/component/api/material/Material.js";
+
+        import { createBasicMaterial } from "../../lib/es6_global/src/ecs/component/api/material/BasicMaterial.js";
+
+
+        import { setTransformParent, getTransformLocalPosition, getTransformPosition, setTransformLocalPosition, setTransformPosition } from "../../lib/es6_global/src/ecs/component/api/transform/Transform.js";
+
+
+        import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/ecs/component/api/cameraController/CameraController.js";
+        import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/ecs/component/api/cameraController/PerspectiveCamera.js";
+
+
+        import { markSourceInstanceModelMatrixIsStatic, getSourceInstanceObjectInstanceArray, createSourceInstance, createSourceInstanceObjectInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
+
+
+
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
+
+
+        window.onload = function () {
+            var state = setMainConfig({
+                isTest: true
+            });
+
+            initSample(state);
+
+
+            function createBoxes(count, state) {
+                var [state, box] = createBox(state);
+
+
+
+                var [state, newBoxes] = cloneGameObject(box, count, false, state);
+
+
+                let flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        let arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                newBoxes = flatten(newBoxes);
+
+                return [state, newBoxes];
+
+            }
+
+
+            // function createBoxesWithoutClone(count, state) {
+            //     var boxes = [];
+            //     // var state$ = state;
+
+            //     // var [state, box] = createBox(state);
+
+
+            //     for (let i = 0; i < count; i++) {
+            //         var [state, box] = createBox(state);
+
+
+            //         // var [state, newBoxes] = cloneGameObject(box, 2000, state);
+
+            //         boxes.push(box);
+            //     }
+
+            //     return [state, boxes];
+            // }
+
+
+
+            function setPosition(boxes, state) {
+                var playgroundSize = 500;
+
+                for (let i = 0, len = boxes.length; i < len; i++) {
+                    let box = boxes[i];
+                    // state = initGameObject(box, state);
+
+
+                    var transform = getGameObjectTransformComponent(box, state);
+
+
+                    // var pos = getTransformPosition(transform, state);
+                    var localPos = getTransformLocalPosition(transform, state);
+
+                    state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+
+
+                    // console.log(getTransformLocalPosition(transform, state));
+                }
+
+                return [state, boxes];
+            }
+
+            function initSample(state) {
+                // var [state, boxes] = createBoxes(19997, state);
+                var [state, boxes] = createBoxes(2, state);
+
+
+
+
+
+
+                var [state, boxes] = setPosition(boxes, state);
+
+
+                var copyState = deepCopyState(state);
+
+
+
+
+
+
+
+                var [state, boxes] = createBoxes(20, state);
+
+
+                var [state, boxes] = setPosition(boxes, state);
+
+
+                var [state, camera] = createCamera(state);
+
+
+                var count = 1;
+                var isRestored = false;
+
+                var state = scheduleLoop((elapsed, state) => {
+                    if (count > 100 && !isRestored) {
+                        isRestored = true;
+                        return restoreFromState(deepCopyState(copyState), state);
+                    }
+                    else {
+                        count += 1;
+                        return state;
+                    }
+                }, state);
+
+
+
+                startDirector(state);
+            }
+
+
+
+
+            function createBox(state) {
+                var [state, material] = createBasicMaterial(state);
+
+                state = setMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+                var [state, meshRenderer] = createMeshRenderer(state);
+
+                var [state, obj] = createGameObject(state);
+
+                state = addGameObjectMaterialComponent(obj, material, state);
+                state = addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var [state, geometry] = createBoxGeometry(state);
+
+                state = setBoxGeometryConfigData(geometry, {
+                    width: 5,
+                    height: 5,
+                    depth: 5
+                }, state);
+
+
+
+
+                state = addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            }
+
+            function createCamera(state) {
+
+                var [state, cameraController] = createCameraController(state);
+
+                state = setPerspectiveCameraNear(cameraController, 0.1, state);
+                state = setPerspectiveCameraFar(cameraController, 2000, state);
+                state = setPerspectiveCameraFovy(cameraController, 60, state);
+                state = setPerspectiveCameraAspect(cameraController, 1.0, state);
+
+
+                state = setCameraControllerPerspectiveCamera(cameraController, state);
+
+
+
+                var [state, obj] = createGameObject(state);
+
+                state = addGameObjectCameraControllerComponent(obj, cameraController, state);
+
+                var transform = getGameObjectTransformComponent(obj, state);
+
+                state = setTransformLocalPosition(transform, [0, 0, 1500], state);
+
+                return [state, obj];
+            }
+        }
+    </script>
+</body>
+
+</html>

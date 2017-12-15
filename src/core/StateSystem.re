@@ -9,6 +9,11 @@ let setState = (stateData: stateData, state: state) => {
   state
 };
 
+let deepCopyState = (state: StateDataType.state) => state |> MeshRendererAdmin.deepCopyState;
+
+let restoreFromState = (targetState, currentState) =>
+  currentState |> MeshRendererAdmin.restoreFromState(targetState);
+
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =
     /* ~renderConfig=(

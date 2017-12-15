@@ -8,7 +8,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _render = (~colorHexStr="#123456", state: StateDataType.state) =>
         state
         |> ClearColorJobTool.getJob(

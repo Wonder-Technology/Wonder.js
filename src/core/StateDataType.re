@@ -289,7 +289,7 @@ and state = {
   cameraControllerData,
   mutable materialData: option(materialData),
   mutable geometryData: option(geometryData),
-  meshRendererData,
+  mutable meshRendererData,
   shaderData,
   programData,
   glslLocationData,

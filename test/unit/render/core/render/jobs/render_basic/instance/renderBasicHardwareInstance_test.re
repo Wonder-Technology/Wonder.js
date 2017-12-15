@@ -8,7 +8,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(StateTool.createState());
       let _createSourceInstanceGameObject = RenderBasicHardwareInstanceTool.createSourceInstanceGameObject;
       let _prepare = RenderBasicHardwareInstanceTool.prepare;
       let _render = RenderBasicHardwareInstanceTool.render;
