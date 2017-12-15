@@ -1,6 +1,6 @@
 let deepCopyState = StateSystem.deepCopyState;
 
-let restoreFromState = (targetState) =>
-  StateSystem.restoreFromState(StateData.stateData, targetState);
+let restoreFromState = (currentState, targetState) =>
+  StateSystem.restoreFromState(StateData.stateData, currentState, targetState);
 
 let getStateData = () => StateData.stateData;

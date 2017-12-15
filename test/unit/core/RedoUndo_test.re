@@ -321,7 +321,7 @@ let _ =
                 let (state, _, _, _, _, _, _) = _prepareState(state);
                 let (currentState, _, _) =
                   GameObjectTool.createGameObject(StateTool.createNewCompleteState());
-                let currentState = StateTool.restoreFromState(state);
+                let currentState = StateTool.restoreFromState(currentState, state);
                 StateTool.getState() |> expect == state
               };
               describe(
@@ -357,7 +357,7 @@ let _ =
                     "test restore",
                     () => {
                       let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(state);
+                      let currentState = StateTool.restoreFromState(currentState, state);
                       currentState |> expect == state
                     }
                   );
@@ -365,7 +365,7 @@ let _ =
                     "set restored state to stateData",
                     () => {
                       let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(state);
+                      let currentState = StateTool.restoreFromState(currentState, state);
                       StateTool.getState() |> expect == currentState
                     }
                   );
@@ -373,7 +373,7 @@ let _ =
                     "change restored state should affect source state",
                     () => {
                       let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(state);
+                      let currentState = StateTool.restoreFromState(currentState, state);
                       let (currentState, gameObject5, meshRenderer5) =
                         MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                       state
@@ -387,7 +387,7 @@ let _ =
                       let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
                         _prepare(state);
                       let currentState =
-                        StateTool.restoreFromState(state |> StateTool.deepCopyState);
+                        StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
                       let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
                       MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                       |> expect == [|gameObject1, gameObject2|]

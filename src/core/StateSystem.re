@@ -15,7 +15,8 @@ let deepCopyState = (state: StateDataType.state) =>
   |> TransformAdmin.deepCopyState
   |> CameraControllerAdmin.deepCopyState;
 
-let restoreFromState = (stateData: stateData, targetState) => setState(stateData, targetState);
+let restoreFromState = (stateData: stateData, currentState, targetState) =>
+  setState(stateData, targetState);
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =
