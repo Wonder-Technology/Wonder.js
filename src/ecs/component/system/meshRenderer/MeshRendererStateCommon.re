@@ -16,8 +16,3 @@ let deepCopyState = ({meshRendererData} as state) => {
     }
   }
 };
-
-let restoreFromState = (targetState, currentState) => {
-  currentState.meshRendererData = targetState.meshRendererData;
-  currentState
-};

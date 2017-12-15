@@ -155,7 +155,7 @@
                 var state = scheduleLoop((elapsed, state) => {
                     if (count > 100 && !isRestored) {
                         isRestored = true;
-                        return restoreFromState(deepCopyState(copyState), state);
+                        return restoreFromState(copyState);
                     }
                     else {
                         count += 1;

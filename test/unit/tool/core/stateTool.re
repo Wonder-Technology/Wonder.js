@@ -1,9 +1,10 @@
-let deepCopyState = (state: StateDataType.state) => State.deepCopyState(state);
+let deepCopyState = State.deepCopyState;
 
-let restoreFromState = (targetState, currentState) =>
-  State.restoreFromState(targetState, currentState);
+let restoreFromState = State.restoreFromState;
 
-let getState = () => StateSystem.getState(StateData.stateData);
+let getStateData = () => State.getStateData();
+
+let getState = () => StateSystem.getState(getStateData());
 
 let createState = StateSystem.createState;
 

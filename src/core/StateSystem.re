@@ -9,10 +9,11 @@ let setState = (stateData: stateData, state: state) => {
   state
 };
 
-let deepCopyState = (state: StateDataType.state) => state |> MeshRendererAdmin.deepCopyState;
+let deepCopyState = (state: StateDataType.state) =>
+  state |> MeshRendererAdmin.deepCopyState |> TransformAdmin.deepCopyState;
 
-let restoreFromState = (targetState, currentState) =>
-  currentState |> MeshRendererAdmin.restoreFromState(targetState);
+let restoreFromState = (stateData: stateData, targetState) =>
+  setState(stateData, targetState);
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =

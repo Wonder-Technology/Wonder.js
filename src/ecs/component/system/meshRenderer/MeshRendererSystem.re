@@ -33,5 +33,3 @@ let batchCreate = (countRangeArr: array(int), state: StateDataType.state) => {
 };
 
 let deepCopyState = MeshRendererStateCommon.deepCopyState;
-
-let restoreFromState = MeshRendererStateCommon.restoreFromState;
