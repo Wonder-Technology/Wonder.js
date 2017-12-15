@@ -18,7 +18,7 @@ let _getShaderIndex = (key: string, {shaderIndexMap}) =>
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
   shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
 
-let _join = (array) => {
+let _join = (array:array(shaderLib)) => {
   let output = ref("");
   for (i in 0 to Js.Array.length(array) |> pred) {
     output := output^ ++ array[i].name
@@ -26,7 +26,7 @@ let _join = (array) => {
   output^
 };
 
-let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> Obj.magic |> _join;
+let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
 
 let _init =
     (
