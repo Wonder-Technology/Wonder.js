@@ -49,7 +49,7 @@
 
         window.onload = function () {
             var state = setMainConfig({
-                isTest: true
+                isTest: false
             });
 
             initSample(state);
@@ -124,7 +124,7 @@
 
             function initSample(state) {
                 // var [state, boxes] = createBoxes(19997, state);
-                var [state, boxes] = createBoxes(2, state);
+                var [state, boxes] = createBoxes(10000, state);
 
 
 
@@ -152,16 +152,16 @@
 
 
                 var count = 1;
-                var isRestored = false;
-                var isTransform = false;
+                // var isRestored = false;
+                // var isTransform = false;
 
                 var state = scheduleLoop((elapsed, state) => {
                     if (count == 1) {
                         count += 1;
 
-                        window.copyState = deepCopyState(state);
+                        window.copyState1 = deepCopyState(state);
 
-                        var [state, boxes] = createBoxes(20, state);
+                        var [state, boxes] = createBoxes(10000, state);
 
 
                         var [state, boxes] = setPosition(boxes, state);
@@ -187,12 +187,19 @@
 
                     //     return state;
                     // }
-                    if (count > 100 && !isRestored) {
-                        isRestored = true;
+                    // if (count === 2 && !isRestored) {
+                    if (count === 2) {
+                        // isRestored = true;
+
+                        count = 1;
 
 
 
-                        return restoreFromState(state, copyState);
+                        // window.copyState2 = deepCopyState(state);
+
+
+
+                        return restoreFromState(state, window.copyState1);
                     }
                     else {
                         count += 1;
