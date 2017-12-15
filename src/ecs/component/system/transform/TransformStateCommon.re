@@ -6,7 +6,7 @@ open Js.Typed_array;
 
 let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);
 
-let deepCopyState = ({transformData} as state) => {
+let deepCopyState = (state: StateDataType.state) => {
   let {
     index,
     localToWorldMatrixMap,
@@ -17,7 +17,7 @@ let deepCopyState = ({transformData} as state) => {
     gameObjectMap,
     disposedIndexArray
   } =
-    transformData |> Js.Option.getExn;
+    state |> getTransformData;
   {
     ...state,
     transformData:

@@ -26,3 +26,16 @@ let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
        ),
        [||]
      );
+
+let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
+  arr
+  |> ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         (newArr, typeArr) => {
+           newArr |> Js.Array.push(copyUint16Array(typeArr)) |> ignore;
+           newArr
+         }
+       ),
+       [||]
+     );

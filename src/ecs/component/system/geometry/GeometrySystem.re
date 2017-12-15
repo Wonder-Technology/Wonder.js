@@ -17,7 +17,6 @@ open Gl;
 let getGeometryData = GeometryStateCommon.getGeometryData;
 
 /* let increaseGroupCount = GeometryGroupCommon.increaseGroupCount; */
-
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
 
 let getVertices = (index: int, state: StateDataType.state) =>
@@ -87,3 +86,7 @@ let getGameObject = (geometry: geometry, state: StateDataType.state) =>
 
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.isAlive(geometry, state);
+
+let deepCopyState = GeometryStateCommon.deepCopyState;
+
+let restoreFromState = GeometryStateCommon.restoreFromState;

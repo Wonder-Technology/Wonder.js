@@ -1,14 +1,7 @@
 open VboBufferType;
 
 let getOrCreateBuffer =
-    (
-      gl,
-      geometryIndex: int,
-      bufferMap,
-      createBuffer,
-      getDataFunc,
-      state: StateDataType.state
-    ) =>
+    (gl, geometryIndex: int, bufferMap, createBuffer, getDataFunc, state: StateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
@@ -22,3 +15,7 @@ let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) =
 
 let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) =>
   VboBufferPoolCommon.addInstanceBufferToPool(sourceInstanceIndex, state);
+
+let deepCopyState = VboBufferStateUtils.deepCopyState;
+
+let restoreFromState = VboBufferStateUtils.restoreFromState;

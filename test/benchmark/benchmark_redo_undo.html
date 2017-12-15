@@ -71,6 +71,8 @@
                 };
                 newBoxes = flatten(newBoxes);
 
+                newBoxes.push(box);
+
                 return [state, newBoxes];
 
             }
@@ -136,19 +138,15 @@
                 var [state, camera] = createCamera(state);
 
 
-                var copyState = deepCopyState(state);
+                // var copyState = deepCopyState(state);
 
 
-                window.boxesWhenCopy = boxes;
+                // window.boxesWhenCopy = boxes;
 
 
 
 
 
-                var [state, boxes] = createBoxes(20, state);
-
-
-                var [state, boxes] = setPosition(boxes, state);
 
 
 
@@ -158,12 +156,37 @@
                 var isTransform = false;
 
                 var state = scheduleLoop((elapsed, state) => {
-                    if (count > 50 && !isTransform) {
-                        isTransform = true;
-                        var [state, boxes] = setPosition(window.boxesWhenCopy, state);
+                    if (count == 1) {
+                        count += 1;
+
+                        window.copyState = deepCopyState(state);
+
+                        var [state, boxes] = createBoxes(20, state);
+
+
+                        var [state, boxes] = setPosition(boxes, state);
+
+
+                        for (let i = 0, len = boxes.length; i < len; i++) {
+                            let box = boxes[i];
+                            state = initGameObject(box, state);
+                        }
+
+
+
+
 
                         return state;
+
                     }
+
+
+                    // if (count > 50 && !isTransform) {
+                    //     isTransform = true;
+                    //     var [state, boxes] = setPosition(window.boxesWhenCopy, state);
+
+                    //     return state;
+                    // }
                     if (count > 100 && !isRestored) {
                         isRestored = true;
 

@@ -22,7 +22,7 @@ let _deepCopyPerspectiveCameraState = (perspectiveCameraData) => {
   }
 };
 
-let deepCopyState = ({cameraControllerData} as state) => {
+let deepCopyState = (state: StateDataType.state) => {
   let {
     index,
     perspectiveCameraData,
@@ -32,7 +32,8 @@ let deepCopyState = ({cameraControllerData} as state) => {
     gameObjectMap,
     updateCameraFuncMap,
     disposedIndexArray
-  } = cameraControllerData;
+  } =
+    state |> getCameraControllerData;
   {
     ...state,
     cameraControllerData: {

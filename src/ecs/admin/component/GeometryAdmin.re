@@ -1,4 +1,3 @@
-
 let unsafeGetVertices = GeometrySystem.unsafeGetVertices;
 
 let unsafeGetIndices = GeometrySystem.unsafeGetIndices;
@@ -10,3 +9,7 @@ let getIndexType = GeometrySystem.getIndexType;
 let getIndexTypeSize = GeometrySystem.getIndexTypeSize;
 
 let getIndicesCount = GeometrySystem.getIndicesCount;
+
+let deepCopyState = GeometrySystem.deepCopyState;
+
+let restoreFromState = GeometrySystem.restoreFromState;

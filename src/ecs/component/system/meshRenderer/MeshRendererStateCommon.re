@@ -4,8 +4,9 @@ open MeshRendererType;
 
 let getMeshRendererData = (state: StateDataType.state) => state.meshRendererData;
 
-let deepCopyState = ({meshRendererData} as state) => {
-  let {index, renderGameObjectArray, gameObjectMap, disposedIndexArray} = meshRendererData;
+let deepCopyState = (state: StateDataType.state) => {
+  let {index, renderGameObjectArray, gameObjectMap, disposedIndexArray} =
+    state |> getMeshRendererData;
   {
     ...state,
     meshRendererData: {
