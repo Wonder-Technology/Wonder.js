@@ -25,8 +25,8 @@ let deepCopyState = ({transformData} as state) => {
     transformData:
       Some({
         index,
-        localToWorldMatrixMap: localToWorldMatrixMap |> CopyUtils.deepCopyFloat32ArrayArray,
-        localPositionMap: localPositionMap |> CopyUtils.deepCopyFloat32ArrayArray,
+        localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+        localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
         localToWorldMatrixTypeArrayPool,
         localPositionTypeArrayPool,
         parentMap: parentMap |> SparseMapSystem.copy,
