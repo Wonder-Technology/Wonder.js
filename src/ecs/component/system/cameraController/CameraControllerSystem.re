@@ -157,3 +157,5 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
   CameraControllerDisposeComponentCommon.isAlive(cameraController, state);
+
+let deepCopyState = CameraControllerStateCommon.deepCopyState;

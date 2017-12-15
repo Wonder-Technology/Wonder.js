@@ -1,0 +1,1 @@
+let isUndefined = (value) => value |> Obj.magic === Js.Undefined.empty;

@@ -132,9 +132,14 @@
                 var [state, boxes] = setPosition(boxes, state);
 
 
+
+                var [state, camera] = createCamera(state);
+
+
                 var copyState = deepCopyState(state);
 
 
+                window.boxesWhenCopy = boxes;
 
 
 
@@ -146,15 +151,24 @@
                 var [state, boxes] = setPosition(boxes, state);
 
 
-                var [state, camera] = createCamera(state);
 
 
                 var count = 1;
                 var isRestored = false;
+                var isTransform = false;
 
                 var state = scheduleLoop((elapsed, state) => {
+                    if (count > 50 && !isTransform) {
+                        isTransform = true;
+                        var [state, boxes] = setPosition(window.boxesWhenCopy, state);
+
+                        return state;
+                    }
                     if (count > 100 && !isRestored) {
                         isRestored = true;
+
+
+
                         return restoreFromState(copyState);
                     }
                     else {

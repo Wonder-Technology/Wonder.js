@@ -10,10 +10,12 @@ let setState = (stateData: stateData, state: state) => {
 };
 
 let deepCopyState = (state: StateDataType.state) =>
-  state |> MeshRendererAdmin.deepCopyState |> TransformAdmin.deepCopyState;
+  state
+  |> MeshRendererAdmin.deepCopyState
+  |> TransformAdmin.deepCopyState
+  |> CameraControllerAdmin.deepCopyState;
 
-let restoreFromState = (stateData: stateData, targetState) =>
-  setState(stateData, targetState);
+let restoreFromState = (stateData: stateData, targetState) => setState(stateData, targetState);
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =
