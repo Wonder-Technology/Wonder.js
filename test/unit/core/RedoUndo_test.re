@@ -114,6 +114,27 @@ let _ =
         vertexAttribHistoryArray |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, history1);
         (state, shaderIndex1, data1, func1, history1)
       };
+      let _prepareMaterialData = (state) => {
+        open Material;
+        open Js.Typed_array;
+        let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+        let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
+        let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
+        let state = MaterialTool.prepareForInit(state);
+        let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        let state = BasicMaterialTool.initMaterials([@bs] GlTool.getGl(state), state);
+        let state = state |> setMaterialColor(material2, [|1., 0.1, 0.2|]);
+        (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
+      };
+      let _prepareShaderData = (state) => {
+        let data = ShaderTool.getShaderData(state);
+        let shaderIndex1 = 0;
+        let shaderIndex2 = 1;
+        data.index = 2;
+        data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1);
+        data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
+        (state, shaderIndex1, shaderIndex2)
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -218,12 +239,9 @@ let _ =
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
                   TransformTool.getTransformData(state).localPositionMap
-                  |>
-                  expect == [|
-                              TransformTool.getTransformLocalPositionTypeArray(transform1, state),
-                              TransformTool.getTransformLocalPositionTypeArray(transform2, state),
-                              Js.Undefined.empty |> Obj.magic
-                            |]
+                  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
               );
               test(
@@ -280,7 +298,8 @@ let _ =
                     verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2),
                     indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
                   )
-                  |> expect == (Float32Array.make([|3., 5., 5.|]), Uint16Array.make([|1, 2, 4|]))
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
               );
               test(
@@ -364,7 +383,8 @@ let _ =
                   let {attributeSendDataMap, drawPointsFuncMap, vertexAttribHistoryArray} =
                     GlslSenderTool.getGLSLSenderData(state);
                   (attributeSendDataMap, drawPointsFuncMap, vertexAttribHistoryArray)
-                  |> expect == ([|data1|], [|func1|], [|history1|])
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
               );
               test(
@@ -384,28 +404,79 @@ let _ =
             }
           );
           describe(
-            "deep copy cameraController data",
+            "deep copy material data",
             () => {
               test(
-                "copied data should equal to source data",
+                "copy shaderIndexMap",
                 () => {
-                  open CameraControllerType;
+                  open MaterialType;
                   let (
                     state,
                     gameObject1,
                     gameObject2,
                     gameObject3,
-                    cameraController1,
-                    cameraController2,
-                    cameraController3
+                    material1,
+                    material2,
+                    material3
                   ) =
-                    _prepareCameraControllerData(state);
-                  let cameraControllerData = CameraControllerTool.getCameraControllerData(state);
+                    _prepareMaterialData(state);
                   let copiedState = StateTool.deepCopyState(state);
-                  CameraControllerTool.getCameraControllerData(copiedState)
-                  |> expect == CameraControllerTool.getCameraControllerData(state)
+                  let data = MaterialTool.getMaterialData(copiedState);
+                  data.shaderIndexMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                  let {shaderIndexMap} = MaterialTool.getMaterialData(state);
+                  shaderIndexMap
+                  |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
               );
+              test(
+                "change copied state shouldn't affect source state",
+                () => {
+                  open MaterialType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    material1,
+                    material2,
+                    material3
+                  ) =
+                    _prepareMaterialData(state);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = MaterialTool.getMaterialData(copiedState);
+                  data.colorMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                  let {colorMap} = MaterialTool.getMaterialData(state);
+                  colorMap
+                  |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
+                }
+              )
+            }
+          );
+          describe(
+            "deep copy shader data",
+            () =>
+              test(
+                "copied data should equal to source data",
+                () => {
+                  open CameraControllerType;
+                  let (state, _, _) = _prepareShaderData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  ShaderTool.getShaderData(copiedState)
+                  |> expect == ShaderTool.getShaderData(state)
+                }
+              )
+          );
+          describe(
+            "deep copy cameraController data",
+            () =>
               test(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -453,18 +524,16 @@ let _ =
                             )
                 }
               )
-            }
           );
           describe(
             "restoreFromState",
             () => {
-              let _test = (_prepareData, state) => {
-                open TransformType;
-                let (state, _, _, _, _, _, _) = _prepareData(state);
-                let (currentData, _, _) =
-                  GameObjectTool.createGameObject(StateTool.createNewCompleteState());
-                let state = StateTool.restoreFromState(currentData, state);
-                StateTool.getState() |> expect == state
+              let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
+                let (state, _, _, _, _, _, _) = prepareDataFunc(state);
+                let currentState = StateTool.createNewCompleteState();
+                let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
+                let _ = StateTool.restoreFromState(currentState, state);
+                StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
               };
               describe(
                 "restore meshRenderer data to target state",
@@ -480,7 +549,7 @@ let _ =
                       meshRenderer3
                     ) =
                       _prepareMeshRendererData(state);
-                    let (currentData, gameObject4, meshRenderer4) =
+                    let (currentState, gameObject4, meshRenderer4) =
                       MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                     (
                       (
@@ -492,31 +561,23 @@ let _ =
                         meshRenderer2,
                         meshRenderer3
                       ),
-                      (currentData, gameObject4, meshRenderer4)
+                      (currentState, gameObject4, meshRenderer4)
                     )
                   };
-                  /* test(
-                       "test restore",
-                       () => {
-                         let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
-                         let currentData = StateTool.restoreFromState(currentData, state);
-                         currentData |> expect == state
-                       }
-                     ); */
                   test(
                     "set restored state to stateData",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
-                      let currentData = StateTool.restoreFromState(currentData, state);
-                      StateTool.getState() |> expect == currentData
+                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
+                      let currentState = StateTool.restoreFromState(currentState, state);
+                      StateTool.getState() |> expect == currentState
                     }
                   );
                   test(
                     "change restored state should affect source state",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
-                      let currentData = StateTool.restoreFromState(currentData, state);
-                      let (currentData, gameObject5, meshRenderer5) =
+                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
+                      let currentState = StateTool.restoreFromState(currentState, state);
+                      let (currentState, gameObject5, meshRenderer5) =
                         MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                       state
                       |> MeshRenderer.getMeshRendererGameObject(meshRenderer5)
@@ -526,11 +587,11 @@ let _ =
                   test(
                     "change restored state which is restore from deep copied state shouldn't affect source state",
                     () => {
-                      let ((state, gameObject1, gameObject2, _, _, _, _), (currentData, _, _)) =
+                      let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
                         _prepare(state);
-                      let currentData =
-                        StateTool.restoreFromState(currentData, state |> StateTool.deepCopyState);
-                      let (currentData, _, _) = MeshRendererTool.createGameObject(currentData);
+                      let currentState =
+                        StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
+                      let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
                       MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                       |> expect == [|gameObject1, gameObject2|]
                     }
@@ -548,12 +609,12 @@ let _ =
                         () => {
                           open TransformType;
                           let (state, _, _, _, _, _, _) = _prepareTransformData(state);
-                          let (currentData, _, transform4) =
+                          let (currentState, _, transform4) =
                             GameObjectTool.createGameObject(StateTool.createNewCompleteState());
                           let pos4 = ((-1.), 4., 5.);
-                          let currentData =
-                            Transform.setTransformLocalPosition(transform4, pos4, currentData);
-                          let _ = StateTool.restoreFromState(currentData, state);
+                          let currentState =
+                            Transform.setTransformLocalPosition(transform4, pos4, currentState);
+                          let _ = StateTool.restoreFromState(currentState, state);
                           let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
                             StateTool.getState() |> TransformTool.getTransformData;
                           (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
@@ -586,10 +647,10 @@ let _ =
                             geometry3
                           ) =
                             _prepareGeometryData(state);
-                          let (currentData, gameObject4, geometry4) =
+                          let (currentState, gameObject4, geometry4) =
                             BoxGeometryTool.createGameObject(StateTool.createNewCompleteState());
-                          let currentData = GeometryTool.initGeometry(geometry4, currentData);
-                          let _ = StateTool.restoreFromState(currentData, state);
+                          let currentState = GeometryTool.initGeometry(geometry4, currentState);
+                          let _ = StateTool.restoreFromState(currentState, state);
                           let {float32ArrayPoolMap, uint16ArrayPoolMap} =
                             StateTool.getState() |> GeometryTool.getGeometryData;
                           (
@@ -625,11 +686,11 @@ let _ =
                         (buffer1, buffer2, buffer3)
                       ) =
                         _prepareVboBufferData(state^);
-                      let (currentData, _, _, _) =
+                      let (currentState, _, _, _) =
                         _prepareVboBufferData(StateTool.createNewCompleteState());
-                      let newData = StateTool.restoreFromState(currentData, state);
+                      let newState = StateTool.restoreFromState(currentState, state);
                       let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
-                        newData |> VboBufferTool.getVboBufferData;
+                        newState |> VboBufferTool.getVboBufferData;
                       (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
                       |> expect == ([||], [||], [||])
                     }
@@ -649,13 +710,13 @@ let _ =
                           ) =
                             _prepareVboBufferData(state^);
                           let (
-                            currentData,
+                            currentState,
                             _,
                             (bufferInMap4, bufferInMap5, bufferInMap6),
                             (buffer4, buffer5, buffer6)
                           ) =
                             _prepareVboBufferData(StateTool.createNewCompleteState());
-                          let _ = StateTool.restoreFromState(currentData, state);
+                          let _ = StateTool.restoreFromState(currentState, state);
                           let {
                             vertexArrayBufferPool,
                             elementArrayBufferPool,
@@ -687,19 +748,82 @@ let _ =
                       open StateDataType;
                       let (state, shaderIndex1, data1, func1, history1) =
                         _prepareGLSLSenderData(state^);
-                      let (currentData, _, _, _, _) =
+                      let (currentState, _, _, _, _) =
                         _prepareGLSLSenderData(StateTool.createNewCompleteState());
-                      let newData = StateTool.restoreFromState(currentData, state);
+                      let newState = StateTool.restoreFromState(currentState, state);
                       let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
-                        newData |> GlslSenderTool.getGLSLSenderData;
+                        newState |> GlslSenderTool.getGLSLSenderData;
                       (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
                       |> expect == (None, None, None)
                     }
                   )
               );
               test(
+                "restore material data to target state",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareMaterialData,
+                    MaterialTool.getMaterialData
+                  )
+              );
+              describe(
+                "restore shader data to target state",
+                () => {
+                  describe(
+                    "contract check",
+                    () =>
+                      test(
+                        "currentState and targetState ->shaderData->glslData->precision should be the same",
+                        () => {
+                          open ShaderType;
+                          let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
+                          let currentState = StateTool.createNewCompleteState();
+                          TestTool.openContractCheck();
+                          let data = ShaderTool.getShaderData(currentState);
+                          data.glslData.precision = Some("aaa");
+                          expect(
+                            () => {
+                              let _ = StateTool.restoreFromState(currentState, state);
+                              ()
+                            }
+                          )
+                          |> toThrowMessage(
+                               "currentState and targetState ->shaderData->glslData->precision should be the same"
+                             )
+                        }
+                      )
+                  );
+                  describe(
+                    "test shaderIndexMap",
+                    () =>
+                      test(
+                        "get intersect map between current shaderIndexMap and target shaderIndexMap whose value is the one in target shaderIndexMap",
+                        () => {
+                          open ShaderType;
+                          let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
+                          let currentState = StateTool.createNewCompleteState();
+                          let data = ShaderTool.getShaderData(currentState);
+                          data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", 20);
+                          data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key3", 30);
+                          let newState = StateTool.restoreFromState(currentState, state);
+                          let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
+                          shaderIndexMap
+                          |> HashMapSystem.entries
+                          |> expect == [|("key1", shaderIndex1)|]
+                        }
+                      )
+                  )
+                }
+              );
+              test(
                 "restore cameraController data to target state",
-                () => _test(_prepareCameraControllerData, state)
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareCameraControllerData,
+                    CameraControllerTool.getCameraControllerData
+                  )
               )
             }
           )

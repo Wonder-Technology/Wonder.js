@@ -18,7 +18,7 @@ let _getShaderIndex = (key: string, {shaderIndexMap}) =>
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
   shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
 
-let _join = (array:array(shaderLib)) => {
+let _join = (array: array(shaderLib)) => {
   let output = ref("");
   for (i in 0 to Js.Array.length(array) |> pred) {
     output := output^ ++ array[i].name
@@ -73,3 +73,7 @@ let getPrecisionSource = (state: StateDataType.state) =>
 let initMaterialShader =
     (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
   _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
+
+let deepCopyState = ShaderStateCommon.deepCopyState;
+
+let restoreFromState = ShaderStateCommon.restoreFromState;

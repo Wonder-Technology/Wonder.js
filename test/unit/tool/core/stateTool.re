@@ -8,4 +8,4 @@ let getState = () => StateSystem.getState(getStateData());
 
 let createState = StateSystem.createState;
 
-let createNewCompleteState = () => StateSystem.createState() |> GameObjectAdmin.initDataFromState;
+let createNewCompleteState = () => Main.setMainConfig(MainTool.buildMainConfig());

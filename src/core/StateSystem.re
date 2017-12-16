@@ -17,7 +17,8 @@ let deepCopyState = (state: StateDataType.state) =>
   |> GeometryAdmin.deepCopyState
   |> VboBufferSystem.deepCopyState
   |> GLSLSenderSystem.deepCopyState
-  |> MaterialAdmin.deepCopyState;
+  |> MaterialAdmin.deepCopyState
+  |> ShaderSystem.deepCopyState;
 
 let restoreFromState = (stateData: stateData, currentState, targetState) =>
   targetState
@@ -25,6 +26,7 @@ let restoreFromState = (stateData: stateData, currentState, targetState) =>
   |> GeometryAdmin.restoreFromState(currentState)
   |> VboBufferSystem.restoreFromState(currentState)
   |> GLSLSenderSystem.restoreFromState(currentState)
+  |> ShaderSystem.restoreFromState(currentState)
   |> setState(stateData);
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */

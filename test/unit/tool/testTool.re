@@ -2,9 +2,7 @@ let initWithoutBuildFakeDom =
     (
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
-      ~bufferConfig=Js.Nullable.return({
-                      "geometryPointDataBufferCount": Js.Nullable.return(300)
-                    }),
+      ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(300)}),
       ()
     ) =>
   Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
@@ -15,15 +13,11 @@ let initWithoutBuildFakeDom =
     }
   );
 
-
-
 let init =
     (
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
-      ~bufferConfig=Js.Nullable.return({
-                      "geometryPointDataBufferCount": Js.Nullable.return(300)
-                    }),
+      ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(300)}),
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
@@ -34,9 +28,7 @@ let initWithRenderConfigWithoutBuildFakeDom =
     (
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
-      ~bufferConfig=Js.Nullable.return({
-                      "geometryPointDataBufferCount": Js.Nullable.return(5)
-                    }),
+      ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
       ~renderConfig,
       ()
     ) =>
@@ -61,9 +53,7 @@ let initWithRenderConfig =
     (
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
-      ~bufferConfig=Js.Nullable.return({
-                      "geometryPointDataBufferCount": Js.Nullable.return(5)
-                    }),
+      ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
       ~renderConfig,
       ()
     ) => {

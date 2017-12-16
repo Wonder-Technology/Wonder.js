@@ -49,6 +49,10 @@ let _assert = (result: bool, message: string) =>
   | true => ()
   };
 
+let assertFail = () => raise(Check_fail("fail"));
+
+let assertPass = () => ();
+
 let assertTrue = (source: bool) =>
   _assert(source == true, "expect to be true, but actual is false");
 
@@ -123,6 +127,7 @@ let assertLte = (type g, kind: assertNumber(g), source: g, target: g) =>
 module Operators = {
   let (==) = (a, b) => assertEqual(Int, a, b);
   let (==.) = (a, b) => assertEqual(Float, a, b);
+  let (==^) = (a, b) => assertEqual(String, a, b);
   let (<>=) = (a, b) => assertNotEqual(Int, a, b);
   let (<>=.) = (a, b) => assertNotEqual(Float, a, b);
   let (>) = (a, b) => assertGt(Int, a, b);

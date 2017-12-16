@@ -1,0 +1,1 @@
+let entries = Js.Dict.entries;
