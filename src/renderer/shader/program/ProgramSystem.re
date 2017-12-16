@@ -1,5 +1,7 @@
 open Gl;
 
+open StateDataType;
+
 open GlType;
 
 open ProgramType;
@@ -89,7 +91,20 @@ let getProgram = (shaderIndex: int, state: StateDataType.state) =>
   _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
 
 let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
-  _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex);
+  _getProgramData(state).programMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "program should exist",
+             () =>
+               _getProgramData(state).programMap
+               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+               |> assertExist
+           )
+         )
+     );
 
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
   _getProgramData(state).programMap
@@ -105,7 +120,7 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
      _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.set(shaderLibDataKey, program) |> ignore;
      state
    }; */
-/* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
+/* let buildProgramMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
 let use = (gl, program: program, state: StateDataType.state) => {
   /* switch (getProgram(shaderIndex, state)) {
      | None => ExceptionHandleSystem.throwMessage("program should exist")
@@ -117,5 +132,25 @@ let use = (gl, program: program, state: StateDataType.state) => {
     data.lastUsedProgram = Some(program);
     useProgram(program, gl);
     state |> GLSLSenderSystem.disableVertexAttribArray(gl)
+  }
+};
+
+let deepCopyState = (state: StateDataType.state) => {
+  let {programMap} = state |> _getProgramData;
+  {...state, programData: {programMap: programMap |> SparseMapSystem.copy, lastUsedProgram: None}}
+};
+
+let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState) => {
+  let {programMap} = _getProgramData(currentState);
+  {
+    ...targetState,
+    programData: {
+      programMap:
+        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+          intersectShaderIndexDataArray,
+          programMap
+        ),
+      lastUsedProgram: None
+    }
   }
 };

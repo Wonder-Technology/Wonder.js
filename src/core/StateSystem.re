@@ -18,16 +18,23 @@ let deepCopyState = (state: StateDataType.state) =>
   |> VboBufferSystem.deepCopyState
   |> GLSLSenderSystem.deepCopyState
   |> MaterialAdmin.deepCopyState
-  |> ShaderSystem.deepCopyState;
+  |> ShaderSystem.deepCopyState
+  |> ProgramSystem.deepCopyState
+  |> GLSLLocationSystem.deepCopyState;
 
-let restoreFromState = (stateData: stateData, currentState, targetState) =>
+let restoreFromState = (stateData: stateData, currentState:StateDataType.state, targetState:StateDataType.state) => {
+  let intersectShaderIndexDataArray =
+    ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   targetState
   |> TransformAdmin.restoreFromState(currentState)
   |> GeometryAdmin.restoreFromState(currentState)
   |> VboBufferSystem.restoreFromState(currentState)
   |> GLSLSenderSystem.restoreFromState(currentState)
   |> ShaderSystem.restoreFromState(currentState)
-  |> setState(stateData);
+  |> ProgramSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
+  |> GLSLLocationSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
+  |> setState(stateData)
+};
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =

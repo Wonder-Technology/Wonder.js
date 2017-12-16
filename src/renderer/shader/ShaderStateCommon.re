@@ -12,6 +12,31 @@ let deepCopyState = (state: StateDataType.state) =>
      {...state, shaderData: {index, shaderIndexMap, glslData: {precision: precision}}} */
   state;
 
+let getIntersectShaderIndexDataArray = (currentState, targetState) => {
+  let {shaderIndexMap: currentShaderIndexMap} = getShaderData(currentState);
+  let {shaderIndexMap: targetShaderIndexMap} = getShaderData(targetState);
+  targetShaderIndexMap
+  |> HashMapSystem.entries
+  |> Js.Array.filter(
+       ((key, _)) => currentShaderIndexMap |> WonderCommonlib.HashMapSystem.has(key)
+     )
+  |> ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         (dataArr, (key, shaderIndex)) => {
+           dataArr
+           |> Js.Array.push((
+                currentShaderIndexMap |> WonderCommonlib.HashMapSystem.unsafeGet(key),
+                shaderIndex
+              ))
+           |> ignore;
+           dataArr
+         }
+       ),
+       [||]
+     )
+};
+
 let _getIntersectShaderIndexMap = (currentShaderIndexMap, targetShaderIndexMap) =>
   targetShaderIndexMap
   |> HashMapSystem.entries
@@ -19,10 +44,8 @@ let _getIntersectShaderIndexMap = (currentShaderIndexMap, targetShaderIndexMap) 
   |> ArraySystem.reduceOneParam(
        [@bs]
        (
-         (shaderMap, (key, shaderIndex)) => {
-           shaderMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
-           shaderMap
-         }
+         (shaderMap, (key, shaderIndex)) =>
+           shaderMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex)
        ),
        WonderCommonlib.HashMapSystem.createEmpty()
      );

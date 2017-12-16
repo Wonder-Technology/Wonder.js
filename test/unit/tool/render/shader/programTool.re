@@ -1,3 +1,5 @@
+let getProgramData = ProgramSystem._getProgramData;
+
 let getProgram = (shaderIndex: int, state: StateDataType.state) =>
   ProgramSystem.getProgram(shaderIndex, state);
 

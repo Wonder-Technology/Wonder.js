@@ -74,6 +74,8 @@ let initMaterialShader =
     (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
   _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
 
+let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndexDataArray;
+
 let deepCopyState = ShaderStateCommon.deepCopyState;
 
 let restoreFromState = ShaderStateCommon.restoreFromState;

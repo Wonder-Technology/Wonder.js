@@ -135,6 +135,14 @@ let _ =
         data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
         (state, shaderIndex1, shaderIndex2)
       };
+      let _prepareProgramData = (state) => {
+        let data = ProgramTool.getProgramData(state);
+        let shaderIndex1 = 0;
+        let program1 = Obj.magic(11);
+        data.programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1);
+        data.lastUsedProgram = program1;
+        (state, shaderIndex1, program1)
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -145,6 +153,17 @@ let _ =
       describe(
         "deepCopyState",
         () => {
+          let _prepareGLSLLocationData = (state) => {
+            let data = GlslLocationTool.getGLSLLocationData(state);
+            let shaderIndex1 = 0;
+            let attributeLocation1 = Obj.magic(11);
+            let uniformLocation1 = Obj.magic(12);
+            data.attributeLocationMap
+            |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocation1);
+            data.uniformLocationMap
+            |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocation1);
+            (state, shaderIndex1, (attributeLocation1, uniformLocation1))
+          };
           describe(
             "deep copy meshRenderer data",
             () => {
@@ -475,6 +494,76 @@ let _ =
               )
           );
           describe(
+            "deep copy program data",
+            () => {
+              test(
+                "change copied state shouldn't affect source state",
+                () => {
+                  open ProgramType;
+                  let (state, shaderIndex1, program1) = _prepareProgramData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = ProgramTool.getProgramData(copiedState);
+                  data.programMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  let {programMap} = ProgramTool.getProgramData(state);
+                  programMap
+                  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex1)
+                  |> expect
+                  |> not_ == (Js.Undefined.empty |> Obj.magic)
+                }
+              );
+              test(
+                "clean lastUsedProgram",
+                () => {
+                  open ProgramType;
+                  let (state, shaderIndex1, program1) = _prepareProgramData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {lastUsedProgram} = ProgramTool.getProgramData(copiedState);
+                  lastUsedProgram |> expect == None
+                }
+              )
+            }
+          );
+          describe(
+            "deep copy glsl location data",
+            () => {
+              test(
+                "change copied state shouldn't affect source state",
+                () => {
+                  open GLSLLocationType;
+                  let (state, shaderIndex1, (attributeLocation1, uniformLocation1)) =
+                    _prepareGLSLLocationData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = GlslLocationTool.getGLSLLocationData(copiedState);
+                  data.attributeLocationMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  data.uniformLocationMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  let {attributeLocationMap, uniformLocationMap} =
+                    GlslLocationTool.getGLSLLocationData(state);
+                  (
+                    attributeLocationMap |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex1),
+                    uniformLocationMap |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex1)
+                  )
+                  |> expect == (attributeLocation1, uniformLocation1)
+                }
+              );
+              test(
+                "clean lastUsedProgram",
+                () => {
+                  open ProgramType;
+                  let (state, shaderIndex1, program1) = _prepareProgramData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {lastUsedProgram} = ProgramTool.getProgramData(copiedState);
+                  lastUsedProgram |> expect == None
+                }
+              )
+            }
+          );
+          describe(
             "deep copy cameraController data",
             () =>
               test(
@@ -769,7 +858,7 @@ let _ =
               );
               describe(
                 "restore shader data to target state",
-                () => {
+                () =>
                   describe(
                     "contract check",
                     () =>
@@ -793,25 +882,260 @@ let _ =
                              )
                         }
                       )
+                  )
+              );
+              describe(
+                "restore program data to target state",
+                () =>
+                  test(
+                    "clean lastUsedProgram",
+                    () => {
+                      open ProgramType;
+                      let (state, shaderIndex1, program1) = _prepareProgramData(state^);
+                      let (currentState, _, _) =
+                        _prepareProgramData(StateTool.createNewCompleteState());
+                      let newState = StateTool.restoreFromState(currentState, state);
+                      let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
+                      lastUsedProgram |> expect == None
+                    }
+                  )
+              );
+              describe(
+                "restore gpu shader related data to target state",
+                () => {
+                  let _prepareState1 = (state) => {
+                    open ShaderType;
+                    open GLSLLocationType;
+                    open ProgramType;
+                    let shaderIndex1 = 0;
+                    let shaderIndex2 = 1;
+                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
+                    data.index = 2;
+                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1);
+                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
+                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let program1 = Obj.magic(11);
+                    let program2 = Obj.magic(12);
+                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1);
+                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    data.lastUsedProgram = program2;
+                    let {attributeLocationMap, uniformLocationMap} =
+                      GlslLocationTool.getGLSLLocationData(state);
+                    let attributeLocationData1 = Obj.magic(21);
+                    let attributeLocationData2 = Obj.magic(22);
+                    let uniformLocationData1 = Obj.magic(31);
+                    let uniformLocationData2 = Obj.magic(32);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
+                    (
+                      state,
+                      (shaderIndex1, shaderIndex2),
+                      (program1, program2),
+                      (
+                        attributeLocationData1,
+                        attributeLocationData2,
+                        uniformLocationData1,
+                        uniformLocationData2
+                      )
+                    )
+                  };
+                  let _prepareState2 = (state) => {
+                    open ShaderType;
+                    open GLSLLocationType;
+                    open ProgramType;
+                    let shaderIndex1 = 3;
+                    let shaderIndex2 = 4;
+                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
+                    data.index = 2;
+                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1);
+                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
+                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let program1 = Obj.magic(101);
+                    let program2 = Obj.magic(102);
+                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1);
+                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    data.lastUsedProgram = program2;
+                    let {attributeLocationMap, uniformLocationMap} =
+                      GlslLocationTool.getGLSLLocationData(state);
+                    let attributeLocationData1 = Obj.magic(201);
+                    let attributeLocationData2 = Obj.magic(202);
+                    let uniformLocationData1 = Obj.magic(301);
+                    let uniformLocationData2 = Obj.magic(302);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
+                    (
+                      state,
+                      (shaderIndex1, shaderIndex2),
+                      (program1, program2),
+                      (
+                        attributeLocationData1,
+                        attributeLocationData2,
+                        uniformLocationData1,
+                        uniformLocationData2
+                      )
+                    )
+                  };
+                  let _prepare = (state) => {
+                    let (
+                      targetState,
+                      targetShaderIndexTuple,
+                      targetProgramTuple,
+                      targetLocationTuple
+                    ) =
+                      _prepareState1(state);
+                    let (
+                      currentState,
+                      currentShaderIndexTuple,
+                      currentProgramTuple,
+                      currentLocationTuple
+                    ) =
+                      _prepareState2(StateTool.createNewCompleteState());
+                    let newState = StateTool.restoreFromState(currentState, targetState);
+                    (
+                      newState,
+                      (
+                        currentState,
+                        currentShaderIndexTuple,
+                        currentProgramTuple,
+                        currentLocationTuple
+                      ),
+                      (
+                        targetState,
+                        targetShaderIndexTuple,
+                        targetProgramTuple,
+                        targetLocationTuple
+                      )
+                    )
+                  };
+                  describe(
+                    "test restore shader data",
+                    () =>
+                      describe(
+                        "test shaderIndexMap",
+                        () =>
+                          test(
+                            "get intersect map between current shaderIndexMap and target shaderIndexMap whose value is the one in target shaderIndexMap",
+                            () => {
+                              open ShaderType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  currentProgramTuple,
+                                  currentLocationTuple
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  targetProgramTuple,
+                                  targetLocationTuple
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
+                              shaderIndexMap
+                              |> HashMapSystem.entries
+                              |> expect == [|("key1", targetShaderIndex1)|]
+                            }
+                          )
+                      )
                   );
                   describe(
-                    "test shaderIndexMap",
+                    "test restore program data",
                     () =>
-                      test(
-                        "get intersect map between current shaderIndexMap and target shaderIndexMap whose value is the one in target shaderIndexMap",
-                        () => {
-                          open ShaderType;
-                          let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
-                          let currentState = StateTool.createNewCompleteState();
-                          let data = ShaderTool.getShaderData(currentState);
-                          data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", 20);
-                          data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key3", 30);
-                          let newState = StateTool.restoreFromState(currentState, state);
-                          let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
-                          shaderIndexMap
-                          |> HashMapSystem.entries
-                          |> expect == [|("key1", shaderIndex1)|]
-                        }
+                      describe(
+                        "test programMap",
+                        () =>
+                          test(
+                            "get intersect map between current programMap and target programMap whose value is the one in current programMap",
+                            () => {
+                              open ProgramType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  (currentProgram1, currentProgram2),
+                                  currentLocationTuple
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  (targetProgram1, targetProgram2),
+                                  targetLocationTuple
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {programMap} = newState |> ProgramTool.getProgramData;
+                              (
+                                programMap |> SparseMapSystem.length,
+                                programMap
+                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                              )
+                              |> expect == (1, currentProgram1)
+                            }
+                          )
+                      )
+                  );
+                  describe(
+                    "test restore glsl location data",
+                    () =>
+                      describe(
+                        "test attributeLocationMap, uniformLocationMap",
+                        () =>
+                          test(
+                            "get intersect map between current map and target map whose value is the one in current map",
+                            () => {
+                              open GLSLLocationType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  (currentProgram1, currentProgram2),
+                                  (
+                                    currentAttributeLocationData1,
+                                    currentAttributeLocationData2,
+                                    currentUniformLocationData1,
+                                    currentUniformLocationData2
+                                  )
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  (targetProgram1, targetProgram2),
+                                  (
+                                    targetAttributeLocationData1,
+                                    targetAttributeLocationData2,
+                                    targetUniformLocationData1,
+                                    targetUniformLocationData2
+                                  )
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {attributeLocationMap, uniformLocationMap} =
+                                newState |> GlslLocationTool.getGLSLLocationData;
+                              (
+                                attributeLocationMap |> SparseMapSystem.length,
+                                attributeLocationMap
+                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                              )
+                              |> expect == (1, currentAttributeLocationData1)
+                            }
+                          )
                       )
                   )
                 }
