@@ -25,34 +25,28 @@ let addTypeArrayToPool =
 };
 
 let addAllTypeArrayToPool =
-    (
-      verticesMap,
-      indicesMap,
-      float32ArrayPoolMap,
-      uint16ArrayPoolMap,
-      state: StateDataType.state
-    ) => {
-  float32ArrayPoolMap
+    (verticesMap, indicesMap, float32ArrayPoolMap, uint16ArrayPoolMap, state: StateDataType.state) => {
+  verticesMap
   |> SparseMapSystem.forEachiValid(
        [@bs]
        (
          (typeArray, geometry) =>
            TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
              GeometryOperateCommon.getVerticesCount(geometry, state),
-             verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+             typeArray,
              float32ArrayPoolMap
            )
            |> ignore
        )
      );
-  uint16ArrayPoolMap
+  indicesMap
   |> SparseMapSystem.forEachiValid(
        [@bs]
        (
          (typeArray, geometry) =>
            TypeArrayPoolCommonUtils.addUint16TypeArrayToPool(
              GeometryOperateCommon.getIndicesCount(geometry, state),
-             indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+             typeArray,
              uint16ArrayPoolMap
            )
            |> ignore

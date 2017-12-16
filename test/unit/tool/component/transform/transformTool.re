@@ -1,5 +1,7 @@
 open TransformType;
 
+open Js.Typed_array;
+
 let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);
 
 let getDefaultPosition = () => (0., 0., 0.);
@@ -53,3 +55,5 @@ let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTyp
 let getTransformPositionTypeArray = TransformSystem.getPositionTypeArray;
 
 let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray;
+
+let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);

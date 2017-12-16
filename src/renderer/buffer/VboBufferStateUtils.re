@@ -24,7 +24,6 @@ let restoreFromState = (currentState, targetState) => {
   {
     ...targetState,
     vboBufferData: {
-      /* ...getVboBufferData(targetState), */
       vertexBufferMap: [||],
       elementArrayBufferMap: [||],
       modelMatrixInstanceBufferMap: [||],

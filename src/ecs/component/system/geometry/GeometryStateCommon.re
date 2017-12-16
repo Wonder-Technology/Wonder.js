@@ -24,10 +24,10 @@ let deepCopyState = (state: StateDataType.state) => {
         indicesMap: indicesMap |> CopyStateUtils.deepCopyUint16ArrayArray,
         float32ArrayPoolMap: [||],
         uint16ArrayPoolMap: [||],
-        computeDataFuncMap: computeDataFuncMap |> Js.Array.copy,
-        configDataMap: configDataMap |> Js.Array.copy,
-        isInitMap: isInitMap |> Js.Array.copy,
-        groupCountMap: groupCountMap |> Js.Array.copy,
+        computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
+        configDataMap: configDataMap |> SparseMapSystem.copy,
+        isInitMap: isInitMap |> SparseMapSystem.copy,
+        groupCountMap: groupCountMap |> SparseMapSystem.copy,
         gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy
       })

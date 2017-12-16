@@ -397,7 +397,6 @@ let _ =
               |> TransformTool.setTransformLocalPositionByTypeArray(child, pos2);
             (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple)
           };
-          let _changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);
           test(
             "change parent's localPosition should affect children",
             () => {
@@ -414,7 +413,7 @@ let _ =
                           pos2,
                           pos2,
                           pos2,
-                          add(Float, pos2Tuple, pos2Tuple) |> _changeTupleToTypeArray
+                          add(Float, pos2Tuple, pos2Tuple) |> TransformTool.changeTupleToTypeArray
                         )
             }
           )
@@ -860,24 +859,20 @@ let _ =
                     "new one should has default transform data",
                     () => {
                       let (state, transform1, transform2) = _prepare();
-                      let state =
-                        state |> setTransformLocalPosition(transform1, (0., 1., 2.));
+                      let state = state |> setTransformLocalPosition(transform1, (0., 1., 2.));
                       let _ = state |> getTransformPosition(transform1);
-
-
                       let state = state |> dispose(transform1);
                       /* let state = state |> dispose(transform2); */
                       let (state, transform3) = createTransform(state);
-
-
-
-(
-  state |> getTransformLocalPosition(transform3),
-  state |> getTransformPosition(transform3)
-)                       |> expect == (
-TransformTool.getDefaultPosition(),
-TransformTool.getDefaultPosition()
-)
+                      (
+                        state |> getTransformLocalPosition(transform3),
+                        state |> getTransformPosition(transform3)
+                      )
+                      |>
+                      expect == (
+                                  TransformTool.getDefaultPosition(),
+                                  TransformTool.getDefaultPosition()
+                                )
                       /* let (state, transform4) = createTransform(state); */
                       /* (transform3, transform4) |> expect == (transform2, transform1) */
                     }
@@ -927,10 +922,7 @@ TransformTool.getDefaultPosition()
                 expect(() => setFunc(Obj.magic(transform1), Obj.magic(1), state))
                 |> toThrowMessage("component should alive")
               };
-              test(
-                "getTransformPosition should error",
-                () => _testGetFunc(getTransformPosition)
-              );
+              test("getTransformPosition should error", () => _testGetFunc(getTransformPosition));
               test(
                 "getTransformLocalPosition should error",
                 () => _testGetFunc(getTransformLocalPosition)
@@ -941,10 +933,7 @@ TransformTool.getDefaultPosition()
                 "getTransformGameObject should error",
                 () => _testGetFunc(getTransformGameObject)
               );
-              test(
-                "setTransformPosition should error",
-                () => _testSetFunc(setTransformPosition)
-              );
+              test("setTransformPosition should error", () => _testSetFunc(setTransformPosition));
               test(
                 "setTransformLocalPosition should error",
                 () => _testSetFunc(setTransformLocalPosition)
