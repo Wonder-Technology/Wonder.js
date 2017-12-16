@@ -16,7 +16,8 @@ let deepCopyState = (state: StateDataType.state) =>
   |> CameraControllerAdmin.deepCopyState
   |> GeometryAdmin.deepCopyState
   |> VboBufferSystem.deepCopyState
-  |> GLSLSenderSystem.deepCopyState;
+  |> GLSLSenderSystem.deepCopyState
+  |> MaterialAdmin.deepCopyState;
 
 let restoreFromState = (stateData: stateData, currentState, targetState) =>
   targetState

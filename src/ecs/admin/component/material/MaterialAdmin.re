@@ -9,3 +9,5 @@ let pregetGLSLData = (gl, state: StateDataType.state) => {
 let initData = (state: StateDataType.state) => MaterialHelper.initData(state);
 
 let unsafeGetShaderIndex = MaterialSystem.unsafeGetShaderIndex;
+
+let deepCopyState = MaterialSystem.deepCopyState;
