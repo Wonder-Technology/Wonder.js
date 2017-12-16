@@ -11,7 +11,7 @@ let isAlive = (material: material, state: StateDataType.state) =>
 
 let _disposeData = (material: material, state: StateDataType.state) => {
   let {colorMap, shaderIndexMap, groupCountMap, gameObjectMap} as data = getMaterialData(state);
-  groupCountMap |> WonderCommonlib.SparseMapSystem.set(material, 0);
+  groupCountMap |> WonderCommonlib.SparseMapSystem.set(material, 0) |> ignore;
   disposeSparseMapData(material, colorMap) |> ignore;
   disposeSparseMapData(material, shaderIndexMap) |> ignore;
   disposeSparseMapData(material, gameObjectMap) |> ignore;

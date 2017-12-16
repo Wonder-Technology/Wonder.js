@@ -911,13 +911,15 @@ let _ =
                     let shaderIndex2 = 1;
                     let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
                     data.index = 2;
-                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1);
-                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
+                    shaderIndexMap
+                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
-                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1);
-                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    programMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GlslLocationTool.getGLSLLocationData(state);
@@ -926,12 +928,10 @@ let _ =
                     let uniformLocationData1 = Obj.magic(31);
                     let uniformLocationData2 = Obj.magic(32);
                     attributeLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1);
-                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
                     uniformLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1);
-                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
                     (
                       state,
@@ -953,13 +953,15 @@ let _ =
                     let shaderIndex2 = 4;
                     let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
                     data.index = 2;
-                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1);
-                    shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
+                    shaderIndexMap
+                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
-                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1);
-                    programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    programMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GlslLocationTool.getGLSLLocationData(state);
@@ -968,12 +970,10 @@ let _ =
                     let uniformLocationData1 = Obj.magic(301);
                     let uniformLocationData2 = Obj.magic(302);
                     attributeLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1);
-                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
                     uniformLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1);
-                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
                     (
                       state,

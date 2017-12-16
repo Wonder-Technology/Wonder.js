@@ -3,17 +3,15 @@ open TransformType;
 open Contract;
 
 let mark = (transform: transform, isDirty, {dirtyMap} as data) => {
-  dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty);
+  dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) |> ignore;
   data
 };
 
-let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) => {
+let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) =>
   data
   |> mark(transform, true)
   |> TransformHierachyCommon.unsafeGetChildren(transform)
   |> ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
-  data
-};
 
 let isDirty = (transform: transform, {dirtyMap} as data) =>
   dirtyMap

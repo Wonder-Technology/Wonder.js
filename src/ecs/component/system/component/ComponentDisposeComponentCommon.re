@@ -11,10 +11,8 @@ let checkComponentShouldAlive = (component, isAlive, state: StateDataType.state)
     () => isAlive(component, state) |> assertTrue
   );
 
-let disposeSparseMapData = (component: int, map) => {
+let disposeSparseMapData = (component: int, map) =>
   map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(component);
-  map
-};
 
 let removeFromArray = (target: int, arr) => {
   let index = arr |> Js.Array.indexOf(target);

@@ -4069,9 +4069,9 @@ wonder-bs-sinon@^0.1.3:
     sinon "^4.1.2"
     wonder-bs-jest "0.2.0"
 
-wonder-commonlib@0.2.12:
-  version "0.2.12"
-  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.12.tgz#5be7759d2bcd3b794a4a92aec4f15be2971df463"
+wonder-commonlib@0.2.13:
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.13.tgz#239878a6ed887f4e1256e50d4eabaf1543ad9fde"
 
 wonder-commonlib@^0.2.0:
   version "0.2.8"

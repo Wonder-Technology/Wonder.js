@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "bs-json": "^0.2.3",
-    "wonder-commonlib": "0.2.12"
+    "wonder-commonlib": "0.2.13"
   }
 }

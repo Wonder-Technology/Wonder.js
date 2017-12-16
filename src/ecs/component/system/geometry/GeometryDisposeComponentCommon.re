@@ -33,7 +33,7 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
          float32ArrayPoolMap,
          uint16ArrayPoolMap
        );
-  groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0);
+  groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0) |> ignore;
   disposeSparseMapData(geometry, verticesMap) |> ignore;
   disposeSparseMapData(geometry, indicesMap) |> ignore;
   disposeSparseMapData(geometry, configDataMap) |> ignore;

@@ -6,7 +6,7 @@ let isAlive = (objectInstance: objectInstance, state: StateDataType.state) =>
   ObjectInstanceDisposeComponentCommon.isAlive(objectInstance, state);
 
 let _setSourceInstance = (objectInstance, sourceInstance, {sourceInstanceMap} as data) => {
-  sourceInstanceMap |> WonderCommonlib.SparseMapSystem.set(objectInstance, sourceInstance);
+  sourceInstanceMap |> WonderCommonlib.SparseMapSystem.set(objectInstance, sourceInstance)|>ignore;
   data
 };
 

@@ -20,6 +20,7 @@ let batchDisposeObjectInstance =
   |> WonderCommonlib.SparseMapSystem.set(
        sourceInstance,
        batchRemoveFromArray(disposedUidMap, disposedUidArr)
-     );
+     )
+  |> ignore;
   state
 };

@@ -23,12 +23,11 @@ let unsafeGetColor = (material: material, state: StateDataType.state) =>
   MaterialOperateCommon.unsafeGetColor(material, state);
 
 let setColor = (material: material, color, state: StateDataType.state) => {
-  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.set(material, color);
+  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.set(material, color) |> ignore;
   state
 };
 
 let deepCopyState = MaterialStateCommon.deepCopyState;
-
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */
