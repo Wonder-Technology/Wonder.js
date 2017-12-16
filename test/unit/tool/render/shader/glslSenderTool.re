@@ -1,3 +1,5 @@
+let getGLSLSenderData = GLSLSenderSystem.getGLSLSenderData;
+
 let disableVertexAttribArray = (state: StateDataType.state) =>
   GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.getGl(state), state);
 
@@ -75,7 +77,8 @@ module JudgeSendUniformData = {
         )
       )
     );
-  let testSendVector3 = (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
+  let testSendVector3 =
+      (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
     Wonder_jest.(
       Expect.(
         Expect.Operators.(

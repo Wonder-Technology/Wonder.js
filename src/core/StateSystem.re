@@ -15,13 +15,15 @@ let deepCopyState = (state: StateDataType.state) =>
   |> TransformAdmin.deepCopyState
   |> CameraControllerAdmin.deepCopyState
   |> GeometryAdmin.deepCopyState
-  |> VboBufferSystem.deepCopyState;
+  |> VboBufferSystem.deepCopyState
+  |> GLSLSenderSystem.deepCopyState;
 
 let restoreFromState = (stateData: stateData, currentState, targetState) =>
   targetState
   |> TransformAdmin.restoreFromState(currentState)
   |> GeometryAdmin.restoreFromState(currentState)
   |> VboBufferSystem.restoreFromState(currentState)
+  |> GLSLSenderSystem.restoreFromState(currentState)
   |> setState(stateData);
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */

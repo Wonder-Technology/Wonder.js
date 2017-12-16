@@ -40,3 +40,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
   data.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state
 };
+
+let deepCopyState = GLSLSenderStateUtils.deepCopyState;
+
+let restoreFromState = GLSLSenderStateUtils.restoreFromState;

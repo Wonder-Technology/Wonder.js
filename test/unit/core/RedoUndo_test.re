@@ -4,14 +4,14 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "State",
+    "test redo,undo",
     () => {
       open Expect;
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateTool.createState());
-      let _prepareMeshRendererState = (state) => {
+      let _prepareMeshRendererData = (state) => {
         let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state^);
         let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
         let (state, gameObject3, meshRenderer3) = MeshRendererTool.createGameObject(state);
@@ -19,7 +19,7 @@ let _ =
           state |> GameObject.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
         (state, gameObject1, gameObject2, gameObject3, meshRenderer1, meshRenderer2, meshRenderer3)
       };
-      let _prepareTransformState = (state) => {
+      let _prepareTransformData = (state) => {
         let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
         let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
         let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
@@ -35,7 +35,7 @@ let _ =
           state |> GameObject.disposeGameObjectTransformComponent(gameObject3, transform3);
         (state, gameObject1, gameObject2, gameObject3, transform1, transform2, transform3)
       };
-      let _prepareCameraControllerState = (state) => {
+      let _prepareCameraControllerData = (state) => {
         open PerspectiveCamera;
         let (state, gameObject1, _, cameraController1) =
           CameraControllerTool.createCameraGameObject(state^);
@@ -63,7 +63,7 @@ let _ =
           cameraController3
         )
       };
-      let _prepareGeometryState = (state) => {
+      let _prepareGeometryData = (state) => {
         open Geometry;
         open Js.Typed_array;
         let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
@@ -74,7 +74,7 @@ let _ =
         let state = state |> setGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
         (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3)
       };
-      let _prepareVboBufferState = (state) => {
+      let _prepareVboBufferData = (state) => {
         open VboBufferType;
         let {
           vertexBufferMap,
@@ -100,6 +100,19 @@ let _ =
         modelMatrixInstanceBufferMap
         |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
         (state, geometry1, (bufferInMap1, bufferInMap2, bufferInMap3), (buffer1, buffer2, buffer3))
+      };
+      let _prepareGLSLSenderData = (state) => {
+        open StateDataType;
+        let {attributeSendDataMap, drawPointsFuncMap, vertexAttribHistoryArray} =
+          GlslSenderTool.getGLSLSenderData(state);
+        let shaderIndex1 = 0;
+        let data1 = Obj.magic(0);
+        let func1 = Obj.magic(1);
+        let history1 = Obj.magic(2);
+        attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, data1);
+        drawPointsFuncMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, func1);
+        vertexAttribHistoryArray |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, history1);
+        (state, shaderIndex1, data1, func1, history1)
       };
       beforeEach(
         () => {
@@ -127,7 +140,7 @@ let _ =
                     meshRenderer2,
                     meshRenderer3
                   ) =
-                    _prepareMeshRendererState(state);
+                    _prepareMeshRendererData(state);
                   let copiedState = StateTool.deepCopyState(state);
                   MeshRendererTool.getMeshRendererData(copiedState)
                   |>
@@ -156,7 +169,7 @@ let _ =
                     meshRenderer2,
                     meshRenderer3
                   ) =
-                    _prepareMeshRendererState(state);
+                    _prepareMeshRendererData(state);
                   let copiedState = StateTool.deepCopyState(state);
                   let data = MeshRendererTool.getMeshRendererData(copiedState);
                   data.index = 0;
@@ -183,169 +196,192 @@ let _ =
           );
           describe(
             "deep copy transform data",
-            () =>
-              describe(
+            () => {
+              test(
                 "change copied state shouldn't affect source state",
                 () => {
-                  test(
-                    "test copied data",
-                    () => {
-                      open TransformType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        transform1,
-                        transform2,
-                        transform3
-                      ) =
-                        _prepareTransformState(state);
-                      let _ = Transform.getTransformPosition(transform2, state);
-                      let copiedState = StateTool.deepCopyState(state);
-                      let data = TransformTool.getTransformData(copiedState);
-                      data.localPositionMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
-                      TransformTool.getTransformData(state).localPositionMap
-                      |>
-                      expect == [|
-                                  TransformTool.getTransformLocalPositionTypeArray(
-                                    transform1,
-                                    state
-                                  ),
-                                  TransformTool.getTransformLocalPositionTypeArray(
-                                    transform2,
-                                    state
-                                  ),
-                                  Js.Undefined.empty |> Obj.magic
-                                |]
-                    }
-                  );
-                  test(
-                    "clean localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
-                    () => {
-                      open TransformType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        transform1,
-                        transform2,
-                        transform3
-                      ) =
-                        _prepareTransformState(state);
-                      let _ = Transform.getTransformPosition(transform2, state);
-                      let copiedState = StateTool.deepCopyState(state);
-                      let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
-                        TransformTool.getTransformData(copiedState);
-                      (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
-                      |> expect == ([||], [||])
-                    }
-                  )
+                  open TransformType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    transform1,
+                    transform2,
+                    transform3
+                  ) =
+                    _prepareTransformData(state);
+                  let _ = Transform.getTransformPosition(transform2, state);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = TransformTool.getTransformData(copiedState);
+                  data.localPositionMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
+                  TransformTool.getTransformData(state).localPositionMap
+                  |>
+                  expect == [|
+                              TransformTool.getTransformLocalPositionTypeArray(transform1, state),
+                              TransformTool.getTransformLocalPositionTypeArray(transform2, state),
+                              Js.Undefined.empty |> Obj.magic
+                            |]
+                }
+              );
+              test(
+                "clean localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
+                () => {
+                  open TransformType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    transform1,
+                    transform2,
+                    transform3
+                  ) =
+                    _prepareTransformData(state);
+                  let _ = Transform.getTransformPosition(transform2, state);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
+                    TransformTool.getTransformData(copiedState);
+                  (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
+                  |> expect == ([||], [||])
                 }
               )
+            }
           );
           describe(
             "deep copy geometry data",
-            () =>
-              describe(
+            () => {
+              test(
                 "change copied state shouldn't affect source state",
                 () => {
-                  test(
-                    "test copied data",
-                    () => {
-                      open StateDataType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        geometry1,
-                        geometry2,
-                        geometry3
-                      ) =
-                        _prepareGeometryState(state);
-                      let copiedState = StateTool.deepCopyState(state);
-                      let data = GeometryTool.getGeometryData(copiedState);
-                      data.verticesMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                      data.indicesMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                      let {verticesMap, indicesMap} = GeometryTool.getGeometryData(state);
-                      (
-                        verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2),
-                        indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
-                      )
-                      |>
-                      expect == (Float32Array.make([|3., 5., 5.|]), Uint16Array.make([|1, 2, 4|]))
-                    }
-                  );
-                  test(
-                    "clean float32ArrayPoolMap, uint16ArrayPoolMap",
-                    () => {
-                      open StateDataType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        geometry1,
-                        geometry2,
-                        geometry3
-                      ) =
-                        _prepareGeometryState(state);
-                      let copiedState = StateTool.deepCopyState(state);
-                      let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                        GeometryTool.getGeometryData(copiedState);
-                      (float32ArrayPoolMap, uint16ArrayPoolMap) |> expect == ([||], [||])
-                    }
+                  open StateDataType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    geometry1,
+                    geometry2,
+                    geometry3
+                  ) =
+                    _prepareGeometryData(state);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = GeometryTool.getGeometryData(copiedState);
+                  data.verticesMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  data.indicesMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  let {verticesMap, indicesMap} = GeometryTool.getGeometryData(state);
+                  (
+                    verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2),
+                    indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
                   )
+                  |> expect == (Float32Array.make([|3., 5., 5.|]), Uint16Array.make([|1, 2, 4|]))
+                }
+              );
+              test(
+                "clean float32ArrayPoolMap, uint16ArrayPoolMap",
+                () => {
+                  open StateDataType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    geometry1,
+                    geometry2,
+                    geometry3
+                  ) =
+                    _prepareGeometryData(state);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap} =
+                    GeometryTool.getGeometryData(copiedState);
+                  (float32ArrayPoolMap, uint16ArrayPoolMap) |> expect == ([||], [||])
                 }
               )
+            }
           );
           describe(
             "deep copy vbo buffer data",
             () =>
-              describe(
+              test(
                 "clean all buffer map and all buffer pool data",
-                () =>
-                  test(
-                    "test copied data",
-                    () => {
-                      open VboBufferType;
-                      let (
-                        state,
-                        geometry1,
-                        (bufferInMap1, bufferInMap2, bufferInMap3),
-                        (buffer1, buffer2, buffer3)
-                      ) =
-                        _prepareVboBufferState(state^);
-                      let copiedState = StateTool.deepCopyState(state);
-                      let {
-                        vertexBufferMap,
-                        elementArrayBufferMap,
-                        modelMatrixInstanceBufferMap,
-                        vertexArrayBufferPool,
-                        elementArrayBufferPool,
-                        modelMatrixInstanceBufferPool
-                      } =
-                        VboBufferTool.getVboBufferData(copiedState);
-                      (
-                        vertexBufferMap,
-                        elementArrayBufferMap,
-                        modelMatrixInstanceBufferMap,
-                        vertexArrayBufferPool,
-                        elementArrayBufferPool,
-                        modelMatrixInstanceBufferPool
-                      )
-                      |> expect == ([||], [||], [||], [||], [||], [||])
-                    }
+                () => {
+                  open VboBufferType;
+                  let (
+                    state,
+                    geometry1,
+                    (bufferInMap1, bufferInMap2, bufferInMap3),
+                    (buffer1, buffer2, buffer3)
+                  ) =
+                    _prepareVboBufferData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {
+                    vertexBufferMap,
+                    elementArrayBufferMap,
+                    modelMatrixInstanceBufferMap,
+                    vertexArrayBufferPool,
+                    elementArrayBufferPool,
+                    modelMatrixInstanceBufferPool
+                  } =
+                    VboBufferTool.getVboBufferData(copiedState);
+                  (
+                    vertexBufferMap,
+                    elementArrayBufferMap,
+                    modelMatrixInstanceBufferMap,
+                    vertexArrayBufferPool,
+                    elementArrayBufferPool,
+                    modelMatrixInstanceBufferPool
                   )
+                  |> expect == ([||], [||], [||], [||], [||], [||])
+                }
               )
+          );
+          describe(
+            "deep copy glslSender data",
+            () => {
+              test(
+                "change copied state shouldn't affect source state",
+                () => {
+                  open StateDataType;
+                  let (state, shaderIndex1, data1, func1, history1) =
+                    _prepareGLSLSenderData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = GlslSenderTool.getGLSLSenderData(copiedState);
+                  data.attributeSendDataMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  data.drawPointsFuncMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  data.vertexAttribHistoryArray
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(shaderIndex1);
+                  let {attributeSendDataMap, drawPointsFuncMap, vertexAttribHistoryArray} =
+                    GlslSenderTool.getGLSLSenderData(state);
+                  (attributeSendDataMap, drawPointsFuncMap, vertexAttribHistoryArray)
+                  |> expect == ([|data1|], [|func1|], [|history1|])
+                }
+              );
+              test(
+                "clean lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial",
+                () => {
+                  open StateDataType;
+                  let (state, shaderIndex1, data1, func1, history1) =
+                    _prepareGLSLSenderData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let data = GlslSenderTool.getGLSLSenderData(copiedState);
+                  let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
+                    GlslSenderTool.getGLSLSenderData(copiedState);
+                  (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
+                  |> expect == (None, None, None)
+                }
+              )
+            }
           );
           describe(
             "deep copy cameraController data",
@@ -363,7 +399,7 @@ let _ =
                     cameraController2,
                     cameraController3
                   ) =
-                    _prepareCameraControllerState(state);
+                    _prepareCameraControllerData(state);
                   let cameraControllerData = CameraControllerTool.getCameraControllerData(state);
                   let copiedState = StateTool.deepCopyState(state);
                   CameraControllerTool.getCameraControllerData(copiedState)
@@ -383,7 +419,7 @@ let _ =
                     cameraController2,
                     cameraController3
                   ) =
-                    _prepareCameraControllerState(state);
+                    _prepareCameraControllerData(state);
                   let copiedState = StateTool.deepCopyState(state);
                   let {perspectiveCameraData} as data =
                     CameraControllerTool.getCameraControllerData(copiedState);
@@ -422,12 +458,12 @@ let _ =
           describe(
             "restoreFromState",
             () => {
-              let _test = (_prepareState, state) => {
+              let _test = (_prepareData, state) => {
                 open TransformType;
-                let (state, _, _, _, _, _, _) = _prepareState(state);
-                let (currentState, _, _) =
+                let (state, _, _, _, _, _, _) = _prepareData(state);
+                let (currentData, _, _) =
                   GameObjectTool.createGameObject(StateTool.createNewCompleteState());
-                let state = StateTool.restoreFromState(currentState, state);
+                let state = StateTool.restoreFromState(currentData, state);
                 StateTool.getState() |> expect == state
               };
               describe(
@@ -443,8 +479,8 @@ let _ =
                       meshRenderer2,
                       meshRenderer3
                     ) =
-                      _prepareMeshRendererState(state);
-                    let (currentState, gameObject4, meshRenderer4) =
+                      _prepareMeshRendererData(state);
+                    let (currentData, gameObject4, meshRenderer4) =
                       MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                     (
                       (
@@ -456,31 +492,31 @@ let _ =
                         meshRenderer2,
                         meshRenderer3
                       ),
-                      (currentState, gameObject4, meshRenderer4)
+                      (currentData, gameObject4, meshRenderer4)
                     )
                   };
                   /* test(
                        "test restore",
                        () => {
-                         let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                         let currentState = StateTool.restoreFromState(currentState, state);
-                         currentState |> expect == state
+                         let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
+                         let currentData = StateTool.restoreFromState(currentData, state);
+                         currentData |> expect == state
                        }
                      ); */
                   test(
                     "set restored state to stateData",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(currentState, state);
-                      StateTool.getState() |> expect == currentState
+                      let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
+                      let currentData = StateTool.restoreFromState(currentData, state);
+                      StateTool.getState() |> expect == currentData
                     }
                   );
                   test(
                     "change restored state should affect source state",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(currentState, state);
-                      let (currentState, gameObject5, meshRenderer5) =
+                      let ((state, _, _, _, _, _, _), (currentData, _, _)) = _prepare(state);
+                      let currentData = StateTool.restoreFromState(currentData, state);
+                      let (currentData, gameObject5, meshRenderer5) =
                         MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                       state
                       |> MeshRenderer.getMeshRendererGameObject(meshRenderer5)
@@ -488,13 +524,13 @@ let _ =
                     }
                   );
                   test(
-                    "change restored state which is restore from deep copy state shouldn't affect source state",
+                    "change restored state which is restore from deep copied state shouldn't affect source state",
                     () => {
-                      let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
+                      let ((state, gameObject1, gameObject2, _, _, _, _), (currentData, _, _)) =
                         _prepare(state);
-                      let currentState =
-                        StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
-                      let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
+                      let currentData =
+                        StateTool.restoreFromState(currentData, state |> StateTool.deepCopyState);
+                      let (currentData, _, _) = MeshRendererTool.createGameObject(currentData);
                       MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                       |> expect == [|gameObject1, gameObject2|]
                     }
@@ -511,13 +547,13 @@ let _ =
                         "add current state->transformData->localToWorldMatrixMap, localPositionMap typeArr to pool",
                         () => {
                           open TransformType;
-                          let (state, _, _, _, _, _, _) = _prepareTransformState(state);
-                          let (currentState, _, transform4) =
+                          let (state, _, _, _, _, _, _) = _prepareTransformData(state);
+                          let (currentData, _, transform4) =
                             GameObjectTool.createGameObject(StateTool.createNewCompleteState());
                           let pos4 = ((-1.), 4., 5.);
-                          let currentState =
-                            Transform.setTransformLocalPosition(transform4, pos4, currentState);
-                          let _ = StateTool.restoreFromState(currentState, state);
+                          let currentData =
+                            Transform.setTransformLocalPosition(transform4, pos4, currentData);
+                          let _ = StateTool.restoreFromState(currentData, state);
                           let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
                             StateTool.getState() |> TransformTool.getTransformData;
                           (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
@@ -549,11 +585,11 @@ let _ =
                             geometry2,
                             geometry3
                           ) =
-                            _prepareGeometryState(state);
-                          let (currentState, gameObject4, geometry4) =
+                            _prepareGeometryData(state);
+                          let (currentData, gameObject4, geometry4) =
                             BoxGeometryTool.createGameObject(StateTool.createNewCompleteState());
-                          let currentState = GeometryTool.initGeometry(geometry4, currentState);
-                          let _ = StateTool.restoreFromState(currentState, state);
+                          let currentData = GeometryTool.initGeometry(geometry4, currentData);
+                          let _ = StateTool.restoreFromState(currentData, state);
                           let {float32ArrayPoolMap, uint16ArrayPoolMap} =
                             StateTool.getState() |> GeometryTool.getGeometryData;
                           (
@@ -588,12 +624,12 @@ let _ =
                         (bufferInMap1, bufferInMap2, bufferInMap3),
                         (buffer1, buffer2, buffer3)
                       ) =
-                        _prepareVboBufferState(state^);
-                      let (currentState, _, _, _) =
-                        _prepareVboBufferState(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
+                        _prepareVboBufferData(state^);
+                      let (currentData, _, _, _) =
+                        _prepareVboBufferData(StateTool.createNewCompleteState());
+                      let newData = StateTool.restoreFromState(currentData, state);
                       let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
-                        newState |> VboBufferTool.getVboBufferData;
+                        newData |> VboBufferTool.getVboBufferData;
                       (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
                       |> expect == ([||], [||], [||])
                     }
@@ -611,15 +647,15 @@ let _ =
                             (bufferInMap1, bufferInMap2, bufferInMap3),
                             (buffer1, buffer2, buffer3)
                           ) =
-                            _prepareVboBufferState(state^);
+                            _prepareVboBufferData(state^);
                           let (
-                            currentState,
+                            currentData,
                             _,
                             (bufferInMap4, bufferInMap5, bufferInMap6),
                             (buffer4, buffer5, buffer6)
                           ) =
-                            _prepareVboBufferState(StateTool.createNewCompleteState());
-                          let _ = StateTool.restoreFromState(currentState, state);
+                            _prepareVboBufferData(StateTool.createNewCompleteState());
+                          let _ = StateTool.restoreFromState(currentData, state);
                           let {
                             vertexArrayBufferPool,
                             elementArrayBufferPool,
@@ -642,9 +678,28 @@ let _ =
                   )
                 }
               );
+              describe(
+                "restore glsl sender data to target state",
+                () =>
+                  test(
+                    "clean last send data",
+                    () => {
+                      open StateDataType;
+                      let (state, shaderIndex1, data1, func1, history1) =
+                        _prepareGLSLSenderData(state^);
+                      let (currentData, _, _, _, _) =
+                        _prepareGLSLSenderData(StateTool.createNewCompleteState());
+                      let newData = StateTool.restoreFromState(currentData, state);
+                      let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
+                        newData |> GlslSenderTool.getGLSLSenderData;
+                      (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
+                      |> expect == (None, None, None)
+                    }
+                  )
+              );
               test(
                 "restore cameraController data to target state",
-                () => _test(_prepareCameraControllerState, state)
+                () => _test(_prepareCameraControllerData, state)
               )
             }
           )
