@@ -6,7 +6,7 @@ open SourceInstanceType;
 
 open InstanceBufferSystem;
 
-let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, transformData, state) => {
+let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => {
   let transform = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
     matricesArrayForInstance,
@@ -14,7 +14,7 @@ let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, transformD
     TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state),
     0,
     16
-  );
+  ) |> ignore;
   state
 };
 
@@ -47,7 +47,8 @@ let _sendModelMatrixData =
     InstanceBufferSystem.getOrCreateModelMatrixFloat32Array(
       sourceInstance,
       modelMatrixInstanceBufferCapacityMap,
-      modelMatrixFloat32ArrayMap
+      modelMatrixFloat32ArrayMap,
+      state
     );
   let (modelMatrixInstanceBuffer, matricesArrayForInstance) =
     setCapacityAndUpdateBufferAndTypeArray(
@@ -63,7 +64,7 @@ let _sendModelMatrixData =
     );
   let offset = ref(0);
   let state =
-    state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^, transformData);
+    state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
   offset := offset^ + 16;
   let state =
     objectInstanceArray
@@ -76,8 +77,7 @@ let _sendModelMatrixData =
                |> _fillModelMatrixTypeArr(
                     objectInstance,
                     matricesArrayForInstance,
-                    offset^,
-                    transformData
+                    offset^
                   );
              offset := offset^ + 16;
              state

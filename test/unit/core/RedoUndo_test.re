@@ -156,8 +156,8 @@ let _ =
       };
       let _prepareTypeArrayPoolData = (state) => {
         open StateDataType;
-        let float32ArrayPoolMap = [|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|];
-        let uint16ArrayPoolMap = [|Uint16Array.make([|RandomTool.getRandomInt(3)|])|];
+        let float32ArrayPoolMap = [|[|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|]|];
+        let uint16ArrayPoolMap = [|[|Uint16Array.make([|RandomTool.getRandomInt(3)|])|]|];
         (
           {...state, typeArrayPoolData: {float32ArrayPoolMap, uint16ArrayPoolMap}},
           (float32ArrayPoolMap, uint16ArrayPoolMap)
@@ -519,8 +519,7 @@ let _ =
                 "clean gl",
                 () => {
                   open StateDataType;
-                  let (state, gl, (colorWrite, clearColor)) =
-                    _prepareDeviceManagerData(state^);
+                  let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyState(state);
                   let {gl}: deviceManagerData =
                     DeviceManagerTool.getDeviceManagerData(copiedState);
@@ -531,8 +530,7 @@ let _ =
                 "directly use readonly data",
                 () => {
                   open StateDataType;
-                  let (state, gl, (colorWrite, clearColor)) =
-                    _prepareDeviceManagerData(state^);
+                  let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyState(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
@@ -712,8 +710,8 @@ let _ =
                           )
                           |>
                           expect == (
-                                      TransformTool.getDefaultLocalToWorldMatrix(),
-                                      TransformTool.changeTupleToTypeArray(pos4)
+                                      [|TransformTool.getDefaultLocalToWorldMatrix()|],
+                                      [|TransformTool.changeTupleToTypeArray(pos4)|]
                                     )
                         }
                       )
@@ -758,8 +756,8 @@ let _ =
                           )
                           |>
                           expect == (
-                                      BoxGeometryTool.getDefaultVertices(),
-                                      BoxGeometryTool.getDefaultIndices()
+                                      [|BoxGeometryTool.getDefaultVertices()|],
+                                      [|BoxGeometryTool.getDefaultIndices()|]
                                     )
                         }
                       )
@@ -913,9 +911,7 @@ let _ =
                       open StateDataType;
                       let (state, targetGl, _) = _prepareDeviceManagerData(state^);
                       let (currentState, currentGl, _) =
-                        _prepareDeviceManagerData(
-                          StateTool.createNewCompleteState()
-                        );
+                        _prepareDeviceManagerData(StateTool.createNewCompleteState());
                       let newState = StateTool.restoreFromState(currentState, state);
                       let {gl}: deviceManagerData =
                         DeviceManagerTool.getDeviceManagerData(newState);

@@ -38,6 +38,15 @@ let _disposeData =
     gameObjectMap
   } =
     getSourceInstanceData(state);
+  switch (modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
+  | Some(typeArr) =>
+    TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+      typeArr,
+      TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+    )
+    |> ignore
+  | None => ()
+  };
   disposeSparseMapData(sourceInstance, objectInstanceArrayMap) |> ignore;
   disposeSparseMapData(sourceInstance, modelMatrixFloat32ArrayMap) |> ignore;
   disposeSparseMapData(sourceInstance, modelMatrixInstanceBufferCapacityMap) |> ignore;
@@ -96,10 +105,7 @@ let handleBatchDisposeComponent =
              (state, sourceInstance) =>
                state
                |> VboBufferSystem.addInstanceBufferToPool(sourceInstance)
-               |> _disposeData(
-                    sourceInstance,
-                    batchDisposeGameObjectFunc
-                  )
+               |> _disposeData(sourceInstance, batchDisposeGameObjectFunc)
            ),
            state
          )

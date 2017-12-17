@@ -47,16 +47,22 @@ let getOrCreateBuffer =
   };
 
 let getOrCreateModelMatrixFloat32Array =
-    (sourceInstance: int, capacityMap, modelMatrixFloat32ArrayMap) =>
-  switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, modelMatrixFloat32ArrayMap)) {
+    (sourceInstance: int, capacityMap, modelMatrixFloat32ArrayMap, state: StateDataType.state) => {
+  let capacity = _getCapacity(sourceInstance, capacityMap);
+  switch (modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) => typeArr
   | None =>
-    let typeArr = _createModelMatrixFloat32Array(_getCapacity(sourceInstance, capacityMap));
-    modelMatrixFloat32ArrayMap
-    |> WonderCommonlib.SparseMapSystem.set(sourceInstance, typeArr)
-    |> ignore;
-    typeArr
-  };
+    switch (TypeArrayPoolSystem.getFloat32TypeArrayFromPool(capacity, state)) {
+    | Some(typeArr) => typeArr
+    | None =>
+      let typeArr = _createModelMatrixFloat32Array(capacity);
+      modelMatrixFloat32ArrayMap
+      |> WonderCommonlib.SparseMapSystem.set(sourceInstance, typeArr)
+      |> ignore;
+      typeArr
+    }
+  }
+};
 
 let setCapacityAndUpdateBufferAndTypeArray =
     (
