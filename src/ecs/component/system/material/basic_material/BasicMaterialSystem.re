@@ -60,3 +60,6 @@ let init = (gl, state: state) => {
        state
      )
 };
+
+let initMaterial = (materialIndex, gl, state: state) =>
+  MaterialInitComponentCommon.initMaterial(gl, materialIndex, state);

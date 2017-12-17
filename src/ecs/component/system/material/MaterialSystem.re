@@ -28,6 +28,8 @@ let setColor = (material: material, color, state: StateDataType.state) => {
 };
 
 let deepCopyState = MaterialStateCommon.deepCopyState;
+
+let restoreFromState = MaterialStateCommon.restoreFromState;
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */

@@ -22,7 +22,10 @@ let deepCopyState = (state: StateDataType.state) =>
   |> ProgramSystem.deepCopyState
   |> GLSLLocationSystem.deepCopyState;
 
-let restoreFromState = (stateData: stateData, currentState:StateDataType.state, targetState:StateDataType.state) => {
+let restoreFromState =
+    (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
+  /* todo fix: get gl after restore deviceManagerData */
+  let gl = [@bs] DeviceManagerSystem.getGl(currentState);
   let intersectShaderIndexDataArray =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   targetState
@@ -33,6 +36,7 @@ let restoreFromState = (stateData: stateData, currentState:StateDataType.state, 
   |> ShaderSystem.restoreFromState(currentState)
   |> ProgramSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
+  |> MaterialAdmin.restoreFromState(gl, currentState)
   |> setState(stateData)
 };
 

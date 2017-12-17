@@ -5,18 +5,23 @@ open MaterialType;
 let getMaterialData = (state: StateDataType.state) => Js.Option.getExn(state.materialData);
 
 let deepCopyState = (state: StateDataType.state) => {
-  let {index, shaderIndexMap, colorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
+  let {index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
     state |> getMaterialData;
   {
     ...state,
     materialData:
       Some({
         index,
-        shaderIndexMap: shaderIndexMap |> SparseMapSystem.copy,
+        shaderIndexMap: [||],
         colorMap: colorMap |> SparseMapSystem.copy,
         groupCountMap: groupCountMap |> SparseMapSystem.copy,
         gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy
       })
   }
+};
+
+let restoreFromState = (currentState, targetState) => {
+  ...targetState,
+  materialData: Some({...getMaterialData(targetState), shaderIndexMap: [||]})
 };

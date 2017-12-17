@@ -2,6 +2,9 @@ let length = Js.Array.length;
 
 let copy = Js.Array.copy;
 
+let getValidValues = (map) =>
+  map |> Js.Array.filter((value) => value |> Obj.magic !== Js.Undefined.empty);
+
 let forEachValid = (func, map) =>
   map
   |> WonderCommonlib.ArraySystem.forEach(
