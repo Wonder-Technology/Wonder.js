@@ -143,6 +143,13 @@ let _ =
         data.lastUsedProgram = program1;
         (state, shaderIndex1, program1)
       };
+      let _prepareDeviceManagerData = (gl, state) => {
+        let data = DeviceManagerTool.getDeviceManagerData(state);
+        /* let gl = Obj.magic(0); */
+        let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
+        let clearColor = Some((1., 0.1, 0.2, 1.));
+        ({...state, deviceManagerData: {gl, colorWrite, clearColor}}, gl, (colorWrite, clearColor))
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -424,7 +431,7 @@ let _ =
           );
           describe(
             "deep copy material data",
-            () => {
+            () =>
               test(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -451,7 +458,6 @@ let _ =
                   |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
               )
-            }
           );
           describe(
             "deep copy shader data",
@@ -533,6 +539,35 @@ let _ =
                   let copiedState = StateTool.deepCopyState(state);
                   let {lastUsedProgram} = ProgramTool.getProgramData(copiedState);
                   lastUsedProgram |> expect == None
+                }
+              )
+            }
+          );
+          describe(
+            "deep copy deviceManager data",
+            () => {
+              test(
+                "clean gl",
+                () => {
+                  open StateDataType;
+                  let (state, gl, (colorWrite, clearColor)) =
+                    _prepareDeviceManagerData(Obj.magic(0), state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {gl} = DeviceManagerTool.getDeviceManagerData(copiedState);
+                  gl |> expect == None
+                }
+              );
+              test(
+                "directly use readonly data",
+                () => {
+                  open StateDataType;
+                  let (state, gl, (colorWrite, clearColor)) =
+                    _prepareDeviceManagerData(Obj.magic(0), state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let targetData = DeviceManagerTool.getDeviceManagerData(state);
+                  let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
+                  (copiedData.colorWrite, copiedData.clearColor)
+                  |> expect == (targetData.colorWrite, targetData.clearColor)
                 }
               )
             }
@@ -872,6 +907,34 @@ let _ =
                       let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
                       lastUsedProgram |> expect == None
                     }
+                  )
+              );
+              describe(
+                "restore deviceManager data to target state",
+                () =>
+                  test(
+                    "use current deviceManager data->gl",
+                    () => {
+                      open StateDataType;
+                      let (state, targetGl, _) = _prepareDeviceManagerData(Obj.magic(0), state^);
+                      let (currentState, currentGl, _) =
+                        _prepareDeviceManagerData(
+                          Obj.magic(1),
+                          StateTool.createNewCompleteState()
+                        );
+                      let newState = StateTool.restoreFromState(currentState, state);
+                      let {gl} = DeviceManagerTool.getDeviceManagerData(newState);
+                      gl |> expect == currentGl
+                    }
+                  )
+              );
+              test(
+                "restore cameraController data to target state",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareCameraControllerData,
+                    CameraControllerTool.getCameraControllerData
                   )
               );
               describe(
@@ -1219,15 +1282,6 @@ let _ =
                     }
                   )
                 }
-              );
-              test(
-                "restore cameraController data to target state",
-                () =>
-                  _testRestoreStateEqualTargetState(
-                    state,
-                    _prepareCameraControllerData,
-                    CameraControllerTool.getCameraControllerData
-                  )
               )
             }
           )

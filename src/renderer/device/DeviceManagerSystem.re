@@ -80,3 +80,25 @@ let clearColor = (gl, (r: float, g: float, b: float, a: float), state: state) =>
     {...state, deviceManagerData: {...state.deviceManagerData, clearColor: Some((r, g, b, a))}}
   }
 };
+
+let deepCopyState = (state: StateDataType.state) => {
+  let {colorWrite, clearColor} = state |> _getDeviceManagerData;
+  {...state, deviceManagerData: {gl: None, colorWrite, clearColor}}
+};
+
+let restoreFromState = (currentState, targetState) => {
+  let currentData = currentState |> _getDeviceManagerData;
+  let {colorWrite, clearColor} = targetState |> _getDeviceManagerData;
+  (
+    [@bs] getGl(currentState),
+    {
+      ...targetState,
+      deviceManagerData: {
+        ..._getDeviceManagerData(targetState),
+        gl: currentData.gl,
+        colorWrite,
+        clearColor
+      }
+    }
+  )
+};

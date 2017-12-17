@@ -20,15 +20,15 @@ let deepCopyState = (state: StateDataType.state) =>
   |> MaterialAdmin.deepCopyState
   |> ShaderSystem.deepCopyState
   |> ProgramSystem.deepCopyState
-  |> GLSLLocationSystem.deepCopyState;
+  |> GLSLLocationSystem.deepCopyState
+  |> DeviceManagerSystem.deepCopyState;
 
 let restoreFromState =
     (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
-  /* todo fix: get gl after restore deviceManagerData */
-  let gl = [@bs] DeviceManagerSystem.getGl(currentState);
+  let (gl, newState) = DeviceManagerSystem.restoreFromState(currentState, targetState);
   let intersectShaderIndexDataArray =
-    ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
-  targetState
+    ShaderSystem.getIntersectShaderIndexDataArray(currentState, newState);
+  newState
   |> TransformAdmin.restoreFromState(currentState)
   |> GeometryAdmin.restoreFromState(currentState)
   |> VboBufferSystem.restoreFromState(currentState)
