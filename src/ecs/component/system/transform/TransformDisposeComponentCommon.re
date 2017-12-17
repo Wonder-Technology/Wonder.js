@@ -27,8 +27,6 @@ let _disposeData = (transform: transform, state: StateDataType.state) => {
   let {
         localToWorldMatrixMap,
         localPositionMap,
-        localToWorldMatrixTypeArrayPool,
-        localPositionTypeArrayPool,
         parentMap,
         childMap,
         dirtyMap,
@@ -36,13 +34,13 @@ let _disposeData = (transform: transform, state: StateDataType.state) => {
       } as data =
     getTransformData(state);
   _disposeFromParentAndChildMap(transform, data) |> ignore;
-  TransformTypeArrayPoolCommon.addTypeArrayToPool(
-    transform,
-    localToWorldMatrixMap,
-    localPositionMap,
-    localToWorldMatrixTypeArrayPool,
-    localPositionTypeArrayPool
-  );
+  let state =
+    TransformTypeArrayPoolCommon.addTypeArrayToPool(
+      transform,
+      localToWorldMatrixMap,
+      localPositionMap,
+      state
+    );
   disposeSparseMapData(transform, localToWorldMatrixMap) |> ignore;
   disposeSparseMapData(transform, localPositionMap) |> ignore;
   disposeSparseMapData(transform, parentMap) |> ignore;

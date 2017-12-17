@@ -34,20 +34,15 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
   unsafeGetVertices(index, state) |> Float32Array.length;
 
 let setVerticesWithArray = (index: int, data: array(float), state: StateDataType.state) => {
-  let {verticesMap} as geometryData = getGeometryData(state);
+  let {verticesMap} = getGeometryData(state);
   switch (getVertices(index, state)) {
   | None =>
     let typeArr =
-      switch (
-        TypeArrayPoolCommonUtils.getFloat32TypeArrayFromPool(
-          data |> Js.Array.length,
-          geometryData.float32ArrayPoolMap
-        )
-      ) {
+      switch (TypeArrayPoolSystem.getFloat32TypeArrayFromPool(data |> Js.Array.length, state)) {
       | None => Float32Array.make(data)
       | Some(typeArr) => fillFloat32Array(typeArr, data, 0)
       };
-    verticesMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr)|>ignore;
+    verticesMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr) |> ignore;
     state
   | Some(vertices) =>
     TypeArrayUtils.fillFloat32Array(vertices, data, 0) |> ignore;
@@ -57,7 +52,7 @@ let setVerticesWithArray = (index: int, data: array(float), state: StateDataType
 
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
   let {verticesMap} = getGeometryData(state);
-  verticesMap |> WonderCommonlib.SparseMapSystem.set(index, data) |>ignore;
+  verticesMap |> WonderCommonlib.SparseMapSystem.set(index, data) |> ignore;
   state
 };
 
@@ -85,16 +80,11 @@ let getIndicesCount = (index: int, state: StateDataType.state) =>
   unsafeGetIndices(index, state) |> Uint16Array.length;
 
 let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.state) => {
-  let {indicesMap} as geometryData = getGeometryData(state);
+  let {indicesMap} = getGeometryData(state);
   switch (getIndices(index, state)) {
   | None =>
     let typeArr =
-      switch (
-        TypeArrayPoolCommonUtils.getUint16TypeArrayFromPool(
-          data |> Js.Array.length,
-          geometryData.uint16ArrayPoolMap
-        )
-      ) {
+      switch (TypeArrayPoolSystem.getUint16TypeArrayFromPool(data |> Js.Array.length, state)) {
       | None => Uint16Array.make(data)
       | Some(typeArr) => fillUint16Array(typeArr, data, 0)
       };

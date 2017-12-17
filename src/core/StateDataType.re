@@ -42,6 +42,8 @@ open ObjectInstanceType;
 
 open GlobalTempType;
 
+open TypeArrayPoolType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -225,7 +227,8 @@ and uniformSendCacheableData = {
   name: string,
   pos: uniformLocation,
   getCacheableDataFunc: [@bs] ((component, state) => array(float)),
-  sendCacheableDataFunc: [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, array(float)) => unit)
+  sendCacheableDataFunc:
+    [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, array(float)) => unit)
 }
 and shaderUniformSendNoCacheableData = {
   pos: uniformLocation,
@@ -270,9 +273,7 @@ and geometryData = {
   mutable gameObjectMap,
   mutable disposedIndexArray: geometryDisposedIndexArray,
   mutable isInitMap: geometryIsInitMap,
-  mutable groupCountMap: geometryGroupCountMap,
-  float32ArrayPoolMap: geometryFloat32ArrayPoolMap,
-  uint16ArrayPoolMap: geometryUint16ArrayPoolMap
+  mutable groupCountMap: geometryGroupCountMap
 }
 and state = {
   bufferConfig: option(bufferConfig),
@@ -299,7 +300,14 @@ and state = {
   schedulerData,
   timeControllerData,
   vboBufferData,
-  globalTempData
+  globalTempData,
+  typeArrayPoolData
+};
+
+type sharedDataForRestoreState = {
+  gl: webgl1Context,
+  float32ArrayPoolMap,
+  uint16ArrayPoolMap
 };
 
 type stateData = {

@@ -7,55 +7,27 @@ let addTypeArrayToPool =
       transform: transform,
       localToWorldMatrixMap: array(Float32Array.t),
       localPositionMap: array(Float32Array.t),
-      localToWorldMatrixTypeArrayPool,
-      localPositionTypeArrayPool
+      state: StateDataType.state
     ) => {
-  TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
-    transform,
+  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
-    localToWorldMatrixTypeArrayPool
+    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
   )
   |> ignore;
-  TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
-    transform,
+  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
     localPositionMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
-    localPositionTypeArrayPool
+    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
   )
-  |> ignore
+  |> ignore;
+  state
 };
 
 let addAllTypeArrayToPool =
     (
       localToWorldMatrixMap: array(Float32Array.t),
       localPositionMap: array(Float32Array.t),
-      localToWorldMatrixTypeArrayPool,
-      localPositionTypeArrayPool
-    ) => {
-  localToWorldMatrixMap
-  |> SparseMapSystem.forEachiValid(
-       [@bs]
-       (
-         (typeArray, transform) =>
-           TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
-             transform,
-             typeArray,
-             localToWorldMatrixTypeArrayPool
-           )
-           |> ignore
-       )
-     );
-  localPositionMap
-  |> SparseMapSystem.forEachiValid(
-       [@bs]
-       (
-         (typeArray, transform) =>
-           TypeArrayPoolCommonUtils.addFloat32TypeArrayToPool(
-             transform,
-             typeArray,
-             localPositionTypeArrayPool
-           )
-           |> ignore
-       )
-     );
-  (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
-};
+      float32ArrayPoolMap
+    ) =>
+  float32ArrayPoolMap
+  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(localToWorldMatrixMap)
+  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(localPositionMap);

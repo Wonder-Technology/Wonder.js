@@ -25,8 +25,6 @@ let deepCopyState = (state: StateDataType.state) => {
         index,
         localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
         localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-        localToWorldMatrixTypeArrayPool: [||],
-        localPositionTypeArrayPool: [||],
         parentMap: parentMap |> SparseMapSystem.copy,
         childMap: childMap |> SparseMapSystem.copy,
         dirtyMap: dirtyMap |> SparseMapSystem.copy,
@@ -36,28 +34,13 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState = (currentState, targetState) => {
-  let {
-    localToWorldMatrixMap,
-    localPositionMap,
-    localToWorldMatrixTypeArrayPool,
-    localPositionTypeArrayPool
-  } =
-    getTransformData(currentState);
-  let (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool) =
+let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
+  let {localToWorldMatrixMap, localPositionMap} = getTransformData(currentState);
+  let float32ArrayPoolMap =
     TransformTypeArrayPoolCommon.addAllTypeArrayToPool(
       localToWorldMatrixMap,
       localPositionMap,
-      localToWorldMatrixTypeArrayPool,
-      localPositionTypeArrayPool
+      float32ArrayPoolMap
     );
-  {
-    ...targetState,
-    transformData:
-      Some({
-        ...getTransformData(targetState),
-        localToWorldMatrixTypeArrayPool,
-        localPositionTypeArrayPool
-      })
-  }
+  (targetState, {...sharedData, float32ArrayPoolMap})
 };

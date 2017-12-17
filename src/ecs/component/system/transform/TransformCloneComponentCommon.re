@@ -14,7 +14,7 @@ let handleCloneComponent =
          [@bs]
          (
            (state, _) => {
-             let index = TransformCreateCommon.create(data);
+             let index = TransformCreateCommon.create(state);
              data
              |> TransformOperateCommon.setLocalPositionByTuple(index, localPosition)
              |> TransformDirtyCommon.mark(index, true)

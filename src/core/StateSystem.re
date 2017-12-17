@@ -21,16 +21,28 @@ let deepCopyState = (state: StateDataType.state) =>
   |> ShaderSystem.deepCopyState
   |> ProgramSystem.deepCopyState
   |> GLSLLocationSystem.deepCopyState
-  |> DeviceManagerSystem.deepCopyState;
+  |> DeviceManagerSystem.deepCopyState
+  |> TypeArrayPoolSystem.deepCopyState;
+
+let _getSharedData = (currentState: StateDataType.state) => {
+  gl: [@bs] DeviceManagerSystem.getGl(currentState),
+  float32ArrayPoolMap: TypeArrayPoolSystem.getFloat32ArrayPoolMap(currentState),
+  uint16ArrayPoolMap: TypeArrayPoolSystem.getUint16ArrayPoolMap(currentState)
+};
 
 let restoreFromState =
     (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
-  let (gl, newState) = DeviceManagerSystem.restoreFromState(currentState, targetState);
   let intersectShaderIndexDataArray =
-    ShaderSystem.getIntersectShaderIndexDataArray(currentState, newState);
-  newState
-  |> TransformAdmin.restoreFromState(currentState)
-  |> GeometryAdmin.restoreFromState(currentState)
+    ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
+  let sharedData = _getSharedData(currentState);
+  let (targetState, sharedData) =
+    targetState |> GeometryAdmin.restoreFromState(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> TransformAdmin.restoreFromState(currentState, sharedData);
+  let targetState = targetState |> DeviceManagerSystem.restoreFromState(currentState, sharedData);
+  let gl = [@bs] DeviceManagerSystem.getGl(targetState);
+  targetState
+  |> TypeArrayPoolSystem.restoreFromState(currentState, sharedData)
   |> VboBufferSystem.restoreFromState(currentState)
   |> GLSLSenderSystem.restoreFromState(currentState)
   |> ShaderSystem.restoreFromState(currentState)
@@ -106,6 +118,7 @@ let createState =
     schedulerData: ScheduleControllerHelper.initData(),
     timeControllerData: TimeControllerHelper.initData(),
     vboBufferData: VboBufferHelper.initData(),
-    globalTempData: GlobalTempHelper.initData()
+    globalTempData: GlobalTempHelper.initData(),
+    typeArrayPoolData: TypeArrayPoolHelper.initData()
   }
 };

@@ -11,9 +11,7 @@ let initData = (state: StateDataType.state) => {
       gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
       isInitMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      float32ArrayPoolMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      uint16ArrayPoolMap: WonderCommonlib.SparseMapSystem.createEmpty()
+      groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty()
     });
   state
 };

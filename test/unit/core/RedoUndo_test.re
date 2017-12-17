@@ -143,12 +143,25 @@ let _ =
         data.lastUsedProgram = program1;
         (state, shaderIndex1, program1)
       };
-      let _prepareDeviceManagerData = (gl, state) => {
+      let _prepareDeviceManagerData = (state) => {
         let data = DeviceManagerTool.getDeviceManagerData(state);
-        /* let gl = Obj.magic(0); */
+        let gl = Obj.magic(RandomTool.getRandomFloat(10.));
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
-        ({...state, deviceManagerData: {gl, colorWrite, clearColor}}, gl, (colorWrite, clearColor))
+        (
+          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor}},
+          Some(gl),
+          (colorWrite, clearColor)
+        )
+      };
+      let _prepareTypeArrayPoolData = (state) => {
+        open StateDataType;
+        let float32ArrayPoolMap = [|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|];
+        let uint16ArrayPoolMap = [|Uint16Array.make([|RandomTool.getRandomInt(3)|])|];
+        (
+          {...state, typeArrayPoolData: {float32ArrayPoolMap, uint16ArrayPoolMap}},
+          (float32ArrayPoolMap, uint16ArrayPoolMap)
+        )
       };
       beforeEach(
         () => {
@@ -243,7 +256,7 @@ let _ =
           );
           describe(
             "deep copy transform data",
-            () => {
+            () =>
               test(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -269,34 +282,11 @@ let _ =
                   |> expect
                   |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
-              );
-              test(
-                "clean localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool",
-                () => {
-                  open TransformType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    transform1,
-                    transform2,
-                    transform3
-                  ) =
-                    _prepareTransformData(state);
-                  let _ = Transform.getTransformPosition(transform2, state);
-                  let copiedState = StateTool.deepCopyState(state);
-                  let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
-                    TransformTool.getTransformData(copiedState);
-                  (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
-                  |> expect == ([||], [||])
-                }
               )
-            }
           );
           describe(
             "deep copy geometry data",
-            () => {
+            () =>
               test(
                 "change copied state shouldn't affect source state",
                 () => {
@@ -327,28 +317,7 @@ let _ =
                   |> expect
                   |> not_ == (Js.Undefined.empty |> Obj.magic)
                 }
-              );
-              test(
-                "clean float32ArrayPoolMap, uint16ArrayPoolMap",
-                () => {
-                  open StateDataType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    geometry1,
-                    geometry2,
-                    geometry3
-                  ) =
-                    _prepareGeometryData(state);
-                  let copiedState = StateTool.deepCopyState(state);
-                  let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                    GeometryTool.getGeometryData(copiedState);
-                  (float32ArrayPoolMap, uint16ArrayPoolMap) |> expect == ([||], [||])
-                }
               )
-            }
           );
           describe(
             "deep copy vbo buffer data",
@@ -551,9 +520,10 @@ let _ =
                 () => {
                   open StateDataType;
                   let (state, gl, (colorWrite, clearColor)) =
-                    _prepareDeviceManagerData(Obj.magic(0), state^);
+                    _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyState(state);
-                  let {gl} = DeviceManagerTool.getDeviceManagerData(copiedState);
+                  let {gl}: deviceManagerData =
+                    DeviceManagerTool.getDeviceManagerData(copiedState);
                   gl |> expect == None
                 }
               );
@@ -562,7 +532,7 @@ let _ =
                 () => {
                   open StateDataType;
                   let (state, gl, (colorWrite, clearColor)) =
-                    _prepareDeviceManagerData(Obj.magic(0), state^);
+                    _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyState(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
@@ -571,6 +541,27 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "deep copy typeArrayPool data",
+            () =>
+              test(
+                "clean pool map",
+                () => {
+                  open StateDataType;
+                  open TypeArrayPoolType;
+                  let (state, _) = _prepareTypeArrayPoolData(state^);
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
+                    TypeArrayPoolTool.getTypeArrayPoolData(copiedState);
+                  (float32ArrayPoolMap, uint16ArrayPoolMap)
+                  |>
+                  expect == (
+                              WonderCommonlib.SparseMapSystem.createEmpty(),
+                              WonderCommonlib.SparseMapSystem.createEmpty()
+                            )
+                }
+              )
           );
           describe(
             "deep copy cameraController data",
@@ -705,7 +696,7 @@ let _ =
                       test(
                         "add current state->transformData->localToWorldMatrixMap, localPositionMap typeArr to pool",
                         () => {
-                          open TransformType;
+                          open TypeArrayPoolType;
                           let (state, _, _, _, _, _, _) = _prepareTransformData(state);
                           let (currentState, _, transform4) =
                             GameObjectTool.createGameObject(StateTool.createNewCompleteState());
@@ -713,13 +704,16 @@ let _ =
                           let currentState =
                             Transform.setTransformLocalPosition(transform4, pos4, currentState);
                           let _ = StateTool.restoreFromState(currentState, state);
-                          let {localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool} =
-                            StateTool.getState() |> TransformTool.getTransformData;
-                          (localToWorldMatrixTypeArrayPool, localPositionTypeArrayPool)
+                          let {float32ArrayPoolMap} =
+                            StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                          (
+                            float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(16),
+                            float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(3)
+                          )
                           |>
                           expect == (
-                                      [|TransformTool.getDefaultLocalToWorldMatrix()|],
-                                      [|TransformTool.changeTupleToTypeArray(pos4)|]
+                                      TransformTool.getDefaultLocalToWorldMatrix(),
+                                      TransformTool.changeTupleToTypeArray(pos4)
                                     )
                         }
                       )
@@ -735,6 +729,7 @@ let _ =
                         "add current state->geometryData->verticesMap, indicesMap typeArr to pool",
                         () => {
                           open StateDataType;
+                          open TypeArrayPoolType;
                           let (
                             state,
                             gameObject1,
@@ -750,7 +745,7 @@ let _ =
                           let currentState = GeometryTool.initGeometry(geometry4, currentState);
                           let _ = StateTool.restoreFromState(currentState, state);
                           let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                            StateTool.getState() |> GeometryTool.getGeometryData;
+                            StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
                           (
                             float32ArrayPoolMap
                             |> WonderCommonlib.SparseMapSystem.unsafeGet(
@@ -916,15 +911,34 @@ let _ =
                     "use current deviceManager data->gl",
                     () => {
                       open StateDataType;
-                      let (state, targetGl, _) = _prepareDeviceManagerData(Obj.magic(0), state^);
+                      let (state, targetGl, _) = _prepareDeviceManagerData(state^);
                       let (currentState, currentGl, _) =
                         _prepareDeviceManagerData(
-                          Obj.magic(1),
                           StateTool.createNewCompleteState()
                         );
                       let newState = StateTool.restoreFromState(currentState, state);
-                      let {gl} = DeviceManagerTool.getDeviceManagerData(newState);
+                      let {gl}: deviceManagerData =
+                        DeviceManagerTool.getDeviceManagerData(newState);
                       gl |> expect == currentGl
+                    }
+                  )
+              );
+              describe(
+                "restore typeArrayPool data to target state",
+                () =>
+                  test(
+                    "use current typeArrayPool data->float32ArrayPoolMap, uint16ArrayPoolMap",
+                    () => {
+                      open StateDataType;
+                      open TypeArrayPoolType;
+                      let (state, _) = _prepareTypeArrayPoolData(state^);
+                      let (currentState, (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)) =
+                        _prepareTypeArrayPoolData(StateTool.createNewCompleteState());
+                      let newState = StateTool.restoreFromState(currentState, state);
+                      let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
+                        TypeArrayPoolTool.getTypeArrayPoolData(newState);
+                      (float32ArrayPoolMap, uint16ArrayPoolMap)
+                      |> expect == (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)
                     }
                   )
               );

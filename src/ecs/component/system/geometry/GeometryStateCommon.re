@@ -22,8 +22,6 @@ let deepCopyState = (state: StateDataType.state) => {
         index,
         verticesMap: verticesMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
         indicesMap: indicesMap |> CopyStateUtils.deepCopyUint16ArrayArray,
-        float32ArrayPoolMap: [||],
-        uint16ArrayPoolMap: [||],
         computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
         configDataMap: configDataMap |> SparseMapSystem.copy,
         isInitMap: isInitMap |> SparseMapSystem.copy,
@@ -34,19 +32,15 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState = (currentState, targetState) => {
-  let {verticesMap, indicesMap, float32ArrayPoolMap, uint16ArrayPoolMap} =
-    getGeometryData(currentState);
+let restoreFromState =
+    (currentState, {float32ArrayPoolMap, uint16ArrayPoolMap} as sharedData, targetState) => {
+  let {verticesMap, indicesMap} = getGeometryData(currentState);
   let (float32ArrayPoolMap, uint16ArrayPoolMap) =
     GeometryTypeArrayPoolCommon.addAllTypeArrayToPool(
       verticesMap,
       indicesMap,
       float32ArrayPoolMap,
-      uint16ArrayPoolMap,
-      currentState
+      uint16ArrayPoolMap
     );
-  {
-    ...targetState,
-    geometryData: Some({...getGeometryData(targetState), float32ArrayPoolMap, uint16ArrayPoolMap})
-  }
+  (targetState, {...sharedData, float32ArrayPoolMap, uint16ArrayPoolMap})
 };

@@ -25,7 +25,7 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType
 
 let create = (state: StateDataType.state) => {
   let data = getTransformData(state);
-  let index = TransformCreateCommon.create(data);
+  let index = TransformCreateCommon.create(state);
   TransformDirtyCommon.mark(index, false, data) |> ignore;
   (state, index)
 };

@@ -84,7 +84,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("vertices should exist")
+                  |> toThrow
                 }
               )
           )

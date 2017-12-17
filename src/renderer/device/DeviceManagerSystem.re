@@ -29,7 +29,7 @@ let setColorWrite =
       writeAlpha: Js.boolean,
       state: StateDataType.state
     ) => {
-  let {colorWrite} as data = _getDeviceManagerData(state);
+  let {colorWrite} = _getDeviceManagerData(state);
   switch colorWrite {
   | Some((oldWriteRed, oldWriteGreen, oldWriteBlue, oldWriteAlpha))
       when
@@ -72,7 +72,7 @@ let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
 };
 
 let clearColor = (gl, (r: float, g: float, b: float, a: float), state: state) => {
-  let {clearColor} as data = _getDeviceManagerData(state);
+  let {clearColor} = _getDeviceManagerData(state);
   switch clearColor {
   | Some((oldR, oldG, oldB, oldA)) when oldR == r && oldG == g && oldB == b && oldA == a => state
   | _ =>
@@ -86,19 +86,7 @@ let deepCopyState = (state: StateDataType.state) => {
   {...state, deviceManagerData: {gl: None, colorWrite, clearColor}}
 };
 
-let restoreFromState = (currentState, targetState) => {
-  let currentData = currentState |> _getDeviceManagerData;
-  let {colorWrite, clearColor} = targetState |> _getDeviceManagerData;
-  (
-    [@bs] getGl(currentState),
-    {
-      ...targetState,
-      deviceManagerData: {
-        ..._getDeviceManagerData(targetState),
-        gl: currentData.gl,
-        colorWrite,
-        clearColor
-      }
-    }
-  )
+let restoreFromState = (currentState, {gl}, targetState) => {
+  ...targetState,
+  deviceManagerData: {..._getDeviceManagerData(targetState), gl: Some(gl)}
 };

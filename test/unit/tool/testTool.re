@@ -4,14 +4,16 @@ let initWithoutBuildFakeDom =
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(300)}),
       ()
-    ) =>
+    ) => {
+  Random.init(1);
   Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
       state
     }
-  );
+  )
+};
 
 let init =
     (
