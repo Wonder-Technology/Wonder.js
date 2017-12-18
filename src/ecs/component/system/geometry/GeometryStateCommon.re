@@ -35,7 +35,7 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState =
+let restore =
     (currentState, {float32ArrayPoolMap, uint16ArrayPoolMap} as sharedData, targetState) => {
   let {verticesMap, indicesMap} = getGeometryData(currentState);
   let (float32ArrayPoolMap, uint16ArrayPoolMap) =

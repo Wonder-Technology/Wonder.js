@@ -805,13 +805,13 @@ let _ =
         }
       );
       describe(
-        "restoreFromState",
+        "restore",
         () => {
           let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
             let (state, _, _, _, _, _, _) = prepareDataFunc(state);
             let currentState = StateTool.createNewCompleteState();
             let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
-            let _ = StateTool.restoreFromState(currentState, state);
+            let _ = StateTool.restore(currentState, state);
             StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
           };
           describe(
@@ -847,7 +847,7 @@ let _ =
                 "set restored state to stateData",
                 () => {
                   let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                  let currentState = StateTool.restoreFromState(currentState, state);
+                  let currentState = StateTool.restore(currentState, state);
                   StateTool.getState() |> expect == currentState
                 }
               );
@@ -855,7 +855,7 @@ let _ =
                 "change restored state should affect source state",
                 () => {
                   let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                  let currentState = StateTool.restoreFromState(currentState, state);
+                  let currentState = StateTool.restore(currentState, state);
                   let (currentState, gameObject5, meshRenderer5) =
                     MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
                   state
@@ -869,7 +869,7 @@ let _ =
                   let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
                     _prepare(state);
                   let currentState =
-                    StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
+                    StateTool.restore(currentState, state |> StateTool.deepCopyState);
                   let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
                   MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                   |> expect == [|gameObject1, gameObject2|]
@@ -890,7 +890,7 @@ let _ =
                   let pos4 = ((-1.), 4., 5.);
                   let currentState =
                     Transform.setTransformLocalPosition(transform4, pos4, currentState);
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap} =
                     StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
                   (
@@ -926,7 +926,7 @@ let _ =
                   let (currentState, gameObject4, geometry4) =
                     BoxGeometryTool.createGameObject(StateTool.createNewCompleteState());
                   let currentState = GeometryTool.initGeometry(geometry4, currentState);
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap} =
                     StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
                   (
@@ -963,7 +963,7 @@ let _ =
                     _prepareVboBufferData(state^);
                   let (currentState, _, _, _) =
                     _prepareVboBufferData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
                     newState |> VboBufferTool.getVboBufferData;
                   (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
@@ -988,7 +988,7 @@ let _ =
                     (buffer4, buffer5, buffer6)
                   ) =
                     _prepareVboBufferData(StateTool.createNewCompleteState());
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restore(currentState, state);
                   let {
                     vertexArrayBufferPool,
                     elementArrayBufferPool,
@@ -1017,7 +1017,7 @@ let _ =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
                     newState |> GlslSenderTool.getGLSLSenderData;
                   (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
@@ -1032,7 +1032,7 @@ let _ =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {vertexAttribHistoryArray} = newState |> GlslSenderTool.getGLSLSenderData;
                   vertexAttribHistoryArray |> expect == WonderCommonlib.ArraySystem.createEmpty()
                 }
@@ -1064,7 +1064,7 @@ let _ =
                   let index = 0;
                   let typeArr = Float32Array.make([|1.|]);
                   modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap}: typeArrayPoolData =
                     StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
                   float32ArrayPoolMap
@@ -1084,7 +1084,7 @@ let _ =
                   |> WonderCommonlib.SparseMapSystem.set(0, true)
                   |> WonderCommonlib.SparseMapSystem.set(1, false)
                   |> ignore;
-                  let _ = StateTool.restoreFromState(StateTool.createNewCompleteState(), state);
+                  let _ = StateTool.restore(StateTool.createNewCompleteState(), state);
                   let {isSendModelMatrixDataMap} =
                     SourceInstanceTool.getSourceInstanceData(StateTool.getState());
                   isSendModelMatrixDataMap |> expect == [|false, false|]
@@ -1103,7 +1103,7 @@ let _ =
                   let data = RenderDataTool.getRenderData(state);
                   data.renderArray = Some([|0|]);
                   data.cameraData = Some(Obj.magic(1));
-                  let _ = StateTool.restoreFromState(StateTool.createNewCompleteState(), state);
+                  let _ = StateTool.restore(StateTool.createNewCompleteState(), state);
                   let {renderArray, cameraData} =
                     RenderDataTool.getRenderData(StateTool.getState());
                   (renderArray, cameraData) |> expect == (None, None)
@@ -1121,7 +1121,7 @@ let _ =
                   let currentState = StateTool.createNewCompleteState();
                   let data = GlobalTempStateCommon.getGlobalTempData(currentState);
                   data.float32Array1 = Float32Array.make([|2.|]);
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restore(currentState, state);
                   let {float32Array1} = GlobalTempTool.getGlobalTempData(StateTool.getState());
                   float32Array1 |> expect == data.float32Array1
                 }
@@ -1144,7 +1144,7 @@ let _ =
                       data.glslData.precision = Some("aaa");
                       expect(
                         () => {
-                          let _ = StateTool.restoreFromState(currentState, state);
+                          let _ = StateTool.restore(currentState, state);
                           ()
                         }
                       )
@@ -1165,7 +1165,7 @@ let _ =
                   let (state, shaderIndex1, program1) = _prepareProgramData(state^);
                   let (currentState, _, _) =
                     _prepareProgramData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
                   lastUsedProgram |> expect == None
                 }
@@ -1181,7 +1181,7 @@ let _ =
                   let (state, targetGl, _) = _prepareDeviceManagerData(state^);
                   let (currentState, currentGl, _) =
                     _prepareDeviceManagerData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {gl}: deviceManagerData = DeviceManagerTool.getDeviceManagerData(newState);
                   gl |> expect == currentGl
                 }
@@ -1198,7 +1198,7 @@ let _ =
                   let (state, _) = _prepareTypeArrayPoolData(state^);
                   let (currentState, (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)) =
                     _prepareTypeArrayPoolData(StateTool.createNewCompleteState());
-                  let newState = StateTool.restoreFromState(currentState, state);
+                  let newState = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
                     TypeArrayPoolTool.getTypeArrayPoolData(newState);
                   (float32ArrayPoolMap, uint16ArrayPoolMap)
@@ -1264,7 +1264,7 @@ let _ =
                          );
                     let currentState = currentState |> GameObjectTool.initGameObject(gameObject);
                     let initShaderCount = getCallCount(currentStateCreateProgram);
-                    let _ = StateTool.restoreFromState(currentState, copiedState);
+                    let _ = StateTool.restore(currentState, copiedState);
                     (currentStateCreateProgram, initShaderCount)
                   };
                   test(
@@ -1470,7 +1470,7 @@ let _ =
                       currentSenderTuple
                     ) =
                       _prepareState2(StateTool.createNewCompleteState());
-                    let newState = StateTool.restoreFromState(currentState, targetState);
+                    let newState = StateTool.restore(currentState, targetState);
                     (
                       newState,
                       (

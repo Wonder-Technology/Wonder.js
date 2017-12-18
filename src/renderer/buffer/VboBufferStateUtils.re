@@ -16,7 +16,7 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState = (currentState, targetState) => {
+let restore = (currentState, targetState) => {
   let (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool) =
     VboBufferPoolCommon.addAllBufferToPool(currentState);
   {

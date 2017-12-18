@@ -10,4 +10,4 @@ let markSendModelMatrix = SourceInstanceSystem.markSendModelMatrix;
 
 let deepCopyState = SourceInstanceSystem.deepCopyState;
 
-let restoreFromState = SourceInstanceSystem.restoreFromState;
+let restore = SourceInstanceSystem.restore;

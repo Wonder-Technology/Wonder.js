@@ -34,29 +34,29 @@ let _getSharedData = (currentState: StateDataType.state) => {
   uint16ArrayPoolMap: TypeArrayPoolSystem.getUint16ArrayPoolMap(currentState)
 };
 
-let restoreFromState =
+let restore =
     (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
   let intersectShaderIndexDataArray =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
-    targetState |> GeometryAdmin.restoreFromState(currentState, sharedData);
+    targetState |> GeometryAdmin.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> TransformAdmin.restoreFromState(currentState, sharedData);
+    targetState |> TransformAdmin.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> SourceInstanceAdmin.restoreFromState(currentState, sharedData);
-  let targetState = targetState |> DeviceManagerSystem.restoreFromState(currentState, sharedData);
+    targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
+  let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
   let gl = [@bs] DeviceManagerSystem.getGl(targetState);
   targetState
-  |> TypeArrayPoolSystem.restoreFromState(currentState, sharedData)
-  |> VboBufferSystem.restoreFromState(currentState)
-  |> ShaderSystem.restoreFromState(currentState)
-  |> ProgramSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
-  |> GLSLLocationSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
-  |> GLSLSenderSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
-  |> MaterialAdmin.restoreFromState(gl, currentState)
-  |> RenderDataSystem.restoreFromState(currentState)
-  |> GlobalTempSystem.restoreFromState(currentState)
+  |> TypeArrayPoolSystem.restore(currentState, sharedData)
+  |> VboBufferSystem.restore(currentState)
+  |> ShaderSystem.restore(currentState)
+  |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
+  |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)
+  |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
+  |> MaterialAdmin.restore(gl, currentState)
+  |> RenderDataSystem.restore(currentState)
+  |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
 };
 

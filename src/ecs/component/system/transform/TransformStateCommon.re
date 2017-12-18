@@ -34,7 +34,7 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
+let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
   let {localToWorldMatrixMap, localPositionMap} = getTransformData(currentState);
   let float32ArrayPoolMap =
     TransformTypeArrayPoolCommon.addAllTypeArrayToPool(

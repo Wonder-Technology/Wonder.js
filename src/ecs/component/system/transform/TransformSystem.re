@@ -110,4 +110,4 @@ let getGameObject = (transform: transform, state: StateDataType.state) =>
 
 let deepCopyState = TransformStateCommon.deepCopyState;
 
-let restoreFromState = TransformStateCommon.restoreFromState;
+let restore = TransformStateCommon.restore;

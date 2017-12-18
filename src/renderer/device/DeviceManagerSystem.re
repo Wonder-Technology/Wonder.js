@@ -86,7 +86,7 @@ let deepCopyState = (state: StateDataType.state) => {
   {...state, deviceManagerData: {gl: None, colorWrite, clearColor}}
 };
 
-let restoreFromState = (currentState, {gl}, targetState) => {
+let restore = (currentState, {gl}, targetState) => {
   ...targetState,
   deviceManagerData: {..._getDeviceManagerData(targetState), gl: Some(gl)}
 };

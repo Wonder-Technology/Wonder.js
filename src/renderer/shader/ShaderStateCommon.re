@@ -64,7 +64,7 @@ let deepCopyState = (state: StateDataType.state) => {
         )
    )
  };
-let restoreFromState = (currentState, targetState) => {
+let restore = (currentState, targetState) => {
   /* todo optimize: collect currentState-> no used shader/program to pool */
   requireCheck(
     () =>

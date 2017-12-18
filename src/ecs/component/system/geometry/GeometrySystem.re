@@ -89,4 +89,4 @@ let isAlive = (geometry: geometry, state: StateDataType.state) =>
 
 let deepCopyState = GeometryStateCommon.deepCopyState;
 
-let restoreFromState = GeometryStateCommon.restoreFromState;
+let restore = GeometryStateCommon.restore;

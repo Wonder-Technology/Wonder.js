@@ -16,7 +16,7 @@
         import { startDirector } from "../../lib/es6_global/src/core/api/Director.js";
 
 
-        import { deepCopyState, restoreFromState } from "../../lib/es6_global/src/core/api/State.js";
+        import { deepCopyState, restoreState } from "../../lib/es6_global/src/core/api/State.js";
 
 
 
@@ -52,7 +52,7 @@
                 isTest: false
             });
 
-            initSample2(state);
+            initSample1(state);
 
 
             function createBoxesByClone(count, state) {
@@ -226,7 +226,7 @@
 
 
             function initSample2(state) {
-                var [state, box, objectInstanceBoxes] = createBoxesByInstance(1000, state);
+                var [state, box, objectInstanceBoxes] = createBoxesByInstance(10000, state);
 
 
 
@@ -301,7 +301,7 @@
 
 
 
-                        return restoreFromState(state, window.copyState1);
+                        return restoreState(state, window.copyState1);
                     }
 
                     count += 1;
@@ -354,7 +354,7 @@
                     if (count === 2) {
                         count = 1;
 
-                        return restoreFromState(state, window.copyState1);
+                        return restoreState(state, window.copyState1);
                     }
 
                     count += 1;

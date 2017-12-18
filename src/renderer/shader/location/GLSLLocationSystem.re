@@ -57,7 +57,7 @@ let deepCopyState = (state: StateDataType.state) =>
      } */
   state;
 
-let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState) => {
+let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {attributeLocationMap, uniformLocationMap} = _getGLSLLocationData(currentState);
   {
     ...targetState,

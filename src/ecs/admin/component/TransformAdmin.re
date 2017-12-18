@@ -4,4 +4,4 @@ let getTransformData = TransformSystem.getTransformData;
 
 let deepCopyState = TransformSystem.deepCopyState;
 
-let restoreFromState = TransformSystem.restoreFromState;
+let restore = TransformSystem.restore;

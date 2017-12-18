@@ -70,7 +70,7 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState =
+let restore =
     (
       currentState,
       {float32ArrayPoolMap, uint16ArrayPoolMap}: sharedDataForRestoreState,

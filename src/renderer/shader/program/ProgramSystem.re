@@ -140,7 +140,7 @@ let deepCopyState = (state: StateDataType.state) =>
   /* let {programMap} = state |> _getProgramData; */
   state;
 
-let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState) => {
+let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {programMap} = _getProgramData(currentState);
   {
     ...targetState,

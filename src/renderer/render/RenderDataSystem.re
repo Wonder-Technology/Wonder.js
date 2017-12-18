@@ -27,7 +27,7 @@ let setRenderArray = (renderArray, state: StateDataType.state) =>
 let setCameraData = (cameraData, state: StateDataType.state) =>
   _getRenderData(state).cameraData = cameraData;
 
-let restoreFromState = (currentState, targetState) => {
+let restore = (currentState, targetState) => {
   ...targetState,
   renderData: {renderArray: None, cameraData: None}
 };

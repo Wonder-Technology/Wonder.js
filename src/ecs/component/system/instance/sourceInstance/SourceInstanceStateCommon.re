@@ -40,7 +40,7 @@ let _buildIsNotSendModelMatrixDataMap = (isSendModelMatrixDataMap) =>
        WonderCommonlib.SparseMapSystem.createEmpty()
      );
 
-let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
+let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
   let {modelMatrixFloat32ArrayMap} = getSourceInstanceData(currentState);
   let {isSendModelMatrixDataMap} as targetData = getSourceInstanceData(targetState);
   let float32ArrayPoolMap =

@@ -24,7 +24,7 @@ let _getAllAliveMaterials = (state: StateDataType.state) =>
 
 let deepCopyState = MaterialSystem.deepCopyState;
 
-let restoreFromState = (gl, currentState, targetState) => {
-  let newState = MaterialSystem.restoreFromState(currentState, targetState);
+let restore = (gl, currentState, targetState) => {
+  let newState = MaterialSystem.restore(currentState, targetState);
   newState |> initMaterials(_getAllAliveMaterials(newState), gl)
 };

@@ -78,4 +78,4 @@ let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndex
 
 let deepCopyState = ShaderStateCommon.deepCopyState;
 
-let restoreFromState = ShaderStateCommon.restoreFromState;
+let restore = ShaderStateCommon.restore;

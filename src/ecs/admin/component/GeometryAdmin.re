@@ -12,4 +12,4 @@ let getIndicesCount = GeometrySystem.getIndicesCount;
 
 let deepCopyState = GeometrySystem.deepCopyState;
 
-let restoreFromState = GeometrySystem.restoreFromState;
+let restore = GeometrySystem.restore;

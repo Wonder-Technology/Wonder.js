@@ -21,7 +21,7 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-let restoreFromState = (currentState, targetState) => {
+let restore = (currentState, targetState) => {
   ...targetState,
   materialData: Some({...getMaterialData(targetState), shaderIndexMap: [||]})
 };

@@ -18,4 +18,4 @@ let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.st
 
 let deepCopyState = VboBufferStateUtils.deepCopyState;
 
-let restoreFromState = VboBufferStateUtils.restoreFromState;
+let restore = VboBufferStateUtils.restore;
