@@ -15,14 +15,21 @@ let createProgram = (gl) => createProgram(gl);
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
   compileShader(shader, gl);
-  if (getShaderParameter(shader, getCompileStatus(gl), gl) == Js.false_) {
-    WonderCommonlib.LogUtils.log(getShaderInfoLog(shader, gl));
-    WonderCommonlib.LogUtils.log({j|source:
-            $glslSource|j});
-    shader
-  } else {
-    shader
-  }
+  shader
+  |> ensureCheck(
+       (shader) =>
+         Contract.Operators.(
+           test(
+             "judge shader parameter",
+             () =>
+               if (getShaderParameter(shader, getCompileStatus(gl), gl) === Js.false_) {
+                 WonderCommonlib.LogUtils.log(getShaderInfoLog(shader, gl));
+                 WonderCommonlib.LogUtils.log({j|source:
+            $glslSource|j})
+               }
+           )
+         )
+     )
 };
 
 let _linkProgram = (program, gl) =>
