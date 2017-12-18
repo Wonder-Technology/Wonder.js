@@ -1341,11 +1341,13 @@ let _ =
                     open StateDataType;
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
+                    let shaderIndex3 = 2;
                     let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
-                    data.index = 2;
+                    data.index = 3;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                    |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
+                    |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2)
+                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3);
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
@@ -1404,7 +1406,7 @@ let _ =
                     data.index = 2;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
+                    |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2);
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
@@ -1500,7 +1502,7 @@ let _ =
                               let (newState, (currentState, _, _, _, _), (targetState, _, _, _, _)) =
                                 _prepare(state^);
                               let {index} = newState |> ShaderTool.getShaderData;
-                              index |> expect == 2
+                              index |> expect == 1
                             }
                           )
                       );

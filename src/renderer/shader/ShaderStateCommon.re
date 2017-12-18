@@ -89,7 +89,7 @@ let restoreFromState = (currentState, targetState) => {
   /* let targetShaderData = getShaderData(targetState); */
   {
     ...targetState,
-    shaderData: {...targetShaderData, shaderIndexMap: intersectShaderIndexMap}
+    shaderData: {...targetShaderData, index, shaderIndexMap: intersectShaderIndexMap}
     /* shaderData: {
       ...targetShaderData,
       index: 0,
