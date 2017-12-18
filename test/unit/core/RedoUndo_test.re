@@ -1194,9 +1194,14 @@ let _ =
                       getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
                     }
                   );
-                  test(
+                  describe(
                     "else, not init it",
                     () => {
+                      test
+                      ("test", 
+                      (
+                      () => {
+                      
                       let (state, _) = _prepareInstanceGameObject(sandbox, state^);
                       let (state, _) = _prepareBasicMaterialGameObject(sandbox, state);
                       let state =
@@ -1209,8 +1214,33 @@ let _ =
                       let (currentStateCreateProgram, initShaderCount) =
                         _exec(currentState, copiedState, gameObject);
                       getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
-                    }
+                      })
+                      );
+                  describe(
+                    "fix bug",
+                    () =>
+                      test(
+                        "test create gameObject which has no material",
+                        () => {
+                          let (state, _) = _prepareInstanceGameObject(sandbox, state^);
+                          let (state, _, _) = GameObjectTool.createGameObject(state);
+                          let (state, gameObject) =
+                            _prepareBasicMaterialGameObject(sandbox, state);
+                          let state =
+                            state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                          let state = state |> DirectorTool.prepare |> DirectorTool.init;
+                          let copiedState = StateTool.deepCopyState(state);
+                          let currentState = state;
+                          let (currentState, gameObject) =
+                            _prepareBasicMaterialGameObject(sandbox, currentState);
+                          let (currentStateCreateProgram, initShaderCount) =
+                            _exec(currentState, copiedState, gameObject);
+                          getCallCount(currentStateCreateProgram) |> expect == initShaderCount
+                        }
+                      )
                   )
+                    }
+                  );
                 }
               );
               describe(
