@@ -20,8 +20,11 @@ let deepCopyState = (state: StateDataType.state) => {
     geometryData:
       Some({
         index,
-        verticesMap: verticesMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-        indicesMap: indicesMap |> CopyStateUtils.deepCopyUint16ArrayArray,
+        /*!
+        because vertices, indices are read-only data, so need to deep copy
+        */
+        verticesMap: verticesMap |> SparseMapSystem.copy,
+        indicesMap: indicesMap |> SparseMapSystem.copy,
         computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
         configDataMap: configDataMap |> SparseMapSystem.copy,
         isInitMap: isInitMap |> SparseMapSystem.copy,
