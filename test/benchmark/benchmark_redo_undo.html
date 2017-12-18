@@ -52,7 +52,7 @@
                 isTest: false
             });
 
-            initSample1(state);
+            initSample2(state);
 
 
             function createBoxesByClone(count, state) {
@@ -190,7 +190,7 @@
 
 
             function initSample1(state) {
-                var [state, boxes] = createBoxesByClone(1, state);
+                var [state, boxes] = createBoxesByClone(5000, state);
 
 
 
@@ -226,7 +226,7 @@
 
 
             function initSample2(state) {
-                var [state, box, objectInstanceBoxes] = createBoxesByInstance(10000, state);
+                var [state, box, objectInstanceBoxes] = createBoxesByInstance(5000, state);
 
 
 
@@ -263,7 +263,7 @@
 
                         window.copyState1 = deepCopyStateForRestore(state);
 
-                        var [state, boxes] = createBoxesByClone(10000, state);
+                        var [state, boxes] = createBoxesByClone(5000, state);
 
 
                         var [state, boxes] = setPosition(boxes, state);
@@ -334,7 +334,7 @@
 
 
 
-                        var [state, boxes] = createBoxesByClone(1000, state);
+                        var [state, boxes] = createBoxesByClone(5000, state);
 
 
                         var [state, boxes] = setPosition(boxes, state);
