@@ -24,7 +24,12 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     getGeometryData(state);
   let state =
     VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state)
-    |> GeometryTypeArrayPoolCommon.addTypeArrayToPool(geometry, verticesMap, indicesMap);
+    |> GeometryTypeArrayPoolCommon.addTypeArrayToPool(
+         geometry,
+         MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
+         verticesMap,
+         indicesMap
+       );
   groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0) |> ignore;
   disposeSparseMapData(geometry, verticesMap) |> ignore;
   disposeSparseMapData(geometry, indicesMap) |> ignore;

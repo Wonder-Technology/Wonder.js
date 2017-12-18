@@ -42,6 +42,7 @@ let _disposeData =
   | Some(typeArr) =>
     TypeArrayPoolSystem.addFloat32TypeArrayToPool(
       typeArr,
+      MemoryConfigSystem.getMaxBigTypeArrayPoolSize(state),
       TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
     )
     |> ignore

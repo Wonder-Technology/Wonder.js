@@ -24,7 +24,8 @@ let deepCopyState = (state: StateDataType.state) =>
   |> DeviceManagerSystem.deepCopyState
   |> TypeArrayPoolSystem.deepCopyState
   |> SourceInstanceAdmin.deepCopyState
-  |> ObjectInstanceAdmin.deepCopyState;
+  |> ObjectInstanceAdmin.deepCopyState
+  |> GameObjectAdmin.deepCopyState;
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.getGl(currentState),

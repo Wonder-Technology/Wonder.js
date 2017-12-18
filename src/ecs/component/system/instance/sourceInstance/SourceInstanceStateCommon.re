@@ -46,6 +46,7 @@ let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targe
   let float32ArrayPoolMap =
     TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(
       modelMatrixFloat32ArrayMap,
+      MemoryConfigSystem.getMaxBigTypeArrayPoolSize(targetState),
       float32ArrayPoolMap
     );
   (

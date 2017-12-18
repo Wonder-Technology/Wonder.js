@@ -24,19 +24,13 @@ let _disposeFromParentAndChildMap = (transform, data) => {
 };
 
 let _disposeData = (transform: transform, state: StateDataType.state) => {
-  let {
-        localToWorldMatrixMap,
-        localPositionMap,
-        parentMap,
-        childMap,
-        dirtyMap,
-        gameObjectMap
-      } as data =
+  let {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as data =
     getTransformData(state);
   _disposeFromParentAndChildMap(transform, data) |> ignore;
   let state =
     TransformTypeArrayPoolCommon.addTypeArrayToPool(
       transform,
+      MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
       localToWorldMatrixMap,
       localPositionMap,
       state

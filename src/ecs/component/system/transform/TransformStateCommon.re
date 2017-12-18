@@ -38,6 +38,7 @@ let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targe
   let {localToWorldMatrixMap, localPositionMap} = getTransformData(currentState);
   let float32ArrayPoolMap =
     TransformTypeArrayPoolCommon.addAllTypeArrayToPool(
+MemoryConfigSystem.getMaxTypeArrayPoolSize(targetState),
       localToWorldMatrixMap,
       localPositionMap,
       float32ArrayPoolMap

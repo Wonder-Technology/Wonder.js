@@ -1,1 +1,5 @@
-type memoryConfig = {mutable maxDisposeCount: int};
+type memoryConfig = {
+  mutable maxDisposeCount: int,
+  mutable maxTypeArrayPoolSize: int,
+  mutable maxBigTypeArrayPoolSize: int
+};

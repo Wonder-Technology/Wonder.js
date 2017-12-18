@@ -336,3 +336,5 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     };
   state
 };
+
+let deepCopyState = GameObjectStateCommon.deepCopyState;

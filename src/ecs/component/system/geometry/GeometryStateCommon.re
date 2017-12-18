@@ -37,6 +37,7 @@ let restoreFromState =
   let {verticesMap, indicesMap} = getGeometryData(currentState);
   let (float32ArrayPoolMap, uint16ArrayPoolMap) =
     GeometryTypeArrayPoolCommon.addAllTypeArrayToPool(
+MemoryConfigSystem.getMaxTypeArrayPoolSize(targetState),
       verticesMap,
       indicesMap,
       float32ArrayPoolMap,
