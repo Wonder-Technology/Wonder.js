@@ -30,11 +30,11 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
          )
      );
 
-let setLocalToWorldMatrix =
+/* let setLocalToWorldMatrix =
     (transform: transform, matTypeArr: Float32Array.t, localToWorldMatrixMap) => {
   localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.set(transform, matTypeArr)|>ignore;
   localToWorldMatrixMap
-};
+}; */
 
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap

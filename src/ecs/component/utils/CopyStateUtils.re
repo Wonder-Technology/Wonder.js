@@ -7,12 +7,12 @@ let copyFloat32Array = (typeArr: Float32Array.t) =>
     Float32Array.copy(typeArr) |> Obj.magic
   };
 
-let copyUint16Array = (typeArr: Uint16Array.t) =>
+/* let copyUint16Array = (typeArr: Uint16Array.t) =>
   if (typeArr |> Obj.magic === Js.Undefined.empty) {
     Js.Undefined.empty |> Obj.magic
   } else {
     Uint16Array.copy(typeArr) |> Obj.magic
-  };
+  }; */
 
 let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
   arr
@@ -27,7 +27,7 @@ let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
        [||]
      );
 
-let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
+/* let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
   arr
   |> ArraySystem.reduceOneParam(
        [@bs]
@@ -38,7 +38,7 @@ let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
          }
        ),
        [||]
-     );
+     ); */
 
 let deepCopyArrayArray = (arr: array(array('a))) =>
   arr

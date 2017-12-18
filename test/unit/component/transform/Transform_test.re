@@ -378,7 +378,7 @@ let _ =
         }
       );
       describe(
-        "TransformTool.setTransformLocalPositionByTypeArray",
+        "setTransformLocalPositionByTypeArray",
         () => {
           open Vector3System;
           open Vector3Type;
@@ -485,6 +485,44 @@ let _ =
                 }
               )
             }
+          )
+      );
+      describe(
+        "setTransformPositionByTypeArray",
+        () =>
+          describe(
+            "set position in world coordinate system",
+            () =>
+              Js.Typed_array.(
+                test(
+                  "change parent's position should affect children",
+                  () => {
+                    open Vector3System;
+                    open Vector3Type;
+                    let (state, parent) = createTransform(state^);
+                    let (state, child) = createTransform(state);
+                    let pos1 = Float32Array.make([|1., 2., 3.|]);
+                    let pos2 = Float32Array.make([|5., 4., 30.|]);
+                    let state = setTransformParent(Js.Nullable.return(parent), child, state);
+                    let state =
+                      TransformTool.setTransformLocalPositionByTypeArray(parent, pos1, state);
+                    let state =
+                      TransformTool.setTransformLocalPositionByTypeArray(child, pos2, state);
+                    let state =
+                      state |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos2);
+                    (
+                      state |> TransformTool.getTransformPositionTypeArray(parent),
+                      state |> TransformTool.getTransformPositionTypeArray(child)
+                    )
+                    |>
+                    expect == (
+                                pos2,
+                                add(Float, (5., 4., 30.), (5., 4., 30.))
+                                |> TransformTool.changeTupleToTypeArray
+                              )
+                  }
+                )
+              )
           )
       );
       /* describe(
