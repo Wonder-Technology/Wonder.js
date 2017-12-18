@@ -40,12 +40,12 @@ let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
        [||]
      );
 
-let deepCopyArrayArray = (arr: array('a)) =>
+let deepCopyArrayArray = (arr: array(array('a))) =>
   arr
   |> ArraySystem.reduceOneParam(
        [@bs]
        (
-         (newArr, typeArr) => {
+         (newArr, arr) => {
            newArr |> Js.Array.push(arr |> Js.Array.copy) |> ignore;
            newArr
          }

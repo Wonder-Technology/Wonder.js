@@ -46,16 +46,16 @@ let setUniformLocationMap = (shaderIndex: int, uniformLocationMap, state: StateD
 
 let createLocationMap = () => WonderCommonlib.HashMapSystem.createEmpty();
 
-let deepCopyState = (state: StateDataType.state) => {
-  let {attributeLocationMap, uniformLocationMap} = state |> _getGLSLLocationData;
-  {
-    ...state,
-    glslLocationData: {
-      attributeLocationMap: attributeLocationMap |> SparseMapSystem.copy,
-      uniformLocationMap: uniformLocationMap |> SparseMapSystem.copy
-    }
-  }
-};
+let deepCopyState = (state: StateDataType.state) =>
+  /* let {attributeLocationMap, uniformLocationMap} = state |> _getGLSLLocationData;
+     {
+       ...state,
+       glslLocationData: {
+         attributeLocationMap: attributeLocationMap |> SparseMapSystem.copy,
+         uniformLocationMap: uniformLocationMap |> SparseMapSystem.copy
+       }
+     } */
+  state;
 
 let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {attributeLocationMap, uniformLocationMap} = _getGLSLLocationData(currentState);
@@ -73,5 +73,6 @@ let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState
           uniformLocationMap
         )
     }
+    /* glslLocationData: GLSLLocationHelper.initData() */
   }
 };

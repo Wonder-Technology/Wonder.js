@@ -21,7 +21,9 @@ let initMaterials = (materialIndexArr, gl, state: StateDataType.state) =>
        state
      );
 
+/* todo fix and test! */
 let _getAllAliveMaterials = (state: StateDataType.state) =>
+  /* MaterialSystem.getMaterialData(state).gameObjectMap |> SparseMapSystem.getValidKeys; */
   MaterialSystem.getMaterialData(state).gameObjectMap |> SparseMapSystem.getValidValues;
 
 let deepCopyState = MaterialSystem.deepCopyState;

@@ -14,7 +14,8 @@ let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => 
     TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state),
     0,
     16
-  ) |> ignore;
+  )
+  |> ignore;
   state
 };
 
@@ -63,8 +64,7 @@ let _sendModelMatrixData =
       state
     );
   let offset = ref(0);
-  let state =
-    state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
+  let state = state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
   offset := offset^ + 16;
   let state =
     objectInstanceArray
@@ -73,12 +73,7 @@ let _sendModelMatrixData =
          (
            (state, objectInstance) => {
              let state =
-               state
-               |> _fillModelMatrixTypeArr(
-                    objectInstance,
-                    matricesArrayForInstance,
-                    offset^
-                  );
+               state |> _fillModelMatrixTypeArr(objectInstance, matricesArrayForInstance, offset^);
              offset := offset^ + 16;
              state
            }

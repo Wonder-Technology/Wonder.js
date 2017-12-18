@@ -13,7 +13,10 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            |> ArraySystem.reduceState(
                 [@bs]
                 (
-                  (state, {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: shaderUniformSendNoCacheableData) => {
+                  (
+                    state,
+                    {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: shaderUniformSendNoCacheableData
+                  ) => {
                     [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(state));
                     state
                   }

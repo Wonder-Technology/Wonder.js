@@ -22,6 +22,7 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceArrayMap} as data)
   data
 };
 
+/* todo init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   open GameObjectComponentCommon;
   let (state, uid) = GameObjectCreateCommon.create(state);
@@ -45,3 +46,7 @@ let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state)
 let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic;
 
 let isModelMatrixIsStatic = SourceInstanceStaticCommon.isModelMatrixIsStatic;
+
+let deepCopyState = SourceInstanceStateCommon.deepCopyState;
+
+let restoreFromState = SourceInstanceStateCommon.restoreFromState;

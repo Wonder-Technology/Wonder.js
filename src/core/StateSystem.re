@@ -22,7 +22,9 @@ let deepCopyState = (state: StateDataType.state) =>
   |> ProgramSystem.deepCopyState
   |> GLSLLocationSystem.deepCopyState
   |> DeviceManagerSystem.deepCopyState
-  |> TypeArrayPoolSystem.deepCopyState;
+  |> TypeArrayPoolSystem.deepCopyState
+  |> SourceInstanceAdmin.deepCopyState
+  |> ObjectInstanceAdmin.deepCopyState;
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.getGl(currentState),
@@ -39,15 +41,17 @@ let restoreFromState =
     targetState |> GeometryAdmin.restoreFromState(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> TransformAdmin.restoreFromState(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> SourceInstanceAdmin.restoreFromState(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restoreFromState(currentState, sharedData);
   let gl = [@bs] DeviceManagerSystem.getGl(targetState);
   targetState
   |> TypeArrayPoolSystem.restoreFromState(currentState, sharedData)
   |> VboBufferSystem.restoreFromState(currentState)
-  |> GLSLSenderSystem.restoreFromState(currentState)
   |> ShaderSystem.restoreFromState(currentState)
   |> ProgramSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
+  |> GLSLSenderSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
   |> MaterialAdmin.restoreFromState(gl, currentState)
   |> setState(stateData)
 };

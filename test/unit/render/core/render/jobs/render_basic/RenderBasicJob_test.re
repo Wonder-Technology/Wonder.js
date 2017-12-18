@@ -63,7 +63,7 @@ let _ =
              })
              ); */
           /* todo should test with more attribute */
-          describe(
+          /* describe(
             "disable all attributes",
             () => {
               let _prepareForDisable = (sandbox, state) => {
@@ -106,7 +106,7 @@ let _ =
                 }
               )
             }
-          )
+          ) */
         }
       );
       describe(

@@ -8,7 +8,7 @@ let initData = () => {
   uniformSendCacheableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   shaderUniformSendNoCacheableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   instanceUniformSendNoCacheableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  /* drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
   lastSendArrayBuffer: None,
   lastSendElementArrayBuffer: None,

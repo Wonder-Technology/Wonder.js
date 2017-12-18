@@ -113,32 +113,25 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
   program
 };
 
-/* let getProgram = (shaderLibDataKey: string, state: StateDataType.state) =>
-     _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.get(shaderLibDataKey);
-
-   let setProgram = (shaderLibDataKey: string, program: program, state: StateDataType.state) => {
-     _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.set(shaderLibDataKey, program) |> ignore;
-     state
-   }; */
-/* let buildProgramMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
 let use = (gl, program: program, state: StateDataType.state) => {
-  /* switch (getProgram(shaderIndex, state)) {
-     | None => ExceptionHandleSystem.throwMessage("program should exist")
-     | Some(program) => */
   let data = _getProgramData(state);
   switch data.lastUsedProgram {
   | Some(lastUsedProgram) when program === lastUsedProgram => state
   | _ =>
     data.lastUsedProgram = Some(program);
     useProgram(program, gl);
-    state |> GLSLSenderSystem.disableVertexAttribArray(gl)
+    /* let state = state |> GLSLSenderSystem.disableVertexAttribArray(gl); */
+    state
   }
 };
 
-let deepCopyState = (state: StateDataType.state) => {
-  let {programMap} = state |> _getProgramData;
-  {...state, programData: {programMap: programMap |> SparseMapSystem.copy, lastUsedProgram: None}}
-};
+let deepCopyState = (state: StateDataType.state) =>
+  /* {
+       ...state,
+       programData: {programMap: WonderCommonlib.SparseMapSystem.createEmpty(), lastUsedProgram: None}
+     } */
+  /* let {programMap} = state |> _getProgramData; */
+  state;
 
 let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {programMap} = _getProgramData(currentState);
@@ -150,6 +143,7 @@ let restoreFromState = (intersectShaderIndexDataArray, currentState, targetState
           intersectShaderIndexDataArray,
           programMap
         ),
+      /* programMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
       lastUsedProgram: None
     }
   }

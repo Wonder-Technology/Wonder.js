@@ -2,7 +2,7 @@ open StateDataType;
 
 let addSourceInstance = (gameObject, state) => {
   let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
-  state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
+  let state = state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
   (state, sourceInstance)
 };
 

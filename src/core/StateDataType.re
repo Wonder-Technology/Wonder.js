@@ -248,7 +248,7 @@ and glslSenderData = {
   uniformSendCacheableDataMap: array(array(uniformSendCacheableData)),
   shaderUniformSendNoCacheableDataMap: array(array(shaderUniformSendNoCacheableData)),
   instanceUniformSendNoCacheableDataMap: array(array(instanceUniformSendNoCacheableData)),
-  drawPointsFuncMap: array((webgl1Context => unit)),
+  /* drawPointsFuncMap: array((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendArrayBuffer: option(buffer),
   mutable lastSendElementArrayBuffer: option(buffer),
