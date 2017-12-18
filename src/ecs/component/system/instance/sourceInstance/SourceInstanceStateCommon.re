@@ -26,7 +26,6 @@ let deepCopyState = (state: StateDataType.state) => {
       modelMatrixInstanceBufferCapacityMap:
         modelMatrixInstanceBufferCapacityMap |> SparseMapSystem.copy,
       isModelMatrixStaticMap: isModelMatrixStaticMap |> SparseMapSystem.copy,
-      /* isSendModelMatrixDataMap: isSendModelMatrixDataMap |> SparseMapSystem.copy, */
       isSendModelMatrixDataMap,
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
       disposedIndexArray: disposedIndexArray |> Js.Array.copy
@@ -34,26 +33,15 @@ let deepCopyState = (state: StateDataType.state) => {
   }
 };
 
-/* todo fix */
-let _buildSendModelMatrixDataMap = (isSendModelMatrixDataMap) =>
+let _buildIsNotSendModelMatrixDataMap = (isSendModelMatrixDataMap) =>
   isSendModelMatrixDataMap
   |> SparseMapSystem.reduceiValid(
-       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapSystem.set(index, true)), 
+       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapSystem.set(index, false)),
        WonderCommonlib.SparseMapSystem.createEmpty()
      );
 
 let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
-  let {
-    index,
-    objectInstanceArrayMap,
-    modelMatrixFloat32ArrayMap,
-    modelMatrixInstanceBufferCapacityMap,
-    isModelMatrixStaticMap,
-    isSendModelMatrixDataMap,
-    gameObjectMap,
-    disposedIndexArray
-  } =
-    getSourceInstanceData(currentState);
+  let {modelMatrixFloat32ArrayMap} = getSourceInstanceData(currentState);
   let {isSendModelMatrixDataMap} as targetData = getSourceInstanceData(targetState);
   let float32ArrayPoolMap =
     TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(
@@ -65,7 +53,7 @@ let restoreFromState = (currentState, {float32ArrayPoolMap} as sharedData, targe
       ...targetState,
       sourceInstanceData: {
         ...targetData,
-        isSendModelMatrixDataMap: _buildSendModelMatrixDataMap(isSendModelMatrixDataMap)
+        isSendModelMatrixDataMap: _buildIsNotSendModelMatrixDataMap(isSendModelMatrixDataMap)
       }
     },
     {...sharedData, float32ArrayPoolMap}

@@ -14,6 +14,7 @@ let getGLSLSenderData = getGLSLSenderData;
 
 /* todo optimize? */
 let disableVertexAttribArray = (gl, state: StateDataType.state) => {
+
   requireCheck(
     () =>
       Contract.Operators.(

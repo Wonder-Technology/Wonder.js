@@ -172,6 +172,43 @@ let _ =
       describe(
         "deepCopyState",
         () => {
+          let _testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
+            let index = 0;
+            getMapFunc(state)
+            |> Js.Array.forEach(
+                 (map) =>
+                   map
+                   |> WonderCommonlib.SparseMapSystem.set(
+                        index,
+                        WonderCommonlib.SparseMapSystem.createEmpty()
+                      )
+                   |> ignore
+               )
+            |> ignore;
+            let copiedState = StateTool.deepCopyState(state);
+            getMapFunc(copiedState)
+            |> Js.Array.forEach(
+                 (map) =>
+                   map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(index) |> ignore
+               )
+            |> ignore;
+            let (sourceArr, targetArr) =
+              getMapFunc(state)
+              |> ArraySystem.reduceOneParam(
+                   [@bs]
+                   (
+                     ((sourceArr, targetArr), map) => {
+                       sourceArr
+                       |> Js.Array.push(map |> WonderCommonlib.SparseMapSystem.unsafeGet(index))
+                       |> ignore;
+                       targetArr |> Js.Array.push(Js.Undefined.empty |> Obj.magic) |> ignore;
+                       (sourceArr, targetArr)
+                     }
+                   ),
+                   ([||], [||])
+                 );
+            sourceArr |> expect |> not_ == targetArr
+          };
           let _prepareGLSLLocationData = (state) => {
             let data = GlslLocationTool.getGLSLLocationData(state);
             let shaderIndex1 = 0;
@@ -511,6 +548,106 @@ let _ =
                }
              ); */
           describe(
+            "deep copy sourceInstance data",
+            () => {
+              test(
+                "deep copy objectInstanceArrayMap, modelMatrixFloat32ArrayMap",
+                () => {
+                  open StateDataType;
+                  open SourceInstanceType;
+                  let (state, gameObject1, sourceInstance1) =
+                    SourceInstanceTool.createSourceInstanceGameObject(state^);
+                  let {objectInstanceArrayMap, modelMatrixFloat32ArrayMap} =
+                    SourceInstanceTool.getSourceInstanceData(state);
+                  let originModelMatrixFloat32Array = Float32Array.make([|1.|]);
+                  modelMatrixFloat32ArrayMap
+                  |> WonderCommonlib.SparseMapSystem.set(
+                       sourceInstance1,
+                       originModelMatrixFloat32Array
+                     )
+                  |> ignore;
+                  let originObjectInstanceArray = [|20|];
+                  objectInstanceArrayMap
+                  |> WonderCommonlib.SparseMapSystem.set(
+                       sourceInstance1,
+                       originObjectInstanceArray
+                     )
+                  |> ignore;
+                  let copiedState = StateTool.deepCopyState(state);
+                  let {objectInstanceArrayMap, modelMatrixFloat32ArrayMap} =
+                    SourceInstanceTool.getSourceInstanceData(copiedState);
+                  let objectInstanceArray =
+                    objectInstanceArrayMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1);
+                  objectInstanceArray |> Js.Array.push(100) |> ignore;
+                  let modelMatrixFloat32Array =
+                    modelMatrixFloat32ArrayMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1);
+                  Float32Array.unsafe_set(modelMatrixFloat32Array, 0, 1000.) |> ignore;
+                  let {objectInstanceArrayMap, modelMatrixFloat32ArrayMap} =
+                    SourceInstanceTool.getSourceInstanceData(state);
+                  (
+                    objectInstanceArrayMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1),
+                    modelMatrixFloat32ArrayMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1)
+                  )
+                  |> expect == (originObjectInstanceArray, originModelMatrixFloat32Array)
+                }
+              );
+              test(
+                "shadow copy modelMatrixInstanceBufferCapacityMap, isModelMatrixStaticMap, gameObjectMap, disposedIndexArray",
+                () =>
+                  StateDataType.(
+                    SourceInstanceType.(
+                      _testShadowCopyArrayLikeMapData(
+                        (state) => {
+                          let {
+                            modelMatrixInstanceBufferCapacityMap,
+                            isModelMatrixStaticMap,
+                            gameObjectMap,
+                            disposedIndexArray
+                          } =
+                            SourceInstanceTool.getSourceInstanceData(state);
+                          [|
+                            modelMatrixInstanceBufferCapacityMap |> Obj.magic,
+                            isModelMatrixStaticMap |> Obj.magic,
+                            gameObjectMap |> Obj.magic,
+                            disposedIndexArray |> Obj.magic
+                          |]
+                        },
+                        state^
+                      )
+                    )
+                  )
+              )
+            }
+          );
+          describe(
+            "deep copy objectInstance data",
+            () =>
+              test(
+                "shadow copy sourceInstanceMap, gameObjectMap, disposedIndexArray",
+                () =>
+                  StateDataType.(
+                    ObjectInstanceType.(
+                      _testShadowCopyArrayLikeMapData(
+                        (state) => {
+                          let {sourceInstanceMap, gameObjectMap, disposedIndexArray} =
+                            ObjectInstanceTool.getObjectInstanceData(state);
+                          [|
+                            sourceInstanceMap |> Obj.magic,
+                            gameObjectMap |> Obj.magic,
+                            disposedIndexArray |> Obj.magic
+                          |]
+                        },
+                        state^
+                      )
+                    )
+                  )
+              )
+          );
+          describe(
             "deep copy deviceManager data",
             () => {
               test(
@@ -609,812 +746,815 @@ let _ =
                             )
                 }
               )
+          )
+        }
+      );
+      describe(
+        "restoreFromState",
+        () => {
+          let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
+            let (state, _, _, _, _, _, _) = prepareDataFunc(state);
+            let currentState = StateTool.createNewCompleteState();
+            let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
+            let _ = StateTool.restoreFromState(currentState, state);
+            StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
+          };
+          describe(
+            "restore meshRenderer data to target state",
+            () => {
+              let _prepare = (state) => {
+                let (
+                  state,
+                  gameObject1,
+                  gameObject2,
+                  gameObject3,
+                  meshRenderer1,
+                  meshRenderer2,
+                  meshRenderer3
+                ) =
+                  _prepareMeshRendererData(state);
+                let (currentState, gameObject4, meshRenderer4) =
+                  MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
+                (
+                  (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    meshRenderer1,
+                    meshRenderer2,
+                    meshRenderer3
+                  ),
+                  (currentState, gameObject4, meshRenderer4)
+                )
+              };
+              test(
+                "set restored state to stateData",
+                () => {
+                  let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
+                  let currentState = StateTool.restoreFromState(currentState, state);
+                  StateTool.getState() |> expect == currentState
+                }
+              );
+              test(
+                "change restored state should affect source state",
+                () => {
+                  let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
+                  let currentState = StateTool.restoreFromState(currentState, state);
+                  let (currentState, gameObject5, meshRenderer5) =
+                    MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
+                  state
+                  |> MeshRenderer.getMeshRendererGameObject(meshRenderer5)
+                  |> expect == gameObject5
+                }
+              );
+              test(
+                "change restored state which is restore from deep copied state shouldn't affect source state",
+                () => {
+                  let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
+                    _prepare(state);
+                  let currentState =
+                    StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
+                  let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
+                  MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
+                  |> expect == [|gameObject1, gameObject2|]
+                }
+              )
+            }
           );
           describe(
-            "restoreFromState",
-            () => {
-              let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
-                let (state, _, _, _, _, _, _) = prepareDataFunc(state);
-                let currentState = StateTool.createNewCompleteState();
-                let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
-                let _ = StateTool.restoreFromState(currentState, state);
-                StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
-              };
-              describe(
-                "restore meshRenderer data to target state",
+            "restore transform data to target state",
+            () =>
+              test(
+                "add current state->transformData->localToWorldMatrixMap, localPositionMap typeArr to pool",
                 () => {
-                  let _prepare = (state) => {
-                    let (
-                      state,
-                      gameObject1,
-                      gameObject2,
-                      gameObject3,
-                      meshRenderer1,
-                      meshRenderer2,
-                      meshRenderer3
-                    ) =
-                      _prepareMeshRendererData(state);
-                    let (currentState, gameObject4, meshRenderer4) =
-                      MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
-                    (
-                      (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        meshRenderer1,
-                        meshRenderer2,
-                        meshRenderer3
-                      ),
-                      (currentState, gameObject4, meshRenderer4)
-                    )
+                  open TypeArrayPoolType;
+                  let (state, _, _, _, _, _, _) = _prepareTransformData(state);
+                  let (currentState, _, transform4) =
+                    GameObjectTool.createGameObject(StateTool.createNewCompleteState());
+                  let pos4 = ((-1.), 4., 5.);
+                  let currentState =
+                    Transform.setTransformLocalPosition(transform4, pos4, currentState);
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {float32ArrayPoolMap} =
+                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                  (
+                    float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(16),
+                    float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(3)
+                  )
+                  |>
+                  expect == (
+                              [|TransformTool.getDefaultLocalToWorldMatrix()|],
+                              [|TransformTool.changeTupleToTypeArray(pos4)|]
+                            )
+                }
+              )
+          );
+          describe(
+            "restore geometry data to target state",
+            () =>
+              test(
+                "add current state->geometryData->verticesMap, indicesMap typeArr to pool",
+                () => {
+                  open StateDataType;
+                  open TypeArrayPoolType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    geometry1,
+                    geometry2,
+                    geometry3
+                  ) =
+                    _prepareGeometryData(state);
+                  let (currentState, gameObject4, geometry4) =
+                    BoxGeometryTool.createGameObject(StateTool.createNewCompleteState());
+                  let currentState = GeometryTool.initGeometry(geometry4, currentState);
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap} =
+                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                  (
+                    float32ArrayPoolMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                         BoxGeometryTool.getDefaultVertices() |> Float32Array.length
+                       ),
+                    uint16ArrayPoolMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                         BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
+                       )
+                  )
+                  |>
+                  expect == (
+                              [|BoxGeometryTool.getDefaultVertices()|],
+                              [|BoxGeometryTool.getDefaultIndices()|]
+                            )
+                }
+              )
+          );
+          describe(
+            "restore vbo buffer data to target state",
+            () => {
+              test(
+                "clean buffer map data",
+                () => {
+                  open VboBufferType;
+                  let (
+                    state,
+                    geometry1,
+                    (bufferInMap1, bufferInMap2, bufferInMap3),
+                    (buffer1, buffer2, buffer3)
+                  ) =
+                    _prepareVboBufferData(state^);
+                  let (currentState, _, _, _) =
+                    _prepareVboBufferData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
+                    newState |> VboBufferTool.getVboBufferData;
+                  (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
+                  |> expect == ([||], [||], [||])
+                }
+              );
+              test(
+                "add current state->vboBufferData->vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap buffer to pool",
+                () => {
+                  open VboBufferType;
+                  let (
+                    state,
+                    geometry1,
+                    (bufferInMap1, bufferInMap2, bufferInMap3),
+                    (buffer1, buffer2, buffer3)
+                  ) =
+                    _prepareVboBufferData(state^);
+                  let (
+                    currentState,
+                    _,
+                    (bufferInMap4, bufferInMap5, bufferInMap6),
+                    (buffer4, buffer5, buffer6)
+                  ) =
+                    _prepareVboBufferData(StateTool.createNewCompleteState());
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {
+                    vertexArrayBufferPool,
+                    elementArrayBufferPool,
+                    modelMatrixInstanceBufferPool
+                  } =
+                    StateTool.getState() |> VboBufferTool.getVboBufferData;
+                  (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool)
+                  |>
+                  expect == (
+                              [|buffer4, bufferInMap4|],
+                              [|buffer5, bufferInMap5|],
+                              [|buffer6, bufferInMap6|]
+                            )
+                }
+              )
+            }
+          );
+          describe(
+            "restore glsl sender data to target state",
+            () => {
+              test(
+                "clean last send data",
+                () => {
+                  open StateDataType;
+                  let (state, shaderIndex1, data1, func1, history1) =
+                    _prepareGLSLSenderData(state^);
+                  let (currentState, _, _, _, _) =
+                    _prepareGLSLSenderData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
+                    newState |> GlslSenderTool.getGLSLSenderData;
+                  (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
+                  |> expect == (None, None, None)
+                }
+              );
+              test(
+                "clean vertexAttribHistoryArray",
+                () => {
+                  open StateDataType;
+                  let (state, shaderIndex1, data1, func1, history1) =
+                    _prepareGLSLSenderData(state^);
+                  let (currentState, _, _, _, _) =
+                    _prepareGLSLSenderData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {vertexAttribHistoryArray} = newState |> GlslSenderTool.getGLSLSenderData;
+                  vertexAttribHistoryArray |> expect == WonderCommonlib.ArraySystem.createEmpty()
+                }
+              )
+            }
+          );
+          test(
+            "restore material data to target state",
+            () =>
+              _testRestoreStateEqualTargetState(
+                state,
+                _prepareMaterialData,
+                MaterialTool.getMaterialData
+              )
+          );
+          describe(
+            "restore sourceInstance data to target state",
+            () => {
+              test(
+                "add current state->sourceInstanceData->modelMatrixFloat32ArrayMap typeArr to pool",
+                () => {
+                  open StateDataType;
+                  open SourceInstanceType;
+                  open TypeArrayPoolType;
+                  let state = state^;
+                  let currentState = StateTool.createNewCompleteState();
+                  let {modelMatrixFloat32ArrayMap} =
+                    SourceInstanceTool.getSourceInstanceData(currentState);
+                  let index = 0;
+                  let typeArr = Float32Array.make([|1.|]);
+                  modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {float32ArrayPoolMap}: typeArrayPoolData =
+                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                  float32ArrayPoolMap
+                  |> WonderCommonlib.SparseMapSystem.unsafeGet(typeArr |> Float32Array.length)
+                  |> expect == [|typeArr|]
+                }
+              );
+              test(
+                "mark is-not-send-modelMatrixData",
+                () => {
+                  open StateDataType;
+                  open SourceInstanceType;
+                  open TypeArrayPoolType;
+                  let state = state^;
+                  let {isSendModelMatrixDataMap} = SourceInstanceTool.getSourceInstanceData(state);
+                  isSendModelMatrixDataMap
+                  |> WonderCommonlib.SparseMapSystem.set(0, true)
+                  |> WonderCommonlib.SparseMapSystem.set(1, false)
+                  |> ignore;
+                  let currentState = StateTool.createNewCompleteState();
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {isSendModelMatrixDataMap} =
+                    SourceInstanceTool.getSourceInstanceData(StateTool.getState());
+                  isSendModelMatrixDataMap |> expect == [|false, false|]
+                }
+              )
+            }
+          );
+          describe(
+            "restore shader data to target state",
+            () =>
+              describe(
+                "contract check",
+                () =>
+                  test(
+                    "currentState and targetState ->shaderData->glslData->precision should be the same",
+                    () => {
+                      open ShaderType;
+                      let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
+                      let currentState = StateTool.createNewCompleteState();
+                      TestTool.openContractCheck();
+                      let data = ShaderTool.getShaderData(currentState);
+                      data.glslData.precision = Some("aaa");
+                      expect(
+                        () => {
+                          let _ = StateTool.restoreFromState(currentState, state);
+                          ()
+                        }
+                      )
+                      |> toThrowMessage(
+                           "currentState and targetState ->shaderData->glslData->precision should be the same"
+                         )
+                    }
+                  )
+              )
+          );
+          describe(
+            "restore program data to target state",
+            () =>
+              test(
+                "clean lastUsedProgram",
+                () => {
+                  open ProgramType;
+                  let (state, shaderIndex1, program1) = _prepareProgramData(state^);
+                  let (currentState, _, _) =
+                    _prepareProgramData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
+                  lastUsedProgram |> expect == None
+                }
+              )
+          );
+          describe(
+            "restore deviceManager data to target state",
+            () =>
+              test(
+                "use current deviceManager data->gl",
+                () => {
+                  open StateDataType;
+                  let (state, targetGl, _) = _prepareDeviceManagerData(state^);
+                  let (currentState, currentGl, _) =
+                    _prepareDeviceManagerData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {gl}: deviceManagerData = DeviceManagerTool.getDeviceManagerData(newState);
+                  gl |> expect == currentGl
+                }
+              )
+          );
+          describe(
+            "restore typeArrayPool data to target state",
+            () =>
+              test(
+                "use current typeArrayPool data->float32ArrayPoolMap, uint16ArrayPoolMap",
+                () => {
+                  open StateDataType;
+                  open TypeArrayPoolType;
+                  let (state, _) = _prepareTypeArrayPoolData(state^);
+                  let (currentState, (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)) =
+                    _prepareTypeArrayPoolData(StateTool.createNewCompleteState());
+                  let newState = StateTool.restoreFromState(currentState, state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
+                    TypeArrayPoolTool.getTypeArrayPoolData(newState);
+                  (float32ArrayPoolMap, uint16ArrayPoolMap)
+                  |> expect == (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)
+                }
+              )
+          );
+          test(
+            "restore cameraController data to target state",
+            () =>
+              _testRestoreStateEqualTargetState(
+                state,
+                _prepareCameraControllerData,
+                CameraControllerTool.getCameraControllerData
+              )
+          );
+          describe(
+            "restore gpu shader related data to target state",
+            () => {
+              describe(
+                "test init shader",
+                () => {
+                  let _prepareBasicMaterialGameObject = (sandbox, state) => {
+                    open GameObject;
+                    open BasicMaterial;
+                    open BoxGeometry;
+                    open Sinon;
+                    let (state, material) = createBasicMaterial(state);
+                    let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+                    let (state, gameObject) = state |> createGameObject;
+                    let state =
+                      state
+                      |> addGameObjectMaterialComponent(gameObject, material)
+                      |> addGameObjectGeometryComponent(gameObject, geometry);
+                    (state, gameObject)
+                  };
+                  let _prepareInstanceGameObject = (sandbox, state) => {
+                    open GameObject;
+                    open BasicMaterial;
+                    open BoxGeometry;
+                    open Sinon;
+                    let (state, material) = createBasicMaterial(state);
+                    let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+                    let (state, gameObject) = state |> createGameObject;
+                    let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
+                    let state =
+                      state
+                      |> addGameObjectSourceInstanceComponent(gameObject, sourceInstance)
+                      |> addGameObjectMaterialComponent(gameObject, material)
+                      |> addGameObjectGeometryComponent(gameObject, geometry);
+                    (state, gameObject)
+                  };
+                  let _exec = (currentState, copiedState, gameObject) => {
+                    let currentStateCreateProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                    let currentState =
+                      currentState
+                      |> FakeGlTool.setFakeGl(
+                           FakeGlTool.buildFakeGl(
+                             ~sandbox,
+                             ~createProgram=currentStateCreateProgram,
+                             ()
+                           )
+                         );
+                    let currentState = currentState |> GameObjectTool.initGameObject(gameObject);
+                    let initShaderCount = getCallCount(currentStateCreateProgram);
+                    let _ = StateTool.restoreFromState(currentState, copiedState);
+                    (currentStateCreateProgram, initShaderCount)
                   };
                   test(
-                    "set restored state to stateData",
+                    "if targetState->shader not exist in currentState->shader, init it",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(currentState, state);
-                      StateTool.getState() |> expect == currentState
+                      let (state, _) = _prepareInstanceGameObject(sandbox, state^);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state = state |> DirectorTool.prepare |> DirectorTool.init;
+                      let copiedState = StateTool.deepCopyState(state);
+                      let currentState = StateTool.createNewCompleteState();
+                      let (currentState, gameObject) =
+                        _prepareBasicMaterialGameObject(sandbox, currentState);
+                      let (currentStateCreateProgram, initShaderCount) =
+                        _exec(currentState, copiedState, gameObject);
+                      getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
                     }
                   );
                   test(
-                    "change restored state should affect source state",
+                    "else, not init it",
                     () => {
-                      let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
-                      let currentState = StateTool.restoreFromState(currentState, state);
-                      let (currentState, gameObject5, meshRenderer5) =
-                        MeshRendererTool.createGameObject(StateTool.createNewCompleteState());
-                      state
-                      |> MeshRenderer.getMeshRendererGameObject(meshRenderer5)
-                      |> expect == gameObject5
-                    }
-                  );
-                  test(
-                    "change restored state which is restore from deep copied state shouldn't affect source state",
-                    () => {
-                      let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
-                        _prepare(state);
-                      let currentState =
-                        StateTool.restoreFromState(currentState, state |> StateTool.deepCopyState);
-                      let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
-                      MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
-                      |> expect == [|gameObject1, gameObject2|]
+                      let (state, _) = _prepareInstanceGameObject(sandbox, state^);
+                      let (state, _) = _prepareBasicMaterialGameObject(sandbox, state);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state = state |> DirectorTool.prepare |> DirectorTool.init;
+                      let copiedState = StateTool.deepCopyState(state);
+                      let currentState = StateTool.createNewCompleteState();
+                      let (currentState, gameObject) =
+                        _prepareBasicMaterialGameObject(sandbox, currentState);
+                      let (currentStateCreateProgram, initShaderCount) =
+                        _exec(currentState, copiedState, gameObject);
+                      getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
                     }
                   )
                 }
               );
               describe(
-                "restore transform data to target state",
-                () =>
-                  describe(
-                    "remain current state->transformData->pool data",
-                    () =>
-                      test(
-                        "add current state->transformData->localToWorldMatrixMap, localPositionMap typeArr to pool",
-                        () => {
-                          open TypeArrayPoolType;
-                          let (state, _, _, _, _, _, _) = _prepareTransformData(state);
-                          let (currentState, _, transform4) =
-                            GameObjectTool.createGameObject(StateTool.createNewCompleteState());
-                          let pos4 = ((-1.), 4., 5.);
-                          let currentState =
-                            Transform.setTransformLocalPosition(transform4, pos4, currentState);
-                          let _ = StateTool.restoreFromState(currentState, state);
-                          let {float32ArrayPoolMap} =
-                            StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
-                          (
-                            float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(16),
-                            float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(3)
-                          )
-                          |>
-                          expect == (
-                                      [|TransformTool.getDefaultLocalToWorldMatrix()|],
-                                      [|TransformTool.changeTupleToTypeArray(pos4)|]
-                                    )
-                        }
-                      )
-                  )
-              );
-              describe(
-                "restore geometry data to target state",
-                () =>
-                  describe(
-                    "remain current state->geometryData->pool data",
-                    () =>
-                      test(
-                        "add current state->geometryData->verticesMap, indicesMap typeArr to pool",
-                        () => {
-                          open StateDataType;
-                          open TypeArrayPoolType;
-                          let (
-                            state,
-                            gameObject1,
-                            gameObject2,
-                            gameObject3,
-                            geometry1,
-                            geometry2,
-                            geometry3
-                          ) =
-                            _prepareGeometryData(state);
-                          let (currentState, gameObject4, geometry4) =
-                            BoxGeometryTool.createGameObject(StateTool.createNewCompleteState());
-                          let currentState = GeometryTool.initGeometry(geometry4, currentState);
-                          let _ = StateTool.restoreFromState(currentState, state);
-                          let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                            StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
-                          (
-                            float32ArrayPoolMap
-                            |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                                 BoxGeometryTool.getDefaultVertices() |> Float32Array.length
-                               ),
-                            uint16ArrayPoolMap
-                            |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                                 BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
-                               )
-                          )
-                          |>
-                          expect == (
-                                      [|BoxGeometryTool.getDefaultVertices()|],
-                                      [|BoxGeometryTool.getDefaultIndices()|]
-                                    )
-                        }
-                      )
-                  )
-              );
-              describe(
-                "restore vbo buffer data to target state",
+                "test restore data",
                 () => {
-                  test(
-                    "clean buffer map data",
-                    () => {
-                      open VboBufferType;
-                      let (
-                        state,
-                        geometry1,
-                        (bufferInMap1, bufferInMap2, bufferInMap3),
-                        (buffer1, buffer2, buffer3)
-                      ) =
-                        _prepareVboBufferData(state^);
-                      let (currentState, _, _, _) =
-                        _prepareVboBufferData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
-                        newState |> VboBufferTool.getVboBufferData;
-                      (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
-                      |> expect == ([||], [||], [||])
-                    }
-                  );
-                  describe(
-                    "remain current state->vboBufferData->pool data",
-                    () =>
-                      test(
-                        "add current state->vboBufferData->vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap buffer to pool",
-                        () => {
-                          open VboBufferType;
-                          let (
-                            state,
-                            geometry1,
-                            (bufferInMap1, bufferInMap2, bufferInMap3),
-                            (buffer1, buffer2, buffer3)
-                          ) =
-                            _prepareVboBufferData(state^);
-                          let (
-                            currentState,
-                            _,
-                            (bufferInMap4, bufferInMap5, bufferInMap6),
-                            (buffer4, buffer5, buffer6)
-                          ) =
-                            _prepareVboBufferData(StateTool.createNewCompleteState());
-                          let _ = StateTool.restoreFromState(currentState, state);
-                          let {
-                            vertexArrayBufferPool,
-                            elementArrayBufferPool,
-                            modelMatrixInstanceBufferPool
-                          } =
-                            StateTool.getState() |> VboBufferTool.getVboBufferData;
-                          (
-                            vertexArrayBufferPool,
-                            elementArrayBufferPool,
-                            modelMatrixInstanceBufferPool
-                          )
-                          |>
-                          expect == (
-                                      [|buffer4, bufferInMap4|],
-                                      [|buffer5, bufferInMap5|],
-                                      [|buffer6, bufferInMap6|]
-                                    )
-                        }
+                  let _prepareState1 = (state) => {
+                    open ShaderType;
+                    open GLSLLocationType;
+                    open ProgramType;
+                    open GLSLSenderType;
+                    open StateDataType;
+                    let shaderIndex1 = 0;
+                    let shaderIndex2 = 1;
+                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
+                    data.index = 2;
+                    shaderIndexMap
+                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
+                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let program1 = Obj.magic(11);
+                    let program2 = Obj.magic(12);
+                    programMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    data.lastUsedProgram = program2;
+                    let {attributeLocationMap, uniformLocationMap} =
+                      GlslLocationTool.getGLSLLocationData(state);
+                    let attributeLocationData1 = Obj.magic(21);
+                    let attributeLocationData2 = Obj.magic(22);
+                    let uniformLocationData1 = Obj.magic(31);
+                    let uniformLocationData2 = Obj.magic(32);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
+                    let {shaderUniformSendNoCacheableDataMap} =
+                      GlslSenderTool.getGLSLSenderData(state);
+                    let shaderUniformSendNoCacheableData1 = Obj.magic(121);
+                    let shaderUniformSendNoCacheableData2 = Obj.magic(122);
+                    shaderUniformSendNoCacheableDataMap
+                    |> WonderCommonlib.SparseMapSystem.set(
+                         shaderIndex1,
+                         shaderUniformSendNoCacheableData1
+                       )
+                    |> WonderCommonlib.SparseMapSystem.set(
+                         shaderIndex2,
+                         shaderUniformSendNoCacheableData2
+                       )
+                    |> ignore;
+                    (
+                      state,
+                      (shaderIndex1, shaderIndex2),
+                      (program1, program2),
+                      (
+                        attributeLocationData1,
+                        attributeLocationData2,
+                        uniformLocationData1,
+                        uniformLocationData2
+                      ),
+                      (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
+                    )
+                  };
+                  let _prepareState2 = (state) => {
+                    open StateDataType;
+                    open ShaderType;
+                    open GLSLLocationType;
+                    open ProgramType;
+                    open GLSLSenderType;
+                    let shaderIndex1 = 3;
+                    let shaderIndex2 = 4;
+                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
+                    data.index = 2;
+                    shaderIndexMap
+                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
+                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let program1 = Obj.magic(101);
+                    let program2 = Obj.magic(102);
+                    programMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
+                    data.lastUsedProgram = program2;
+                    let {attributeLocationMap, uniformLocationMap} =
+                      GlslLocationTool.getGLSLLocationData(state);
+                    let attributeLocationData1 = Obj.magic(201);
+                    let attributeLocationData2 = Obj.magic(202);
+                    let uniformLocationData1 = Obj.magic(301);
+                    let uniformLocationData2 = Obj.magic(302);
+                    attributeLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2);
+                    uniformLocationMap
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
+                    let {shaderUniformSendNoCacheableDataMap} =
+                      GlslSenderTool.getGLSLSenderData(state);
+                    let shaderUniformSendNoCacheableData1 = Obj.magic(10221);
+                    let shaderUniformSendNoCacheableData2 = Obj.magic(10222);
+                    shaderUniformSendNoCacheableDataMap
+                    |> WonderCommonlib.SparseMapSystem.set(
+                         shaderIndex1,
+                         shaderUniformSendNoCacheableData1
+                       )
+                    |> WonderCommonlib.SparseMapSystem.set(
+                         shaderIndex2,
+                         shaderUniformSendNoCacheableData2
+                       )
+                    |> ignore;
+                    (
+                      state,
+                      (shaderIndex1, shaderIndex2),
+                      (program1, program2),
+                      (
+                        attributeLocationData1,
+                        attributeLocationData2,
+                        uniformLocationData1,
+                        uniformLocationData2
+                      ),
+                      (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
+                    )
+                  };
+                  let _prepare = (state) => {
+                    let (
+                      targetState,
+                      targetShaderIndexTuple,
+                      targetProgramTuple,
+                      targetLocationTuple,
+                      targetSenderTuple
+                    ) =
+                      _prepareState1(state);
+                    let (
+                      currentState,
+                      currentShaderIndexTuple,
+                      currentProgramTuple,
+                      currentLocationTuple,
+                      currentSenderTuple
+                    ) =
+                      _prepareState2(StateTool.createNewCompleteState());
+                    let newState = StateTool.restoreFromState(currentState, targetState);
+                    (
+                      newState,
+                      (
+                        currentState,
+                        currentShaderIndexTuple,
+                        currentProgramTuple,
+                        currentLocationTuple,
+                        currentSenderTuple
+                      ),
+                      (
+                        targetState,
+                        targetShaderIndexTuple,
+                        targetProgramTuple,
+                        targetLocationTuple,
+                        targetSenderTuple
                       )
-                  )
-                }
-              );
-              describe(
-                "restore glsl sender data to target state",
-                () => {
-                  test(
-                    "clean last send data",
-                    () => {
-                      open StateDataType;
-                      let (state, shaderIndex1, data1, func1, history1) =
-                        _prepareGLSLSenderData(state^);
-                      let (currentState, _, _, _, _) =
-                        _prepareGLSLSenderData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
-                        newState |> GlslSenderTool.getGLSLSenderData;
-                      (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
-                      |> expect == (None, None, None)
-                    }
-                  );
-                  test(
-                    "clean vertexAttribHistoryArray",
-                    () => {
-                      open StateDataType;
-                      let (state, shaderIndex1, data1, func1, history1) =
-                        _prepareGLSLSenderData(state^);
-                      let (currentState, _, _, _, _) =
-                        _prepareGLSLSenderData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {vertexAttribHistoryArray} =
-                        newState |> GlslSenderTool.getGLSLSenderData;
-                      vertexAttribHistoryArray
-                      |> expect == WonderCommonlib.ArraySystem.createEmpty()
-                    }
-                  )
-                }
-              );
-              test(
-                "restore material data to target state",
-                () =>
-                  _testRestoreStateEqualTargetState(
-                    state,
-                    _prepareMaterialData,
-                    MaterialTool.getMaterialData
-                  )
-              );
-              describe(
-                "restore shader data to target state",
-                () =>
+                    )
+                  };
                   describe(
-                    "contract check",
-                    () =>
-                      test(
-                        "currentState and targetState ->shaderData->glslData->precision should be the same",
-                        () => {
-                          open ShaderType;
-                          let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
-                          let currentState = StateTool.createNewCompleteState();
-                          TestTool.openContractCheck();
-                          let data = ShaderTool.getShaderData(currentState);
-                          data.glslData.precision = Some("aaa");
-                          expect(
+                    "test restore shader data",
+                    () => {
+                      describe(
+                        "test index",
+                        () =>
+                          test(
+                            "index should be intersected shader's length + 1",
                             () => {
-                              let _ = StateTool.restoreFromState(currentState, state);
-                              ()
+                              open ShaderType;
+                              let (newState, (currentState, _, _, _, _), (targetState, _, _, _, _)) =
+                                _prepare(state^);
+                              let {index} = newState |> ShaderTool.getShaderData;
+                              index |> expect == 2
                             }
                           )
-                          |> toThrowMessage(
-                               "currentState and targetState ->shaderData->glslData->precision should be the same"
-                             )
-                        }
-                      )
-                  )
-              );
-              describe(
-                "restore program data to target state",
-                () =>
-                  test(
-                    "clean lastUsedProgram",
-                    () => {
-                      open ProgramType;
-                      let (state, shaderIndex1, program1) = _prepareProgramData(state^);
-                      let (currentState, _, _) =
-                        _prepareProgramData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
-                      lastUsedProgram |> expect == None
-                    }
-                  )
-              );
-              describe(
-                "restore deviceManager data to target state",
-                () =>
-                  test(
-                    "use current deviceManager data->gl",
-                    () => {
-                      open StateDataType;
-                      let (state, targetGl, _) = _prepareDeviceManagerData(state^);
-                      let (currentState, currentGl, _) =
-                        _prepareDeviceManagerData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {gl}: deviceManagerData =
-                        DeviceManagerTool.getDeviceManagerData(newState);
-                      gl |> expect == currentGl
-                    }
-                  )
-              );
-              describe(
-                "restore typeArrayPool data to target state",
-                () =>
-                  test(
-                    "use current typeArrayPool data->float32ArrayPoolMap, uint16ArrayPoolMap",
-                    () => {
-                      open StateDataType;
-                      open TypeArrayPoolType;
-                      let (state, _) = _prepareTypeArrayPoolData(state^);
-                      let (currentState, (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)) =
-                        _prepareTypeArrayPoolData(StateTool.createNewCompleteState());
-                      let newState = StateTool.restoreFromState(currentState, state);
-                      let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
-                        TypeArrayPoolTool.getTypeArrayPoolData(newState);
-                      (float32ArrayPoolMap, uint16ArrayPoolMap)
-                      |> expect == (currentFloat32ArrayPoolMap, currentUint16ArrayPoolMap)
-                    }
-                  )
-              );
-              test(
-                "restore cameraController data to target state",
-                () =>
-                  _testRestoreStateEqualTargetState(
-                    state,
-                    _prepareCameraControllerData,
-                    CameraControllerTool.getCameraControllerData
-                  )
-              );
-              describe(
-                "restore gpu shader related data to target state",
-                () => {
-                  describe(
-                    "test init shader",
-                    () => {
-                      let _prepareBasicMaterialGameObject = (sandbox, state) => {
-                        open GameObject;
-                        open BasicMaterial;
-                        open BoxGeometry;
-                        open Sinon;
-                        let (state, material) = createBasicMaterial(state);
-                        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-                        let (state, gameObject) = state |> createGameObject;
-                        let state =
-                          state
-                          |> addGameObjectMaterialComponent(gameObject, material)
-                          |> addGameObjectGeometryComponent(gameObject, geometry);
-                        (state, gameObject)
-                      };
-                      let _prepareInstanceGameObject = (sandbox, state) => {
-                        open GameObject;
-                        open BasicMaterial;
-                        open BoxGeometry;
-                        open Sinon;
-                        let (state, material) = createBasicMaterial(state);
-                        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-                        let (state, gameObject) = state |> createGameObject;
-                        let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
-                        let state =
-                          state
-                          |> addGameObjectSourceInstanceComponent(gameObject, sourceInstance)
-                          |> addGameObjectMaterialComponent(gameObject, material)
-                          |> addGameObjectGeometryComponent(gameObject, geometry);
-                        (state, gameObject)
-                      };
-                      let _exec = (currentState, copiedState, gameObject) => {
-                        let currentStateCreateProgram = createEmptyStubWithJsObjSandbox(sandbox);
-                        let currentState =
-                          currentState
-                          |> FakeGlTool.setFakeGl(
-                               FakeGlTool.buildFakeGl(
-                                 ~sandbox,
-                                 ~createProgram=currentStateCreateProgram,
-                                 ()
-                               )
-                             );
-                        let currentState =
-                          currentState |> GameObjectTool.initGameObject(gameObject);
-                        let initShaderCount = getCallCount(currentStateCreateProgram);
-                        let _ = StateTool.restoreFromState(currentState, copiedState);
-                        (currentStateCreateProgram, initShaderCount)
-                      };
-                      test(
-                        "if targetState->shader not exist in currentState->shader, init it",
-                        () => {
-                          let (state, _) = _prepareInstanceGameObject(sandbox, state^);
-                          let state =
-                            state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                          let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                          let copiedState = StateTool.deepCopyState(state);
-                          let currentState = StateTool.createNewCompleteState();
-                          let (currentState, gameObject) =
-                            _prepareBasicMaterialGameObject(sandbox, currentState);
-                          let (currentStateCreateProgram, initShaderCount) =
-                            _exec(currentState, copiedState, gameObject);
-                          getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
-                        }
                       );
-                      test(
-                        "else, not init it",
-                        () => {
-                          let (state, _) = _prepareInstanceGameObject(sandbox, state^);
-                          let (state, _) = _prepareBasicMaterialGameObject(sandbox, state);
-                          let state =
-                            state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                          let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                          let copiedState = StateTool.deepCopyState(state);
-                          let currentState = StateTool.createNewCompleteState();
-                          let (currentState, gameObject) =
-                            _prepareBasicMaterialGameObject(sandbox, currentState);
-                          let (currentStateCreateProgram, initShaderCount) =
-                            _exec(currentState, copiedState, gameObject);
-                          getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
-                        }
+                      describe(
+                        "test shaderIndexMap",
+                        () =>
+                          test(
+                            "get intersect map between current shaderIndexMap and target shaderIndexMap whose value is the one in target shaderIndexMap",
+                            () => {
+                              open ShaderType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  currentProgramTuple,
+                                  currentLocationTuple,
+                                  _
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  targetProgramTuple,
+                                  targetLocationTuple,
+                                  _
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
+                              shaderIndexMap
+                              |> HashMapSystem.entries
+                              |> expect == [|("key1", targetShaderIndex1)|]
+                            }
+                          )
                       )
                     }
                   );
                   describe(
-                    "test restore data",
-                    () => {
-                      let _prepareState1 = (state) => {
-                        open ShaderType;
-                        open GLSLLocationType;
-                        open ProgramType;
-                        open GLSLSenderType;
-                        open StateDataType;
-                        let shaderIndex1 = 0;
-                        let shaderIndex2 = 1;
-                        let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
-                        data.index = 2;
-                        shaderIndexMap
-                        |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                        |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2);
-                        let {programMap} as data = ProgramTool.getProgramData(state);
-                        let program1 = Obj.magic(11);
-                        let program2 = Obj.magic(12);
-                        programMap
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
-                        data.lastUsedProgram = program2;
-                        let {attributeLocationMap, uniformLocationMap} =
-                          GlslLocationTool.getGLSLLocationData(state);
-                        let attributeLocationData1 = Obj.magic(21);
-                        let attributeLocationData2 = Obj.magic(22);
-                        let uniformLocationData1 = Obj.magic(31);
-                        let uniformLocationData2 = Obj.magic(32);
-                        attributeLocationMap
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex1,
-                             attributeLocationData1
-                           )
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex2,
-                             attributeLocationData2
-                           );
-                        uniformLocationMap
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
-                        let {shaderUniformSendNoCacheableDataMap} =
-                          GlslSenderTool.getGLSLSenderData(state);
-                        let shaderUniformSendNoCacheableData1 = Obj.magic(121);
-                        let shaderUniformSendNoCacheableData2 = Obj.magic(122);
-                        shaderUniformSendNoCacheableDataMap
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex1,
-                             shaderUniformSendNoCacheableData1
-                           )
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex2,
-                             shaderUniformSendNoCacheableData2
-                           )
-                        |> ignore;
-                        (
-                          state,
-                          (shaderIndex1, shaderIndex2),
-                          (program1, program2),
-                          (
-                            attributeLocationData1,
-                            attributeLocationData2,
-                            uniformLocationData1,
-                            uniformLocationData2
-                          ),
-                          (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
-                        )
-                      };
-                      let _prepareState2 = (state) => {
-                        open StateDataType;
-                        open ShaderType;
-                        open GLSLLocationType;
-                        open ProgramType;
-                        open GLSLSenderType;
-                        let shaderIndex1 = 3;
-                        let shaderIndex2 = 4;
-                        let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
-                        data.index = 2;
-                        shaderIndexMap
-                        |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                        |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex2);
-                        let {programMap} as data = ProgramTool.getProgramData(state);
-                        let program1 = Obj.magic(101);
-                        let program2 = Obj.magic(102);
-                        programMap
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2);
-                        data.lastUsedProgram = program2;
-                        let {attributeLocationMap, uniformLocationMap} =
-                          GlslLocationTool.getGLSLLocationData(state);
-                        let attributeLocationData1 = Obj.magic(201);
-                        let attributeLocationData2 = Obj.magic(202);
-                        let uniformLocationData1 = Obj.magic(301);
-                        let uniformLocationData2 = Obj.magic(302);
-                        attributeLocationMap
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex1,
-                             attributeLocationData1
-                           )
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex2,
-                             attributeLocationData2
-                           );
-                        uniformLocationMap
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                        |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2);
-                        let {shaderUniformSendNoCacheableDataMap} =
-                          GlslSenderTool.getGLSLSenderData(state);
-                        let shaderUniformSendNoCacheableData1 = Obj.magic(10221);
-                        let shaderUniformSendNoCacheableData2 = Obj.magic(10222);
-                        shaderUniformSendNoCacheableDataMap
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex1,
-                             shaderUniformSendNoCacheableData1
-                           )
-                        |> WonderCommonlib.SparseMapSystem.set(
-                             shaderIndex2,
-                             shaderUniformSendNoCacheableData2
-                           )
-                        |> ignore;
-                        (
-                          state,
-                          (shaderIndex1, shaderIndex2),
-                          (program1, program2),
-                          (
-                            attributeLocationData1,
-                            attributeLocationData2,
-                            uniformLocationData1,
-                            uniformLocationData2
-                          ),
-                          (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
-                        )
-                      };
-                      let _prepare = (state) => {
-                        let (
-                          targetState,
-                          targetShaderIndexTuple,
-                          targetProgramTuple,
-                          targetLocationTuple,
-                          targetSenderTuple
-                        ) =
-                          _prepareState1(state);
-                        let (
-                          currentState,
-                          currentShaderIndexTuple,
-                          currentProgramTuple,
-                          currentLocationTuple,
-                          currentSenderTuple
-                        ) =
-                          _prepareState2(StateTool.createNewCompleteState());
-                        let newState = StateTool.restoreFromState(currentState, targetState);
-                        (
-                          newState,
-                          (
-                            currentState,
-                            currentShaderIndexTuple,
-                            currentProgramTuple,
-                            currentLocationTuple,
-                            currentSenderTuple
-                          ),
-                          (
-                            targetState,
-                            targetShaderIndexTuple,
-                            targetProgramTuple,
-                            targetLocationTuple,
-                            targetSenderTuple
-                          )
-                        )
-                      };
+                    "test restore program data",
+                    () =>
                       describe(
-                        "test restore shader data",
-                        () => {
-                          describe(
-                            "test index",
-                            () =>
-                              test(
-                                "index should be intersected shader's length + 1",
-                                () => {
-                                  open ShaderType;
-                                  let (
-                                    newState,
-                                    (currentState, _, _, _, _),
-                                    (targetState, _, _, _, _)
-                                  ) =
-                                    _prepare(state^);
-                                  let {index} = newState |> ShaderTool.getShaderData;
-                                  index |> expect == 2
-                                }
-                              )
-                          );
-                          describe(
-                            "test shaderIndexMap",
-                            () =>
-                              test(
-                                "get intersect map between current shaderIndexMap and target shaderIndexMap whose value is the one in target shaderIndexMap",
-                                () => {
-                                  open ShaderType;
-                                  let (
-                                    newState,
-                                    (
-                                      currentState,
-                                      (currentShaderIndex1, currentShaderIndex2),
-                                      currentProgramTuple,
-                                      currentLocationTuple,
-                                      _
-                                    ),
-                                    (
-                                      targetState,
-                                      (targetShaderIndex1, targetShaderIndex2),
-                                      targetProgramTuple,
-                                      targetLocationTuple,
-                                      _
-                                    )
-                                  ) =
-                                    _prepare(state^);
-                                  let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
-                                  shaderIndexMap
-                                  |> HashMapSystem.entries
-                                  |> expect == [|("key1", targetShaderIndex1)|]
-                                }
-                              )
-                          )
-                        }
-                      );
-                      describe(
-                        "test restore program data",
+                        "test programMap",
                         () =>
-                          describe(
-                            "test programMap",
-                            () =>
-                              test(
-                                "get intersect map between current programMap and target programMap whose value is the one in current programMap",
-                                () => {
-                                  open ProgramType;
-                                  let (
-                                    newState,
-                                    (
-                                      currentState,
-                                      (currentShaderIndex1, currentShaderIndex2),
-                                      (currentProgram1, currentProgram2),
-                                      currentLocationTuple,
-                                      _
-                                    ),
-                                    (
-                                      targetState,
-                                      (targetShaderIndex1, targetShaderIndex2),
-                                      (targetProgram1, targetProgram2),
-                                      targetLocationTuple,
-                                      _
-                                    )
-                                  ) =
-                                    _prepare(state^);
-                                  let {programMap} = newState |> ProgramTool.getProgramData;
-                                  (
-                                    programMap |> SparseMapSystem.length,
-                                    programMap
-                                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                                         targetShaderIndex1
-                                       )
-                                  )
-                                  |> expect == (1, currentProgram1)
-                                }
+                          test(
+                            "get intersect map between current programMap and target programMap whose value is the one in current programMap",
+                            () => {
+                              open ProgramType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  (currentProgram1, currentProgram2),
+                                  currentLocationTuple,
+                                  _
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  (targetProgram1, targetProgram2),
+                                  targetLocationTuple,
+                                  _
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {programMap} = newState |> ProgramTool.getProgramData;
+                              (
+                                programMap |> SparseMapSystem.length,
+                                programMap
+                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
                               )
-                          )
-                      );
-                      describe(
-                        "test restore glsl location data",
-                        () =>
-                          describe(
-                            "test attributeLocationMap, uniformLocationMap",
-                            () =>
-                              test(
-                                "get intersect map between current map and target map whose value is the one in current map",
-                                () => {
-                                  open GLSLLocationType;
-                                  let (
-                                    newState,
-                                    (
-                                      currentState,
-                                      (currentShaderIndex1, currentShaderIndex2),
-                                      (currentProgram1, currentProgram2),
-                                      (
-                                        currentAttributeLocationData1,
-                                        currentAttributeLocationData2,
-                                        currentUniformLocationData1,
-                                        currentUniformLocationData2
-                                      ),
-                                      _
-                                    ),
-                                    (
-                                      targetState,
-                                      (targetShaderIndex1, targetShaderIndex2),
-                                      (targetProgram1, targetProgram2),
-                                      (
-                                        targetAttributeLocationData1,
-                                        targetAttributeLocationData2,
-                                        targetUniformLocationData1,
-                                        targetUniformLocationData2
-                                      ),
-                                      _
-                                    )
-                                  ) =
-                                    _prepare(state^);
-                                  let {attributeLocationMap, uniformLocationMap} =
-                                    newState |> GlslLocationTool.getGLSLLocationData;
-                                  (
-                                    attributeLocationMap |> SparseMapSystem.length,
-                                    attributeLocationMap
-                                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                                         targetShaderIndex1
-                                       )
-                                  )
-                                  |> expect == (1, currentAttributeLocationData1)
-                                }
-                              )
-                          )
-                      );
-                      describe(
-                        "test restore glsl sender data",
-                        () =>
-                          describe(
-                            "test shaderUniformSendNoCacheableDataMap",
-                            () =>
-                              test(
-                                "get intersect map between current shaderUniformSendNoCacheableDataMap and target shaderUniformSendNoCacheableDataMap whose value is the one in current shaderUniformSendNoCacheableDataMap",
-                                () => {
-                                  open StateDataType;
-                                  let (
-                                    newState,
-                                    (
-                                      currentState,
-                                      _,
-                                      _,
-                                      _,
-                                      (
-                                        currentShaderUniformSendNoCacheableData1,
-                                        currentShaderUniformSendNoCacheableData2
-                                      )
-                                    ),
-                                    (
-                                      targetState,
-                                      (targetShaderIndex1, _),
-                                      _,
-                                      _,
-                                      (
-                                        targetShaderUniformSendNoCacheableData1,
-                                        targetShaderUniformSendNoCacheableData2
-                                      )
-                                    )
-                                  ) =
-                                    _prepare(state^);
-                                  let {shaderUniformSendNoCacheableDataMap} =
-                                    newState |> GlslSenderTool.getGLSLSenderData;
-                                  (
-                                    shaderUniformSendNoCacheableDataMap |> SparseMapSystem.length,
-                                    shaderUniformSendNoCacheableDataMap
-                                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                                         targetShaderIndex1
-                                       )
-                                  )
-                                  |> expect == (1, currentShaderUniformSendNoCacheableData1)
-                                }
-                              )
+                              |> expect == (1, currentProgram1)
+                            }
                           )
                       )
-                    }
+                  );
+                  describe(
+                    "test restore glsl location data",
+                    () =>
+                      describe(
+                        "test attributeLocationMap, uniformLocationMap",
+                        () =>
+                          test(
+                            "get intersect map between current map and target map whose value is the one in current map",
+                            () => {
+                              open GLSLLocationType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  (currentShaderIndex1, currentShaderIndex2),
+                                  (currentProgram1, currentProgram2),
+                                  (
+                                    currentAttributeLocationData1,
+                                    currentAttributeLocationData2,
+                                    currentUniformLocationData1,
+                                    currentUniformLocationData2
+                                  ),
+                                  _
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, targetShaderIndex2),
+                                  (targetProgram1, targetProgram2),
+                                  (
+                                    targetAttributeLocationData1,
+                                    targetAttributeLocationData2,
+                                    targetUniformLocationData1,
+                                    targetUniformLocationData2
+                                  ),
+                                  _
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {attributeLocationMap, uniformLocationMap} =
+                                newState |> GlslLocationTool.getGLSLLocationData;
+                              (
+                                attributeLocationMap |> SparseMapSystem.length,
+                                attributeLocationMap
+                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                              )
+                              |> expect == (1, currentAttributeLocationData1)
+                            }
+                          )
+                      )
+                  );
+                  describe(
+                    "test restore glsl sender data",
+                    () =>
+                      describe(
+                        "test shaderUniformSendNoCacheableDataMap",
+                        () =>
+                          test(
+                            "get intersect map between current shaderUniformSendNoCacheableDataMap and target shaderUniformSendNoCacheableDataMap whose value is the one in current shaderUniformSendNoCacheableDataMap",
+                            () => {
+                              open StateDataType;
+                              let (
+                                newState,
+                                (
+                                  currentState,
+                                  _,
+                                  _,
+                                  _,
+                                  (
+                                    currentShaderUniformSendNoCacheableData1,
+                                    currentShaderUniformSendNoCacheableData2
+                                  )
+                                ),
+                                (
+                                  targetState,
+                                  (targetShaderIndex1, _),
+                                  _,
+                                  _,
+                                  (
+                                    targetShaderUniformSendNoCacheableData1,
+                                    targetShaderUniformSendNoCacheableData2
+                                  )
+                                )
+                              ) =
+                                _prepare(state^);
+                              let {shaderUniformSendNoCacheableDataMap} =
+                                newState |> GlslSenderTool.getGLSLSenderData;
+                              (
+                                shaderUniformSendNoCacheableDataMap |> SparseMapSystem.length,
+                                shaderUniformSendNoCacheableDataMap
+                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                              )
+                              |> expect == (1, currentShaderUniformSendNoCacheableData1)
+                            }
+                          )
+                      )
                   )
                 }
               )
