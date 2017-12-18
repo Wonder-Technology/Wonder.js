@@ -3,7 +3,7 @@ let createGameObject = (state: StateDataType.state) => {
   (state, gameObject, GameObject.getGameObjectTransformComponent(gameObject, state))
 };
 
-let getData = (state: StateDataType.state) => state.gameObjectData;
+let getGameObjectData = (state: StateDataType.state) => state.gameObjectData;
 
 let initGameObject = (gameObject, state: StateDataType.state) =>
   state |> MaterialTool.prepareForInit |> GameObject.initGameObject(gameObject);

@@ -624,6 +624,44 @@ let _ =
             }
           );
           describe(
+            "deep copy gameObject data",
+            () =>
+              test(
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, materialMap, sourceInstanceMap, objectInstanceMap",
+                () =>
+                  GameObjectType.(
+                    _testShadowCopyArrayLikeMapData(
+                      (state) => {
+                        let {
+                          disposedUidMap,
+                          aliveUidArray,
+                          transformMap,
+                          cameraControllerMap,
+                          geometryMap,
+                          meshRendererMap,
+                          materialMap,
+                          sourceInstanceMap,
+                          objectInstanceMap
+                        } =
+                          GameObjectTool.getGameObjectData(state);
+                        [|
+                          disposedUidMap |> Obj.magic,
+                          aliveUidArray |> Obj.magic,
+                          transformMap |> Obj.magic,
+                          cameraControllerMap |> Obj.magic,
+                          geometryMap |> Obj.magic,
+                          meshRendererMap |> Obj.magic,
+                          materialMap |> Obj.magic,
+                          sourceInstanceMap |> Obj.magic,
+                          objectInstanceMap |> Obj.magic
+                        |]
+                      },
+                      state^
+                    )
+                  )
+              )
+          );
+          describe(
             "deep copy objectInstance data",
             () =>
               test(
@@ -1197,50 +1235,48 @@ let _ =
                   describe(
                     "else, not init it",
                     () => {
-                      test
-                      ("test", 
-                      (
-                      () => {
-                      
-                      let (state, _) = _prepareInstanceGameObject(sandbox, state^);
-                      let (state, _) = _prepareBasicMaterialGameObject(sandbox, state);
-                      let state =
-                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                      let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                      let copiedState = StateTool.deepCopyState(state);
-                      let currentState = StateTool.createNewCompleteState();
-                      let (currentState, gameObject) =
-                        _prepareBasicMaterialGameObject(sandbox, currentState);
-                      let (currentStateCreateProgram, initShaderCount) =
-                        _exec(currentState, copiedState, gameObject);
-                      getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
-                      })
-                      );
-                  describe(
-                    "fix bug",
-                    () =>
                       test(
-                        "test create gameObject which has no material",
+                        "test",
                         () => {
                           let (state, _) = _prepareInstanceGameObject(sandbox, state^);
-                          let (state, _, _) = GameObjectTool.createGameObject(state);
-                          let (state, gameObject) =
-                            _prepareBasicMaterialGameObject(sandbox, state);
+                          let (state, _) = _prepareBasicMaterialGameObject(sandbox, state);
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> DirectorTool.prepare |> DirectorTool.init;
                           let copiedState = StateTool.deepCopyState(state);
-                          let currentState = state;
+                          let currentState = StateTool.createNewCompleteState();
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
                           let (currentStateCreateProgram, initShaderCount) =
                             _exec(currentState, copiedState, gameObject);
-                          getCallCount(currentStateCreateProgram) |> expect == initShaderCount
+                          getCallCount(currentStateCreateProgram) |> expect == initShaderCount + 1
                         }
+                      );
+                      describe(
+                        "fix bug",
+                        () =>
+                          test(
+                            "test create gameObject which has no material",
+                            () => {
+                              let (state, _) = _prepareInstanceGameObject(sandbox, state^);
+                              let (state, _, _) = GameObjectTool.createGameObject(state);
+                              let (state, gameObject) =
+                                _prepareBasicMaterialGameObject(sandbox, state);
+                              let state =
+                                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                              let state = state |> DirectorTool.prepare |> DirectorTool.init;
+                              let copiedState = StateTool.deepCopyState(state);
+                              let currentState = state;
+                              let (currentState, gameObject) =
+                                _prepareBasicMaterialGameObject(sandbox, currentState);
+                              let (currentStateCreateProgram, initShaderCount) =
+                                _exec(currentState, copiedState, gameObject);
+                              getCallCount(currentStateCreateProgram) |> expect == initShaderCount
+                            }
+                          )
                       )
-                  )
                     }
-                  );
+                  )
                 }
               );
               describe(

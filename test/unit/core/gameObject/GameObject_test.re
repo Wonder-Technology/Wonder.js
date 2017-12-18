@@ -42,7 +42,7 @@ let _ =
                 "state->uid + 1",
                 () => {
                   let (state, _) = createGameObject(state^);
-                  GameObjectTool.getData(state) |> ((data) => expect(data.uid) == 1)
+                  GameObjectTool.getGameObjectData(state) |> ((data) => expect(data.uid) == 1)
                 }
               )
           )
@@ -448,7 +448,7 @@ let _ =
                           let (state, gameObject3) = createGameObject(state);
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {transformMap} = GameObjectTool.getData(state);
+                          let {transformMap} = GameObjectTool.getGameObjectData(state);
                           (
                             transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -475,7 +475,7 @@ let _ =
                             |> addGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {meshRendererMap} = GameObjectTool.getData(state);
+                          let {meshRendererMap} = GameObjectTool.getGameObjectData(state);
                           (
                             meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -506,7 +506,7 @@ let _ =
                           let state = state |> GeometryTool.initGeometrys;
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {geometryMap} = GameObjectTool.getData(state);
+                          let {geometryMap} = GameObjectTool.getGameObjectData(state);
                           (
                             geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -528,7 +528,7 @@ let _ =
                             BasicMaterialTool.createGameObject(state);
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {materialMap} = GameObjectTool.getData(state);
+                          let {materialMap} = GameObjectTool.getGameObjectData(state);
                           (
                             materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -550,7 +550,7 @@ let _ =
                             CameraControllerTool.createCameraGameObject(state);
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {cameraControllerMap} = GameObjectTool.getData(state);
+                          let {cameraControllerMap} = GameObjectTool.getGameObjectData(state);
                           (
                             cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -569,7 +569,7 @@ let _ =
                           let (state, gameObject2, _) =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
                           let state = state |> disposeGameObject(gameObject1);
-                          let {sourceInstanceMap} = GameObjectTool.getData(state);
+                          let {sourceInstanceMap} = GameObjectTool.getGameObjectData(state);
                           (
                             sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject2)
@@ -587,7 +587,7 @@ let _ =
                           let (state, _, _, objectInstanceGameObject2, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
                           let state = state |> disposeGameObject(objectInstanceGameObject1);
-                          let {objectInstanceMap} = GameObjectTool.getData(state);
+                          let {objectInstanceMap} = GameObjectTool.getGameObjectData(state);
                           (
                             objectInstanceMap
                             |> WonderCommonlib.SparseMapSystem.has(objectInstanceGameObject1),
@@ -615,7 +615,7 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let state = state |> disposeGameObject(gameObject3);
                           let state = state |> disposeGameObject(gameObject4);
-                          let {transformMap} = GameObjectTool.getData(state);
+                          let {transformMap} = GameObjectTool.getGameObjectData(state);
                           (
                             transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                             transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -637,7 +637,7 @@ let _ =
                       let state = state |> disposeGameObject(gameObject1);
                       let state = state |> disposeGameObject(gameObject2);
                       let state = state |> disposeGameObject(gameObject3);
-                      let {disposedUidMap} = GameObjectTool.getData(state);
+                      let {disposedUidMap} = GameObjectTool.getGameObjectData(state);
                       (
                         disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
                         disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
@@ -657,7 +657,7 @@ let _ =
                       let state = state |> disposeGameObject(gameObject1);
                       let state = state |> disposeGameObject(gameObject2);
                       let state = state |> disposeGameObject(gameObject3);
-                      let {aliveUidArray} = GameObjectTool.getData(state);
+                      let {aliveUidArray} = GameObjectTool.getGameObjectData(state);
                       aliveUidArray |> expect == [|gameObject3|]
                     }
                   )
@@ -932,7 +932,7 @@ let _ =
                          gameObject3,
                          gameObject4
                        |]);
-                  let {transformMap, disposeCount} = GameObjectTool.getData(state);
+                  let {transformMap, disposeCount} = GameObjectTool.getGameObjectData(state);
                   (
                     disposeCount,
                     transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
