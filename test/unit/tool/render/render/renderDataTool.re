@@ -1,0 +1,1 @@
+let getRenderData = RenderDataSystem._getRenderData;

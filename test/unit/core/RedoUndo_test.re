@@ -662,6 +662,23 @@ let _ =
               )
           );
           describe(
+            "deep copy scheduler data",
+            () =>
+              test(
+                "shadow copy funcRecordArray, isFinishMap",
+                () =>
+                  StateDataType.(
+                    _testShadowCopyArrayLikeMapData(
+                      (state) => {
+                        let {funcRecordArray, isFinishMap} = SchedulerTool.getSchedulerData(state);
+                        [|funcRecordArray |> Obj.magic, isFinishMap |> Obj.magic|]
+                      },
+                      state^
+                    )
+                  )
+              )
+          );
+          describe(
             "deep copy objectInstance data",
             () =>
               test(
@@ -1067,14 +1084,48 @@ let _ =
                   |> WonderCommonlib.SparseMapSystem.set(0, true)
                   |> WonderCommonlib.SparseMapSystem.set(1, false)
                   |> ignore;
-                  let currentState = StateTool.createNewCompleteState();
-                  let _ = StateTool.restoreFromState(currentState, state);
+                  let _ = StateTool.restoreFromState(StateTool.createNewCompleteState(), state);
                   let {isSendModelMatrixDataMap} =
                     SourceInstanceTool.getSourceInstanceData(StateTool.getState());
                   isSendModelMatrixDataMap |> expect == [|false, false|]
                 }
               )
             }
+          );
+          describe(
+            "restore render data to target state",
+            () =>
+              test(
+                "clean renderArray, cameraData",
+                () => {
+                  open RenderDataType;
+                  let state = state^;
+                  let data = RenderDataTool.getRenderData(state);
+                  data.renderArray = Some([|0|]);
+                  data.cameraData = Some(Obj.magic(1));
+                  let _ = StateTool.restoreFromState(StateTool.createNewCompleteState(), state);
+                  let {renderArray, cameraData} =
+                    RenderDataTool.getRenderData(StateTool.getState());
+                  (renderArray, cameraData) |> expect == (None, None)
+                }
+              )
+          );
+          describe(
+            "restore global temp data to target state",
+            () =>
+              test(
+                "use current data->float32Array1",
+                () => {
+                  open GlobalTempType;
+                  let state = state^;
+                  let currentState = StateTool.createNewCompleteState();
+                  let data = GlobalTempStateCommon.getGlobalTempData(currentState);
+                  data.float32Array1 = Float32Array.make([|2.|]);
+                  let _ = StateTool.restoreFromState(currentState, state);
+                  let {float32Array1} = GlobalTempTool.getGlobalTempData(StateTool.getState());
+                  float32Array1 |> expect == data.float32Array1
+                }
+              )
           );
           describe(
             "restore shader data to target state",

@@ -73,3 +73,5 @@ let scheduleLoop = (taskFunc, state: state) => {
   data.count = succ(data.count);
   state
 };
+
+let deepCopyState = ScheduleStateCommon.deepCopyState;

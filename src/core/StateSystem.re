@@ -25,7 +25,8 @@ let deepCopyState = (state: StateDataType.state) =>
   |> TypeArrayPoolSystem.deepCopyState
   |> SourceInstanceAdmin.deepCopyState
   |> ObjectInstanceAdmin.deepCopyState
-  |> GameObjectAdmin.deepCopyState;
+  |> GameObjectAdmin.deepCopyState
+  |> ScheduleControllerSystem.deepCopyState;
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.getGl(currentState),
@@ -54,6 +55,8 @@ let restoreFromState =
   |> GLSLLocationSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
   |> GLSLSenderSystem.restoreFromState(intersectShaderIndexDataArray, currentState)
   |> MaterialAdmin.restoreFromState(gl, currentState)
+  |> RenderDataSystem.restoreFromState(currentState)
+  |> GlobalTempSystem.restoreFromState(currentState)
   |> setState(stateData)
 };
 

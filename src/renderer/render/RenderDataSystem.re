@@ -1,5 +1,7 @@
 open RenderDataType;
 
+open StateDataType;
+
 open GameObjectType;
 
 let _getRenderData = (state: StateDataType.state) => state.renderData;
@@ -24,3 +26,8 @@ let setRenderArray = (renderArray, state: StateDataType.state) =>
 
 let setCameraData = (cameraData, state: StateDataType.state) =>
   _getRenderData(state).cameraData = cameraData;
+
+let restoreFromState = (currentState, targetState) => {
+  ...targetState,
+  renderData: {renderArray: None, cameraData: None}
+};
