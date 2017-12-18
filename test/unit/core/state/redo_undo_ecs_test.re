@@ -94,7 +94,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "deepCopyState",
+        "deepCopyStateForRestore",
         () => {
           describe(
             "deep copy meshRenderer data",
@@ -113,7 +113,7 @@ let _ =
                     meshRenderer3
                   ) =
                     _prepareMeshRendererData(state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   MeshRendererTool.getMeshRendererData(copiedState)
                   |>
                   expect == {
@@ -142,7 +142,7 @@ let _ =
                     meshRenderer3
                   ) =
                     _prepareMeshRendererData(state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let data = MeshRendererTool.getMeshRendererData(copiedState);
                   data.index = 0;
                   data.renderGameObjectArray |> Js.Array.pop |> ignore;
@@ -184,7 +184,7 @@ let _ =
                   ) =
                     _prepareTransformData(state);
                   let _ = Transform.getTransformPosition(transform2, state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let data = TransformTool.getTransformData(copiedState);
                   data.localPositionMap
                   |> Obj.magic
@@ -213,7 +213,7 @@ let _ =
                     geometry3
                   ) =
                     _prepareGeometryData(state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let data = GeometryTool.getGeometryData(copiedState);
                   data.verticesMap
                   |> Obj.magic
@@ -248,7 +248,7 @@ let _ =
                     material3
                   ) =
                     _prepareMaterialData(state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let data = MaterialTool.getMaterialData(copiedState);
                   data.colorMap
                   |> Obj.magic
@@ -287,7 +287,7 @@ let _ =
                        originObjectInstanceArray
                      )
                   |> ignore;
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {objectInstanceArrayMap, modelMatrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceData(copiedState);
                   let objectInstanceArray =
@@ -416,7 +416,7 @@ let _ =
                     cameraController3
                   ) =
                     _prepareCameraControllerData(state);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {perspectiveCameraData} as data =
                     CameraControllerTool.getCameraControllerData(copiedState);
                   data.cameraArray
@@ -517,7 +517,7 @@ let _ =
                   let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
                     _prepare(state);
                   let currentState =
-                    StateTool.restore(currentState, state |> StateTool.deepCopyState);
+                    StateTool.restore(currentState, state |> StateTool.deepCopyStateForRestore);
                   let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
                   MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                   |> expect == [|gameObject1, gameObject2|]

@@ -21,4 +21,4 @@ let create = (sourceInstance, uid, state: StateDataType.state) => {
   ComponentSystem.addComponentToGameObjectMap(index, uid, gameObjectMap) |> ignore;
   (state, index)
 };
-let deepCopyState = ObjectInstanceStateCommon.deepCopyState;
+let deepCopyStateForRestore = ObjectInstanceStateCommon.deepCopyStateForRestore;

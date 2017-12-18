@@ -4,7 +4,7 @@ open MaterialType;
 
 let getMaterialData = (state: StateDataType.state) => Js.Option.getExn(state.materialData);
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
     state |> getMaterialData;
   {

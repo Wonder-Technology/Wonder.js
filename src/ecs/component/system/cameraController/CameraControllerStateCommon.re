@@ -22,7 +22,7 @@ let _deepCopyPerspectiveCameraState = (perspectiveCameraData) => {
   }
 };
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     index,
     perspectiveCameraData,

@@ -1,3 +1,3 @@
 let getRenderArray = MeshRendererSystem.getRenderArray;
 
-let deepCopyState = MeshRendererSystem.deepCopyState;
+let deepCopyStateForRestore = MeshRendererSystem.deepCopyStateForRestore;

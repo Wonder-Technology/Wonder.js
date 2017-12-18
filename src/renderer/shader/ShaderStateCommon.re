@@ -6,7 +6,7 @@ let getShaderData = (state: StateDataType.state) => state.shaderData;
 
 let getGLSLData = (state: StateDataType.state) => getShaderData(state).glslData;
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, shaderIndexMap} = state |> getShaderData;
   let {precision} = state |> getGLSLData;
   {

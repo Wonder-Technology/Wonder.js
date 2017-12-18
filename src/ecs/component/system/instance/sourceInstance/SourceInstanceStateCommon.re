@@ -4,7 +4,7 @@ open StateDataType;
 
 let getSourceInstanceData = (state: StateDataType.state) => state.sourceInstanceData;
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     index,
     objectInstanceArrayMap,

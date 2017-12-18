@@ -6,7 +6,7 @@ open Js.Typed_array;
 
 let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     index,
     localToWorldMatrixMap,

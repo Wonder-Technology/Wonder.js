@@ -2,7 +2,7 @@ open StateDataType;
 
 let getSchedulerData = (state: StateDataType.state) => state.schedulerData;
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {count, funcRecordArray, isFinishMap} = state |> getSchedulerData;
   {
     ...state,

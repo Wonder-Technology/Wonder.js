@@ -22,7 +22,7 @@ let initMaterials = (materialIndexArr, gl, state: StateDataType.state) =>
 let _getAllAliveMaterials = (state: StateDataType.state) =>
   MaterialSystem.getMaterialData(state).gameObjectMap |> SparseMapSystem.getValidKeys;
 
-let deepCopyState = MaterialSystem.deepCopyState;
+let deepCopyStateForRestore = MaterialSystem.deepCopyStateForRestore;
 
 let restore = (gl, currentState, targetState) => {
   let newState = MaterialSystem.restore(currentState, targetState);

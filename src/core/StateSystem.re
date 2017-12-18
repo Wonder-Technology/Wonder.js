@@ -9,24 +9,24 @@ let setState = (stateData: stateData, state: state) => {
   state
 };
 
-let deepCopyState = (state: StateDataType.state) =>
+let deepCopyStateForRestore = (state: StateDataType.state) =>
   state
-  |> MeshRendererAdmin.deepCopyState
-  |> TransformAdmin.deepCopyState
-  |> CameraControllerAdmin.deepCopyState
-  |> GeometryAdmin.deepCopyState
-  |> VboBufferSystem.deepCopyState
-  |> GLSLSenderSystem.deepCopyState
-  |> MaterialAdmin.deepCopyState
-  |> ShaderSystem.deepCopyState
-  |> ProgramSystem.deepCopyState
-  |> GLSLLocationSystem.deepCopyState
-  |> DeviceManagerSystem.deepCopyState
-  |> TypeArrayPoolSystem.deepCopyState
-  |> SourceInstanceAdmin.deepCopyState
-  |> ObjectInstanceAdmin.deepCopyState
-  |> GameObjectAdmin.deepCopyState
-  |> ScheduleControllerSystem.deepCopyState;
+  |> MeshRendererAdmin.deepCopyStateForRestore
+  |> TransformAdmin.deepCopyStateForRestore
+  |> CameraControllerAdmin.deepCopyStateForRestore
+  |> GeometryAdmin.deepCopyStateForRestore
+  |> VboBufferSystem.deepCopyStateForRestore
+  |> GLSLSenderSystem.deepCopyStateForRestore
+  |> MaterialAdmin.deepCopyStateForRestore
+  |> ShaderSystem.deepCopyStateForRestore
+  |> ProgramSystem.deepCopyStateForRestore
+  |> GLSLLocationSystem.deepCopyStateForRestore
+  |> DeviceManagerSystem.deepCopyStateForRestore
+  |> TypeArrayPoolSystem.deepCopyStateForRestore
+  |> SourceInstanceAdmin.deepCopyStateForRestore
+  |> ObjectInstanceAdmin.deepCopyStateForRestore
+  |> GameObjectAdmin.deepCopyStateForRestore
+  |> ScheduleControllerSystem.deepCopyStateForRestore;
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.getGl(currentState),

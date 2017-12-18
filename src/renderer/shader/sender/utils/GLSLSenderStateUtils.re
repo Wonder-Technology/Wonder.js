@@ -2,7 +2,7 @@ open StateDataType;
 
 let getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
 
-let deepCopyState = (state: StateDataType.state) =>
+let deepCopyStateForRestore = (state: StateDataType.state) =>
   /* let {
        attributeSendDataMap,
        instanceAttributeSendDataMap,

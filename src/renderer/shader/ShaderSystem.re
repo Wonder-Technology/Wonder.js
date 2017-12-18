@@ -76,6 +76,6 @@ let initMaterialShader =
 
 let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndexDataArray;
 
-let deepCopyState = ShaderStateCommon.deepCopyState;
+let deepCopyStateForRestore = ShaderStateCommon.deepCopyStateForRestore;
 
 let restore = ShaderStateCommon.restore;

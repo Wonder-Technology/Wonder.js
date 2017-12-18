@@ -186,7 +186,7 @@ let _ =
                       let state =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                      let copiedState = StateTool.deepCopyState(state);
+                      let copiedState = StateTool.deepCopyStateForRestore(state);
                       let currentState = StateTool.createNewCompleteState();
                       let (currentState, gameObject) =
                         _prepareBasicMaterialGameObject(sandbox, currentState);
@@ -206,7 +206,7 @@ let _ =
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                          let copiedState = StateTool.deepCopyState(state);
+                          let copiedState = StateTool.deepCopyStateForRestore(state);
                           let currentState = StateTool.createNewCompleteState();
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
@@ -228,7 +228,7 @@ let _ =
                               let state =
                                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                               let state = state |> DirectorTool.prepare |> DirectorTool.init;
-                              let copiedState = StateTool.deepCopyState(state);
+                              let copiedState = StateTool.deepCopyStateForRestore(state);
                               let currentState = state;
                               let (currentState, gameObject) =
                                 _prepareBasicMaterialGameObject(sandbox, currentState);

@@ -66,7 +66,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "deepCopyState",
+        "deepCopyStateForRestore",
         () => {
           describe(
             "deep copy scheduler data",
@@ -93,7 +93,7 @@ let _ =
                 () => {
                   open StateDataType;
                   let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {gl}: deviceManagerData =
                     DeviceManagerTool.getDeviceManagerData(copiedState);
                   gl |> expect == None
@@ -104,7 +104,7 @@ let _ =
                 () => {
                   open StateDataType;
                   let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
                   (copiedData.colorWrite, copiedData.clearColor)
@@ -127,7 +127,7 @@ let _ =
                     (buffer1, buffer2, buffer3)
                   ) =
                     _prepareVboBufferData(state^);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {
                     vertexBufferMap,
                     elementArrayBufferMap,
@@ -158,7 +158,7 @@ let _ =
                   open StateDataType;
                   open TypeArrayPoolType;
                   let (state, _) = _prepareTypeArrayPoolData(state^);
-                  let copiedState = StateTool.deepCopyState(state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
                     TypeArrayPoolTool.getTypeArrayPoolData(copiedState);
                   (float32ArrayPoolMap, uint16ArrayPoolMap)

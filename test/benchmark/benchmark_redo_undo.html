@@ -16,7 +16,7 @@
         import { startDirector } from "../../lib/es6_global/src/core/api/Director.js";
 
 
-        import { deepCopyState, restoreState } from "../../lib/es6_global/src/core/api/State.js";
+        import { deepCopyStateForRestore, restoreState } from "../../lib/es6_global/src/core/api/State.js";
 
 
 
@@ -205,7 +205,7 @@
                 var [state, camera] = createCamera(state);
 
 
-                // var copyState = deepCopyState(state);
+                // var copyState = deepCopyStateForRestore(state);
 
 
                 // window.boxesWhenCopy = boxes;
@@ -261,7 +261,7 @@
                     if (count == 1) {
                         count += 1;
 
-                        window.copyState1 = deepCopyState(state);
+                        window.copyState1 = deepCopyStateForRestore(state);
 
                         var [state, boxes] = createBoxesByClone(10000, state);
 
@@ -297,7 +297,7 @@
 
 
 
-                        // window.copyState2 = deepCopyState(state);
+                        // window.copyState2 = deepCopyStateForRestore(state);
 
 
 
@@ -320,7 +320,7 @@
                     if (count == 1) {
                         count += 1;
 
-                        window.copyState1 = deepCopyState(state);
+                        window.copyState1 = deepCopyStateForRestore(state);
 
                         // var [state, sourceInstanceBox, objectInstanceBoxes] = createBoxesByInstance(2, state);
 

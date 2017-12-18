@@ -108,6 +108,6 @@ let setPositionByTuple = (transform: transform, position: position, state: State
 let getGameObject = (transform: transform, state: StateDataType.state) =>
   TransformGameObjectCommon.getGameObject(transform, getTransformData(state));
 
-let deepCopyState = TransformStateCommon.deepCopyState;
+let deepCopyStateForRestore = TransformStateCommon.deepCopyStateForRestore;
 
 let restore = TransformStateCommon.restore;

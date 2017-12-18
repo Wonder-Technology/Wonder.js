@@ -74,4 +74,4 @@ let scheduleLoop = (taskFunc, state: state) => {
   state
 };
 
-let deepCopyState = ScheduleStateCommon.deepCopyState;
+let deepCopyStateForRestore = ScheduleStateCommon.deepCopyStateForRestore;

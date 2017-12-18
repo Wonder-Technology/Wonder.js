@@ -1,1 +1,1 @@
-let deepCopyState = ObjectInstanceSystem.deepCopyState;
+let deepCopyStateForRestore = ObjectInstanceSystem.deepCopyStateForRestore;

@@ -87,6 +87,6 @@ let getGameObject = (geometry: geometry, state: StateDataType.state) =>
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.isAlive(geometry, state);
 
-let deepCopyState = GeometryStateCommon.deepCopyState;
+let deepCopyStateForRestore = GeometryStateCommon.deepCopyStateForRestore;
 
 let restore = GeometryStateCommon.restore;

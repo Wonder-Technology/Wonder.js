@@ -8,6 +8,6 @@ let isSendModelMatrix = SourceInstanceSystem.isSendModelMatrix;
 
 let markSendModelMatrix = SourceInstanceSystem.markSendModelMatrix;
 
-let deepCopyState = SourceInstanceSystem.deepCopyState;
+let deepCopyStateForRestore = SourceInstanceSystem.deepCopyStateForRestore;
 
 let restore = SourceInstanceSystem.restore;

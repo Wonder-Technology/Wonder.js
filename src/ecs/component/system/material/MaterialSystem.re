@@ -27,7 +27,7 @@ let setColor = (material: material, color, state: StateDataType.state) => {
   state
 };
 
-let deepCopyState = MaterialStateCommon.deepCopyState;
+let deepCopyStateForRestore = MaterialStateCommon.deepCopyStateForRestore;
 
 let restore = MaterialStateCommon.restore;
 /* let getShaderIndexDataSize = () => 1;

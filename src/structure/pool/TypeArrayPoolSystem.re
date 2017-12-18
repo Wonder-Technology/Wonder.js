@@ -62,7 +62,7 @@ let addAllUint16TypeArrayToPool = (typeArrayMap: array(Uint16Array.t), maxSize, 
   map
 };
 
-let deepCopyState = (state: StateDataType.state) => {
+let deepCopyStateForRestore = (state: StateDataType.state) => {
   ...state,
   typeArrayPoolData: {
     float32ArrayPoolMap: WonderCommonlib.SparseMapSystem.createEmpty(),

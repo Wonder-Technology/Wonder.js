@@ -47,6 +47,6 @@ let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic
 
 let isModelMatrixIsStatic = SourceInstanceStaticCommon.isModelMatrixIsStatic;
 
-let deepCopyState = SourceInstanceStateCommon.deepCopyState;
+let deepCopyStateForRestore = SourceInstanceStateCommon.deepCopyStateForRestore;
 
 let restore = SourceInstanceStateCommon.restore;
