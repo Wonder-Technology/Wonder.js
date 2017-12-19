@@ -14,7 +14,7 @@ let _ =
       let _prepareGLSLSenderData = (state) => {
         open StateDataType;
         let {attributeSendDataMap, vertexAttribHistoryArray} =
-          GlslSenderTool.getGLSLSenderData(state);
+          GLSLSenderTool.getGLSLSenderData(state);
         let shaderIndex1 = 0;
         let data1 = Obj.magic(0);
         let func1 = Obj.magic(1);
@@ -63,7 +63,7 @@ let _ =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState());
                   let newState = StateTool.restore(currentState, state);
                   let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
-                    newState |> GlslSenderTool.getGLSLSenderData;
+                    newState |> GLSLSenderTool.getGLSLSenderData;
                   (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
                   |> expect == (None, None, None)
                 }
@@ -77,7 +77,7 @@ let _ =
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState());
                   let newState = StateTool.restore(currentState, state);
-                  let {vertexAttribHistoryArray} = newState |> GlslSenderTool.getGLSLSenderData;
+                  let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderData;
                   vertexAttribHistoryArray |> expect == WonderCommonlib.ArraySystem.createEmpty()
                 }
               )
@@ -268,7 +268,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2) |> ignore; 
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
-                      GlslLocationTool.getGLSLLocationData(state);
+                      GLSLLocationTool.getGLSLLocationData(state);
                     let attributeLocationData1 = Obj.magic(21);
                     let attributeLocationData2 = Obj.magic(22);
                     let uniformLocationData1 = Obj.magic(31);
@@ -280,7 +280,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
                     let {shaderUniformSendNoCacheableDataMap} =
-                      GlslSenderTool.getGLSLSenderData(state);
+                      GLSLSenderTool.getGLSLSenderData(state);
                     let shaderUniformSendNoCacheableData1 = Obj.magic(121);
                     let shaderUniformSendNoCacheableData2 = Obj.magic(122);
                     shaderUniformSendNoCacheableDataMap
@@ -327,7 +327,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2) |> ignore;
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
-                      GlslLocationTool.getGLSLLocationData(state);
+                      GLSLLocationTool.getGLSLLocationData(state);
                     let attributeLocationData1 = Obj.magic(201);
                     let attributeLocationData2 = Obj.magic(202);
                     let uniformLocationData1 = Obj.magic(301);
@@ -339,7 +339,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
                     let {shaderUniformSendNoCacheableDataMap} =
-                      GlslSenderTool.getGLSLSenderData(state);
+                      GLSLSenderTool.getGLSLSenderData(state);
                     let shaderUniformSendNoCacheableData1 = Obj.magic(10221);
                     let shaderUniformSendNoCacheableData2 = Obj.magic(10222);
                     shaderUniformSendNoCacheableDataMap
@@ -530,7 +530,7 @@ let _ =
                               ) =
                                 _prepare(state^);
                               let {attributeLocationMap, uniformLocationMap} =
-                                newState |> GlslLocationTool.getGLSLLocationData;
+                                newState |> GLSLLocationTool.getGLSLLocationData;
                               (
                                 attributeLocationMap |> SparseMapSystem.length,
                                 attributeLocationMap
@@ -576,7 +576,7 @@ let _ =
                               ) =
                                 _prepare(state^);
                               let {shaderUniformSendNoCacheableDataMap} =
-                                newState |> GlslSenderTool.getGLSLSenderData;
+                                newState |> GLSLSenderTool.getGLSLSenderData;
                               (
                                 shaderUniformSendNoCacheableDataMap |> SparseMapSystem.length,
                                 shaderUniformSendNoCacheableDataMap

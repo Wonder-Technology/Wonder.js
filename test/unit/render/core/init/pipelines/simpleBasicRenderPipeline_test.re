@@ -25,7 +25,7 @@ let _ =
                 "should contain basic_end shader lib's glsl",
                 () => {
                   let shaderSource = SimpleBasicRenderPipelineTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.getFsSource(shaderSource)
+                  GLSLTool.getFsSource(shaderSource)
                   |> expect
                   |> toContainString({|gl_FragColor = vec4(totalColor.rgb, totalColor.a);|})
                 }

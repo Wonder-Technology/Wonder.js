@@ -27,8 +27,8 @@ let _ =
                 () => {
                   let state = GpuDetectTool.setPrecision(GPUDetectType.HIGHP, state^);
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
-                  GlslTool.containSpecifyCount(
-                    GlslTool.getFsSource(shaderSource),
+                  GLSLTool.containSpecifyCount(
+                    GLSLTool.getFsSource(shaderSource),
                     {|precision highp float;
 precision highp int;
 |},
@@ -42,8 +42,8 @@ precision highp int;
                 () => {
                   let state = GpuDetectTool.setPrecision(GPUDetectType.MEDIUMP, state^);
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
-                  GlslTool.containSpecifyCount(
-                    GlslTool.getFsSource(shaderSource),
+                  GLSLTool.containSpecifyCount(
+                    GLSLTool.getFsSource(shaderSource),
                     {|precision mediump float;
 precision mediump int;
 |},
@@ -57,8 +57,8 @@ precision mediump int;
                 () => {
                   let state = GpuDetectTool.setPrecision(GPUDetectType.LOWP, state^);
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
-                  GlslTool.containSpecifyCount(
-                    GlslTool.getFsSource(shaderSource),
+                  GLSLTool.containSpecifyCount(
+                    GLSLTool.getFsSource(shaderSource),
                     {|precision lowp float;
 precision lowp int;
 |},

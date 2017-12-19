@@ -230,7 +230,7 @@ let _ =
                   let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                   let pos = 0;
                   let getUniformLocation =
-                    GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                    GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(

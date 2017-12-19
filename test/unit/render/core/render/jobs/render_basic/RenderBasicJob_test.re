@@ -70,7 +70,7 @@ let _ =
                 let state = _prepare(sandbox, state);
                 let pos = 0;
                 let getAttribLocation =
-                  GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                  GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                 let disableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
                 let state =
                   state
@@ -293,7 +293,7 @@ let _ =
                   let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
                   let pos = 0;
                   let getAttribLocation =
-                    GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                    GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(
@@ -346,7 +346,7 @@ let _ =
                       let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
                       let pos = 0;
                       let getAttribLocation =
-                        GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                        GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
@@ -375,7 +375,7 @@ let _ =
                           let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
                           let pos = 0;
                           let getAttribLocation =
-                            GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                            GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
@@ -401,7 +401,7 @@ let _ =
                           let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
                           let pos = 0;
                           let getAttribLocation =
-                            GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                            GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
@@ -417,8 +417,8 @@ let _ =
                           let state = state |> _render;
                           let state =
                             state
-                            |> GlslSenderTool.disableVertexAttribArray
-                            |> GlslSenderTool.cleanLastSendArrayBuffer;
+                            |> GLSLSenderTool.disableVertexAttribArray
+                            |> GLSLSenderTool.cleanLastSendArrayBuffer;
                           let state = state |> _render;
                           enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
                         }
@@ -538,7 +538,7 @@ let _ =
                   RenderJobsTool.prepareGameObject(sandbox, state);
                 let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                 let pos = 0;
-                let getUniformLocation = GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
                 let state =
                   state
                   |> FakeGlTool.setFakeGl(
@@ -552,7 +552,7 @@ let _ =
                 uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 1
               }
             );
-          GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
+          GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
@@ -585,7 +585,7 @@ let _ =
                     let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
                     let getUniformLocation =
-                      GlslLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
+                      GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
                     let state =
                       state
                       |> FakeGlTool.setFakeGl(
@@ -626,7 +626,7 @@ let _ =
                         let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
-                          GlslLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
+                          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
                         let state =
                           state
                           |> FakeGlTool.setFakeGl(
@@ -657,7 +657,7 @@ let _ =
               },
             ()
           );
-          GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
+          GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_vMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
@@ -685,7 +685,7 @@ let _ =
                 testSendShaderUniformDataOnlyOnce("u_vMatrix", _prepareSendUinformData),
             ()
           );
-          GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
+          GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_pMatrix",
             (gameObjectTransform, cameraTransform, cameraController, state) => state,
@@ -695,7 +695,7 @@ let _ =
                 testSendShaderUniformDataOnlyOnce("u_pMatrix", _prepareSendUinformData),
             ()
           );
-          GlslSenderTool.JudgeSendUniformData.testSendVector3(
+          GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
             "u_color",
             ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
@@ -718,7 +718,7 @@ let _ =
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
-                          GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                          GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
                         let state =
                           state
                           |> FakeGlTool.setFakeGl(

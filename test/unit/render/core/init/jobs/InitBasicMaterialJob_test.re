@@ -30,7 +30,7 @@ let _ =
                   let (state, gameObject, geometry, material) =
                     InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let getAttribLocation =
-                    GlslLocationTool.getAttribLocation(sandbox, "a_position");
+                    GLSLLocationTool.getAttribLocation(sandbox, "a_position");
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(
@@ -54,7 +54,7 @@ let _ =
                       let (state, _, _, _) =
                         InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
                       let getAttribLocation =
-                        GlslLocationTool.getAttribLocation(sandbox, "a_position");
+                        GLSLLocationTool.getAttribLocation(sandbox, "a_position");
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
@@ -77,7 +77,7 @@ let _ =
           let _testGetLocation = (name) => {
             let (state, gameObject, geometry, material) =
               InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-            let getUniformLocation = GlslLocationTool.getUniformLocation(sandbox, name);
+            let getUniformLocation = GLSLLocationTool.getUniformLocation(sandbox, name);
             let state =
               state
               |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ()));
@@ -99,7 +99,7 @@ let _ =
                       let (state, _, _, _) =
                         InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
                       let getUniformLocation =
-                        GlslLocationTool.getUniformLocation(sandbox, "u_mMatrix");
+                        GLSLLocationTool.getUniformLocation(sandbox, "u_mMatrix");
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
@@ -126,13 +126,13 @@ let _ =
             () => {
               let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
               (
-                GlslTool.containSpecifyCount(
-                  GlslTool.getVsSource(shaderSource),
+                GLSLTool.containSpecifyCount(
+                  GLSLTool.getVsSource(shaderSource),
                   "gl_Position =",
                   ~count=1,()
                 ),
-                GlslTool.containSpecifyCount(
-                  GlslTool.getFsSource(shaderSource),
+                GLSLTool.containSpecifyCount(
+                  GLSLTool.getFsSource(shaderSource),
                   "gl_FragColor =",
                   ~count=1, ()
                 )
@@ -147,8 +147,8 @@ let _ =
                 "test common shader lib's glsl",
                 () => {
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.containMultiline(
-                    GlslTool.getVsSource(shaderSource),
+                  GLSLTool.containMultiline(
+                    GLSLTool.getVsSource(shaderSource),
                     [{|uniform mat4 u_vMatrix;
 |}, {|uniform mat4 u_pMatrix;
 |}]
@@ -164,8 +164,8 @@ let _ =
                     () => {
                       let shaderSource =
                         InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                      GlslTool.containMultiline(
-                        GlslTool.getVsSource(shaderSource),
+                      GLSLTool.containMultiline(
+                        GLSLTool.getVsSource(shaderSource),
                         [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
                       )
                       |> expect == true
@@ -183,8 +183,8 @@ let _ =
                           let state =
                             state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
                           let state = state |> InitBasicMaterialJobTool.exec;
-                          GlslTool.containMultiline(
-                            GlslTool.getVsSource(shaderSource),
+                          GLSLTool.containMultiline(
+                            GLSLTool.getVsSource(shaderSource),
                             [
                               {|attribute vec4 a_mVec4_0;|},
                               {|attribute vec4 a_mVec4_1;|},
@@ -204,8 +204,8 @@ let _ =
                           let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
                           let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
                           let state = state |> InitBasicMaterialJobTool.exec;
-                          GlslTool.containMultiline(
-                            GlslTool.getVsSource(shaderSource),
+                          GLSLTool.containMultiline(
+                            GLSLTool.getVsSource(shaderSource),
                             [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
                           )
                           |> expect == true
@@ -219,7 +219,7 @@ let _ =
                 "test vertex shader lib's glsl",
                 () => {
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.getVsSource(shaderSource)
+                  GLSLTool.getVsSource(shaderSource)
                   |> expect
                   |> toContainString({|attribute vec3 a_position;
 |})
@@ -233,7 +233,7 @@ let _ =
                     () => {
                       let shaderSource =
                         InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                      GlslTool.getVsSource(shaderSource)
+                      GLSLTool.getVsSource(shaderSource)
                       |> expect
                       |> toContainString(
                            {|
@@ -247,8 +247,8 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
                     () => {
                       let shaderSource =
                         InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                      GlslTool.containMultiline(
-                        GlslTool.getFsSource(shaderSource),
+                      GLSLTool.containMultiline(
+                        GLSLTool.getFsSource(shaderSource),
                         [{|uniform vec3 u_color;|}, {|vec4 totalColor = vec4(u_color, 1.0);
 |}]
                       )
@@ -261,7 +261,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
                 "test basic_end shader lib's glsl",
                 () => {
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.getFsSource(shaderSource)
+                  GLSLTool.getFsSource(shaderSource)
                   |> expect
                   |> toContainString({|gl_FragColor = vec4(totalColor.rgb, totalColor.a);|})
                 }

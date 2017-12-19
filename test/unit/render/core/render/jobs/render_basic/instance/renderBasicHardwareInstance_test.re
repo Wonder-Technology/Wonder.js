@@ -73,7 +73,7 @@ let _ =
                   let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
                   let pos = 0;
                   let getAttribLocation =
-                    GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                    GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(
@@ -107,7 +107,7 @@ let _ =
               let (state, gameObject3, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
               let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
               let pos = 1;
-              let getUniformLocation = GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+              let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
               let state =
                 state
                 |> FakeGlTool.setFakeGl(
@@ -121,7 +121,7 @@ let _ =
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           );
-          GlslSenderTool.JudgeSendUniformData.testSendVector3(
+          GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
             "u_color",
             ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
@@ -497,7 +497,7 @@ let _ =
                     let pos3 = 3;
                     let pos4 = 4;
                     let getAttribLocation =
-                      GlslLocationTool.getAttribLocation(~pos=pos1, sandbox, "a_mVec4_0");
+                      GLSLLocationTool.getAttribLocation(~pos=pos1, sandbox, "a_mVec4_0");
                     getAttribLocation
                     |> withTwoArgs(Sinon.matchAny, "a_mVec4_1")
                     |> returns(pos2)
