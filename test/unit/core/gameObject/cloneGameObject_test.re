@@ -588,8 +588,8 @@ let _ =
                       )
                       |>
                       expect == (
-                                  Js.Nullable.empty,
-                                  Js.Nullable.empty,
+                                  Js.Nullable.undefined,
+                                  Js.Nullable.undefined,
                                   Js.Nullable.return(clonedTransformArr[0]),
                                   Js.Nullable.return(clonedTransformArr[1]),
                                   Js.Nullable.return(clonedTransformArr[0]),

@@ -129,12 +129,12 @@ let _ =
                 GlslTool.containSpecifyCount(
                   GlslTool.getVsSource(shaderSource),
                   "gl_Position =",
-                  ~count=1
+                  ~count=1,()
                 ),
                 GlslTool.containSpecifyCount(
                   GlslTool.getFsSource(shaderSource),
                   "gl_FragColor =",
-                  ~count=1
+                  ~count=1, ()
                 )
               )
               |> expect == (true, true)

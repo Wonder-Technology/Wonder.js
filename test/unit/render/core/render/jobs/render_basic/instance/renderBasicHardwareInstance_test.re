@@ -203,7 +203,7 @@ let _ =
                           )
                         ) =
                           _prepare(sandbox, state);
-                        for (i in 0 to 62) {
+                        for (_ in 0 to 62) {
                           let (state, objectInstanceGameObject) =
                             SourceInstance.createSourceInstanceObjectInstance(
                               sourceInstance,
@@ -222,8 +222,8 @@ let _ =
                             let buffer1 = Obj.magic(1);
                             let buffer2 = Obj.magic(2);
                             let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                            createBuffer |> onCall(2) |> returns(buffer1);
-                            createBuffer |> onCall(3) |> returns(buffer2);
+                            createBuffer |> onCall(2) |> returns(buffer1) |> ignore;
+                            createBuffer |> onCall(3) |> returns(buffer2) |> ignore;
                             let deleteBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                             (state, buffer1, buffer2, createBuffer, deleteBuffer)
                           };

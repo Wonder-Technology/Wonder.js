@@ -8,7 +8,7 @@
     {
       "dir": "test",
       "subdirs": true,
-      "type":"dev"
+      "type": "dev"
     }
   ],
   "bs-dev-dependencies": [
@@ -23,5 +23,9 @@
   "package-specs": [
     "es6-global"
   ],
-  "namespace": true
+  "namespace": true,
+  "warnings": {
+    "number": "-10-26-27-K-44-45",
+    "error": "+5+6"
+  }
 }

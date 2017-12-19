@@ -129,7 +129,11 @@ let _addUniformSendDataByType =
   | "mat4" =>
     sendNoCacheableDataArr
     |> Js.Array.push(
-         {pos, sendNoCacheableDataFunc: sendMatrix4, getNoCacheableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCacheableData
+         {
+           pos,
+           sendNoCacheableDataFunc: sendMatrix4,
+           getNoCacheableDataFunc: getDataFunc |> Obj.magic
+         }: uniformSendNoCacheableData
        )
     |> ignore
   | "vec3" =>
@@ -201,7 +205,8 @@ let addUniformSendData =
     _getOrCreateHashMap(state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex));
   let uniformCacheMap =
     _getOrCreateHashMap(data |> GLSLSenderSendDataUtils.getCacheMap(shaderIndex));
-  let sendNoCacheableDataArr: array(uniformSendNoCacheableData) = WonderCommonlib.ArraySystem.createEmpty();
+  let sendNoCacheableDataArr: array(uniformSendNoCacheableData) =
+    WonderCommonlib.ArraySystem.createEmpty();
   let sendCacheableDataArr: array(uniformSendCacheableData) =
     WonderCommonlib.ArraySystem.createEmpty();
   let shaderSendNoCacheableDataArr: array(shaderUniformSendNoCacheableData) =
@@ -284,6 +289,7 @@ let addUniformSendData =
                             )
                           | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
                           }
+                        | _ => ExceptionHandleSystem.throwMessage({j|unknow from:$from|j})
                         }
                       }
                     )

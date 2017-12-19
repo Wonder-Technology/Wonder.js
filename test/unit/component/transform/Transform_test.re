@@ -121,7 +121,7 @@ let _ =
         "getTransformParent",
         () =>
           test(
-            "default value should be Js.Nullable.empty",
+            "default value should be Js.Nullable.undefined",
             () => {
               let (state, transform) = createTransform(state^);
               getTransformParent(transform, state) |> expect == Js.Nullable.undefined

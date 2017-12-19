@@ -32,7 +32,7 @@ let _ =
                     {|precision highp float;
 precision highp int;
 |},
-                    ~count=1
+                    ~count=1, ()
                   )
                   |> expect == true
                 }
@@ -47,7 +47,7 @@ precision highp int;
                     {|precision mediump float;
 precision mediump int;
 |},
-                    ~count=1
+                    ~count=1, ()
                   )
                   |> expect == true
                 }
@@ -62,7 +62,7 @@ precision mediump int;
                     {|precision lowp float;
 precision lowp int;
 |},
-                    ~count=1
+                    ~count=1, ()
                   )
                   |> expect == true
                 }
