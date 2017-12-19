@@ -16,7 +16,7 @@ let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
   switch (map |> WonderCommonlib.SparseMapSystem.get(count)) {
   | Some(arr) =>
     switch (arr |> Js.Array.length) {
-    | len when len > maxSize => map
+    | len when len >= maxSize => map
     | _ =>
       arr |> Js.Array.push(typeArray) |> ignore;
       map
