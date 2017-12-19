@@ -13,7 +13,8 @@
     "build": "bsb -clean-world -make-world",
     "test": "npm run build && jest --config jest.json",
     "test:coverage": "npm run build && jest --config jest_coverage.json",
-    "test:watch": "npm run build && jest --watch --config jest.json"
+    "test:watch": "npm run build && jest --watch --config jest.json",
+    "test:ci": "jest --config jest_coverage.json"
   },
   "devDependencies": {
     "babel": "^6.23.0",
