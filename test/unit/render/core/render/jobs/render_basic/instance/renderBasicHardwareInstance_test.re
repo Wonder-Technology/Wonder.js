@@ -826,33 +826,6 @@ let _ =
             }
           )
       );
-      describe(
-        "test instance shader and no instance gameObject",
-        () =>
-          describe(
-            "fix bug",
-            () => {
-              let _prepareBasicMaterialGameObject = (sandbox, state) => {
-                open GameObject;
-                open BasicMaterial;
-                open MeshRenderer;
-                open BoxGeometry;
-                open Sinon;
-                let (state, material) = createBasicMaterial(state);
-                let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-                let (state, meshRenderer) = createMeshRenderer(state);
-                let (state, gameObject) = state |> createGameObject;
-                let state =
-                  state
-                  |> addGameObjectMaterialComponent(gameObject, material)
-                  |> addGameObjectMeshRendererComponent(gameObject, meshRenderer)
-                  |> addGameObjectGeometryComponent(gameObject, geometry);
-                (state, gameObject)
-              };
-              ()
-            }
-          )
-      )
       /* test(
            "not unbind instance buffer",
            () => {
