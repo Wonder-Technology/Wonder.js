@@ -210,7 +210,7 @@ let _ =
           describe(
             "test cameraController component",
             () => {
-              let prepare = () => {
+              let _prepare = () => {
                 open CameraController;
                 let (state, gameObject) = createGameObject(state^);
                 let (state, cameraController) = createCameraController(state);
@@ -225,7 +225,7 @@ let _ =
                     "if this type of component is already exist, error",
                     () => {
                       open CameraController;
-                      let (state, gameObject, _) = prepare();
+                      let (state, gameObject, _) = _prepare();
                       expect(
                         () => {
                           let (state, cameraController) = createCameraController(state);
@@ -243,7 +243,7 @@ let _ =
                     "can get component's gameObject",
                     () => {
                       open CameraController;
-                      let (state, gameObject, _) = prepare();
+                      let (state, gameObject, _) = _prepare();
                       state
                       |> getCameraControllerGameObject(
                            getGameObjectCameraControllerComponent(gameObject, state)
@@ -259,7 +259,7 @@ let _ =
                   test(
                     "get cameraController component",
                     () => {
-                      let (state, gameObject, _) = prepare();
+                      let (state, gameObject, _) = _prepare();
                       state
                       |> getGameObjectCameraControllerComponent(gameObject)
                       |> CameraControllerTool.isCameraController
@@ -272,7 +272,7 @@ let _ =
                   test(
                     "has cameraController component",
                     () => {
-                      let (state, gameObject, _) = prepare();
+                      let (state, gameObject, _) = _prepare();
                       state |> hasGameObjectCameraControllerComponent(gameObject) |> expect == true
                     }
                   )
