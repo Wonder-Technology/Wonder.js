@@ -65,7 +65,7 @@ let _ =
                     function test(){
                         var arr = [];
                         for(var i = 0; i <= 100000; i++){
-                        arr[i] = wd.add(1, 2);
+                        arr[i] = 10
                         }
                     }
 var n1 = performance.now();
