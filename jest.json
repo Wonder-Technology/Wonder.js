@@ -3,7 +3,7 @@
   "moduleFileExtensions": [
     "js"
   ],
-  "testRegex": "lib/js/test/unit/.+_test\\.js$",
+  "testRegex": "lib/es6_global/test/unit/.+_test\\.js$",
   "transformIgnorePatterns": [
     "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib)"
   ],
