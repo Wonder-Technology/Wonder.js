@@ -11,3 +11,5 @@ install:
 script:
   - gulp build
   - npm run test:ci
+after_success:
+  - npm run codecov
