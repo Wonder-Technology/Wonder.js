@@ -52,7 +52,7 @@ gulp.task("rollup", function () {
     //       })
     //   }
     var inputConfig = {
-        input: "./lib/es6_global/src/Index.js",
+        input: "./lib/js/src/Index.js",
         plugins: [
         ]
     };
