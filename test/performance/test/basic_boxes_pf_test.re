@@ -159,15 +159,18 @@ var n2 = performance.now();
                     var state = wd.initDirector(state);
 
 
-var n3 = performance.now();
 
-                    var state = wd.initDirector(state);
+                    /* var state = wd.initDirector(state); */
                     /* var state = wd.setState(state); */
 
-                    /* var state = wd.loopBody(100.0, state); */
+                    var state = wd.loopBody(100.0, state);
 
-                    /* var state = wd.loopBody(200.0, state);
-                    var state = wd.loopBody(300.0, state); */
+
+
+var n3 = performance.now();
+
+                    /* var state = wd.loopBody(200.0, state); */
+                    var state = wd.loopBody(300.0, state);
 
 
 var n4 = performance.now();
