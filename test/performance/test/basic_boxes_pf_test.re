@@ -92,7 +92,7 @@ return [n1, n2, n3, n4]
               ];
               state^ |> exec("create_20k_boxes", [@bs] body) |> compare((expect, toBe))
             },
-            16000
+            1600000
           )
       )
     }
