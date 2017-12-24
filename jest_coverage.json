@@ -3,9 +3,9 @@
   "moduleFileExtensions": [
     "js"
   ],
-  "testRegex": "lib/es6_global/test/.+pf_test\\.js$",
+  "testRegex": "lib/js/test/.+pf_test\\.js$",
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib|wonder-benchmark)"
+    "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib)"
   ],
   "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
   "notify": false,
