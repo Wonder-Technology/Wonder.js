@@ -2,6 +2,7 @@
 .merlin
 .idea/
 .vscode/
+jest_0/
 lib/bs/
 lib/**/src/
 reference/

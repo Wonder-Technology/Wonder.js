@@ -13,6 +13,7 @@
     "build": "bsb -clean-world -make-world",
     "test": "npm run build && jest --config jest.json",
     "test:coverage": "npm run build && jest --config jest_coverage.json",
+    "test:performance": "jest --config jest_pf.json",
     "test:watch": "jest --watch --config jest.json",
     "test:ci": "jest --config jest_coverage.json"
   },
@@ -27,9 +28,10 @@
     "gulp-sync": "^0.1.4",
     "http": "^0.0.0",
     "rollup": "^0.51.5",
+    "wonder-benchmark": "^0.1.0",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "^0.1.4",
-    "wonder-generate-index": "^0.0.1",
+    "wonder-generate-index": "0.1.0",
     "wonder-glsl-compiler": "latest"
   },
   "dependencies": {

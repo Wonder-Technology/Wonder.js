@@ -1,0 +1,24 @@
+{
+    "name": "basic boxes",
+    "cases": [
+        {
+            "name": "create_20k_boxes",
+            "time": [
+                {
+                    "name": "prepare",
+                    "time": 95
+                },
+                {
+                    "name": "init",
+                    "time": 10
+                },
+                {
+                    "name": "loopBody",
+                    "time": 80
+                }
+            ],
+            "memory": 17,
+            "error_rate": 5
+        }
+    ]
+}

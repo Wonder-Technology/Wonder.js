@@ -3,9 +3,9 @@
 .DS_Store/
 lib/bs/
 test/
-src/
 build/
 reference/
 mine/
 server/
 examples/
+jest_0/
