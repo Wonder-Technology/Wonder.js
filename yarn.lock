@@ -4478,9 +4478,9 @@ wonder-commonlib@0.2.13, wonder-commonlib@^0.2.0:
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.13.tgz#239878a6ed887f4e1256e50d4eabaf1543ad9fde"
 
-wonder-generate-index@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/wonder-generate-index/-/wonder-generate-index-0.0.1.tgz#d5c426d0ee940c2a6580e202b1c3bf8afde6e394"
+wonder-generate-index@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/wonder-generate-index/-/wonder-generate-index-0.1.0.tgz#beaea10b7ee82f22fc1406724618e7922beabda7"
   dependencies:
     bs-glob reasonml-community/bs-glob
     wonder-commonlib "0.2.13"
