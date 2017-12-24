@@ -10,4 +10,4 @@ install:
   - yarn install
 script:
   - gulp build
-  - npm run test:performance
+  - npm run test:ci
