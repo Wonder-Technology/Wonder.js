@@ -21,7 +21,6 @@ install:
 script:
   - gulp prepareForCI
   - gulp build
-  - npm run test:pf
-  - npm run test:coverage
+  - npm run test:ci
 after_success:
   - npm run codecov

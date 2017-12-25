@@ -1,0 +1,23 @@
+{
+  "automock": false,
+  "moduleFileExtensions": [
+    "js"
+  ],
+  "testRegex": "lib/js/test/.+/.+_test\\.js$",
+  "transformIgnorePatterns": [
+    "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib)"
+  ],
+  "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
+  "notify": false,
+  "verbose": true,
+  "collectCoverage":true,
+  "coverageDirectory":"<rootDir>/test/coverage/",
+  "coveragePathIgnorePatterns":[
+    "<rootDir>/lib/js/src/.+/Director.*",
+    "<rootDir>/lib/js/src/utils/",
+    "<rootDir>/lib/js/src/definition/",
+    "<rootDir>/lib/js/src/structure/",
+    "<rootDir>/lib/js/src/Index.*"
+  ],
+  "collectCoverageFrom" : ["lib/js/src/**/*.{js}", "!**/node_modules/**", "!**/vendor/**"]
+}
