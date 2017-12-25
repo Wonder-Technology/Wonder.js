@@ -31,7 +31,7 @@ let getConfig = (defaultConfig, ciConfig) => {
   }
 };
 
-let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 50, "extremeCount": 5}, ~ciConfig={"isClosePage": true, "execCount": 100, "extremeCount": 10}, defaultFileName, ciFileName, browser, page, state) => {
+let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 20, "extremeCount": 5}, ~ciConfig={"isClosePage": true, "execCount": 20, "extremeCount": 5}, defaultFileName, ciFileName, browser, page, state) => {
   setTimeout(100000) |> ignore;
   Js.Promise.(
     WonderBenchmark.(

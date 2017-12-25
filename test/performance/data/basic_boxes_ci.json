@@ -6,26 +6,26 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 92
+                    "time": 98
                 },
                 {
                     "name": "init",
-                    "time": 10
+                    "time": 11
                 },
                 {
                     "name": "loopBody",
-                    "time": 91
+                    "time": 110
                 }
             ],
             "memory": 7,
-            "error_rate": 1
+            "error_rate": 20
         },
         {
             "name": "create_5k_boxes+transform",
             "time": [
                 {
                     "name": "prepare",
-                    "time": 92
+                    "time": 98
                 },
                 {
                     "name": "init",
@@ -33,11 +33,11 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 123
+                    "time": 144
                 }
             ],
             "memory": 10,
-            "error_rate": 1    
+            "error_rate": 20    
         },
         {
             "name": "create_5k_boxes+transform+set_parent",
@@ -52,18 +52,18 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 137
+                    "time": 150
                 }
             ],
             "memory": 7,
-            "error_rate": 1
+            "error_rate": 20
         },
         {
             "name": "create_and_dispose_1k_boxes",
             "time": [
                 {
                     "name": "prepare",
-                    "time": 5
+                    "time": 6
                 },
                 {
                     "name": "init",
@@ -71,15 +71,15 @@
                 },
                 {
                     "name": "loopBody1",
-                    "time": 188
+                    "time": 205
                 },
                 {
                     "name": "loopBody2",
-                    "time": 149
+                    "time": 160
                 }
             ],
             "memory": 11,
-            "error_rate": 1
+            "error_rate": 20
         }
     ]
 }
