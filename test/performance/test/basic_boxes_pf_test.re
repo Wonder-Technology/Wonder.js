@@ -58,7 +58,7 @@ let _ =
         "test time",
         () =>
           testPromiseWithTimeout(
-            "create 20k boxes",
+            "create 5k boxes",
             () => {
 
               let body = [%bs.raw
@@ -144,7 +144,7 @@ let _ =
 
                 function initSample(state) {
 var n1 = performance.now();
-                    var data = createBoxes(2000, state);
+                    var data = createBoxes(5000, state);
 
                     var state = data[0];
                     var boxes = data[1];
