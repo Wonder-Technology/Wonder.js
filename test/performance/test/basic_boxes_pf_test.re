@@ -60,6 +60,7 @@ let _ =
           testPromiseWithTimeout(
             "create 20k boxes",
             () => {
+
               let body = [%bs.raw
                 {| function() {
                 var state = wd.setMainConfig({
