@@ -18,7 +18,7 @@
                 }
             ],
             "memory": 7,
-            "error_rate": 10
+            "error_rate": 20
         }
     ]
 }
