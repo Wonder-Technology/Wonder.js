@@ -21,7 +21,14 @@ let _ =
       let browser = ref(None);
       let page = ref(None);
       beforeAllPromise(
-        () => BenchmarkTool.prepareForNoHeadless("basic_boxes.json", "basic_boxes_ci.json", browser, page, state)
+        () =>
+          BenchmarkTool.prepareForNoHeadless(
+            "basic_boxes.json",
+            "basic_boxes_ci.json",
+            browser,
+            page,
+            state
+          )
       );
       afterAllPromise(() => browser^ |> Js.Option.getExn |> Browser.close);
       beforeEach(() => sandbox := createSandbox());
@@ -29,7 +36,7 @@ let _ =
       describe(
         "test time",
         () =>
-          testPromiseWithTimeout(
+          testPromise(
             "create 5k boxes",
             () => {
               let body = [%bs.raw
@@ -323,8 +330,7 @@ return [n1, n2, n3, n4]
 |}
               ];
               state^ |> exec("create_5k_boxes", [@bs] body) |> compare((expect, toBe))
-            },
-            16000000
+            }
           )
       )
     }

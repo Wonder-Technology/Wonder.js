@@ -1,5 +1,14 @@
 open Node;
 
+let setTimeout = [%bs.raw
+  {|
+               function(timeout) {
+
+                jest.setTimeout(timeout);
+               }
+                |}
+];
+
 let getDataJsonFileName = (defaultFileName, ciFileName) => {
   open Json;
   open Decode;
@@ -11,7 +20,8 @@ let getDataJsonFileName = (defaultFileName, ciFileName) => {
   }
 };
 
-let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) =>
+let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) => {
+  setTimeout(100000) |> ignore;
   Js.Promise.(
     WonderBenchmark.(
       Benchmark.(
@@ -53,4 +63,5 @@ let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) =
         )
       )
     )
-  );
+  )
+};
