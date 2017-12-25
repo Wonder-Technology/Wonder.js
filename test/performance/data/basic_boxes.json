@@ -18,7 +18,7 @@
                 }
             ],
             "memory": 7,
-            "error_rate": 10
+            "error_rate": 1
         },
         {
             "name": "create_5k_boxes+transform",
@@ -36,8 +36,8 @@
                     "time": 48
                 }
             ],
-            "memory": 11,
-            "error_rate": 15    
+            "memory": 9,
+            "error_rate": 1    
         },
         {
             "name": "create_5k_boxes+transform+set_parent",
@@ -55,8 +55,8 @@
                     "time": 54
                 }
             ],
-            "memory": 8,
-            "error_rate": 15
+            "memory": 9,
+            "error_rate": 1
         },
         {
             "name": "create_and_dispose_1k_boxes",
@@ -79,7 +79,7 @@
                 }
             ],
             "memory": 6,
-            "error_rate": 15
+            "error_rate": 1
         }
     ]
 }

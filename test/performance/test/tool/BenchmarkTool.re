@@ -20,6 +20,19 @@ let getDataJsonFileName = (defaultFileName, ciFileName) => {
   }
 };
 
+
+
+let getConfig = () => {
+  open Json;
+  open Decode;
+  let json =
+    Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
+  switch (json |> field("env", string)) {
+  | "ci" => {"isClosePage": true, "execCount": 20}
+  | _ => {"isClosePage": true, "execCount": 20}
+  }
+};
+
 let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) => {
   setTimeout(100000) |> ignore;
   Js.Promise.(
