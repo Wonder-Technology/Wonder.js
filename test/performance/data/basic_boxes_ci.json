@@ -6,7 +6,7 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 100
+                    "time": 110
                 },
                 {
                     "name": "init",
@@ -14,11 +14,72 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 100
+                    "time": 110
                 }
             ],
             "memory": 7,
             "error_rate": 20
+        },
+        {
+            "name": "create_5k_boxes+transform",
+            "time": [
+                {
+                    "name": "prepare",
+                    "time": 55
+                },
+                {
+                    "name": "init",
+                    "time": 9
+                },
+                {
+                    "name": "loopBody",
+                    "time": 48
+                }
+            ],
+            "memory": 11,
+            "error_rate": 15    
+        },
+        {
+            "name": "create_5k_boxes+transform+set_parent",
+            "time": [
+                {
+                    "name": "prepare",
+                    "time": 55
+                },
+                {
+                    "name": "init",
+                    "time": 9
+                },
+                {
+                    "name": "loopBody",
+                    "time": 54
+                }
+            ],
+            "memory": 8,
+            "error_rate": 15
+        },
+        {
+            "name": "create_and_dispose_1k_boxes",
+            "time": [
+                {
+                    "name": "prepare",
+                    "time": 3
+                },
+                {
+                    "name": "init",
+                    "time": 10
+                },
+                {
+                    "name": "loopBody1",
+                    "time": 88
+                },
+                {
+                    "name": "loopBody2",
+                    "time": 64
+                }
+            ],
+            "memory": 6,
+            "error_rate": 15
         }
     ]
 }

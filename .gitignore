@@ -11,3 +11,5 @@ mine/
 test/coverage
 dist/
 
+
+.bsb.lock
