@@ -14,8 +14,7 @@
     "test": "npm run build && jest --config jest.json",
     "test:coverage": "npm run build && jest --config jest_coverage.json",
     "test:pf": "jest --config jest_pf.json",
-    "test:watch": "jest --watch --config jest.json",
-    "test:ci": "jest --config jest_ci.json"
+    "test:watch": "jest --watch --config jest.json"
   },
   "devDependencies": {
     "babel": "^6.23.0",
