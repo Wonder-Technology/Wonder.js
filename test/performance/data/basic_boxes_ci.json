@@ -18,7 +18,7 @@
                 }
             ],
             "memory": 7,
-            "error_rate": 15
+            "error_rate": 25
         },
         {
             "name": "create_5k_boxes+transform",
@@ -36,15 +36,15 @@
                     "time": 140
                 }
             ],
-            "memory": 9,
-            "error_rate": 15    
+            "memory": 10,
+            "error_rate": 25    
         },
         {
             "name": "create_5k_boxes+transform+set_parent",
             "time": [
                 {
                     "name": "prepare",
-                    "time": 100
+                    "time": 110
                 },
                 {
                     "name": "init",
@@ -52,18 +52,18 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 140
+                    "time": 250
                 }
             ],
-            "memory": 8,
-            "error_rate": 15
+            "memory": 10,
+            "error_rate": 25
         },
         {
             "name": "create_and_dispose_1k_boxes",
             "time": [
                 {
                     "name": "prepare",
-                    "time": 6
+                    "time": 8
                 },
                 {
                     "name": "init",
@@ -75,11 +75,11 @@
                 },
                 {
                     "name": "loopBody2",
-                    "time": 157
+                    "time": 167
                 }
             ],
             "memory": 11,
-            "error_rate": 15
+            "error_rate": 25
         }
     ]
 }
