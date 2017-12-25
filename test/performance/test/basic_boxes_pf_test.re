@@ -22,7 +22,7 @@ let _ =
       let page = ref(None);
       beforeAllPromise(
         () =>
-          BenchmarkTool.prepareForHeadless(
+          BenchmarkTool.prepareForNoHeadless(
             "basic_boxes.json",
             "basic_boxes_ci.json",
             browser,
