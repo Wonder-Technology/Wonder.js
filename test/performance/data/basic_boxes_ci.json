@@ -18,25 +18,25 @@
                 }
             ],
             "memory": 7,
-            "error_rate": 20
+            "error_rate": 15
         },
         {
             "name": "create_5k_boxes+transform",
             "time": [
                 {
                     "name": "prepare",
-                    "time": 55
+                    "time": 100
                 },
                 {
                     "name": "init",
-                    "time": 9
+                    "time": 11
                 },
                 {
                     "name": "loopBody",
-                    "time": 48
+                    "time": 140
                 }
             ],
-            "memory": 11,
+            "memory": 9,
             "error_rate": 15    
         },
         {
@@ -44,15 +44,15 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 55
+                    "time": 100
                 },
                 {
                     "name": "init",
-                    "time": 9
+                    "time": 11
                 },
                 {
                     "name": "loopBody",
-                    "time": 54
+                    "time": 140
                 }
             ],
             "memory": 8,
@@ -63,22 +63,22 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 3
+                    "time": 6
                 },
                 {
                     "name": "init",
-                    "time": 10
+                    "time": 12
                 },
                 {
                     "name": "loopBody1",
-                    "time": 88
+                    "time": 200
                 },
                 {
                     "name": "loopBody2",
-                    "time": 64
+                    "time": 157
                 }
             ],
-            "memory": 6,
+            "memory": 11,
             "error_rate": 15
         }
     ]
