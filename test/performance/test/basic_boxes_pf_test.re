@@ -26,8 +26,8 @@ let _ =
               "ignoreHTTPSErrors": Js.Nullable.empty,
               "executablePath": Js.Nullable.empty,
               "slowMo": Js.Nullable.empty,
-              "args": Js.Nullable.empty,
-              /* "args": Js.Nullable.return([|"--headless", "--hide-scrollbars", "--mute-audio"|]), */
+              /* "args": Js.Nullable.empty, */
+              "args": Js.Nullable.return([|"--headless", "--hide-scrollbars", "--mute-audio"|]),
               "handleSIGINT": Js.Nullable.empty,
               "timeout": Js.Nullable.empty,
               "dumpio": Js.Nullable.empty,
