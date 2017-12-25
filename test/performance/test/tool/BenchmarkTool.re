@@ -20,16 +20,14 @@ let getDataJsonFileName = (defaultFileName, ciFileName) => {
   }
 };
 
-
-
 let getConfig = () => {
   open Json;
   open Decode;
   let json =
     Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
   switch (json |> field("env", string)) {
-  | "ci" => {"isClosePage": true, "execCount": 100, "extremeCount": 10}
-  | _ => {"isClosePage": true, "execCount": 100, "extremeCount":10}
+  | "ci" => {"isClosePage": true, "execCount": 50, "extremeCount": 5}
+  | _ => {"isClosePage": true, "execCount": 50, "extremeCount": 5}
   }
 };
 
@@ -65,6 +63,7 @@ let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) =
                  page := Some(p);
                  state :=
                    createState(
+                     ~config=getConfig(),
                      p,
                      browser^ |> Js.Option.getExn,
                      "./dist/wd.js",
