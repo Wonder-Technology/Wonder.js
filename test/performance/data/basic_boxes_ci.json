@@ -6,15 +6,15 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 140
+                    "time": 100
                 },
                 {
                     "name": "init",
-                    "time": 15
+                    "time": 10
                 },
                 {
                     "name": "loopBody",
-                    "time": 130
+                    "time": 100
                 }
             ],
             "memory": 7,
