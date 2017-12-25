@@ -14,7 +14,6 @@
     "test": "jest --config jest.json",
     "test:coverage": "jest --config jest_coverage.json",
     "test:pf": "jest --config jest_performance.json",
-    "test:ci": "jest --config jest_ci.json",
     "test:watch": "jest --watch --config jest.json"
   },
   "devDependencies": {
