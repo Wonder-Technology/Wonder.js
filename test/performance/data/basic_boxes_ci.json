@@ -6,7 +6,7 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 55
+                    "time": 95
                 },
                 {
                     "name": "init",
@@ -14,11 +14,11 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 35
+                    "time": 50
                 }
             ],
             "memory": 7,
-            "error_rate": 10
+            "error_rate": 20
         }
     ]
 }

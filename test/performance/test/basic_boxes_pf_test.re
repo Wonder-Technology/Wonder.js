@@ -15,12 +15,24 @@ let _ =
       open Sinon;
       open Puppeteer;
       open Js.Promise;
+      open Node;
       let sandbox = getSandboxDefaultVal();
       let state = ref(createEmptyState());
       let browser = ref(None);
       let page = ref(None);
       beforeAllPromise(
-        () =>
+        () => {
+          let dataJsonFileName = {
+            open Json;
+            open Decode;
+            let json =
+              Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|]))
+              |> Js.Json.parseExn;
+            switch (json |> field("env", string)) {
+            | "ci" => "basic_boxes_ci.json"
+            | _ => "basic_boxes.json"
+            }
+          };
           launch(
             ~options={
               "ignoreHTTPSErrors": Js.Nullable.empty,
@@ -46,10 +58,11 @@ let _ =
                (p) => {
                  page := Some(p);
                  state :=
-                   createState(p, browser^ |> Js.Option.getExn, "./dist/wd.js", "basic_boxes.json");
+                   createState(p, browser^ |> Js.Option.getExn, "./dist/wd.js", dataJsonFileName);
                  p |> resolve
                }
              )
+        }
       );
       afterAllPromise(() => browser^ |> Js.Option.getExn |> Browser.close);
       beforeEach(() => sandbox := createSandbox());
@@ -57,10 +70,9 @@ let _ =
       describe(
         "test time",
         () =>
-          testPromiseWithTimeout(
+          testPromise(
             "create 5k boxes",
             () => {
-
               let body = [%bs.raw
                 {| function() {
                 var state = wd.setMainConfig({
@@ -162,17 +174,12 @@ var n2 = performance.now();
 
 
 
-                    /* var state = wd.initDirector(state); */
                     /* var state = wd.setState(state); */
 
 var n3 = performance.now();
                     var state = wd.loopBody(100.0, state);
 
 
-
-
-                    /* var state = wd.loopBody(200.0, state); */
-                    /* var state = wd.loopBody(300.0, state); */
 
 
 var n4 = performance.now();
@@ -356,9 +363,8 @@ return [n1, n2, n3, n4]
 }
 |}
               ];
-              state^ |> exec("create_20k_boxes", [@bs] body) |> compare((expect, toBe))
-            },
-            1600000
+              state^ |> exec("create_5k_boxes", [@bs] body) |> compare((expect, toBe))
+            }
           )
       )
     }

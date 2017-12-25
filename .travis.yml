@@ -19,6 +19,7 @@ before_script:
 install:
   - yarn install
 script:
+  - gulp prepareForCI
   - gulp build
   - npm run test:ci
 after_success:
