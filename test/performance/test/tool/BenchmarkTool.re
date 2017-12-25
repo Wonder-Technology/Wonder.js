@@ -26,8 +26,8 @@ let getConfig = () => {
   let json =
     Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
   switch (json |> field("env", string)) {
-  | "ci" => {"isClosePage": true, "execCount": 50, "extremeCount": 5}
-  | _ => {"isClosePage": true, "execCount": 50, "extremeCount": 5}
+  | "ci" => {"isClosePage": true, "execCount": 80, "extremeCount": 8}
+  | _ => {"isClosePage": true, "execCount": 30, "extremeCount": 5}
   }
 };
 

@@ -6,11 +6,11 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 60
+                    "time": 55
                 },
                 {
                     "name": "init",
-                    "time": 11
+                    "time": 10
                 },
                 {
                     "name": "loopBody",
