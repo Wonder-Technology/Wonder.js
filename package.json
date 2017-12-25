@@ -11,9 +11,9 @@
     "codecov": "cat test/coverage/lcov.info | codecov",
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
-    "test": "npm run build && jest --config jest.json",
-    "test:coverage": "npm run build && jest --config jest_coverage.json",
-    "test:pf": "jest --config jest_pf.json",
+    "test": "jest --config jest.json",
+    "test:coverage": "jest --config jest_coverage.json",
+    "test:pf": "jest --config jest_performance.json",
     "test:watch": "jest --watch --config jest.json"
   },
   "devDependencies": {
