@@ -52,6 +52,7 @@ let prepareForHeadless = (~defaultConfig={"isClosePage": true, "execCount": 20, 
               "userDataDir": Js.Nullable.empty,
               "headless": Js.Nullable.return(Js.false_)
             },
+
             ()
           )
           |> then_(
