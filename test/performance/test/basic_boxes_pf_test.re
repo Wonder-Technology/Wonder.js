@@ -22,6 +22,7 @@ let _ =
       beforeAllPromise(
         () =>
           launch(
+
             ~options={
               "ignoreHTTPSErrors": Js.Nullable.empty,
               "executablePath": Js.Nullable.empty,
