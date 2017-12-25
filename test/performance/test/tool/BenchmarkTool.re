@@ -20,18 +20,18 @@ let getDataJsonFileName = (defaultFileName, ciFileName) => {
   }
 };
 
-let getConfig = () => {
+let getConfig = (defaultConfig, ciConfig) => {
   open Json;
   open Decode;
   let json =
     Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
   switch (json |> field("env", string)) {
-  | "ci" => {"isClosePage": true, "execCount": 80, "extremeCount": 8}
-  | _ => {"isClosePage": true, "execCount": 30, "extremeCount": 5}
+  | "ci" => ciConfig
+  | _ => defaultConfig
   }
 };
 
-let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) => {
+let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 30, "extremeCount": 5}, ~ciConfig={"isClosePage": true, "execCount": 80, "extremeCount": 8}, defaultFileName, ciFileName, browser, page, state) => {
   setTimeout(100000) |> ignore;
   Js.Promise.(
     WonderBenchmark.(
@@ -63,7 +63,7 @@ let prepareForNoHeadless = (defaultFileName, ciFileName, browser, page, state) =
                  page := Some(p);
                  state :=
                    createState(
-                     ~config=getConfig(),
+                     ~config=getConfig(defaultConfig, ciConfig),
                      p,
                      browser^ |> Js.Option.getExn,
                      "./dist/wd.js",
