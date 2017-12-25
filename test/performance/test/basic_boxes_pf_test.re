@@ -141,7 +141,6 @@ let _ =
                     return [state, boxes];
                 }
 
-
                 function initSample(state) {
 var n1 = performance.now();
 
