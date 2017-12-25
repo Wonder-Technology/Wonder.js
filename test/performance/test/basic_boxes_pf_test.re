@@ -142,7 +142,7 @@ let _ =
 
                 function initSample(state) {
 var n1 = performance.now();
-                    var data = createBoxes(2000, state);
+                    var data = createBoxes(20000, state);
 
                     var state = data[0];
                     var boxes = data[1];
@@ -356,7 +356,7 @@ return [n1, n2, n3, n4]
               ];
               state^ |> exec("create_20k_boxes", [@bs] body) |> compare((expect, toBe))
             },
-            1600000
+            16000000000
           )
       )
     }
