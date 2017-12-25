@@ -144,6 +144,7 @@ let _ =
 
                 function initSample(state) {
 var n1 = performance.now();
+
                     var data = createBoxes(5000, state);
 
                     var state = data[0];
