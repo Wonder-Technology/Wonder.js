@@ -6,15 +6,15 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 108
+                    "time": 92
                 },
                 {
                     "name": "init",
-                    "time": 13
+                    "time": 10
                 },
                 {
                     "name": "loopBody",
-                    "time": 131
+                    "time": 91
                 }
             ],
             "memory": 7,
@@ -25,15 +25,15 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 110
+                    "time": 92
                 },
                 {
                     "name": "init",
-                    "time": 12
+                    "time": 10
                 },
                 {
                     "name": "loopBody",
-                    "time": 160
+                    "time": 123
                 }
             ],
             "memory": 10,
@@ -44,7 +44,7 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 96
+                    "time": 97
                 },
                 {
                     "name": "init",
@@ -52,7 +52,7 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 160
+                    "time": 137
                 }
             ],
             "memory": 7,
@@ -67,15 +67,15 @@
                 },
                 {
                     "name": "init",
-                    "time": 10
+                    "time": 11
                 },
                 {
                     "name": "loopBody1",
-                    "time": 175
+                    "time": 188
                 },
                 {
                     "name": "loopBody2",
-                    "time": 138
+                    "time": 149
                 }
             ],
             "memory": 11,

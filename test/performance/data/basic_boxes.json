@@ -18,7 +18,7 @@
                 }
             ],
             "memory": 7,
-            "error_rate": 10
+            "error_rate": 5
         },
         {
             "name": "create_5k_boxes+transform",
@@ -33,11 +33,11 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 48
+                    "time": 50
                 }
             ],
             "memory": 11,
-            "error_rate": 10    
+            "error_rate": 5    
         },
         {
             "name": "create_5k_boxes+transform+set_parent",
@@ -56,7 +56,7 @@
                 }
             ],
             "memory": 8,
-            "error_rate": 10
+            "error_rate": 5
         },
         {
             "name": "create_and_dispose_1k_boxes",
@@ -79,7 +79,7 @@
                 }
             ],
             "memory": 6,
-            "error_rate": 10
+            "error_rate": 5
         }
     ]
 }
