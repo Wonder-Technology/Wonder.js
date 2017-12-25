@@ -6,7 +6,7 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 110
+                    "time": 120
                 },
                 {
                     "name": "init",
@@ -14,7 +14,7 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 110
+                    "time": 120
                 }
             ],
             "memory": 7,
@@ -25,11 +25,11 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 100
+                    "time": 105
                 },
                 {
                     "name": "init",
-                    "time": 11
+                    "time": 12
                 },
                 {
                     "name": "loopBody",
@@ -44,7 +44,7 @@
             "time": [
                 {
                     "name": "prepare",
-                    "time": 110
+                    "time": 105
                 },
                 {
                     "name": "init",
@@ -52,10 +52,10 @@
                 },
                 {
                     "name": "loopBody",
-                    "time": 250
+                    "time": 160
                 }
             ],
-            "memory": 10,
+            "memory": 7,
             "error_rate": 1
         },
         {
@@ -71,11 +71,11 @@
                 },
                 {
                     "name": "loopBody1",
-                    "time": 200
+                    "time": 205
                 },
                 {
                     "name": "loopBody2",
-                    "time": 167
+                    "time": 170
                 }
             ],
             "memory": 11,
