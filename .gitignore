@@ -11,5 +11,6 @@ mine/
 test/coverage
 dist/
 
+test/performance/data
 
 .bsb.lock
