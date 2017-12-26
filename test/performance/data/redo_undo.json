@@ -1,0 +1,12 @@
+{
+         "name": "redo_undo",
+         "cases": [{
+         "name": "redo_undo",
+         "cases": [
+           {
+               "name": "copy_1k_boxes(objectInstance)+restore_from_1k_boxes_and_1k_boxes(objectInstance)",
+               "time": [
+                   {"name":"prepare","time":11},{"name":"init","time":10},{"name":"loopBody","time":138}
+               ],
+               "memory": 8]
+         }
