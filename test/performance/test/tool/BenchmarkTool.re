@@ -21,7 +21,7 @@ let prepareForNoHeadless =
       page,
       state
     ) => {
-  setTimeout(100000) |> ignore;
+  setTimeout(500000) |> ignore;
   Js.Promise.(
     WonderBenchmark.(
       Benchmark.(
