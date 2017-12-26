@@ -271,6 +271,56 @@ let _ =
             }
           );
           describe(
+            "gpuConfig",
+            () => {
+              open StateDataType;
+              let _buildGpuConfig = (~useHardwareInstance=Js.Nullable.undefined, ()) =>
+                Js.Nullable.return({"useHardwareInstance": useHardwareInstance});
+              let _buildExpectedGpuConfig = (~useHardwareInstance=Js.true_, ()) => {
+                useHardwareInstance: Js.to_bool(useHardwareInstance)
+              };
+              describe(
+                "if pass gpuConfig",
+                () =>
+                  test(
+                    "set to state (use default value if the field isn't passed)",
+                    () => {
+                      let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let useHardwareInstance = Js.false_;
+                      let state =
+                        setMainConfig(
+                          MainTool.buildMainConfig(
+                            ~gpuConfig=
+                              _buildGpuConfig(
+                                ~useHardwareInstance=Js.Nullable.return(useHardwareInstance),
+                                ()
+                              ),
+                            ()
+                          )
+                        );
+                      state
+                      |> GpuConfigSystem.getConfig
+                      |> expect == _buildExpectedGpuConfig(~useHardwareInstance, ())
+                    }
+                  )
+              );
+              describe(
+                "else",
+                () =>
+                  test(
+                    "set default data",
+                    () => {
+                      let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let state = setMainConfig(MainTool.buildMainConfig());
+                      state
+                      |> GpuConfigSystem.getConfig
+                      |> expect == _buildExpectedGpuConfig(~useHardwareInstance=Js.true_, ())
+                    }
+                  )
+              )
+            }
+          );
+          describe(
             "detect gpu",
             () => {
               describe(

@@ -34,12 +34,14 @@ let buildFakeDomForNotPassCanvasId = (sandbox) => {
 let buildMainConfig =
     (
       ~bufferConfig=Js.Nullable.undefined,
+      ~gpuConfig=Js.Nullable.undefined,
       ~canvasId=Js.Nullable.undefined,
       ~isTest=Js.Nullable.undefined,
       ~contextConfig=Js.Nullable.undefined,
       ()
     ) => {
   "bufferConfig": bufferConfig,
+  "gpuConfig": gpuConfig,
   "canvasId": canvasId,
   "isTest": isTest,
   "contextConfig": contextConfig

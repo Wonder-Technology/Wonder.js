@@ -55,6 +55,8 @@ type contextConfig = {
 
 type bufferConfig = {mutable geometryPointDataBufferCount: int};
 
+type gpuConfig = {mutable useHardwareInstance: bool};
+
 type viewData = {
   canvas: option(DomType.htmlElement),
   contextConfig: option(contextConfig)
@@ -277,6 +279,7 @@ and geometryData = {
 }
 and state = {
   bufferConfig: option(bufferConfig),
+  gpuConfig: option(gpuConfig),
   memoryConfig,
   renderConfig,
   gpuDetectData,

@@ -28,6 +28,10 @@ let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType
     getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000)
 };
 
+let _changeToGpuConfigRecord = (gpuConfigObj: Js.t({..})) : MainConfigType.gpuConfig => {
+  useHardwareInstance: Js.to_bool(getValueFromJsObj(gpuConfigObj##useHardwareInstance, Js.true_))
+};
+
 let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
   canvasId: getOptionValueFromJsObj(config##canvasId),
   isTest: Js.to_bool(getValueFromJsObj(config##isTest, Js.false_)),
@@ -47,6 +51,11 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
     switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
     | None => {geometryPointDataBufferCount: 1000 * 1000}
+    },
+  gpuConfig:
+    switch (Js.Nullable.to_opt(config##gpuConfig)) {
+    | Some(gpuConfig) => _changeToGpuConfigRecord(gpuConfig)
+    | None => {useHardwareInstance: true}
     }
 };
 
@@ -65,6 +74,7 @@ let init = ((config: mainConfigData, state: state)) => {
   |> setCanvas(~canvas)
   |> setContextConfig(~contextConfig=config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
+  |> GpuConfigSystem.setConfig(~gpuConfig=config.gpuConfig)
   |> GPUDetectSystem.detect(gl)
   |> GameObjectAdmin.initDataFromState
 };

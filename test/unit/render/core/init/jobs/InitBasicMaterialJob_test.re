@@ -129,12 +129,14 @@ let _ =
                 GLSLTool.containSpecifyCount(
                   GLSLTool.getVsSource(shaderSource),
                   "gl_Position =",
-                  ~count=1,()
+                  ~count=1,
+                  ()
                 ),
                 GLSLTool.containSpecifyCount(
                   GLSLTool.getFsSource(shaderSource),
                   "gl_FragColor =",
-                  ~count=1, ()
+                  ~count=1,
+                  ()
                 )
               )
               |> expect == (true, true)
@@ -196,19 +198,55 @@ let _ =
                           |> expect == true
                         }
                       );
-                      test(
+                      describe(
                         "else, use modelMatrix_batch_instance shader lib",
                         () => {
-                          let (state, shaderSource, gameObject) =
-                            InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
-                          let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-                          let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
-                          let state = state |> InitBasicMaterialJobTool.exec;
-                          GLSLTool.containMultiline(
-                            GLSLTool.getVsSource(shaderSource),
-                            [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+                          open StateDataType;
+                          let _setGpuConfigDataAllowBatchInstance = (state) => {
+                            ...state,
+                            gpuConfig: Some({...state.gpuConfig, useHardwareInstance: false})
+                          };
+                          let _setGpuDetectDataAllowBatchInstance = (state) => {
+                            ...state,
+                            gpuDetectData: {...state.gpuDetectData, extensionInstancedArrays: None}
+                          };
+                          test(
+                            "if state->gpuConfig->useHardwareInstance == false, use batch",
+                            () => {
+                              let (state, shaderSource, gameObject) =
+                                InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(
+                                  sandbox,
+                                  state^
+                                );
+                              let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                              let state = state |> _setGpuConfigDataAllowBatchInstance;
+                              let state = state |> InitBasicMaterialJobTool.exec;
+                              GLSLTool.containMultiline(
+                                GLSLTool.getVsSource(shaderSource),
+                                [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+                              )
+                              |> expect == true
+                            }
+                          );
+                          test(
+                            "if gpu not support hardware instance, use batch",
+                            () => {
+                              let (state, shaderSource, gameObject) =
+                                InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(
+                                  sandbox,
+                                  state^
+                                );
+                              let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                              let state = state |> _setGpuDetectDataAllowBatchInstance;
+                              let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+                              let state = state |> InitBasicMaterialJobTool.exec;
+                              GLSLTool.containMultiline(
+                                GLSLTool.getVsSource(shaderSource),
+                                [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+                              )
+                              |> expect == true
+                            }
                           )
-                          |> expect == true
                         }
                       )
                     }

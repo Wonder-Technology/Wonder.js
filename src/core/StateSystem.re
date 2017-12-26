@@ -94,6 +94,7 @@ let createState =
   ) = renderConfig;
   {
     bufferConfig: None,
+    gpuConfig: None,
     memoryConfig: MemoryConfigSystem.initData(),
     renderConfig: {
       jobHandleMap: JobHandleSystem.createJobHandleMap(),
