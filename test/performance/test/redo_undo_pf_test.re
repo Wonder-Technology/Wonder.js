@@ -21,7 +21,7 @@ let _ =
       let browser = ref(None);
       let page = ref(None);
       beforeAllPromise(
-        () => BenchmarkTool.prepareForNoHeadless(~scriptFilePathList=["./test/performance/js/RedoUndoTool.js", "./test/performance/js/BasicBoxesTool.js", "./test/performance/js/InstanceBasicBoxesTool.js", "./test/performance/js/CameraTool.js"], "redo_undo.json", browser, page, state)
+        () => BenchmarkTool.prepareForHeadless(~scriptFilePathList=["./test/performance/js/RedoUndoTool.js", "./test/performance/js/BasicBoxesTool.js", "./test/performance/js/InstanceBasicBoxesTool.js", "./test/performance/js/CameraTool.js"], "redo_undo.json", browser, page, state)
       );
       afterAllPromise(() => BenchmarkTool.handleAfterAll(browser^, state^));
       beforeEach(() => sandbox := createSandbox());

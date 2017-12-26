@@ -13,10 +13,11 @@ let setTimeout = [%bs.raw
                 |}
 ];
 
-let prepareForNoHeadless =
+let _prepare =
     (
-      ~config={isClosePage: true, execCount: 20, extremeCount: 5, isGenerateDataFile: true},
-      ~scriptFilePathList=[],
+      launchPromise,
+      config,
+      scriptFilePathList,
       fileName,
       browser,
       page,
@@ -27,21 +28,7 @@ let prepareForNoHeadless =
     WonderBenchmark.(
       Benchmark.(
         Puppeteer.(
-          launch(
-            ~options={
-              "ignoreHTTPSErrors": Js.Nullable.empty,
-              "executablePath": Js.Nullable.empty,
-              "slowMo": Js.Nullable.empty,
-              "args": Js.Nullable.empty,
-              /* "args": Js.Nullable.return([|"--headless", "--hide-scrollbars", "--mute-audio"|]), */
-              "handleSIGINT": Js.Nullable.empty,
-              "timeout": Js.Nullable.empty,
-              "dumpio": Js.Nullable.empty,
-              "userDataDir": Js.Nullable.empty,
-              "headless": Js.Nullable.return(Js.false_)
-            },
-            ()
-          )
+          launchPromise
           |> then_(
                (b) => {
                  browser := Some(b);
@@ -66,6 +53,76 @@ let prepareForNoHeadless =
         )
       )
     )
+  )
+};
+
+let prepareForHeadless =
+    (
+      ~config={isClosePage: true, execCount: 30, extremeCount: 5, isGenerateDataFile: true},
+      ~scriptFilePathList=[],
+      fileName,
+      browser,
+      page,
+      state
+    ) => {
+    WonderBenchmark.(
+      Benchmark.(
+        Puppeteer.(
+        _prepare(
+
+          launch(
+            ~options={
+              "ignoreHTTPSErrors": Js.Nullable.empty,
+              "executablePath": Js.Nullable.empty,
+              "slowMo": Js.Nullable.empty,
+              /* "args": Js.Nullable.empty, */
+              "args": Js.Nullable.return([|"--headless", "--hide-scrollbars", "--mute-audio"|]),
+              "handleSIGINT": Js.Nullable.empty,
+              "timeout": Js.Nullable.empty,
+              "dumpio": Js.Nullable.empty,
+              "userDataDir": Js.Nullable.empty,
+              "headless": Js.Nullable.return(Js.false_)
+            },
+            ()
+          ), config, scriptFilePathList, fileName, browser, page, state
+
+        )
+        )
+      )
+    )
+};
+
+let prepareForNoHeadless =
+    (
+      ~config={isClosePage: true, execCount: 30, extremeCount: 5, isGenerateDataFile: true},
+      ~scriptFilePathList=[],
+      fileName,
+      browser,
+      page,
+      state
+    ) => {
+    WonderBenchmark.(
+      Benchmark.(
+        Puppeteer.(
+        _prepare(
+          launch(
+            ~options={
+              "ignoreHTTPSErrors": Js.Nullable.empty,
+              "executablePath": Js.Nullable.empty,
+              "slowMo": Js.Nullable.empty,
+              "args": Js.Nullable.empty,
+              /* "args": Js.Nullable.return([|"--headless", "--hide-scrollbars", "--mute-audio"|]), */
+              "handleSIGINT": Js.Nullable.empty,
+              "timeout": Js.Nullable.empty,
+              "dumpio": Js.Nullable.empty,
+              "userDataDir": Js.Nullable.empty,
+              "headless": Js.Nullable.return(Js.false_)
+            },
+            ()
+          ), config, scriptFilePathList, fileName, browser, page, state
+          )
+        )
+      )
   )
 };
 

@@ -22,7 +22,7 @@ let _ =
       let page = ref(None);
       beforeAllPromise(
         () =>
-          BenchmarkTool.prepareForNoHeadless(
+          BenchmarkTool.prepareForHeadless(
             ~scriptFilePathList=[
               "./test/performance/js/BasicBoxesTool.js",
               "./test/performance/js/CameraTool.js"
