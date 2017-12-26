@@ -69,20 +69,6 @@ gulp.task("rollup", function () {
 
 
 
-var fs = require("fs");
-
-gulp.task("prepareForCI", function (done) {
-    var ciConfigFilePath = "./test/ci/config.json";
-
-    var configJson = JSON.parse(fs.readFileSync(ciConfigFilePath));
-
-    configJson.env = "ci";
-
-    fs.writeFileSync(ciConfigFilePath, JSON.stringify(configJson));
-
-    done();
-});
-
 
 
 

@@ -13,39 +13,10 @@ let setTimeout = [%bs.raw
                 |}
 ];
 
-let getDataJsonFileName = (defaultFileName, ciFileName) => {
-  open Json;
-  open Decode;
-  let json =
-    Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
-  switch (json |> field("env", string)) {
-  | "ci" => ciFileName
-  | _ => defaultFileName
-  }
-};
-
-let getConfig = (defaultConfig, ciConfig) => {
-  open Json;
-  open Decode;
-  let json =
-    Fs.readFileAsUtf8Sync(Path.join([|Process.cwd(), "test/ci/config.json"|])) |> Js.Json.parseExn;
-  switch (json |> field("env", string)) {
-  | "ci" => ciConfig
-  | _ => defaultConfig
-  }
-};
-
 let prepareForNoHeadless =
     (
-      ~defaultConfig={
-                       isClosePage: true,
-                       execCount: 20,
-                       extremeCount: 5,
-                       generateDataFilePath: None
-                     },
-      ~ciConfig={isClosePage: true, execCount: 20, extremeCount: 5, generateDataFilePath: None},
-      defaultFileName,
-      ciFileName,
+      ~config={isClosePage: true, execCount: 20, extremeCount: 5, generateDataFilePath: None},
+      fileName,
       browser,
       page,
       state
@@ -80,13 +51,7 @@ let prepareForNoHeadless =
                (p) => {
                  page := Some(p);
                  state :=
-                   createState(
-                     ~config=getConfig(defaultConfig, ciConfig),
-                     p,
-                     browser^ |> Js.Option.getExn,
-                     "./dist/wd.js",
-                     getDataJsonFileName(defaultFileName, ciFileName)
-                   )
+                   createState(~config, p, browser^ |> Js.Option.getExn, "./dist/wd.js", fileName)
                    |> Benchmark.prepareBeforeAll;
                  p |> resolve
                }

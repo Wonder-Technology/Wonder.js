@@ -23,14 +23,13 @@ let _ =
       beforeAllPromise(
         () =>
           BenchmarkTool.prepareForNoHeadless(
-            ~defaultConfig={
+            ~config={
               isClosePage: true,
               execCount: 20,
               extremeCount: 5,
               generateDataFilePath: Some("./test/performance/data/basic_boxes.json")
             },
             "basic_boxes.json",
-            "basic_boxes_ci.json",
             browser,
             page,
             state
@@ -90,7 +89,7 @@ var n4 = performance.now();
 
 
 
-return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                 }
 }
 |}
@@ -159,7 +158,7 @@ var n4 = performance.now();
 
 
 
-return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                 }
 }
 |}
@@ -230,7 +229,7 @@ return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArr
 
 
 
-return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                          }
          }
          |}
@@ -304,7 +303,7 @@ return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArr
 
 
 
-return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
 
                          }
          }

@@ -4,7 +4,7 @@
            {
                "name": "create_5k_boxes",
                "time": [
-                   {"name":"prepare","time":53},{"name":"init","time":9},{"name":"loopBody","time":34}
+                   {"name":"prepare","time":53},{"name":"init","time":8},{"name":"loopBody","time":34}
                ],
                "memory": 7,
                "error_rate": 10
@@ -13,7 +13,7 @@
            {
                "name": "create_5k_boxes+transform",
                "time": [
-                   {"name":"prepare","time":54},{"name":"init","time":8},{"name":"loopBody","time":48}
+                   {"name":"prepare","time":52},{"name":"init","time":8},{"name":"loopBody","time":48}
                ],
                "memory": 10,
                "error_rate": 10
@@ -22,7 +22,7 @@
            {
                "name": "create_5k_boxes+transform+set_parent",
                "time": [
-                   {"name":"prepare","time":56},{"name":"init","time":9},{"name":"loopBody","time":54}
+                   {"name":"prepare","time":54},{"name":"init","time":9},{"name":"loopBody","time":53}
                ],
                "memory": 7,
                "error_rate": 10
@@ -31,7 +31,7 @@
            {
                "name": "create_and_dispose_1k_boxes",
                "time": [
-                   {"name":"prepare","time":3},{"name":"init","time":9},{"name":"loopBody1","time":90},{"name":"loopBody2","time":65}
+                   {"name":"prepare","time":3},{"name":"init","time":9},{"name":"loopBody1","time":89},{"name":"loopBody2","time":64}
                ],
                "memory": 6,
                "error_rate": 10
