@@ -23,12 +23,6 @@ let _ =
       beforeAllPromise(
         () =>
           BenchmarkTool.prepareForNoHeadless(
-            ~config={
-              isClosePage: true,
-              execCount: 20,
-              extremeCount: 5,
-              generateDataFilePath: Some("./test/performance/data/basic_boxes.json")
-            },
             "basic_boxes.json",
             browser,
             page,
