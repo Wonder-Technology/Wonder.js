@@ -1,5 +1,7 @@
 language: node_js
 
+os: osx
+
 addons:
   chrome: stable
 
@@ -11,15 +13,11 @@ cache:
 node_js:
   - "8.7"
 
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
-
 install:
   - yarn install
 script:
   - gulp build
+  - npm run test:pf
   - npm run test:coverage
 after_success:
   - npm run codecov
