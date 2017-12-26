@@ -23,6 +23,12 @@ let _ =
       beforeAllPromise(
         () =>
           BenchmarkTool.prepareForNoHeadless(
+            ~defaultConfig={
+              isClosePage: true,
+              execCount: 20,
+              extremeCount: 5,
+              generateDataFilePath: Some("./test/performance/data/basic_boxes.json")
+            },
             "basic_boxes.json",
             "basic_boxes_ci.json",
             browser,
@@ -30,7 +36,7 @@ let _ =
             state
           )
       );
-      afterAllPromise(() => browser^ |> Js.Option.getExn |> Browser.close);
+      afterAllPromise(() => BenchmarkTool.handleAfterAll(browser^, state^));
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       testPromise(
@@ -84,7 +90,7 @@ var n4 = performance.now();
 
 
 
-return [n1, n2, n3, n4]
+return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                 }
 }
 |}
@@ -153,7 +159,7 @@ var n4 = performance.now();
 
 
 
-return [n1, n2, n3, n4]
+return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                 }
 }
 |}
@@ -169,65 +175,65 @@ return [n1, n2, n3, n4]
         () => {
           let body = [%bs.raw
             {| function() {
-                var state = wd.setMainConfig({
-                    isTest: false
-                });
+                         var state = wd.setMainConfig({
+                             isTest: false
+                         });
 
-                return initSample(state);
-
-
-
-                function initSample(state) {
-var n1 = performance.now();
-
-                    var data = BasicBoxesTool.createBoxes(5000, state);
-
-                    var state = data[0];
-                    var boxes = data[1];
-
-                    var data = BasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
-
-                    var data = BasicBoxesTool.createCamera(state);
+                         return initSample(state);
 
 
 
-                    var state = data[0];
+                         function initSample(state) {
+         var n1 = performance.now();
+
+                             var data = BasicBoxesTool.createBoxes(5000, state);
+
+                             var state = data[0];
+                             var boxes = data[1];
+
+                             var data = BasicBoxesTool.setPosition(boxes, state);
+                             var state = data[0];
+                             var boxes = data[1];
+
+                             var data = BasicBoxesTool.createCamera(state);
 
 
-                    var state = BasicBoxesTool.setData(boxes, state);
 
-                    var state = BasicBoxesTool.setParent(boxes, state);
-
+                             var state = data[0];
 
 
+                             var state = BasicBoxesTool.setData(boxes, state);
 
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                             var state = BasicBoxesTool.setParent(boxes, state);
 
 
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+         var n2 = performance.now();
+
+                             var state = wd.initDirector(state);
 
 
 
 
-var n4 = performance.now();
-
-
-                    /* return state; */
+         var n3 = performance.now();
+                             var state = wd.loopBody(100.0, state);
 
 
 
 
-return [n1, n2, n3, n4]
-                }
-}
-|}
+         var n4 = performance.now();
+
+
+                             /* return state; */
+
+
+
+
+return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+                         }
+         }
+         |}
           ];
           state^
           |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])
@@ -240,68 +246,69 @@ return [n1, n2, n3, n4]
         () => {
           let body = [%bs.raw
             {| function() {
-                var state = wd.setMainConfig({
-                    isTest: false
-                });
+                         var state = wd.setMainConfig({
+                             isTest: false
+                         });
 
-                return initSample(state);
-
-
-
-                function initSample(state) {
-var n1 = performance.now();
-
-                    var data = BasicBoxesTool.createBoxes(1, state);
-
-                    var state = data[0];
-                    var boxes = data[1];
-
-                    var data = BasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
-
-                    var data = BasicBoxesTool.createCamera(state);
+                         return initSample(state);
 
 
 
-                    var state = data[0];
+                         function initSample(state) {
+         var n1 = performance.now();
+
+                             var data = BasicBoxesTool.createBoxes(1, state);
+
+                             var state = data[0];
+                             var boxes = data[1];
+
+                             var data = BasicBoxesTool.setPosition(boxes, state);
+                             var state = data[0];
+                             var boxes = data[1];
+
+                             var data = BasicBoxesTool.createCamera(state);
 
 
-                    var state = BasicBoxesTool.createAndDisposeGameObjects(boxes, state);
+
+                             var state = data[0];
 
 
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                             var state = BasicBoxesTool.createAndDisposeGameObjects(boxes, state);
 
 
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+         var n2 = performance.now();
+
+                             var state = wd.initDirector(state);
 
 
 
 
-var n4 = performance.now();
-
-
-
-                    var state = wd.loopBody(200.0, state);
+         var n3 = performance.now();
+                             var state = wd.loopBody(100.0, state);
 
 
 
 
-var n5 = performance.now();
+         var n4 = performance.now();
 
 
 
-return [n1, n2, n3, n4, n5]
-                }
-}
-|}
+                             var state = wd.loopBody(200.0, state);
+
+
+
+
+         var n5 = performance.now();
+
+
+
+return {"error_rate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+
+                         }
+         }
+         |}
           ];
           state^
           |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])

@@ -1,5 +1,9 @@
 open Node;
 
+open WonderBenchmark;
+
+open BenchmarkType;
+
 let setTimeout = [%bs.raw
   {|
                function(timeout) {
@@ -31,7 +35,21 @@ let getConfig = (defaultConfig, ciConfig) => {
   }
 };
 
-let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 20, "extremeCount": 5}, ~ciConfig={"isClosePage": true, "execCount": 20, "extremeCount": 5}, defaultFileName, ciFileName, browser, page, state) => {
+let prepareForNoHeadless =
+    (
+      ~defaultConfig={
+                       isClosePage: true,
+                       execCount: 20,
+                       extremeCount: 5,
+                       generateDataFilePath: None
+                     },
+      ~ciConfig={isClosePage: true, execCount: 20, extremeCount: 5, generateDataFilePath: None},
+      defaultFileName,
+      ciFileName,
+      browser,
+      page,
+      state
+    ) => {
   setTimeout(100000) |> ignore;
   Js.Promise.(
     WonderBenchmark.(
@@ -68,7 +86,8 @@ let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 20
                      browser^ |> Js.Option.getExn,
                      "./dist/wd.js",
                      getDataJsonFileName(defaultFileName, ciFileName)
-                   );
+                   )
+                   |> Benchmark.prepareBeforeAll;
                  p |> resolve
                }
              )
@@ -77,3 +96,15 @@ let prepareForNoHeadless = (~defaultConfig={"isClosePage": true, "execCount": 20
     )
   )
 };
+
+let handleAfterAll = (browser, state) =>
+  Js.Promise.(
+    browser
+    |> Js.Option.getExn
+    |> Browser.close
+    |> then_(
+         (_) =>
+           (Benchmark.needGenerateData(state) ? Benchmark.generateDataFile(state) : state)
+           |> resolve
+       )
+  );
