@@ -1,39 +1,89 @@
 {
-         "name": "basic_boxes",
-         "cases": [{
-         "name": "basic_boxes",
-         "cases": [
-           {
-               "name": "create_5k_boxes",
-               "time": [
-                   {"name":"prepare","time":71},{"name":"init","time":11},{"name":"loopBody","time":45}
-               ],
-               "memory": 7,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "create_5k_boxes+transform",
-               "time": [
-                   {"name":"prepare","time":60},{"name":"init","time":9},{"name":"loopBody","time":56}
-               ],
-               "memory": 10,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "create_5k_boxes+transform+set_parent",
-               "time": [
-                   {"name":"prepare","time":61},{"name":"init","time":10},{"name":"loopBody","time":61}
-               ],
-               "memory": 7,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "create_and_dispose_1k_boxes",
-               "time": [
-                   {"name":"prepare","time":4},{"name":"init","time":8},{"name":"loopBody1","time":105},{"name":"loopBody2","time":78}
-               ],
-               "memory": 6]
-         }
+    "name": "basic_boxes",
+    "cases": [
+        {
+            "name": "basic_boxes",
+            "cases": [
+                {
+                    "name": "create_5k_boxes",
+                    "time": [
+                        {
+                            "name": "prepare",
+                            "time": 71
+                        },
+                        {
+                            "name": "init",
+                            "time": 11
+                        },
+                        {
+                            "name": "loopBody",
+                            "time": 45
+                        }
+                    ],
+                    "memory": 7,
+                    "error_rate": 10
+                },
+                {
+                    "name": "create_5k_boxes+transform",
+                    "time": [
+                        {
+                            "name": "prepare",
+                            "time": 60
+                        },
+                        {
+                            "name": "init",
+                            "time": 9
+                        },
+                        {
+                            "name": "loopBody",
+                            "time": 56
+                        }
+                    ],
+                    "memory": 10,
+                    "error_rate": 10
+                },
+                {
+                    "name": "create_5k_boxes+transform+set_parent",
+                    "time": [
+                        {
+                            "name": "prepare",
+                            "time": 61
+                        },
+                        {
+                            "name": "init",
+                            "time": 10
+                        },
+                        {
+                            "name": "loopBody",
+                            "time": 61
+                        }
+                    ],
+                    "memory": 7,
+                    "error_rate": 10
+                },
+                {
+                    "name": "create_and_dispose_1k_boxes",
+                    "time": [
+                        {
+                            "name": "prepare",
+                            "time": 4
+                        },
+                        {
+                            "name": "init",
+                            "time": 8
+                        },
+                        {
+                            "name": "loopBody1",
+                            "time": 105
+                        },
+                        {
+                            "name": "loopBody2",
+                            "time": 78
+                        }
+                    ],
+                    "memory": 6
+                }
+            ]
+        }
+    ]
+}
