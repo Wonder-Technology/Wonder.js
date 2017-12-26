@@ -21,7 +21,7 @@ let _ =
       let browser = ref(None);
       let page = ref(None);
       beforeAllPromise(
-        () => BenchmarkTool.prepareForNoHeadless("instance_basic_boxes.json", browser, page, state)
+        () => BenchmarkTool.prepareForNoHeadless(~scriptFilePathList=[ "./test/performance/js/BasicBoxesTool.js", "./test/performance/js/InstanceBasicBoxesTool.js", "./test/performance/js/CameraTool.js"],"instance_basic_boxes.json", browser, page, state)
       );
       afterAllPromise(() => BenchmarkTool.handleAfterAll(browser^, state^));
       beforeEach(() => sandbox := createSandbox());
@@ -88,7 +88,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 |}
                   ];
                   state^
-                  |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
                   |> exec("create_100k_boxes_hardware", [@bs] body)
                   |> compare((expect, toBe))
                 }
@@ -148,7 +147,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 |}
                   ];
                   state^
-                  |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
                   |> exec("create_2k_boxes_batch", [@bs] body)
                   |> compare((expect, toBe))
                 }
@@ -217,7 +215,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 |}
               ];
               state^
-              |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
               |> exec("create_10k_boxes+transform", [@bs] body)
               |> compare((expect, toBe))
             }
@@ -281,7 +278,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 |}
               ];
               state^
-              |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
               |> exec("create_10k_boxes+transform+set_parent", [@bs] body)
               |> compare((expect, toBe))
             }
@@ -347,7 +343,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody
 |}
               ];
               state^
-              |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
               |> exec("createAndDispose_200_5_boxes", [@bs] body)
               |> compare((expect, toBe))
             }
@@ -413,7 +408,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody
 |}
               ];
               state^
-              |> addScriptList(["./test/performance/js/InstanceBasicBoxesTool.js"])
               |> exec("createAndDispose_1_2k_boxes", [@bs] body)
               |> compare((expect, toBe))
             }

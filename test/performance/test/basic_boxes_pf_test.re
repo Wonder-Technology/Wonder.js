@@ -23,6 +23,10 @@ let _ =
       beforeAllPromise(
         () =>
           BenchmarkTool.prepareForNoHeadless(
+            ~scriptFilePathList=[
+              "./test/performance/js/BasicBoxesTool.js",
+              "./test/performance/js/CameraTool.js"
+            ],
             "basic_boxes.json",
             browser,
             page,
@@ -48,7 +52,7 @@ let _ =
                 function initSample(state) {
 var n1 = performance.now();
 
-                    var data = BasicBoxesTool.createBoxes(5000, state);
+                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
 
                     var state = data[0];
                     var boxes = data[1];
@@ -88,10 +92,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 }
 |}
           ];
-          state^
-          |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])
-          |> exec("create_5k_boxes", [@bs] body)
-          |> compare((expect, toBe))
+          state^ |> exec("create_5k_boxes", [@bs] body) |> compare((expect, toBe))
         }
       );
       testPromise(
@@ -110,7 +111,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
                 function initSample(state) {
 var n1 = performance.now();
 
-                    var data = BasicBoxesTool.createBoxes(5000, state);
+                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
 
                     var state = data[0];
                     var boxes = data[1];
@@ -157,10 +158,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
 }
 |}
           ];
-          state^
-          |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])
-          |> exec("create_5k_boxes+transform", [@bs] body)
-          |> compare((expect, toBe))
+          state^ |> exec("create_5k_boxes+transform", [@bs] body) |> compare((expect, toBe))
         }
       );
       testPromise(
@@ -179,7 +177,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
                          function initSample(state) {
          var n1 = performance.now();
 
-                             var data = BasicBoxesTool.createBoxes(5000, state);
+                             var data = BasicBoxesTool.createBoxesByClone(5000, state);
 
                              var state = data[0];
                              var boxes = data[1];
@@ -229,7 +227,6 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
          |}
           ];
           state^
-          |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])
           |> exec("create_5k_boxes+transform+set_parent", [@bs] body)
           |> compare((expect, toBe))
         }
@@ -250,7 +247,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody"], "timeArra
                          function initSample(state) {
          var n1 = performance.now();
 
-                             var data = BasicBoxesTool.createBoxes(1, state);
+                             var data = BasicBoxesTool.createBoxesByClone(1, state);
 
                              var state = data[0];
                              var boxes = data[1];
@@ -303,10 +300,7 @@ return {"errorRate": 10, "textArray": ["prepare", "init", "loopBody1", "loopBody
          }
          |}
           ];
-          state^
-          |> addScriptList(["./test/performance/js/BasicBoxesTool.js"])
-          |> exec("create_and_dispose_1k_boxes", [@bs] body)
-          |> compare((expect, toBe))
+          state^ |> exec("create_and_dispose_1k_boxes", [@bs] body) |> compare((expect, toBe))
         }
       )
     }

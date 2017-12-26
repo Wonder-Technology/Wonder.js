@@ -16,6 +16,7 @@ let setTimeout = [%bs.raw
 let prepareForNoHeadless =
     (
       ~config={isClosePage: true, execCount: 20, extremeCount: 5, isGenerateDataFile: true},
+      ~scriptFilePathList=[],
       fileName,
       browser,
       page,
@@ -51,7 +52,13 @@ let prepareForNoHeadless =
                (p) => {
                  page := Some(p);
                  state :=
-                   createState(~config, p, browser^ |> Js.Option.getExn, "./dist/wd.js", fileName)
+                   createState(
+                     ~config,
+                     p,
+                     browser^ |> Js.Option.getExn,
+                     ["./dist/wd.js", ...scriptFilePathList],
+                     fileName
+                   )
                    |> Benchmark.prepareBeforeAll;
                  p |> resolve
                }
