@@ -58,7 +58,7 @@ let _prepare =
 
 let prepareForHeadless =
     (
-      ~config={isClosePage: true, execCount: 3, extremeCount: 1, isGenerateDataFile: true},
+      ~config={isClosePage: true, execCount: 30, extremeCount: 5, isGenerateDataFile: true},
       ~scriptFilePathList=[],
       fileName,
       browser,
@@ -69,7 +69,6 @@ let prepareForHeadless =
       Benchmark.(
         Puppeteer.(
         _prepare(
-
           launch(
             ~options={
               "ignoreHTTPSErrors": Js.Nullable.empty,

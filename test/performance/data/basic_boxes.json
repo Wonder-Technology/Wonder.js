@@ -1,5 +1,7 @@
 {
          "name": "basic_boxes",
+         "cases": [{
+         "name": "basic_boxes",
          "cases": [
            {
                "name": "create_5k_boxes",
@@ -33,7 +35,5 @@
                "time": [
                    {"name":"prepare","time":4},{"name":"init","time":10},{"name":"loopBody1","time":103},{"name":"loopBody2","time":89}
                ],
-               "memory": 7,
-               "error_rate": 10
-           }]
+               "memory": 7]
          }
