@@ -1,89 +1,39 @@
 {
-    "name": "basic_boxes",
-    "cases": [
-        {
-            "name": "basic_boxes",
-            "cases": [
-                {
-                    "name": "create_5k_boxes",
-                    "time": [
-                        {
-                            "name": "prepare",
-                            "time": 71
-                        },
-                        {
-                            "name": "init",
-                            "time": 11
-                        },
-                        {
-                            "name": "loopBody",
-                            "time": 45
-                        }
-                    ],
-                    "memory": 7,
-                    "error_rate": 10
-                },
-                {
-                    "name": "create_5k_boxes+transform",
-                    "time": [
-                        {
-                            "name": "prepare",
-                            "time": 60
-                        },
-                        {
-                            "name": "init",
-                            "time": 9
-                        },
-                        {
-                            "name": "loopBody",
-                            "time": 56
-                        }
-                    ],
-                    "memory": 10,
-                    "error_rate": 10
-                },
-                {
-                    "name": "create_5k_boxes+transform+set_parent",
-                    "time": [
-                        {
-                            "name": "prepare",
-                            "time": 61
-                        },
-                        {
-                            "name": "init",
-                            "time": 10
-                        },
-                        {
-                            "name": "loopBody",
-                            "time": 61
-                        }
-                    ],
-                    "memory": 7,
-                    "error_rate": 10
-                },
-                {
-                    "name": "create_and_dispose_1k_boxes",
-                    "time": [
-                        {
-                            "name": "prepare",
-                            "time": 4
-                        },
-                        {
-                            "name": "init",
-                            "time": 8
-                        },
-                        {
-                            "name": "loopBody1",
-                            "time": 105
-                        },
-                        {
-                            "name": "loopBody2",
-                            "time": 78
-                        }
-                    ],
-                    "memory": 6
-                }
-            ]
-        }
-    ]
-}
+         "name": "basic_boxes",
+         "cases": [
+           {
+               "name": "create_5k_boxes",
+               "time": [
+                   {"name":"prepare","time":72},{"name":"init","time":11},{"name":"loopBody","time":49}
+               ],
+               "memory": 7,
+               "error_rate": 10
+           },
+       
+           {
+               "name": "create_5k_boxes+transform",
+               "time": [
+                   {"name":"prepare","time":59},{"name":"init","time":9},{"name":"loopBody","time":52}
+               ],
+               "memory": 11,
+               "error_rate": 10
+           },
+       
+           {
+               "name": "create_5k_boxes+transform+set_parent",
+               "time": [
+                   {"name":"prepare","time":58},{"name":"init","time":9},{"name":"loopBody","time":59}
+               ],
+               "memory": 8,
+               "error_rate": 10
+           },
+       
+           {
+               "name": "create_and_dispose_1k_boxes",
+               "time": [
+                   {"name":"prepare","time":3},{"name":"init","time":8},{"name":"loopBody1","time":97},{"name":"loopBody2","time":71}
+               ],
+               "memory": 6,
+               "error_rate": 10
+           }]
+         }
