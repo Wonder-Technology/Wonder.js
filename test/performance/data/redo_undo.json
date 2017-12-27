@@ -4,7 +4,7 @@
            {
                "name": "copy_1k_boxes(objectInstance)+restore_from_1k_boxes_and_1k_boxes(objectInstance)",
                "time": [
-                   {"name":"prepare","time":11},{"name":"init","time":10},{"name":"loopBody","time":141}
+                   {"name":"prepare","time":12},{"name":"init","time":10},{"name":"loopBody","time":139}
                ],
                "memory": 8,
                "error_rate": 10
