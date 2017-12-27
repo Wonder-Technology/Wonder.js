@@ -1,57 +1,10 @@
-{
-         "name": "instance_basic_boxes",
-         "cases": [
+
            {
                "name": "create_100k_boxes_hardware",
                "time": [
-                   {"name":"prepare","time":250},{"name":"init","time":12},{"name":"loopBody","time":42}
+                   {"name":"prepare","time":247},{"name":"init","time":11},{"name":"loopBody","time":39}
                ],
                "memory": 40,
                "error_rate": 10
            },
        
-           {
-               "name": "create_2k_boxes_batch",
-               "time": [
-                   {"name":"prepare","time":25},{"name":"init","time":9},{"name":"loopBody","time":9}
-               ],
-               "memory": 5,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "create_10k_boxes+transform",
-               "time": [
-                   {"name":"prepare","time":67},{"name":"init","time":9},{"name":"loopBody","time":44}
-               ],
-               "memory": 10,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "create_10k_boxes+transform+set_parent",
-               "time": [
-                   {"name":"prepare","time":91},{"name":"init","time":9},{"name":"loopBody","time":72}
-               ],
-               "memory": 11,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "createAndDispose_200_5_boxes",
-               "time": [
-                   {"name":"prepare","time":3},{"name":"init","time":8},{"name":"loopBody1","time":50},{"name":"loopBody2","time":42}
-               ],
-               "memory": 3,
-               "error_rate": 10
-           },
-       
-           {
-               "name": "createAndDispose_1_2k_boxes",
-               "time": [
-                   {"name":"prepare","time":3},{"name":"init","time":8},{"name":"loopBody1","time":49},{"name":"loopBody2","time":39}
-               ],
-               "memory": 6,
-               "error_rate": 10
-           }]
-         }
