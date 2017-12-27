@@ -56,7 +56,6 @@ let _prepare =
   )
 };
 
-
 let prepareForHeadless =
     (
       ~config={isClosePage: true, execCount: 30, extremeCount: 5, isGenerateDataFile: true},
