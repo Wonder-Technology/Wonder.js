@@ -17,12 +17,10 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: Qc8srQOlKxmqB1ggBppgKlGuMj/xRYsn1KiDDb30uIhZyVQKna30noLZobB03jduuWmeixC5L761o8ZcOB6e5tcr05/Cmue/cB2S8SmsYiIA0BpKB5/gvT0iORzP5GBblLxajFPMf/FXVaF7e9qm3BGonRudc14yXSjQcLpzMds=
-  file_glob: true
-  file: dist/*
-  skip_cleanup: true
-  overwrite: true
+    secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
+  file: dist/wd.js
   on:
-    tags: false
+    repo: DreamForeast/Wonder.js
+    branch: dev
 after_success:
 - npm run codecov
