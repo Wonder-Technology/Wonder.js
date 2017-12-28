@@ -32,6 +32,7 @@ gulp.task("generateIndex", function (done) {
 
 
 
+gulp.task("buildForRunTest", gulpSync.sync(["createShaderChunkSystemFile", "generateIndex", "rollup"]));
 
 
 
