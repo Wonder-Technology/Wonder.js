@@ -2,7 +2,7 @@
 Wonder.js is a Functional, High performance 3D WebGL Engine.
 It is currently in alpha, any contributions are very welcome.
 
-[[https://travis-ci.org/DreamForeast/Wonder.js?branch%3Dmaster][https://travis-ci.org/DreamForeast/Wonder.js.png]] [[https://codecov.io/github/DreamForeast/Wonder.js?branch=master][https://codecov.io/github/DreamForeast/Wonder.js/coverage.svg?branch=master]]
+[[https://travis-ci.org/DreamForeast/Wonder.js?branch%3Dmaster][https://travis-ci.org/DreamForeast/Wonder.js.png]] [[https://codecov.io/github/DreamForeast/Wonder.js?branch=master][https://codecov.io/github/DreamForeast/Wonder.js/coverage.svg?branch=master]] [[http://commitizen.github.io/cz-cli/][https://img.shields.io/badge/commitizen-friendly-brightgreen.svg]]
 
 * Goal
 To build a elegant, high performance 3D engine with full functions.
