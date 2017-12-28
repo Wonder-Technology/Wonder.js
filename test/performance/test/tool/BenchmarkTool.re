@@ -58,7 +58,7 @@ let _prepare =
 
 let prepareForHeadless =
     (
-      ~config={isClosePage: true, execCount: 30, extremeCount: 5, isGenerateDataFile: true},
+      ~config={isClosePage: true, execCount: 20},
       ~scriptFilePathList=[],
       fileName,
       browser,
@@ -93,7 +93,7 @@ let prepareForHeadless =
 
 let prepareForNoHeadless =
     (
-      ~config={isClosePage: true, execCount: 20, extremeCount: 5, isGenerateDataFile: true},
+      ~config={isClosePage: true, execCount: 20},
       ~scriptFilePathList=[],
       fileName,
       browser,
