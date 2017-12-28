@@ -9,8 +9,9 @@ reference/
 node_modules/
 mine/
 test/coverage
-dist/
 
 test/performance/data
+
+yarn.lock
 
 .bsb.lock
