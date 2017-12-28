@@ -15,18 +15,17 @@ node_js:
   - "8.7"
 
 stages:
-  - compile
   - test
 
 
 install:
   - yarn install
 
+
+script: gulp build
+
 jobs:
   include:
-    - stage: compile
-      script: gulp build
-
     - stage: test
       script: npm run test:coverage
 
