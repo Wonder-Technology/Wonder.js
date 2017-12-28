@@ -14,10 +14,22 @@ cache:
 node_js:
   - "8.7"
 
+stages:
+  - compile
+  - test
+
+
 install:
   - yarn install
-script:
-  - gulp build
-  - npm run test:coverage
+
+jobs:
+  include:
+    - stage: compile
+      script: gulp build
+
+    - stage: test
+      script: npm run test:coverage
+
+
 after_success:
   - npm run codecov
