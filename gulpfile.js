@@ -3,6 +3,8 @@ var gulpSync = require("gulp-sync")(gulp);
 
 require("./build/gulp_task/create_inner_file/shaderChunk.js");
 require("./build/gulp_task/compile/compileReason.js");
+require("./build/gulp_task/rollup/rollup.js");
+require("./build/gulp_task/performance/generateData");
 
 
 
@@ -23,49 +25,6 @@ gulp.task("generateIndex", function (done) {
 
 
 
-var rollup = require("rollup");
-
-
-
-
-gulp.task("rollup", function () {
-    // function buildEntry (config) {
-    //     const output = config.output
-    //     const { file, banner } = output
-    //     const isProd = /min\.js$/.test(file)
-    //     return rollup.rollup(config)
-    //       .then(bundle => bundle.generate(output))
-    //       .then(({ code }) => {
-    //         if (isProd) {
-    //           var minified = (banner ? banner + '\n' : '') + uglify.minify(code, {
-    //             output: {
-    //               ascii_only: true
-    //             },
-    //             compress: {
-    //               pure_funcs: ['makeMap']
-    //             }
-    //           }).code
-    //           return write(file, minified, true)
-    //         } else {
-    //           return write(file, code)
-    //         }
-    //       })
-    //   }
-    var inputConfig = {
-        input: "./lib/es6_global/src/Index.js",
-        plugins: [
-        ]
-    };
-    var outputConfig = {
-        file: "./dist/wd.js",
-        format: "umd",
-        name: "wd",
-        indent: '\t'
-    };
-
-    return rollup.rollup(inputConfig)
-        .then(bundle => bundle.write(outputConfig))
-});
 
 
 
@@ -73,18 +32,6 @@ gulp.task("rollup", function () {
 
 
 
-var exec = require("child_process").exec;
-
-
-gulp.task("generatePfData", function (done) {
-    exec("npm run test:pf_generate", { maxBuffer: 2048 * 1000 }, function (err, stdout, stderr) {
-        if (err) {
-            throw err;
-        }
-
-        done();
-    });
-});
 
 
 
