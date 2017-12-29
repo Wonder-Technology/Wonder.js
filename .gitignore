@@ -4,7 +4,7 @@
 .vscode/
 jest_0/
 lib/bs/
-lib/js/
+lib/**/src/
 reference/
 node_modules/
 mine/
