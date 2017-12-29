@@ -1,14 +1,3 @@
-<a name="1.0.0-alpha.13"></a>
-# 1.0.0-alpha.13 (2017-12-29)
-
-* chore: add commitlint.config.js file ([f0280e5](https://github.com/yyc-git/Wonder.js/commit/f0280e5))
-* chore: push lib/es6_global/ files ([8102ba7](https://github.com/yyc-git/Wonder.js/commit/8102ba7))
-* chore: remove lib/es6_global/ files ([9fa1208](https://github.com/yyc-git/Wonder.js/commit/9fa1208))
-* chore(.gitignore): ignore lib/**/src/ ([b0e02c8](https://github.com/yyc-git/Wonder.js/commit/b0e02c8))
-* chore(codecov): try send codecov report to branch:mater ([1606e00](https://github.com/yyc-git/Wonder.js/commit/1606e00))
-
-
-
 <a name="1.0.0-alpha.12"></a>
 # [1.0.0-alpha.12](https://github.com/yyc-git/Wonder.js/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2017-12-28)
 

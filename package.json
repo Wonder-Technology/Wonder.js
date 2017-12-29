@@ -1,13 +1,28 @@
 {
   "name": "wonder.js",
+  "version": "1.0.0-alpha.12",
+  "authors": "DreamForest",
   "description": "3d webgl engine",
   "homepage": "https://github.com/DreamForeast/Wonder.js",
-  "version": "1.0.0-alpha.13",
+  "license": "MIT",
   "main": "",
-  "authors": "DreamForest",
-  "dependencies": {
-    "bs-json": "^0.2.3",
-    "wonder-commonlib": "0.2.13"
+  "scripts": {
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "start": "node ./server/app.js",
+    "codecov": "cat test/coverage/lcov.info | codecov",
+    "watch": "bsb -clean-world -make-world -w",
+    "build": "bsb -clean-world -make-world",
+    "test": "jest --config jest.json",
+    "test:coverage": "jest --config jest_coverage.json",
+    "test:pf": "jest --config jest_performance.json",
+    "test:pf_generate": "jest --config jest_performance_generate.json",
+    "test:watch": "jest --watch --config jest.json",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
   },
   "devDependencies": {
     "@commitlint/cli": "^5.2.8",
@@ -30,23 +45,8 @@
     "wonder-generate-index": "0.1.0",
     "wonder-glsl-compiler": "latest"
   },
-  "scripts": {
-    "build": "bsb -clean-world -make-world",
-    "codecov": "cat test/coverage/lcov.info | codecov",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "start": "node ./server/app.js",
-    "test": "jest --config jest.json",
-    "test:coverage": "jest --config jest_coverage.json",
-    "test:pf": "jest --config jest_performance.json",
-    "test:pf_generate": "jest --config jest_performance_generate.json",
-    "test:watch": "jest --watch --config jest.json",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
-    "watch": "bsb -clean-world -make-world -w"
-  },
-  "license": "MIT",
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-customizable"
-    }
+  "dependencies": {
+    "bs-json": "^0.2.3",
+    "wonder-commonlib": "0.2.13"
   }
 }
