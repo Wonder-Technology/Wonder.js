@@ -16,10 +16,11 @@ let _ =
         let gl = Obj.magic(RandomTool.getRandomFloat(10.));
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
+        let viewport = Some((1., 0.1, 10., 20.));
         (
-          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor}},
+          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor, viewport}},
           Some(gl),
-          (colorWrite, clearColor)
+          (colorWrite, clearColor, viewport)
         )
       };
       let _prepareTypeArrayPoolData = (state) => {
@@ -92,7 +93,7 @@ let _ =
                 "clean gl",
                 () => {
                   open StateDataType;
-                  let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
+                  let (state, gl, _) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {gl}: deviceManagerData =
                     DeviceManagerTool.getDeviceManagerData(copiedState);
@@ -103,12 +104,13 @@ let _ =
                 "directly use readonly data",
                 () => {
                   open StateDataType;
-                  let (state, gl, (colorWrite, clearColor)) = _prepareDeviceManagerData(state^);
+                  let (state, gl, (colorWrite, clearColor, viewport)) =
+                    _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
-                  (copiedData.colorWrite, copiedData.clearColor)
-                  |> expect == (targetData.colorWrite, targetData.clearColor)
+                  (copiedData.colorWrite, copiedData.clearColor, copiedData.viewport)
+                  |> expect == (targetData.colorWrite, targetData.clearColor, targetData.viewport)
                 }
               )
             }

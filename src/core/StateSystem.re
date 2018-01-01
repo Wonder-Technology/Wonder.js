@@ -111,7 +111,7 @@ let createState =
     initConfig: {isTest: false},
     sourceInstanceData: SourceInstanceHelper.initData(),
     objectInstanceData: ObjectInstanceHelper.initData(),
-    deviceManagerData: {gl: None, colorWrite: None, clearColor: None},
+    deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport:None},
     gameObjectData: GameObjectHelper.initData(),
     transformData: None,
     cameraControllerData: CameraControllerHelper.initData(),

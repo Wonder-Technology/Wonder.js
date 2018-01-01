@@ -27,5 +27,13 @@ let createCanvas = ({canvasId}) => {
       | Some(canvas) => canvas
       }
     };
-  canvas
+  canvas |> Obj.magic
 };
+
+let getFullScreenData = () => ViewSystem.getFullScreenData();
+
+let setToFullScreen =
+    ((x, y, width, height, styleWidth, styleHeight) as screenData, gl, canvas, state) => (
+  state |> DeviceManagerSystem.setViewport(gl, x, y, width, height),
+  ViewSystem.setToFullScreen(screenData, canvas)
+);
