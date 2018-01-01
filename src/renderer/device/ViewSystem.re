@@ -12,14 +12,68 @@ let _getOptionValueFromState = (value) => Js.Option.getExn(value);
 
 let getCanvas = (state: state) => state.viewData.canvas |> _getOptionValueFromState;
 
-let setCanvas = (~canvas: htmlElement, state: state) => {
+let setCanvas = (canvas: htmlElement, state: state) => {
   ...state,
   viewData: {...state.viewData, canvas: Some(canvas)}
 };
 
+let setX = (x, canvas) => {
+  canvas##style##left#={j|($x)px|j};
+  canvas
+};
+
+let setY = (y, canvas) => {
+  canvas##style##top#={j|($y)px|j};
+  canvas
+};
+
+let setWidth = (width, canvas) => {
+  canvas##width#=width;
+  canvas
+};
+
+let setHeight = (height, canvas) => {
+  canvas##height#=height;
+  canvas
+};
+
+let setStyleWidth = (width, canvas) => {
+  canvas##style##width#=width;
+  canvas
+};
+
+let setStyleHeight = (height, canvas) => {
+  canvas##style##height#=height;
+  canvas
+};
+
+let getFullScreenData = () => {
+  let root = Root.root;
+  (0, 0, root##innerWidth, root##innerHeight, "100%", "100%")
+};
+
+let _setBodyMargin = (document) =>
+  switch (Dom.querySelectorAll(document, "body")) {
+  | bodies when Js.Array.length(bodies) === 0 => ()
+  | bodies =>
+    Dom.setBatchStyle(bodies[0], "margin:0");
+    ()
+  };
+
+let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) => {
+  _setBodyMargin(Dom.document);
+  canvas
+  |> setX(x)
+  |> setY(y)
+  |> setWidth(width)
+  |> setHeight(height)
+  |> setStyleWidth(styleWidth)
+  |> setStyleHeight(styleHeight)
+};
+
 let getContextConfig = (state: state) => _getOptionValueFromState(state.viewData.contextConfig);
 
-let setContextConfig = (~contextConfig: MainConfigType.contextConfig, state: state) => {
+let setContextConfig = (contextConfig: MainConfigType.contextConfig, state: state) => {
   ...state,
   viewData: {
     ...state.viewData,
@@ -41,5 +95,5 @@ let _convertContextConfigDataToJsObj =
 };
 
 /* todo support webgl2 */
-let getContext = (canvas: htmlElement, options: MainConfigType.contextConfig) =>
+let getContext = (canvas, options: MainConfigType.contextConfig) =>
   getWebgl1Context(canvas, _convertContextConfigDataToJsObj(options));

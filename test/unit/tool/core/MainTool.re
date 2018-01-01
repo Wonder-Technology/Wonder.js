@@ -15,11 +15,20 @@ let buildFakeGl = (sandbox) => {
   "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0))
 };
 
+let buildFakeCanvas = (id, gl, sandbox) => {
+  "id": id,
+  "nodeType": 1,
+  "style": {"left": 0, "top": 0, "width": "0", "height": "0"},
+  "width": 0,
+  "height": 0,
+  "getContext": createGetContextStub(gl, sandbox)
+};
+
 let buildFakeDomForNotPassCanvasId = (sandbox) => {
   let fakeGl = buildFakeGl(sandbox);
-  let canvasDom = {"id": "a", "nodeType": 1, "getContext": createGetContextStub(fakeGl, sandbox)};
+  let canvasDom = buildFakeCanvas("a", fakeGl, sandbox);
   let div = {"innerHTML": "", "firstChild": canvasDom};
-  let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^))};
+  let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^)), "style": {"cssText": ""}};
   createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "createElement")
   |> withOneArg("div")
   |> returns(div)

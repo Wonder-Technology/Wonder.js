@@ -50,3 +50,8 @@ let prependTo = (sourceElement: htmlElement, ~targetElement: option(htmlElement)
     | _ => sourceElement
     }
   };
+
+let setBatchStyle = (element: htmlElement, cssText: string) => {
+  htmlElementToJsObj(element)##style##cssText#=cssText;
+  element
+};

@@ -17,7 +17,7 @@ let setGl = (gl: webgl1Context, state: state) => {
 
 /* let createGL (state: state) =>
    state |> getCanvas |> getContext options::(getContextConfig state); */
-let createGL = (canvas: htmlElement, contextConfig: MainConfigType.contextConfig) =>
+let createGL = (contextConfig: MainConfigType.contextConfig, canvas) =>
   getContext(canvas, contextConfig);
 
 let setColorWrite =

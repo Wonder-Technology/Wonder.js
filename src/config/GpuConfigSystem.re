@@ -4,7 +4,7 @@ external mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData :
   MainConfigType.gpuConfig => StateDataType.gpuConfig =
   "%identity";
 
-let setConfig = (~gpuConfig: MainConfigType.gpuConfig, state: state) => {
+let setConfig = (gpuConfig: MainConfigType.gpuConfig, state: state) => {
   ...state,
   gpuConfig: Some(mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData(gpuConfig))
 };

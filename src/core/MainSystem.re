@@ -65,16 +65,16 @@ let setConfig = (config: Js.t({..}), state: state) => {
   (config, state)
 };
 
-/* todo detect, setscreensize, set pixel ratio ... */
+/* todo set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
-  let gl = createGL(canvas, config.contextConfig);
+  let gl = canvas |> setToFullScreen(getFullScreenData()) |> createGL(config.contextConfig);
   state
   |> setGl(gl)
-  |> setCanvas(~canvas)
-  |> setContextConfig(~contextConfig=config.contextConfig)
+  |> setCanvas(canvas)
+  |> setContextConfig(config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
-  |> GpuConfigSystem.setConfig(~gpuConfig=config.gpuConfig)
+  |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> GPUDetectSystem.detect(gl)
   |> GameObjectAdmin.initDataFromState
 };

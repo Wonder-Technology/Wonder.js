@@ -27,5 +27,5 @@ let createCanvas = ({canvasId}) => {
       | Some(canvas) => canvas
       }
     };
-  canvas
+  canvas |> Obj.magic
 };

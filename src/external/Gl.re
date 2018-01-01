@@ -41,7 +41,7 @@ open Js.Typed_array;
 [@bs.get] external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
 
 [@bs.send]
-external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
+external getWebgl1Context : ('canvas, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
 
 [@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";
