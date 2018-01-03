@@ -111,7 +111,7 @@ let generate = ({commonData, testData}, imageType) =>
     ()
   )
   |> then_(
-       (browser) =>{
+       (browser) => {
          WonderCommonlib.DebugUtils.log("launch") |> ignore;
          testData
          |> List.fold_left(
@@ -135,23 +135,18 @@ let generate = ({commonData, testData}, imageType) =>
                                         )
                                      |> then_(
                                           (_) => {
-                                            WonderCommonlib.DebugUtils.log("before screenshot") |> ignore;
                                             let path =
                                               buildImagePath(imageType, name, imagePath, timePath);
-
-                                            WonderCommonlib.DebugUtils.log("before create image dir, image path is " ++ path) |> ignore;
+                                            WonderCommonlib.DebugUtils.log(
+                                              "before create image dir, image path is " ++ path
+                                            )
+                                            |> ignore;
                                             _createImageDir(path);
-                                            WonderCommonlib.DebugUtils.log("before screenshot") |> ignore;
+                                            WonderCommonlib.DebugUtils.log("before screenshot")
+                                            |> ignore;
                                             page
                                             |> Page.screenshot(
                                                  ~options={
-                                                   /* "clip":
-                                                      Js.Nullable.return({
-                                                        "x": 0.,
-                                                        "y": 0.,
-                                                        "width": 300.,
-                                                        "height": 150.
-                                                      }), */
                                                    "clip": Js.Nullable.empty,
                                                    "fullPage": Js.Nullable.return(false),
                                                    "omitBackground": Js.Nullable.return(false),
@@ -160,6 +155,15 @@ let generate = ({commonData, testData}, imageType) =>
                                                    "_type": Js.Nullable.return("png")
                                                  },
                                                  ()
+                                               )
+                                            |> then_(
+                                                 (d) => {
+                                                   WonderCommonlib.DebugUtils.log(
+                                                     "after screen shot"
+                                                   )
+                                                   |> ignore;
+                                                   d |> resolve
+                                                 }
                                                )
                                           }
                                         )

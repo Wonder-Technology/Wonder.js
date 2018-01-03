@@ -27,7 +27,8 @@ let _getCaseText = (imagePath) => Node.Path.basename_ext(imagePath, ".png");
 
 let compare = (renderTestData) => {
   WonderCommonlib.DebugUtils.log("begin compare") |> ignore;
-  GenerateCurrentImage.generate(renderTestData)
+  /* GenerateCurrentImage.generate(renderTestData) */
+  GenerateCorrectImage.generate(renderTestData)
   |> then_(
        (_) => {
          WonderCommonlib.DebugUtils.log("000") |> ignore;
