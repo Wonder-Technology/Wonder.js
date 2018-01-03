@@ -42,6 +42,18 @@ function _writeGenerateBasedCommitIdToConfig(commitId, config, configFilePath) {
     fs.writeFileSync(configFilePath, copiedConfig);
 }
 
+function _restoreToCurrentCommid(currentCommitId, done) {
+    git.reset(currentCommitId, { args: '--hard' }, function (err) {
+        if (!!err) {
+            console.error(err);
+            done();
+            return;
+        }
+
+        done()
+    });
+}
+
 gulp.task("testRender", function (done) {
     var configFilePath = path.join(process.cwd(), "test/render/e2eConfig.json");
 
@@ -84,7 +96,7 @@ gulp.task("testRender", function (done) {
                 git.reset(currentCommitId, { args: '--hard' }, function (err) {
                     if (!!err) {
                         console.error(err);
-                        done();
+
                         return;
                     }
 
@@ -94,7 +106,8 @@ gulp.task("testRender", function (done) {
                 });
             }, function (e) {
                 console.error(e);
-                done();
+
+                _restoreToCurrentCommid(currentCommitId, done);
             })
         });
     });
