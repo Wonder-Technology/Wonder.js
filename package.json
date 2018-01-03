@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "bs-json": "^0.2.3",
+    "puppeteer": "^0.13.0",
     "wonder-commonlib": "latest"
   }
 }
