@@ -1,4 +1,4 @@
-open WonderRenderTest;
+/* open WonderRenderTest; */
 
 open RenderTestData;
 
