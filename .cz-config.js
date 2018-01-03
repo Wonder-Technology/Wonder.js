@@ -22,8 +22,9 @@ module.exports = {
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
     test: [
-      { name: "pfTest" },
-      { name: "unitTest" }
+      { name: "pf-test" },
+      { name: "render-test" },
+      { name: "unit-test" }
     ],
     chore: [
       { name: "ci" },
