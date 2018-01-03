@@ -25,9 +25,9 @@ let _getTargetThreshold = (threshold) =>
 
 let _getCaseText = (imagePath) => Node.Path.basename_ext(imagePath, ".png");
 
-let compare = (renderTestData) => {
+let compare = (browser, renderTestData) => {
   WonderCommonlib.DebugUtils.log("begin compare") |> ignore;
-  GenerateCurrentImage.generate(renderTestData)
+  GenerateCurrentImage.generate(browser, renderTestData)
   /* GenerateCorrectImage.generate(renderTestData) */
   |> then_(
        (_) => {

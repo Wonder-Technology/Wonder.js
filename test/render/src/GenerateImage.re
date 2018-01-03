@@ -94,6 +94,71 @@ let getAllImagePathDataList = ({testData}, imageType) =>
        []
      );
 
+let generateWithBrowser = (browser, {commonData, testData}, imageType) => {
+  WonderCommonlib.DebugUtils.log("not launch") |> ignore;
+  testData
+  |> List.fold_left(
+       (promise, {bodyFuncStr, name, imagePath, frameData, scriptFilePathList}) =>
+         frameData
+         |> List.fold_left(
+              (promise, {timePath}) =>
+                promise
+                |> then_(
+                     (browser) =>
+                       browser
+                       |> Browser.newPage
+                       |> _addScript(commonData, scriptFilePathList)
+                       |> then_(
+                            (page) =>
+                              page
+                              |> Page.evaluateWithTwoArgs(
+                                   [@bs] _evaluateScript,
+                                   bodyFuncStr,
+                                   timePath |> Array.of_list
+                                 )
+                              |> then_(
+                                   (_) => {
+                                     let path =
+                                       buildImagePath(imageType, name, imagePath, timePath);
+                                     WonderCommonlib.DebugUtils.log(
+                                       "before create image dir, image path is " ++ path
+                                     )
+                                     |> ignore;
+                                     _createImageDir(path);
+                                     WonderCommonlib.DebugUtils.log("before screenshot") |> ignore;
+                                     page
+                                     |> Page.screenshot(
+                                          ~options={
+                                            "clip": Js.Nullable.empty,
+                                            "fullPage": Js.Nullable.return(true),
+                                            "omitBackground": Js.Nullable.return(false),
+                                            "path": Js.Nullable.return(path),
+                                            "quality": Js.Nullable.empty,
+                                            "_type": Js.Nullable.return("png")
+                                          },
+                                          ()
+                                        )
+                                     |> then_(
+                                          (d) => {
+                                            WonderCommonlib.DebugUtils.log("after screen shot")
+                                            |> ignore;
+                                            d |> resolve
+                                          }
+                                        )
+                                   }
+                                 )
+                              |> then_(
+                                   (_) => page |> Page.close |> then_((_) => browser |> resolve)
+                                 )
+                          )
+                   ),
+              promise
+            ),
+       browser |> resolve
+     )
+  |> then_((browser) => browser |> Browser.close)
+};
+
 let generate = ({commonData, testData}, imageType) =>
   launch(
     ~options={
@@ -148,7 +213,7 @@ let generate = ({commonData, testData}, imageType) =>
                                             |> Page.screenshot(
                                                  ~options={
                                                    "clip": Js.Nullable.empty,
-                                                   "fullPage": Js.Nullable.return(false),
+                                                   "fullPage": Js.Nullable.return(true),
                                                    "omitBackground": Js.Nullable.return(false),
                                                    "path": Js.Nullable.return(path),
                                                    "quality": Js.Nullable.empty,
@@ -178,5 +243,5 @@ let generate = ({commonData, testData}, imageType) =>
               browser |> resolve
             )
        }
-     )
-  |> then_((browser) => browser |> Browser.close);
+     );
+/* |> then_((browser) => browser |> Browser.close); */

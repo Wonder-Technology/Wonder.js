@@ -5,10 +5,10 @@ var fs = require("fs");
 
 var testRender = require(path.join(process.cwd(), "lib/js/test/render/TestRender.js"));
 
-function _runTest(done) {
+function _runTest(browser, done) {
     console.log("run test...");
 
-    testRender.runTest().then(function () {
+    testRender.runTest(browser).then(function () {
         console.log("done");
         done()
     }, function (e) {
@@ -69,10 +69,11 @@ gulp.task("testRender", function (done) {
             return;
         }
 
-        if (basedCommitId === config.render.last_generate_based_commit_id) {
-            _runTest(done);
-            return
-        }
+        // todo open
+        // if (basedCommitId === config.render.last_generate_based_commit_id) {
+        //     _runTest(done);
+        //     return
+        // }
 
         console.log("reset hard to basedCommitId:", basedCommitId, "...");
 
@@ -87,28 +88,28 @@ gulp.task("testRender", function (done) {
             console.log("generate correct images...");
 
 
-            // testRender.generateCorrectImage().then(function () {
-            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
+            testRender.generateCorrectImage().then(function (browser) {
+                _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
 
 
-            console.log("reset hard to currentCommitId:", currentCommitId, "...");
+                console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
-            git.reset(currentCommitId, { args: '--hard' }, function (err) {
-                if (!!err) {
-                    console.error(err);
+                git.reset(currentCommitId, { args: '--hard' }, function (err) {
+                    if (!!err) {
+                        console.error(err);
 
-                    return;
-                }
+                        return;
+                    }
 
-                _runBuild(function () {
-                    _runTest(done);
+                    _runBuild(function () {
+                        _runTest(browser, done);
+                    });
                 });
-            });
-            // }, function (e) {
-            //     console.error(e);
+            }, function (e) {
+                console.error(e);
 
-            //     _restoreToCurrentCommid(currentCommitId, done);
-            // })
+                _restoreToCurrentCommid(currentCommitId, done);
+            })
         });
     });
 });

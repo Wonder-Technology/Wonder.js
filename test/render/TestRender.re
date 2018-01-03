@@ -6,8 +6,8 @@ open Js.Promise;
 
 let generateCorrectImage = () => GenerateCorrectImage.generate(renderTestData);
 
-let runTest = () =>
-  Comparer.compare(renderTestData)
+let runTest = (browser) =>
+  Comparer.compare(browser, renderTestData)
   |> then_(
        ((_, list)) =>
          ! Comparer.isPass(list) ?
