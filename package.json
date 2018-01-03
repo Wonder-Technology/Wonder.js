@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "bs-json": "^0.2.3",
-    "wonder-commonlib": "latest"
+    "wonder-commonlib": "latest",
+    "wonder-render-test": "latest"
   }
 }
