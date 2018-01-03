@@ -28,7 +28,8 @@ module.exports = {
     ],
     chore: [
       { name: "ci" },
-      { name: "merge" }
+      { name: "merge" },
+      { name: "gulp" }
     ]
   },
   // override the messages, defaults are as follows

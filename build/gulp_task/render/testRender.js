@@ -71,10 +71,15 @@ gulp.task("testRender", function (done) {
                 return;
             }
 
-            console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
-            testRender.generate().then(function () {
+            console.log("generate correct images...");
+
+
+            testRender.generateCorrectImage().then(function () {
                 _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
+
+
+                console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
                 git.reset(currentCommitId, { args: '--hard' }, function (err) {
                     if (!!err) {

@@ -4,7 +4,7 @@ open RenderTestData;
 
 open Js.Promise;
 
-let generate = () => GenerateCorrectImage.generate(renderTestData);
+let generateCorrectImage = () => GenerateCorrectImage.generate(renderTestData);
 
 let runTest = () =>
   Comparer.compare(renderTestData)
