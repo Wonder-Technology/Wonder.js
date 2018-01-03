@@ -111,7 +111,8 @@ let generate = ({commonData, testData}, imageType) =>
     ()
   )
   |> then_(
-       (browser) =>
+       (browser) =>{
+         WonderCommonlib.DebugUtils.log("launch") |> ignore;
          testData
          |> List.fold_left(
               (promise, {bodyFuncStr, name, imagePath, frameData, scriptFilePathList}) =>
@@ -134,9 +135,13 @@ let generate = ({commonData, testData}, imageType) =>
                                         )
                                      |> then_(
                                           (_) => {
+                                            WonderCommonlib.DebugUtils.log("before screenshot") |> ignore;
                                             let path =
                                               buildImagePath(imageType, name, imagePath, timePath);
+
+                                            WonderCommonlib.DebugUtils.log("before create image dir, image path is " ++ path) |> ignore;
                                             _createImageDir(path);
+                                            WonderCommonlib.DebugUtils.log("before screenshot") |> ignore;
                                             page
                                             |> Page.screenshot(
                                                  ~options={
@@ -168,5 +173,6 @@ let generate = ({commonData, testData}, imageType) =>
                    ),
               browser |> resolve
             )
+       }
      )
   |> then_((browser) => browser |> Browser.close);
