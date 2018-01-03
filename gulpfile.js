@@ -2,7 +2,6 @@ var gulp = require("gulp");
 var gulpSync = require("gulp-sync")(gulp);
 
 require("./build/gulp_task/create_inner_file/shaderChunk");
-require("./build/gulp_task/compile/compileReason");
 require("./build/gulp_task/rollup/rollup");
 require("./build/gulp_task/performance/generateData");
 require("./build/gulp_task/render/testRender");
@@ -41,4 +40,4 @@ gulp.task("buildForRunTest", gulpSync.sync(["createShaderChunkSystemFile", "gene
 
 
 
-gulp.task("build", gulpSync.sync(["createShaderChunkSystemFile", "compileReason", "generateIndex", "rollup"]));
+gulp.task("build", gulpSync.sync(["createShaderChunkSystemFile", "generateIndex", "rollup"]));

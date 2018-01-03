@@ -12,7 +12,7 @@ node_js:
 install:
 - yarn install
 script:
-- gulp build
+- npm run buildAll
 - gulp testRender
 - npm run test:coverage
 deploy:
@@ -23,7 +23,7 @@ deploy:
   overwrite: true
   file: dist/wd.js
   on:
-    repo: DreamForeast/Wonder.js
+    repo: Wonder-Technology/Wonder.js
     branch: master
     tags: true
 after_success:
