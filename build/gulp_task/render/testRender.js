@@ -87,28 +87,28 @@ gulp.task("testRender", function (done) {
             console.log("generate correct images...");
 
 
-            testRender.generateCorrectImage().then(function () {
-                _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
+            // testRender.generateCorrectImage().then(function () {
+            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
 
 
-                console.log("reset hard to currentCommitId:", currentCommitId, "...");
+            console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
-                git.reset(currentCommitId, { args: '--hard' }, function (err) {
-                    if (!!err) {
-                        console.error(err);
+            git.reset(currentCommitId, { args: '--hard' }, function (err) {
+                if (!!err) {
+                    console.error(err);
 
-                        return;
-                    }
+                    return;
+                }
 
-                    _runBuild(function () {
-                        _runTest(done);
-                    });
+                _runBuild(function () {
+                    _runTest(done);
                 });
-            }, function (e) {
-                console.error(e);
+            });
+            // }, function (e) {
+            //     console.error(e);
 
-                _restoreToCurrentCommid(currentCommitId, done);
-            })
+            //     _restoreToCurrentCommid(currentCommitId, done);
+            // })
         });
     });
 });
