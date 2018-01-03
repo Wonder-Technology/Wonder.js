@@ -58,7 +58,7 @@ var fs = require("fs");
 var testRender = require("./lib/js/test/render/TestRender.js");
 
 function _runTest(done) {
-    console.log("run test");
+    console.log("run test...");
 
     testRender.runTest().then(function () {
         console.log("done");
@@ -73,7 +73,9 @@ function _runTest(done) {
 function _runBuild(cb) {
     var exec = require("child_process").exec;
 
-    exec("gulp build", { maxBuffer: 2048 * 1000 }, function (err, stdout, stderr) {
+    console.log("build...");
+
+    exec("gulp build", { maxBuffer: 4096 * 2000 }, function (err, stdout, stderr) {
         if (err) {
             throw err;
         }
@@ -112,7 +114,7 @@ gulp.task("testRender", function (done) {
             return
         }
 
-        console.log("reset hard to basedCommitId:", basedCommitId);
+        console.log("reset hard to basedCommitId:", basedCommitId, "...");
 
         git.reset(basedCommitId, { args: '--hard' }, function (err) {
             if (!!err) {
@@ -121,7 +123,7 @@ gulp.task("testRender", function (done) {
                 return;
             }
 
-            console.log("reset hard to currentCommitId:", currentCommitId);
+            console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
             testRender.generate().then(function () {
                 _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
