@@ -1,3 +1,0 @@
-type request;
-
-type response;

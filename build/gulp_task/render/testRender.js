@@ -5,10 +5,10 @@ var fs = require("fs");
 
 var testRender = require(path.join(process.cwd(), "lib/js/test/render/TestRender.js"));
 
-function _runTest(browser, done) {
+function _runTest(browserArr, done) {
     console.log("run test...");
 
-    testRender.runTest(browser).then(function () {
+    testRender.runTest(browserArr).then(function () {
         console.log("done");
         done()
     }, function (e) {
@@ -69,11 +69,10 @@ gulp.task("testRender", function (done) {
             return;
         }
 
-        // todo open
-        // if (basedCommitId === config.render.last_generate_based_commit_id) {
-        //     _runTest(done);
-        //     return
-        // }
+        if (basedCommitId === config.render.last_generate_based_commit_id) {
+            _runTest([], done);
+            return
+        }
 
         console.log("reset hard to basedCommitId:", basedCommitId, "...");
 
@@ -102,7 +101,7 @@ gulp.task("testRender", function (done) {
                     }
 
                     _runBuild(function () {
-                        _runTest(browser, done);
+                        _runTest([browser], done);
                     });
                 });
             }, function (e) {

@@ -1,4 +1,4 @@
-/* open WonderRenderTest; */
+open WonderRenderTest;
 
 open RenderTestDataType;
 
@@ -46,7 +46,7 @@ let renderTestData = {
       distance: None,
       diffPercent: None,
       threshold: None,
-      frameData: [{timePath: [10]}, {timePath: [10, 20]}]
+      frameData: [{timePath: [10]}]
     }
   ]
 };
