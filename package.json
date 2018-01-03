@@ -35,19 +35,21 @@
     "cz-customizable": "^5.2.0",
     "express": "^4.16.1",
     "gulp": "^3.9.1",
+    "gulp-git": "^2.5.0",
     "gulp-sync": "^0.1.4",
     "http": "^0.0.0",
     "husky": "^0.14.3",
     "rollup": "^0.51.5",
-    "wonder-benchmark": "latest",
+    "wonder-benchmark": "^0.1.24",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
-    "wonder-glsl-compiler": "latest"
+    "wonder-glsl-compiler": "latest",
+    "wonder-render-test": "^0.1.4"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
-    "wonder-commonlib": "latest",
-    "wonder-render-test": "latest"
+    "puppeteer": "^0.13.0",
+    "wonder-commonlib": "latest"
   }
 }

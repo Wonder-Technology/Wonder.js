@@ -70,6 +70,18 @@ function _runTest(done) {
     })
 }
 
+function _runBuild(cb) {
+    var exec = require("child_process").exec;
+
+    exec("gulp build", { maxBuffer: 2048 * 1000 }, function (err, stdout, stderr) {
+        if (err) {
+            throw err;
+        }
+
+        cb()
+    });
+}
+
 function _deepCopyJson(json) {
     return JSON.parse(JSON.stringify(json));
 }
@@ -121,7 +133,9 @@ gulp.task("testRender", function (done) {
                         return;
                     }
 
-                    _runTest(done);
+                    _runBuild(function () {
+                        _runTest(done);
+                    });
                 });
             }, function (e) {
                 console.error(e);
