@@ -39,14 +39,14 @@
     "http": "^0.0.0",
     "husky": "^0.14.3",
     "rollup": "^0.51.5",
-    "wonder-benchmark": "^0.1.21",
+    "wonder-benchmark": "latest",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "latest",
-    "wonder-generate-index": "0.1.0",
+    "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "latest"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
-    "wonder-commonlib": "0.2.13"
+    "wonder-commonlib": "latest"
   }
 }
