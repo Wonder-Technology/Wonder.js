@@ -1,9 +1,9 @@
 {
   "name": "wonder.js",
   "version": "1.0.0-alpha.12",
-  "authors": "DreamForest",
+  "authors": "Wonder",
   "description": "3d webgl engine",
-  "homepage": "https://github.com/DreamForeast/Wonder.js",
+  "homepage": "https://github.com/Wonder-Technology/Wonder.js",
   "license": "MIT",
   "main": "",
   "scripts": {
