@@ -13,6 +13,7 @@ install:
 - yarn install
 script:
 - gulp build
+- gulp testRender
 - npm run test:coverage
 deploy:
   provider: releases
