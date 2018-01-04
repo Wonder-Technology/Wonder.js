@@ -4,6 +4,7 @@ open RenderTestDataType;
 
 let renderTestData = {
   commonData: {
+    imagePath: "test/e2e/render/image/",
     scriptFilePathList: [
       "./test/e2e/render/js/BasicBoxesTool.js",
       "./test/e2e/render/js/CameraTool.js",
@@ -41,7 +42,6 @@ let renderTestData = {
                         return wd.startDirector(state);
                     }
     |},
-      imagePath: "test/e2e/render/image/",
       scriptFilePathList: None,
       distance: None,
       diffPercent: None,
