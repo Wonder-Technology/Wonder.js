@@ -23,7 +23,7 @@ function _runBuild(cb) {
 
     console.log("build...");
 
-    exec("npm run buildAll", { maxBuffer: 4096 * 2000 }, function (err, stdout, stderr) {
+    exec("npm run buildAll", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
         if (err) {
             throw err;
         }
@@ -88,8 +88,6 @@ gulp.task("testRender", function (done) {
                 done();
                 return;
             }
-
-            console.log("build...");
 
             _runBuild(function () {
                 console.log("generate correct images...");
