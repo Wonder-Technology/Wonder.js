@@ -23,7 +23,7 @@ function _runBuild(cb) {
 
     console.log("build...");
 
-    exec("gulp build", { maxBuffer: 4096 * 2000 }, function (err, stdout, stderr) {
+    exec("npm run buildAll", { maxBuffer: 4096 * 2000 }, function (err, stdout, stderr) {
         if (err) {
             throw err;
         }
@@ -50,7 +50,11 @@ function _restoreToCurrentCommid(currentCommitId, done) {
             return;
         }
 
-        done()
+        console.log("build...");
+
+        _runBuild(function () {
+            done()
+        });
     });
 }
 
@@ -70,7 +74,9 @@ gulp.task("testRender", function (done) {
         }
 
         if (basedCommitId === config.render.last_generate_based_commit_id) {
-            _runTest([], done);
+            _runBuild(function () {
+                _runTest([], done);
+            });
             return
         }
 
@@ -83,32 +89,36 @@ gulp.task("testRender", function (done) {
                 return;
             }
 
+            console.log("build...");
 
-            console.log("generate correct images...");
+            _runBuild(function () {
+                console.log("generate correct images...");
+
+                testRender.generateCorrectImage().then(function (browser) {
+                    _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
 
 
-            testRender.generateCorrectImage().then(function (browser) {
-                _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
+                    console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
+                    git.reset(currentCommitId, { args: '--hard' }, function (err) {
+                        if (!!err) {
+                            console.error(err);
 
-                console.log("reset hard to currentCommitId:", currentCommitId, "...");
+                            return;
+                        }
 
-                git.reset(currentCommitId, { args: '--hard' }, function (err) {
-                    if (!!err) {
-                        console.error(err);
-
-                        return;
-                    }
-
-                    _runBuild(function () {
-                        _runTest([browser], done);
+                        _runBuild(function () {
+                            _runTest([browser], done);
+                        });
                     });
-                });
-            }, function (e) {
-                console.error(e);
+                }, function (e) {
+                    console.error(e);
 
-                _restoreToCurrentCommid(currentCommitId, done);
-            })
+                    console.log("restore to origin commitId...");
+
+                    _restoreToCurrentCommid(currentCommitId, done);
+                })
+            });
         });
     });
 });
