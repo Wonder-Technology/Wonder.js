@@ -30,7 +30,8 @@ module.exports = {
       { name: "ci" },
       { name: "merge" },
       { name: "gulp" },
-      { name: "package.json" }
+      { name: "package.json" },
+      { name: "publish" }
     ]
   },
   // override the messages, defaults are as follows
