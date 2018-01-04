@@ -14,7 +14,7 @@
     "buildAll": "npm run build && gulp build",
     "test": "jest --config jest.json",
     "test:coverage": "jest --config jest_coverage.json",
-    "test:ci": "jest --config --maxWorkers=4 jest_coverage.json",
+    "test:ci": "jest --config --runInBand jest_coverage.json",
     "test:pf": "jest --config jest_performance.json",
     "test:pf_generate": "jest --config jest_performance_generate.json",
     "test:watch": "jest --watch --config jest.json",
