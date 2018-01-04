@@ -3,7 +3,7 @@ var git = require("gulp-git");
 var path = require("path");
 var fs = require("fs");
 
-var testRender = require(path.join(process.cwd(), "lib/js/test/render/TestRender.js"));
+var testRender = require(path.join(process.cwd(), "lib/js/test/e2e/render/TestRender.js"));
 
 function _runTest(browserArr, done) {
     console.log("run test...");
@@ -59,7 +59,7 @@ function _restoreToCurrentCommid(currentCommitId, done) {
 }
 
 gulp.task("testRender", function (done) {
-    var configFilePath = path.join(process.cwd(), "test/render/e2eConfig.json");
+    var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
 
     git.revParse({ args: "HEAD" }, function (err, commitId) {
         var currentCommitId = commitId;

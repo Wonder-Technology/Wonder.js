@@ -15,4 +15,6 @@ npm-debug
 
 test/performance/data
 
+test/e2e/render/image
+
 .bsb.lock
