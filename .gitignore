@@ -13,8 +13,6 @@ dist/
 npm-debug
 
 
-test/e2e/render/image
-
 test/performance/data
 
 test/e2e/render/image
