@@ -14,7 +14,7 @@ install:
 script:
 - npm run build
 - gulp testRender
-- npm run test:coverage
+- npm run test:ci
 deploy:
   provider: releases
   api_key:
