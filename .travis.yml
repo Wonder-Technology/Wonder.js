@@ -12,6 +12,7 @@ node_js:
 install:
 - yarn install
 script:
+- npm run build
 - gulp testRender
 - npm run test:coverage
 deploy:
