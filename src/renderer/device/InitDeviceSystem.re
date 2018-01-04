@@ -16,7 +16,6 @@ let _getCanvasId = (domId: string) =>
        );
 
 let createCanvas = ({canvasId}) => {
-  let canvas =
     switch canvasId {
     | None =>
       buildDom("<canvas></canvas>")
@@ -26,8 +25,7 @@ let createCanvas = ({canvasId}) => {
       | None => failwith({j|canvas whose id is $canvasId should exist|j})
       | Some(canvas) => canvas
       }
-    };
-  canvas |> Obj.magic
+    } |> Obj.magic
 };
 
 let getFullScreenData = () => ViewSystem.getFullScreenData();
