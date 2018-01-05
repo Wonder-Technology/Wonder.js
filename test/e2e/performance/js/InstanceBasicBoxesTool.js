@@ -146,17 +146,17 @@ var InstanceBasicBoxesTool = (function () {
 
             return [state, boxes];
         },
-        createBoxesWithHierachy: function (count, isStatic, state) {
+        createBoxesWithHierachy: function (parentCount, childrenCount, isStatic, state) {
             var boxes = [];
 
 
-            var data = InstanceBasicBoxesTool.createBox(count, isStatic, state);
+            var data = InstanceBasicBoxesTool.createBox(parentCount, isStatic, state);
             var state = data[0];
             var box1 = data[1];
             var objectInstanceArr1 = data[2];
 
 
-            var data = InstanceBasicBoxesTool.createBox(count, isStatic, state);
+            var data = InstanceBasicBoxesTool.createBox(childrenCount, isStatic, state);
             var state = data[0];
             var box2 = data[1];
             var objectInstanceArr2 = data[2];
@@ -231,7 +231,7 @@ var InstanceBasicBoxesTool = (function () {
                 return _setData(boxes, state)
             }, state)
         },
-        createAndDisposeSourceInstanceGameObjects: function (boxes, state) {
+        createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
             window.boxes = [];
 
             return wd.scheduleLoop((elapsed, state) => {
@@ -244,7 +244,7 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-                var data = InstanceBasicBoxesTool.createBoxes(200, 5, false, state);
+                var data = InstanceBasicBoxesTool.createBoxes(sourceInstanceCount, objectInstanceCount, false, state);
                 var state = data[0];
                 var newBoxes = data[1];
 
