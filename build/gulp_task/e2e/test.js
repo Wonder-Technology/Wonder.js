@@ -58,7 +58,69 @@ function _restoreToCurrentCommid(currentCommitId, done) {
 }
 
 module.exports = {
-    test: function (generateCorrectDataFunc, runTestFunc, generateDataInfo, type, done) {
+    testInCI: function (generateCorrectDataFunc, runTestFunc, generateDataInfo, type, done) {
+        var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
+
+        git.revParse({ args: "HEAD" }, function (err, commitId) {
+            var currentCommitId = commitId;
+
+            var config = JSON.parse(fs.readFileSync(configFilePath));
+            var basedCommitId = config[type].base_commit_id;
+
+            if (!!err) {
+                console.error(err);
+                done();
+                return;
+            }
+
+            // if (basedCommitId === config[type].last_generate_based_commit_id) {
+            //     _runBuild(function () {
+            //         _runTest(runTestFunc, [], done);
+            //     });
+            //     return
+            // }
+
+            console.log("reset hard to basedCommitId:", basedCommitId, "...");
+
+            git.reset(basedCommitId, { args: '--hard' }, function (err) {
+                if (!!err) {
+                    console.error(err);
+                    done();
+                    return;
+                }
+
+                _runBuild(function () {
+                    console.log(generateDataInfo);
+
+                    generateCorrectDataFunc().then(function (browser) {
+                        console.log("reset hard to currentCommitId:", currentCommitId, "...");
+
+                        git.reset(currentCommitId, { args: '--hard' }, function (err) {
+                            if (!!err) {
+                                console.error(err);
+
+                                return;
+                            }
+
+                            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, type, configFilePath);
+
+                            _runBuild(function () {
+                                _runTest(runTestFunc, [browser], done);
+                            });
+                        });
+                    }, function (e) {
+                        console.error(e);
+
+                        console.log("restore to origin commitId...");
+
+                        _restoreToCurrentCommid(currentCommitId, done);
+                    })
+                });
+            });
+        });
+
+    },
+    testInLocal: function (generateCorrectDataFunc, runTestFunc, generateDataInfo, type, done) {
         var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
@@ -75,7 +137,7 @@ module.exports = {
 
             if (basedCommitId === config[type].last_generate_based_commit_id) {
                 _runBuild(function () {
-                    _runTest([], done);
+                    _runTest(runTestFunc, [], done);
                 });
                 return
             }
