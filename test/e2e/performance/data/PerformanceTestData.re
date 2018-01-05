@@ -5,13 +5,13 @@ open PerformanceTestDataType;
 let performanceTestData = {
   commonData: {
     isClosePage: true,
-    execCountWhenTest: 20,
-    execCountWhenGenerateBenchmark: 40,
+    execCountWhenTest: 2,
+    execCountWhenGenerateBenchmark: 4,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     scriptFilePathList: [
       "./dist/wd.js",
-      "./test/performance/js/BasicBoxesTool.js",
-      "./test/performance/js/CameraTool.js"
+      "./test/e2e/performance/js/BasicBoxesTool.js",
+      "./test/e2e/performance/js/CameraTool.js"
     ]
   },
   testDataList: [
