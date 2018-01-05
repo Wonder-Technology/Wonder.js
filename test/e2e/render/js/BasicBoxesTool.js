@@ -141,7 +141,7 @@ var BasicBoxesTool = (function () {
                 return _setData(boxes, state);
             }, state)
         },
-        createAndDisposeGameObjects: function (boxes, state) {
+        createAndDisposeGameObjects: function (count, boxes, state) {
             window.sourceBox = boxes[0];
             window.boxes = [];
 
@@ -155,7 +155,7 @@ var BasicBoxesTool = (function () {
 
                 // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
 
-                var data = wd.cloneGameObject(window.sourceBox, 5000, true, state);
+                var data = wd.cloneGameObject(window.sourceBox, count, true, state);
                 var state = data[0];
                 var newBoxes = data[1];
 

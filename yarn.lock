@@ -2342,8 +2342,8 @@ is-builtin-module@^1.0.0:
     builtin-modules "^1.0.0"
 
 is-ci@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.0.10.tgz#f739336b2632365061a9d48270cd56ae3369318e"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-ci/-/is-ci-1.1.0.tgz#247e4162e7860cebbdaf30b774d6b0ac7dcfe7a5"
   dependencies:
     ci-info "^1.0.0"
 
@@ -3557,14 +3557,20 @@ p-finally@^1.0.0:
   resolved "https://registry.yarnpkg.com/p-finally/-/p-finally-1.0.0.tgz#3fbcfb15b899a44123b34b6dcc18b724336a2cae"
 
 p-limit@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.1.0.tgz#b07ff2d9a5d88bec806035895a2bab66a27988bc"
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.2.0.tgz#0e92b6bedcb59f022c13d0f1949dc82d15909f1c"
+  dependencies:
+    p-try "^1.0.0"
 
 p-locate@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/p-locate/-/p-locate-2.0.0.tgz#20a0103b222a70c8fd39cc2e580680f3dde5ec43"
   dependencies:
     p-limit "^1.1.0"
+
+p-try@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
 parse-bmfont-ascii@^1.0.3:
   version "1.0.6"
@@ -4946,9 +4952,9 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.1.24:
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.24.tgz#203738d82e1e608538799c946b8c7ba6dce3abd7"
+wonder-benchmark@latest:
+  version "0.1.25"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.25.tgz#bbe27f99387e1610928e5af4596db3b200aede1e"
   dependencies:
     bs-json "^0.2.3"
     wonder-commonlib latest
@@ -5084,8 +5090,8 @@ wonder-jest@latest:
     wonder-jest-cli latest
 
 wonder-render-test@latest:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.6.tgz#8d49c1448f08df218da05614186f88ee983725c4"
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.7.tgz#2186448c0f4b8a04ff99dca0679729dbec870e16"
   dependencies:
     bs-json "^0.2.3"
     jimp "^0.2.28"
