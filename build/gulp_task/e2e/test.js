@@ -24,18 +24,20 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
     runTestFunc(browserArr).then(function (failList) {
         done()
     }, function (e) {
+        var failMessage = e[0];
+        var failList = e[1];
+
         console.log("fail");
-        console.error(e);
+        console.error(failMessage);
+
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, failList).then(function () {
-            console.log("done");
-            done()
-        }, function (e) {
-            console.error(e);
-            done();
-        })
+        generateReportFunc(reportFilePath, failList);
+
+        console.log("done");
+
+        done()
     })
 }
 

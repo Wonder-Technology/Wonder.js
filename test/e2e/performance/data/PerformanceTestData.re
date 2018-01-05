@@ -17,7 +17,7 @@ let performanceTestData = {
     ]
   },
   testDataList: [
-    {
+    /* {
       name: "basic_boxes",
       caseList: [
         {
@@ -620,7 +620,7 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
           errorRate: 10
         }
       ]
-    },
+    }, */
     {
       name: "redo_undo",
       caseList: [
