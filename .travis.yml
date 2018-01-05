@@ -13,9 +13,9 @@ install:
 - yarn install
 script:
 - npm run build
-- gulp testPerformance
+- gulp testPerformanceInCI
 - npm run build
-- gulp testRender
+- gulp testRenderInCI
 - npm run test:ci
 deploy:
   provider: releases
