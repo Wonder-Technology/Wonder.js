@@ -102,7 +102,7 @@ module.exports = {
                                 return;
                             }
 
-                            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
+                            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, type, configFilePath);
 
                             _runBuild(function () {
                                 _runTest(runTestFunc, [browser], done);
