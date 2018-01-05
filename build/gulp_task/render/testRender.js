@@ -4,9 +4,11 @@ var testRender = require(path.join(process.cwd(), "lib/js/test/e2e/render/TestRe
 var test = require("../e2e/test");
 
 gulp.task("testRenderInCI", function (done) {
-    test.testInCI(testRender.generateCorrectImage, testRender.runTest, "generate correct image...", "render", done);
+    test.testInCI("generate correct image...", "render", testRender.generateCorrectImage, testRender.runTest, done);
 });
 
 gulp.task("testRenderInLocal", function (done) {
-    test.testInLocal(testRender.generateCorrectImage, testRender.runTest, "generate correct image...", "render", done);
+    var reportFilePath = path.join(process.cwd(), "./test/e2e/render/report/report.html");
+
+    test.testInLocal("generate correct image...", reportFilePath, "render", testRender.generateCorrectImage, testRender.generateReport, testRender.runTest, done);
 });

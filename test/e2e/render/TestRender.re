@@ -8,6 +8,18 @@ let generateCorrectImage = () =>
   PuppeteerUtils.launchHeadlessBrowser()
   |> then_((browser) => GenerateCorrectImage.generate(browser, renderTestData));
 
+let generateReport = (reportFilePath) =>
+  PuppeteerUtils.launchHeadlessBrowser()
+  |> then_((browser) => Comparer.compare(browser, renderTestData))
+  |> then_(
+       (compareResultData) =>
+         GenerateReport.generateHtmlFile(reportFilePath, compareResultData)
+         |> then_(
+              (htmlStr) =>
+                GenerateDebug.generateHtmlFiles(reportFilePath, compareResultData) |> resolve
+            )
+     );
+
 let runTest = (browserArr) =>
   (
     switch (browserArr |> Js.Array.length) {
