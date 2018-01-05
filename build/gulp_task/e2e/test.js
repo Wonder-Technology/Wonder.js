@@ -27,17 +27,9 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
     runTestFunc(browserArr).then(function (compareResultData) {
         console.log("pass test");
 
-        console.log("generate report...");
+        console.log("done");
 
-        generateReportFunc(reportFilePath, compareResultData).then(function () {
-            console.log("done");
-
-            done()
-        }, function (e) {
-            console.log("fail");
-            console.error(e);
-            done()
-        })
+        done()
     }, function (e) {
         var failMessage = e[0];
         var compareResultData = e[1];
@@ -47,10 +39,6 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
 
         console.log("generate report...");
-
-        // generateReportFunc(reportFilePath, compareResultData) 
-        // done();
-
 
         generateReportFunc(reportFilePath, compareResultData).then(function () {
             console.log("done");
