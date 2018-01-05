@@ -36,6 +36,7 @@ function _deepCopyJson(json) {
 }
 
 function _writeGenerateBasedCommitIdToConfig(commitId, config, type, configFilePath) {
+    console.log("_write generate based commitId...");
     var copiedConfig = _deepCopyJson(config);
     copiedConfig[type].last_generate_based_commit_id = commitId;
     fs.writeFileSync(configFilePath, JSON.stringify(copiedConfig));
@@ -138,6 +139,8 @@ module.exports = {
             }
 
             if (basedCommitId === config[type].last_generate_based_commit_id) {
+                console.log("already generate data based on the same commit id, not generate again...");
+
                 _runBuild(function () {
                     _runTest(runTestFunc, [], done);
                 });
