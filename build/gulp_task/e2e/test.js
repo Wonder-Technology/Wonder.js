@@ -142,9 +142,8 @@ module.exports = {
                 });
             });
         });
-
     },
-    testInLocal: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, reportFilePath, done) {
+    testInLocal: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, done) {
         var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
