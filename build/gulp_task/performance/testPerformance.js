@@ -40,7 +40,7 @@ function _deepCopyJson(json) {
 function _writeGenerateBasedCommitIdToConfig(commitId, config, configFilePath) {
     var copiedConfig = _deepCopyJson(config);
     copiedConfig.performance.last_generate_based_commit_id = commitId;
-    fs.writeFileSync(configFilePath, copiedConfig);
+    fs.writeFileSync(configFilePath, JSON.stringify(copiedConfig));
 }
 
 function _restoreToCurrentCommid(currentCommitId, done) {
@@ -95,9 +95,6 @@ gulp.task("testPerformance", function (done) {
                 console.log("generate benchmark...");
 
                 testPerformance.generateBenchmark().then(function (browser) {
-                    _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
-
-
                     console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
                     git.reset(currentCommitId, { args: '--hard' }, function (err) {
@@ -106,6 +103,8 @@ gulp.task("testPerformance", function (done) {
 
                             return;
                         }
+
+                        _writeGenerateBasedCommitIdToConfig(basedCommitId, config, configFilePath);
 
                         _runBuild(function () {
                             _runTest([browser], done);
