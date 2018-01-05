@@ -29,11 +29,15 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, failList);
+        generateReportFunc(reportFilePath, failList).then(function () {
+            console.log("done");
 
-        console.log("done");
-
-        done()
+            done()
+        }, function (e) {
+            console.log("fail");
+            console.error(e);
+            done()
+        })
     }, function (e) {
         var failMessage = e[0];
         var failList = e[1];
@@ -44,11 +48,15 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, failList);
+        generateReportFunc(reportFilePath, failList).then(function () {
+            console.log("done");
 
-        console.log("done");
-
-        done()
+            done()
+        }, function (e) {
+            console.log("fail");
+            console.error(e);
+            done()
+        })
     })
 }
 
