@@ -13,6 +13,8 @@ install:
 - yarn install
 script:
 - npm run build
+- gulp testPerformance
+- npm run build
 - gulp testRender
 - npm run test:ci
 deploy:
