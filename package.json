@@ -39,7 +39,7 @@
     "http": "^0.0.0",
     "rollup": "^0.51.5",
     "puppeteer": "^0.13.0",
-    "wonder-benchmark": "^0.1.26",
+    "wonder-benchmark": "^0.1.27",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
