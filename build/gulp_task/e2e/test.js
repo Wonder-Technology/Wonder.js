@@ -24,12 +24,12 @@ function _runTest(runTestFunc, browserArr, done) {
 function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browserArr, done) {
     console.log("run test...");
 
-    runTestFunc(browserArr).then(function (failList) {
+    runTestFunc(browserArr).then(function (compareResultData) {
         console.log("pass test");
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, failList).then(function () {
+        generateReportFunc(reportFilePath, compareResultData).then(function () {
             console.log("done");
 
             done()
@@ -40,7 +40,7 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
         })
     }, function (e) {
         var failMessage = e[0];
-        var failList = e[1];
+        var compareResultData = e[1];
 
         console.log("fail");
         console.error(failMessage);
@@ -48,7 +48,11 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, failList).then(function () {
+        // generateReportFunc(reportFilePath, compareResultData) 
+        // done();
+
+
+        generateReportFunc(reportFilePath, compareResultData).then(function () {
             console.log("done");
 
             done()

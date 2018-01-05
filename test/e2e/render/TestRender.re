@@ -8,18 +8,20 @@ let generateCorrectImage = () =>
   PuppeteerUtils.launchHeadlessBrowser()
   |> then_((browser) => GenerateCorrectImage.generate(browser, renderTestData));
 
-let generateReport = (reportFilePath) =>
-  PuppeteerUtils.launchHeadlessBrowser()
-  |> then_((browser) => Comparer.compare(browser, renderTestData))
+let generateReport = (reportFilePath, compareResultData) =>
+  /* PuppeteerUtils.launchHeadlessBrowser()
+     |> then_((browser) => Comparer.compare(browser, renderTestData))
+     |> then_(
+          (compareResultData) => */
+  GenerateReport.generateHtmlFile(reportFilePath, compareResultData)
   |> then_(
-       (compareResultData) =>
-         GenerateReport.generateHtmlFile(reportFilePath, compareResultData)
-         |> then_(
-              (htmlStr) =>
-                GenerateDebug.generateHtmlFiles(reportFilePath, compareResultData) |> resolve
-            )
+       (htmlStr) => {
+         GenerateDebug.generateHtmlFiles(reportFilePath, compareResultData);
+         reportFilePath |> resolve
+       }
      );
 
+/* ); */
 let runTest = (browserArr) =>
   (
     switch (browserArr |> Js.Array.length) {
@@ -32,8 +34,9 @@ let runTest = (browserArr) =>
          Comparer.compare(browser, renderTestData)
          |> then_((data) => PuppeteerUtils.closeBrowser(browser) |> then_((_) => data |> resolve))
          |> then_(
-              ((_, list)) =>
+              ((_, list) as compareResultData) =>
                 ! Comparer.isPass(list) ?
-                  Comparer.getFailText(list) |> Obj.magic |> reject : () |> resolve
+                  (Comparer.getFailText(list), compareResultData) |> Obj.magic |> reject :
+                  compareResultData |> resolve
             )
      );
