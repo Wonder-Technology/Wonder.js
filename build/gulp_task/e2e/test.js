@@ -7,7 +7,7 @@ var fs = require("fs");
 function _runTest(runTestFunc, browserArr, done) {
     console.log("run test...");
 
-    runTestFunc(browserArr).then(function () {
+    runTestFunc(browserArr).then(function (failList) {
         console.log("done");
         done()
     }, function (e) {
@@ -16,6 +16,28 @@ function _runTest(runTestFunc, browserArr, done) {
         done();
     })
 }
+
+
+function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browserArr, done) {
+    console.log("run test...");
+
+    runTestFunc(browserArr).then(function (failList) {
+        console.log("generate report...");
+
+        generateReportFunc(reportFilePath, failList).then(function () {
+            console.log("done");
+            done()
+        }, function (e) {
+            console.error(e);
+            done();
+        })
+    }, function (e) {
+        console.log("fail");
+        console.error(e);
+        done();
+    })
+}
+
 
 function _runBuild(cb) {
     var exec = require("child_process").exec;
@@ -59,7 +81,7 @@ function _restoreToCurrentCommid(currentCommitId, done) {
 }
 
 module.exports = {
-    testInCI: function (generateCorrectDataFunc, runTestFunc, generateDataInfo, type, done) {
+    testInCI: function (generateDataInfo, type, generateCorrectDataFunc, runTestFunc, done) {
         var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
@@ -122,7 +144,7 @@ module.exports = {
         });
 
     },
-    testInLocal: function (generateCorrectDataFunc, runTestFunc, generateDataInfo, type, done) {
+    testInLocal: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, reportFilePath, done) {
         var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
@@ -141,7 +163,7 @@ module.exports = {
                 console.log("already generate data based on the same commit id, not generate again...");
 
                 _runBuild(function () {
-                    _runTest(runTestFunc, [], done);
+                    _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [], done);
                 });
                 return
             }
@@ -171,7 +193,7 @@ module.exports = {
                             _writeGenerateBasedCommitIdToConfig(basedCommitId, config, type, configFilePath);
 
                             _runBuild(function () {
-                                _runTest(runTestFunc, [browser], done);
+                                _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [browser], done);
                             });
                         });
                     }, function (e) {
