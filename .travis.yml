@@ -14,8 +14,8 @@ install:
 script:
 - npm run build
 - gulp testPerformanceInCI
-- npm run build
-- gulp testRenderInCI
+# - npm run build
+# - gulp testRenderInCI
 - npm run test:ci
 deploy:
   provider: releases
