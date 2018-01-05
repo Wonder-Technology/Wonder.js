@@ -107,7 +107,6 @@ module.exports = {
 
 
                             _runBuild(function () {
-                                console.log(browser);
                                 _runTest(runTestFunc, [browser], done);
                             });
                         });
