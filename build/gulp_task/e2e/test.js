@@ -22,6 +22,11 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
     console.log("run test...");
 
     runTestFunc(browserArr).then(function (failList) {
+        done()
+    }, function (e) {
+        console.log("fail");
+        console.error(e);
+
         console.log("generate report...");
 
         generateReportFunc(reportFilePath, failList).then(function () {
@@ -31,10 +36,6 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
             console.error(e);
             done();
         })
-    }, function (e) {
-        console.log("fail");
-        console.error(e);
-        done();
     })
 }
 
@@ -71,8 +72,6 @@ function _restoreToCurrentCommid(currentCommitId, done) {
             done();
             return;
         }
-
-        console.log("build...");
 
         _runBuild(function () {
             done()
