@@ -8,7 +8,10 @@ function _runTest(runTestFunc, browserArr, done) {
     console.log("run test...");
 
     runTestFunc(browserArr).then(function (failList) {
+        console.log("pass test");
+
         console.log("done");
+
         done()
     }, function (e) {
         console.log("fail");
@@ -22,6 +25,14 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
     console.log("run test...");
 
     runTestFunc(browserArr).then(function (failList) {
+        console.log("pass test");
+
+        console.log("generate report...");
+
+        generateReportFunc(reportFilePath, failList);
+
+        console.log("done");
+
         done()
     }, function (e) {
         var failMessage = e[0];
