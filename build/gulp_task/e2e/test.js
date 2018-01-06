@@ -3,11 +3,24 @@ var git = require("gulp-git");
 var path = require("path");
 var fs = require("fs");
 
-function _fail(message, done) {
-    throw message
+function _getErrorMessage(e) {
+    if (e[0] === undefined) {
+        return e;
+    }
+    else {
+        return e[0];
+    }
 }
 
-function _runTest(runTestFunc, browserArr, done) {
+function _fail(message, done) {
+    console.log("fail");
+
+    console.error(message);
+
+    process.exit(1);
+}
+
+function _runTestInCI(runTestFunc, browserArr, done) {
     console.log("run test...");
 
     runTestFunc(browserArr).then(function (failList) {
@@ -17,8 +30,9 @@ function _runTest(runTestFunc, browserArr, done) {
 
         done()
     }, function (e) {
-        console.log("fail");
-        _fail(e, done);
+        var failMessage = _getErrorMessage(e);
+
+        _fail(failMessage, done);
     })
 }
 
@@ -33,13 +47,12 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
         done()
     }, function (e) {
-        var failMessage = e[0];
+        var failMessage = _getErrorMessage(e);
         var compareResultData = e[1];
 
         console.log("fail");
-        console.log(e);
-        console.error(failMessage);
 
+        console.error(failMessage);
 
         console.log("generate report...");
 
@@ -48,7 +61,6 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
             done()
         }, function (e) {
-            console.log("fail");
             _fail(e, done);
         })
     })
@@ -110,7 +122,7 @@ module.exports = {
 
             // if (basedCommitId === config[type].last_generate_based_commit_id) {
             //     _runBuild(function () {
-            //         _runTest(runTestFunc, [], done);
+            //         _runTestInCI(runTestFunc, [], done);
             //     });
             //     return
             // }
@@ -140,7 +152,7 @@ module.exports = {
 
 
                             _runBuild(function () {
-                                _runTest(runTestFunc, [browser], done);
+                                _runTestInCI(runTestFunc, [browser], done);
                             });
                         });
                     }, function (e) {
