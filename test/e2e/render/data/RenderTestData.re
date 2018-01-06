@@ -4,7 +4,7 @@ open RenderTestDataType;
 
 let renderTestData = {
   commonData: {
-    imagePath: "test/e2e/render/image/",
+    imagePath: "test/e2e/render/screenshot/",
     scriptFilePathList: [
       "./test/e2e/render/js/BasicBoxesTool.js",
       "./test/e2e/render/js/CameraTool.js",
