@@ -4952,18 +4952,23 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@latest:
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.25.tgz#bbe27f99387e1610928e5af4596db3b200aede1e"
+wonder-benchmark@^0.1.29:
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.29.tgz#f5199973e3fe6e38f6ac52646a9b5c67847ab0e8"
   dependencies:
     bs-json "^0.2.3"
-    wonder-commonlib latest
+    wonder-bs-puppeteer "^0.1.0"
+    wonder-commonlib "^0.2.17"
 
-wonder-bs-jest@latest:
+wonder-bs-jest@0.2.17, wonder-bs-jest@latest:
   version "0.2.17"
   resolved "https://registry.yarnpkg.com/wonder-bs-jest/-/wonder-bs-jest-0.2.17.tgz#ebbcd37487d8ce0c5d863a501859b8c14db44d88"
   dependencies:
     wonder-jest latest
+
+wonder-bs-puppeteer@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/wonder-bs-puppeteer/-/wonder-bs-puppeteer-0.1.0.tgz#8266357f722f3a70d31e6d4efc73a86f17f377ad"
 
 wonder-bs-sinon@latest:
   version "0.1.5"
@@ -4972,13 +4977,9 @@ wonder-bs-sinon@latest:
     sinon "^4.1.2"
     wonder-bs-jest latest
 
-wonder-commonlib@0.2.13:
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.13.tgz#239878a6ed887f4e1256e50d4eabaf1543ad9fde"
-
-wonder-commonlib@^0.2.0, wonder-commonlib@latest:
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.14.tgz#0017fa3ea31af7a3483ddbb9b1d1e73e34e530bb"
+wonder-commonlib@0.2.13, wonder-commonlib@0.2.17, wonder-commonlib@^0.2.0, wonder-commonlib@^0.2.17, wonder-commonlib@latest:
+  version "0.2.17"
+  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.17.tgz#58a0fce1836a7a2c5bc9ef558546abcab61238af"
 
 wonder-generate-index@latest:
   version "0.1.0"
@@ -5089,13 +5090,14 @@ wonder-jest@latest:
   dependencies:
     wonder-jest-cli latest
 
-wonder-render-test@latest:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.7.tgz#2186448c0f4b8a04ff99dca0679729dbec870e16"
+wonder-render-test@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.8.tgz#8999234434d1d7edab450b1b7f9b2bfae93f851e"
   dependencies:
     bs-json "^0.2.3"
     jimp "^0.2.28"
-    wonder-commonlib latest
+    wonder-bs-puppeteer "^0.1.0"
+    wonder-commonlib "^0.2.17"
 
 word-wrap@1.1.0:
   version "1.1.0"
