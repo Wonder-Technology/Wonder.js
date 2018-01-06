@@ -44,7 +44,7 @@ let renderTestData = {
     |},
       scriptFilePathList: None,
       distance: None,
-      diffPercent: None,
+      diffPercent: Some(0.001),
       threshold: None,
       frameData: [{timePath: [10]}]
     }
