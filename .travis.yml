@@ -11,22 +11,38 @@ node_js:
 - '8.7'
 install:
 - yarn install
-script:
-- npm run build
-- gulp testRenderInCI
-- npm run build
-- gulp testPerformanceInCI
-- npm run test:ci
-deploy:
-  provider: releases
-  api_key:
-    secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
-  skip_cleanup: true
-  overwrite: true
-  file: dist/wd.js
-  on:
-    repo: Wonder-Technology/Wonder.js
-    branch: master
-    tags: true
+
+
+stages:
+  - test
+
+
+
+jobs:
+  include:
+    - stage: test
+      script: npm run build && gulp testRenderInCI
+      script: npm run build && gulp testPerformanceInCI
+      script: npm run buildAll && npm run test:ci
+
+
+
+# script:
+# - npm run build
+# - gulp testRenderInCI
+# - npm run build
+# - gulp testPerformanceInCI
+# - npm run test:ci
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
+#   skip_cleanup: true
+#   overwrite: true
+#   file: dist/wd.js
+#   on:
+#     repo: Wonder-Technology/Wonder.js
+#     branch: master
+#     tags: true
 after_success:
 - npm run codecov
