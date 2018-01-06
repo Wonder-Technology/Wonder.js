@@ -5,8 +5,8 @@ open PerformanceTestDataType;
 let performanceTestData = {
   commonData: {
     isClosePage: true,
-    execCountWhenTest: 2,
-    execCountWhenGenerateBenchmark: 4,
+    execCountWhenTest: 20,
+    execCountWhenGenerateBenchmark: 40,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     scriptFilePathList: [
       "./dist/wd.js",
@@ -17,7 +17,7 @@ let performanceTestData = {
     ]
   },
   testDataList: [
-    /* {
+    {
       name: "basic_boxes",
       caseList: [
         {
@@ -620,7 +620,7 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
           errorRate: 10
         }
       ]
-    }, */
+    },
     {
       name: "redo_undo",
       caseList: [
