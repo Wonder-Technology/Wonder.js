@@ -5,8 +5,8 @@ open PerformanceTestDataType;
 let performanceTestData = {
   commonData: {
     isClosePage: true,
-    execCountWhenTest: 20,
-    execCountWhenGenerateBenchmark: 40,
+    execCountWhenTest: 5,
+    execCountWhenGenerateBenchmark: 20,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     scriptFilePathList: [
       "./dist/wd.js",
