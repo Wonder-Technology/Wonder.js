@@ -3,6 +3,9 @@ var git = require("gulp-git");
 var path = require("path");
 var fs = require("fs");
 
+function _fail(message, done) {
+    throw message
+}
 
 function _runTest(runTestFunc, browserArr, done) {
     console.log("run test...");
@@ -15,8 +18,7 @@ function _runTest(runTestFunc, browserArr, done) {
         done()
     }, function (e) {
         console.log("fail");
-        console.error(e);
-        done();
+        _fail(e, done);
     })
 }
 
@@ -35,6 +37,7 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
         var compareResultData = e[1];
 
         console.log("fail");
+        console.log(e);
         console.error(failMessage);
 
 
@@ -46,8 +49,7 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
             done()
         }, function (e) {
             console.log("fail");
-            console.error(e);
-            done()
+            _fail(e, done);
         })
     })
 }
@@ -78,16 +80,15 @@ function _writeGenerateBasedCommitIdToConfig(commitId, config, type, configFileP
     fs.writeFileSync(configFilePath, JSON.stringify(copiedConfig));
 }
 
-function _restoreToCurrentCommid(currentCommitId, done) {
+function _restoreToCurrentCommid(e, currentCommitId, done) {
     git.reset(currentCommitId, { args: '--hard' }, function (err) {
         if (!!err) {
-            console.error(err);
-            done();
+            _fail(err, done);
             return;
         }
 
         _runBuild(function () {
-            done()
+            _fail(e, done);
         });
     });
 }
@@ -103,8 +104,7 @@ module.exports = {
             var basedCommitId = config[type].base_commit_id;
 
             if (!!err) {
-                console.error(err);
-                done();
+                _fail(err, done);
                 return;
             }
 
@@ -119,8 +119,7 @@ module.exports = {
 
             git.reset(basedCommitId, { args: '--hard' }, function (err) {
                 if (!!err) {
-                    console.error(err);
-                    done();
+                    _fail(err, done);
                     return;
                 }
 
@@ -132,7 +131,7 @@ module.exports = {
 
                         git.reset(currentCommitId, { args: '--hard' }, function (err) {
                             if (!!err) {
-                                console.error(err);
+                                _fail(err, done);
 
                                 return;
                             }
@@ -145,11 +144,9 @@ module.exports = {
                             });
                         });
                     }, function (e) {
-                        console.error(e);
-
                         console.log("restore to origin commitId...");
 
-                        _restoreToCurrentCommid(currentCommitId, done);
+                        _restoreToCurrentCommid(e, currentCommitId, done);
                     })
                 });
             });
@@ -165,8 +162,7 @@ module.exports = {
             var basedCommitId = config[type].base_commit_id;
 
             if (!!err) {
-                console.error(err);
-                done();
+                _fail(err, done);
                 return;
             }
 
@@ -183,8 +179,7 @@ module.exports = {
 
             git.reset(basedCommitId, { args: '--hard' }, function (err) {
                 if (!!err) {
-                    console.error(err);
-                    done();
+                    _fail(err, done);
                     return;
                 }
 
@@ -196,7 +191,7 @@ module.exports = {
 
                         git.reset(currentCommitId, { args: '--hard' }, function (err) {
                             if (!!err) {
-                                console.error(err);
+                                _fail(err, done);
 
                                 return;
                             }
@@ -208,11 +203,9 @@ module.exports = {
                             });
                         });
                     }, function (e) {
-                        console.error(e);
-
                         console.log("restore to origin commitId...");
 
-                        _restoreToCurrentCommid(currentCommitId, done);
+                        _restoreToCurrentCommid(e, currentCommitId, done);
                     })
                 });
             });
