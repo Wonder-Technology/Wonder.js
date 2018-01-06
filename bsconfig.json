@@ -14,7 +14,8 @@
   "bs-dev-dependencies": [
     "wonder-bs-jest",
     "wonder-bs-sinon",
-    "wonder-benchmark"
+    "wonder-benchmark",
+    "wonder-render-test"
   ],
   "refmt": 3,
   "bs-dependencies": [

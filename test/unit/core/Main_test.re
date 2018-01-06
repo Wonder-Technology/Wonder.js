@@ -402,6 +402,47 @@ let _ =
             }
           )
         }
+      );
+      describe(
+        "set screen",
+        () =>
+          describe(
+            "set full screen",
+            () => {
+              let _exec = () => {
+                let width = 100.;
+                let height = 200.;
+                Root.root##innerWidth#=width;
+                Root.root##innerHeight#=height;
+                let (canvasDom, fakeGl, div, body) = buildFakeDomForNotPassCanvasId(sandbox);
+                setMainConfig(MainTool.buildMainConfig()) |> ignore;
+                (canvasDom, fakeGl, width, height)
+              };
+              test(
+                "set canvas",
+                () => {
+                  let (canvasDom, fakeGl, width, height) = _exec();
+                  (
+                    canvasDom##width,
+                    canvasDom##height,
+                    canvasDom##style##position,
+                    canvasDom##style##left,
+                    canvasDom##style##top,
+                    canvasDom##style##width,
+                    canvasDom##style##height
+                  )
+                  |> expect == (width, height, "absolute", "0px", "0px", "100%", "100%")
+                }
+              );
+              test(
+                "set viewport",
+                () => {
+                  let (canvasDom, fakeGl, width, height) = _exec();
+                  fakeGl##viewport |> expect |> toCalledWith([0., 0., 100., 200.])
+                }
+              )
+            }
+          )
       )
     }
   );

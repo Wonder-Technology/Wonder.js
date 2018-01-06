@@ -10,6 +10,7 @@ let buildFakeGl = (sandbox) => {
   "FRAGMENT_SHADER": 1,
   "HIGH_FLOAT": 2,
   "MEDIUM_FLOAT": 3,
+  "viewport": createEmptyStub(refJsObjToSandbox(sandbox^)),
   "getShaderPrecisionFormat":
     createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns({"precision": 1}),
   "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0))
@@ -18,9 +19,9 @@ let buildFakeGl = (sandbox) => {
 let buildFakeCanvas = (id, gl, sandbox) => {
   "id": id,
   "nodeType": 1,
-  "style": {"left": 0, "top": 0, "width": "0", "height": "0"},
-  "width": 0,
-  "height": 0,
+  "style": {"left": "", "top": "", "width": "", "height": "", "position": "static"},
+  "width": 0.,
+  "height": 0.,
   "getContext": createGetContextStub(gl, sandbox)
 };
 

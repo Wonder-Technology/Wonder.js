@@ -6,8 +6,6 @@ open InitConfigSystem;
 
 open InitDeviceSystem;
 
-open ViewSystem;
-
 open DeviceManagerSystem;
 
 open JsObjUtils;
@@ -47,6 +45,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
         preserveDrawingBuffer: false
       }
     },
+  /* todo remove geometryPointDataBufferCount */
   bufferConfig:
     switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
@@ -68,11 +67,12 @@ let setConfig = (config: Js.t({..}), state: state) => {
 /* todo set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
-  let gl = canvas |> setToFullScreen(getFullScreenData()) |> createGL(config.contextConfig);
+  let gl = canvas |> createGL(config.contextConfig);
+  let (state, canvas) = state |> setToFullScreen(getFullScreenData(), gl, canvas);
   state
   |> setGl(gl)
-  |> setCanvas(canvas)
-  |> setContextConfig(config.contextConfig)
+  |> ViewSystem.setCanvas(canvas)
+  |> ViewSystem.setContextConfig(config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> GPUDetectSystem.detect(gl)

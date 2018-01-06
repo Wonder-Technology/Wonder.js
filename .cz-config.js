@@ -22,12 +22,17 @@ module.exports = {
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
     test: [
-      { name: "pfTest" },
-      { name: "unitTest" }
+      { name: "pf-test" },
+      { name: "render-test" },
+      { name: "e2e-test" },
+      { name: "unit-test" }
     ],
     chore: [
       { name: "ci" },
-      { name: "merge" }
+      { name: "merge" },
+      { name: "gulp" },
+      { name: "package.json" },
+      { name: "publish" }
     ]
   },
   // override the messages, defaults are as follows

@@ -17,13 +17,18 @@ let setCanvas = (canvas: htmlElement, state: state) => {
   viewData: {...state.viewData, canvas: Some(canvas)}
 };
 
+let _setAbsolutePosition = (canvas) => {
+  canvas##style##position#="absolute";
+  canvas
+};
+
 let setX = (x, canvas) => {
-  canvas##style##left#={j|($x)px|j};
+  canvas##style##left#={j|$(x)px|j};
   canvas
 };
 
 let setY = (y, canvas) => {
-  canvas##style##top#={j|($y)px|j};
+  canvas##style##top#={j|$(y)px|j};
   canvas
 };
 
@@ -49,7 +54,7 @@ let setStyleHeight = (height, canvas) => {
 
 let getFullScreenData = () => {
   let root = Root.root;
-  (0, 0, root##innerWidth, root##innerHeight, "100%", "100%")
+  (0., 0., root##innerWidth, root##innerHeight, "100%", "100%")
 };
 
 let _setBodyMargin = (document) =>
@@ -63,12 +68,14 @@ let _setBodyMargin = (document) =>
 let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) => {
   _setBodyMargin(Dom.document);
   canvas
+  |> _setAbsolutePosition
   |> setX(x)
   |> setY(y)
   |> setWidth(width)
   |> setHeight(height)
   |> setStyleWidth(styleWidth)
   |> setStyleHeight(styleHeight)
+  |> Obj.magic
 };
 
 let getContextConfig = (state: state) => _getOptionValueFromState(state.viewData.contextConfig);

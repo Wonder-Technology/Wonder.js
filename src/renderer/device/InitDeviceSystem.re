@@ -15,8 +15,8 @@ let _getCanvasId = (domId: string) =>
            test("dom id should start with '#'", () => assertTrue(Js.Re.test(id, [%re "/#[^#]+/"])))
        );
 
-let createCanvas = ({canvasId}) => {
-  let canvas =
+let createCanvas = ({canvasId}) =>
+  (
     switch canvasId {
     | None =>
       buildDom("<canvas></canvas>")
@@ -26,6 +26,14 @@ let createCanvas = ({canvasId}) => {
       | None => failwith({j|canvas whose id is $canvasId should exist|j})
       | Some(canvas) => canvas
       }
-    };
-  canvas |> Obj.magic
-};
+    }
+  )
+  |> Obj.magic;
+
+let getFullScreenData = () => ViewSystem.getFullScreenData();
+
+let setToFullScreen =
+    ((x, y, width, height, styleWidth, styleHeight) as screenData, gl, canvas, state) => (
+  state |> DeviceManagerSystem.setViewport(gl, x, y, width, height),
+  ViewSystem.setToFullScreen(screenData, canvas)
+);

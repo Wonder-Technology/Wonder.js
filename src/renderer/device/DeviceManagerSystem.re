@@ -33,10 +33,10 @@ let setColorWrite =
   switch colorWrite {
   | Some((oldWriteRed, oldWriteGreen, oldWriteBlue, oldWriteAlpha))
       when
-        oldWriteRed == writeRed
-        && oldWriteGreen == writeGreen
-        && oldWriteBlue == writeBlue
-        && oldWriteAlpha == writeAlpha => state
+        oldWriteRed === writeRed
+        && oldWriteGreen === writeGreen
+        && oldWriteBlue === writeBlue
+        && oldWriteAlpha === writeAlpha => state
   | _ =>
     Gl.colorMask(
       writeRed: Js.boolean,
@@ -71,19 +71,33 @@ let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
   state
 };
 
-let clearColor = (gl, (r: float, g: float, b: float, a: float), state: state) => {
+let clearColor = (gl, (r: float, g: float, b: float, a: float), state: StateDataType.state) => {
   let {clearColor} = _getDeviceManagerData(state);
   switch clearColor {
-  | Some((oldR, oldG, oldB, oldA)) when oldR == r && oldG == g && oldB == b && oldA == a => state
+  | Some((oldR, oldG, oldB, oldA)) when oldR === r && oldG === g && oldB === b && oldA === a => state
   | _ =>
     Gl.clearColor(r, g, b, a, gl);
     {...state, deviceManagerData: {...state.deviceManagerData, clearColor: Some((r, g, b, a))}}
   }
 };
 
+let setViewport = (gl, x, y, width, height, state: StateDataType.state) => {
+  let {viewport} = _getDeviceManagerData(state);
+  switch viewport {
+  | Some((oldX, oldY, oldWidth, oldHeight))
+      when oldX === x && oldY === y && oldWidth === width && oldHeight === height => state
+  | _ =>
+    Gl.viewport(x, y, width, height, gl);
+    {
+      ...state,
+      deviceManagerData: {...state.deviceManagerData, viewport: Some((x, y, width, height))}
+    }
+  }
+};
+
 let deepCopyStateForRestore = (state: StateDataType.state) => {
-  let {colorWrite, clearColor} = state |> _getDeviceManagerData;
-  {...state, deviceManagerData: {gl: None, colorWrite, clearColor}}
+  let {colorWrite, clearColor, viewport} = state |> _getDeviceManagerData;
+  {...state, deviceManagerData: {gl: None, colorWrite, clearColor, viewport}}
 };
 
 let restore = (currentState, {gl}, targetState) => {

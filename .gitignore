@@ -13,6 +13,10 @@ dist/
 npm-debug
 
 
-test/performance/data
+test/e2e/**/report
+
+test/e2e/render/screenshot
+
+test/e2e/performance/benchmark
 
 .bsb.lock

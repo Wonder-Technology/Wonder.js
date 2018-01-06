@@ -40,8 +40,7 @@ open Js.Typed_array;
 
 [@bs.get] external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
 
-[@bs.send]
-external getWebgl1Context : ('canvas, [@bs.as "webgl"] _, options) => webgl1Context =
+[@bs.send] external getWebgl1Context : ('canvas, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
 
 [@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";
@@ -130,6 +129,8 @@ external uniform3f : (uniformLocation, float, float, float) => unit =
 [@bs.send.pipe : webgl1Context] external drawElements : (int, int, int, int) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external drawArray : (int, int, int) => unit = "";
+
+[@bs.send.pipe : webgl1Context] external viewport : (float, float, float, float) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external clearColor : (float, float, float, float) => unit = "";
 
