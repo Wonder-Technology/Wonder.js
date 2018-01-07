@@ -24,7 +24,8 @@ module.exports = {
   scopeOverrides: {
     refactor: [
       { name: "duplication" },
-      { name: "shader" }
+      { name: "shader" },
+      { name: "code climate" }
     ],
     test: [
       { name: "pf-test" },
@@ -37,7 +38,8 @@ module.exports = {
       { name: "merge" },
       { name: "gulp" },
       { name: "package.json" },
-      { name: "publish" }
+      { name: "publish" },
+      { name: "code climate" }
     ]
   },
   // override the messages, defaults are as follows
