@@ -4952,9 +4952,9 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.1.30:
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.30.tgz#dba41cb340f5a9ee26d74394f3d3f88a91c60a90"
+wonder-benchmark@^0.1.32:
+  version "0.1.32"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.32.tgz#b2f39a6c46d238f279818dadb1969a5ac1e47c24"
   dependencies:
     bs-json "^0.2.3"
     wonder-bs-puppeteer "^0.1.0"

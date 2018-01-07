@@ -11,6 +11,8 @@ let performanceTestData = {
     maxAllowDiffTimePercent: 50,
     maxAllowDiffMemoryPercent: 50,
     benchmarkPath: "./test/e2e/performance/benchmark/",
+    generateBaseDebugData:
+      Some([{sourceScriptFilePath: "./dist/wd.js", targetScriptFilePath: "./dist/wd_base.js"}]),
     scriptFilePathList: [
       "./dist/wd.js",
       "./test/e2e/performance/js/BasicBoxesTool.js",
