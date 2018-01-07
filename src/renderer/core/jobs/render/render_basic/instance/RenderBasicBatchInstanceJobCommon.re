@@ -17,23 +17,26 @@ let render = (gl, uid, state: StateDataType.state) => {
          (state, uid) => {
            let state =
              instanceUniformSendNoCachableData
-             |> List.fold_left(
+             |> ArraySystem.reduceState(
+                  [@bs]
                   (
-                    state,
-                    {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: instanceUniformSendNoCachableData
-                  ) => {
-                    [@bs]
-                    sendNoCachableDataFunc(
-                      gl,
-                      pos,
+                    (
+                      state,
+                      {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: instanceUniformSendNoCachableData
+                    ) => {
                       [@bs]
-                      getNoCachableDataFunc(
-                        GameObjectAdmin.unsafeGetTransformComponent(uid, state),
-                        state
-                      )
-                    );
-                    state
-                  },
+                      sendNoCachableDataFunc(
+                        gl,
+                        pos,
+                        [@bs]
+                        getNoCachableDataFunc(
+                          GameObjectAdmin.unsafeGetTransformComponent(uid, state),
+                          state
+                        )
+                      );
+                      state
+                    }
+                  ),
                   state
                 );
            GLSLSenderDrawUtils.drawElement(drawMode, indexType, indexTypeSize, indicesCount, gl)

@@ -18,32 +18,30 @@ let addUniformSendDataByType =
     (
       (type_, pos),
       (
-        sendNoCachableDataList,
-        sendCachableDataList,
-        shaderSendNoCachableDataList,
-        instanceSendNoCachableDataList
+        sendNoCachableDataArr,
+        sendCachableDataArr,
+        shaderSendNoCachableDataArr,
+        instanceSendNoCachableDataArr
       ),
       getDataFunc
     ) =>
   switch type_ {
   | "mat4" => (
-      sendNoCachableDataList,
-      sendCachableDataList,
-      shaderSendNoCachableDataList,
-      [
-        (
-          {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc}: instanceUniformSendNoCachableData
-        ),
-        ...instanceSendNoCachableDataList
-      ]
+      sendNoCachableDataArr,
+      sendCachableDataArr,
+      shaderSendNoCachableDataArr,
+      instanceSendNoCachableDataArr
+      |> ArraySystem.push(
+           {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc}: instanceUniformSendNoCachableData
+         )
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
   };
 
 let setToUniformSendMap =
-    (shaderIndex, instanceUniformSendNoCachableDataMap, instanceSendNoCachableDataList) =>
+    (shaderIndex, instanceUniformSendNoCachableDataMap, instanceSendNoCachableDataArr) =>
   instanceUniformSendNoCachableDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataList)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
 
 let getUniformSendData = (shaderIndex: int, state: StateDataType.state) =>

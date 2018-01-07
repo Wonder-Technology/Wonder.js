@@ -149,10 +149,15 @@ let reduceOneParami = (func, param, arr) => {
      };
      ()
    }; */ */
-let join = (array) => {
+let join = (arr) => {
   let output = ref("");
-  for (i in 0 to Js.Array.length(array)) {
-    output := output^ ++ array[i]
+  for (i in 0 to Js.Array.length(arr)) {
+    output := output^ ++ arr[i]
   };
   output^
+};
+
+let push = (item, arr) => {
+  arr |> Js.Array.push(item) |> ignore;
+  arr
 };

@@ -22,64 +22,64 @@ let _getModelMNoCachableData =
   );
 
 let _addUniformSendDataByType =
-    ((type_, shaderCacheMap, name, pos), sendDataListTuple, getDataFunc) =>
+    ((type_, shaderCacheMap, name, pos), sendDataArrTuple, getDataFunc) =>
   /* todo remove Obj.magic? */
   switch type_ {
   | "mat4" =>
     GLSLSenderConfigDataHandleUniformNoCacheCommon.addUniformSendDataByType(
       pos,
-      sendDataListTuple,
+      sendDataArrTuple,
       getDataFunc
     )
   | "vec3" =>
     GLSLSenderConfigDataHandleUniformCacheCommon.addUniformSendDataByType(
       (shaderCacheMap, name, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       getDataFunc
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
   };
 
-let _addCameraSendData = ((field, pos, type_), sendDataListTuple) =>
+let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
   switch field {
   | "vMatrix" =>
     GLSLSenderConfigDataHandleUniformShaderCommon.addUniformSendDataByType(
       (type_, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       RenderDataSystem.getCameraVMatrixDataFromState
     )
   | "pMatrix" =>
     GLSLSenderConfigDataHandleUniformShaderCommon.addUniformSendDataByType(
       (type_, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
   };
 
-let _addMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataListTuple) =>
+let _addMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "color" =>
     _addUniformSendDataByType(
       (type_, uniformCacheMap, name, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       MaterialAdminAci.unsafeGetColor
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
   };
 
-let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataListTuple) =>
+let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "mMatrix" =>
     _addUniformSendDataByType(
       (type_, uniformCacheMap, name, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       _getModelMNoCachableData
     )
   | "instance_mMatrix" =>
     GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
       (type_, pos),
-      sendDataListTuple,
+      sendDataArrTuple,
       _getModelMNoCachableData
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
@@ -96,62 +96,62 @@ let _setToUniformSendMap =
       },
       state,
       (
-        sendNoCachableDataList,
-        sendCachableDataList,
-        shaderSendNoCachableDataList,
-        instanceSendNoCachableDataList
+        sendNoCachableDataArr,
+        sendCachableDataArr,
+        shaderSendNoCachableDataArr,
+        instanceSendNoCachableDataArr
       )
     ) => {
   GLSLSenderConfigDataHandleUniformNoCacheCommon.setToUniformSendMap(
     shaderIndex,
     uniformSendNoCachableDataMap,
-    sendNoCachableDataList
+    sendNoCachableDataArr
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformCacheCommon.setToUniformSendMap(
     shaderIndex,
     uniformSendCachableDataMap,
-    sendCachableDataList
+    sendCachableDataArr
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformShaderCommon.setToUniformSendMap(
     shaderIndex,
     shaderUniformSendNoCachableDataMap,
-    shaderSendNoCachableDataList
+    shaderSendNoCachableDataArr
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformInstanceCommon.setToUniformSendMap(
     shaderIndex,
     instanceUniformSendNoCachableDataMap,
-    instanceSendNoCachableDataList
+    instanceSendNoCachableDataArr
   )
   |> ignore;
   state
 };
 
 let _readUniforms =
-    ((gl, program, uniformLocationMap, uniformCacheMap), sendDataListTuple, uniforms) =>
+    ((gl, program, uniformLocationMap, uniformCacheMap), sendDataArrTuple, uniforms) =>
   switch uniforms {
-  | None => sendDataListTuple
+  | None => sendDataArrTuple
   | Some(uniforms) =>
     uniforms
     |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
          (
-           (sendDataListTuple, {name, field, type_, from}) => {
+           (sendDataArrTuple, {name, field, type_, from}) => {
              let pos =
                GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl);
              switch from {
-             | "camera" => _addCameraSendData((field, pos, type_), sendDataListTuple)
+             | "camera" => _addCameraSendData((field, pos, type_), sendDataArrTuple)
              | "material" =>
-               _addMaterialSendData((field, pos, name, type_, uniformCacheMap), sendDataListTuple)
+               _addMaterialSendData((field, pos, name, type_, uniformCacheMap), sendDataArrTuple)
              | "model" =>
-               _addModelSendData((field, pos, name, type_, uniformCacheMap), sendDataListTuple)
+               _addModelSendData((field, pos, name, type_, uniformCacheMap), sendDataArrTuple)
              | _ => ExceptionHandleSystem.throwMessage({j|unknow from:$from|j})
              }
            }
          ),
-         sendDataListTuple
+         sendDataArrTuple
        )
   };
 
@@ -160,18 +160,18 @@ let _readUniformSendData = (shaderLibDataArr, gl, program, (uniformLocationMap, 
   |> ArraySystem.reduceOneParam(
        [@bs]
        (
-         (sendDataListTuple, {variables}) =>
+         (sendDataArrTuple, {variables}) =>
            switch variables {
-           | None => sendDataListTuple
+           | None => sendDataArrTuple
            | Some({uniforms}) =>
              _readUniforms(
                (gl, program, uniformLocationMap, uniformCacheMap),
-               sendDataListTuple,
+               sendDataArrTuple,
                uniforms
              )
            }
        ),
-       ([], [], [], [])
+       ([||], [||], [||], [||])
      );
 
 let _checkShouldNotAddBefore = (shaderIndex, state) =>

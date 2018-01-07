@@ -17,61 +17,61 @@ open GLSLSenderDrawUtils;
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
 let _addInstanceArrayBufferSendData =
-    ((gl, program, name, attributeLocationMap), (sendDataList, instanceSendNoCachableDataList)) => (
-  sendDataList,
-  instanceSendNoCachableDataList
-  @ [{pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl)}]
+    ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
+  sendDataArr,
+  instanceSendNoCachableDataArr
+  |> ArraySystem.push({
+       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl)
+     })
 );
 
 let _addOtherArrayBufferSendData =
     (
       (gl, program, name, buffer, type_, attributeLocationMap),
-      (sendDataList, instanceSendNoCachableDataList)
+      (sendDataArr, instanceSendNoCachableDataArr)
     ) => (
-  sendDataList
-  @ [
-    {
-      pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
-      size: getBufferSizeByType(type_),
-      buffer,
-      sendFunc: sendBuffer
-    }
-  ],
-  instanceSendNoCachableDataList
+  sendDataArr
+  |> ArraySystem.push({
+       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       size: getBufferSizeByType(type_),
+       buffer,
+       sendFunc: sendBuffer
+     }),
+  instanceSendNoCachableDataArr
 );
 
-let _addElementBufferSendData = (buffer, (sendDataList, instanceSendNoCachableDataList)) => (
-  sendDataList @ [{pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}],
-  instanceSendNoCachableDataList
+let _addElementBufferSendData = (buffer, (sendDataArr, instanceSendNoCachableDataArr)) => (
+  sendDataArr |> ArraySystem.push({pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}),
+  instanceSendNoCachableDataArr
 );
 
-let _readAttributes = ((gl, program, attributeLocationMap), sendDataListTuple, attributes) =>
+let _readAttributes = ((gl, program, attributeLocationMap), sendDataArrTuple, attributes) =>
   switch attributes {
-  | None => sendDataListTuple
+  | None => sendDataArrTuple
   | Some(attributes) =>
     attributes
     |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
          (
-           (sendDataListTuple, {name, buffer, type_}) =>
+           (sendDataArrTuple, {name, buffer, type_}) =>
              switch (name, type_) {
              | (Some(name), Some(type_)) =>
                switch buffer {
                | "instance" =>
                  _addInstanceArrayBufferSendData(
                    (gl, program, name, attributeLocationMap),
-                   sendDataListTuple
+                   sendDataArrTuple
                  )
                | _ =>
                  _addOtherArrayBufferSendData(
                    (gl, program, name, buffer, type_, attributeLocationMap),
-                   sendDataListTuple
+                   sendDataArrTuple
                  )
                }
-             | (_, _) => _addElementBufferSendData(buffer, sendDataListTuple)
+             | (_, _) => _addElementBufferSendData(buffer, sendDataArrTuple)
              }
          ),
-         sendDataListTuple
+         sendDataArrTuple
        )
   };
 
@@ -80,22 +80,22 @@ let _readAttributeSendData = (shaderLibDataArr, gl, program, attributeLocationMa
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
-         (sendDataListTuple, {variables}) =>
+         (sendDataArrTuple, {variables}) =>
            switch variables {
-           | None => sendDataListTuple
+           | None => sendDataArrTuple
            | Some({attributes}) =>
-             _readAttributes((gl, program, attributeLocationMap), sendDataListTuple, attributes)
+             _readAttributes((gl, program, attributeLocationMap), sendDataArrTuple, attributes)
            }
        ),
-       ([], [])
+       ([||], [||])
      );
 
 let _setToAttributeSendMap =
-    (shaderIndex, attributeLocationMap, state, (sendDataList, instanceSendNoCachableDataList)) => {
+    (shaderIndex, attributeLocationMap, state, (sendDataArr, instanceSendNoCachableDataArr)) => {
   let {attributeSendDataMap, instanceAttributeSendDataMap} = getGLSLSenderData(state);
-  attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataList) |> ignore;
+  attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr) |> ignore;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataList)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
   state
 };

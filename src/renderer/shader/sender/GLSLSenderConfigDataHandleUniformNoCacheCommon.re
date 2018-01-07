@@ -18,27 +18,25 @@ let addUniformSendDataByType =
     (
       pos,
       (
-        sendNoCachableDataList,
-        sendCachableDataList,
-        shaderSendNoCachableDataList,
-        instanceSendNoCachableDataList
+        sendNoCachableDataArr,
+        sendCachableDataArr,
+        shaderSendNoCachableDataArr,
+        instanceSendNoCachableDataArr
       ),
       getDataFunc
     ) => (
-  [
-    (
-      {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCachableData
-    ),
-    ...sendNoCachableDataList
-  ],
-  sendCachableDataList,
-  shaderSendNoCachableDataList,
-  instanceSendNoCachableDataList
+  sendNoCachableDataArr
+  |> ArraySystem.push(
+       {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCachableData
+     ),
+  sendCachableDataArr,
+  shaderSendNoCachableDataArr,
+  instanceSendNoCachableDataArr
 );
 
-let setToUniformSendMap = (shaderIndex, uniformSendNoCachableDataMap, sendNoCachableDataList) =>
+let setToUniformSendMap = (shaderIndex, uniformSendNoCachableDataMap, sendNoCachableDataArr) =>
   uniformSendNoCachableDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendNoCachableDataList)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendNoCachableDataArr)
   |> ignore;
 
 let getUniformSendData = (shaderIndex: int, state: StateDataType.state) =>

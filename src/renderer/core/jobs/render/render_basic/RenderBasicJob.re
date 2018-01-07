@@ -10,14 +10,17 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            state
            |> ProgramSystem.use(gl, program)
            |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendNoCachableData(shaderIndex)
-           |> List.fold_left(
+           |> ArraySystem.reduceState(
+                [@bs]
                 (
-                  state,
-                  {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: shaderUniformSendNoCachableData
-                ) => {
-                  [@bs] sendNoCachableDataFunc(gl, pos, [@bs] getNoCachableDataFunc(state));
-                  state
-                },
+                  (
+                    state,
+                    {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: shaderUniformSendNoCachableData
+                  ) => {
+                    [@bs] sendNoCachableDataFunc(gl, pos, [@bs] getNoCachableDataFunc(state));
+                    state
+                  }
+                ),
                 state
               )
          }
@@ -54,4 +57,5 @@ let _render = (gl, state: StateDataType.state) => {
   }
 };
 
+let getJob = (configData, gl, state) => _render(gl, state);
 let getJob = (configData, gl, state) => _render(gl, state);
