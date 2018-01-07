@@ -14,7 +14,7 @@ open GLSLSenderSendDataUtils;
 
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
-let _getModelMNoCacheableData =
+let _getModelMNoCachableData =
   [@bs]
   (
     (transform, state: StateDataType.state) =>
@@ -74,13 +74,13 @@ let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataLis
     _addUniformSendDataByType(
       (type_, uniformCacheMap, name, pos),
       sendDataListTuple,
-      _getModelMNoCacheableData
+      _getModelMNoCachableData
     )
   | "instance_mMatrix" =>
     GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
       (type_, pos),
       sendDataListTuple,
-      _getModelMNoCacheableData
+      _getModelMNoCachableData
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
   };
@@ -89,41 +89,41 @@ let _setToUniformSendMap =
     (
       shaderIndex,
       {
-        uniformSendNoCacheableDataMap,
-        uniformSendCacheableDataMap,
-        shaderUniformSendNoCacheableDataMap,
-        instanceUniformSendNoCacheableDataMap
+        uniformSendNoCachableDataMap,
+        uniformSendCachableDataMap,
+        shaderUniformSendNoCachableDataMap,
+        instanceUniformSendNoCachableDataMap
       },
       state,
       (
-        sendNoCacheableDataList,
-        sendCacheableDataList,
-        shaderSendNoCacheableDataList,
-        instanceSendNoCacheableDataList
+        sendNoCachableDataList,
+        sendCachableDataList,
+        shaderSendNoCachableDataList,
+        instanceSendNoCachableDataList
       )
     ) => {
   GLSLSenderConfigDataHandleUniformNoCacheCommon.setToUniformSendMap(
     shaderIndex,
-    uniformSendNoCacheableDataMap,
-    sendNoCacheableDataList
+    uniformSendNoCachableDataMap,
+    sendNoCachableDataList
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformCacheCommon.setToUniformSendMap(
     shaderIndex,
-    uniformSendCacheableDataMap,
-    sendCacheableDataList
+    uniformSendCachableDataMap,
+    sendCachableDataList
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformShaderCommon.setToUniformSendMap(
     shaderIndex,
-    shaderUniformSendNoCacheableDataMap,
-    shaderSendNoCacheableDataList
+    shaderUniformSendNoCachableDataMap,
+    shaderSendNoCachableDataList
   )
   |> ignore;
   GLSLSenderConfigDataHandleUniformInstanceCommon.setToUniformSendMap(
     shaderIndex,
-    instanceUniformSendNoCacheableDataMap,
-    instanceSendNoCacheableDataList
+    instanceUniformSendNoCachableDataMap,
+    instanceSendNoCachableDataList
   )
   |> ignore;
   state
@@ -181,7 +181,7 @@ let _checkShouldNotAddBefore = (shaderIndex, state) =>
         test(
           "shouldn't be added before",
           () =>
-            getGLSLSenderData(state).uniformSendNoCacheableDataMap
+            getGLSLSenderData(state).uniformSendNoCachableDataMap
             |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
@@ -212,10 +212,10 @@ let addUniformSendData =
   |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
-let getUniformSendNoCacheableData = GLSLSenderConfigDataHandleUniformNoCacheCommon.getUniformSendData;
+let getUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformNoCacheCommon.getUniformSendData;
 
-let getUniformSendCacheableData = GLSLSenderConfigDataHandleUniformCacheCommon.getUniformSendData;
+let getUniformSendCachableData = GLSLSenderConfigDataHandleUniformCacheCommon.getUniformSendData;
 
-let getShaderUniformSendNoCacheableData = GLSLSenderConfigDataHandleUniformShaderCommon.getUniformSendData;
+let getShaderUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderCommon.getUniformSendData;
 
-let getInstanceUniformSendNoCacheableData = GLSLSenderConfigDataHandleUniformInstanceCommon.getUniformSendData;
+let getInstanceUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceCommon.getUniformSendData;

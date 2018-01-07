@@ -279,18 +279,18 @@ let _ =
                     uniformLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
-                    let {shaderUniformSendNoCacheableDataMap} =
+                    let {shaderUniformSendNoCachableDataMap} =
                       GLSLSenderTool.getGLSLSenderData(state);
-                    let shaderUniformSendNoCacheableData1 = Obj.magic(121);
-                    let shaderUniformSendNoCacheableData2 = Obj.magic(122);
-                    shaderUniformSendNoCacheableDataMap
+                    let shaderUniformSendNoCachableData1 = Obj.magic(121);
+                    let shaderUniformSendNoCachableData2 = Obj.magic(122);
+                    shaderUniformSendNoCachableDataMap
                     |> WonderCommonlib.SparseMapSystem.set(
                          shaderIndex1,
-                         shaderUniformSendNoCacheableData1
+                         shaderUniformSendNoCachableData1
                        )
                     |> WonderCommonlib.SparseMapSystem.set(
                          shaderIndex2,
-                         shaderUniformSendNoCacheableData2
+                         shaderUniformSendNoCachableData2
                        )
                     |> ignore;
                     (
@@ -303,7 +303,7 @@ let _ =
                         uniformLocationData1,
                         uniformLocationData2
                       ),
-                      (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
+                      (shaderUniformSendNoCachableData1, shaderUniformSendNoCachableData2)
                     )
                   };
                   let _prepareState2 = (state) => {
@@ -338,18 +338,18 @@ let _ =
                     uniformLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
-                    let {shaderUniformSendNoCacheableDataMap} =
+                    let {shaderUniformSendNoCachableDataMap} =
                       GLSLSenderTool.getGLSLSenderData(state);
-                    let shaderUniformSendNoCacheableData1 = Obj.magic(10221);
-                    let shaderUniformSendNoCacheableData2 = Obj.magic(10222);
-                    shaderUniformSendNoCacheableDataMap
+                    let shaderUniformSendNoCachableData1 = Obj.magic(10221);
+                    let shaderUniformSendNoCachableData2 = Obj.magic(10222);
+                    shaderUniformSendNoCachableDataMap
                     |> WonderCommonlib.SparseMapSystem.set(
                          shaderIndex1,
-                         shaderUniformSendNoCacheableData1
+                         shaderUniformSendNoCachableData1
                        )
                     |> WonderCommonlib.SparseMapSystem.set(
                          shaderIndex2,
-                         shaderUniformSendNoCacheableData2
+                         shaderUniformSendNoCachableData2
                        )
                     |> ignore;
                     (
@@ -362,7 +362,7 @@ let _ =
                         uniformLocationData1,
                         uniformLocationData2
                       ),
-                      (shaderUniformSendNoCacheableData1, shaderUniformSendNoCacheableData2)
+                      (shaderUniformSendNoCachableData1, shaderUniformSendNoCachableData2)
                     )
                   };
                   let _prepare = (state) => {
@@ -545,10 +545,10 @@ let _ =
                     "test restore glsl sender data",
                     () =>
                       describe(
-                        "test shaderUniformSendNoCacheableDataMap",
+                        "test shaderUniformSendNoCachableDataMap",
                         () =>
                           test(
-                            "get intersect map between current shaderUniformSendNoCacheableDataMap and target shaderUniformSendNoCacheableDataMap whose value is the one in current shaderUniformSendNoCacheableDataMap",
+                            "get intersect map between current shaderUniformSendNoCachableDataMap and target shaderUniformSendNoCachableDataMap whose value is the one in current shaderUniformSendNoCachableDataMap",
                             () => {
                               open StateDataType;
                               let (
@@ -559,8 +559,8 @@ let _ =
                                   _,
                                   _,
                                   (
-                                    currentShaderUniformSendNoCacheableData1,
-                                    currentShaderUniformSendNoCacheableData2
+                                    currentShaderUniformSendNoCachableData1,
+                                    currentShaderUniformSendNoCachableData2
                                   )
                                 ),
                                 (
@@ -569,20 +569,20 @@ let _ =
                                   _,
                                   _,
                                   (
-                                    targetShaderUniformSendNoCacheableData1,
-                                    targetShaderUniformSendNoCacheableData2
+                                    targetShaderUniformSendNoCachableData1,
+                                    targetShaderUniformSendNoCachableData2
                                   )
                                 )
                               ) =
                                 _prepare(state^);
-                              let {shaderUniformSendNoCacheableDataMap} =
+                              let {shaderUniformSendNoCachableDataMap} =
                                 newState |> GLSLSenderTool.getGLSLSenderData;
                               (
-                                shaderUniformSendNoCacheableDataMap |> SparseMapSystem.length,
-                                shaderUniformSendNoCacheableDataMap
+                                shaderUniformSendNoCachableDataMap |> SparseMapSystem.length,
+                                shaderUniformSendNoCachableDataMap
                                 |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
                               )
-                              |> expect == (1, currentShaderUniformSendNoCacheableData1)
+                              |> expect == (1, currentShaderUniformSendNoCachableData1)
                             }
                           )
                       )

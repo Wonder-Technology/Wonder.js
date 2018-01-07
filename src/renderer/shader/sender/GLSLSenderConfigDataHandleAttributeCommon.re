@@ -17,16 +17,16 @@ open GLSLSenderDrawUtils;
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
 let _addInstanceArrayBufferSendData =
-    ((gl, program, name, attributeLocationMap), (sendDataList, instanceSendNoCacheableDataList)) => (
+    ((gl, program, name, attributeLocationMap), (sendDataList, instanceSendNoCachableDataList)) => (
   sendDataList,
-  instanceSendNoCacheableDataList
+  instanceSendNoCachableDataList
   @ [{pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl)}]
 );
 
 let _addOtherArrayBufferSendData =
     (
       (gl, program, name, buffer, type_, attributeLocationMap),
-      (sendDataList, instanceSendNoCacheableDataList)
+      (sendDataList, instanceSendNoCachableDataList)
     ) => (
   sendDataList
   @ [
@@ -37,12 +37,12 @@ let _addOtherArrayBufferSendData =
       sendFunc: sendBuffer
     }
   ],
-  instanceSendNoCacheableDataList
+  instanceSendNoCachableDataList
 );
 
-let _addElementBufferSendData = (buffer, (sendDataList, instanceSendNoCacheableDataList)) => (
+let _addElementBufferSendData = (buffer, (sendDataList, instanceSendNoCachableDataList)) => (
   sendDataList @ [{pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}],
-  instanceSendNoCacheableDataList
+  instanceSendNoCachableDataList
 );
 
 let _readAttributes = ((gl, program, attributeLocationMap), sendDataListTuple, attributes) =>
@@ -91,11 +91,11 @@ let _readAttributeSendData = (shaderLibDataArr, gl, program, attributeLocationMa
      );
 
 let _setToAttributeSendMap =
-    (shaderIndex, attributeLocationMap, state, (sendDataList, instanceSendNoCacheableDataList)) => {
+    (shaderIndex, attributeLocationMap, state, (sendDataList, instanceSendNoCachableDataList)) => {
   let {attributeSendDataMap, instanceAttributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataList) |> ignore;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCacheableDataList)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataList)
   |> ignore;
   state
 };

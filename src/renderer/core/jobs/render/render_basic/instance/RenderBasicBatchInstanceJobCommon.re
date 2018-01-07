@@ -2,8 +2,8 @@ open StateDataType;
 
 let render = (gl, uid, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
-  let instanceUniformSendNoCacheableData =
-    state |> GLSLSenderConfigDataHandleSystem.getInstanceUniformSendNoCacheableData(shaderIndex);
+  let instanceUniformSendNoCachableData =
+    state |> GLSLSenderConfigDataHandleSystem.getInstanceUniformSendNoCachableData(shaderIndex);
   let drawMode = GeometryAdmin.getDrawMode(gl);
   let indexType = GeometryAdmin.getIndexType(gl);
   let indexTypeSize = GeometryAdmin.getIndexTypeSize(gl);
@@ -16,18 +16,18 @@ let render = (gl, uid, state: StateDataType.state) => {
        (
          (state, uid) => {
            let state =
-             instanceUniformSendNoCacheableData
+             instanceUniformSendNoCachableData
              |> List.fold_left(
                   (
                     state,
-                    {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: instanceUniformSendNoCacheableData
+                    {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: instanceUniformSendNoCachableData
                   ) => {
                     [@bs]
-                    sendNoCacheableDataFunc(
+                    sendNoCachableDataFunc(
                       gl,
                       pos,
                       [@bs]
-                      getNoCacheableDataFunc(
+                      getNoCachableDataFunc(
                         GameObjectAdmin.unsafeGetTransformComponent(uid, state),
                         state
                       )

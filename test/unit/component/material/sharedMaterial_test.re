@@ -187,7 +187,7 @@ let _ =
             }
           );
           describe(
-            "should send shared materials' uniform cacheable data only once",
+            "should send shared materials' uniform cachable data only once",
             () => {
               let _prepareSendUinformData = (sandbox, state) => {
                 let (state, gameObject, _, material, _) =

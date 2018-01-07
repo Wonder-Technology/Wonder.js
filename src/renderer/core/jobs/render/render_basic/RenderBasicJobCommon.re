@@ -41,15 +41,15 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendNoCacheableData(shaderIndex)
+    |> GLSLSenderConfigDataHandleSystem.getUniformSendNoCachableData(shaderIndex)
     |> List.fold_left(
          (
            (
              state,
-             {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: uniformSendNoCacheableData
+             {pos, getNoCachableDataFunc, sendNoCachableDataFunc}: uniformSendNoCachableData
            ) => {
              [@bs]
-             sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(transformIndex, state));
+             sendNoCachableDataFunc(gl, pos, [@bs] getNoCachableDataFunc(transformIndex, state));
              state
            }
          ),
@@ -62,20 +62,20 @@ let render = (gl, uid, state: StateDataType.state) => {
     | _ =>
       data.lastSendMaterial = Some(materialIndex);
       state
-      |> GLSLSenderConfigDataHandleSystem.getUniformSendCacheableData(shaderIndex)
+      |> GLSLSenderConfigDataHandleSystem.getUniformSendCachableData(shaderIndex)
       |> List.fold_left(
            (
              (
                state,
-               {shaderCacheMap, name, pos, getCacheableDataFunc, sendCacheableDataFunc}: uniformSendCacheableData
+               {shaderCacheMap, name, pos, getCachableDataFunc, sendCachableDataFunc}: uniformSendCachableData
              ) => {
                [@bs]
-               sendCacheableDataFunc(
+               sendCachableDataFunc(
                  gl,
                  shaderCacheMap,
                  name,
                  pos,
-                 [@bs] getCacheableDataFunc(materialIndex, state)
+                 [@bs] getCachableDataFunc(materialIndex, state)
                );
                state
              }

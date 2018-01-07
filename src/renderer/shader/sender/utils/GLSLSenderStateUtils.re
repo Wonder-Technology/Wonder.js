@@ -7,10 +7,10 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
        attributeSendDataMap,
        instanceAttributeSendDataMap,
        uniformCacheMap,
-       uniformSendNoCacheableDataMap,
-       uniformSendCacheableDataMap,
-       shaderUniformSendNoCacheableDataMap,
-       instanceUniformSendNoCacheableDataMap,
+       uniformSendNoCachableDataMap,
+       uniformSendCachableDataMap,
+       shaderUniformSendNoCachableDataMap,
+       instanceUniformSendNoCachableDataMap,
        drawPointsFuncMap,
        vertexAttribHistoryArray
      } =
@@ -21,12 +21,12 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
          attributeSendDataMap: attributeSendDataMap |> SparseMapSystem.copy,
          instanceAttributeSendDataMap: instanceAttributeSendDataMap |> SparseMapSystem.copy,
          uniformCacheMap: uniformCacheMap |> SparseMapSystem.copy,
-         uniformSendNoCacheableDataMap: uniformSendNoCacheableDataMap |> SparseMapSystem.copy,
-         uniformSendCacheableDataMap: uniformSendCacheableDataMap |> SparseMapSystem.copy,
-         shaderUniformSendNoCacheableDataMap:
-           shaderUniformSendNoCacheableDataMap |> SparseMapSystem.copy,
-         instanceUniformSendNoCacheableDataMap:
-           instanceUniformSendNoCacheableDataMap |> SparseMapSystem.copy,
+         uniformSendNoCachableDataMap: uniformSendNoCachableDataMap |> SparseMapSystem.copy,
+         uniformSendCachableDataMap: uniformSendCachableDataMap |> SparseMapSystem.copy,
+         shaderUniformSendNoCachableDataMap:
+           shaderUniformSendNoCachableDataMap |> SparseMapSystem.copy,
+         instanceUniformSendNoCachableDataMap:
+           instanceUniformSendNoCachableDataMap |> SparseMapSystem.copy,
          drawPointsFuncMap: drawPointsFuncMap |> SparseMapSystem.copy,
          vertexAttribHistoryArray: vertexAttribHistoryArray |> SparseMapSystem.copy,
          lastSendArrayBuffer: None,
@@ -41,10 +41,10 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     attributeSendDataMap,
     instanceAttributeSendDataMap,
     uniformCacheMap,
-    uniformSendNoCacheableDataMap,
-    uniformSendCacheableDataMap,
-    shaderUniformSendNoCacheableDataMap,
-    instanceUniformSendNoCacheableDataMap
+    uniformSendNoCachableDataMap,
+    uniformSendCachableDataMap,
+    shaderUniformSendNoCachableDataMap,
+    instanceUniformSendNoCachableDataMap
     /* drawPointsFuncMap */
   } =
     getGLSLSenderData(currentState);
@@ -67,25 +67,25 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
           intersectShaderIndexDataArray,
           uniformCacheMap
         ),
-      uniformSendNoCacheableDataMap:
+      uniformSendNoCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
-          uniformSendNoCacheableDataMap
+          uniformSendNoCachableDataMap
         ),
-      uniformSendCacheableDataMap:
+      uniformSendCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
-          uniformSendCacheableDataMap
+          uniformSendCachableDataMap
         ),
-      shaderUniformSendNoCacheableDataMap:
+      shaderUniformSendNoCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
-          shaderUniformSendNoCacheableDataMap
+          shaderUniformSendNoCachableDataMap
         ),
-      instanceUniformSendNoCacheableDataMap:
+      instanceUniformSendNoCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
-          instanceUniformSendNoCacheableDataMap
+          instanceUniformSendNoCachableDataMap
         ),
       /* drawPointsFuncMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(

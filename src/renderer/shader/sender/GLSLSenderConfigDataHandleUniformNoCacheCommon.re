@@ -18,31 +18,31 @@ let addUniformSendDataByType =
     (
       pos,
       (
-        sendNoCacheableDataList,
-        sendCacheableDataList,
-        shaderSendNoCacheableDataList,
-        instanceSendNoCacheableDataList
+        sendNoCachableDataList,
+        sendCachableDataList,
+        shaderSendNoCachableDataList,
+        instanceSendNoCachableDataList
       ),
       getDataFunc
     ) => (
   [
     (
-      {pos, sendNoCacheableDataFunc: sendMatrix4, getNoCacheableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCacheableData
+      {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCachableData
     ),
-    ...sendNoCacheableDataList
+    ...sendNoCachableDataList
   ],
-  sendCacheableDataList,
-  shaderSendNoCacheableDataList,
-  instanceSendNoCacheableDataList
+  sendCachableDataList,
+  shaderSendNoCachableDataList,
+  instanceSendNoCachableDataList
 );
 
-let setToUniformSendMap = (shaderIndex, uniformSendNoCacheableDataMap, sendNoCacheableDataList) =>
-  uniformSendNoCacheableDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendNoCacheableDataList)
+let setToUniformSendMap = (shaderIndex, uniformSendNoCachableDataMap, sendNoCachableDataList) =>
+  uniformSendNoCachableDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendNoCachableDataList)
   |> ignore;
 
 let getUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
   GLSLSenderConfigDataHandleUniformUtils.getUniformSendData(
     shaderIndex,
-    getGLSLSenderData(state).uniformSendNoCacheableDataMap
+    getGLSLSenderData(state).uniformSendNoCachableDataMap
   );
