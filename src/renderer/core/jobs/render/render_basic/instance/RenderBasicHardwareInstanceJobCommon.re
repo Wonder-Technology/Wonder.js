@@ -105,7 +105,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceAdmin.getSourceInstanceData(state);
-  let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
+  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
   let state =

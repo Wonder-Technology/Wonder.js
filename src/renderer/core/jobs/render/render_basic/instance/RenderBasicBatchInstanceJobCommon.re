@@ -8,7 +8,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let indexType = GeometryAdmin.getIndexType(gl);
   let indexTypeSize = GeometryAdmin.getIndexTypeSize(gl);
   let indicesCount = GeometryAdmin.getIndicesCount(geometryIndex, state);
-  let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
+  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   objectInstanceArray
   |> ArraySystem.reduceState(

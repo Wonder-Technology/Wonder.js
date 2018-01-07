@@ -24,7 +24,6 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceArrayMap} as data)
 
 /* todo init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, state: StateDataType.state) => {
-  open GameObjectComponentCommon;
   let (state, uid) = GameObjectCreateCommon.create(state);
   _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getSourceInstanceData(state))
   |> ignore;
@@ -32,8 +31,8 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
   let (state, objectInstance) = ObjectInstanceSystem.create(sourceInstance, uid, state);
   let state =
     state
-    |> addTransformComponent(uid, transform)
-    |> addObjectInstanceComponent(uid, objectInstance);
+    |> GameObjectAddComponentCommon.addTransformComponent(uid, transform)
+    |> GameObjectAddComponentCommon.addObjectInstanceComponent(uid, objectInstance);
   (state, uid)
 };
 
