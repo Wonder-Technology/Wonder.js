@@ -88,20 +88,6 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-let fillFloat32ArrayWithFloat32Array =
-    (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
-  let typeArrIndex = ref(targetStartIndex);
-  for (i in sourceStartIndex to endIndex - 1) {
-    Js.Typed_array.Float32Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex^,
-      Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i)
-    );
-    typeArrIndex := succ(typeArrIndex^)
-  };
-  typeArrIndex^
-};
-
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
 
@@ -137,28 +123,48 @@ let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-let fillUint16ArrayWithUint16Array =
-    (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
-  requireCheck(
-    () =>
-      Contract.Operators.(
-        test(
-          "targetStartIndex should <= sourceStartIndex",
-          () => targetStartIndex <= sourceStartIndex
-        )
+let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
+  Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
+
+let _setFloat32ArrayWithFloat32Array =
+  [@bs]
+  (
+    (targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
+      Js.Typed_array.Float32Array.unsafe_set(
+        targetTypeArr,
+        typeArrIndex,
+        Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i)
       )
   );
+
+let _setUint16ArrayWithUint16Array =
+  [@bs]
+  (
+    (targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
+      Js.Typed_array.Uint16Array.unsafe_set(
+        targetTypeArr,
+        typeArrIndex,
+        Js.Typed_array.Uint16Array.unsafe_get(sourceTypeArr, i)
+      )
+  );
+
+let _fillTypeArrayWithTypeArray =
+    (
+      (targetTypeArr, targetStartIndex),
+      (sourceTypeArr, sourceStartIndex),
+      endIndex,
+      _setTypeArrayWithTypeArray
+    ) => {
   let typeArrIndex = ref(targetStartIndex);
   for (i in sourceStartIndex to endIndex - 1) {
-    Js.Typed_array.Uint16Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex^,
-      Js.Typed_array.Uint16Array.unsafe_get(sourceTypeArr, i)
-    );
+    [@bs] _setTypeArrayWithTypeArray(targetTypeArr, sourceTypeArr, typeArrIndex^, i);
     typeArrIndex := succ(typeArrIndex^)
   };
   typeArrIndex^
 };
 
-let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
-  Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
+let fillUint16ArrayWithUint16Array = (targetData, sourceData, endIndex) =>
+  _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setUint16ArrayWithUint16Array);
+
+let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
+  _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setFloat32ArrayWithFloat32Array);

@@ -21,6 +21,9 @@ module.exports = {
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
+    refactor: [
+      { name: "duplication" }
+    ],
     test: [
       { name: "pf-test" },
       { name: "render-test" },

@@ -9,10 +9,8 @@ open InstanceBufferSystem;
 let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => {
   let transform = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
-    matricesArrayForInstance,
-    offset,
-    TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state),
-    0,
+    (matricesArrayForInstance, offset),
+    (TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state), 0),
     16
   )
   |> ignore;
