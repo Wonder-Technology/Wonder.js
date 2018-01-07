@@ -10,17 +10,14 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            state
            |> ProgramSystem.use(gl, program)
            |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendNoCacheableData(shaderIndex)
-           |> ArraySystem.reduceState(
-                [@bs]
+           |> List.fold_left(
                 (
-                  (
-                    state,
-                    {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: shaderUniformSendNoCacheableData
-                  ) => {
-                    [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(state));
-                    state
-                  }
-                ),
+                  state,
+                  {pos, getNoCacheableDataFunc, sendNoCacheableDataFunc}: shaderUniformSendNoCacheableData
+                ) => {
+                  [@bs] sendNoCacheableDataFunc(gl, pos, [@bs] getNoCacheableDataFunc(state));
+                  state
+                },
                 state
               )
          }

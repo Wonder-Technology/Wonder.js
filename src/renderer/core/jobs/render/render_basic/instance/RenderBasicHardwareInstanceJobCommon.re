@@ -81,15 +81,12 @@ let _sendModelMatrixData =
   let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
   state
   |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
-  |> WonderCommonlib.ArraySystem.forEachi(
-       [@bs]
-       (
-         ({pos}: instanceAttributeSendData, index) => {
-           Gl.enableVertexAttribArray(pos, gl);
-           Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
-           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
-         }
-       )
+  |> List.iteri(
+       (index, {pos}: instanceAttributeSendData) => {
+         Gl.enableVertexAttribArray(pos, gl);
+         Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
+         [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
+       }
      );
   state
 };

@@ -17,12 +17,14 @@ module.exports = {
   scopes: [
     // { name: "exampleScope" },
     // { name: "changeMe" }
+      { name: "shader" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
     refactor: [
-      { name: "duplication" }
+      { name: "duplication" },
+      { name: "shader" }
     ],
     test: [
       { name: "pf-test" },

@@ -13,8 +13,7 @@ let render = (gl, uid, state: StateDataType.state) => {
     state
     |> ProgramSystem.use(gl, program)
     |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
+    |> List.fold_left(
          (
            (state, {pos, size, buffer, sendFunc}) => {
              let arrayBuffer =
@@ -43,8 +42,7 @@ let render = (gl, uid, state: StateDataType.state) => {
          state
        )
     |> GLSLSenderConfigDataHandleSystem.getUniformSendNoCacheableData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
+    |> List.fold_left(
          (
            (
              state,
@@ -65,8 +63,7 @@ let render = (gl, uid, state: StateDataType.state) => {
       data.lastSendMaterial = Some(materialIndex);
       state
       |> GLSLSenderConfigDataHandleSystem.getUniformSendCacheableData(shaderIndex)
-      |> ArraySystem.reduceState(
-           [@bs]
+      |> List.fold_left(
            (
              (
                state,
