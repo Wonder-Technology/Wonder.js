@@ -57,9 +57,7 @@ let _init =
        )
     |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
          gl,
-         shaderIndex,
-         program,
-         shaderLibDataArr
+         (program, shaderIndex, shaderLibDataArr)
        )
     |> ignore;
     shaderIndex
