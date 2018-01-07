@@ -15,8 +15,8 @@
     "test": "jest --config jest.json",
     "test:coverage": "jest --config jest_coverage.json",
     "test:ci": "jest --maxWorkers=4 --config jest_coverage.json",
-    "test:pf": "jest --config jest_performance.json",
-    "test:pf_generate": "jest --config jest_performance_generate.json",
+    "test:render": "npm run build && gulp testRenderInLocal",
+    "test:pf": "npm run build && gulp testPerformanceInLocal",
     "test:watch": "jest --watch --config jest.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
