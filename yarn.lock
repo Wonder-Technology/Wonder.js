@@ -4952,9 +4952,9 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.1.29:
-  version "0.1.29"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.29.tgz#f5199973e3fe6e38f6ac52646a9b5c67847ab0e8"
+wonder-benchmark@^0.1.30:
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.30.tgz#dba41cb340f5a9ee26d74394f3d3f88a91c60a90"
   dependencies:
     bs-json "^0.2.3"
     wonder-bs-puppeteer "^0.1.0"
@@ -5090,9 +5090,9 @@ wonder-jest@latest:
   dependencies:
     wonder-jest-cli latest
 
-wonder-render-test@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.8.tgz#8999234434d1d7edab450b1b7f9b2bfae93f851e"
+wonder-render-test@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.9.tgz#4dc4e8b400af65b14ebea90c67bf12e4b5f62a21"
   dependencies:
     bs-json "^0.2.3"
     jimp "^0.2.28"

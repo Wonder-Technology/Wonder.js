@@ -7,6 +7,9 @@ let performanceTestData = {
     isClosePage: true,
     execCountWhenTest: 5,
     execCountWhenGenerateBenchmark: 20,
+    compareCount: 6,
+    maxAllowDiffTimePercent: 50,
+    maxAllowDiffMemoryPercent: 50,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     scriptFilePathList: [
       "./dist/wd.js",
