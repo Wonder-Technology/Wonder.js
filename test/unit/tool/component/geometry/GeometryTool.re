@@ -81,6 +81,6 @@ let isGeometryDisposed = (geometry, state) => {
 
 let getGroupCount = (geometry, state) => GeometryGroupCommon.getGroupCount(geometry, state);
 
-let setVerticesWithArray = GeometryOperateCommon.setVerticesWithArray;
+let setVerticesWithArray = GeometryOperateVerticesCommon.setVerticesWithArray;
 
-let setIndicesWithArray = GeometryOperateCommon.setIndicesWithArray;
+let setIndicesWithArray = GeometryOperateIndicesCommon.setIndicesWithArray;

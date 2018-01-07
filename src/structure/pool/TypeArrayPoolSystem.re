@@ -40,11 +40,19 @@ let _getTypeArrayFromPool = (count, map) =>
     }
   };
 
-let getFloat32TypeArrayFromPool = (count, state: StateDataType.state) =>
-  _getTypeArrayFromPool(count, state |> getFloat32ArrayPoolMap);
+let getFloat32TypeArrayFromPool =
+  [@bs]
+  (
+    (count, state: StateDataType.state) =>
+      _getTypeArrayFromPool(count, state |> getFloat32ArrayPoolMap)
+  );
 
-let getUint16TypeArrayFromPool = (count, state: StateDataType.state) =>
-  _getTypeArrayFromPool(count, state |> getUint16ArrayPoolMap);
+let getUint16TypeArrayFromPool =
+  [@bs]
+  (
+    (count, state: StateDataType.state) =>
+      _getTypeArrayFromPool(count, state |> getUint16ArrayPoolMap)
+  );
 
 let addAllFloat32TypeArrayToPool = (typeArrayMap: array(Float32Array.t), maxSize, map) => {
   typeArrayMap

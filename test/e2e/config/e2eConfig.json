@@ -1,8 +1,1 @@
-{
-    "render": {
-        "base_commit_id": "7e602"
-    },
-    "performance": {
-        "base_commit_id": "7e602"
-    }
-}
+{"render":{"base_commit_id":"7e602","last_generate_based_commit_id":"7e602"},"performance":{"base_commit_id":"7e602","last_generate_based_commit_id":"7e602"}}

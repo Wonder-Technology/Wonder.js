@@ -4,8 +4,6 @@ open StateDataType;
 
 open GeometryGetStateDataCommon;
 
-open GeometryOperateCommon;
-
 let _isInit = (index: int, state: StateDataType.state) =>
   switch (getGeometryData(state).isInitMap |> WonderCommonlib.SparseMapSystem.get(index)) {
   | None => false
@@ -28,11 +26,10 @@ let initGeometry = (index: int, state: StateDataType.state) =>
       let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
       /* todo compute normals */
       state
-      |> setVerticesWithArray(index, vertices)
-      |> setIndicesWithArray(index, indices)
+      |> GeometryOperateVerticesCommon.setVerticesWithArray(index, vertices)
+      |> GeometryOperateIndicesCommon.setIndicesWithArray(index, indices)
       |> _markIsInit(index, true)
     }
   };
 
-let handleInitComponent = (index: int, state: StateDataType.state) =>
-  initGeometry(index, state);
+let handleInitComponent = (index: int, state: StateDataType.state) => initGeometry(index, state);

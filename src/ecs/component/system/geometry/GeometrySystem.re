@@ -20,37 +20,37 @@ let getGeometryData = GeometryGetStateDataCommon.getGeometryData;
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
 
 let getVertices = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.getVertices(index, state);
+  GeometryOperateVerticesCommon.getVertices(index, state);
 
 let unsafeGetVertices =
   [@bs]
   (
     (index: int, state: StateDataType.state) =>
-      GeometryOperateCommon.unsafeGetVertices(index, state)
+      GeometryOperateVerticesCommon.unsafeGetVertices(index, state)
   );
 
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) =>
-  GeometryOperateCommon.setVertices(index, data, state);
+  GeometryOperateVerticesCommon.setVertices(index, data, state);
 
 let getIndices = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.getIndices(index, state);
+  GeometryOperateIndicesCommon.getIndices(index, state);
 
 let unsafeGetIndices =
   [@bs]
   (
-    (index: int, state: StateDataType.state) => GeometryOperateCommon.unsafeGetIndices(index, state)
+    (index: int, state: StateDataType.state) => GeometryOperateIndicesCommon.unsafeGetIndices(index, state)
   );
 
 let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) =>
-  GeometryOperateCommon.setIndices(index, data, state);
+  GeometryOperateIndicesCommon.setIndices(index, data, state);
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.getIndicesCount(index, state);
+  GeometryOperateIndicesCommon.getIndicesCount(index, state);
 
 let hasIndices = (index: int, state: StateDataType.state) => getIndicesCount(index, state) > 0;
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
-  GeometryOperateCommon.getVerticesCount(index, state);
+  GeometryOperateVerticesCommon.getVerticesCount(index, state);
 
 let getDrawMode = (gl) => getTriangles(gl);
 
