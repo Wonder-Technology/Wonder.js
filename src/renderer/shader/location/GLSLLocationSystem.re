@@ -4,23 +4,25 @@ open StateDataType;
 
 let _getGLSLLocationData = (state: StateDataType.state) => state.glslLocationData;
 
-let getAttribLocation = (program, name, attributeLocationMap, gl) =>
-  switch (attributeLocationMap |> WonderCommonlib.HashMapSystem.get(name)) {
+let _getLocation = ((program, name, locationMap), getGlLocationFunc, gl) =>
+  switch (locationMap |> WonderCommonlib.HashMapSystem.get(name)) {
   | Some(pos) => pos
   | None =>
-    let pos = Gl.getAttribLocation(program, name, gl);
-    attributeLocationMap |> WonderCommonlib.HashMapSystem.set(name, pos) |> ignore;
+    let pos = [@bs] getGlLocationFunc(program, name, gl);
+    locationMap |> WonderCommonlib.HashMapSystem.set(name, pos) |> ignore;
     pos
   };
 
+let _getGlAttribLocation = [@bs] ((program, name, gl) => Gl.getAttribLocation(program, name, gl));
+
+let _getGlUniformLocation =
+  [@bs] ((program, name, gl) => Gl.getUniformLocation(program, name, gl));
+
+let getAttribLocation = (program, name, attributeLocationMap, gl) =>
+  _getLocation((program, name, attributeLocationMap), _getGlAttribLocation, gl);
+
 let getUniformLocation = (program, name, uniformLocationMap, gl) =>
-  switch (uniformLocationMap |> WonderCommonlib.HashMapSystem.get(name)) {
-  | Some(pos) => pos
-  | None =>
-    let pos = Gl.getUniformLocation(program, name, gl);
-    uniformLocationMap |> WonderCommonlib.HashMapSystem.set(name, pos) |> ignore;
-    pos
-  };
+  _getLocation((program, name, uniformLocationMap), _getGlUniformLocation, gl);
 
 let getAttributeLocationMap = (shaderIndex: int, state: StateDataType.state) =>
   _getGLSLLocationData(state).attributeLocationMap
