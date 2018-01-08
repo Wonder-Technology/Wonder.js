@@ -36,8 +36,8 @@ let _sendModelMatrixData =
     InstanceBufferSystem.getOrCreateBuffer(
       gl,
       sourceInstance,
-      modelMatrixInstanceBufferCapacityMap,
-      modelMatrixInstanceBufferMap,
+      (modelMatrixInstanceBufferCapacityMap,
+      modelMatrixInstanceBufferMap),
       state
     );
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
@@ -50,15 +50,14 @@ let _sendModelMatrixData =
       state
     );
   let (modelMatrixInstanceBuffer, matricesArrayForInstance) =
-    setCapacityAndUpdateBufferAndTypeArray(
-      gl,
-      sourceInstance,
-      instanceRenderListCount * stride,
-      modelMatrixInstanceBuffer,
-      matricesArrayForInstance,
-      modelMatrixInstanceBufferMap,
-      modelMatrixFloat32ArrayMap,
-      modelMatrixInstanceBufferCapacityMap,
+    setCapacityAndUpdateBufferTypeArray(
+      (gl, sourceInstance, instanceRenderListCount * stride),
+      (modelMatrixInstanceBuffer, matricesArrayForInstance),
+      (
+        modelMatrixInstanceBufferMap,
+        modelMatrixFloat32ArrayMap,
+        modelMatrixInstanceBufferCapacityMap
+      ),
       state
     );
   let offset = ref(0);

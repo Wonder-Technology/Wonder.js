@@ -22,8 +22,10 @@ let getOrCreateInstanceBuffer = (sourceInstanceIndex: int, state: StateDataType.
   InstanceBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     sourceInstanceIndex,
-    SourceInstanceAdmin.getSourceInstanceData(state).modelMatrixInstanceBufferCapacityMap,
-    VboBufferGetStateDataUtils.getVboBufferData(state).modelMatrixInstanceBufferMap,
+    (
+      SourceInstanceAdmin.getSourceInstanceData(state).modelMatrixInstanceBufferCapacityMap,
+      VboBufferGetStateDataUtils.getVboBufferData(state).modelMatrixInstanceBufferMap
+    ),
     state
   );
 
