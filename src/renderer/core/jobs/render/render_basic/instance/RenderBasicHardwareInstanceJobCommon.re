@@ -6,7 +6,7 @@ open SourceInstanceType;
 
 open InstanceBufferSystem;
 
-let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => {
+let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, (state, offset)) => {
   let transform = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
     (matricesArrayForInstance, offset),
@@ -14,30 +14,63 @@ let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => 
     16
   )
   |> ignore;
+  (state, offset + 16)
+};
+
+let _fillObjectInstanceData = (objectInstanceArray, matricesArrayForInstance, stateOffsetTuple) => {
+  let (state, offset) =
+    objectInstanceArray
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
+         [@bs]
+         (
+           (stateOffsetTuple, objectInstance) =>
+             _fillModelMatrixTypeArr(objectInstance, matricesArrayForInstance, stateOffsetTuple)
+         ),
+         stateOffsetTuple
+       );
+  state
+};
+
+let _sendModelMatrixDataBuffer =
+    (
+      (gl, extension),
+      shaderIndex,
+      (stride, extension, matricesArrayForInstance, modelMatrixInstanceBuffer),
+      state
+    ) => {
+  let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
+  state
+  |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
+  |> WonderCommonlib.ArraySystem.forEachi(
+       [@bs]
+       (
+         ({pos}: instanceAttributeSendData, index) => {
+           Gl.enableVertexAttribArray(pos, gl);
+           Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
+           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
+         }
+       )
+     );
   state
 };
 
 let _sendModelMatrixData =
     (
-      gl,
-      sourceUid,
-      extension,
-      sourceInstance,
-      shaderIndex,
-      objectInstanceArray,
-      instanceRenderListCount,
-      modelMatrixInstanceBufferCapacityMap,
-      modelMatrixInstanceBufferMap,
-      modelMatrixFloat32ArrayMap,
-      transformData,
+      (gl, extension, shaderIndex),
+      (sourceUid, sourceInstance),
+      (objectInstanceArray, instanceRenderListCount),
+      (
+        modelMatrixInstanceBufferCapacityMap,
+        modelMatrixInstanceBufferMap,
+        modelMatrixFloat32ArrayMap
+      ),
       state
     ) => {
   let modelMatrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
       gl,
       sourceInstance,
-      (modelMatrixInstanceBufferCapacityMap,
-      modelMatrixInstanceBufferMap),
+      (modelMatrixInstanceBufferCapacityMap, modelMatrixInstanceBufferMap),
       state
     );
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
@@ -60,37 +93,13 @@ let _sendModelMatrixData =
       ),
       state
     );
-  let offset = ref(0);
-  let state = state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
-  offset := offset^ + 16;
-  let state =
-    objectInstanceArray
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, objectInstance) => {
-             let state =
-               state |> _fillModelMatrixTypeArr(objectInstance, matricesArrayForInstance, offset^);
-             offset := offset^ + 16;
-             state
-           }
-         ),
-         state
-       );
-  let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
-  state
-  |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
-  |> WonderCommonlib.ArraySystem.forEachi(
-       [@bs]
-       (
-         ({pos}: instanceAttributeSendData, index) => {
-           Gl.enableVertexAttribArray(pos, gl);
-           Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
-           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
-         }
-       )
-     );
-  state
+  _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, (state, 0))
+  |> _fillObjectInstanceData(objectInstanceArray, matricesArrayForInstance)
+  |> _sendModelMatrixDataBuffer(
+       (gl, extension),
+       shaderIndex,
+       (stride, extension, matricesArrayForInstance, modelMatrixInstanceBuffer)
+     )
 };
 
 let render = (gl, uid, state: StateDataType.state) => {
@@ -111,35 +120,29 @@ let render = (gl, uid, state: StateDataType.state) => {
     SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
       SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
         state :
-        _sendModelMatrixData(
-          gl,
-          uid,
-          extension,
-          sourceInstance,
-          shaderIndex,
-          objectInstanceArray,
-          instanceRenderListCount,
-          modelMatrixInstanceBufferCapacityMap,
-          modelMatrixInstanceBufferMap,
-          modelMatrixFloat32ArrayMap,
-          transformData,
-          state
-        )
+        state
+        |> _sendModelMatrixData(
+             (gl, extension, shaderIndex),
+             (sourceInstance, sourceInstance),
+             (objectInstanceArray, instanceRenderListCount),
+             (
+               modelMatrixInstanceBufferCapacityMap,
+               modelMatrixInstanceBufferMap,
+               modelMatrixFloat32ArrayMap
+             )
+           )
         |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, true) :
       state
       |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, false)
       |> _sendModelMatrixData(
-           gl,
-           uid,
-           extension,
-           sourceInstance,
-           shaderIndex,
-           objectInstanceArray,
-           instanceRenderListCount,
-           modelMatrixInstanceBufferCapacityMap,
-           modelMatrixInstanceBufferMap,
-           modelMatrixFloat32ArrayMap,
-           transformData
+           (gl, extension, shaderIndex),
+           (sourceInstance, sourceInstance),
+           (objectInstanceArray, instanceRenderListCount),
+           (
+             modelMatrixInstanceBufferCapacityMap,
+             modelMatrixInstanceBufferMap,
+             modelMatrixFloat32ArrayMap
+           )
          );
   GLSLSenderDrawUtils.drawElementsInstancedANGLE(
     GeometryAdmin.getDrawMode(gl),
