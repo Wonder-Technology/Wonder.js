@@ -59,11 +59,10 @@ let getLocalPositionTuple = (transform: transform, localPositionMap) => {
 };
 
 /* let setLocalPositionByTypeArray =
-    (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
-  localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr) |> ignore;
-  data
-}; */
-
+       (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
+     localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr) |> ignore;
+     data
+   }; */
 let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMap} as data) => {
   let typeArr = getLocalPositionTypeArray(transform, localPositionMap);
   Float32Array.unsafe_set(typeArr, 0, x);
@@ -121,7 +120,7 @@ let rec update = (transform: transform, state: StateDataType.state) => {
 let _getPosition = (transform: transform, getTranslationFunc, state: StateDataType.state) => {
   open Js.Typed_array;
   let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
-  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap) |> getTranslationFunc
+  [@bs] getTranslationFunc(getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap))
 };
 
 let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
@@ -131,24 +130,23 @@ let getPositionTuple = (transform: transform, state: StateDataType.state) =>
   _getPosition(transform, Matrix4System.getTranslationTuple, state);
 
 /* let setPositionByTypeArray = (transform: transform, position, data, state: StateDataType.state) =>
-  switch (getParent(transform, data)) {
-  | None =>
-    setLocalPositionByTypeArray(transform, position, data) |> ignore;
-    data
-  | Some(parent) =>
-    let data = update(parent, state) |> getTransformData;
-    Vector3System.transformMat4TypeArray(
-      position,
-      invert(
-        getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap),
-        GlobalTempSystem.getFloat32Array1(state)
-      ),
-      getLocalPositionTypeArray(transform, data.localPositionMap)
-    )
-    |> ignore;
-    data
-  }; */
-
+   switch (getParent(transform, data)) {
+   | None =>
+     setLocalPositionByTypeArray(transform, position, data) |> ignore;
+     data
+   | Some(parent) =>
+     let data = update(parent, state) |> getTransformData;
+     Vector3System.transformMat4TypeArray(
+       position,
+       invert(
+         getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap),
+         GlobalTempSystem.getFloat32Array1(state)
+       ),
+       getLocalPositionTypeArray(transform, data.localPositionMap)
+     )
+     |> ignore;
+     data
+   }; */
 let setPositionByTuple =
     (transform: transform, position: position, data, state: StateDataType.state) =>
   switch (getParent(transform, data)) {

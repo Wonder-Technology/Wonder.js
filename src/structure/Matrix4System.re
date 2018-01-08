@@ -42,18 +42,26 @@ let fromTranslation = (positionTypeArr: Float32Array.t, resultFloat32Arr) => {
   resultFloat32Arr
 };
 
-let getTranslationTypeArray = (matTypeArr) =>
-  Float32Array.make([|
-    Float32Array.unsafe_get(matTypeArr, 12),
-    Float32Array.unsafe_get(matTypeArr, 13),
-    Float32Array.unsafe_get(matTypeArr, 14)
-  |]);
+let getTranslationTypeArray =
+  [@bs]
+  (
+    (matTypeArr) =>
+      Float32Array.make([|
+        Float32Array.unsafe_get(matTypeArr, 12),
+        Float32Array.unsafe_get(matTypeArr, 13),
+        Float32Array.unsafe_get(matTypeArr, 14)
+      |])
+  );
 
-let getTranslationTuple = (matTypeArr) => (
-  Float32Array.unsafe_get(matTypeArr, 12),
-  Float32Array.unsafe_get(matTypeArr, 13),
-  Float32Array.unsafe_get(matTypeArr, 14)
-);
+let getTranslationTuple =
+  [@bs]
+  (
+    (matTypeArr) => (
+      Float32Array.unsafe_get(matTypeArr, 12),
+      Float32Array.unsafe_get(matTypeArr, 13),
+      Float32Array.unsafe_get(matTypeArr, 14)
+    )
+  );
 
 let multiply = (aMatTypeArr: Float32Array.t, bMatTypeArr: Float32Array.t, resultFloat32Arr) => {
   let a00 = Float32Array.unsafe_get(aMatTypeArr, 0);
