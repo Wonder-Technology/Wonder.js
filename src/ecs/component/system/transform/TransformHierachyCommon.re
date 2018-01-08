@@ -67,23 +67,21 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
   _setParent(parent, child, transformData) |> _addChild(parent, child)
 };
 
+let _setNewParent = (parent, child, transformData) =>
+  switch (getParent(child, transformData)) {
+  | None => _addToParent(parent, child, transformData)
+  | Some(currentParent) =>
+    ! TransformJudgeCommon.isSame(currentParent, parent) ?
+      _removeFromParent(currentParent, child, transformData) |> _addToParent(parent, child) :
+      transformData
+  };
+
 let setParent = (parent: option(transform), child: transform, transformData: transformData) =>
   switch parent {
   | None =>
     switch (getParent(child, transformData)) {
     | None => transformData
-    | Some(currentParent) =>
-      let currentParentIndex = currentParent;
-      _removeFromParent(currentParentIndex, child, transformData)
+    | Some(currentParent) => _removeFromParent(currentParent, child, transformData)
     }
-  | Some(newParent) =>
-    switch (getParent(child, transformData)) {
-    | None => _addToParent(newParent, child, transformData)
-    | Some(currentParent) =>
-      let currentParentIndex = currentParent;
-      ! TransformJudgeCommon.isSame(currentParent, newParent) ?
-        _removeFromParent(currentParentIndex, child, transformData)
-        |> _addToParent(newParent, child) :
-        transformData
-    }
+  | Some(newParent) => _setNewParent(newParent, child, transformData)
   };
