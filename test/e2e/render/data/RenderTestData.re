@@ -6,8 +6,8 @@ let renderTestData = {
   commonData: {
     imagePath: "test/e2e/render/screenshot/",
     scriptFilePathList: [
-      "./test/e2e/render/js/BasicBoxesTool.js",
-      "./test/e2e/render/js/CameraTool.js",
+      "./test/e2e/js/BasicBoxesTool.js",
+      "./test/e2e/js/CameraTool.js",
       "./dist/wd.js"
     ]
   },

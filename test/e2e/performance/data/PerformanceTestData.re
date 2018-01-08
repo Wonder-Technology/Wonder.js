@@ -17,10 +17,10 @@ let performanceTestData = {
       ]),
     scriptFilePathList: [
       "./dist/wd.js",
-      "./test/e2e/performance/js/BasicBoxesTool.js",
+      "./test/e2e/js/BasicBoxesTool.js",
+      "./test/e2e/js/CameraTool.js",
       "./test/e2e/performance/js/InstanceBasicBoxesTool.js",
-      "./test/e2e/performance/js/RedoUndoTool.js",
-      "./test/e2e/performance/js/CameraTool.js"
+      "./test/e2e/performance/js/RedoUndoTool.js"
     ]
   },
   testDataList: [

@@ -25,7 +25,8 @@ module.exports = {
     refactor: [
       { name: "duplication" },
       { name: "shader" },
-      { name: "code climate" }
+      { name: "code climate" },
+      { name: "e2e-test" }
     ],
     test: [
       { name: "pf-test" },
