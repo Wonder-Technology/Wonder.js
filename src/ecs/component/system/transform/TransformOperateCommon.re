@@ -31,11 +31,10 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
      );
 
 /* let setLocalToWorldMatrix =
-    (transform: transform, matTypeArr: Float32Array.t, localToWorldMatrixMap) => {
-  localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.set(transform, matTypeArr)|>ignore;
-  localToWorldMatrixMap
-}; */
-
+       (transform: transform, matTypeArr: Float32Array.t, localToWorldMatrixMap) => {
+     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.set(transform, matTypeArr)|>ignore;
+     localToWorldMatrixMap
+   }; */
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
@@ -61,7 +60,7 @@ let getLocalPositionTuple = (transform: transform, localPositionMap) => {
 
 let setLocalPositionByTypeArray =
     (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
-  localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr)|>ignore;
+  localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr) |> ignore;
   data
 };
 
@@ -119,19 +118,17 @@ let rec update = (transform: transform, state: StateDataType.state) => {
   }
 };
 
-let getPositionTypeArray = (transform: transform, state: StateDataType.state) => {
+let _getPosition = (transform: transform, getTranslationFunc, state: StateDataType.state) => {
   open Js.Typed_array;
   let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
-  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
-  |> Matrix4System.getTranslationTypeArray
+  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap) |> getTranslationFunc
 };
 
-let getPositionTuple = (transform: transform, state: StateDataType.state) => {
-  open Js.Typed_array;
-  let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
-  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
-  |> Matrix4System.getTranslationTuple
-};
+let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
+  _getPosition(transform, Matrix4System.getTranslationTypeArray, state);
+
+let getPositionTuple = (transform: transform, state: StateDataType.state) =>
+  _getPosition(transform, Matrix4System.getTranslationTuple, state);
 
 let setPositionByTypeArray = (transform: transform, position, data, state: StateDataType.state) =>
   switch (getParent(transform, data)) {
