@@ -57,8 +57,7 @@ let _sendModelMatrixDataBuffer =
 let _sendModelMatrixData =
     (
       (gl, extension, shaderIndex),
-      (sourceUid, sourceInstance),
-      (objectInstanceArray, instanceRenderListCount),
+      (sourceUid, sourceInstance, objectInstanceArray, instanceRenderListCount),
       (
         modelMatrixInstanceBufferCapacityMap,
         modelMatrixInstanceBufferMap,
@@ -102,6 +101,39 @@ let _sendModelMatrixData =
      )
 };
 
+let _sendStaticModelMatrixData =
+    (
+      glDataTuple,
+      (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
+      modelMatrixMapTuple,
+      state
+    ) =>
+  SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
+    state :
+    state
+    |> _sendModelMatrixData
+         (
+           glDataTuple,
+           (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
+           modelMatrixMapTuple
+         )
+    |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, true);
+
+let _sendDynamicModelMatrixData =
+    (
+      glDataTuple,
+      (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
+      modelMatrixMapTuple,
+      state
+    ) =>
+  state
+  |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, false)
+  |> _sendModelMatrixData(
+       glDataTuple,
+       (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
+       modelMatrixMapTuple
+     );
+
 let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
@@ -116,34 +148,17 @@ let render = (gl, uid, state: StateDataType.state) => {
   let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
+  let glDataTuple = (gl, extension, shaderIndex);
+  let instanceDataTuple = (uid, sourceInstance, objectInstanceArray, instanceRenderListCount);
+  let modelMatrixMapTuple = (
+    modelMatrixInstanceBufferCapacityMap,
+    modelMatrixInstanceBufferMap,
+    modelMatrixFloat32ArrayMap
+  );
   let state =
     SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
-      SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
-        state :
-        state
-        |> _sendModelMatrixData(
-             (gl, extension, shaderIndex),
-             (sourceInstance, sourceInstance),
-             (objectInstanceArray, instanceRenderListCount),
-             (
-               modelMatrixInstanceBufferCapacityMap,
-               modelMatrixInstanceBufferMap,
-               modelMatrixFloat32ArrayMap
-             )
-           )
-        |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, true) :
-      state
-      |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, false)
-      |> _sendModelMatrixData(
-           (gl, extension, shaderIndex),
-           (sourceInstance, sourceInstance),
-           (objectInstanceArray, instanceRenderListCount),
-           (
-             modelMatrixInstanceBufferCapacityMap,
-             modelMatrixInstanceBufferMap,
-             modelMatrixFloat32ArrayMap
-           )
-         );
+      _sendStaticModelMatrixData(glDataTuple, instanceDataTuple, modelMatrixMapTuple, state) :
+      _sendDynamicModelMatrixData(glDataTuple, instanceDataTuple, modelMatrixMapTuple, state);
   GLSLSenderDrawUtils.drawElementsInstancedANGLE(
     GeometryAdmin.getDrawMode(gl),
     GeometryAdmin.getIndexType(gl),
