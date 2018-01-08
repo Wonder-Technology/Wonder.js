@@ -30,6 +30,60 @@ let cloneMaterialComponent =
     state
   );
 
+let _cloneComponent =
+    (
+      (uid, component: option(int), countRangeArr, clonedGameObjectArr: array(int)),
+      (cloneComponentFunc, batchAddComponentFunc),
+      state
+    ) =>
+  switch component {
+  | Some(component) =>
+    let (state, clonedComponentArr) = cloneComponentFunc(component, countRangeArr, state);
+    batchAddComponentFunc(clonedGameObjectArr, clonedComponentArr, state)
+  | None => state
+  };
+
 let cloneCameraControllerComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   CameraControllerCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
+
+let cloneComponent =
+    ((uid, transform, countRangeArr, clonedGameObjectArr: array(int)), isShareMaterial, state) => {
+  open GameObjectGetComponentCommon;
+  let (state, clonedTransformArr) =
+    state
+    |> _cloneComponent(
+         (uid, getMeshRendererComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneMeshRendererComponent,
+           GameObjectAddComponentCommon.batchAddMeshRendererComponentForClone
+         )
+       )
+    |> _cloneComponent(
+         (uid, getGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (cloneGeometryComponent, GameObjectAddComponentCommon.batchAddGeometryComponentForClone)
+       )
+    |> _cloneComponent(
+         (uid, getMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneMaterialComponent(isShareMaterial),
+           GameObjectAddComponentCommon.batchAddMaterialComponentForClone(isShareMaterial)
+         )
+       )
+    |> _cloneComponent(
+         (uid, getCameraControllerComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneCameraControllerComponent,
+           GameObjectAddComponentCommon.batchAddCameraControllerComponentForClone
+         )
+       )
+    |> cloneTransformComponent(transform, countRangeArr);
+  (
+    state
+    |> GameObjectAddComponentCommon.batchAddTransformComponentForClone(
+         clonedGameObjectArr,
+         clonedTransformArr
+       ),
+    clonedTransformArr
+  )
+};

@@ -4,6 +4,8 @@ open ComponentType;
 
 open Contract;
 
+open GameObjectGetComponentCommon;
+
 let disposeSourceInstanceComponent =
     (uid: int, component: component, batchDisposeGameObjectFunc, state: StateDataType.state) =>
   SourceInstanceDisposeComponentCommon.handleDisposeComponent(
@@ -101,3 +103,61 @@ let batchDisposeObjectInstanceComponent =
       componentArray
     )
   };
+
+let disposeComponent = (uid, batchDisposeFunc, state) => {
+  let state =
+    switch (getTransformComponent(uid, state)) {
+    | Some(transform) => disposeTransformComponent(uid, transform, state)
+    | None => state
+    };
+  let state =
+    switch (getMeshRendererComponent(uid, state)) {
+    | Some(meshRenderer) => disposeMeshRendererComponent(uid, meshRenderer, state)
+    | None => state
+    };
+  let state =
+    switch (getMaterialComponent(uid, state)) {
+    | Some(material) => disposeMaterialComponent(uid, material, state)
+    | None => state
+    };
+  let state =
+    switch (getGeometryComponent(uid, state)) {
+    | Some(geometry) => disposeGeometryComponent(uid, geometry, state)
+    | None => state
+    };
+  let state =
+    switch (getCameraControllerComponent(uid, state)) {
+    | Some(cameraController) => disposeCameraControllerComponent(uid, cameraController, state)
+    | None => state
+    };
+  let state =
+    switch (getSourceInstanceComponent(uid, state)) {
+    | Some(sourceInstance) =>
+      disposeSourceInstanceComponent(uid, sourceInstance, batchDisposeFunc, state)
+    | None => state
+    };
+  let state =
+    switch (getObjectInstanceComponent(uid, state)) {
+    | Some(objectInstance) => disposeObjectInstanceComponent(uid, objectInstance, state)
+    | None => state
+    };
+  state
+};
+
+let batchDisposeCommonComponent =
+    (uidArray: array(int), disposedUidMap, batchDisposeFunc, state: StateDataType.state) =>
+  state
+  |> batchGetMeshRendererComponent(uidArray)
+  |> batchDisposeMeshRendererComponent(disposedUidMap, state)
+  |> batchGetTransformComponent(uidArray)
+  |> batchDisposeTransformComponent(disposedUidMap, state)
+  |> batchGetMaterialComponent(uidArray)
+  |> batchDisposeMaterialComponent(disposedUidMap, state)
+  |> batchGetGeometryComponent(uidArray)
+  |> batchDisposeGeometryComponent(disposedUidMap, state)
+  |> batchGetCameraControllerComponent(uidArray)
+  |> batchDisposeCameraControllerComponent(disposedUidMap, state)
+  |> batchGetObjectInstanceComponent(uidArray)
+  |> batchDisposeObjectInstanceComponent(disposedUidMap, state)
+  |> batchGetSourceInstanceComponent(uidArray)
+  |> batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
