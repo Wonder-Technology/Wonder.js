@@ -23,10 +23,12 @@ let createGL = (contextConfig: MainConfigType.contextConfig, canvas) =>
 let setColorWrite =
     (
       gl,
-      writeRed: Js.boolean,
-      writeGreen: Js.boolean,
-      writeBlue: Js.boolean,
-      writeAlpha: Js.boolean,
+      (
+        writeRed: Js.boolean,
+        writeGreen: Js.boolean,
+        writeBlue: Js.boolean,
+        writeAlpha: Js.boolean
+      ),
       state: StateDataType.state
     ) => {
   let {colorWrite} = _getDeviceManagerData(state);
@@ -56,7 +58,7 @@ let setColorWrite =
 };
 
 let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
-  let state = setColorWrite(gl, Js.true_, Js.true_, Js.true_, Js.true_, state);
+  let state = setColorWrite(gl, (Js.true_, Js.true_, Js.true_, Js.true_), state);
   /*! optimize in ANGLE:
     (need more verify:set color mask all false before clear?
     so here not do the recommendation)
@@ -81,7 +83,7 @@ let clearColor = (gl, (r: float, g: float, b: float, a: float), state: StateData
   }
 };
 
-let setViewport = (gl, x, y, width, height, state: StateDataType.state) => {
+let setViewport = (gl, (x, y, width, height), state: StateDataType.state) => {
   let {viewport} = _getDeviceManagerData(state);
   switch viewport {
   | Some((oldX, oldY, oldWidth, oldHeight))
