@@ -31,24 +31,28 @@ let _fillObjectInstanceData = (objectInstanceArray, matricesArrayForInstance, st
   state
 };
 
-let _sendModelMatrixDataBuffer =
+let _sendModelMatrixDataBuffer = ((gl, extension), pos, stride, index) => {
+  Gl.enableVertexAttribArray(pos, gl);
+  Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
+  [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
+};
+
+let _sendModelMatrixDataBufferData =
     (
-      (gl, extension),
+      glDataTuple,
       shaderIndex,
-      (stride, extension, matricesArrayForInstance, modelMatrixInstanceBuffer),
+      (stride, matricesArrayForInstance, modelMatrixInstanceBuffer),
       state
     ) => {
+  let (gl, extension) = glDataTuple;
   let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
   state
   |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArraySystem.forEachi(
        [@bs]
        (
-         ({pos}: instanceAttributeSendData, index) => {
-           Gl.enableVertexAttribArray(pos, gl);
-           Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
-           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
-         }
+         ({pos}: instanceAttributeSendData, index) =>
+           _sendModelMatrixDataBuffer(glDataTuple, pos, stride, index)
        )
      );
   state
@@ -94,10 +98,10 @@ let _sendModelMatrixData =
     );
   _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, (state, 0))
   |> _fillObjectInstanceData(objectInstanceArray, matricesArrayForInstance)
-  |> _sendModelMatrixDataBuffer(
+  |> _sendModelMatrixDataBufferData(
        (gl, extension),
        shaderIndex,
-       (stride, extension, matricesArrayForInstance, modelMatrixInstanceBuffer)
+       (stride, matricesArrayForInstance, modelMatrixInstanceBuffer)
      )
 };
 
@@ -133,6 +137,13 @@ let _sendDynamicModelMatrixData =
        modelMatrixMapTuple
      );
 
+let _getModelMatrixMapTuple = (state) => {
+  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
+    SourceInstanceAdmin.getSourceInstanceData(state);
+  (modelMatrixInstanceBufferCapacityMap, modelMatrixInstanceBufferMap, modelMatrixFloat32ArrayMap)
+};
+
 let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
@@ -140,20 +151,12 @@ let render = (gl, uid, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
   let extension =
     GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
-  let transformData = TransformAdmin.getTransformData(state);
-  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
-  let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
-    SourceInstanceAdmin.getSourceInstanceData(state);
   let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
   let glDataTuple = (gl, extension, shaderIndex);
   let instanceDataTuple = (uid, sourceInstance, objectInstanceArray, instanceRenderListCount);
-  let modelMatrixMapTuple = (
-    modelMatrixInstanceBufferCapacityMap,
-    modelMatrixInstanceBufferMap,
-    modelMatrixFloat32ArrayMap
-  );
+  let modelMatrixMapTuple = _getModelMatrixMapTuple(state);
   let state =
     SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
       _sendStaticModelMatrixData(glDataTuple, instanceDataTuple, modelMatrixMapTuple, state) :
