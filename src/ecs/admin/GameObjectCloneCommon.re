@@ -92,7 +92,7 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.s
     _clone(
       (
         uid,
-        GameObjectGetComponentCommon.getTransformComponent(uid, state) |> Js.Option.getExn,
+        [@bs] GameObjectGetComponentCommon.getTransformComponent(uid, state) |> Js.Option.getExn,
         ArraySystem.range(0, count - 1),
         [||],
         totalClonedGameObjectArr

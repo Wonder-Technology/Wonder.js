@@ -18,38 +18,66 @@ let _unsafeGetComponent = (uid: int, componentMap: array(int)) =>
          )
      );
 
-let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap |> getComponent(uid);
+let getSourceInstanceComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap |> getComponent(uid)
+  );
 
 let unsafeGetSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap |> _unsafeGetComponent(uid);
 
-let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> getComponent(uid);
+let getObjectInstanceComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> getComponent(uid)
+  );
 
 let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _unsafeGetComponent(uid);
 
-let getCameraControllerComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).cameraControllerMap |> getComponent(uid);
+let getCameraControllerComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).cameraControllerMap |> getComponent(uid)
+  );
 
-let getTransformComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).transformMap |> getComponent(uid);
+let getTransformComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).transformMap |> getComponent(uid)
+  );
 
 let unsafeGetTransformComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).transformMap |> _unsafeGetComponent(uid);
 
-let getGeometryComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).geometryMap |> getComponent(uid);
+let getGeometryComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).geometryMap |> getComponent(uid)
+  );
 
 let unsafeGetGeometryComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).geometryMap |> _unsafeGetComponent(uid);
 
-let getMeshRendererComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> getComponent(uid);
+let getMeshRendererComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> getComponent(uid)
+  );
 
-let getMaterialComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).materialMap |> getComponent(uid);
+let getMaterialComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).materialMap |> getComponent(uid)
+  );
 
 let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
@@ -80,14 +108,11 @@ let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.
     state
   );
 
-
 let batchGetMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).materialMap, state);
 
-
 let batchGetGeometryComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).geometryMap, state);
-
 
 let batchGetCameraControllerComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
@@ -102,7 +127,6 @@ let batchGetSourceInstanceComponent = (uidArray: array(int), state: StateDataTyp
     GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap,
     state
   );
-
 
 let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(

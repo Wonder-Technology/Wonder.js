@@ -2,6 +2,8 @@ open Contract;
 
 open GameObjectType;
 
+open ComponentType;
+
 let init = (state: StateDataType.state) =>
   state |> CameraControllerSystem.init |> GeometrySystem.init;
 
@@ -13,65 +15,86 @@ let update = (elapsed: float, state: StateDataType.state) =>
 
 let hasSourceInstanceComponent = GameObjectHasComponentCommon.hasSourceInstanceComponent;
 
-let getSourceInstanceComponent = GameObjectGetComponentCommon.getSourceInstanceComponent;
+let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getSourceInstanceComponent(uid, state);
 
 let addSourceInstanceComponent = GameObjectAddComponentCommon.addSourceInstanceComponent;
 
-let disposeSourceInstanceComponent = GameObjectDisposeComponentCommon.disposeSourceInstanceComponent;
+let disposeSourceInstanceComponent =
+    (uid: int, component: component, batchDisposeGameObjectFunc, state: StateDataType.state) =>
+  [@bs]
+  GameObjectDisposeComponentCommon.disposeSourceInstanceComponent(
+    uid,
+    component,
+    batchDisposeGameObjectFunc,
+    state
+  );
 
 let hasObjectInstanceComponent = GameObjectHasComponentCommon.hasObjectInstanceComponent;
 
-let getObjectInstanceComponent = GameObjectGetComponentCommon.getObjectInstanceComponent;
+let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getObjectInstanceComponent(uid, state);
 
 let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceComponent;
 
-let disposeObjectInstanceComponent = GameObjectDisposeComponentCommon.disposeObjectInstanceComponent;
+let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
 
 let hasCameraControllerComponent = GameObjectHasComponentCommon.hasCameraControllerComponent;
 
-let getCameraControllerComponent = GameObjectGetComponentCommon.getCameraControllerComponent;
+let getCameraControllerComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getCameraControllerComponent(uid, state);
 
 let addCameraControllerComponent = GameObjectAddComponentCommon.addCameraControllerComponent;
 
-let disposeCameraControllerComponent = GameObjectDisposeComponentCommon.disposeCameraControllerComponent;
+let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeCameraControllerComponent(uid, component, state);
 
 let hasTransformComponent = GameObjectHasComponentCommon.hasTransformComponent;
 
-let getTransformComponent = GameObjectGetComponentCommon.getTransformComponent;
+let getTransformComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getTransformComponent(uid, state);
 
 let unsafeGetTransformComponent = GameObjectGetComponentCommon.unsafeGetTransformComponent;
 
 let addTransformComponent = GameObjectAddComponentCommon.addTransformComponent;
 
-let disposeTransformComponent = GameObjectDisposeComponentCommon.disposeTransformComponent;
+let disposeTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeTransformComponent(uid, component, state);
 
 let hasGeometryComponent = GameObjectHasComponentCommon.hasGeometryComponent;
 
-let getGeometryComponent = GameObjectGetComponentCommon.getGeometryComponent;
+let getGeometryComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getGeometryComponent(uid, state);
 
 let unsafeGetGeometryComponent = GameObjectGetComponentCommon.unsafeGetGeometryComponent;
 
 let addGeometryComponent = GameObjectAddComponentCommon.addGeometryComponent;
 
-let disposeGeometryComponent = GameObjectDisposeComponentCommon.disposeGeometryComponent;
+let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeGeometryComponent(uid, component, state);
 
 let hasMeshRendererComponent = GameObjectHasComponentCommon.hasMeshRendererComponent;
 
-let getMeshRendererComponent = GameObjectGetComponentCommon.getMeshRendererComponent;
+let getMeshRendererComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getMeshRendererComponent(uid, state);
 
 let addMeshRendererComponent = GameObjectAddComponentCommon.addMeshRendererComponent;
 
-let disposeMeshRendererComponent = GameObjectDisposeComponentCommon.disposeMeshRendererComponent;
+let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeMeshRendererComponent(uid, component, state);
 
 let hasMaterialComponent = GameObjectHasComponentCommon.hasMaterialComponent;
 
-let getMaterialComponent = GameObjectGetComponentCommon.getMaterialComponent;
+let getMaterialComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getMaterialComponent(uid, state);
 
 let unsafeGetMaterialComponent = GameObjectGetComponentCommon.unsafeGetMaterialComponent;
 
 let addMaterialComponent = GameObjectAddComponentCommon.addMaterialComponent;
 
-let disposeMaterialComponent = GameObjectDisposeComponentCommon.disposeMaterialComponent;
+let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeMaterialComponent(uid, component, state);
 
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
@@ -93,12 +116,12 @@ let isAlive = (uid: int, state: StateDataType.state) => {
 
 let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
-    switch (getGeometryComponent(uid, state)) {
+    switch ( getGeometryComponent(uid, state)) {
     | Some(geometry) => GeometrySystem.handleInitComponent(geometry, state)
     | None => state
     };
   let state =
-    switch (getMaterialComponent(uid, state)) {
+    switch ( getMaterialComponent(uid, state)) {
     | Some(material) =>
       MaterialSystem.handleInitComponent([@bs] DeviceManagerSystem.getGl(state), material, state)
     | None => state

@@ -1,3 +1,5 @@
+
+
 open GameObjectType;
 
 open ComponentType;
@@ -7,30 +9,57 @@ open Contract;
 open GameObjectGetComponentCommon;
 
 let disposeSourceInstanceComponent =
+  [@bs]
+  (
     (uid: int, component: component, batchDisposeGameObjectFunc, state: StateDataType.state) =>
-  SourceInstanceDisposeComponentCommon.handleDisposeComponent(
-    component,
-    batchDisposeGameObjectFunc,
-    state
+      SourceInstanceDisposeComponentCommon.handleDisposeComponent(
+        component,
+        batchDisposeGameObjectFunc,
+        state
+      )
   );
 
-let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
-  ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeObjectInstanceComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
 
-let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
-  CameraControllerDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeCameraControllerComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      CameraControllerDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
 
-let disposeTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
-  TransformDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeTransformComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      TransformDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
 
-let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
-  GeometryDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeGeometryComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      GeometryDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
 
-let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
-  MeshRendererDisposeComponentCommon.handleDisposeComponent(component, uid, state);
+let disposeMeshRendererComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      MeshRendererDisposeComponentCommon.handleDisposeComponent(component, uid, state)
+  );
 
-let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  MaterialDisposeComponentCommon.handleDisposeComponent(component, state);
+let disposeMaterialComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      MaterialDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
 
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
@@ -104,45 +133,28 @@ let batchDisposeObjectInstanceComponent =
     )
   };
 
-let disposeComponent = (uid, batchDisposeFunc, state) => {
-  let state =
-    switch (getTransformComponent(uid, state)) {
-    | Some(transform) => disposeTransformComponent(uid, transform, state)
-    | None => state
-    };
-  let state =
-    switch (getMeshRendererComponent(uid, state)) {
-    | Some(meshRenderer) => disposeMeshRendererComponent(uid, meshRenderer, state)
-    | None => state
-    };
-  let state =
-    switch (getMaterialComponent(uid, state)) {
-    | Some(material) => disposeMaterialComponent(uid, material, state)
-    | None => state
-    };
-  let state =
-    switch (getGeometryComponent(uid, state)) {
-    | Some(geometry) => disposeGeometryComponent(uid, geometry, state)
-    | None => state
-    };
-  let state =
-    switch (getCameraControllerComponent(uid, state)) {
-    | Some(cameraController) => disposeCameraControllerComponent(uid, cameraController, state)
-    | None => state
-    };
-  let state =
-    switch (getSourceInstanceComponent(uid, state)) {
-    | Some(sourceInstance) =>
-      disposeSourceInstanceComponent(uid, sourceInstance, batchDisposeFunc, state)
-    | None => state
-    };
-  let state =
-    switch (getObjectInstanceComponent(uid, state)) {
-    | Some(objectInstance) => disposeObjectInstanceComponent(uid, objectInstance, state)
-    | None => state
-    };
+let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), state) =>
+  switch ([@bs] getComponentFunc(uid, state)) {
+  | Some(component) => [@bs] disposeComponentFunc(uid, component, state)
+  | None => state
+  };
+
+let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
+  switch ([@bs] getSourceInstanceComponent(uid, state)) {
+  | Some(component) => [@bs] disposeSourceInstanceComponent(uid, component, batchDisposeFunc, state)
+  | None => state
+  };
+
+
+let disposeComponent = (uid, batchDisposeFunc, state) =>
   state
-};
+  |> _disposeCommonComponent(uid, (getTransformComponent, disposeTransformComponent))
+  |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
+  |> _disposeCommonComponent(uid, (getMaterialComponent, disposeMaterialComponent))
+  |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
+  |> _disposeCommonComponent(uid, (getCameraControllerComponent, disposeCameraControllerComponent))
+  |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
+  |> _disposeCommonComponent(uid, (getObjectInstanceComponent, disposeObjectInstanceComponent));
 
 let batchDisposeCommonComponent =
     (uidArray: array(int), disposedUidMap, batchDisposeFunc, state: StateDataType.state) =>
@@ -161,3 +173,4 @@ let batchDisposeCommonComponent =
   |> batchDisposeObjectInstanceComponent(disposedUidMap, state)
   |> batchGetSourceInstanceComponent(uidArray)
   |> batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
+

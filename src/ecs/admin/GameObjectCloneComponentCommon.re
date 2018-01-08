@@ -53,25 +53,25 @@ let cloneComponent =
   let (state, clonedTransformArr) =
     state
     |> _cloneComponent(
-         (uid, getMeshRendererComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (uid, [@bs] getMeshRendererComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
            cloneMeshRendererComponent,
            GameObjectAddComponentCommon.batchAddMeshRendererComponentForClone
          )
        )
     |> _cloneComponent(
-         (uid, getGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (uid, [@bs] getGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (cloneGeometryComponent, GameObjectAddComponentCommon.batchAddGeometryComponentForClone)
        )
     |> _cloneComponent(
-         (uid, getMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (uid, [@bs] getMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
            cloneMaterialComponent(isShareMaterial),
            GameObjectAddComponentCommon.batchAddMaterialComponentForClone(isShareMaterial)
          )
        )
     |> _cloneComponent(
-         (uid, getCameraControllerComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (uid, [@bs] getCameraControllerComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
            cloneCameraControllerComponent,
            GameObjectAddComponentCommon.batchAddCameraControllerComponentForClone

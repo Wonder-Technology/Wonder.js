@@ -375,7 +375,9 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GeometryTool.initGeometrys;
+                  WonderCommonlib.DebugUtils.log(111) |> ignore;
                   let state = state |> disposeGameObject(gameObject1);
+                  WonderCommonlib.DebugUtils.log(222) |> ignore;
                   (
                     GeometryTool.isGeometryDisposed(geometry1, state),
                     GeometryTool.isGeometryDisposed(geometry2, state)
