@@ -18,9 +18,9 @@ let cloneGeometryComponent =
 
 let cloneMaterialComponent =
     (
+      isShareMaterial: bool,
       sourceComponent: component,
       countRangeArr: array(int),
-      isShareMaterial: bool,
       state: StateDataType.state
     ) =>
   MaterialCloneComponentCommon.handleCloneComponent(

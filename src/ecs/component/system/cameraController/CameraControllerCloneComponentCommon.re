@@ -9,7 +9,7 @@ let handleCloneComponent =
   let far = getFar(sourceComponent, cameraData) |> Js.Option.getExn;
   let fovy = getFovy(sourceComponent, cameraData) |> Js.Option.getExn;
   let aspect = getAspect(sourceComponent, cameraData) |> Js.Option.getExn;
-  let componentArr = [||];
+  let componentArr:array(cameraController) = [||];
   let state =
     countRangeArr
     |> ArraySystem.reduceState(

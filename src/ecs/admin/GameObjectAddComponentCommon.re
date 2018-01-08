@@ -178,9 +178,9 @@ let batchAddGeometryComponentForClone =
 
 let batchAddMaterialComponentForClone =
     (
+      isShareMaterial,
       uidArray: array(int),
       componentArr: array(component),
-      isShareMaterial,
       state: StateDataType.state
     ) => {
   let componentMap = GameObjectStateCommon.getGameObjectData(state).materialMap;
