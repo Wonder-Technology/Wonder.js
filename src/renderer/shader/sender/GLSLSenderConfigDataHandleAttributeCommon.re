@@ -102,9 +102,7 @@ let _setToAttributeSendMap =
 
 let addAttributeSendData =
     (
-      gl,
-      shaderIndex: int,
-      program: program,
+      (gl, shaderIndex: int, program: program),
       shaderLibDataArr: shader_libs,
       state: StateDataType.state
     ) => {

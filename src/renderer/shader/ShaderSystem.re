@@ -50,9 +50,7 @@ let _init =
       |> ProgramSystem.initShader(vsSource, fsSource, gl);
     state
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
-         gl,
-         shaderIndex,
-         program,
+         (gl, shaderIndex, program),
          shaderLibDataArr
        )
     |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
