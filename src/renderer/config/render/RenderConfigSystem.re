@@ -77,26 +77,34 @@ let _getMaterialShaderLibDataArrByGroup =
     resultDataArr
   );
 
+let _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance =
+    ((gameObject, state), (shaderLibs, value), resultDataArr) =>
+  resultDataArr
+  |> ArraySystem.push(
+       _findFirstShaderData(
+         if (InstanceUtils.isSourceInstance(gameObject, state)) {
+           if (InstanceUtils.isSupportInstance(state)) {
+             value[1]
+           } else {
+             value[2]
+           }
+         } else {
+           value[0]
+         },
+         shaderLibs
+       )
+     );
+
 let _getMaterialShaderLibDataArrByStaticBranch =
     ((gameObject, name, state), (static_branchs: array(shaderMapData), shaderLibs), resultDataArr) => {
   let {value} = findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
   switch name {
   | "modelMatrix_instance" =>
-    resultDataArr
-    |> ArraySystem.push(
-         _findFirstShaderData(
-           if (InstanceUtils.isSourceInstance(gameObject, state)) {
-             if (InstanceUtils.isSupportInstance(state)) {
-               value[1]
-             } else {
-               value[2]
-             }
-           } else {
-             value[0]
-           },
-           shaderLibs
-         )
-       )
+    _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance(
+      (gameObject, state),
+      (shaderLibs, value),
+      resultDataArr
+    )
   }
 };
 
