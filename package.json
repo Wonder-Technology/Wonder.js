@@ -38,12 +38,13 @@
     "gulp-sync": "^0.1.4",
     "http": "^0.0.0",
     "rollup": "^0.51.5",
-    "wonder-benchmark": "^0.1.32",
+    "puppeteer": "^0.13.0",
+    "wonder-benchmark": "^0.1.35",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "latest",
-    "wonder-render-test": "^0.1.9"
+    "wonder-render-test": "^0.1.10"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
