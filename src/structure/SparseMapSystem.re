@@ -7,7 +7,7 @@ let getValidValues = (map) =>
 
 let getValidKeys = (map) =>
   map
-  |> ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
        [@bs]
        (
          (arr, value, key) =>
@@ -51,7 +51,7 @@ let forEachiValid = (func, map) =>
 
 let reduceiValid = (func, initValue, map) =>
   map
-  |> ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
        [@bs]
        (
          (previousValue, value, index) =>

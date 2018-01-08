@@ -131,7 +131,7 @@ let getMaterialShaderLibDataArr =
       state: StateDataType.state
     ) =>
   shaderLibItems
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (resultDataArr, {type_, name}: shaderLibItem) =>

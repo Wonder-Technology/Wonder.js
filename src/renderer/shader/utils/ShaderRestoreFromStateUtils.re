@@ -1,6 +1,6 @@
 let getIntersectShaderRelatedMap = (intersectShaderIndexDataArray, currentMap) =>
   intersectShaderIndexDataArray
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (intersectMap, (currentShaderIndex, targetShaderIndex)) => {

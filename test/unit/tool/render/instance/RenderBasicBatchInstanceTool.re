@@ -5,7 +5,7 @@ let createSourceInstanceGameObject = (sandbox, count, state) => {
   let state = state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
   let (state, objectInstanceGameObjectList) =
     ArraySystem.range(0, count - 1)
-    |> ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
          (
            ((state, objectInstanceGameObjectList), _) => {

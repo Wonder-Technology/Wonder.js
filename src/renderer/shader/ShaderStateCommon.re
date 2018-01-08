@@ -29,7 +29,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
    |> Js.Array.filter(
         ((key, _)) => currentShaderIndexMap |> WonderCommonlib.HashMapSystem.has(key)
       )
-   |> ArraySystem.reduceOneParam(
+   |> WonderCommonlib.ArraySystem.reduceOneParam(
         [@bs]
         (
           (dataArr, (key, shaderIndex)) => {
@@ -54,7 +54,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
    (
      intersectShaderIndexDataArr |> Js.Array.length,
      intersectShaderIndexDataArr
-     |> ArraySystem.reduceOneParam(
+     |> WonderCommonlib.ArraySystem.reduceOneParam(
           [@bs]
           (
             (shaderMap, (key, shaderIndex)) =>

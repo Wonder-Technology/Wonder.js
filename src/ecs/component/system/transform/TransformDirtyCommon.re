@@ -11,7 +11,7 @@ let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) =>
   data
   |> mark(transform, true)
   |> TransformHierachyCommon.unsafeGetChildren(transform)
-  |> ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
+  |> WonderCommonlib.ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
 
 let isDirty = (transform: transform, {dirtyMap} as data) =>
   dirtyMap

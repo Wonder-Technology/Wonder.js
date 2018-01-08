@@ -157,7 +157,7 @@ let _readUniforms =
 
 let _readUniformSendData = (shaderLibDataArr, gl, program, (uniformLocationMap, uniformCacheMap)) =>
   shaderLibDataArr
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (sendDataArrTuple, {variables}) =>

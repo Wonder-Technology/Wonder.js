@@ -16,7 +16,7 @@ let copyFloat32Array = (typeArr: Float32Array.t) =>
 
 let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
   arr
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (newArr, typeArr) => {
@@ -29,7 +29,7 @@ let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
 
 /* let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
   arr
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (newArr, typeArr) => {
@@ -42,7 +42,7 @@ let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
 
 let deepCopyArrayArray = (arr: array(array('a))) =>
   arr
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (newArr, arr) => {

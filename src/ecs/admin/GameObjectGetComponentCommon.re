@@ -84,7 +84,7 @@ let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
 
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
-  |> ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
          (arr, uid) =>

@@ -34,7 +34,7 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   |> ignore;
   let (sourceArr, targetArr) =
     getMapFunc(state)
-    |> ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
          (
            ((sourceArr, targetArr), map) => {

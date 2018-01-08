@@ -425,7 +425,7 @@ let _ =
                       let data = Js.Typed_array.Float32Array.fromLength(64 * 16);
                       let transformArr = [|sourceTransform, objectTransform|];
                       ArraySystem.range(0, 1)
-                      |> ArraySystem.reduceOneParam(
+                      |> WonderCommonlib.ArraySystem.reduceOneParam(
                            [@bs]
                            (
                              (offset, index) => {
@@ -442,7 +442,7 @@ let _ =
                          )
                       |> ignore;
                       ArraySystem.range(2, 63)
-                      |> ArraySystem.reduceOneParam(
+                      |> WonderCommonlib.ArraySystem.reduceOneParam(
                            [@bs]
                            (
                              (offset, index) => {

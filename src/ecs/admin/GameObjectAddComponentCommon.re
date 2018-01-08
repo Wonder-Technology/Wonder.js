@@ -110,7 +110,7 @@ let _batchAddComponent =
       )
   );
   uidArray
-  |> ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
        [@bs]
        (
          (state, uid, index) => {
@@ -139,7 +139,7 @@ let _batchAddSharableComponent =
       )
   );
   uidArray
-  |> ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
        [@bs]
        (
          (state, uid, index) => {
