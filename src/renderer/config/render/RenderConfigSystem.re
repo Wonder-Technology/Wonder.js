@@ -38,17 +38,17 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) 
   {name: jobItemName, flags, shader}
 };
 
-let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: array(job)) => {
-  let init_pipelineItem: pipeline =
-    findFirst(init_pipelines, ({name}: pipeline) => _filterTargetName(name, init_pipeline));
-  init_pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
+let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
+  let pipelineItem: pipeline =
+    findFirst(pipelines, ({name}: pipeline) => _filterTargetName(name, pipeline));
+  pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 
-let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs: array(job)) => {
-  let render_pipelineItem: pipeline =
-    findFirst(render_pipelines, ({name}: pipeline) => _filterTargetName(name, render_pipeline));
-  render_pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
-};
+let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: array(job)) =>
+  _getPipelineExecutableJobs(init_pipeline, init_pipelines, jobs);
+
+let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs: array(job)) =>
+  _getPipelineExecutableJobs(render_pipeline, render_pipelines, jobs);
 
 let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : state => {
   let jobHandleMap = _getJobHandleMap(state);
@@ -69,12 +69,57 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   findFirst(shaderLibs, (item: shaderLib) => _filterTargetName(item.name, shaderLibName));
 
+let _getMaterialShaderLibDataArrByGroup =
+    (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
+  Js.Array.concat(
+    findFirst(groups, (item) => _filterTargetName(item.name, name)).value
+    |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs)),
+    resultDataArr
+  );
+
+let _getMaterialShaderLibDataArrByStaticBranch =
+    ((gameObject, name, state), (static_branchs: array(shaderMapData), shaderLibs), resultDataArr) => {
+  let {value} = findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
+  switch name {
+  | "modelMatrix_instance" =>
+    resultDataArr
+    |> ArraySystem.push(
+         _findFirstShaderData(
+           if (InstanceUtils.isSourceInstance(gameObject, state)) {
+             if (InstanceUtils.isSupportInstance(state)) {
+               value[1]
+             } else {
+               value[2]
+             }
+           } else {
+             value[0]
+           },
+           shaderLibs
+         )
+       )
+  }
+};
+
+let _getMaterialShaderLibDataArrByType =
+    (
+      (type_, groups: array(shaderMapData), name, gameObject, state),
+      (shaderLibs, static_branchs: array(shaderMapData)),
+      resultDataArr
+    ) =>
+  switch type_ {
+  | "group" => _getMaterialShaderLibDataArrByGroup(groups, name, shaderLibs, resultDataArr)
+  | "static_branch" =>
+    _getMaterialShaderLibDataArrByStaticBranch(
+      (gameObject, name, state),
+      (static_branchs: array(shaderMapData), shaderLibs),
+      resultDataArr
+    )
+  };
+
 let getMaterialShaderLibDataArr =
     (
-      {static_branchs, groups},
       gameObject: gameObject,
-      shaderLibItems,
-      shaderLibs: shader_libs,
+      ({static_branchs, groups}, shaderLibItems, shaderLibs: shader_libs),
       state: StateDataType.state
     ) =>
   shaderLibItems
@@ -83,38 +128,13 @@ let getMaterialShaderLibDataArr =
        (
          (resultDataArr, {type_, name}: shaderLibItem) =>
            switch type_ {
-           | None =>
-             Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr);
-             resultDataArr
+           | None => resultDataArr |> ArraySystem.push(_findFirstShaderData(name, shaderLibs))
            | Some(type_) =>
-             switch type_ {
-             | "group" =>
-               let group = findFirst(groups, (item) => _filterTargetName(item.name, name));
-               let shaderLibArr =
-                 group.value
-                 |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
-               Js.Array.concat(shaderLibArr, resultDataArr)
-             | "static_branch" =>
-               let {value} =
-                 findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
-               switch name {
-               | "modelMatrix_instance" =>
-                 let shaderLibName =
-                   if (InstanceUtils.isSourceInstance(gameObject, state)) {
-                     if (InstanceUtils.isSupportInstance(state)) {
-                       value[1]
-                     } else {
-                       value[2]
-                     }
-                   } else {
-                     value[0]
-                   };
-                 resultDataArr
-                 |> Js.Array.push(_findFirstShaderData(shaderLibName, shaderLibs))
-                 |> ignore;
-                 resultDataArr
-               }
-             }
+             _getMaterialShaderLibDataArrByType(
+               (type_, groups, name, gameObject, state),
+               (shaderLibs, static_branchs),
+               resultDataArr
+             )
            }
        ),
        WonderCommonlib.ArraySystem.createEmpty()
