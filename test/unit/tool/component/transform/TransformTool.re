@@ -50,10 +50,8 @@ let isDisposed = (transform, state) => {
 
 let getTransformLocalPositionTypeArray = TransformSystem.getLocalPositionTypeArray;
 
-let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray;
-
+/* let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray; */
 let getTransformPositionTypeArray = TransformSystem.getPositionTypeArray;
 
-let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray;
-
+/* let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray; */
 let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);

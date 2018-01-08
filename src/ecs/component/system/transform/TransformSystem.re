@@ -62,15 +62,14 @@ let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =
     getTransformData(state).localPositionMap
   );
 
-let setLocalPositionByTypeArray = (transform: transform, localPosition, state: StateDataType.state) => {
-  state
-  |> getTransformData
-  |> TransformOperateCommon.setLocalPositionByTypeArray(transform, localPosition)
-  |> markHierachyDirty(transform)
-  |> ignore;
-  state
-};
-
+/* let setLocalPositionByTypeArray = (transform: transform, localPosition, state: StateDataType.state) => {
+     state
+     |> getTransformData
+     |> TransformOperateCommon.setLocalPositionByTypeArray(transform, localPosition)
+     |> markHierachyDirty(transform)
+     |> ignore;
+     state
+   }; */
 let setLocalPositionByTuple = (transform: transform, localPosition, state: StateDataType.state) => {
   state
   |> getTransformData
@@ -86,18 +85,17 @@ let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
 let getPositionTuple = (transform: transform, state: StateDataType.state) =>
   TransformOperateCommon.getPositionTuple(transform, state);
 
-let setPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
-  TransformOperateCommon.setPositionByTypeArray(
-    transform,
-    position,
-    getTransformData(state),
-    state
-  )
-  |> markHierachyDirty(transform)
-  |> ignore;
-  state
-};
-
+/* let setPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
+     TransformOperateCommon.setPositionByTypeArray(
+       transform,
+       position,
+       getTransformData(state),
+       state
+     )
+     |> markHierachyDirty(transform)
+     |> ignore;
+     state
+   }; */
 let setPositionByTuple = (transform: transform, position: position, state: StateDataType.state) => {
   TransformOperateCommon.setPositionByTuple(transform, position, getTransformData(state), state)
   |> markHierachyDirty(transform)

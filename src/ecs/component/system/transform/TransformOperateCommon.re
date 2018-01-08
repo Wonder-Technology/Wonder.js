@@ -58,11 +58,11 @@ let getLocalPositionTuple = (transform: transform, localPositionMap) => {
   )
 };
 
-let setLocalPositionByTypeArray =
+/* let setLocalPositionByTypeArray =
     (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
   localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr) |> ignore;
   data
-};
+}; */
 
 let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMap} as data) => {
   let typeArr = getLocalPositionTypeArray(transform, localPositionMap);
@@ -130,7 +130,7 @@ let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
 let getPositionTuple = (transform: transform, state: StateDataType.state) =>
   _getPosition(transform, Matrix4System.getTranslationTuple, state);
 
-let setPositionByTypeArray = (transform: transform, position, data, state: StateDataType.state) =>
+/* let setPositionByTypeArray = (transform: transform, position, data, state: StateDataType.state) =>
   switch (getParent(transform, data)) {
   | None =>
     setLocalPositionByTypeArray(transform, position, data) |> ignore;
@@ -147,7 +147,7 @@ let setPositionByTypeArray = (transform: transform, position, data, state: State
     )
     |> ignore;
     data
-  };
+  }; */
 
 let setPositionByTuple =
     (transform: transform, position: position, data, state: StateDataType.state) =>

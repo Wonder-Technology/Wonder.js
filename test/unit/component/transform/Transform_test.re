@@ -377,7 +377,7 @@ let _ =
           )
         }
       );
-      describe(
+      /* describe(
         "setTransformLocalPositionByTypeArray",
         () => {
           open Vector3System;
@@ -418,7 +418,7 @@ let _ =
             }
           )
         }
-      );
+      ); */
       describe(
         "getTransformPosition",
         () => {
@@ -487,7 +487,7 @@ let _ =
             }
           )
       );
-      describe(
+      /* describe(
         "setTransformPositionByTypeArray",
         () =>
           describe(
@@ -524,7 +524,7 @@ let _ =
                 )
               )
           )
-      );
+      ); */
       /* describe(
            "test before TransformTool.update",
            () => {
