@@ -8,6 +8,13 @@ let generateBenchmark = () => {
   GenerateBenchmark.removeFiles(
     Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/benchmark"|])
   );
+  let copiedTargetDirForBaseScript = Node.Path.join([|Node.Process.cwd(), "./dist/base"|]);
+  GenerateDebug.removeFiles(
+    Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report"|]),
+    Some(copiedTargetDirForBaseScript)
+  );
+  WonderCommonlib.DebugUtils.log({j|copy base script to $(copiedTargetDirForBaseScript)...|j})
+  |> ignore;
   Tester.copyBaseScript(performanceTestData);
   Tester.generateBenchmark(performanceTestData)
 };
@@ -19,7 +26,7 @@ let generateReport = (reportFilePath, failList) => {
   );
   GenerateDebug.removeFiles(
     Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report"|]),
-    Some(Node.Path.join([|Node.Process.cwd(), "./dist/base"|]))
+    None
   );
   Tester.generateReport(reportFilePath, failList, performanceTestData)
 };
