@@ -39,7 +39,7 @@ let render = (gl, uid, state: StateDataType.state) => {
                   ),
                   state
                 );
-           GLSLSenderDrawUtils.drawElement(drawMode, indexType, indexTypeSize, indicesCount, gl)
+           GLSLSenderDrawUtils.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
            |> ignore;
            state
          }

@@ -43,10 +43,12 @@ let _render = (gl, state: StateDataType.state) => {
              } else {
                let (state, _, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
                GLSLSenderDrawUtils.drawElement(
-                 GeometryAdmin.getDrawMode(gl),
-                 GeometryAdmin.getIndexType(gl),
-                 GeometryAdmin.getIndexTypeSize(gl),
-                 GeometryAdmin.getIndicesCount(geometryIndex, state),
+                 (
+                   GeometryAdmin.getDrawMode(gl),
+                   GeometryAdmin.getIndexType(gl),
+                   GeometryAdmin.getIndexTypeSize(gl),
+                   GeometryAdmin.getIndicesCount(geometryIndex, state)
+                 ),
                  gl
                );
                state
@@ -58,4 +60,5 @@ let _render = (gl, state: StateDataType.state) => {
 };
 
 let getJob = (configData, gl, state) => _render(gl, state);
+
 let getJob = (configData, gl, state) => _render(gl, state);

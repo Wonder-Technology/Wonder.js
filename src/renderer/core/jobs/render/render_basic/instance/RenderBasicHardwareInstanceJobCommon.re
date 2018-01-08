@@ -111,12 +111,11 @@ let _sendStaticModelMatrixData =
   SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
     state :
     state
-    |> _sendModelMatrixData
-         (
-           glDataTuple,
-           (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
-           modelMatrixMapTuple
-         )
+    |> _sendModelMatrixData(
+         glDataTuple,
+         (uid, sourceInstance, objectInstanceArray, instanceRenderListCount),
+         modelMatrixMapTuple
+       )
     |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, true);
 
 let _sendDynamicModelMatrixData =
@@ -160,11 +159,13 @@ let render = (gl, uid, state: StateDataType.state) => {
       _sendStaticModelMatrixData(glDataTuple, instanceDataTuple, modelMatrixMapTuple, state) :
       _sendDynamicModelMatrixData(glDataTuple, instanceDataTuple, modelMatrixMapTuple, state);
   GLSLSenderDrawUtils.drawElementsInstancedANGLE(
-    GeometryAdmin.getDrawMode(gl),
-    GeometryAdmin.getIndexType(gl),
-    GeometryAdmin.getIndexTypeSize(gl),
-    GeometryAdmin.getIndicesCount(geometryIndex, state),
-    instanceRenderListCount,
+    (
+      GeometryAdmin.getDrawMode(gl),
+      GeometryAdmin.getIndexType(gl),
+      GeometryAdmin.getIndexTypeSize(gl),
+      GeometryAdmin.getIndicesCount(geometryIndex, state),
+      instanceRenderListCount
+    ),
     Obj.magic(extension)
   );
   /* todo unbind? */

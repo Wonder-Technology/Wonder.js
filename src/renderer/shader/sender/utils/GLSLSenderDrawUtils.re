@@ -23,7 +23,7 @@ let bindElementArrayBuffer =
     }
   );
 
-let drawElement = (drawMode: int, type_: int, typeSize: int, indicesCount: int, gl) => {
+let drawElement = ((drawMode: int, type_: int, typeSize: int, indicesCount: int), gl) => {
   let startOffset = 0;
   drawElements(drawMode, indicesCount, type_, typeSize * startOffset, gl);
   ()
@@ -36,7 +36,7 @@ let drawArray = (drawMode: int, verticesCount: int, gl) => {
 };
 
 let drawElementsInstancedANGLE =
-    (drawMode, type_, typeSize: int, indicesCount: int, instancesCount, extension) => {
+    ((drawMode, type_, typeSize: int, indicesCount: int, instancesCount), extension) => {
   let startOffset = 0;
   [@bs]
   extension##drawElementsInstancedANGLE(
