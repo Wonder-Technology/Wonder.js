@@ -19,6 +19,7 @@ let generateReport = (reportFilePath, failList) => {
     Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report"|]),
     Some(Node.Path.join([|Node.Process.cwd(), "./dist/base"|]))
   );
+  Tester.copyBaseScript(performanceTestData);
   Tester.generateReport(reportFilePath, failList, performanceTestData)
 };
 
