@@ -31,8 +31,7 @@ let _disposeData = (transform: transform, state: StateDataType.state) => {
     TransformTypeArrayPoolCommon.addTypeArrayToPool(
       transform,
       MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
-      localToWorldMatrixMap,
-      localPositionMap,
+      (localToWorldMatrixMap, localPositionMap),
       state
     );
   disposeSparseMapData(transform, localToWorldMatrixMap) |> ignore;

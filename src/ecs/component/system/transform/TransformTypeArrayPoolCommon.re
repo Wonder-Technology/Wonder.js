@@ -6,8 +6,7 @@ let addTypeArrayToPool =
     (
       transform: transform,
       maxSize,
-      localToWorldMatrixMap: array(Float32Array.t),
-      localPositionMap: array(Float32Array.t),
+      (localToWorldMatrixMap: array(Float32Array.t), localPositionMap: array(Float32Array.t)),
       state: StateDataType.state
     ) => {
   [@bs]

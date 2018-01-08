@@ -1,7 +1,7 @@
 open GeometryType;
 
 let addTypeArrayToPool =
-    (geometry: geometry, maxSize, verticesMap, indicesMap, state: StateDataType.state) => {
+    (geometry: geometry, maxSize, (verticesMap, indicesMap), state: StateDataType.state) => {
   [@bs]
   TypeArrayPoolSystem.addFloat32TypeArrayToPool(
     verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
@@ -20,7 +20,7 @@ let addTypeArrayToPool =
 };
 
 let addAllTypeArrayToPool =
-    (maxSize, verticesMap, indicesMap, float32ArrayPoolMap, uint16ArrayPoolMap) => (
+    (maxSize, (verticesMap, indicesMap), (float32ArrayPoolMap, uint16ArrayPoolMap)) => (
   TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(verticesMap, maxSize, float32ArrayPoolMap),
   TypeArrayPoolSystem.addAllUint16TypeArrayToPool(indicesMap, maxSize, uint16ArrayPoolMap)
 );

@@ -27,8 +27,7 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     |> GeometryTypeArrayPoolCommon.addTypeArrayToPool(
          geometry,
          MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
-         verticesMap,
-         indicesMap
+         (verticesMap, indicesMap)
        );
   groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0) |> ignore;
   disposeSparseMapData(geometry, verticesMap) |> ignore;
