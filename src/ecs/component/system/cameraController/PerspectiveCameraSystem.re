@@ -67,10 +67,7 @@ let update = (index: int, cameraControllerData: cameraControllerData) => {
   ) {
   | (Some(fovy), Some(aspect), Some(near), Some(far)) =>
     Matrix4System.buildPerspective(
-      fovy,
-      aspect,
-      near,
-      far,
+      (fovy, aspect, near, far),
       _unsafeGetPMatrix(index, cameraControllerData)
     )
     |> ignore

@@ -319,7 +319,7 @@ let multiply = (aMatTypeArr: Float32Array.t, bMatTypeArr: Float32Array.t, result
        |])
      }
    }; */
-let buildPerspective = (fovy: float, aspect: float, near: float, far: float, resultFloat32Arr) => {
+let buildPerspective = ((fovy: float, aspect: float, near: float, far: float), resultFloat32Arr) => {
   requireCheck(
     () =>
       Contract.Operators.(
