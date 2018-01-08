@@ -217,7 +217,7 @@ and attributeSendData = {
   pos: attributeLocation,
   size: int,
   buffer: string,
-  sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
+  sendFunc: [@bs] ((webgl1Context, (attributeLocation, int), buffer, state) => state)
 }
 and instanceAttributeSendData = {pos: attributeLocation}
 and uniformSendNoCachableData = {
@@ -231,7 +231,7 @@ and uniformSendCachableData = {
   pos: uniformLocation,
   getCachableDataFunc: [@bs] ((component, state) => array(float)),
   sendCachableDataFunc:
-    [@bs] ((webgl1Context, shaderCacheMap, string, uniformLocation, array(float)) => unit)
+    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
 }
 and shaderUniformSendNoCachableData = {
   pos: uniformLocation,

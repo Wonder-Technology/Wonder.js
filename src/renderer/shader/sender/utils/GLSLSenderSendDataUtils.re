@@ -13,10 +13,19 @@ let getBufferSizeByType = (type_: string) =>
   | _ => ExceptionHandleSystem.throwMessage({j|invalide type_:$type_|j})
   };
 
+let _enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>
+  WonderCommonlib.ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
+    {
+      enableVertexAttribArray(pos, gl);
+      Array.unsafe_set(vertexAttribHistoryArray, pos, true);
+      state
+    } :
+    state;
+
 let sendBuffer =
   [@bs]
   (
-    (gl, size: int, pos: attributeLocation, buffer: buffer, state: StateDataType.state) => {
+    (gl, (size: int, pos: attributeLocation), buffer: buffer, state: StateDataType.state) => {
       let {vertexAttribHistoryArray, lastSendArrayBuffer} as data = getGLSLSenderData(state);
       switch lastSendArrayBuffer {
       | Some(lastSendArrayBuffer) when lastSendArrayBuffer === buffer => state
@@ -24,13 +33,7 @@ let sendBuffer =
         data.lastSendArrayBuffer = Some(buffer);
         bindBuffer(getArrayBuffer(gl), buffer, gl);
         vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-        WonderCommonlib.ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
-          {
-            enableVertexAttribArray(pos, gl);
-            Array.unsafe_set(vertexAttribHistoryArray, pos, true);
-            state
-          } :
-          state
+        _enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
       }
     }
   );
@@ -51,33 +54,36 @@ let _setCache = (shaderCacheMap, name: string, data) =>
 let getCacheMap = (shaderIndex: int, {uniformCacheMap}) =>
   uniformCacheMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
 
-let _isNotCacheVector3 = (shaderCacheMap, name: string, x: float, y: float, z: float) =>
+let _queryIsNotCacheWithCache = (cache, x, y, z) => {
+  let isNotCached = ref(false);
+  if (Array.unsafe_get(cache, 0) !== x) {
+    Array.unsafe_set(cache, 0, x);
+    isNotCached := true
+  };
+  if (Array.unsafe_get(cache, 1) !== y) {
+    Array.unsafe_set(cache, 1, y);
+    isNotCached := true
+  };
+  if (Array.unsafe_get(cache, 2) !== z) {
+    Array.unsafe_set(cache, 2, z);
+    isNotCached := true
+  };
+  isNotCached^
+};
+
+let _isNotCacheVector3 = (shaderCacheMap, name: string, (x: float, y: float, z: float)) =>
   switch (_getCache(shaderCacheMap, name)) {
   | None =>
     _setCache(shaderCacheMap, name, [|x, y, z|]) |> ignore;
     true
-  | Some(cache) =>
-    let isNotCached = ref(false);
-    if (Array.unsafe_get(cache, 0) !== x) {
-      Array.unsafe_set(cache, 0, x);
-      isNotCached := true
-    };
-    if (Array.unsafe_get(cache, 1) !== y) {
-      Array.unsafe_set(cache, 1, y);
-      isNotCached := true
-    };
-    if (Array.unsafe_get(cache, 2) !== z) {
-      Array.unsafe_set(cache, 2, z);
-      isNotCached := true
-    };
-    isNotCached^
+  | Some(cache) => _queryIsNotCacheWithCache(cache, x, y, z)
   };
 
 let sendFloat3 =
   [@bs]
   (
-    (gl, shaderCacheMap, name: string, pos: uniformLocation, [|x, y, z|]) =>
-      if (_isNotCacheVector3(shaderCacheMap, name, x, y, z)) {
+    (gl, shaderCacheMap, (name: string, pos: uniformLocation), [|x, y, z|]) =>
+      if (_isNotCacheVector3(shaderCacheMap, name, (x, y, z))) {
         uniform3f(pos, x, y, z, gl)
       } else {
         ()

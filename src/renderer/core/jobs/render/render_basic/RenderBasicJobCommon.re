@@ -38,7 +38,7 @@ let render = (gl, uid, state: StateDataType.state) => {
                  )
                | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
                };
-             [@bs] sendFunc(gl, size, pos, arrayBuffer, state)
+             [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
            }
          ),
          state
@@ -74,8 +74,7 @@ let render = (gl, uid, state: StateDataType.state) => {
                sendCachableDataFunc(
                  gl,
                  shaderCacheMap,
-                 name,
-                 pos,
+                 (name, pos),
                  [@bs] getCachableDataFunc(materialIndex, state)
                );
                state

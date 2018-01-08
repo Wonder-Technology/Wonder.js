@@ -11,7 +11,7 @@ open GLSLSenderStateUtils;
 let bindElementArrayBuffer =
   [@bs]
   (
-    (gl, size: int, pos: attributeLocation, buffer, state: StateDataType.state) => {
+    (gl, (size: int, pos: attributeLocation), buffer, state: StateDataType.state) => {
       let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state);
       switch lastSendElementArrayBuffer {
       | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
@@ -36,14 +36,7 @@ let drawArray = (drawMode: int, verticesCount: int, gl) => {
 };
 
 let drawElementsInstancedANGLE =
-    (
-      drawMode,
-      type_,
-      typeSize: int,
-      indicesCount: int,
-      instancesCount,
-      extension
-    ) => {
+    (drawMode, type_, typeSize: int, indicesCount: int, instancesCount, extension) => {
   let startOffset = 0;
   [@bs]
   extension##drawElementsInstancedANGLE(
