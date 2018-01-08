@@ -12,7 +12,9 @@ let performanceTestData = {
     maxAllowDiffMemoryPercent: 50,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     generateBaseDebugData:
-      Some([{sourceScriptFilePath: "./dist/wd.js", targetScriptFilePath: "./dist/base/wd_base.js"}]),
+      Some([
+        {sourceScriptFilePath: "./dist/wd.js", targetScriptFilePath: "./dist/base/wd_base.js"}
+      ]),
     scriptFilePathList: [
       "./dist/wd.js",
       "./test/e2e/performance/js/BasicBoxesTool.js",
@@ -79,8 +81,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 |},
           scriptFilePathList: None,
           errorRate: 10
-        }
-        /* {
+        },
+        {
           name: "create_5k_boxes+transform",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
@@ -685,7 +687,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 |},
           scriptFilePathList: None,
           errorRate: 10
-        } */
+        }
       ]
     }
   ]
