@@ -40,6 +40,7 @@ let _disposeData =
     getSourceInstanceData(state);
   switch (modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) =>
+    [@bs]
     TypeArrayPoolSystem.addFloat32TypeArrayToPool(
       typeArr,
       MemoryConfigSystem.getMaxBigTypeArrayPoolSize(state),

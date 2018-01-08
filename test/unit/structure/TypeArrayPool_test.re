@@ -33,9 +33,9 @@ let _ =
                   let typeArr1 = Float32Array.make([|1.|]);
                   let typeArr2 = Float32Array.make([|2.|]);
                   let map =
-                    map
-                    |> TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr1, maxSize)
-                    |> TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr2, maxSize);
+                    [@bs] TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr1, maxSize, map);
+                  let map =
+                    [@bs] TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr2, maxSize, map);
                   map
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(count)
                   |> SparseMapSystem.length
@@ -59,9 +59,9 @@ let _ =
                   let typeArr1 = Uint16Array.make([|1|]);
                   let typeArr2 = Uint16Array.make([|2|]);
                   let map =
-                    map
-                    |> TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr1, maxSize)
-                    |> TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr2, maxSize);
+                    [@bs] TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr1, maxSize, map);
+                  let map =
+                    [@bs] TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr2, maxSize, map);
                   map
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(count)
                   |> SparseMapSystem.length

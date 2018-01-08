@@ -24,11 +24,19 @@ let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
   | None => map |> WonderCommonlib.SparseMapSystem.set(count, [|typeArray|])
   };
 
-let addFloat32TypeArrayToPool = (typeArray: Float32Array.t, maxSize, map) =>
-  _addTypeArrayToPool(typeArray |> Float32Array.length, typeArray, maxSize, map);
+let addFloat32TypeArrayToPool =
+  [@bs]
+  (
+    (typeArray: Float32Array.t, maxSize, map) =>
+      _addTypeArrayToPool(typeArray |> Float32Array.length, typeArray, maxSize, map)
+  );
 
-let addUint16TypeArrayToPool = (typeArray: Uint16Array.t, maxSize, map) =>
-  _addTypeArrayToPool(typeArray |> Uint16Array.length, typeArray, maxSize, map);
+let addUint16TypeArrayToPool =
+  [@bs]
+  (
+    (typeArray: Uint16Array.t, maxSize, map) =>
+      _addTypeArrayToPool(typeArray |> Uint16Array.length, typeArray, maxSize, map)
+  );
 
 let _getTypeArrayFromPool = (count, map) =>
   switch (map |> WonderCommonlib.SparseMapSystem.get(count)) {
@@ -54,21 +62,20 @@ let getUint16TypeArrayFromPool =
       _getTypeArrayFromPool(count, state |> getUint16ArrayPoolMap)
   );
 
-let addAllFloat32TypeArrayToPool = (typeArrayMap: array(Float32Array.t), maxSize, map) => {
+let _addAllTypeArrayToPool =
+    (typeArrayMap, maxSize, map, addTypeArrayToPoolFunc) => {
   typeArrayMap
   |> SparseMapSystem.forEachValid(
-       [@bs] ((typeArray) => addFloat32TypeArrayToPool(typeArray, maxSize, map) |> ignore)
+       [@bs] ((typeArray) => [@bs] addTypeArrayToPoolFunc(typeArray, maxSize, map) |> ignore)
      );
   map
 };
 
-let addAllUint16TypeArrayToPool = (typeArrayMap: array(Uint16Array.t), maxSize, map) => {
-  typeArrayMap
-  |> SparseMapSystem.forEachValid(
-       [@bs] ((typeArray) => addUint16TypeArrayToPool(typeArray, maxSize, map) |> ignore)
-     );
-  map
-};
+let addAllFloat32TypeArrayToPool = (typeArrayMap: array(Float32Array.t), maxSize, map) =>
+  _addAllTypeArrayToPool(typeArrayMap, maxSize, map, addFloat32TypeArrayToPool);
+
+let addAllUint16TypeArrayToPool = (typeArrayMap: array(Uint16Array.t), maxSize, map) =>
+  _addAllTypeArrayToPool(typeArrayMap, maxSize, map, addUint16TypeArrayToPool);
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   ...state,

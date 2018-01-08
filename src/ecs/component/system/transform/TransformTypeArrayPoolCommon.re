@@ -10,12 +10,14 @@ let addTypeArrayToPool =
       localPositionMap: array(Float32Array.t),
       state: StateDataType.state
     ) => {
+  [@bs]
   TypeArrayPoolSystem.addFloat32TypeArrayToPool(
     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
     maxSize,
     TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
   )
   |> ignore;
+  [@bs]
   TypeArrayPoolSystem.addFloat32TypeArrayToPool(
     localPositionMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
     maxSize,
