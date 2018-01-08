@@ -1,10 +1,8 @@
 {
     "render": {
-        "base_commit_id": "00b22",
-        "last_generate_based_commit_id": "7e602"
+        "base_commit_id": "edcc7"
     },
     "performance": {
-        "base_commit_id": "00b22",
-        "last_generate_based_commit_id": "7e602"
+        "base_commit_id": "edcc7"
     }
 }
