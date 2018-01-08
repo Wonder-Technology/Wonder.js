@@ -96,6 +96,34 @@ let getPrecisionSource = (state: StateDataType.state) => {
   }
 };
 
+let _setSource =
+    (
+      {
+        top: sourceTop,
+        define: sourceDefine,
+        varDeclare: sourceVarDeclare,
+        funcDeclare: sourceFuncDeclare,
+        funcDefine: sourceFuncDefine,
+        body: sourceBody
+      } as sourceChunk,
+      {top, define, varDeclare, funcDeclare, funcDefine, body}
+    ) => {
+  sourceChunk.top = sourceTop ++ top;
+  sourceChunk.define = sourceDefine ++ define;
+  sourceChunk.varDeclare = sourceVarDeclare ++ varDeclare;
+  sourceChunk.funcDeclare = sourceFuncDeclare ++ funcDeclare;
+  sourceChunk.funcDefine = sourceFuncDefine ++ funcDefine;
+  sourceChunk.body = sourceBody ++ body
+};
+
+let _buildBody = ({body}, webgl1_main_end) => body ++ webgl1_main_end;
+
+let _buildTop = ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
+  top ++ _generateUniformSource(shaderLibDataArr, varDeclare, funcDefine, body);
+
+let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =>
+  top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
+
 let buildGLSLSource =
   [@bs]
   (
@@ -117,25 +145,6 @@ let buildGLSLSource =
         funcDefine: "",
         body: ""
       };
-      let _setSource =
-          (
-            {
-              top: sourceTop,
-              define: sourceDefine,
-              varDeclare: sourceVarDeclare,
-              funcDeclare: sourceFuncDeclare,
-              funcDefine: sourceFuncDefine,
-              body: sourceBody
-            } as sourceChunk,
-            {top, define, varDeclare, funcDeclare, funcDefine, body}
-          ) => {
-        sourceChunk.top = sourceTop ++ top;
-        sourceChunk.define = sourceDefine ++ define;
-        sourceChunk.varDeclare = sourceVarDeclare ++ varDeclare;
-        sourceChunk.funcDeclare = sourceFuncDeclare ++ funcDeclare;
-        sourceChunk.funcDefine = sourceFuncDefine ++ funcDefine;
-        sourceChunk.body = sourceBody ++ body
-      };
       vs.body = vs.body ++ webgl1_main_begin;
       fs.body = fs.body ++ webgl1_main_begin;
       fs.top = (precision |> Js.Option.getExn) ++ fs.top;
@@ -156,16 +165,11 @@ let buildGLSLSource =
                   )
              }
          );
-      vs.body = vs.body ++ webgl1_main_end;
-      fs.body = fs.body ++ webgl1_main_end;
+      vs.body = _buildBody(vs, webgl1_main_end);
+      fs.body = _buildBody(fs, webgl1_main_end);
       vs.top = vs.top ++ _generateAttributeSource(shaderLibDataArr);
-      vs.top =
-        vs.top ++ _generateUniformSource(shaderLibDataArr, vs.varDeclare, vs.funcDefine, vs.body);
-      fs.top =
-        fs.top ++ _generateUniformSource(shaderLibDataArr, fs.varDeclare, fs.funcDefine, fs.body);
-      (
-        vs.top ++ vs.define ++ vs.varDeclare ++ vs.funcDeclare ++ vs.funcDefine ++ vs.body,
-        fs.top ++ fs.define ++ fs.varDeclare ++ fs.funcDeclare ++ fs.funcDefine ++ fs.body
-      )
+      vs.top = _buildTop(vs, shaderLibDataArr);
+      fs.top = _buildTop(fs, shaderLibDataArr);
+      (_addAlllParts(vs), _addAlllParts(fs))
     }
   );
