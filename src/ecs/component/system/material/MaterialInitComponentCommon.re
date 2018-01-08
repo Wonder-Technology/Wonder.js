@@ -11,9 +11,11 @@ let _initMaterialShader = (gl, materialIndex: int, initShaderFuncTuple, state: S
     {
       let shaderIndex =
         ShaderSystem.initMaterialShader(
-          gl,
           materialIndex,
-          getMaterialShaderLibDataArr(gameObject, (shaderData, shader_libs, shaderLibs), state),
+          (
+            gl,
+            getMaterialShaderLibDataArr(gameObject, (shaderData, shader_libs, shaderLibs), state)
+          ),
           initShaderFuncTuple,
           state
         );

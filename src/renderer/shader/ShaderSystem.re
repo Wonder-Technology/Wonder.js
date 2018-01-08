@@ -1,3 +1,5 @@
+
+
 open ShaderType;
 
 open StateDataType;
@@ -28,14 +30,11 @@ let _join = (array: array(shaderLib)) => {
 
 let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
 
-let _init =
-    (
-      gl,
-      materialIndex: int,
-      shaderLibDataArr: shader_libs,
-      buildGLSLSource,
-      state: StateDataType.state
-    ) => {
+let getPrecisionSource = (state: StateDataType.state) =>
+  ShaderSourceBuildCommon.getPrecisionSource(state);
+
+let initMaterialShader =
+    (materialIndex: int, (gl, shaderLibDataArr), buildGLSLSource, state: StateDataType.state) => {
   let shaderData = ShaderStateCommon.getShaderData(state);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {
@@ -63,15 +62,9 @@ let _init =
   }
 };
 
-let getPrecisionSource = (state: StateDataType.state) =>
-  ShaderSourceBuildCommon.getPrecisionSource(state);
-
-let initMaterialShader =
-    (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
-  _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
-
 let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndexDataArray;
 
 let deepCopyStateForRestore = ShaderStateCommon.deepCopyStateForRestore;
 
 let restore = ShaderStateCommon.restore;
+
