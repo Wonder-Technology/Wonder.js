@@ -106,8 +106,17 @@ function _restoreToCurrentCommid(e, currentCommitId, done) {
 }
 
 module.exports = {
+    fail: function (message, done) {
+        _fail(message, done);
+    },
+    deepCopyJson: function (json) {
+        return _deepCopyJson(json);
+    },
+    getE2eConfigFilePath: function () {
+        return path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
+    },
     testInCI: function (generateDataInfo, type, generateCorrectDataFunc, runTestFunc, done) {
-        var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
+        var configFilePath = test.getE2eConfigFilePath();
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
             var currentCommitId = commitId;

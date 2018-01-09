@@ -4,12 +4,15 @@ plugins:
   prerelease:
     Linting config files:
       plugin: bumped-finepack
-    build:
+    Unit Test:
       plugin: bumped-terminal
-      command: 'npm run build'
-    test:
+      command: 'npm run test:coverage'
+    E2e Test:
       plugin: bumped-terminal
-      command: 'npm run test:pf && npm run test:coverage'
+      command: 'npm run test:render'
+    Update Base CommitId:
+      plugin: bumped-terminal
+      command: 'gulp upgradeBaseCommitId && git add test/e2e/config/e2eConfig.json && git commit -m "test(e2e-test): update base commit id"'
   postrelease:
     Generating CHANGELOG file:
       plugin: bumped-changelog
