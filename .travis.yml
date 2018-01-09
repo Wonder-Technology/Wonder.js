@@ -1,7 +1,6 @@
 language: node_js
 dist: trusty
 sudo: false
-group: deprecated-2017Q4
 addons:
   chrome: stable
 cache:
@@ -27,30 +26,29 @@ jobs:
 
 
     - stage: test
-      script: npm run build && gulp testRenderInCI
-    - stage: test
-      script: npm run build && gulp testPerformanceInCI
+      env:
+        global:
+          - CC_TEST_REPORTER_ID=9a5e1b648e2c3e7397ab79b4592037e01f8578b5be3d89c32ff258042fa7184c          
 
-    # - stage: test
-    #   env:
-    #     global:
-    #       - CC_TEST_REPORTER_ID=9a5e1b648e2c3e7397ab79b4592037e01f8578b5be3d89c32ff258042fa7184c
-
-    #   script: npm run buildAll && npm run test:ci
+      script: npm run buildAll && npm run test:ci
 
 
 
-    #   before_script:
-    #     - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    #     - chmod +x ./cc-test-reporter
-    #     - ./cc-test-reporter before-build
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
 
 
-    #   after_script:
-    #     # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test/coverage
-    #     - cp test/coverage/lcov.info coverage/lcov.info
-    #     # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test --debug
-    #     - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d
+      after_script:
+        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test/coverage
+        # - cp test/coverage/lcov.info coverage/lcov.info
+        - cd test
+        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test --debug
+        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d
+        - ../cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d -r 9a5e1b648e2c3e7397ab79b4592037e01f8578b5be3d89c32ff258042fa7184c
+
+
 
     - stage: deploy
       script: skip
@@ -99,5 +97,3 @@ jobs:
 #     tags: true
 # after_success:
 # - npm run codecov
-
-
