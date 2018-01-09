@@ -1,7 +1,7 @@
 open VboBufferType;
 
 let getOrCreateBuffer =
-    (gl, geometryIndex: int, bufferMap, createBuffer, getDataFunc, state: StateDataType.state) =>
+    (gl, (geometryIndex: int, bufferMap), (createBuffer, getDataFunc), state: StateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
