@@ -18,6 +18,9 @@ let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
          )
      );
 
+let getShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+  getMaterialData(state).shaderIndexMap |> WonderCommonlib.SparseMapSystem.get(materialIndex);
+
 let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(materialIndex);
 
