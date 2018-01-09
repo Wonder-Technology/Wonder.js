@@ -34,21 +34,23 @@ let _setDefaultLocalPosition = (index: int, localPositionMap, state: StateDataTy
 let _isNotNeedInitData = (index: int, childMap) =>
   childMap |> WonderCommonlib.SparseMapSystem.has(index);
 
-let _initDataWhenCreate =
-    (index: int, childMap, localToWorldMatrixMap, localPositionMap, state: StateDataType.state) =>
+let _initDataWhenCreate = (index: int, state: StateDataType.state) => {
+  let {childMap, localToWorldMatrixMap, localPositionMap} as data =
+    TransformStateCommon.getTransformData(state);
   _isNotNeedInitData(index, childMap) ?
     () :
     {
       _setDefaultChildren(index, childMap) |> ignore;
       _setDefaultLocalToWorldMatrix(index, localToWorldMatrixMap, state) |> ignore;
       _setDefaultLocalPosition(index, localPositionMap, state) |> ignore
-    };
+    }
+};
 
 let create = (state: StateDataType.state) => {
   let {index, disposedIndexArray, childMap, localToWorldMatrixMap, localPositionMap} as data =
     TransformStateCommon.getTransformData(state);
   let (index, newIndex) = generateIndex(index, disposedIndexArray);
   data.index = newIndex;
-  _initDataWhenCreate(index, childMap, localToWorldMatrixMap, localPositionMap, state);
+  _initDataWhenCreate(index, state);
   index
 };
