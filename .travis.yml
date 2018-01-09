@@ -38,7 +38,7 @@ jobs:
 
       after_script:
         # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test/coverage
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix test/coverage --debug
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix test --debug
 
     - stage: deploy
       script: skip
