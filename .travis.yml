@@ -1,6 +1,6 @@
 language: node_js
-dist: trusty
-sudo: false
+# dist: trusty
+# sudo: false
 addons:
   chrome: stable
 cache:
@@ -16,10 +16,10 @@ install:
 
 jobs:
   include:
-    # - script: npm run build && gulp testRenderInCI
-    # - script: npm run build && gulp testPerformanceInCI
-    # - script: npm run buildAll && npm run test:ci
-
+    - stage: test
+      script: npm run build && gulp testRenderInCI
+    - stage: test
+      script: npm run build && gulp testPerformanceInCI
 
     - stage: test
       env:
@@ -32,7 +32,7 @@ jobs:
 
 
       before_script:
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-0.1.4-linux-amd64 > ./cc-test-reporter
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
         - ./cc-test-reporter before-build
 
@@ -41,6 +41,8 @@ jobs:
         - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d -r 864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
 
 
+      after_success:
+      - npm run codecov
 
 
     - stage: deploy
