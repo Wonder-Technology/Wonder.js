@@ -6,7 +6,7 @@ let performanceTestData = {
   commonData: {
     isClosePage: true,
     execCountWhenTest: 15,
-    execCountWhenGenerateBenchmark: 30,
+    execCountWhenGenerateBenchmark: 25,
     compareCount: 5,
     maxAllowDiffTimePercent: 50,
     maxAllowDiffMemoryPercent: 50,
