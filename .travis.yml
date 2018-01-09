@@ -16,6 +16,36 @@ install:
 
 jobs:
   include:
+    - stage: test
+      script: npm run test:renderCI
+    - stage: test
+      script: npm run test:pfCI
+
+    - stage: test
+      env:
+        global:
+          - CC_TEST_REPORTER_ID=864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
+
+
+      script: npm run test:ci
+
+
+
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+
+
+      after_script:
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d -r 864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
+
+
+      # TODO need remove
+      after_success:
+      - npm run codecov
+
+
     - stage: deploy
       script: npm run buildAll
       deploy:
@@ -28,3 +58,5 @@ jobs:
         on:
           repo: Wonder-Technology/Wonder.js
           branch: master
+          tags: true
+
