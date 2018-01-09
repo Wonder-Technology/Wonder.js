@@ -25,33 +25,34 @@ let decideSpecificRenderSettingAndSetToState =
      */
   state;
 
-let init = (state: StateDataType.state) => {
-  open Render_setting;
-  open Json;
-  open Decode;
-  let state =
-    state
-    |> getRenderSetting
-    |> filterHardwareRelatedSetting
-    |> decideSpecificRenderSettingAndSetToState(state);
-  state
-  |> execJobs(
-       [@bs] DeviceManagerSystem.getGl(state),
-       getInitPipelineExecutableJobs(
-         getRenderSetting(state),
-         getInitPipelines(state),
-         getInitJobs(state)
-       )
-     )
-};
+let _execJobs = (executableJobs, state) =>
+  state |> execJobs([@bs] DeviceManagerSystem.getGl(state), executableJobs);
+
+let init = (state: StateDataType.state) =>
+  Render_setting.(
+    Json.(
+      Decode.(
+        state
+        |> getRenderSetting
+        |> filterHardwareRelatedSetting
+        |> decideSpecificRenderSettingAndSetToState(state)
+        |> _execJobs(
+             getInitPipelineExecutableJobs(
+               getRenderSetting(state),
+               getInitPipelines(state),
+               getInitJobs(state)
+             )
+           )
+      )
+    )
+  );
 
 let render = (state: StateDataType.state) =>
   Render_setting.(
     Json.(
       Decode.(
         state
-        |> execJobs(
-             [@bs] DeviceManagerSystem.getGl(state),
+        |> _execJobs(
              getRenderPipelineExecutableJobs(
                getRenderSetting(state),
                getRenderPipelines(state),
