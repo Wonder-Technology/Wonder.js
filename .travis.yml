@@ -17,9 +17,9 @@ install:
 jobs:
   include:
     - stage: test
-      script: npm run build && gulp testRenderInCI
+      script: npm run test:renderCI
     - stage: test
-      script: npm run build && gulp testPerformanceInCI
+      script: npm run test:pfCI
 
     - stage: test
       env:
@@ -27,7 +27,7 @@ jobs:
           - CC_TEST_REPORTER_ID=864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
 
 
-      script: npm run buildAll && npm run test:ci
+      script: npm run test:ci
 
 
 
@@ -41,6 +41,7 @@ jobs:
         - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d -r 864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
 
 
+      # TODO need remove
       after_success:
       - npm run codecov
 
