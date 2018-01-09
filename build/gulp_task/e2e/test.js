@@ -116,7 +116,7 @@ module.exports = {
         return path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
     },
     testInCI: function (generateDataInfo, type, generateCorrectDataFunc, runTestFunc, done) {
-        var configFilePath = test.getE2eConfigFilePath();
+        var configFilePath = this.getE2eConfigFilePath();
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
             var currentCommitId = commitId;
@@ -174,7 +174,7 @@ module.exports = {
         });
     },
     testInLocal: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, done) {
-        var configFilePath = path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
+        var configFilePath = this.getE2eConfigFilePath();
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
             var currentCommitId = commitId;
