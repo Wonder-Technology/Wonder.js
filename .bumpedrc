@@ -2,8 +2,6 @@ files:
   - package.json
 plugins:
   prerelease:
-    Linting config files:
-      plugin: bumped-finepack
     Unit Test:
       plugin: bumped-terminal
       command: 'npm run test:coverage'
