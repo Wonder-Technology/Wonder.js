@@ -14,59 +14,77 @@ install:
 - yarn install
 
 
-# jobs:
-#   include:
-#     - script: npm run build && gulp testRenderInCI
-#     - script: npm run build && gulp testPerformanceInCI
-#     - script: npm run buildAll && npm run test:ci
-#     - stage: deploy
-#       script: skip
-#       deploy:
-#         provider: releases
-#         api_key:
-#           secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
-#         skip_cleanup: true
-#         overwrite: true
-#         file: dist/wd.js
-#         on:
-#           repo: Wonder-Technology/Wonder.js
-#           branch: master
-#           tags: true
 
 
 
-env:
-  global:
-    - CC_TEST_REPORTER_ID=9a5e1b648e2c3e7397ab79b4592037e01f8578b5be3d89c32ff258042fa7184c
+
+jobs:
+  include:
+    # - script: npm run build && gulp testRenderInCI
+    # - script: npm run build && gulp testPerformanceInCI
+    # - script: npm run buildAll && npm run test:ci
+    - stage: test
+      env:
+        global:
+          - CC_TEST_REPORTER_ID=9a5e1b648e2c3e7397ab79b4592037e01f8578b5be3d89c32ff258042fa7184c
+
+      script: npm run buildAll && npm run test:ci
+      script: bundle exec rspec
+
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
 
 
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+      after_script:
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 
-script:
-# - npm run build
-# - gulp testRenderInCI
-# - npm run build
-# - gulp testPerformanceInCI
-- npm run buildAll
-- npm run test:ci
+    - stage: deploy
+      script: skip
+      deploy:
+        provider: releases
+        api_key:
+          secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
+        skip_cleanup: true
+        overwrite: true
+        file: dist/wd.js
+        on:
+          repo: Wonder-Technology/Wonder.js
+          branch: master
+          tags: true
 
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
-deploy:
-  provider: releases
-  api_key:
-    secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
-  skip_cleanup: true
-  overwrite: true
-  file: dist/wd.js
-  on:
-    repo: Wonder-Technology/Wonder.js
-    branch: master
-    tags: true
+
+
+# before_script:
+#   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#   - chmod +x ./cc-test-reporter
+#   - ./cc-test-reporter before-build
+
+
+# script:
+# # - npm run build
+# # - gulp testRenderInCI
+# # - npm run build
+# # - gulp testPerformanceInCI
+# - npm run buildAll
+# - npm run test:ci
+
+# after_script:
+#   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
+#   skip_cleanup: true
+#   overwrite: true
+#   file: dist/wd.js
+#   on:
+#     repo: Wonder-Technology/Wonder.js
+#     branch: master
+#     tags: true
 # after_success:
 # - npm run codecov
