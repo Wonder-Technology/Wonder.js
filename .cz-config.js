@@ -32,7 +32,8 @@ module.exports = {
       { name: "pf-test" },
       { name: "render-test" },
       { name: "e2e-test" },
-      { name: "unit-test" }
+      { name: "unit-test" },
+      { name: "coverage" }
     ],
     chore: [
       { name: "ci" },

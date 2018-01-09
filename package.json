@@ -8,7 +8,7 @@
   "main": "",
   "scripts": {
     "start": "node ./server/app.js",
-    "codecov": "cat test/coverage/lcov.info | codecov",
+    "codecov": "cat coverage/lcov.info | codecov",
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
     "buildAll": "npm run build && gulp build",
