@@ -47,10 +47,10 @@ before_script:
 
 
 script:
-- npm run build
-- gulp testRenderInCI
-- npm run build
-- gulp testPerformanceInCI
+# - npm run build
+# - gulp testRenderInCI
+# - npm run build
+# - gulp testPerformanceInCI
 - npm run buildAll
 - npm run test:ci
 
