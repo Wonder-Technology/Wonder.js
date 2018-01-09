@@ -2,8 +2,8 @@ open Contract;
 
 open StateDataType;
 
-/* todo add pause,resume, stop control */
-/* todo add more Items */
+/* TODO add pause,resume, stop control */
+/* TODO add more Items */
 let _remove = (index: int, state: state) => {
   let {count, funcRecordArray} as data = ScheduleStateCommon.getSchedulerData(state);
   ArraySystem.deleteBySwap(index, count - 1, funcRecordArray) |> ignore;

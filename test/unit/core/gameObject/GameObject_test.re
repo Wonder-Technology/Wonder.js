@@ -70,7 +70,7 @@ let _ =
                       |> toThrowMessage("this type of component is already exist")
                     }
                   );
-                  /* todo: test after add disposeGameObjectTransformComponet */
+                  /* TODO: test after add disposeGameObjectTransformComponet */
                   /* test "add transform component" (fun () => {
                      }); */
                   test(

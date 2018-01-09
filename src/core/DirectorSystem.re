@@ -21,11 +21,11 @@ let _run = (time: float, state: StateDataType.state) =>
   /* let elapsed = TimeControllerSystem.computeElapseTime(time, state); */
   state |> _sync(time) |> WebGLRenderAdmin.render;
 
-/* todo unit test */
+/* TODO unit test */
 let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
 
 let start = (state: StateDataType.state) => {
-  /* todo save loop id */
+  /* TODO save loop id */
   let rec _loop = (time: float, state: StateDataType.state) : int =>
     Dom.requestAnimationFrame(
       (time: float) => state |> loopBody(time) |> setState(stateData) |> _loop(time) |> ignore

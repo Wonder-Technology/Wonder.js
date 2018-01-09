@@ -25,7 +25,7 @@ let testWithMessageFunc = (messageFunc: unit => string, func: unit => unit) =>
     failwith({j|$message->$failMessage|j})
   };
 
-/* todo use conditional compilation */
+/* TODO use conditional compilation */
 let requireCheck = (f: unit => unit) : unit =>
   switch (_getIsTestFromStateData(stateData)) {
   | true => f()
@@ -33,7 +33,7 @@ let requireCheck = (f: unit => unit) : unit =>
   };
 
 /* (); */
-/* todo use conditional compilation */
+/* TODO use conditional compilation */
 let ensureCheck = (f: 'a => unit, returnVal: 'a) : 'a =>
   switch (_getIsTestFromStateData(stateData)) {
   | true =>

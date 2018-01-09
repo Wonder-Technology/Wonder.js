@@ -186,7 +186,7 @@ let _ =
                           |> toThrowMessage("capacity should be a multiplier of 4")
                       )
                   );
-                  /* todo test modelMatrixFloat32Array */
+                  /* TODO test modelMatrixFloat32Array */
                   describe(
                     "if current capacity < target capacity",
                     () => {
@@ -793,7 +793,7 @@ let _ =
       describe(
         "draw instance",
         () =>
-          /* todo test
+          /* TODO test
              test
              ("if sourceInstance gameObject not has indices, contract error",
              (

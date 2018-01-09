@@ -22,7 +22,7 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceArrayMap} as data)
   data
 };
 
-/* todo init objectInstance gameObjects when init? */
+/* TODO init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
   _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getSourceInstanceData(state))

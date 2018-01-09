@@ -12,7 +12,7 @@ let filterHardwareRelatedSetting =
 
 let decideSpecificRenderSettingAndSetToState =
     (state: StateDataType.state, hardwareSetting: hardwareRelatedSetting) =>
-  /* todo set specific render setting
+  /* TODO set specific render setting
 
      diferent setting can has different jobs mapping to the same job name.
      e.g.

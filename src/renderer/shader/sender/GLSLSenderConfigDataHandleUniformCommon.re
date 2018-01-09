@@ -23,7 +23,7 @@ let _getModelMNoCachableData =
 
 let _addUniformSendDataByType =
     ((type_, shaderCacheMap, name, pos), sendDataArrTuple, getDataFunc) =>
-  /* todo remove Obj.magic? */
+  /* TODO remove Obj.magic? */
   switch type_ {
   | "mat4" =>
     GLSLSenderConfigDataHandleUniformNoCacheCommon.addUniformSendDataByType(

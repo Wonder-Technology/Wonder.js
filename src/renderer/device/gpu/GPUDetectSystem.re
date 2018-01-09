@@ -20,7 +20,7 @@ let _detectExtension = (gl, gpuDetectData) => {
 };
 
 let _detectPrecision = (gl, gpuDetectData) => {
-  /* todo handle Some experimental-webgl implementations do not have getShaderPrecisionFormat:
+  /* TODO handle Some experimental-webgl implementations do not have getShaderPrecisionFormat:
 
      if (!gl.getShaderPrecisionFormat) {
          gpuDetectData.precision = EGPUPrecision.HIGHP;

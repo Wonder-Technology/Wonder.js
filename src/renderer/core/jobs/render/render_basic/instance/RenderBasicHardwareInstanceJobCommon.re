@@ -145,7 +145,7 @@ let _getModelMatrixMapTuple = (state) => {
 };
 
 let render = (gl, uid, state: StateDataType.state) => {
-  /* todo optimize for static data:
+  /* TODO optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
@@ -171,6 +171,6 @@ let render = (gl, uid, state: StateDataType.state) => {
     ),
     Obj.magic(extension)
   );
-  /* todo unbind? */
+  /* TODO unbind? */
   state
 };

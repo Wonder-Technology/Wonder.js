@@ -76,7 +76,7 @@ let _ =
                         }
                       );
                       test
-                        /* todo test webgl2 context */
+                        /* TODO test webgl2 context */
                         (
                           "save canvas to state and get webgl1 context from it",
                           () =>

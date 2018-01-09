@@ -10,7 +10,7 @@ let getMaxTypeArrayPoolSize = (state: StateDataType.state) =>
 let getMaxBigTypeArrayPoolSize = (state: StateDataType.state) =>
   state.memoryConfig.maxBigTypeArrayPoolSize;
 
-/* todo setMainConfig should set theses config */
+/* TODO setMainConfig should set theses config */
 let initData = () => {
   maxDisposeCount: 1000,
   maxTypeArrayPoolSize: 5000,

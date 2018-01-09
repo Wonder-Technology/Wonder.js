@@ -101,6 +101,6 @@ let _convertContextConfigDataToJsObj =
   "preserveDrawingBuffer": Js.Boolean.to_js_boolean(preserveDrawingBuffer)
 };
 
-/* todo support webgl2 */
+/* TODO support webgl2 */
 let getContext = (canvas, options: MainConfigType.contextConfig) =>
   getWebgl1Context(canvas, _convertContextConfigDataToJsObj(options));

@@ -62,7 +62,7 @@ let _ =
 
              })
              ); */
-          /* todo should test with more attribute */
+          /* TODO should test with more attribute */
           /* describe(
             "disable all attributes",
             () => {
@@ -427,7 +427,7 @@ let _ =
                          ("differenc shader's vertexAttribHistory of the same attribute data pos are independent",
                          (
                          () => {
-                           todo test switch program
+                           TODO test switch program
                          })
                          );
                          */
@@ -884,7 +884,7 @@ let _ =
                        let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
                        (state, geometry1, geometry2)
                      };
-                     todo use diferent geometry which have different indices count!
+                     TODO use diferent geometry which have different indices count!
                      test(
                        "different gameObject(with the same material, different geometry) should drawElements with different geometry data",
                        () => {
@@ -923,7 +923,7 @@ let _ =
             }
           )
       )
-      /* todo test
+      /* TODO test
          test
          ("if gameObject not has indices, contract error",
          (

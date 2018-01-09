@@ -168,7 +168,7 @@ let _ =
                 }
               )
           );
-          /* todo test if cameraController->gameObject->transform not exist, error */
+          /* TODO test if cameraController->gameObject->transform not exist, error */
           test(
             "get cameraController->gameObject->transform-> localToWorldMatrix->invert",
             () => {

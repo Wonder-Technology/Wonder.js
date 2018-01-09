@@ -10,7 +10,7 @@ open DeviceManagerSystem;
 
 open JsObjUtils;
 
-/* todo not set default twice! */
+/* TODO not set default twice! */
 let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigType.contextConfig => {
   alpha: Js.to_bool(getValueFromJsObj(contextConfigObj##alpha, Js.true_)),
   depth: Js.to_bool(getValueFromJsObj(contextConfigObj##depth, Js.true_)),
@@ -45,7 +45,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
         preserveDrawingBuffer: false
       }
     },
-  /* todo remove geometryPointDataBufferCount */
+  /* TODO remove geometryPointDataBufferCount */
   bufferConfig:
     switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
@@ -64,7 +64,7 @@ let setConfig = (config: Js.t({..}), state: state) => {
   (config, state)
 };
 
-/* todo set pixel ratio ... */
+/* TODO set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
   let gl = canvas |> createGL(config.contextConfig);

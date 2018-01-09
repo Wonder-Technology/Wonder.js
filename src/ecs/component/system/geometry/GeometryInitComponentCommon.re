@@ -24,7 +24,7 @@ let initGeometry = (index: int, state: StateDataType.state) =>
     | None => state
     | Some(computeDataFunc) =>
       let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
-      /* todo compute normals */
+      /* TODO compute normals */
       state
       |> GeometryOperateVerticesCommon.setVerticesWithArray(index, vertices)
       |> GeometryOperateIndicesCommon.setIndicesWithArray(index, indices)

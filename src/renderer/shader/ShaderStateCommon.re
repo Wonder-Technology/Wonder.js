@@ -65,7 +65,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
    )
  };
 let restore = (currentState, targetState) => {
-  /* todo optimize: collect currentState-> no used shader/program to pool */
+  /* TODO optimize: collect currentState-> no used shader/program to pool */
   requireCheck(
     () =>
       Contract.Operators.(
@@ -84,7 +84,7 @@ let restore = (currentState, targetState) => {
   );
   let {shaderIndexMap: currentShaderIndexMap} = getShaderData(currentState);
   let {shaderIndexMap: targetShaderIndexMap} as targetShaderData = getShaderData(targetState);
-  /* ////todo ensure check: shaderIndexMap should has 0-index-1 key, no undefined! */
+  /* ////TODO ensure check: shaderIndexMap should has 0-index-1 key, no undefined! */
   let (index, intersectShaderIndexMap) =
      _getIntersectShaderIndexMap(currentShaderIndexMap, targetShaderIndexMap);
   /* let targetShaderData = getShaderData(targetState); */

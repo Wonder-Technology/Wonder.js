@@ -46,7 +46,7 @@ let start = (state: StateDataType.state) => {
   state
 };
 
-/* todo support pause */
+/* TODO support pause */
 let computeElapseTime = (time: float, state: StateDataType.state) => {
   let {startTime} as data = _getTimeControllerData(state);
   data.elapsed = NumberUtils.leastFloat(0., time -. startTime);

@@ -2,7 +2,7 @@ open CameraControllerType;
 
 let handleCloneComponent =
     (sourceComponent: cameraController, countRangeArr: array(int), state: StateDataType.state) => {
-  /* todo judge is perspective camera or other camera */
+  /* TODO judge is perspective camera or other camera */
   open PerspectiveCameraOperateCommon;
   let cameraData = CameraControllerStateCommon.getPerspectiveCameraData(state);
   let near = getNear(sourceComponent, cameraData) |> Js.Option.getExn;

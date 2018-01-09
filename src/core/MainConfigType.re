@@ -37,7 +37,7 @@ type mainConfigData = {
   contextConfig,
   bufferConfig,
   gpuConfig
-  /* todo add more config */
+  /* TODO add more config */
   /* screenSize: any, */
   /* useDevicePixelRatio: bool, */
   /* workerConfig: WorkerConfigData, */

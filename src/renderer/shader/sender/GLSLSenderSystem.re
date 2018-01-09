@@ -12,7 +12,7 @@ open Js.Typed_array;
 
 let getGLSLSenderData = getGLSLSenderData;
 
-/* todo optimize? */
+/* TODO optimize? */
 let disableVertexAttribArray = (gl, state: StateDataType.state) => {
 
   requireCheck(

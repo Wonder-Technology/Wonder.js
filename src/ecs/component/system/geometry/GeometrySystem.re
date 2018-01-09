@@ -54,7 +54,7 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
 
 let getDrawMode = (gl) => getTriangles(gl);
 
-/* todo handle UInt32Array */
+/* TODO handle UInt32Array */
 let getIndexType = (gl) => getUnsignedShort(gl);
 
 let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;

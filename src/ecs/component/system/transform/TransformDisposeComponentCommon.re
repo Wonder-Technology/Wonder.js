@@ -78,7 +78,7 @@ let handleBatchDisposeComponent =
       );
       let {disposedIndexArray} as data = getTransformData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
-      /* todo optimize: batch remove parent,child? */
+      /* TODO optimize: batch remove parent,child? */
       transformArray
       |> WonderCommonlib.ArraySystem.forEach([@bs] ((transform) => _disposeData(transform, state)));
       state
