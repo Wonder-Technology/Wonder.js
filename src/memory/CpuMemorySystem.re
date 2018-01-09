@@ -4,87 +4,113 @@ open Contract;
 
 open StateDataType;
 
-let reAllocateGameObject = (state: StateDataType.state) => {
+let _setNewDataToState =
+    (
+      newAliveUidArray,
+      state,
+      (
+        newTransformMap,
+        newMeshRendererMap,
+        newGeometryMap,
+        newCameraControllerMap,
+        newMaterialMap,
+        newSourceInstanceMap,
+        newObjectInstanceMap
+      )
+    ) => {
+  ...state,
+  gameObjectData: {
+    ...state.gameObjectData,
+    disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+    aliveUidArray: newAliveUidArray,
+    transformMap: newTransformMap,
+    meshRendererMap: newMeshRendererMap,
+    geometryMap: newGeometryMap,
+    cameraControllerMap: newCameraControllerMap,
+    materialMap: newMaterialMap,
+    sourceInstanceMap: newSourceInstanceMap,
+    objectInstanceMap: newObjectInstanceMap
+  }
+};
+
+let _allocateNewMaps = (newAliveUidArray, state) => {
   let {
-        aliveUidArray,
-        disposedUidMap,
-        transformMap,
-        meshRendererMap,
-        geometryMap,
-        materialMap,
-        cameraControllerMap,
-        sourceInstanceMap,
-        objectInstanceMap
-      } as data =
+    transformMap,
+    meshRendererMap,
+    geometryMap,
+    materialMap,
+    cameraControllerMap,
+    sourceInstanceMap,
+    objectInstanceMap
+  } =
     GameObjectAdminAci.getData(state);
-  let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newMeshRendererMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newCameraControllerMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newMaterialMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newSourceInstanceMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newObjectInstanceMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newAliveUidArray =
-    aliveUidArray
-    |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
   newAliveUidArray
-  |> WonderCommonlib.ArraySystem.forEach(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
-         (uid) => {
+         (
+           (
+             newTransformMap,
+             newMeshRendererMap,
+             newGeometryMap,
+             newCameraControllerMap,
+             newMaterialMap,
+             newSourceInstanceMap,
+             newObjectInstanceMap
+           ),
+           uid
+         ) => (
            newTransformMap
            |> WonderCommonlib.SparseMapSystem.set(
                 uid,
                 transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid)
-              )
-           |> ignore;
+              ),
            switch (meshRendererMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
+           | None => newMeshRendererMap
            | Some(meshRenderer) =>
-             newMeshRendererMap |> WonderCommonlib.SparseMapSystem.set(uid, meshRenderer) |> ignore
-           };
+             newMeshRendererMap |> WonderCommonlib.SparseMapSystem.set(uid, meshRenderer)
+           },
            switch (geometryMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
-           | Some(geometry) =>
-             newGeometryMap |> WonderCommonlib.SparseMapSystem.set(uid, geometry) |> ignore
-           };
-           switch (materialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
-           | Some(material) =>
-             newMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material) |> ignore
-           };
+           | None => newGeometryMap
+           | Some(geometry) => newGeometryMap |> WonderCommonlib.SparseMapSystem.set(uid, geometry)
+           },
            switch (cameraControllerMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
+           | None => newCameraControllerMap
            | Some(cameraController) =>
-             newCameraControllerMap
-             |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
-             |> ignore
-           };
+             newCameraControllerMap |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
+           },
+           switch (materialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newMaterialMap
+           | Some(material) => newMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
+           },
            switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
+           | None => newSourceInstanceMap
            | Some(sourceInstance) =>
-             newSourceInstanceMap
-             |> WonderCommonlib.SparseMapSystem.set(uid, sourceInstance)
-             |> ignore
-           };
+             newSourceInstanceMap |> WonderCommonlib.SparseMapSystem.set(uid, sourceInstance)
+           },
            switch (objectInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => ()
+           | None => newObjectInstanceMap
            | Some(objectInstance) =>
-             newObjectInstanceMap
-             |> WonderCommonlib.SparseMapSystem.set(uid, objectInstance)
-             |> ignore
+             newObjectInstanceMap |> WonderCommonlib.SparseMapSystem.set(uid, objectInstance)
            }
-         }
+         )
+       ),
+       (
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty(),
+         WonderCommonlib.SparseMapSystem.createEmpty()
        )
-     );
-  data.disposedUidMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  data.aliveUidArray = newAliveUidArray;
-  data.transformMap = newTransformMap;
-  data.meshRendererMap = newMeshRendererMap;
-  data.geometryMap = newGeometryMap;
-  data.materialMap = newMaterialMap;
-  data.cameraControllerMap = newCameraControllerMap;
-  data.sourceInstanceMap = newSourceInstanceMap;
-  data.objectInstanceMap = newObjectInstanceMap;
-  state
+     )
+};
+
+let reAllocateGameObject = (state: StateDataType.state) => {
+  let {aliveUidArray, disposedUidMap} as data = GameObjectAdminAci.getData(state);
+  let newAliveUidArray =
+    aliveUidArray
+    |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
+  state |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, state)
 };
