@@ -11,7 +11,7 @@
   "notify": false,
   "verbose": true,
   "collectCoverage":true,
-  "coverageDirectory":"<rootDir>/test/coverage/",
+  "coverageDirectory":"<rootDir>/coverage/",
   "coveragePathIgnorePatterns":[
     "<rootDir>/lib/js/src/.+/Director.*",
     "<rootDir>/lib/js/src/utils/",
