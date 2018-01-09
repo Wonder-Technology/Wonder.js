@@ -1,6 +1,6 @@
 language: node_js
-# dist: trusty
-# sudo: false
+dist: trusty
+sudo: false
 addons:
   chrome: stable
 cache:
@@ -58,44 +58,3 @@ jobs:
           repo: Wonder-Technology/Wonder.js
           branch: master
           tags: true
-
-
-
-
-# env:
-#   global:
-#     - CC_TEST_REPORTER_ID=864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
-
-
-
-
-# before_script:
-#   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-#   - chmod +x ./cc-test-reporter
-#   - ./cc-test-reporter before-build
-
-
-# script:
-# # - npm run build
-# # - gulp testRenderInCI
-# # - npm run build
-# # - gulp testPerformanceInCI
-# - npm run buildAll
-# - npm run test:ci
-
-# after_script:
-# - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -debug
-
-# deploy:
-#   provider: releases
-#   api_key:
-#     secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
-#   skip_cleanup: true
-#   overwrite: true
-#   file: dist/wd.js
-#   on:
-#     repo: Wonder-Technology/Wonder.js
-#     branch: master
-#     tags: true
-# after_success:
-# - npm run codecov
