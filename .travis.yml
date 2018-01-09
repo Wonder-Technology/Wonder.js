@@ -37,8 +37,7 @@ jobs:
 
 
       after_script:
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix ./test/coverage/lcov.info
-
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test/coverage/lcov.info 
 
     - stage: deploy
       script: skip
