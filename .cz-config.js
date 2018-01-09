@@ -41,7 +41,8 @@ module.exports = {
       { name: "gulp" },
       { name: "package.json" },
       { name: "publish" },
-      { name: "code climate" }
+      { name: "code climate" },
+      { name: "readme" }
     ]
   },
   // override the messages, defaults are as follows
