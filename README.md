@@ -21,7 +21,6 @@ It is currently in alpha, any contributions are very welcome.
 To build a elegant, high performance 3D engine with full functions.
 # Document
 
-Please learn samples in examples/samples/ to get more info.
 # Design
 - Functional Programming
 - Functional Reactive Programming
