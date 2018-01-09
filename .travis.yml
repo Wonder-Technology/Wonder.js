@@ -41,7 +41,7 @@ script:
 after_script:
 # - cd test
 # - ../cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -r 864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
-- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --debug
+- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -debug -r 864730435b2a0b3d8f054495c28797d2f838803f3f710c95b23a947535e1e178
 
 # deploy:
 #   provider: releases
