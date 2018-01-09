@@ -1,3 +1,34 @@
+<a name="1.0.0-alpha.13"></a>
+# [1.0.0-alpha.13](https://github.com/yyc-git/Wonder.js/compare/1.0.0-alpha.12...1.0.0-alpha.13) (2018-01-09)
+
+
+### Bug Fixes
+
+* change "DreamForest" to "Wonder-Technology" ([e5afdb7](https://github.com/yyc-git/Wonder.js/commit/e5afdb7))
+* rename "cacheable" to "cachable" ([f90506a](https://github.com/yyc-git/Wonder.js/commit/f90506a))
+* **license:** fix author and date ([e2f18c9](https://github.com/yyc-git/Wonder.js/commit/e2f18c9))
+* **render-test:** fix "gulp build" error: Cannot find module 'xxx/lib/js/test/render/TestRender.js' ([1029a99](https://github.com/yyc-git/Wonder.js/commit/1029a99))
+
+
+### Features
+
+* **canvas:** use full screen  canvas ([d992876](https://github.com/yyc-git/Wonder.js/commit/d992876))
+* **canvas:** use full screen canvas ([95f38da](https://github.com/yyc-git/Wonder.js/commit/95f38da))
+
+
+### Performance Improvements
+
+* **code climate:** solve performance reduce problem caused by refactor ([0f56d2a](https://github.com/yyc-git/Wonder.js/commit/0f56d2a))
+
+
+### Reverts
+
+* "chore(release): 1.0.0-alpha.13" ([84dbeb4](https://github.com/yyc-git/Wonder.js/commit/84dbeb4))
+* "chore(release): 1.0.0-alpha.13" ([698488a](https://github.com/yyc-git/Wonder.js/commit/698488a))
+* chore(release): 1.0.0-alpha.13 ([7321f92](https://github.com/yyc-git/Wonder.js/commit/7321f92))
+
+
+
 <a name="1.0.0-alpha.12"></a>
 # [1.0.0-alpha.12](https://github.com/yyc-git/Wonder.js/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2017-12-28)
 
