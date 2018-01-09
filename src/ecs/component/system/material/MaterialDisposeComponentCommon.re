@@ -18,6 +18,14 @@ let _disposeData = (material: material, state: StateDataType.state) => {
   state
 };
 
+let _handleDispose = (disposedIndexArray, material: material, state: StateDataType.state) =>
+  switch (MaterialGroupCommon.isGroupMaterial(material, state)) {
+  | false =>
+    disposedIndexArray |> Js.Array.push(material) |> ignore;
+    state |> _disposeData(material)
+  | true => MaterialGroupCommon.decreaseGroupCount(material, state)
+  };
+
 let handleDisposeComponent = (material: material, state: StateDataType.state) => {
   requireCheck(
     () =>
@@ -25,13 +33,7 @@ let handleDisposeComponent = (material: material, state: StateDataType.state) =>
         ComponentDisposeComponentCommon.checkComponentShouldAlive(material, isAlive, state)
       )
   );
-  let {disposedIndexArray} = getMaterialData(state);
-  switch (MaterialGroupCommon.isGroupMaterial(material, state)) {
-  | false =>
-    disposedIndexArray |> Js.Array.push(material) |> ignore;
-    state |> _disposeData(material)
-  | true => MaterialGroupCommon.decreaseGroupCount(material, state)
-  }
+  _handleDispose(getMaterialData(state).disposedIndexArray, material, state)
 };
 
 let handleBatchDisposeComponent =
@@ -58,16 +60,7 @@ let handleBatchDisposeComponent =
       let {disposedIndexArray} as data = getMaterialData(state);
       materialArray
       |> ArraySystem.reduceState(
-           [@bs]
-           (
-             (state, material) =>
-               switch (MaterialGroupCommon.isGroupMaterial(material, state)) {
-               | false =>
-                 disposedIndexArray |> Js.Array.push(material) |> ignore;
-                 state |> _disposeData(material)
-               | true => MaterialGroupCommon.decreaseGroupCount(material, state)
-               }
-           ),
+           [@bs] ((state, material) => _handleDispose(disposedIndexArray, material, state)),
            state
          )
     }
