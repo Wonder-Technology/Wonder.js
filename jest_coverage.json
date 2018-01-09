@@ -10,14 +10,26 @@
   "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
   "notify": false,
   "verbose": true,
-  "collectCoverage":true,
-  "coverageDirectory":"<rootDir>/coverage/",
-  "coveragePathIgnorePatterns":[
+  "collectCoverage": true,
+  "coverageDirectory": "<rootDir>/coverage/",
+  "coveragePathIgnorePatterns": [
     "<rootDir>/lib/js/src/.+/Director.*",
     "<rootDir>/lib/js/src/utils/",
     "<rootDir>/lib/js/src/definition/",
     "<rootDir>/lib/js/src/structure/",
     "<rootDir>/lib/js/src/Index.*"
   ],
-  "collectCoverageFrom" : ["lib/js/src/**/*.{js}", "!**/node_modules/**", "!**/vendor/**"]
+  "collectCoverageFrom": [
+    "lib/js/src/**/*.{js}",
+    "!**/node_modules/**",
+    "!**/vendor/**"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "lines": 95,
+      "statements": 95,
+      "branches": 80,
+      "functions": 94
+    }
+  }
 }
