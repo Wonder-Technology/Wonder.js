@@ -38,7 +38,9 @@ jobs:
 
       after_script:
         # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test/coverage
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test --debug
+        - cp test/coverage/lcov.info coverage/lcov.info
+        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --prefix /home/travis/build/Wonder-Technology/Wonder.js/test --debug
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t lcov -d
 
     - stage: deploy
       script: skip
