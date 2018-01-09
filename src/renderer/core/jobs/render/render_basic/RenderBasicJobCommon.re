@@ -16,16 +16,14 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
              | "vertex" =>
                ArrayBufferSystem.getOrCreateBuffer(
                  gl,
-                 geometryIndex,
-                 vertexBufferMap,
+                 (geometryIndex, vertexBufferMap),
                  [@bs] GeometryAdmin.unsafeGetVertices,
                  state
                )
              | "index" =>
                ElementArrayBufferSystem.getOrCreateBuffer(
                  gl,
-                 geometryIndex,
-                 elementArrayBufferMap,
+                 (geometryIndex, elementArrayBufferMap),
                  [@bs] GeometryAdmin.unsafeGetIndices,
                  state
                )
