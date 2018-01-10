@@ -10,7 +10,7 @@ plugins:
       command: 'sudo npm run test:render && sudo npm run test:pf'
     Update Base CommitId:
       plugin: bumped-terminal
-      command: 'gulp upgradeBaseCommitId && git add test/e2e/config/e2eConfig.json && git commit -m "test(e2e-test): update base commit id"'
+      command: 'sudo npm run e2e:upgradeBaseCommitId && git add test/e2e/config/e2eConfig.json && git commit -m "test(e2e-test): update base commit id"'
   postrelease:
     Generating CHANGELOG file:
       plugin: bumped-terminal
