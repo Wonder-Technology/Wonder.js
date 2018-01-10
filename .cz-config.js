@@ -25,7 +25,7 @@ module.exports = {
     refactor: [
       { name: "duplication" },
       { name: "shader" },
-      { name: "code climate" },
+      { name: "code-climate" },
       { name: "e2e-test" }
     ],
     test: [
@@ -43,7 +43,7 @@ module.exports = {
       { name: "package.json" },
       { name: "publish" },
       { name: "bumped" },
-      { name: "code climate" },
+      { name: "code-climate" },
       { name: "readme" }
     ]
   },

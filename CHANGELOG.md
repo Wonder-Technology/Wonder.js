@@ -18,7 +18,7 @@
 
 ### Performance Improvements
 
-* **code climate:** solve performance reduce problem caused by refactor ([0f56d2a](https://github.com/yyc-git/Wonder.js/commit/0f56d2a))
+* **code-climate:** solve performance reduce problem caused by refactor ([0f56d2a](https://github.com/yyc-git/Wonder.js/commit/0f56d2a))
 
 
 ### Reverts
