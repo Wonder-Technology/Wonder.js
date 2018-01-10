@@ -12,12 +12,16 @@ function _getErrorMessage(e) {
     }
 }
 
+function _exit() {
+    process.exit(1);
+}
+
 function _fail(message, done) {
     console.log("fail");
 
     console.error(message);
 
-    process.exit(1);
+    _exit();
 }
 
 function _runTestInCI(runTestFunc, browserArr, done) {
@@ -57,9 +61,7 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
         console.log("generate report...");
 
         generateReportFunc(reportFilePath, compareResultData).then(function () {
-            console.log("done");
-
-            done()
+            _exit();
         }, function (e) {
             _fail(e, done);
         })
@@ -193,6 +195,7 @@ module.exports = {
                 _runBuild(function () {
                     _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [], done);
                 });
+
                 return
             }
 
