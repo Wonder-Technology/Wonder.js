@@ -41,6 +41,7 @@ module.exports = {
       { name: "gulp" },
       { name: "package.json" },
       { name: "publish" },
+      { name: "bumped" },
       { name: "code climate" },
       { name: "readme" }
     ]

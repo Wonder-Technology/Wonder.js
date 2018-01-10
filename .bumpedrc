@@ -4,17 +4,17 @@ plugins:
   prerelease:
     Unit Test:
       plugin: bumped-terminal
-      command: 'npm run test:coverage'
+      command: 'sudo npm run test:coverage'
     E2e Test:
       plugin: bumped-terminal
-      command: 'npm run test:render && npm run test:pf'
+      command: 'sudo npm run test:render && sudo npm run test:pf'
     Update Base CommitId:
       plugin: bumped-terminal
       command: 'gulp upgradeBaseCommitId && git add test/e2e/config/e2eConfig.json && git commit -m "test(e2e-test): update base commit id"'
   postrelease:
     Generating CHANGELOG file:
       plugin: bumped-terminal
-      command: 'npm run version'
+      command: 'sudo npm run version'
     Committing new version:
       plugin: bumped-terminal
       command: 'git add CHANGELOG.md package.json && git commit -m "chore(release): v$newVersion"'
@@ -23,4 +23,4 @@ plugins:
       command: 'git tag v$newVersion && git push origin master:master && git push origin v$newVersion'
     Publishing to NPM:
       plugin: bumped-terminal
-      command: npm publish
+      command: sudo npm publish
