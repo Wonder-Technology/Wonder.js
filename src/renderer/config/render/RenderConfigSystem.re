@@ -24,10 +24,8 @@ let findFirst = (arr: array('a), func) =>
   arr
   |> ArraySystem.unsafeFind(func)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test("should find result", () => arr |> Js.Array.find(func) |> assertExist)
-         )
+       (first) =>
+         Contract.Operators.(test("should find result", () => first |> assertNullableExist))
      );
 
 let _filterTargetName = (name, targetName) => name == targetName;

@@ -16,10 +16,10 @@ let removeFromParentMap = (childIndex: int, transformData: transformData) => {
 let unsafeGetChildren = (index: int, transformData: transformData) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.childMap)
   |> ensureCheck(
-       (_) =>
+       (children) =>
          test(
            "children should exist",
-           () => WonderCommonlib.SparseMapSystem.get(index, transformData.childMap) |> assertExist
+           () => children  |> assertNullableExist
          )
      );
 

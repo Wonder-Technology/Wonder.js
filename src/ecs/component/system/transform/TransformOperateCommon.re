@@ -18,15 +18,9 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
   localToWorlMatrixMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
   |> ensureCheck(
-       (r) =>
+       (localToWorldMatrix) =>
          Contract.Operators.(
-           test(
-             "localToWorldMatrix should exist",
-             () =>
-               localToWorlMatrixMap
-               |> WonderCommonlib.SparseMapSystem.get(transform)
-               |> assertExist
-           )
+           test("localToWorldMatrix should exist", () => localToWorldMatrix |> assertNullableExist)
          )
      );
 
@@ -39,13 +33,9 @@ let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
   |> ensureCheck(
-       (r) =>
+       (localPosition) =>
          Contract.Operators.(
-           test(
-             "localPositionshould exist",
-             () =>
-               localPositionMap |> WonderCommonlib.SparseMapSystem.get(transform) |> assertExist
-           )
+           test("localPositionshould exist", () => localPosition |> assertNullableExist)
          )
      );
 
@@ -70,22 +60,6 @@ let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMa
   Float32Array.unsafe_set(typeArr, 2, z);
   data
 };
-
-let _getLocalToWorldMatrixFloat32Array = (transform: transform, localToWorldMatrixFloat32ArrayMap) =>
-  localToWorldMatrixFloat32ArrayMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "localToWorldMatrixFloat32Array should exist",
-             () =>
-               localToWorldMatrixFloat32ArrayMap
-               |> WonderCommonlib.SparseMapSystem.get(transform)
-               |> assertExist
-           )
-         )
-     );
 
 let rec update = (transform: transform, state: StateDataType.state) => {
   let {localToWorldMatrixMap, localPositionMap} as data = getTransformData(state);

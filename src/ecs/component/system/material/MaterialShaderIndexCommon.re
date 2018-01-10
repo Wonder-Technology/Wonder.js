@@ -6,15 +6,9 @@ let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
   |> ensureCheck(
-       (r) =>
+       (shaderIndex) =>
          Contract.Operators.(
-           test(
-             "shaderIndex should exist",
-             () =>
-               getMaterialData(state).shaderIndexMap
-               |> WonderCommonlib.SparseMapSystem.get(materialIndex)
-               |> assertExist
-           )
+           test("shaderIndex should exist", () => shaderIndex |> assertNullableExist)
          )
      );
 

@@ -16,13 +16,8 @@ let unsafeGetPoints = (index: int, pointsMap) =>
   pointsMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "indices should exist",
-             () => pointsMap |> WonderCommonlib.SparseMapSystem.get(index) |> assertExist
-           )
-         )
+       (points) =>
+         Contract.Operators.(test("indices should exist", () => points |> assertNullableExist))
      );
 
 let setPointsWithArray =

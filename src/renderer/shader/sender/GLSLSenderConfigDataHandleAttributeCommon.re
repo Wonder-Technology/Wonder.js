@@ -130,17 +130,9 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   attributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
-       (r) =>
+       (sendData) =>
          Contract.Operators.(
-           test(
-             "attribute send data should exist",
-             () => {
-               let {attributeSendDataMap} = getGLSLSenderData(state);
-               attributeSendDataMap
-               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-               |> assertExist
-             }
-           )
+           test("attribute send data should exist", () => sendData |> assertNullableExist)
          )
      )
 };
@@ -150,17 +142,9 @@ let getInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state
   instanceAttributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
-       (r) =>
+       (sendData) =>
          Contract.Operators.(
-           test(
-             "instance attribute send data should exist",
-             () => {
-               let {instanceAttributeSendDataMap} = getGLSLSenderData(state);
-               instanceAttributeSendDataMap
-               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-               |> assertExist
-             }
-           )
+           test("instance attribute send data should exist", () => sendData |> assertNullableExist)
          )
      )
 };

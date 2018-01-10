@@ -4,14 +4,11 @@ let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
   objectInstanceArrayMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> ensureCheck(
-       (r) =>
+       (objectInstanceArray) =>
          Contract.Operators.(
            test(
              {j|objectInstanceArray of sourceInstance:$sourceInstance should exist|j},
-             () =>
-               objectInstanceArrayMap
-               |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
-               |> assertExist
+             () => objectInstanceArray |> assertNullableExist
            )
          )
      );

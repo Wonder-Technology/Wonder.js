@@ -9,12 +9,9 @@ open Contract;
 let _unsafeGetComponent = (uid: int, componentMap: array(int)) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(uid, componentMap)
   |> ensureCheck(
-       (r) =>
+       (component) =>
          Contract.Operators.(
-           test(
-             "component should exist",
-             () => WonderCommonlib.SparseMapSystem.get(uid, componentMap) |> assertExist
-           )
+           test("component should exist", () => component |> assertNullableExist)
          )
      );
 

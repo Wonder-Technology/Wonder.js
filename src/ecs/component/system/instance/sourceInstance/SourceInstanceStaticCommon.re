@@ -14,16 +14,8 @@ let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataTyp
   SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "should exist",
-             () =>
-               SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
-               |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
-               |> assertExist
-           )
-         )
+       (isStatic) =>
+         Contract.Operators.(test("should exist", () => isStatic |> assertNullableExist))
      );
 
 let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
@@ -37,14 +29,5 @@ let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.st
   SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "should exist",
-             () =>
-               SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
-               |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
-               |> assertExist
-           )
-         )
+       (isSend) => Contract.Operators.(test("should exist", () => isSend |> assertNullableExist))
      );

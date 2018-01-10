@@ -39,6 +39,32 @@ let _ =
             }
           )
         }
+      );
+      describe(
+        "test asserts",
+        () =>
+          describe(
+            "assertNullableExist",
+            () =>
+              describe(
+                "assert Js.Nullable.t('a) should exist",
+                () => {
+                  test(
+                    "Js.Nullable.empty should fail",
+                    () =>
+                      expect(() => Js.Nullable.empty |> Contract.assertNullableExist)
+                      |> toThrowMessage("expect to be exist, but actual not")
+                  );
+                  test(
+                    "not Js.Nullable.empty should pass",
+                    () =>
+                      expect(() => Js.Nullable.return(1) |> Contract.assertNullableExist)
+                      |> not_
+                      |> toThrow
+                  )
+                }
+              )
+          )
       )
     }
   );

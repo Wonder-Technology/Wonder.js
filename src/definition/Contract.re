@@ -68,6 +68,17 @@ let assertJsFalse = (source: Js.boolean) =>
 let assertIsBool = (source: bool) =>
   _assert(source == true || source == false, "expect to be bool, but actual not");
 
+let _isNullableExist = [%bs.raw
+  {|
+function(source) {
+    return source !== undefined && source !== null;
+}
+|}
+];
+
+let assertNullableExist = (source: 'a) =>
+  _assert(_isNullableExist(source) |> Js.to_bool, "expect to be exist, but actual not");
+
 let assertExist = (source: option('a)) =>
   _assert(Js.Option.isSome(source), "expect to be exist, but actual not");
 

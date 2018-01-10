@@ -9,7 +9,7 @@ let getCurrentCameraController = (state: StateDataType.state) =>
 let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
   CameraControllerSystem.getWorldToCameraMatrix(transform, state);
 
-let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  CameraControllerSystem.getPMatrix(cameraController, state);
+let unsafeGetPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
+  CameraControllerSystem.unsafeGetPMatrix(cameraController, state);
 
 let deepCopyStateForRestore = CameraControllerSystem.deepCopyStateForRestore;

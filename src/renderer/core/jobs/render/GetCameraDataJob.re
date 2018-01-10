@@ -30,7 +30,7 @@ let _getCameraData = (state: StateDataType.state) =>
        }) */
     Some({
       vMatrix: CameraControllerAdmin.getWorldToCameraMatrix(transform, state),
-      pMatrix: CameraControllerAdmin.getPMatrix(currentCameraController, state)
+      pMatrix: CameraControllerAdmin.unsafeGetPMatrix(currentCameraController, state)
     })
   };
 

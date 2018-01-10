@@ -11,7 +11,10 @@ let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) =>
   data
   |> mark(transform, true)
   |> TransformHierachyCommon.unsafeGetChildren(transform)
-  |> WonderCommonlib.ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
+       [@bs] ((data, child) => markHierachyDirty(child, data)),
+       data
+     );
 
 let isDirty = (transform: transform, {dirtyMap} as data) =>
   dirtyMap
@@ -22,7 +25,7 @@ let isDirty = (transform: transform, {dirtyMap} as data) =>
            test(
              "should return bool",
              () => {
-               dirtyMap |> WonderCommonlib.SparseMapSystem.get(transform) |> assertExist;
+               isDirty |> assertNullableExist;
                isDirty |> assertIsBool
              }
            )

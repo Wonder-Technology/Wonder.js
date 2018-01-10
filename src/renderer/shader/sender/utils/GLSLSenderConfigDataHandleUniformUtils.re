@@ -4,11 +4,8 @@ let getUniformSendData = (shaderIndex: int, map) =>
   map
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
-       (r) =>
+       (sendData) =>
          Contract.Operators.(
-           test(
-             "uniform send data should exist",
-             () => map |> WonderCommonlib.SparseMapSystem.get(shaderIndex) |> assertExist
-           )
+           test("uniform send data should exist", () => sendData |> assertNullableExist)
          )
      );

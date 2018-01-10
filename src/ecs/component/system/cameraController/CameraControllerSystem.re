@@ -135,24 +135,14 @@ let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
    | CacheType.Cache(data) => CacheType.Cache(data |> Matrix4System.invert)
    | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
    }; */
-let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
+let unsafeGetPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(
     cameraController,
     getCameraControllerData(state).pMatrixMap
   )
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "pMatrix should exist",
-             () =>
-               WonderCommonlib.SparseMapSystem.get(
-                 cameraController,
-                 getCameraControllerData(state).pMatrixMap
-               )
-               |> assertExist
-           )
-         )
+       (pMatrix) =>
+         Contract.Operators.(test("pMatrix should exist", () => pMatrix |> assertNullableExist))
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>

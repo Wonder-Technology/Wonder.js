@@ -25,7 +25,7 @@ let getCameraControllerPMatrix = (cameraController, state) => {
         ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
       )
   );
-  getPMatrix(cameraController, state)
+  unsafeGetPMatrix(cameraController, state)
 };
 
 let getCameraControllerGameObject = (cameraController, state) => {

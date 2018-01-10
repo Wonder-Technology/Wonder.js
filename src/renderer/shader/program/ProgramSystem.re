@@ -101,16 +101,8 @@ let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
   _getProgramData(state).programMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "program should exist",
-             () =>
-               _getProgramData(state).programMap
-               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-               |> assertExist
-           )
-         )
+       (program) =>
+         Contract.Operators.(test("program should exist", () => program |> assertNullableExist))
      );
 
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {

@@ -33,7 +33,7 @@ let _ =
           expect == Some({
                       vMatrix:
                         CameraControllerTool.getWorldToCameraMatrix(transform2, state),
-                      pMatrix: CameraControllerTool.getPMatrix(cameraController2, state)
+                      pMatrix: CameraControllerTool.unsafeGetPMatrix(cameraController2, state)
                     })
         }
       )

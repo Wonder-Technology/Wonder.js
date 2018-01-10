@@ -36,18 +36,8 @@ let _unsafeGetPMatrix =
     (cameraController: cameraController, cameraControllerData: cameraControllerData) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(cameraController, cameraControllerData.pMatrixMap)
   |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "pMatrix should exist",
-             () =>
-               WonderCommonlib.SparseMapSystem.get(
-                 cameraController,
-                 cameraControllerData.pMatrixMap
-               )
-               |> assertExist
-           )
-         )
+       (pMatrix) =>
+         Contract.Operators.(test("pMatrix should exist", () => pMatrix |> assertNullableExist))
      );
 
 /* let _setPMatrix =

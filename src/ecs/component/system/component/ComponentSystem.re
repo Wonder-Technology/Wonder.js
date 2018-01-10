@@ -11,12 +11,9 @@ let getComponentGameObject = (component: component, gameObjectMap) =>
 let unsafeGetComponentGameObject = (component: component, gameObjectMap) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(component, gameObjectMap)
   |> ensureCheck(
-       (r) =>
+       (gameObject) =>
          Contract.Operators.(
-           test(
-             "component's gameObject should exist",
-             () => WonderCommonlib.SparseMapSystem.get(component, gameObjectMap) |> assertExist
-           )
+           test("component's gameObject should exist", () => gameObject |> assertNullableExist)
          )
      );
 
