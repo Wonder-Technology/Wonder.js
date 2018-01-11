@@ -12,6 +12,9 @@ mine/
 coverage
 
 dist/
+
+dist/base
+
 npm-debug
 
 
