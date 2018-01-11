@@ -120,7 +120,7 @@ let _ =
                     "prepend to body",
                     () => {
                       let (canvasDom, _, body) = exec();
-                      body##prepend |> expect |> toCalledWith([canvasDom])
+                      body##prepend |> expect |> toCalledWith([|canvasDom|])
                     }
                   )
                 }
@@ -154,7 +154,7 @@ let _ =
                       |> ignore;
                       canvasDom##getContext
                       |> expect
-                      |> toCalledWith([
+                      |> toCalledWith([|
                            matchAny,
                            {
                              "alpha": Js.Nullable.return(Js.true_),
@@ -164,7 +164,7 @@ let _ =
                              "premultipliedAlpha": Js.Nullable.return(Js.true_),
                              "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
                            }
-                         ])
+                         |])
                     }
                   )
               );
@@ -178,7 +178,7 @@ let _ =
                       setMainConfig(MainTool.buildMainConfig()) |> ignore;
                       canvasDom##getContext
                       |> expect
-                      |> toCalledWith([
+                      |> toCalledWith([|
                            matchAny,
                            {
                              "alpha": Js.Nullable.return(Js.true_),
@@ -188,7 +188,7 @@ let _ =
                              "premultipliedAlpha": Js.Nullable.return(Js.true_),
                              "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
                            }
-                         ])
+                         |])
                     }
                   )
               );
@@ -329,7 +329,7 @@ let _ =
                       let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       setMainConfig(MainTool.buildMainConfig()) |> ignore;
                       /* DebugUtils.log(fakeGl##getExtension |> getCall(0) |> getArgs) |> ignore; */
-                      /* fakeGl##getExtension |> expect |> toCalledWith(["ANGLE_instanced_arrays"]) */
+                      /* fakeGl##getExtension |> expect |> toCalledWith([|"ANGLE_instanced_arrays"|]) */
                       fakeGl##getExtension |> expect |> toCalledOnce
                     }
                   )
@@ -438,7 +438,7 @@ let _ =
                 "set viewport",
                 () => {
                   let (canvasDom, fakeGl, width, height) = _exec();
-                  fakeGl##viewport |> expect |> toCalledWith([0., 0., 100., 200.])
+                  fakeGl##viewport |> expect |> toCalledWith([|0., 0., 100., 200.|])
                 }
               )
             }

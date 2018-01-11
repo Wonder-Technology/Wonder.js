@@ -36,7 +36,7 @@ let _ =
                          FakeGlTool.buildFakeGl(~sandbox, ~color_buffer_bit, ~clear, ())
                        );
                   let state = state |> _render(~flags=[|"COLOR_BUFFER"|]);
-                  clear |> expect |> toCalledWith([color_buffer_bit])
+                  clear |> expect |> toCalledWith([|color_buffer_bit|])
                 }
               );
               test(
@@ -51,7 +51,7 @@ let _ =
                          FakeGlTool.buildFakeGl(~sandbox, ~depth_buffer_bit, ~clear, ())
                        );
                   let state = state |> _render(~flags=[|"DEPTH_BUFFER"|]);
-                  clear |> expect |> toCalledWith([depth_buffer_bit])
+                  clear |> expect |> toCalledWith([|depth_buffer_bit|])
                 }
               );
               test(
@@ -66,7 +66,7 @@ let _ =
                          FakeGlTool.buildFakeGl(~sandbox, ~stencil_buffer_bit, ~clear, ())
                        );
                   let state = state |> _render(~flags=[|"STENCIL_BUFFER"|]);
-                  clear |> expect |> toCalledWith([stencil_buffer_bit])
+                  clear |> expect |> toCalledWith([|stencil_buffer_bit|])
                 }
               );
               test(
@@ -93,7 +93,7 @@ let _ =
                     state |> _render(~flags=[|"COLOR_BUFFER", "DEPTH_BUFFER", "STENCIL_BUFFER"|]);
                   clear
                   |> expect
-                  |> toCalledWith([color_buffer_bit lor depth_buffer_bit lor stencil_buffer_bit])
+                  |> toCalledWith([|color_buffer_bit lor depth_buffer_bit lor stencil_buffer_bit|])
                 }
               )
             }
@@ -110,7 +110,7 @@ let _ =
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~colorMask, ()));
               let state = state |> _render;
-              colorMask |> expect |> toCalledWith([Js.true_, Js.true_, Js.true_, Js.true_])
+              colorMask |> expect |> toCalledWith([|Js.true_, Js.true_, Js.true_, Js.true_|])
             }
           );
           test(

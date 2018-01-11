@@ -54,7 +54,7 @@ let _ =
               let (state, program, createProgram, useProgram) =
                 _prepareForUseProgram(sandbox, state^);
               let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              useProgram |> expect |> toCalledWith([program])
+              useProgram |> expect |> toCalledWith([|program|])
             }
           )
         }
@@ -89,7 +89,7 @@ let _ =
                   vertexAttribPointer
                   |> getCall(0)
                   |> expect
-                  |> toCalledWith([pos, 3, float, Obj.magic(Js.false_), 0, 0])
+                  |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
                 }
               )
           )
@@ -243,7 +243,7 @@ let _ =
                                      )
                                    );
                               let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                              deleteBuffer |> expect |> toCalledWith([buffer1])
+                              deleteBuffer |> expect |> toCalledWith([|buffer1|])
                             }
                           );
                           test(
@@ -569,7 +569,7 @@ let _ =
                             _prepare(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([pos1, 4, float, Obj.magic(Js.false_), 64, 0])
+                          |> toCalledWith([|pos1, 4, float, Obj.magic(Js.false_), 64, 0|])
                         }
                       );
                       test(
@@ -579,7 +579,7 @@ let _ =
                             _prepare(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([pos2, 4, float, Obj.magic(Js.false_), 64, 16])
+                          |> toCalledWith([|pos2, 4, float, Obj.magic(Js.false_), 64, 16|])
                         }
                       );
                       test(
@@ -589,7 +589,7 @@ let _ =
                             _prepare(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([pos3, 4, float, Obj.magic(Js.false_), 64, 32])
+                          |> toCalledWith([|pos3, 4, float, Obj.magic(Js.false_), 64, 32|])
                         }
                       );
                       test(
@@ -599,7 +599,7 @@ let _ =
                             _prepare(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([pos4, 4, float, Obj.magic(Js.false_), 64, 48])
+                          |> toCalledWith([|pos4, 4, float, Obj.magic(Js.false_), 64, 48|])
                         }
                       )
                     }
@@ -816,13 +816,13 @@ let _ =
               let state = state |> _render;
               drawElementsInstancedANGLE
               |> expect
-              |> toCalledWith([
+              |> toCalledWith([|
                    triangles,
                    GeometryTool.getIndicesCount(geometry, state),
                    GeometryTool.getIndexType(state),
                    GeometryTool.getIndexTypeSize(state) * 0,
                    2
-                 ])
+                 |])
             }
           )
       );

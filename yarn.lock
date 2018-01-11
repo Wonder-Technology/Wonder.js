@@ -4952,9 +4952,9 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.1.38:
-  version "0.1.38"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.38.tgz#0ddea15bfcd436ba0fda4b190a56b164a7dbf01a"
+wonder-benchmark@^0.1.40:
+  version "0.1.40"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.40.tgz#4c041835e2061d1676692c7db5d148009cc2694e"
   dependencies:
     bs-json "^0.2.3"
     wonder-bs-puppeteer "^0.1.0"
@@ -4970,9 +4970,9 @@ wonder-bs-puppeteer@^0.1.0, wonder-bs-puppeteer@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/wonder-bs-puppeteer/-/wonder-bs-puppeteer-0.1.1.tgz#88b2fb8233a50bfaa501ec2577fb291539725986"
 
-wonder-bs-sinon@latest:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/wonder-bs-sinon/-/wonder-bs-sinon-0.1.5.tgz#3fab3d0ea7b178c687b39c87f71bff795c4c9cc0"
+wonder-bs-sinon@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/wonder-bs-sinon/-/wonder-bs-sinon-0.1.6.tgz#2535e4423a6755ce4ecc03249741afaca5df1e10"
   dependencies:
     sinon "^4.1.2"
     wonder-bs-jest latest

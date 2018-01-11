@@ -42,7 +42,7 @@ let _ =
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
               let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              useProgram |> expect |> toCalledWith([program])
+              useProgram |> expect |> toCalledWith([|program|])
             }
           );
           test(
@@ -335,7 +335,7 @@ let _ =
                              )
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      bindBuffer |> expect |> toCalledWith([array_buffer, buffer])
+                      bindBuffer |> expect |> toCalledWith([|array_buffer, buffer|])
                     }
                   );
                   test(
@@ -361,7 +361,7 @@ let _ =
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([pos, 3, float, Obj.magic(Js.false_), 0, 0])
+                      |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
                     }
                   );
                   describe(
@@ -603,11 +603,11 @@ let _ =
                       |> _render;
                     uniformMatrix4fv
                     |> expect
-                    |> toCalledWith([
+                    |> toCalledWith([|
                          pos,
                          Obj.magic(Js.false_),
                          Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
-                       ])
+                       |])
                   }
                 );
                 describe(
@@ -646,11 +646,11 @@ let _ =
                         |> withOneArg(pos)
                         |> getCall(1)
                         |> expect
-                        |> toCalledWith([
+                        |> toCalledWith([|
                              pos,
                              Obj.magic(Js.false_),
                              Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
-                           ])
+                           |])
                       }
                     )
                 )

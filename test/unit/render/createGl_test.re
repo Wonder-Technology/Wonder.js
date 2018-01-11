@@ -19,7 +19,7 @@ let _ =
         () => {
           let (canvasDom, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
           setMainConfig(buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())) |> ignore;
-          expect(canvasDom##getContext) |> toCalledWith(["webgl"])
+          expect(canvasDom##getContext) |> toCalledWith([|"webgl"|])
         }
       )
     }

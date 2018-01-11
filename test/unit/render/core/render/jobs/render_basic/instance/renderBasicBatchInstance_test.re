@@ -53,7 +53,7 @@ let _ =
               let (state, program, createProgram, useProgram) =
                 _prepareForUseProgram(sandbox, state^);
               let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              useProgram |> expect |> toCalledWith([program])
+              useProgram |> expect |> toCalledWith([|program|])
             }
           )
         }
@@ -88,7 +88,7 @@ let _ =
                   vertexAttribPointer
                   |> getCall(0)
                   |> expect
-                  |> toCalledWith([pos, 3, float, Obj.magic(Js.false_), 0, 0])
+                  |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
                 }
               )
           )

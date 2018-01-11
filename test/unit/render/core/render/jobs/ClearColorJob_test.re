@@ -31,7 +31,7 @@ let _ =
             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~clearColor, ()));
           let state = state |> _render(~colorHexStr);
           let (r, g, b, a) = ColorTool.convert16HexToRGBA(colorHexStr);
-          clearColor |> expect |> toCalledWith([r, g, b, a])
+          clearColor |> expect |> toCalledWith([|r, g, b, a|])
         }
       );
       test(

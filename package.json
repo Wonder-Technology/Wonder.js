@@ -44,7 +44,7 @@
     "puppeteer": "^0.13.0",
     "wonder-benchmark": "^0.1.40",
     "wonder-bs-jest": "latest",
-    "wonder-bs-sinon": "latest",
+    "wonder-bs-sinon": "^0.1.6",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "latest",
     "wonder-render-test": "^0.1.11"
