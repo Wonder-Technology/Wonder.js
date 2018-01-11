@@ -9,7 +9,7 @@ let performanceTestData = {
     execCountWhenGenerateBenchmark: 15,
     compareCount: 5,
     maxAllowDiffTimePercent: 50,
-    maxAllowDiffMemoryPercent: 50,
+    maxAllowDiffMemoryPercent: 150,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     baseDir: "./dist/base",
     scriptFilePathList: [
