@@ -41,20 +41,19 @@
     "gulp-sync": "^0.1.4",
     "http": "^0.0.0",
     "rollup": "^0.51.5",
-    "puppeteer": "^0.13.0",
-    "wonder-benchmark": "^0.1.37",
+    "wonder-benchmark": "^0.1.38",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "latest",
-    "wonder-render-test": "^0.1.10"
+    "wonder-render-test": "^0.1.11"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
     "wonder-commonlib": "latest"
   },
   "resolutions": {
-    "wonder-commonlib": "0.2.17",
+    "wonder-commonlib": "0.2.18",
     "wonder-bs-jest": "0.2.17",
     "wonder-bs-puppeteer": "^0.1.1"
   }

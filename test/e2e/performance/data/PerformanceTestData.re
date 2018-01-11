@@ -11,10 +11,7 @@ let performanceTestData = {
     maxAllowDiffTimePercent: 50,
     maxAllowDiffMemoryPercent: 50,
     benchmarkPath: "./test/e2e/performance/benchmark/",
-    generateBaseDebugData:
-      Some([
-        {sourceScriptFilePath: "./dist/wd.js", targetScriptFilePath: "./dist/base/wd_base.js"}
-      ]),
+    baseDir: "./dist/base",
     scriptFilePathList: [
       "./dist/wd.js",
       "./test/e2e/js/BasicBoxesTool.js",
@@ -79,7 +76,6 @@ var n4 = performance.now();
 return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4]};
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -142,7 +138,6 @@ var n4 = performance.now();
 return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -206,7 +201,6 @@ var n4 = performance.now();
 return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -274,7 +268,6 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
 }
 
 |},
-          scriptFilePathList: None,
           errorRate: 10
         }
       ]
@@ -334,7 +327,6 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -384,7 +376,6 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -440,7 +431,6 @@ var n4 = performance.now();
 return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -499,7 +489,6 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 }
 
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -561,7 +550,6 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
 }
 
 |},
-          scriptFilePathList: None,
           errorRate: 10
         },
         {
@@ -623,7 +611,6 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
 }
 
 |},
-          scriptFilePathList: None,
           errorRate: 10
         }
       ]
@@ -685,7 +672,6 @@ var n4 = performance.now();
 return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
 }
 |},
-          scriptFilePathList: None,
           errorRate: 10
         }
       ]
