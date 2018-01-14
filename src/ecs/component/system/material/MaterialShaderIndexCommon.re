@@ -1,15 +1,21 @@
 open MaterialStateCommon;
 
-open Contract;
-
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (shaderIndex) =>
-         Contract.Operators.(
-           test("shaderIndex should exist", () => shaderIndex |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|shaderIndex exist|j}, ~actual={j|not|j}),
+                 () => shaderIndex |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let getShaderIndex = (materialIndex: int, state: StateDataType.state) =>

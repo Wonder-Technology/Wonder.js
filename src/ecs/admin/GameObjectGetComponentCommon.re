@@ -4,15 +4,21 @@ open ComponentType;
 
 open GameObjectComponentCommon;
 
-open Contract;
-
 let _unsafeGetComponent = (uid: int, componentMap: array(int)) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(uid, componentMap)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (component) =>
-         Contract.Operators.(
-           test("component should exist", () => component |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|component exist|j}, ~actual={j|not|j}),
+                 () => component |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let getSourceInstanceComponent =

@@ -1,15 +1,23 @@
 open ComponentType;
 
-open Contract;
-
 let isAlive = (component, disposedIndexArray: array(int)) =>
   ! Js.Array.includes(component, disposedIndexArray);
 
 let checkComponentShouldAlive = (component, isAlive, state: StateDataType.state) =>
-  test(
-    "shouldn't dispose the component which isn't alive",
-    () => isAlive(component, state) |> assertTrue
+  WonderLog.(
+    Contract.(
+      test(
+        Log.buildAssertMessage(~expect={j|dispose the alive component|j}, ~actual={j|not|j}),
+        () => isAlive(component, state) |> assertTrue
+      )
+    )
   );
+
+let checkComponentShouldAliveWithBatchDispose = (componentArr, isAlive, state: StateDataType.state) =>
+  componentArr
+  |> WonderCommonlib.ArraySystem.forEach(
+       [@bs] ((component) => checkComponentShouldAlive(component, isAlive, state))
+     );
 
 let disposeSparseMapData = (component: int, map) =>
   map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(component);

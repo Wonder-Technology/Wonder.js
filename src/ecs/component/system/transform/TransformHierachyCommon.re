@@ -1,7 +1,5 @@
 open TransformType;
 
-open Contract;
-
 let _unsafeGetParent = (index: int, transformData: transformData) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.parentMap);
 
@@ -15,12 +13,19 @@ let removeFromParentMap = (childIndex: int, transformData: transformData) => {
 
 let unsafeGetChildren = (index: int, transformData: transformData) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.childMap)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (children) =>
-         test(
-           "children should exist",
-           () => children  |> assertNullableExist
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|children exist|j}, ~actual={j|not|j}),
+                 () => children |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let _removeChild = (childIndex: int, children: array(transform)) =>
@@ -54,15 +59,21 @@ let _addChild = (parentIndex: int, child: transform, transformData: transformDat
 };
 
 let _addToParent = (parent: transform, child: transform, transformData: transformData) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () => {
-      open Contract.Operators;
-      test("child shouldn't has parent", () => getParent(child, transformData) |> assertNotExist);
+      open WonderLog;
+      open Contract;
+      open Operators;
       test(
-        "parent shouldn't already has the child",
+        Log.buildAssertMessage(~expect={j|child not has parent|j}, ~actual={j|has|j}),
+        () => getParent(child, transformData) |> assertNotExist
+      );
+      test(
+        Log.buildAssertMessage(~expect={j|parent not already has the child|j}, ~actual={j|has|j}),
         () => unsafeGetChildren(parent, transformData) |> Js.Array.includes(child) |> assertFalse
       )
-    }
+    },
+    StateData.stateData.isTest
   );
   _setParent(parent, child, transformData) |> _addChild(parent, child)
 };

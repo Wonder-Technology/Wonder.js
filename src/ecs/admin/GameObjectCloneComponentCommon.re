@@ -2,8 +2,6 @@ open GameObjectType;
 
 open ComponentType;
 
-open Contract;
-
 let cloneTransformComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   TransformCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);

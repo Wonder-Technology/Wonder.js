@@ -57,7 +57,7 @@ let _ =
                   let (state, gameObject, sourceInstance) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   expect(() => _cloneGameObject(gameObject, 2, state) |> ignore)
-                  |> toThrowMessage("shouldn't clone sourceInstance gameObject")
+                  |> toThrowMessage("expect not clone sourceInstance gameObject, but actual do")
                 }
               );
               test(
@@ -66,7 +66,7 @@ let _ =
                   let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   expect(() => _cloneGameObject(objectInstanceGameObject, 2, state) |> ignore)
-                  |> toThrowMessage("shouldn't clone objectInstance gameObject")
+                  |> toThrowMessage("expect not clone objectInstance gameObject, but actual do")
                 }
               )
             }
@@ -219,7 +219,7 @@ let _ =
                     "set color",
                     () => {
                       let (state, gameObject, material) = _prepare();
-                      let color = [| 1., 0.2, 0.3 |];
+                      let color = [|1., 0.2, 0.3|];
                       let state = state |> Material.setMaterialColor(material, color);
                       let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                       let state =

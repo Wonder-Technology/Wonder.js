@@ -4,8 +4,6 @@ open ComponentDisposeComponentCommon;
 
 open MaterialStateCommon;
 
-open Contract;
-
 let isAlive = (material: material, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(material, getMaterialData(state).disposedIndexArray);
 
@@ -27,11 +25,16 @@ let _handleDispose = (disposedIndexArray, material: material, state: StateDataTy
   };
 
 let handleDisposeComponent = (material: material, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(material, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(material, isAlive, state)
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   _handleDispose(getMaterialData(state).disposedIndexArray, material, state)
 };
@@ -40,22 +43,20 @@ let handleBatchDisposeComponent =
   [@bs]
   (
     (materialArray: array(material), gameObjectUidMap: array(bool), state: StateDataType.state) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            materialArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (material) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       material,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  materialArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let {disposedIndexArray} as data = getMaterialData(state);
       materialArray

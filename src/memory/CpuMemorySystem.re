@@ -1,7 +1,5 @@
 open GameObjectType;
 
-open Contract;
-
 open StateDataType;
 
 let _setNewDataToState =

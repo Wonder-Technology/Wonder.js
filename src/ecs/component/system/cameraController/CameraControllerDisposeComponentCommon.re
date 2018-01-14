@@ -4,8 +4,6 @@ open ComponentDisposeComponentCommon;
 
 open CameraControllerStateCommon;
 
-open Contract;
-
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(
     cameraController,
@@ -25,11 +23,20 @@ let _disposeData = (cameraController: cameraController, state: StateDataType.sta
 };
 
 let handleDisposeComponent = (cameraController: cameraController, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(cameraController, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(
+              cameraController,
+              isAlive,
+              state
+            )
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let {disposedIndexArray} = getCameraControllerData(state);
   disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
@@ -44,22 +51,20 @@ let handleBatchDisposeComponent =
       gameObjectUidMap: array(bool),
       state: StateDataType.state
     ) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            cameraControllerArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (cameraController) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       cameraController,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  cameraControllerArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let {disposedIndexArray} as data = getCameraControllerData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(cameraControllerArray);

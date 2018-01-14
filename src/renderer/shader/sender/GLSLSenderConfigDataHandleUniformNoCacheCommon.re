@@ -6,8 +6,6 @@ open GameObjectType;
 
 open StateDataType;
 
-open Contract;
-
 open GLSLSenderStateUtils;
 
 open GLSLSenderSendDataUtils;

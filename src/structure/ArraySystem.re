@@ -1,16 +1,23 @@
-open Contract;
-
 open StateDataType;
 
 [@bs.send.pipe : array('a)] external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
 
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
-  requireCheck(
-    () =>
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let len = arr |> Js.Array.length;
       test(
-        "lastIndex should == arr.length",
+        Log.buildAssertMessage(
+          ~expect={j|lastIndex:$lastIndex === arr.length:$len|j},
+          ~actual={j|not|j}
+        ),
         () => lastIndex |> assertEqual(Int, Js.Array.length(arr) - 1)
       )
+    },
+    StateData.stateData.isTest
   );
   WonderCommonlib.ArraySystem.unsafeSet(
     arr,

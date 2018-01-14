@@ -4,8 +4,6 @@ open CameraControllerType;
 
 open CameraControllerDirtyCommon;
 
-open Contract;
-
 open CameraControllerStateCommon;
 
 let create = (state: StateDataType.state) => CameraControllerCreateCommon.create(state);
@@ -13,17 +11,22 @@ let create = (state: StateDataType.state) => CameraControllerCreateCommon.create
 let getCameraControllerData = CameraControllerStateCommon.getCameraControllerData;
 
 let getCurrentCameraController = (state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          "should has at least one camera",
-          () => {
-            let {cameraArray} = getCameraControllerData(state);
-            Js.Array.length(cameraArray) > 0
-          }
+      WonderLog.(
+        Contract.(
+          Operators.(
+            Contract.test(
+              Log.buildAssertMessage(~expect={j|has at least one camera|j}, ~actual={j|has 0|j}),
+              () => {
+                let {cameraArray} = getCameraControllerData(state);
+                Js.Array.length(cameraArray) > 0
+              }
+            )
+          )
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
   let {cameraArray} = getCameraControllerData(state);
   WonderCommonlib.ArraySystem.get(0, cameraArray)
@@ -47,35 +50,10 @@ let init = (state: StateDataType.state) => {
        );
     /* cameraControllerData |> cleanDirtyArray |> ignore; */
     state
-  /* |> ensureCheck(
-       (state) =>
-         Contract.Operators.(
-           test(
-             "should has no cache",
-             () =>
-               WonderCommonlib.SparseMapSystem.length(getCameraControllerData(state).worldToCameraMatrixCacheMap)
-               == 0
-           )
-         )
-     ) */
   }
 };
 
 let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) => {
-  /* requireCheck(
-       () =>
-         Contract.Operators.(
-           test(
-             "updateCameraFunc shouldn't already exist",
-             () => {
-               let cameraControllerData = getCameraControllerData(state);
-               cameraControllerData.updateCameraFuncMap
-               |> WonderCommonlib.SparseMapSystem.get((cameraController))
-               |> assertNotExist
-             }
-           )
-         )
-     ); */
   let cameraControllerData = getCameraControllerData(state);
   cameraControllerData.updateCameraFuncMap
   |> WonderCommonlib.SparseMapSystem.set(cameraController, PerspectiveCameraSystem.update)
@@ -140,9 +118,19 @@ let unsafeGetPMatrix = (cameraController: cameraController, state: StateDataType
     cameraController,
     getCameraControllerData(state).pMatrixMap
   )
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (pMatrix) =>
-         Contract.Operators.(test("pMatrix should exist", () => pMatrix |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|pMatrix exist|j}, ~actual={j|not|j}),
+                 () => pMatrix |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>

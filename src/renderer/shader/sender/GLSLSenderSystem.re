@@ -1,7 +1,5 @@
 open StateDataType;
 
-open Contract;
-
 open GlType;
 
 open Gl;
@@ -14,20 +12,27 @@ let getGLSLSenderData = getGLSLSenderData;
 
 /* TODO optimize? */
 let disableVertexAttribArray = (gl, state: StateDataType.state) => {
-
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          "vertexAttribHistory:array('a) should has no hole",
-          () => {
-            let {vertexAttribHistoryArray} = getGLSLSenderData(state);
-            vertexAttribHistoryArray
-            |> Js.Array.filter(WonderCommonlib.JudgeUtils.isBool)
-            |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
-          }
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|vertexAttribHistory:array('a) has no hole|j},
+                ~actual={j|not|j}
+              ),
+              () => {
+                let {vertexAttribHistoryArray} = getGLSLSenderData(state);
+                vertexAttribHistoryArray
+                |> Js.Array.filter(WonderCommonlib.JudgeUtils.isBool)
+                |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
+              }
+            )
+          )
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
   let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
   vertexAttribHistoryArray

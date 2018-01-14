@@ -13,8 +13,7 @@ let generateBenchmark = () => {
     Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report"|]),
     Some(copiedTargetDirForBaseScript)
   );
-  WonderCommonlib.DebugUtils.log({j|copy base script to $(copiedTargetDirForBaseScript)...|j})
-  |> ignore;
+  WonderLog.Log.log({j|copy base script to $(copiedTargetDirForBaseScript)...|j}) |> ignore;
   Tester.copyBaseScript(performanceTestData);
   Tester.generateBenchmark(performanceTestData)
 };

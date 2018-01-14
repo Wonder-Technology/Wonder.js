@@ -19,8 +19,10 @@ let _ =
         let data1 = Obj.magic(0);
         let func1 = Obj.magic(1);
         let history1 = Obj.magic(2);
-        attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, data1)|>ignore;
-        vertexAttribHistoryArray |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, history1)|>ignore;
+        attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, data1) |> ignore;
+        vertexAttribHistoryArray
+        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, history1)
+        |> ignore;
         (state, shaderIndex1, data1, func1, history1)
       };
       let _prepareShaderData = (state) => {
@@ -105,7 +107,7 @@ let _ =
                         }
                       )
                       |> toThrowMessage(
-                           "currentState and targetState ->shaderData->glslData->precision should be the same"
+                           "expect currentState->shaderData->glslData->precision and targetState ->shaderData->glslData->precision be the same, but actual not"
                          )
                     }
                   )
@@ -259,13 +261,15 @@ let _ =
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
                     |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2)
-                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3) |> ignore;
+                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3)
+                    |> ignore;
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
                     programMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2) |> ignore; 
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
+                    |> ignore;
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GLSLLocationTool.getGLSLLocationData(state);
@@ -275,10 +279,12 @@ let _ =
                     let uniformLocationData2 = Obj.magic(32);
                     attributeLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2) |> ignore;
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2)
+                    |> ignore;
                     uniformLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
+                    |> ignore;
                     let {shaderUniformSendNoCachableDataMap} =
                       GLSLSenderTool.getGLSLSenderData(state);
                     let shaderUniformSendNoCachableData1 = Obj.magic(121);
@@ -318,13 +324,15 @@ let _ =
                     data.index = 2;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                    |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2) |> ignore;
+                    |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2)
+                    |> ignore;
                     let {programMap} as data = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
                     programMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2) |> ignore;
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
+                    |> ignore;
                     data.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GLSLLocationTool.getGLSLLocationData(state);
@@ -334,10 +342,12 @@ let _ =
                     let uniformLocationData2 = Obj.magic(302);
                     attributeLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2) |> ignore;
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2)
+                    |> ignore;
                     uniformLocationMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2) |> ignore;
+                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
+                    |> ignore;
                     let {shaderUniformSendNoCachableDataMap} =
                       GLSLSenderTool.getGLSLSenderData(state);
                     let shaderUniformSendNoCachableData1 = Obj.magic(10221);

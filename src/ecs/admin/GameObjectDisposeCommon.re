@@ -1,5 +1,3 @@
-open Contract;
-
 open GameObjectType;
 
 let _handleByDisposeCount = (data, state) =>

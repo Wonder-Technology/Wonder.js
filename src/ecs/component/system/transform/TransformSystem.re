@@ -1,7 +1,5 @@
 open TransformType;
 
-open Contract;
-
 open StateDataType;
 
 open TransformDirtyCommon;

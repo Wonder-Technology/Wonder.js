@@ -6,8 +6,6 @@ open GameObjectType;
 
 open StateDataType;
 
-open Contract;
-
 open GLSLSenderStateUtils;
 
 open GLSLSenderSendDataUtils;
@@ -21,8 +19,7 @@ let _getModelMNoCachableData =
       TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
   );
 
-let _addUniformSendDataByType =
-    ((type_, shaderCacheMap, name, pos), sendDataArrTuple, getDataFunc) =>
+let _addUniformSendDataByType = ((type_, shaderCacheMap, name, pos), sendDataArrTuple, getDataFunc) =>
   /* TODO remove Obj.magic? */
   switch type_ {
   | "mat4" =>
@@ -175,17 +172,22 @@ let _readUniformSendData = (shaderLibDataArr, gl, program, (uniformLocationMap, 
      );
 
 let _checkShouldNotAddBefore = (shaderIndex, state) =>
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          "shouldn't be added before",
-          () =>
-            getGLSLSenderData(state).uniformSendNoCachableDataMap
-            |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-            |> assertNotExist
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(~expect={j|not be added before|j}, ~actual={j|be|j}),
+              () =>
+                getGLSLSenderData(state).uniformSendNoCachableDataMap
+                |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+                |> assertNotExist
+            )
+          )
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
 
 let addUniformSendData =

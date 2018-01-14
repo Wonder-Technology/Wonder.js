@@ -1,7 +1,5 @@
 open SourceInstanceType;
 
-open Contract;
-
 open ComponentDisposeComponentCommon;
 
 open SourceInstanceStateCommon;
@@ -60,11 +58,20 @@ let _disposeData =
 
 let handleDisposeComponent =
     (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(sourceInstance, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(
+              sourceInstance,
+              isAlive,
+              state
+            )
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
   disposedIndexArray |> Js.Array.push(sourceInstance) |> ignore;
@@ -81,22 +88,20 @@ let handleBatchDisposeComponent =
       batchDisposeGameObjectFunc,
       state: StateDataType.state
     ) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            sourceInstanceArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (sourceInstance) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       sourceInstance,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  sourceInstanceArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(sourceInstanceArray);

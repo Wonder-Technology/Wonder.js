@@ -1,7 +1,5 @@
 open SourceInstanceType;
 
-open Contract;
-
 let markModelMatrixIsStatic =
     (sourceInstance: sourceInstance, isStatic: bool, state: StateDataType.state) => {
   SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
@@ -13,9 +11,19 @@ let markModelMatrixIsStatic =
 let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataType.state) =>
   SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (isStatic) =>
-         Contract.Operators.(test("should exist", () => isStatic |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|isStatic exist|j}, ~actual={j|not|j}),
+                 () => isStatic |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
@@ -28,6 +36,17 @@ let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateD
 let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.state) =>
   SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
-  |> ensureCheck(
-       (isSend) => Contract.Operators.(test("should exist", () => isSend |> assertNullableExist))
+  |> WonderLog.Contract.ensureCheck(
+       (isSend) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|isSend exist|j}, ~actual={j|not|j}),
+                 () => isSend |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );

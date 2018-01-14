@@ -1,5 +1,3 @@
-open Contract;
-
 open Root;
 
 open TimeControllerType;
@@ -51,8 +49,18 @@ let computeElapseTime = (time: float, state: StateDataType.state) => {
   let {startTime} as data = _getTimeControllerData(state);
   data.elapsed = NumberUtils.leastFloat(0., time -. startTime);
   data.elapsed
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(test({j|elapsed should >= 0, but actual is $r|j}, () => r >=. 0.))
+  |> WonderLog.Contract.ensureCheck(
+       (elapsed) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|elapsed >= 0|j}, ~actual={j|is $elapsed|j}),
+                 () => elapsed >=. 0.
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      )
 };

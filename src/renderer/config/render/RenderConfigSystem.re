@@ -1,5 +1,3 @@
-open Contract;
-
 open GameObjectType;
 
 open StateDataType;
@@ -23,9 +21,19 @@ let _getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHan
 let findFirst = (arr: array('a), func) =>
   arr
   |> ArraySystem.unsafeFind(func)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (first) =>
-         Contract.Operators.(test("should find result", () => first |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|find result|j}, ~actual={j|not|j}),
+                 () => first |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let _filterTargetName = (name, targetName) => name == targetName;

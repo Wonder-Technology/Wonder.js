@@ -1,5 +1,3 @@
-open Contract;
-
 open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
@@ -33,6 +31,6 @@ let setVerticesWithArray = (index: int, data: array(float), state: StateDataType
   );
 
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
-    setPoints(index, getGeometryData(state).verticesMap, data) |> ignore;
+  setPoints(index, getGeometryData(state).verticesMap, data) |> ignore;
   state
 };

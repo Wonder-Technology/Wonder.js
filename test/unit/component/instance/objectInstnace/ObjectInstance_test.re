@@ -123,7 +123,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "shouldn't dispose the component which isn't alive",
+                "expect dispose the alive component, but actual not",
                 () => {
                   open ObjectInstanceType;
                   let (state, gameObject1, _, _, objectInstance1) =
@@ -145,7 +145,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                  |> toThrowMessage("expect dispose the alive component, but actual not")
                 }
               )
           )

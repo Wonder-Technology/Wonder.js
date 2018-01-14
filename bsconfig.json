@@ -20,6 +20,7 @@
   "refmt": 3,
   "bs-dependencies": [
     "bs-json",
+    "wonder-log",
     "wonder-commonlib"
   ],
   "package-specs": [

@@ -1,11 +1,17 @@
-open Contract;
-
 let getUniformSendData = (shaderIndex: int, map) =>
   map
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (sendData) =>
-         Contract.Operators.(
-           test("uniform send data should exist", () => sendData |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|uniform send data exist|j}, ~actual={j|not|j}),
+                 () => sendData |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );

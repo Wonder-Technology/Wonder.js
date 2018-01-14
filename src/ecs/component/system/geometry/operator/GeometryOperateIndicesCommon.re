@@ -1,5 +1,3 @@
-open Contract;
-
 open GeometryGetStateDataCommon;
 
 open Js.Typed_array;

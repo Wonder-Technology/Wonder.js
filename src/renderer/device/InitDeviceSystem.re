@@ -4,15 +4,26 @@ open Dom;
 
 open DomUtils;
 
-open Contract;
-
 let _getCanvasId = (domId: string) =>
   String.contains(domId, '#') ?
     domId :
     {j|#$domId|j}
-    |> ensureCheck(
-         (id: string) =>
-           test("dom id should start with '#'", () => assertTrue(Js.Re.test(id, [%re "/#[^#]+/"])))
+    |> WonderLog.Contract.ensureCheck(
+         (id) =>
+           WonderLog.(
+             Contract.(
+               Operators.(
+                 test(
+                   Log.buildAssertMessage(
+                     ~expect={j|dom id start with '#'|j},
+                     ~actual={j|is $domId|j}
+                   ),
+                   () => assertTrue(Js.Re.test(id, [%re "/#[^#]+/"]))
+                 )
+               )
+             )
+           ),
+         StateData.stateData.isTest
        );
 
 let createCanvas = ({canvasId}) =>

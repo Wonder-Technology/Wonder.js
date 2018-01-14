@@ -4,47 +4,57 @@ open StateDataType;
 
 open CameraControllerType;
 
-open Contract;
-
 let createCameraController = create;
 
 let setCameraControllerPerspectiveCamera = (cameraController: int, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
+        )
+      ),
+    StateData.stateData.isTest
   );
   setPerspectiveCamera(cameraController, state)
 };
 
 let getCameraControllerPMatrix = (cameraController, state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
+        )
+      ),
+    StateData.stateData.isTest
   );
   unsafeGetPMatrix(cameraController, state)
 };
 
 let getCameraControllerGameObject = (cameraController, state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
+        )
+      ),
+    StateData.stateData.isTest
   );
   getGameObject(cameraController, state) |> Js.Option.getExn
 };
 
 let getCameraControllerWorldToCameraMatrix =
     (cameraController: cameraController, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
+        )
+      ),
+    StateData.stateData.isTest
   );
   getWorldToCameraMatrix(
     GetComponentUtils.getTransformFromCameraController(cameraController, state),

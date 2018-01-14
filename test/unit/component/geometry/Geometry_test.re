@@ -433,7 +433,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "shouldn't dispose the component which isn't alive",
+                "expect dispose the alive component, but actual not",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObject.initGameObject(gameObject1);
@@ -449,7 +449,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                  |> toThrowMessage("expect dispose the alive component, but actual not")
                 }
               )
           )
@@ -473,7 +473,7 @@ let _ =
                     let state =
                       state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
                     expect(() => getFunc(geometry, state))
-                    |> toThrowMessage("component should alive")
+                    |> toThrowMessage("expect component alive, but actual not")
                   };
                   let _testSetFunc = (setFunc) => {
                     open GameObject;
@@ -484,7 +484,7 @@ let _ =
                     let state =
                       state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
                     expect(() => setFunc(geometry, Obj.magic(0), state))
-                    |> toThrowMessage("component should alive")
+                    |> toThrowMessage("expect component alive, but actual not")
                   };
                   test(
                     "getGeometryVertices should error",

@@ -6,8 +6,6 @@ open GlType;
 
 open ProgramType;
 
-open Contract;
-
 let _getProgramData = (state: StateDataType.state) => state.programData;
 
 let createProgram = (gl) => createProgram(gl);
@@ -15,37 +13,51 @@ let createProgram = (gl) => createProgram(gl);
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
   compileShader(shader, gl);
+  WonderLog.Log.debugWithFunc(
+    () =>
+      getShaderParameter(shader, getCompileStatus(gl), gl) === Js.false_ ?
+        {
+          let message = getShaderInfoLog(shader, gl);
+          WonderLog.Log.debug(
+            WonderLog.Log.buildDebugMessage(
+              ~description="shader info log",
+              ~params={j|$message|j}
+            ),
+            StateData.stateData.isTest
+          );
+          WonderLog.Log.debug(
+            WonderLog.Log.buildDebugMessage(~description="glsl source", ~params={j|$glslSource|j}),
+            StateData.stateData.isTest
+          )
+        } :
+        (),
+    StateData.stateData.isTest
+  );
   shader
-  |> ensureCheck(
-       (shader) =>
-         Contract.Operators.(
-           test(
-             "judge shader parameter",
-             () =>
-               if (getShaderParameter(shader, getCompileStatus(gl), gl) === Js.false_) {
-                 WonderCommonlib.LogUtils.log(getShaderInfoLog(shader, gl));
-                 WonderCommonlib.LogUtils.log({j|source:
-            $glslSource|j})
-               }
-           )
-         )
-     )
 };
 
-let _linkProgram = (program, gl) =>
-  linkProgram(program, gl)
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           testWithMessageFunc(
-             () => {
-               let message = getProgramInfoLog(program, gl);
-               {j|link program error:$message|j}
-             },
-             () => getProgramParameter(program, getLinkStatus(gl), gl) |> assertJsTrue
-           )
-         )
-     );
+let _linkProgram = (program, gl) => {
+  linkProgram(program, gl);
+  WonderLog.Log.debugWithFunc(
+    () =>
+      getProgramParameter(program, getLinkStatus(gl), gl) === Js.false_ ?
+        {
+          let message = getProgramInfoLog(program, gl);
+          WonderLog.Log.fatal(
+            WonderLog.Log.buildFatalMessage(
+              ~title="link program error",
+              ~description={j|$message|j},
+              ~reason="",
+              ~solution={j||j},
+              ~params={j||j}
+            )
+          )
+        } :
+        (),
+    StateData.stateData.isTest
+  );
+  ()
+};
 
 let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
   let vs = _compileShader(gl, vsSource, createShader(getVertexShader(gl), gl));
@@ -100,9 +112,19 @@ let getProgram = (shaderIndex: int, state: StateDataType.state) =>
 let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
   _getProgramData(state).programMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (program) =>
-         Contract.Operators.(test("program should exist", () => program |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|program exist|j}, ~actual={j|not|j}),
+                 () => program |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {

@@ -1,7 +1,5 @@
 open CameraControllerType;
 
-open Contract;
-
 open PerspectiveCameraType;
 
 open CameraControllerStateCommon;
@@ -35,9 +33,19 @@ let setDefaultPMatrix =
 let _unsafeGetPMatrix =
     (cameraController: cameraController, cameraControllerData: cameraControllerData) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(cameraController, cameraControllerData.pMatrixMap)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (pMatrix) =>
-         Contract.Operators.(test("pMatrix should exist", () => pMatrix |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|pMatrix exist|j}, ~actual={j|not|j}),
+                 () => pMatrix |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 /* let _setPMatrix =

@@ -2,8 +2,6 @@ open Gl;
 
 open Js.Typed_array;
 
-open Contract;
-
 /*! start with a maximum of 64 instances */
 let _getDefaultCapacity = () => 64 * 16 * 4;
 
@@ -15,9 +13,22 @@ let createBuffer = (gl, capacity: int, state: StateDataType.state) => {
 };
 
 let _getFloat32InstanceArraySize = (capacity: int) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(test("capacity should be a multiplier of 4", () => capacity mod 4 == 0))
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|capacity should be a multiplier of 4|j},
+                ~actual={j|is $capacity|j}
+              ),
+              () => capacity mod 4 == 0
+            )
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   capacity / 4
 };

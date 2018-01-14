@@ -67,7 +67,9 @@ let _ =
                           addGameObjectTransformComponent(gameObject, transform, state)
                         }
                       )
-                      |> toThrowMessage("this type of component is already exist")
+                      |> toThrowMessage(
+                           "expect this type of the component shouldn't be added before, but actual not"
+                         )
                     }
                   );
                   /* TODO: test after add disposeGameObjectTransformComponet */
@@ -236,7 +238,9 @@ let _ =
                           )
                         }
                       )
-                      |> toThrowMessage("this type of component is already exist")
+                      |> toThrowMessage(
+                           "expect this type of the component shouldn't be added before, but actual not"
+                         )
                     }
                   );
                   test(
@@ -834,7 +838,7 @@ let _ =
                             }
                           )
                           |> toThrowMessage(
-                               "all objectInstance should belong to the same sourceInstance"
+                               "expect all objectInstance belong to the same sourceInstance, but actual not"
                              )
                         }
                       )
@@ -994,16 +998,17 @@ let _ =
           describe(
             "if gameObject is disposed",
             () => {
+              let _getErrorMsg = () => "expect gameObject alive, but actual not";
               let _testTwoParamFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
                 let state = state |> disposeGameObject(gameObject);
-                expect(() => func(gameObject, state)) |> toThrowMessage("gameObject should alive")
+                expect(() => func(gameObject, state)) |> toThrowMessage(_getErrorMsg())
               };
               let _testThreeParmFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
                 let state = state |> disposeGameObject(gameObject);
                 expect(() => func(Obj.magic(gameObject), Obj.magic(1), state))
-                |> toThrowMessage("gameObject should alive")
+                |> toThrowMessage(_getErrorMsg())
               };
               test(
                 "getGameObjectTransformComponent should error",
@@ -1032,7 +1037,7 @@ let _ =
                   let (state, gameObject) = createGameObject(state^);
                   let state = state |> disposeGameObject(gameObject);
                   expect(() => batchDisposeGameObject([|gameObject|], state))
-                  |> toThrowMessage("gameObject should alive")
+                  |> toThrowMessage(_getErrorMsg())
                 }
               );
               test("initGameObject should error", () => _testTwoParamFunc(initGameObject));

@@ -10,8 +10,6 @@ open MaterialType;
 
 open MaterialStateCommon;
 
-open Contract;
-
 /* let getMaxCount = (state: StateDataType.state) =>
    BufferConfigCommon.getConfig(state).basicMaterialDataBufferCount; */
 let create = (state: StateDataType.state) => BasicMaterialCreateCommon.create(state);
@@ -23,18 +21,26 @@ let create = (state: StateDataType.state) => BasicMaterialCreateCommon.create(st
      MaterialCommon.initMaterialShaders(gl, basic_material, buildInitShaderFuncTuple(), state)
    }; */
 let init = (gl, state: state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          "shouldn't dispose any material before init",
-          () =>
-            MaterialDisposeComponentCommon.isNotDisposed(
-              MaterialStateCommon.getMaterialData(state)
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|not dispose any material before init|j},
+                ~actual={j|do|j}
+              ),
+              () =>
+                MaterialDisposeComponentCommon.isNotDisposed(
+                  MaterialStateCommon.getMaterialData(state)
+                )
+                |> assertTrue
             )
-            |> assertTrue
+          )
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
   ArraySystem.range(0, MaterialStateCommon.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(

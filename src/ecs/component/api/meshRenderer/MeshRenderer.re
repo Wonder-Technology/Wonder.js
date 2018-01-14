@@ -2,14 +2,17 @@ open MeshRendererSystem;
 
 open MeshRendererType;
 
-open Contract;
-
 let createMeshRenderer = create;
 
 let getMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(ComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state))
+      WonderLog.(
+        Contract.(
+          Operators.(ComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state))
+        )
+      ),
+    StateData.stateData.isTest
   );
   getGameObject(meshRenderer, state) |> Js.Option.getExn
 };

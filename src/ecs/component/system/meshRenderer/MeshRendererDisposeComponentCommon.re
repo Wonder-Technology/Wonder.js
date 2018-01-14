@@ -4,8 +4,6 @@ open ComponentDisposeComponentCommon;
 
 open MeshRendererStateCommon;
 
-open Contract;
-
 let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
   removeFromArray(disposedGameObjectUid, renderGameObjectArray) |> ignore;
   data
@@ -31,11 +29,16 @@ let _disposeData = (meshRenderer: meshRenderer, state: StateDataType.state) => {
 
 let handleDisposeComponent =
     (meshRenderer: meshRenderer, gameObjectUid: int, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(meshRenderer, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(meshRenderer, isAlive, state)
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let {disposedIndexArray} as data = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
@@ -51,22 +54,20 @@ let handleBatchDisposeComponent =
       gameObjectUidMap: array(bool),
       state: StateDataType.state
     ) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            meshRendererArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (meshRenderer) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       meshRenderer,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  meshRendererArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let {disposedIndexArray} as data = getMeshRendererData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(meshRendererArray);

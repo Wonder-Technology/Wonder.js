@@ -289,7 +289,7 @@ let _ =
                 "current camera should exist",
                 () =>
                   expect(() => state^ |> CameraControllerTool.getCurrentCameraController |> ignore)
-                  |> toThrowMessage("should has at least one camera")
+                  |> toThrowMessage("expect has at least one camera, but actual has 0")
               )
           )
         }
@@ -403,7 +403,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "shouldn't dispose the component which isn't alive",
+                "expect dispose the alive component, but actual not",
                 () => {
                   let (state, gameObject1, cameraController1, gameObject2, cameraController2) =
                     _prepareTwo(state^);
@@ -424,7 +424,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                  |> toThrowMessage("expect dispose the alive component, but actual not")
                 }
               )
           )
@@ -436,6 +436,7 @@ let _ =
           describe(
             "if cameraController is disposed",
             () => {
+              let _getErrorMsg = () => "expect component alive, but actual not";
               let _testGetFunc = (getFunc) => {
                 open GameObject;
                 let (state, gameObject, _, cameraController) =
@@ -446,8 +447,7 @@ let _ =
                        gameObject,
                        cameraController
                      );
-                expect(() => getFunc(cameraController, state))
-                |> toThrowMessage("component should alive")
+                expect(() => getFunc(cameraController, state)) |> toThrowMessage(_getErrorMsg())
               };
               let _testSetFunc = (setFunc) => {
                 open GameObject;
@@ -460,7 +460,7 @@ let _ =
                        cameraController
                      );
                 expect(() => setFunc(cameraController, Obj.magic(0), state))
-                |> toThrowMessage("component should alive")
+                |> toThrowMessage(_getErrorMsg())
               };
               test(
                 "getCameraControllerPMatrix should error",

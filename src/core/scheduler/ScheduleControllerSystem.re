@@ -1,5 +1,3 @@
-open Contract;
-
 open StateDataType;
 
 /* TODO add pause,resume, stop control */
@@ -12,14 +10,20 @@ let _remove = (index: int, state: state) => {
 };
 
 let _getFuncRecord = (index: int, funcRecordArray) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          {j|$funcRecordArray[$index] should exist|j},
-          () => WonderCommonlib.ArraySystem.get(index, funcRecordArray) |> assertExist
+      WonderLog.Contract.Operators.(
+        WonderLog.Contract.test(
+          WonderLog.Log.buildAssertMessage(
+            ~expect={j|$funcRecordArray[$index] exist|j},
+            ~actual={j|not|j}
+          ),
+          () =>
+            WonderCommonlib.ArraySystem.get(index, funcRecordArray)
+            |> WonderLog.Contract.assertExist
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
   Array.unsafe_get(funcRecordArray, index)
 };

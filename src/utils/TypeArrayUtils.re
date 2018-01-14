@@ -1,7 +1,5 @@
 open Js.Typed_array;
 
-open Contract;
-
 let getFloat3 = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index),
   Float32Array.unsafe_get(typeArray, index + 1),
@@ -9,8 +7,18 @@ let getFloat3 = (index: int, typeArray: Float32Array.t) => (
 );
 
 let setFloat3 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t) => {
-  requireCheck(
-    () => Contract.Operators.(test("data.length should === 3", () => Js.Array.length(data) == 3))
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let len = data |> Js.Array.length;
+      test(
+        Log.buildAssertMessage(~expect={j|data.length === 3|j}, ~actual={j|is $len|j}),
+        () => len == 3
+      )
+    },
+    StateData.stateData.isTest
   );
   /* Float32Array.setArrayOffset(data, index, typeArray); */
   for (i in index to index + 2) {
@@ -39,8 +47,18 @@ let getFloat16 = (index: int, typeArr: Float32Array.t) => [|
 |];
 
 let setFloat16 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t) => {
-  requireCheck(
-    () => Contract.Operators.(test("data.length should === 16", () => Js.Array.length(data) == 16))
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let len = data |> Js.Array.length;
+      test(
+        Log.buildAssertMessage(~expect={j|data.length === 16|j}, ~actual={j|is $len|j}),
+        () => len == 16
+      )
+    },
+    StateData.stateData.isTest
   );
   /* Float32Array.setArrayOffset(data, index, typeArray); */
   for (i in index to index + 15) {
@@ -59,14 +77,22 @@ let fillFloat32Array =
   [@bs]
   (
     (typeArr: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            test(
-              "should not exceed Float32Array range",
-              () => Js.Array.length(dataArr) + startIndex <= Float32Array.length(typeArr)
-            )
+      WonderLog.Contract.requireCheck(
+        () => {
+          open WonderLog;
+          open Contract;
+          open Operators;
+          let actualLen = Js.Array.length(dataArr) + startIndex;
+          let range = Float32Array.length(typeArr);
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|not exceed Float32Array range:$range|j},
+              ~actual={j|is $actualLen|j}
+            ),
+            () => actualLen <= range
           )
+        },
+        StateData.stateData.isTest
       );
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -83,15 +109,26 @@ let fillFloat32Array =
   );
 
 let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, offset) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () => {
-      open Contract.Operators;
-      test("offset should >= 0", () => offset >= 0);
+      open WonderLog;
+      open Contract;
+      open Operators;
       test(
-        "sourceTypeArr.length + offset should <= targetTypeArr.length",
-        () => offset + Float32Array.length(sourceTypeArr) <= Float32Array.length(targetTypeArr)
+        Log.buildAssertMessage(~expect={j|offset should >= 0|j}, ~actual={j|is $offset|j}),
+        () => offset >= 0
+      );
+      let sourceTypeArrLen = Float32Array.length(sourceTypeArr);
+      let targetTypeArrLen = Float32Array.length(targetTypeArr);
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+          ~actual={j||j}
+        ),
+        () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
-    }
+    },
+    StateData.stateData.isTest
   );
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
@@ -103,14 +140,22 @@ let fillUint16Array =
   [@bs]
   (
     (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            test(
-              "should not exceed Uint16Array range",
-              () => Js.Array.length(dataArr) + startIndex <= Uint16Array.length(typeArr)
-            )
+      WonderLog.Contract.requireCheck(
+        () => {
+          open WonderLog;
+          open Contract;
+          open Operators;
+          let actualLen = Js.Array.length(dataArr) + startIndex;
+          let range = Uint16Array.length(typeArr);
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|not exceed Uint16Array range:$range|j},
+              ~actual={j|is $actualLen|j}
+            ),
+            () => actualLen <= range
           )
+        },
+        StateData.stateData.isTest
       );
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -126,15 +171,26 @@ let fillUint16Array =
   );
 
 let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () => {
-      open Contract.Operators;
-      test("offset should >= 0", () => offset >= 0);
+      open WonderLog;
+      open Contract;
+      open Operators;
       test(
-        "sourceTypeArr.length + offset should <= targetTypeArr.length",
-        () => offset + Uint16Array.length(sourceTypeArr) <= Uint16Array.length(targetTypeArr)
+        Log.buildAssertMessage(~expect={j|offset should >= 0|j}, ~actual={j|is $offset|j}),
+        () => offset >= 0
+      );
+      let sourceTypeArrLen = Uint16Array.length(sourceTypeArr);
+      let targetTypeArrLen = Uint16Array.length(targetTypeArr);
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+          ~actual={j||j}
+        ),
+        () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
-    }
+    },
+    StateData.stateData.isTest
   );
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };

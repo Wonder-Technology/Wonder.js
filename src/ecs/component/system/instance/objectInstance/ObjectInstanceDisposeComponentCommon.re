@@ -4,8 +4,6 @@ open ObjectInstanceType;
 
 open StateDataType;
 
-open Contract;
-
 open ComponentDisposeComponentCommon;
 
 open ObjectInstanceStateCommon;
@@ -19,11 +17,19 @@ let isAlive = (objectInstance: objectInstance, state: StateDataType.state) =>
 let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceMap}) =>
   sourceInstanceMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(objectInstance)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (sourceInstance) =>
-         Contract.Operators.(
-           test("sourceInstance should exist", () => sourceInstance |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|souceInstance exist|j}, ~actual={j|not|j}),
+                 () => sourceInstance |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let _disposeData = (objectInstance: objectInstance, state: StateDataType.state) => {
@@ -34,11 +40,20 @@ let _disposeData = (objectInstance: objectInstance, state: StateDataType.state) 
 };
 
 let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(objectInstance, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(
+              objectInstance,
+              isAlive,
+              state
+            )
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
   disposedIndexArray |> Js.Array.push(objectInstance) |> ignore;
@@ -58,38 +73,39 @@ let handleBatchDisposeComponent =
       gameObjectUidMap: array(bool),
       state: StateDataType.state
     ) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () => {
-          open Contract.Operators;
-          objectInstanceArray
-          |> WonderCommonlib.ArraySystem.forEach(
-               [@bs]
-               (
-                 (objectInstance) =>
-                   ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                     objectInstance,
-                     isAlive,
-                     state
-                   )
-               )
-             );
+          open WonderLog;
+          open Contract;
+          open Operators;
+          let objectInstanceLen = objectInstanceArray |> Js.Array.length;
           test(
-            "objectInstanceArray should has one objectInstance at least",
-            () => objectInstanceArray |> Js.Array.length > 0
+            Log.buildAssertMessage(
+              ~expect={j|objectInstanceArray has one objectInstance at least|j},
+              ~actual={j|$objectInstanceLen|j}
+            ),
+            () => objectInstanceLen > 0
           );
           test(
-            "all objectInstance should belong to the same sourceInstance",
+            Log.buildAssertMessage(
+              ~expect={j|all objectInstance belong to the same sourceInstance|j},
+              ~actual={j|not|j}
+            ),
             () => {
               let data = getObjectInstanceData(state);
               let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], data);
               objectInstanceArray
               |> WonderCommonlib.ArraySystem.forEach(
                    [@bs]
-                   ((objectInstance) => _unsafeGetSourceInstance(objectInstance, data) == sourceInstance)
+                   (
+                     (objectInstance) =>
+                       _unsafeGetSourceInstance(objectInstance, data) == sourceInstance
+                   )
                  )
             }
           )
-        }
+        },
+        StateData.stateData.isTest
       );
       let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(objectInstanceArray);

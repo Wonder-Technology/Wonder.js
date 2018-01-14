@@ -1,7 +1,5 @@
 open VboBufferType;
 
-open Contract;
-
 let _getBufferAndSetBufferMap = (gl, bufferPool) =>
   switch (bufferPool |> Js.Array.pop) {
   | Some(buffer) => buffer
@@ -25,14 +23,22 @@ let getInstanceBuffer = (gl, state: StateDataType.state) => {
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, bufferMap)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (r) =>
-         Contract.Operators.(
-           test(
-             "buffer should exist in bufferMap",
-             () => WonderCommonlib.SparseMapSystem.has(index, bufferMap) |> assertTrue
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|buffer exist in bufferMap|j},
+                   ~actual={j|not|j}
+                 ),
+                 () => WonderCommonlib.SparseMapSystem.has(index, bufferMap) |> assertTrue
+               )
+             )
            )
-         )
+         ),
+       StateData.stateData.isTest
      );
 
 let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {

@@ -454,7 +454,7 @@ let _ =
                   state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
                 TestTool.openContractCheck();
                 expect(() => setFunc(geometry, Obj.magic(0), state))
-                |> toThrowMessage("component should alive")
+                |> toThrowMessage("expect component alive, but actual not")
               };
               test(
                 "setBoxGeometryConfigData should error",

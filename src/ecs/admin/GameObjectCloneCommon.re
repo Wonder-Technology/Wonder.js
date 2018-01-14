@@ -1,5 +1,3 @@
-open Contract;
-
 open GameObjectType;
 
 let _createGameObjectArr = (countRangeArr, state) =>
@@ -74,18 +72,27 @@ let rec _clone =
                    ////shareGeometry:false
    } */
 let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () => {
-      open Contract.Operators;
+      open WonderLog;
+      open Contract;
+      open Operators;
       test(
-        "shouldn't clone sourceInstance gameObject",
+        Log.buildAssertMessage(
+          ~expect={j|not clone sourceInstance gameObject|j},
+          ~actual={j|do|j}
+        ),
         () => GameObjectHasComponentCommon.hasSourceInstanceComponent(uid, state) |> assertFalse
       );
       test(
-        "shouldn't clone objectInstance gameObject",
+        Log.buildAssertMessage(
+          ~expect={j|not clone objectInstance gameObject|j},
+          ~actual={j|do|j}
+        ),
         () => GameObjectHasComponentCommon.hasObjectInstanceComponent(uid, state) |> assertFalse
       )
-    }
+    },
+    StateData.stateData.isTest
   );
   let totalClonedGameObjectArr = [||];
   (

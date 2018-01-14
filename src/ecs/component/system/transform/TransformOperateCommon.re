@@ -12,16 +12,22 @@ open TransformStateCommon;
 
 open Matrix4System;
 
-open Contract;
-
 let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap) =>
   localToWorlMatrixMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (localToWorldMatrix) =>
-         Contract.Operators.(
-           test("localToWorldMatrix should exist", () => localToWorldMatrix |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|localToWorldMatrix exist|j}, ~actual={j|not|j}),
+                 () => localToWorldMatrix |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 /* let setLocalToWorldMatrix =
@@ -32,11 +38,19 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (localPosition) =>
-         Contract.Operators.(
-           test("localPositionshould exist", () => localPosition |> assertNullableExist)
-         )
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|localPosition exist|j}, ~actual={j|not|j}),
+                 () => localPosition |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let getLocalPositionTuple = (transform: transform, localPositionMap) => {

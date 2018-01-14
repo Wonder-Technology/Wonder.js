@@ -2,8 +2,6 @@ open ComponentSystem;
 
 open Js.Typed_array;
 
-open Contract;
-
 open TypeArrayUtils;
 
 open GeometryGetStateDataCommon;
@@ -38,7 +36,8 @@ let getIndices = (index: int, state: StateDataType.state) =>
 let unsafeGetIndices =
   [@bs]
   (
-    (index: int, state: StateDataType.state) => GeometryOperateIndicesCommon.unsafeGetIndices(index, state)
+    (index: int, state: StateDataType.state) =>
+      GeometryOperateIndicesCommon.unsafeGetIndices(index, state)
   );
 
 let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) =>
@@ -60,14 +59,23 @@ let getIndexType = (gl) => getUnsignedShort(gl);
 let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
 let init = (state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        test(
-          "shouldn't dispose any geometry before init",
-          () => GeometryDisposeComponentCommon.isNotDisposed(getGeometryData(state)) |> assertTrue
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|not dispose any geometry before init|j},
+                ~actual={j|not|j}
+              ),
+              () =>
+                GeometryDisposeComponentCommon.isNotDisposed(getGeometryData(state)) |> assertTrue
+            )
+          )
         )
-      )
+      ),
+    StateData.stateData.isTest
   );
   let {index} = getGeometryData(state);
   ArraySystem.range(0, index - 1)

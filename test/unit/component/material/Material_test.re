@@ -128,7 +128,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "shouldn't dispose the component which isn't alive",
+                "expect dispose the alive component, but actual not",
                 () => {
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let state =
@@ -141,7 +141,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                  |> toThrowMessage("expect dispose the alive component, but actual not")
                 }
               )
           )
@@ -160,7 +160,7 @@ let _ =
                 let state = state |> addGameObjectMaterialComponent(gameObject, material);
                 let state =
                   state |> GameObject.disposeGameObjectMaterialComponent(gameObject, material);
-                expect(() => getFunc(material, state)) |> toThrowMessage("component should alive")
+                expect(() => getFunc(material, state)) |> toThrowMessage("expect component alive, but actual not")
               };
               test("getMaterialGameObject should error", () => _testGetFunc(getMaterialGameObject))
             }

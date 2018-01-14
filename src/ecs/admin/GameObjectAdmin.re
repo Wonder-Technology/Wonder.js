@@ -1,5 +1,3 @@
-open Contract;
-
 open GameObjectType;
 
 open ComponentType;
@@ -116,12 +114,12 @@ let isAlive = (uid: int, state: StateDataType.state) => {
 
 let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
-    switch ( getGeometryComponent(uid, state)) {
+    switch (getGeometryComponent(uid, state)) {
     | Some(geometry) => GeometrySystem.handleInitComponent(geometry, state)
     | None => state
     };
   let state =
-    switch ( getMaterialComponent(uid, state)) {
+    switch (getMaterialComponent(uid, state)) {
     | Some(material) =>
       MaterialSystem.handleInitComponent([@bs] DeviceManagerSystem.getGl(state), material, state)
     | None => state

@@ -1,10 +1,6 @@
-
-
 open GameObjectType;
 
 open ComponentType;
-
-open Contract;
 
 open GameObjectGetComponentCommon;
 
@@ -141,10 +137,10 @@ let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), st
 
 let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   switch ([@bs] getSourceInstanceComponent(uid, state)) {
-  | Some(component) => [@bs] disposeSourceInstanceComponent(uid, component, batchDisposeFunc, state)
+  | Some(component) =>
+    [@bs] disposeSourceInstanceComponent(uid, component, batchDisposeFunc, state)
   | None => state
   };
-
 
 let disposeComponent = (uid, batchDisposeFunc, state) =>
   state
@@ -152,7 +148,10 @@ let disposeComponent = (uid, batchDisposeFunc, state) =>
   |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
   |> _disposeCommonComponent(uid, (getMaterialComponent, disposeMaterialComponent))
   |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
-  |> _disposeCommonComponent(uid, (getCameraControllerComponent, disposeCameraControllerComponent))
+  |> _disposeCommonComponent(
+       uid,
+       (getCameraControllerComponent, disposeCameraControllerComponent)
+     )
   |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
   |> _disposeCommonComponent(uid, (getObjectInstanceComponent, disposeObjectInstanceComponent));
 
@@ -173,4 +172,3 @@ let batchDisposeCommonComponent =
   |> batchDisposeObjectInstanceComponent(disposedUidMap, state)
   |> batchGetSourceInstanceComponent(uidArray)
   |> batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
-

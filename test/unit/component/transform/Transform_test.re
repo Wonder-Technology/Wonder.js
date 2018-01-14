@@ -922,7 +922,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "shouldn't dispose the component which isn't alive",
+                "expect dispose the alive component, but actual not",
                 () => {
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
@@ -936,7 +936,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                  |> toThrowMessage("expect dispose the alive component, but actual not")
                 }
               )
           )
@@ -952,13 +952,13 @@ let _ =
                 let (state, transform1) = createTransform(state^);
                 let state = state |> TransformTool.dispose(transform1);
                 expect(() => getFunc(transform1, state))
-                |> toThrowMessage("component should alive")
+                |> toThrowMessage("expect component alive, but actual not")
               };
               let _testSetFunc = (setFunc) => {
                 let (state, transform1) = createTransform(state^);
                 let state = state |> TransformTool.dispose(transform1);
                 expect(() => setFunc(Obj.magic(transform1), Obj.magic(1), state))
-                |> toThrowMessage("component should alive")
+                |> toThrowMessage("expect component alive, but actual not")
               };
               test("getTransformPosition should error", () => _testGetFunc(getTransformPosition));
               test(

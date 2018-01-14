@@ -1,5 +1,3 @@
-open Contract;
-
 open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
@@ -15,9 +13,19 @@ let getPoints = (index: int, pointsMap) => pointsMap |> WonderCommonlib.SparseMa
 let unsafeGetPoints = (index: int, pointsMap) =>
   pointsMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
-  |> ensureCheck(
+  |> WonderLog.Contract.ensureCheck(
        (points) =>
-         Contract.Operators.(test("indices should exist", () => points |> assertNullableExist))
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|points exist|j}, ~actual={j|not|j}),
+                 () => points |> assertNullableExist
+               )
+             )
+           )
+         ),
+       StateData.stateData.isTest
      );
 
 let setPointsWithArray =

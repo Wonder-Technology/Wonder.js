@@ -48,7 +48,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("shouldn't dispose any material before init")
+                  |> toThrowMessage("expect not dispose any material before init, but actual do")
                 }
               )
           )

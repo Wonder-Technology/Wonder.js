@@ -328,8 +328,6 @@ let _ =
                     () => {
                       let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       setMainConfig(MainTool.buildMainConfig()) |> ignore;
-                      /* DebugUtils.log(fakeGl##getExtension |> getCall(0) |> getArgs) |> ignore; */
-                      /* fakeGl##getExtension |> expect |> toCalledWith([|"ANGLE_instanced_arrays"|]) */
                       fakeGl##getExtension |> expect |> toCalledOnce
                     }
                   )

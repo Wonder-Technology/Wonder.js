@@ -4,8 +4,6 @@ open StateDataType;
 
 open GeometryGetStateDataCommon;
 
-open Contract;
-
 open ComponentDisposeComponentCommon;
 
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
@@ -41,11 +39,16 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
 };
 
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(geometry, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(geometry, isAlive, state)
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let {disposedIndexArray} = getGeometryData(state);
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
@@ -61,22 +64,20 @@ let handleBatchDisposeComponent =
   [@bs]
   (
     (geometryArray: array(geometry), gameObjectUidMap: array(bool), state: StateDataType.state) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            geometryArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (geometry) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       geometry,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  geometryArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let {disposedIndexArray} as data = getGeometryData(state);
       geometryArray

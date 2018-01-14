@@ -4,8 +4,6 @@ open ComponentDisposeComponentCommon;
 
 open TransformStateCommon;
 
-open Contract;
-
 let isAlive = (transform: transform, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(transform, getTransformData(state).disposedIndexArray);
 
@@ -44,11 +42,16 @@ let _disposeData = (transform: transform, state: StateDataType.state) => {
 };
 
 let handleDisposeComponent = (transform: transform, state: StateDataType.state) => {
-  requireCheck(
+  WonderLog.Contract.requireCheck(
     () =>
-      Contract.Operators.(
-        ComponentDisposeComponentCommon.checkComponentShouldAlive(transform, isAlive, state)
-      )
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(transform, isAlive, state)
+          )
+        )
+      ),
+    StateData.stateData.isTest
   );
   let {disposedIndexArray} as data = getTransformData(state);
   disposedIndexArray |> Js.Array.push(transform) |> ignore;
@@ -59,22 +62,20 @@ let handleBatchDisposeComponent =
   [@bs]
   (
     (transformArray: array(transform), gameObjectUidMap: array(bool), state: StateDataType.state) => {
-      requireCheck(
+      WonderLog.Contract.requireCheck(
         () =>
-          Contract.Operators.(
-            transformArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (transform) =>
-                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                       transform,
-                       isAlive,
-                       state
-                     )
-                 )
-               )
-          )
+          WonderLog.(
+            Contract.(
+              Operators.(
+                ComponentDisposeComponentCommon.checkComponentShouldAliveWithBatchDispose(
+                  transformArray,
+                  isAlive,
+                  state
+                )
+              )
+            )
+          ),
+        StateData.stateData.isTest
       );
       let {disposedIndexArray} as data = getTransformData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
