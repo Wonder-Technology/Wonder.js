@@ -871,8 +871,9 @@ browser-resolve@^1.11.2:
   dependencies:
     resolve "1.1.7"
 
-bs-glob@reasonml-community/bs-glob:
+"bs-glob@github:reasonml-community/bs-glob", bs-glob@reasonml-community/bs-glob:
   version "0.1.0"
+  uid "96cc8573edfd59e104ba929dc739b51413c6716e"
   resolved "https://codeload.github.com/reasonml-community/bs-glob/tar.gz/96cc8573edfd59e104ba929dc739b51413c6716e"
   dependencies:
     glob "^7.1.2"
@@ -4981,7 +4982,7 @@ wonder-bs-sinon@^0.1.6:
     sinon "^4.1.2"
     wonder-bs-jest latest
 
-wonder-commonlib@0.2.13, wonder-commonlib@0.2.19, wonder-commonlib@^0.2.0, wonder-commonlib@^0.2.19:
+wonder-commonlib@0.2.13, wonder-commonlib@0.2.19, wonder-commonlib@^0.2.19:
   version "0.2.19"
   resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.19.tgz#f9e81de5979961cd1d1c6baddc7b8575892fba1f"
 
@@ -4992,12 +4993,12 @@ wonder-generate-index@latest:
     bs-glob reasonml-community/bs-glob
     wonder-commonlib "0.2.13"
 
-wonder-glsl-compiler@latest:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.0.11.tgz#8b050f5ad4a56dd4f9163456b78f5042ccad330d"
+wonder-glsl-compiler@^0.1.1:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.1.2.tgz#752cbcd481e3d03e4f68a35b3f414c200f3d9d5d"
   dependencies:
     bs-glob reasonml-community/bs-glob
-    wonder-commonlib "^0.2.0"
+    wonder-commonlib "^0.2.19"
 
 wonder-jest-cli@latest:
   version "0.0.6"

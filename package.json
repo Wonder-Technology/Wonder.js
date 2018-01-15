@@ -46,7 +46,7 @@
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "^0.1.6",
     "wonder-generate-index": "latest",
-    "wonder-glsl-compiler": "latest",
+    "wonder-glsl-compiler": "^0.1.1",
     "wonder-render-test": "^0.1.12"
   },
   "dependencies": {
