@@ -5,7 +5,7 @@
   ],
   "testRegex": "lib/es6_global/test/(unit|integration)/.+_test\\.js$",
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib)"
+    "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib|wonder-log)"
   ],
   "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
   "notify": false,
@@ -13,14 +13,14 @@
   "collectCoverage": true,
   "coverageDirectory": "<rootDir>/coverage/",
   "coveragePathIgnorePatterns": [
-    "<rootDir>/lib/js/src/.+/Director.*",
-    "<rootDir>/lib/js/src/utils/",
-    "<rootDir>/lib/js/src/definition/",
-    "<rootDir>/lib/js/src/structure/",
-    "<rootDir>/lib/js/src/Index.*"
+    "<rootDir>/lib/es6_global/src/.+/Director.*",
+    "<rootDir>/lib/es6_global/src/utils/",
+    "<rootDir>/lib/es6_global/src/definition/",
+    "<rootDir>/lib/es6_global/src/structure/",
+    "<rootDir>/lib/es6_global/src/Index.*"
   ],
   "collectCoverageFrom": [
-    "lib/js/src/**/*.{js}",
+    "lib/es6_global/src/**/*.{js}",
     "!**/node_modules/**",
     "!**/vendor/**"
   ],
