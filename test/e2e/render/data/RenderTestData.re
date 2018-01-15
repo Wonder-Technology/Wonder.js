@@ -114,7 +114,7 @@ let renderTestData = {
 
 
 
-                    var state = RedoUndoTool.redoUndoShader(state);
+                    var state = RedoUndoTool.redoUndoShader(5, state);
 
 
 

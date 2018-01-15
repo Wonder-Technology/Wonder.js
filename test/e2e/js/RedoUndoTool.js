@@ -1,11 +1,11 @@
 var RedoUndoTool = (function () {
     return {
-        redoUndoShader: function (state) {
-            var count = 1;
+        redoUndoShader: function (count, state) {
+            var index = 1;
 
             var state = wd.scheduleLoop((elapsed, state) => {
-                if (count == 1) {
-                    count += 1;
+                if (index == 1) {
+                    index += 1;
 
                     window.copyState1 = wd.deepCopyStateForRestore(state);
 
@@ -21,7 +21,7 @@ var RedoUndoTool = (function () {
 
 
 
-                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                    var data = BasicBoxesTool.createBoxesByClone(count, state);
                     var state = data[0];
                     var boxes = data[1];
 
@@ -42,13 +42,13 @@ var RedoUndoTool = (function () {
                     return state;
 
                 }
-                if (count === 2) {
-                    count = 1;
+                if (index === 2) {
+                    index = 1;
 
                     return wd.restoreState(state, window.copyState1);
                 }
 
-                count += 1;
+                index += 1;
                 return state;
             }, state);
 

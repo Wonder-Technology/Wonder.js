@@ -646,7 +646,7 @@ var n1 = performance.now();
 
 
 
-                    var state = RedoUndoTool.redoUndoShader(state);
+                    var state = RedoUndoTool.redoUndoShader(1000, state);
 
 
 var n2 = performance.now();
