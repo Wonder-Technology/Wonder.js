@@ -23,7 +23,7 @@ var CameraTool = (function () {
 
             var transform = wd.getGameObjectTransformComponent(obj, state);
 
-            state = wd.setTransformLocalPosition(transform, [0, 0, 15], state);
+            state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 
             return [state, obj];
         }

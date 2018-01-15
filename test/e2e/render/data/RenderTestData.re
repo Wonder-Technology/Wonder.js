@@ -10,6 +10,7 @@ let renderTestData = {
       "./test/e2e/js/CameraTool.js",
       "./test/e2e/js/InstanceBasicBoxesTool.js",
       "./test/e2e/js/RedoUndoTool.js",
+      "./test/e2e/js/RandomTool.js",
       "./dist/wd.js"
     ]
   },
@@ -62,6 +63,8 @@ let renderTestData = {
 
 
                     function initSample(state) {
+                    RandomTool.stubMathRandom(10000);
+
                     var data = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
                     var state = data[0];
                     var boxes = data[1];
@@ -95,9 +98,10 @@ let renderTestData = {
 
 
                     function initSample(state) {
+                    RandomTool.stubMathRandom(10000);
 
 
-                var data = RedoUndoTool.createBoxesByInstance(10, state);
+                    var data = RedoUndoTool.createBoxesByInstance(10, state);
                     var state = data[0];
                     var box = data[1];
 
