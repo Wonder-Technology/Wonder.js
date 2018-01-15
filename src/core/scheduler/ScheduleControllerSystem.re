@@ -23,7 +23,7 @@ let _getFuncRecord = (index: int, funcRecordArray) => {
             |> WonderLog.Contract.assertExist
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Array.unsafe_get(funcRecordArray, index)
 };

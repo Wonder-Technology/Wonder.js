@@ -38,7 +38,7 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {

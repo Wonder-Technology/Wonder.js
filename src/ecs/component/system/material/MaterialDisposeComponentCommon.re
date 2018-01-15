@@ -34,7 +34,7 @@ let handleDisposeComponent = (material: material, state: StateDataType.state) =>
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   _handleDispose(getMaterialData(state).disposedIndexArray, material, state)
 };
@@ -56,7 +56,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getMaterialData(state);
       materialArray

@@ -48,7 +48,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {disposedIndexArray} = getGeometryData(state);
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
@@ -77,7 +77,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getGeometryData(state);
       geometryArray

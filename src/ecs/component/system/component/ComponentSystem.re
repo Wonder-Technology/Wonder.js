@@ -23,7 +23,7 @@ let unsafeGetComponentGameObject = (component: component, gameObjectMap) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>

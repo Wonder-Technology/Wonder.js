@@ -12,7 +12,7 @@ let createSourceInstanceObjectInstance = (sourceInstance, state: StateDataType.s
           Operators.(ComponentSystem.checkComponentShouldAlive(sourceInstance, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   createInstance(sourceInstance, state)
 };
@@ -25,7 +25,7 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataType
           Operators.(ComponentSystem.checkComponentShouldAlive(sourceInstance, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getObjectInstanceArray(sourceInstance, state)
 };
@@ -39,7 +39,7 @@ let markSourceInstanceModelMatrixIsStatic =
           Operators.(ComponentSystem.checkComponentShouldAlive(sourceInstance, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   markModelMatrixIsStatic(sourceInstance, Js.to_bool(isStatic), state)
 };

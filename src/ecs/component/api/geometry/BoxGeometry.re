@@ -17,7 +17,7 @@ let setBoxGeometryConfigData =
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setConfigData(geometry, configData, state)
 };

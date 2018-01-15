@@ -28,7 +28,7 @@ let _getFloat32InstanceArraySize = (capacity: int) => {
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   capacity / 4
 };

@@ -119,7 +119,7 @@ let addAttributeSendData =
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let attributeLocationMap =
     getOrCreateHashMap(state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex));
@@ -147,7 +147,7 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      )
 };
 
@@ -170,6 +170,6 @@ let getInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      )
 };

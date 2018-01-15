@@ -108,7 +108,7 @@ let createState =
     },
     gpuDetectData: {extensionInstancedArrays: None, precision: None},
     viewData: {canvas: None, contextConfig: None},
-    initConfig: {isTest: false},
+    initConfig: {isDebug: false},
     sourceInstanceData: SourceInstanceHelper.initData(),
     objectInstanceData: ObjectInstanceHelper.initData(),
     deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport:None},

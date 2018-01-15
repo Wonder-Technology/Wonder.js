@@ -23,7 +23,7 @@ let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataTyp
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
@@ -48,5 +48,5 @@ let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.st
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );

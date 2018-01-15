@@ -38,7 +38,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {disposedIndexArray} as data = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
@@ -67,7 +67,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getMeshRendererData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(meshRendererArray);

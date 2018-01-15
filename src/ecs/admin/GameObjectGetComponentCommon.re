@@ -18,7 +18,7 @@ let _unsafeGetComponent = (uid: int, componentMap: array(int)) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let getSourceInstanceComponent =

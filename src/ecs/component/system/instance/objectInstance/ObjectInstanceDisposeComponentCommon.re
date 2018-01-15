@@ -29,7 +29,7 @@ let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceM
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let _disposeData = (objectInstance: objectInstance, state: StateDataType.state) => {
@@ -53,7 +53,7 @@ let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataTy
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
   disposedIndexArray |> Js.Array.push(objectInstance) |> ignore;
@@ -105,7 +105,7 @@ let handleBatchDisposeComponent =
             }
           )
         },
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(objectInstanceArray);

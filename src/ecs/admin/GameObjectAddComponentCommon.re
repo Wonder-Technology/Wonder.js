@@ -20,7 +20,7 @@ let _addComponent = (uid: int, component: component, componentMap: array(int)) =
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
 };
@@ -118,7 +118,7 @@ let _checkBatchAdd = (uidArr, componentArr) =>
         () => gameObjectCount == componentCount
       )
     },
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
 
 let _batchAddComponent =

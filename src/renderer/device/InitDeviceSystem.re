@@ -23,7 +23,7 @@ let _getCanvasId = (domId: string) =>
                )
              )
            ),
-         StateData.stateData.isTest
+         StateData.stateData.isDebug
        );
 
 let createCanvas = ({canvasId}) =>

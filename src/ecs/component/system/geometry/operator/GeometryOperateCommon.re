@@ -25,7 +25,7 @@ let unsafeGetPoints = (index: int, pointsMap) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let setPointsWithArray =

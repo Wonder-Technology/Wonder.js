@@ -10,7 +10,7 @@ let getTransformGameObject = (transform: transform, state: StateDataType.state) 
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getGameObject(transform, state) |> Js.Option.getExn
 };
@@ -21,7 +21,7 @@ let getTransformParent = (transform: transform, state: StateDataType.state) => {
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getParent(transform, state) |> Js.Nullable.from_opt
 };
@@ -39,7 +39,7 @@ let setTransformParent =
       );
       ComponentSystem.checkComponentShouldAlive(child, isAlive, state)
     },
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setParent(parent, child, state)
 };
@@ -50,7 +50,7 @@ let getTransformChildren = (transform: transform, state: StateDataType.state) =>
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getChildren(transform, state)
 };
@@ -67,7 +67,7 @@ let getTransformLocalPosition = (transform: transform, state: StateDataType.stat
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getLocalPositionTuple(transform, state)
 };
@@ -85,7 +85,7 @@ let setTransformLocalPosition = (transform: transform, localPosition, state: Sta
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setLocalPositionByTuple(transform, localPosition, state)
 };
@@ -102,7 +102,7 @@ let getTransformPosition = (transform: transform, state: StateDataType.state) =>
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getPositionTuple(transform, state)
 };
@@ -119,7 +119,7 @@ let setTransformPosition = (transform: transform, position: position, state: Sta
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(transform, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setPositionByTuple(transform, position, state)
 };

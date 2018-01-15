@@ -36,7 +36,7 @@ let handleDisposeComponent = (cameraController: cameraController, state: StateDa
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {disposedIndexArray} = getCameraControllerData(state);
   disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
@@ -64,7 +64,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getCameraControllerData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(cameraControllerArray);

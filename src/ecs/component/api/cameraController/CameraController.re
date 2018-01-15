@@ -14,7 +14,7 @@ let setCameraControllerPerspectiveCamera = (cameraController: int, state: StateD
           Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setPerspectiveCamera(cameraController, state)
 };
@@ -27,7 +27,7 @@ let getCameraControllerPMatrix = (cameraController, state) => {
           Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   unsafeGetPMatrix(cameraController, state)
 };
@@ -40,7 +40,7 @@ let getCameraControllerGameObject = (cameraController, state) => {
           Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getGameObject(cameraController, state) |> Js.Option.getExn
 };
@@ -54,7 +54,7 @@ let getCameraControllerWorldToCameraMatrix =
           Operators.(ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getWorldToCameraMatrix(
     GetComponentUtils.getTransformFromCameraController(cameraController, state),

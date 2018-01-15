@@ -45,7 +45,7 @@ let _unsafeGetPMatrix =
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 /* let _setPMatrix =

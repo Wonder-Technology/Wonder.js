@@ -1,12 +1,12 @@
 let initWithoutBuildFakeDom =
     (
       ~sandbox,
-      ~isTest=Js.Nullable.return(Js.true_),
+      ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(300)}),
       ()
     ) => {
   Random.init(1);
-  Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
+  Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
@@ -18,23 +18,23 @@ let initWithoutBuildFakeDom =
 let init =
     (
       ~sandbox,
-      ~isTest=Js.Nullable.return(Js.true_),
+      ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(300)}),
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithoutBuildFakeDom(~sandbox, ~isTest, ~bufferConfig, ())
+  initWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ())
 };
 
 let initWithRenderConfigWithoutBuildFakeDom =
     (
       ~sandbox,
-      ~isTest=Js.Nullable.return(Js.true_),
+      ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
       ~renderConfig,
       ()
     ) =>
-  Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
+  Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
@@ -54,17 +54,17 @@ let initWithRenderConfig =
        ), */
     (
       ~sandbox,
-      ~isTest=Js.Nullable.return(Js.true_),
+      ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
       ~renderConfig,
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithRenderConfigWithoutBuildFakeDom(~sandbox, ~isTest, ~bufferConfig, ~renderConfig, ())
+  initWithRenderConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderConfig, ())
 };
 
 let openContractCheck = () =>
-  InitConfigSystem.setIsTest(~isTest=true, StateData.stateData) |> ignore;
+  InitConfigSystem.setIsTest(~isDebug=true, StateData.stateData) |> ignore;
 
 let closeContractCheck = () =>
-  InitConfigSystem.setIsTest(~isTest=false, StateData.stateData) |> ignore;
+  InitConfigSystem.setIsTest(~isDebug=false, StateData.stateData) |> ignore;

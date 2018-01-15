@@ -13,5 +13,5 @@ let getUniformSendData = (shaderIndex: int, map) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );

@@ -40,7 +40,7 @@ let init = (gl, state: state) => {
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   ArraySystem.range(0, MaterialStateCommon.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(

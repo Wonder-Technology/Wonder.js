@@ -26,7 +26,7 @@ let getCurrentCameraController = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {cameraArray} = getCameraControllerData(state);
   WonderCommonlib.ArraySystem.get(0, cameraArray)
@@ -130,7 +130,7 @@ let unsafeGetPMatrix = (cameraController: cameraController, state: StateDataType
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>

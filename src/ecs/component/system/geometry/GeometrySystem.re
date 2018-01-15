@@ -75,7 +75,7 @@ let init = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {index} = getGeometryData(state);
   ArraySystem.range(0, index - 1)

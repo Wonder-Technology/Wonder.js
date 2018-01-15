@@ -11,7 +11,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   [@bs] unsafeGetVertices(geometry, state)
 };
@@ -23,7 +23,7 @@ let setGeometryVertices =
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setVertices(geometry, data, state)
 };
@@ -34,7 +34,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   [@bs] unsafeGetIndices(geometry, state)
 };
@@ -46,7 +46,7 @@ let setGeometryIndices =
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   setIndices(geometry, data, state)
 };
@@ -57,7 +57,7 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getConfigData(geometry, state) |> Js.Option.getExn
 };
@@ -68,7 +68,7 @@ let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => 
       WonderLog.(
         Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getGameObject(geometry, state) |> Js.Option.getExn
 };

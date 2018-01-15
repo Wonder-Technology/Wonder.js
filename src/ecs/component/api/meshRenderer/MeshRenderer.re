@@ -12,7 +12,7 @@ let getMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateDataTyp
           Operators.(ComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state))
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getGameObject(meshRenderer, state) |> Js.Option.getExn
 };

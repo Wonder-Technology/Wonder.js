@@ -33,7 +33,7 @@ let findFirst = (arr: array('a), func) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let _filterTargetName = (name, targetName) => name == targetName;

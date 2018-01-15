@@ -62,7 +62,7 @@ type viewData = {
   contextConfig: option(contextConfig)
 };
 
-type initConfig = {isTest: bool};
+type initConfig = {isDebug: bool};
 
 type colorRgba = (float, float, float, float);
 
@@ -316,5 +316,5 @@ type sharedDataForRestoreState = {
 
 type stateData = {
   mutable state: option(state),
-  mutable isTest: bool
+  mutable isDebug: bool
 };

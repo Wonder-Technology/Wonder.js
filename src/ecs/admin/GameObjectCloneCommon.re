@@ -92,7 +92,7 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.s
         () => GameObjectHasComponentCommon.hasObjectInstanceComponent(uid, state) |> assertFalse
       )
     },
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let totalClonedGameObjectArr = [||];
   (

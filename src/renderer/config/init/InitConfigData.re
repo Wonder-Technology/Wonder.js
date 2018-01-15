@@ -1,1 +1,1 @@
-type initConfig = {isTest: bool};
+type initConfig = {isDebug: bool};

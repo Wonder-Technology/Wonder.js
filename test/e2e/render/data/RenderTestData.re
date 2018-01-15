@@ -16,7 +16,7 @@ let renderTestData = {
       name: "basic_box",
       bodyFuncStr: {|
                     var state = wd.setMainConfig({
-                        isTest: false
+                        isDebug: false
                     });
 
                     return initSample(state);

@@ -24,7 +24,7 @@ let _ =
         "setMainConfig",
         () => {
           describe(
-            "isTest",
+            "isDebug",
             () =>
               describe(
                 "if true",
@@ -34,7 +34,7 @@ let _ =
                     () => {
                       buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
                       setMainConfig(
-                        MainTool.buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())
+                        MainTool.buildMainConfig(~isDebug=Js.Nullable.return(Js.true_), ())
                       )
                       |> ignore;
                       getIsTest(StateData.stateData) |> expect == true

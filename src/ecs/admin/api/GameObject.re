@@ -20,7 +20,7 @@ let addGameObjectTransformComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addTransformComponent(gameObject, component, state)
 };
@@ -29,7 +29,7 @@ let disposeGameObjectTransformComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeTransformComponent(gameObject, component, state)
 };
@@ -37,7 +37,7 @@ let disposeGameObjectTransformComponent =
 let getGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Js.Option.getExn(getTransformComponent(gameObject, state))
 };
@@ -45,7 +45,7 @@ let getGameObjectTransformComponent = (gameObject: gameObject, state: StateDataT
 let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasTransformComponent(gameObject, state)
 };
@@ -54,7 +54,7 @@ let addGameObjectCameraControllerComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addCameraControllerComponent(gameObject, component, state)
 };
@@ -63,7 +63,7 @@ let disposeGameObjectCameraControllerComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeCameraControllerComponent(gameObject, component, state)
 };
@@ -71,7 +71,7 @@ let disposeGameObjectCameraControllerComponent =
 let getGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Js.Option.getExn(getCameraControllerComponent(gameObject, state))
 };
@@ -79,7 +79,7 @@ let getGameObjectCameraControllerComponent = (gameObject: gameObject, state: Sta
 let hasGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasCameraControllerComponent(gameObject, state)
 };
@@ -88,7 +88,7 @@ let addGameObjectMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addMaterialComponent(gameObject, component, state)
 };
@@ -97,7 +97,7 @@ let disposeGameObjectMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeMaterialComponent(gameObject, component, state)
 };
@@ -105,7 +105,7 @@ let disposeGameObjectMaterialComponent =
 let getGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Js.Option.getExn(getMaterialComponent(gameObject, state))
 };
@@ -113,7 +113,7 @@ let getGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataTy
 let hasGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasMaterialComponent(gameObject, state)
 };
@@ -122,7 +122,7 @@ let addGameObjectMeshRendererComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addMeshRendererComponent(gameObject, component, state)
 };
@@ -131,7 +131,7 @@ let disposeGameObjectMeshRendererComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeMeshRendererComponent(gameObject, component, state)
 };
@@ -139,7 +139,7 @@ let disposeGameObjectMeshRendererComponent =
 let getGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Js.Option.getExn(getMeshRendererComponent(gameObject, state))
 };
@@ -147,7 +147,7 @@ let getGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDa
 let hasGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasMeshRendererComponent(gameObject, state)
 };
@@ -156,7 +156,7 @@ let addGameObjectGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addGeometryComponent(gameObject, component, state)
 };
@@ -165,7 +165,7 @@ let disposeGameObjectGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeGeometryComponent(gameObject, component, state)
 };
@@ -173,7 +173,7 @@ let disposeGameObjectGeometryComponent =
 let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   Js.Option.getExn(getGeometryComponent(gameObject, state))
 };
@@ -181,7 +181,7 @@ let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataTy
 let hasGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasGeometryComponent(gameObject, state)
 };
@@ -190,7 +190,7 @@ let addGameObjectSourceInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addSourceInstanceComponent(gameObject, component, state)
 };
@@ -198,7 +198,7 @@ let addGameObjectSourceInstanceComponent =
 let getGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getSourceInstanceComponent(gameObject, state)
 };
@@ -206,7 +206,7 @@ let getGameObjectSourceInstanceComponent = (gameObject: gameObject, state: State
 let hasGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   hasSourceInstanceComponent(gameObject, state)
 };
@@ -215,7 +215,7 @@ let disposeGameObjectSourceInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeSourceInstanceComponent(gameObject, component, batchDispose, state)
 };
@@ -224,7 +224,7 @@ let addGameObjectObjectInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   addObjectInstanceComponent(gameObject, component, state)
 };
@@ -232,7 +232,7 @@ let addGameObjectObjectInstanceComponent =
 let getGameObjectObjectInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   getObjectInstanceComponent(gameObject, state)
 };
@@ -241,7 +241,7 @@ let disposeGameObjectObjectInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   disposeObjectInstanceComponent(gameObject, component, state)
 };
@@ -252,7 +252,7 @@ let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
 let disposeGameObject = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   dispose(gameObject, state)
 };
@@ -260,7 +260,7 @@ let disposeGameObject = (gameObject: gameObject, state: StateDataType.state) => 
 let initGameObject = (gameObject: gameObject, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   initGameObject(gameObject, state)
 };
@@ -278,7 +278,7 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   batchDispose(gameObjectArray, state)
 };

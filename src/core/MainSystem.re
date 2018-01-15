@@ -32,7 +32,7 @@ let _changeToGpuConfigRecord = (gpuConfigObj: Js.t({..})) : MainConfigType.gpuCo
 
 let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
   canvasId: getOptionValueFromJsObj(config##canvasId),
-  isTest: Js.to_bool(getValueFromJsObj(config##isTest, Js.false_)),
+  isDebug: Js.to_bool(getValueFromJsObj(config##isDebug, Js.false_)),
   contextConfig:
     switch (Js.Nullable.to_opt(config##contextConfig)) {
     | Some(contextConfig) => _changeToContextConfigRecord(contextConfig)
@@ -60,7 +60,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
 
 let setConfig = (config: Js.t({..}), state: state) => {
   let config = _changeConfigToRecord(config);
-  setIsTest(~isTest=config.isTest, StateData.stateData);
+  setIsTest(~isDebug=config.isDebug, StateData.stateData);
   (config, state)
 };
 

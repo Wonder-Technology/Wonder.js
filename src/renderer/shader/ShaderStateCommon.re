@@ -85,7 +85,7 @@ let restore = (currentState, targetState) => {
           }
       )
     },
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {shaderIndexMap: currentShaderIndexMap} = getShaderData(currentState);
   let {shaderIndexMap: targetShaderIndexMap} as targetShaderData = getShaderData(targetState);

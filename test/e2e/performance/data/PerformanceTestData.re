@@ -28,7 +28,7 @@ let performanceTestData = {
           name: "create_5k_boxes",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -82,7 +82,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "create_5k_boxes+transform",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -144,7 +144,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "create_5k_boxes+transform+set_parent",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -207,7 +207,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "create_dispose_1k_boxes",
           bodyFuncStr: {|
                          var state = wd.setMainConfig({
-                             isTest: false
+                             isDebug: false
                          });
 
                          return initSample(state);
@@ -279,7 +279,7 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
           name: "static_hardware_create_100k_boxes",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -333,7 +333,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "static_batch_create_5k_boxes",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false,
+                    isDebug: false,
                     gpuConfig: {
 useHardwareInstance:false
                     }
@@ -382,7 +382,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "dynamic_hardware_create_10k_boxes+transform",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -437,7 +437,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "dynamic_hardware_create_10k_boxes+transform+set_parent",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -495,7 +495,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
           name: "dynamic_hardware_create_dispose_200(sourceInstance box)*5(objectInstance box)",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -556,7 +556,7 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
           name: "dynamic_hardware_create_dispose_1[(sourceInstance box)*2k(objectInstance box)",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);
@@ -622,7 +622,7 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
           name: "copy_1k_boxes(objectInstance)+restore_from_1k_boxes(not instance)_1k_boxes(objectInstance)",
           bodyFuncStr: {|
                 var state = wd.setMainConfig({
-                    isTest: false
+                    isDebug: false
                 });
 
                 return initSample(state);

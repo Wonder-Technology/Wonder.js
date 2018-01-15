@@ -71,7 +71,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
   disposedIndexArray |> Js.Array.push(sourceInstance) |> ignore;
@@ -101,7 +101,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(sourceInstanceArray);

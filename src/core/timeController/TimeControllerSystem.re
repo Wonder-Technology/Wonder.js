@@ -61,6 +61,6 @@ let computeElapseTime = (time: float, state: StateDataType.state) => {
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      )
 };

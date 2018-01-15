@@ -32,7 +32,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
   vertexAttribHistoryArray

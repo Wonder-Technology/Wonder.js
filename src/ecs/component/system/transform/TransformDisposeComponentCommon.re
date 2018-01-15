@@ -51,7 +51,7 @@ let handleDisposeComponent = (transform: transform, state: StateDataType.state) 
           )
         )
       ),
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   let {disposedIndexArray} as data = getTransformData(state);
   disposedIndexArray |> Js.Array.push(transform) |> ignore;
@@ -75,7 +75,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isTest
+        StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getTransformData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);

@@ -32,5 +32,5 @@ let isDirty = (transform: transform, {dirtyMap} as data) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );

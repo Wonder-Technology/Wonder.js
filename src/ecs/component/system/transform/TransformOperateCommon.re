@@ -27,7 +27,7 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 /* let setLocalToWorldMatrix =
@@ -50,7 +50,7 @@ let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let getLocalPositionTuple = (transform: transform, localPositionMap) => {

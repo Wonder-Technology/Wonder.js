@@ -25,7 +25,7 @@ let unsafeGetChildren = (index: int, transformData: transformData) =>
              )
            )
          ),
-       StateData.stateData.isTest
+       StateData.stateData.isDebug
      );
 
 let _removeChild = (childIndex: int, children: array(transform)) =>
@@ -73,7 +73,7 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
         () => unsafeGetChildren(parent, transformData) |> Js.Array.includes(child) |> assertFalse
       )
     },
-    StateData.stateData.isTest
+    StateData.stateData.isDebug
   );
   _setParent(parent, child, transformData) |> _addChild(parent, child)
 };
