@@ -340,7 +340,7 @@ let _ =
                     let warn =
                       createMethodStubWithJsObjSandbox(
                         sandbox,
-                        WonderCommonlib.LogUtils.console,
+                        Console.console,
                         "warn"
                       );
                     let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);

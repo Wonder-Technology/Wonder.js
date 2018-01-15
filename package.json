@@ -42,20 +42,20 @@
     "http": "^0.0.0",
     "rollup": "^0.51.5",
     "puppeteer": "^0.13.0",
-    "wonder-benchmark": "^0.1.40",
+    "wonder-benchmark": "^0.1.41",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "^0.1.6",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "latest",
-    "wonder-render-test": "^0.1.11"
+    "wonder-render-test": "^0.1.12"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
-    "wonder-commonlib": "latest",
+    "wonder-commonlib": "^0.2.19",
     "wonder-log": "^0.1.1"
   },
   "resolutions": {
-    "wonder-commonlib": "0.2.18",
+    "wonder-commonlib": "0.2.19",
     "wonder-bs-jest": "0.2.17",
     "wonder-bs-puppeteer": "^0.1.1"
   }

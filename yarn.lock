@@ -4955,13 +4955,14 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.1.40:
-  version "0.1.40"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.40.tgz#4c041835e2061d1676692c7db5d148009cc2694e"
+wonder-benchmark@^0.1.41:
+  version "0.1.41"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.1.41.tgz#b70b5c824ca2bede34feec92f6d32dbfdaa95c80"
   dependencies:
     bs-json "^0.2.3"
     wonder-bs-puppeteer "^0.1.0"
-    wonder-commonlib "^0.2.18"
+    wonder-commonlib "^0.2.19"
+    wonder-log "^0.1.1"
 
 wonder-bs-jest@0.2.17, wonder-bs-jest@latest:
   version "0.2.17"
@@ -4980,9 +4981,9 @@ wonder-bs-sinon@^0.1.6:
     sinon "^4.1.2"
     wonder-bs-jest latest
 
-wonder-commonlib@0.2.13, wonder-commonlib@0.2.18, wonder-commonlib@^0.2.0, wonder-commonlib@^0.2.18, wonder-commonlib@latest:
-  version "0.2.18"
-  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.18.tgz#cb74338448a5ecd9a846dc0b69012a17b67d8f60"
+wonder-commonlib@0.2.13, wonder-commonlib@0.2.19, wonder-commonlib@^0.2.0, wonder-commonlib@^0.2.19:
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.19.tgz#f9e81de5979961cd1d1c6baddc7b8575892fba1f"
 
 wonder-generate-index@latest:
   version "0.1.0"
@@ -5097,14 +5098,15 @@ wonder-log@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.1.1.tgz#7f404aa5fe9e9009d6dd5d6d18885cb7ce409b35"
 
-wonder-render-test@^0.1.11:
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.11.tgz#09500864046912dad1907d06a737d0488777b5d3"
+wonder-render-test@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.12.tgz#0dcd6ec66a0577c5cccf3a1c4cb1e52489742a10"
   dependencies:
     bs-json "^0.2.3"
     jimp "^0.2.28"
     wonder-bs-puppeteer "^0.1.0"
-    wonder-commonlib "^0.2.18"
+    wonder-commonlib "^0.2.19"
+    wonder-log "^0.1.1"
 
 word-wrap@1.1.0:
   version "1.1.0"

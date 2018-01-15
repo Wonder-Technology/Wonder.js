@@ -47,10 +47,10 @@ let _detectPrecision = (gl, gpuDetectData) => {
     && fragmentShaderPrecisionMediumpFloat##precision > 0;
   if (! highpAvailable) {
     if (mediumpAvailable) {
-      WonderCommonlib.LogUtils.warn("not support highp, using mediump instead");
+      WonderLog.Log.warn({j|not support highp, using mediump instead|j});
       {...gpuDetectData, precision: Some(MEDIUMP)}
     } else {
-      WonderCommonlib.LogUtils.warn("not support highp and mediump, using lowp instead");
+      WonderLog.Log.warn({j|not support highp and mediump, using lowp instead|j});
       {...gpuDetectData, precision: Some(LOWP)}
     }
   } else {
