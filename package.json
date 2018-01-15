@@ -8,7 +8,6 @@
 	"main": "",
 	"scripts": {
 		"start": "node ./server/app.js",
-		"codecov": "cat coverage/lcov.info | codecov",
 		"watch": "bsb -clean-world -make-world -w",
 		"build": "bsb -clean-world -make-world",
 		"buildAll": "npm run build && gulp build",
@@ -33,7 +32,6 @@
 		"babel-cli": "^6.26.0",
 		"babel-preset-es2015": "^6.24.1",
 		"bs-platform": "^2.1.0",
-		"codecov.io": "^0.1.6",
 		"cz-customizable": "^5.2.0",
 		"express": "^4.16.1",
 		"gulp": "^3.9.1",
