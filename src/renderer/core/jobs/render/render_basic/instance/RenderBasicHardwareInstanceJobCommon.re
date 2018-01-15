@@ -47,7 +47,7 @@ let _sendModelMatrixDataBufferData =
   let (gl, extension) = glDataTuple;
   let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
   state
-  |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
+  |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArraySystem.forEachi(
        [@bs]
        (

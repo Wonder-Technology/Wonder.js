@@ -9,7 +9,7 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
            state
            |> ProgramSystem.use(gl, program)
-           |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendNoCachableData(shaderIndex)
+           |> GLSLSenderConfigDataHandleSystem.unsafeGetShaderUniformSendNoCachableData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (

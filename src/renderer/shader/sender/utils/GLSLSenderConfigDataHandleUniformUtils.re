@@ -1,4 +1,4 @@
-let getUniformSendData = (shaderIndex: int, map) =>
+let unsafeGetUniformSendData = (shaderIndex: int, map) =>
   map
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(

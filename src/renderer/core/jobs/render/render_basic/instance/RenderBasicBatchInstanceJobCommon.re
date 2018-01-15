@@ -3,7 +3,7 @@ open StateDataType;
 let render = (gl, uid, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
   let instanceUniformSendNoCachableData =
-    state |> GLSLSenderConfigDataHandleSystem.getInstanceUniformSendNoCachableData(shaderIndex);
+    state |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceUniformSendNoCachableData(shaderIndex);
   let drawMode = GeometryAdmin.getDrawMode(gl);
   let indexType = GeometryAdmin.getIndexType(gl);
   let indexTypeSize = GeometryAdmin.getIndexTypeSize(gl);

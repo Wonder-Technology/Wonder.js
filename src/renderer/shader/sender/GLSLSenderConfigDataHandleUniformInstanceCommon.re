@@ -42,8 +42,8 @@ let setToUniformSendMap =
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
 
-let getUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
-  GLSLSenderConfigDataHandleUniformUtils.getUniformSendData(
+let unsafeGetUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
+  GLSLSenderConfigDataHandleUniformUtils.unsafeGetUniformSendData(
     shaderIndex,
     getGLSLSenderData(state).instanceUniformSendNoCachableDataMap
   );

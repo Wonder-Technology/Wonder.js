@@ -6,7 +6,7 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
   let {vertexBufferMap, elementArrayBufferMap} =
     VboBufferGetStateDataUtils.getVboBufferData(state);
   state
-  |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
+  |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -38,7 +38,7 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
 
 let _sendUniformNoCacheData = (gl, shaderIndex, transformIndex, state) =>
   state
-  |> GLSLSenderConfigDataHandleSystem.getUniformSendNoCachableData(shaderIndex)
+  |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformSendNoCachableData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -53,7 +53,7 @@ let _sendUniformNoCacheData = (gl, shaderIndex, transformIndex, state) =>
 
 let _sendUniformCachableData = (gl, shaderIndex, materialIndex, state) =>
   state
-  |> GLSLSenderConfigDataHandleSystem.getUniformSendCachableData(shaderIndex)
+  |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformSendCachableData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (

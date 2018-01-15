@@ -128,7 +128,7 @@ let addAttributeSendData =
   |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
 
-let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
+let unsafeGetAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
@@ -151,7 +151,7 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
      )
 };
 
-let getInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
+let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {instanceAttributeSendDataMap} = getGLSLSenderData(state);
   instanceAttributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)

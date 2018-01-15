@@ -579,8 +579,8 @@ let _ =
                                   _,
                                   _,
                                   (
-                                    targetShaderUniformSendNoCachableData1,
-                                    targetShaderUniformSendNoCachableData2
+                                    tarunsafeGetShaderUniformSendNoCachableData1,
+                                    tarunsafeGetShaderUniformSendNoCachableData2
                                   )
                                 )
                               ) =

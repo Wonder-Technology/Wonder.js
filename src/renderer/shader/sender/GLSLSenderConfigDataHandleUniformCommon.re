@@ -214,10 +214,10 @@ let addUniformSendData =
   |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
-let getUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformNoCacheCommon.getUniformSendData;
+let unsafeGetUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformNoCacheCommon.unsafeGetUniformSendData;
 
-let getUniformSendCachableData = GLSLSenderConfigDataHandleUniformCacheCommon.getUniformSendData;
+let unsafeGetUniformSendCachableData = GLSLSenderConfigDataHandleUniformCacheCommon.unsafeGetUniformSendData;
 
-let getShaderUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderCommon.getUniformSendData;
+let unsafeGetShaderUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderCommon.unsafeGetUniformSendData;
 
-let getInstanceUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceCommon.getUniformSendData;
+let unsafeGetInstanceUniformSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceCommon.unsafeGetUniformSendData;
