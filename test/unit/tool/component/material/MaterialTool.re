@@ -20,11 +20,11 @@ let dispose = (material, state: StateDataType.state) =>
   MaterialDisposeComponentCommon.handleDisposeComponent(material, state);
 
 let prepareForInit = (state) =>
-  state |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state));
+  state |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let initMaterial = (materialIndex, state) =>
   MaterialInitComponentCommon.initMaterial(
-    [@bs] DeviceManagerSystem.getGl(state),
+    [@bs] DeviceManagerSystem.unsafeGetGl(state),
     materialIndex,
     state
   );

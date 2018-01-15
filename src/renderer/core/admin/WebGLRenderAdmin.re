@@ -26,7 +26,7 @@ let decideSpecificRenderSettingAndSetToState =
   state;
 
 let _execJobs = (executableJobs, state) =>
-  state |> execJobs([@bs] DeviceManagerSystem.getGl(state), executableJobs);
+  state |> execJobs([@bs] DeviceManagerSystem.unsafeGetGl(state), executableJobs);
 
 let init = (state: StateDataType.state) =>
   Render_setting.(

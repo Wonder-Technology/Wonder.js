@@ -3,7 +3,7 @@ open GeometrySystem;
 open GeometryType;
 
 let getGeometryDrawMode = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.getGl(state) |> getDrawMode;
+  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> getDrawMode;
 
 let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(

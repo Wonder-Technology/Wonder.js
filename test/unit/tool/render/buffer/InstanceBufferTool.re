@@ -5,7 +5,7 @@ let getOrCreateBuffer = (sourceInstance, state) => {
   let {modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateCommon.getSourceInstanceData(state);
   InstanceBufferSystem.getOrCreateBuffer(
-    [@bs] GlTool.getGl(state),
+    [@bs] GlTool.unsafeGetGl(state),
     sourceInstance,
     (modelMatrixInstanceBufferCapacityMap, modelMatrixInstanceBufferMap),
     state

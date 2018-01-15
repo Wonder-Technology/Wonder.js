@@ -30,10 +30,10 @@ let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(index, state);
 
 let getIndexType = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;
+  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> GeometrySystem.getIndexType;
 
 let getIndexTypeSize = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
+  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> GeometrySystem.getIndexTypeSize;
 
 let hasIndices = (index: int, state: StateDataType.state) =>
   GeometrySystem.hasIndices(index, state);

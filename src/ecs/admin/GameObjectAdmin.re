@@ -121,7 +121,7 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getMaterialComponent(uid, state)) {
     | Some(material) =>
-      MaterialSystem.handleInitComponent([@bs] DeviceManagerSystem.getGl(state), material, state)
+      MaterialSystem.handleInitComponent([@bs] DeviceManagerSystem.unsafeGetGl(state), material, state)
     | None => state
     };
   state

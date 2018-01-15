@@ -8,7 +8,27 @@ open DomType;
 
 let _getDeviceManagerData = (state: state) => state.deviceManagerData;
 
-let getGl = [@bs] ((state: state) => Js.Option.getExn(_getDeviceManagerData(state).gl));
+let unsafeGetGl =
+  [@bs]
+  (
+    (state: state) => {
+      WonderLog.Contract.requireCheck(
+        () =>
+          WonderLog.(
+            Contract.(
+              Operators.(
+                test(
+                  Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}),
+                  () => _getDeviceManagerData(state).gl |> assertExist
+                )
+              )
+            )
+          ),
+        StateData.stateData.isDebug
+      );
+      Js.Option.getExn(_getDeviceManagerData(state).gl)
+    }
+  );
 
 let setGl = (gl: webgl1Context, state: state) => {
   ...state,

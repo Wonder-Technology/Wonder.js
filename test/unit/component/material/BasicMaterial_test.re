@@ -44,7 +44,7 @@ let _ =
                   expect(
                     () => {
                       let state =
-                        state |> BasicMaterialTool.initMaterials([@bs] GlTool.getGl(state));
+                        state |> BasicMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state));
                       ()
                     }
                   )

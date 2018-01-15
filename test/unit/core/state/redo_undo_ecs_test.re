@@ -82,7 +82,7 @@ let _ =
         let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
         let state = MaterialTool.prepareForInit(state);
         let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-        let state = BasicMaterialTool.initMaterials([@bs] GlTool.getGl(state), state);
+        let state = BasicMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state), state);
         let state = state |> setMaterialColor(material2, [|1., 0.1, 0.2|]);
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };

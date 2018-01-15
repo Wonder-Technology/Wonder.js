@@ -1,1 +1,1 @@
-let getGl = DeviceManagerSystem.getGl;
+let unsafeGetGl = DeviceManagerSystem.unsafeGetGl;

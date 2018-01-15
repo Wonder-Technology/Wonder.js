@@ -29,7 +29,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> ScheduleControllerSystem.deepCopyStateForRestore;
 
 let _getSharedData = (currentState: StateDataType.state) => {
-  gl: [@bs] DeviceManagerSystem.getGl(currentState),
+  gl: [@bs] DeviceManagerSystem.unsafeGetGl(currentState),
   float32ArrayPoolMap: TypeArrayPoolSystem.getFloat32ArrayPoolMap(currentState),
   uint16ArrayPoolMap: TypeArrayPoolSystem.getUint16ArrayPoolMap(currentState)
 };
@@ -46,7 +46,7 @@ let restore =
   let (targetState, sharedData) =
     targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
-  let gl = [@bs] DeviceManagerSystem.getGl(targetState);
+  let gl = [@bs] DeviceManagerSystem.unsafeGetGl(targetState);
   targetState
   |> TypeArrayPoolSystem.restore(currentState, sharedData)
   |> VboBufferSystem.restore(currentState)
@@ -58,6 +58,18 @@ let restore =
   |> RenderDataSystem.restore(currentState)
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
+  /* |> WonderLog.Contract.ensureCheck ((state) => {
+  open WonderLog;
+  open Contract;
+  open Operators;
+  test
+  (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}), 
+  (
+  () => {
+ [@bs]DeviceManagerSystem.unsafeGetGl(state)  
+  })
+  );
+  }, StateData.stateData.isTest); */
 };
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */

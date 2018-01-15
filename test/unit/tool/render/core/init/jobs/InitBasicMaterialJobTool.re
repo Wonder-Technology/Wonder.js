@@ -63,8 +63,8 @@ let prepareGameObject = (sandbox, state) => {
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
-  |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state))
-  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
+  |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.unsafeGetGl(state))
+  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;
