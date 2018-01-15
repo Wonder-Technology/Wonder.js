@@ -1,3 +1,24 @@
+<a name="1.0.0-alpha.13.1"></a>
+# [1.0.0-alpha.13.1](https://github.com/yyc-git/Wonder.js/compare/v1.0.0-alpha.13...v1.0.0-alpha.13.1) (2018-01-15)
+
+
+### Bug Fixes
+
+* **bumped:** solve "permission denied" problem ([125d132](https://github.com/yyc-git/Wonder.js/commit/125d132))
+* createShaderChunkSystemFile gulp task-> builded ShaderChunkSystem.re not has "open Contract;" ([5b3ba87](https://github.com/yyc-git/Wonder.js/commit/5b3ba87))
+* **coverage:** fix jest_coverage.json: change "lib/js/xxx" to "lib/es6_global/xxx" ([178529d](https://github.com/yyc-git/Wonder.js/commit/178529d))
+* **e2e-test:** fix "if test fail, not exit when run test in local" bug ([f91cc29](https://github.com/yyc-git/Wonder.js/commit/f91cc29))
+* **pf-test:** fix "re-generate benchmark case data" bug ([d1ecd9b](https://github.com/yyc-git/Wonder.js/commit/d1ecd9b))
+
+
+### Features
+
+* **log:** use wonder-log for debug,contract,log,error,fatal ([5d02463](https://github.com/yyc-git/Wonder.js/commit/5d02463))
+* **pf-test:** improve pf test success rate:re-generate benchmark before re-compare ([440b08b](https://github.com/yyc-git/Wonder.js/commit/440b08b))
+* upgrade wonder-commonlib, remove DebugUtils, LogUtils ([0ed59c5](https://github.com/yyc-git/Wonder.js/commit/0ed59c5))
+
+
+
 <a name="1.0.0-alpha.13"></a>
 # [1.0.0-alpha.13](https://github.com/yyc-git/Wonder.js/compare/1.0.0-alpha.12...1.0.0-alpha.13) (2018-01-09)
 
