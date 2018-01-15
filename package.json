@@ -51,7 +51,6 @@
 	},
 	"dependencies": {
 		"bs-json": "^0.2.3",
-		"gulp-shell": "^0.6.5",
 		"wonder-commonlib": "^0.2.19",
 		"wonder-log": "^0.1.1"
 	},
