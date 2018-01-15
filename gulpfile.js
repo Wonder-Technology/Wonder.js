@@ -7,6 +7,8 @@ require("./build/gulp_task/performance/testPerformance");
 require("./build/gulp_task/render/testRender");
 require("./build/gulp_task/e2e/upgradeConfig");
 
+require("./build/gulp_task/install/installWithPuppeteer");
+
 
 
 
@@ -23,10 +25,6 @@ gulp.task("generateIndex", function (done) {
 
     done();
 });
-
-
-
-
 
 
 
