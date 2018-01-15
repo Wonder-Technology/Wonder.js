@@ -508,21 +508,5 @@ let _ =
               )
           )
       )
-      /* describe(
-           "check getGeometryConfigData",
-           () =>
-             test(
-               "cloned geometry have no config data, shouldn't get it",
-               () => {
-                 open StateDataType;
-                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                 let state = state |> GeometryTool.initGeometrys;
-                 let (state, _, _, _, clonedGeometryArr) =
-                   CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
-                 expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
-                 |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
-               }
-             )
-         ) */
     }
   );
