@@ -47,7 +47,7 @@ let renderTestData = {
     |},
       scriptFilePathList: None,
       distance: None,
-      diffPercent: Some(0.001),
+      diffPercent: Some(0.00001),
       threshold: None,
       frameData: [{timePath: [16]}]
     },
@@ -82,7 +82,7 @@ let renderTestData = {
     |},
       scriptFilePathList: None,
       distance: None,
-      diffPercent: Some(0.001),
+      diffPercent: Some(0.00001),
       threshold: None,
       frameData: [{timePath: [16]}]
     },
