@@ -64,7 +64,7 @@ let initWithRenderConfig =
 };
 
 let openContractCheck = () =>
-  InitConfigSystem.setIsTest(~isDebug=true, StateData.stateData) |> ignore;
+  InitConfigSystem.setIsDebug(~isDebug=true, StateData.stateData) |> ignore;
 
 let closeContractCheck = () =>
-  InitConfigSystem.setIsTest(~isDebug=false, StateData.stateData) |> ignore;
+  InitConfigSystem.setIsDebug(~isDebug=false, StateData.stateData) |> ignore;

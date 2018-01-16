@@ -60,7 +60,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
 
 let setConfig = (config: Js.t({..}), state: state) => {
   let config = _changeConfigToRecord(config);
-  setIsTest(~isDebug=config.isDebug, StateData.stateData);
+  setIsDebug(~isDebug=config.isDebug, StateData.stateData);
   (config, state)
 };
 

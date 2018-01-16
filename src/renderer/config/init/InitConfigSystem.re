@@ -2,6 +2,6 @@ open StateSystem;
 
 open StateDataType;
 
-let getIsTest = ({isDebug}: stateData) : bool => isDebug;
+let getIsDebug = ({isDebug}: stateData) : bool => isDebug;
 
-let setIsTest = (~isDebug: bool, stateData: stateData) => stateData.isDebug = isDebug;
+let setIsDebug = (~isDebug: bool, stateData: stateData) => stateData.isDebug = isDebug;

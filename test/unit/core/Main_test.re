@@ -37,7 +37,7 @@ let _ =
                         MainTool.buildMainConfig(~isDebug=Js.Nullable.return(Js.true_), ())
                       )
                       |> ignore;
-                      getIsTest(StateData.stateData) |> expect == true
+                      getIsDebug(StateData.stateData) |> expect == true
                     }
                   )
               )

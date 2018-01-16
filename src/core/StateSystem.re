@@ -69,7 +69,7 @@ let restore =
  [@bs]DeviceManagerSystem.unsafeGetGl(state)  
   })
   );
-  }, StateData.stateData.isTest); */
+  }, StateData.stateData.isDebug); */
 };
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
