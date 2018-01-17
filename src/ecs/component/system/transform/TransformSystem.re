@@ -34,11 +34,25 @@ let getParent = (child: transform, state: StateDataType.state) =>
 let setParentNotMarkDirty = (parent: option(transform), child: transform, transformData) =>
   transformData |> TransformHierachyCommon.setParent(parent, child);
 
+let setParentKeepOrderNotMarkDirty = (parent: option(transform), child: transform, transformData) =>
+  transformData |> TransformHierachyCommon.setParentKeepOrder(parent, child);
+
+let _setParent = (parent: Js.nullable(transform), child: transform, isKeepOrder, transformData) =>
+  (
+    isKeepOrder ?
+      transformData |> setParentKeepOrderNotMarkDirty(Js.toOption(parent), child) :
+      transformData |> setParentNotMarkDirty(Js.toOption(parent), child)
+  )
+  |> markHierachyDirty(child);
+
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
-  getTransformData(state)
-  |> setParentNotMarkDirty(Js.toOption(parent), child)
-  |> markHierachyDirty(child)
-  |> ignore;
+  _setParent(parent, child, false, getTransformData(state)) |> ignore;
+  state
+};
+
+let setParentKeepOrder =
+    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
+  _setParent(parent, child, true, getTransformData(state)) |> ignore;
   state
 };
 

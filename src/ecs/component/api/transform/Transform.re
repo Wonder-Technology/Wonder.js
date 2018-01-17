@@ -26,8 +26,8 @@ let getTransformParent = (transform: transform, state: StateDataType.state) => {
   getParent(transform, state) |> Js.Nullable.from_opt
 };
 
-let setTransformParent =
-    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
+let _checkParentAndChildTransformShouldAlive =
+    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) =>
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -41,7 +41,17 @@ let setTransformParent =
     },
     StateData.stateData.isDebug
   );
+
+let setTransformParent =
+    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
+  _checkParentAndChildTransformShouldAlive(parent, child, state);
   setParent(parent, child, state)
+};
+
+let setTransformParentKeepOrder =
+    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
+  _checkParentAndChildTransformShouldAlive(parent, child, state);
+  setParentKeepOrder(parent, child, state)
 };
 
 let getTransformChildren = (transform: transform, state: StateDataType.state) => {

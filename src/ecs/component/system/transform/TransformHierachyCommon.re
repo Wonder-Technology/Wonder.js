@@ -1,18 +1,20 @@
 open TransformType;
 
-let _unsafeGetParent = (index: int, transformData: transformData) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.parentMap);
+let _unsafeGetParent = (transform: transform, transformData: transformData) =>
+  WonderCommonlib.SparseMapSystem.unsafeGet(transform, transformData.parentMap);
 
-let getParent = (index: int, transformData: transformData) =>
-  Js.Undefined.to_opt(WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.parentMap));
+let getParent = (transform: transform, transformData: transformData) =>
+  Js.Undefined.to_opt(
+    WonderCommonlib.SparseMapSystem.unsafeGet(transform, transformData.parentMap)
+  );
 
-let removeFromParentMap = (childIndex: int, transformData: transformData) => {
-  WonderCommonlib.SparseMapSystem.deleteVal(childIndex, transformData.parentMap) |> ignore;
+let removeFromParentMap = (child: int, transformData: transformData) => {
+  WonderCommonlib.SparseMapSystem.deleteVal(child, transformData.parentMap) |> ignore;
   transformData
 };
 
-let unsafeGetChildren = (index: int, transformData: transformData) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.childMap)
+let unsafeGetChildren = (transform: transform, transformData: transformData) =>
+  WonderCommonlib.SparseMapSystem.unsafeGet(transform, transformData.childMap)
   |> WonderLog.Contract.ensureCheck(
        (children) =>
          WonderLog.(
@@ -28,24 +30,36 @@ let unsafeGetChildren = (index: int, transformData: transformData) =>
        StateData.stateData.isDebug
      );
 
-let _removeChild = (childIndex: int, children: array(transform)) =>
+let _setChildren = (transformData, parent, children) => {
+  WonderCommonlib.SparseMapSystem.set(parent, children, transformData.childMap) |> ignore;
+  transformData
+};
+
+let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
   ArraySystem.deleteBySwap(
-    Js.Array.indexOf(childIndex, children),
+    Js.Array.indexOf(child, children),
     Js.Array.length(children) - 1,
     children
   );
 
-let removeFromChildMap = (parentIndex: int, childIndex: int, transformData: transformData) => {
-  unsafeGetChildren(parentIndex, transformData) |> _removeChild(childIndex) |> ignore;
-  transformData
-};
+let removeFromChildMap = (parent: int, child: int, isKeepOrder, transformData: transformData) =>
+  isKeepOrder ?
+    unsafeGetChildren(parent, transformData)
+    |> Js.Array.filter((transform) => transform !== child)
+    |> _setChildren(transformData, parent) :
+    {
+      unsafeGetChildren(parent, transformData) |> _removeChild(child, isKeepOrder) |> ignore;
+      transformData
+    };
 
-let _removeFromParent = (currentParentIndex: int, child: transform, transformData: transformData) =>
-  removeFromParentMap(child, transformData) |> removeFromChildMap(currentParentIndex, child);
+let _removeFromParent =
+    (currentParent: int, child: transform, isKeepOrder, transformData: transformData) =>
+  removeFromParentMap(child, transformData)
+  |> removeFromChildMap(currentParent, child, isKeepOrder);
 
-let _setParent = (parent: transform, childIndex: int, transformData: transformData) => {
+let _setParent = (parent: transform, child: int, transformData: transformData) => {
   WonderCommonlib.SparseMapSystem.set(
-    childIndex,
+    child,
     TransformCastTypeCommon.transformToJsUndefine(parent),
     transformData.parentMap
   )
@@ -53,8 +67,8 @@ let _setParent = (parent: transform, childIndex: int, transformData: transformDa
   transformData
 };
 
-let _addChild = (parentIndex: int, child: transform, transformData: transformData) => {
-  unsafeGetChildren(parentIndex, transformData) |> Js.Array.push(child) |> ignore;
+let _addChild = (parent: int, child: transform, transformData: transformData) => {
+  unsafeGetChildren(parent, transformData) |> Js.Array.push(child) |> ignore;
   transformData
 };
 
@@ -78,21 +92,30 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
   _setParent(parent, child, transformData) |> _addChild(parent, child)
 };
 
-let _setNewParent = (parent, child, transformData) =>
+let _setNewParent = (parent, child, isKeepOrder, transformData) =>
   switch (getParent(child, transformData)) {
   | None => _addToParent(parent, child, transformData)
   | Some(currentParent) =>
     ! TransformJudgeCommon.isSame(currentParent, parent) ?
-      _removeFromParent(currentParent, child, transformData) |> _addToParent(parent, child) :
+      _removeFromParent(currentParent, child, isKeepOrder, transformData)
+      |> _addToParent(parent, child) :
       transformData
   };
 
-let setParent = (parent: option(transform), child: transform, transformData: transformData) =>
+let _setParent =
+    (parent: option(transform), child: transform, isKeepOrder, transformData: transformData) =>
   switch parent {
   | None =>
     switch (getParent(child, transformData)) {
     | None => transformData
-    | Some(currentParent) => _removeFromParent(currentParent, child, transformData)
+    | Some(currentParent) => _removeFromParent(currentParent, child, isKeepOrder, transformData)
     }
-  | Some(newParent) => _setNewParent(newParent, child, transformData)
+  | Some(newParent) => _setNewParent(newParent, child, isKeepOrder, transformData)
   };
+
+let setParent = (parent: option(transform), child: transform, transformData: transformData) =>
+  _setParent(parent, child, false, transformData);
+
+let setParentKeepOrder =
+    (parent: option(transform), child: transform, transformData: transformData) =>
+  _setParent(parent, child, true, transformData);

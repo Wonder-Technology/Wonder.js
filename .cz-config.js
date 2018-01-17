@@ -17,7 +17,8 @@ module.exports = {
   scopes: [
     // { name: "exampleScope" },
     // { name: "changeMe" }
-      { name: "shader" }
+      { name: "shader" },
+      { name: "transform" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

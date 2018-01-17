@@ -279,6 +279,22 @@ let _ =
                     |> setTransformParent(Js.Nullable.return(parent2), child);
                   state |> getTransformParent(child) |> expect == Js.Nullable.return(parent2)
                 }
+              );
+              test(
+                "change its current parent's children order",
+                () => {
+                  let (state, parent) = createTransform(state^);
+                  let (state, child1) = createTransform(state);
+                  let (state, child2) = createTransform(state);
+                  let (state, child3) = createTransform(state);
+                  let state =
+                    state
+                    |> setTransformParent(Js.Nullable.return(parent), child1)
+                    |> setTransformParent(Js.Nullable.return(parent), child2)
+                    |> setTransformParent(Js.Nullable.return(parent), child3);
+                  let state = state |> setTransformParent(Js.Nullable.return(child3), child1);
+                  state |> getTransformChildren(parent) |> expect == [|3, 2|]
+                }
               )
             }
           );
@@ -324,6 +340,26 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "setTransformParentKeepOrder",
+        () =>
+          test(
+            "not change its current parent's children order",
+            () => {
+              let (state, parent) = createTransform(state^);
+              let (state, child1) = createTransform(state);
+              let (state, child2) = createTransform(state);
+              let (state, child3) = createTransform(state);
+              let state =
+                state
+                |> setTransformParent(Js.Nullable.return(parent), child1)
+                |> setTransformParent(Js.Nullable.return(parent), child2)
+                |> setTransformParent(Js.Nullable.return(parent), child3);
+              let state = state |> setTransformParentKeepOrder(Js.Nullable.return(child3), child1);
+              state |> getTransformChildren(parent) |> expect == [|2, 3|]
+            }
+          )
       );
       describe(
         "getTransformChildren",
@@ -378,47 +414,47 @@ let _ =
         }
       );
       /* describe(
-        "setTransformLocalPositionByTypeArray",
-        () => {
-          open Vector3System;
-          open Vector3Type;
-          open Js.Typed_array;
-          let _prepare = () => {
-            let (state, parent) = createTransform(state^);
-            let (state, child) = createTransform(state);
-            let pos1Tuple = (1., 2., 3.);
-            let pos2Tuple = (5., 10., 30.);
-            let pos1 = Float32Array.make([|1., 2., 3.|]);
-            let pos2 = Float32Array.make([|5., 10., 30.|]);
-            let state = setTransformParent(Js.Nullable.return(parent), child, state);
-            let state =
-              state
-              |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos1)
-              |> TransformTool.setTransformLocalPositionByTypeArray(child, pos2);
-            (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple)
-          };
-          test(
-            "change parent's localPosition should affect children",
-            () => {
-              let (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple) = _prepare();
-              let state = TransformTool.setTransformLocalPositionByTypeArray(parent, pos2, state);
-              (
-                state |> TransformTool.getTransformLocalPositionTypeArray(parent),
-                state |> TransformTool.getTransformPositionTypeArray(parent),
-                state |> TransformTool.getTransformLocalPositionTypeArray(child),
-                state |> TransformTool.getTransformPositionTypeArray(child)
-              )
-              |>
-              expect == (
-                          pos2,
-                          pos2,
-                          pos2,
-                          add(Float, pos2Tuple, pos2Tuple) |> TransformTool.changeTupleToTypeArray
-                        )
-            }
-          )
-        }
-      ); */
+           "setTransformLocalPositionByTypeArray",
+           () => {
+             open Vector3System;
+             open Vector3Type;
+             open Js.Typed_array;
+             let _prepare = () => {
+               let (state, parent) = createTransform(state^);
+               let (state, child) = createTransform(state);
+               let pos1Tuple = (1., 2., 3.);
+               let pos2Tuple = (5., 10., 30.);
+               let pos1 = Float32Array.make([|1., 2., 3.|]);
+               let pos2 = Float32Array.make([|5., 10., 30.|]);
+               let state = setTransformParent(Js.Nullable.return(parent), child, state);
+               let state =
+                 state
+                 |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos1)
+                 |> TransformTool.setTransformLocalPositionByTypeArray(child, pos2);
+               (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple)
+             };
+             test(
+               "change parent's localPosition should affect children",
+               () => {
+                 let (state, parent, child, pos1, pos1Tuple, pos2, pos2Tuple) = _prepare();
+                 let state = TransformTool.setTransformLocalPositionByTypeArray(parent, pos2, state);
+                 (
+                   state |> TransformTool.getTransformLocalPositionTypeArray(parent),
+                   state |> TransformTool.getTransformPositionTypeArray(parent),
+                   state |> TransformTool.getTransformLocalPositionTypeArray(child),
+                   state |> TransformTool.getTransformPositionTypeArray(child)
+                 )
+                 |>
+                 expect == (
+                             pos2,
+                             pos2,
+                             pos2,
+                             add(Float, pos2Tuple, pos2Tuple) |> TransformTool.changeTupleToTypeArray
+                           )
+               }
+             )
+           }
+         ); */
       describe(
         "getTransformPosition",
         () => {
@@ -488,43 +524,43 @@ let _ =
           )
       );
       /* describe(
-        "setTransformPositionByTypeArray",
-        () =>
-          describe(
-            "set position in world coordinate system",
-            () =>
-              Js.Typed_array.(
-                test(
-                  "change parent's position should affect children",
-                  () => {
-                    open Vector3System;
-                    open Vector3Type;
-                    let (state, parent) = createTransform(state^);
-                    let (state, child) = createTransform(state);
-                    let pos1 = Float32Array.make([|1., 2., 3.|]);
-                    let pos2 = Float32Array.make([|5., 4., 30.|]);
-                    let state = setTransformParent(Js.Nullable.return(parent), child, state);
-                    let state =
-                      TransformTool.setTransformLocalPositionByTypeArray(parent, pos1, state);
-                    let state =
-                      TransformTool.setTransformLocalPositionByTypeArray(child, pos2, state);
-                    let state =
-                      state |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos2);
-                    (
-                      state |> TransformTool.getTransformPositionTypeArray(parent),
-                      state |> TransformTool.getTransformPositionTypeArray(child)
-                    )
-                    |>
-                    expect == (
-                                pos2,
-                                add(Float, (5., 4., 30.), (5., 4., 30.))
-                                |> TransformTool.changeTupleToTypeArray
-                              )
-                  }
-                )
-              )
-          )
-      ); */
+           "setTransformPositionByTypeArray",
+           () =>
+             describe(
+               "set position in world coordinate system",
+               () =>
+                 Js.Typed_array.(
+                   test(
+                     "change parent's position should affect children",
+                     () => {
+                       open Vector3System;
+                       open Vector3Type;
+                       let (state, parent) = createTransform(state^);
+                       let (state, child) = createTransform(state);
+                       let pos1 = Float32Array.make([|1., 2., 3.|]);
+                       let pos2 = Float32Array.make([|5., 4., 30.|]);
+                       let state = setTransformParent(Js.Nullable.return(parent), child, state);
+                       let state =
+                         TransformTool.setTransformLocalPositionByTypeArray(parent, pos1, state);
+                       let state =
+                         TransformTool.setTransformLocalPositionByTypeArray(child, pos2, state);
+                       let state =
+                         state |> TransformTool.setTransformLocalPositionByTypeArray(parent, pos2);
+                       (
+                         state |> TransformTool.getTransformPositionTypeArray(parent),
+                         state |> TransformTool.getTransformPositionTypeArray(child)
+                       )
+                       |>
+                       expect == (
+                                   pos2,
+                                   add(Float, (5., 4., 30.), (5., 4., 30.))
+                                   |> TransformTool.changeTupleToTypeArray
+                                 )
+                     }
+                   )
+                 )
+             )
+         ); */
       /* describe(
            "test before TransformTool.update",
            () => {

@@ -16,7 +16,7 @@ let _disposeFromParentAndChildMap = (transform, data) => {
      );
   switch (TransformHierachyCommon.getParent(transform, data)) {
   | None => ()
-  | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform) |> ignore
+  | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform, false) |> ignore
   };
   data
 };
