@@ -43,7 +43,7 @@ let setParent = (parent: Js.nullable(transform), child: transform, state: StateD
 };
 
 let getChildren = (transform: transform, state: StateDataType.state) =>
-  getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
+  getTransformData(state) |> unsafeGetChildren(transform);
 
 let unsafeGetChildren = (transform: transform, transformData) =>
   unsafeGetChildren(transform, transformData);
