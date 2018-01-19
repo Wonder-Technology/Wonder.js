@@ -82,7 +82,7 @@ beforeEach(function () {
                             message += ", but actual is not called";
                         }
                         else {
-                            message += ", but actual is " + toString(actualArg[0]);
+                            message += ", but actual is " + toString(actualArg);
                         }
 
                         return {
