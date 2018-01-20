@@ -18,7 +18,8 @@ module.exports = {
     // { name: "exampleScope" },
     // { name: "changeMe" }
       { name: "shader" },
-      { name: "transform" }
+      { name: "transform" },
+      { name: "render-worker" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
