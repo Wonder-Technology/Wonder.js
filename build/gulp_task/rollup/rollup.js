@@ -51,3 +51,20 @@ gulp.task("rollup", function () {
     return rollup.rollup(inputConfig)
         .then(bundle => bundle.write(outputConfig))
 });
+
+gulp.task("rollupRenderWorker", function () {
+    var inputConfig = {
+        input: "./lib/es6_global/src/renderer/worker/RenderWorkerIndex.js",
+        plugins: [
+        ]
+    };
+    var outputConfig = {
+        file: "./dist/wd.render.worker.js",
+        format: "umd",
+        name: "wdrd",
+        indent: '\t'
+    };
+
+    return rollup.rollup(inputConfig)
+        .then(bundle => bundle.write(outputConfig))
+});
