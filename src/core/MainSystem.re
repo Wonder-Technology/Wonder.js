@@ -33,6 +33,8 @@ let _changeToGpuConfigRecord = (gpuConfigObj: Js.t({..})) : MainConfigType.gpuCo
 let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
   canvasId: getOptionValueFromJsObj(config##canvasId),
   isDebug: Js.to_bool(getValueFromJsObj(config##isDebug, Js.false_)),
+  /* TODO test */
+  workerFileDir: getValueFromJsObj(config##workerFileDir, ""),
   contextConfig:
     switch (Js.Nullable.to_opt(config##contextConfig)) {
     | Some(contextConfig) => _changeToContextConfigRecord(contextConfig)
@@ -65,13 +67,13 @@ let setConfig = (config: Js.t({..}), state: state) => {
 };
 
 /* TODO use conditional compile */
-let _initWorkInstances = (state: state) =>
+let _initWorkInstances = (workerFileDir: string, state: state) =>
   WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
-    WorkerInstanceSystem.initWorkInstances(state) : state;
+    WorkerInstanceSystem.initWorkInstances(workerFileDir, state) : state;
 
 /* TODO refactor: move to WorkerSystem? */
-let _initWorker = (state: state) => {
-  let state = state |> WorkerDetectSystem.detect |> _initWorkInstances;
+let _initWorker = (workerFileDir: string, state: state) => {
+  let state = state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir);
   /* TODO remove */
   state |> WorkerInstanceSystem.unsafeGetRenderWorker |> Worker.postMessage({"testMsg": "haha"});
   state
@@ -90,5 +92,5 @@ let init = ((config: mainConfigData, state: state)) => {
   |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> GPUDetectSystem.detect(gl)
   |> GameObjectAdmin.initDataFromState
-  |> _initWorker;
+  |> _initWorker(config.workerFileDir)
 };

@@ -2,6 +2,7 @@ type configJsObj = {
   .
   "canvasId": Js.nullable(string),
   "isDebug": Js.nullable(Js.boolean),
+  "workerFileDir": Js.nullable(string),
   "contextConfig":
     Js.nullable(
       {
@@ -34,6 +35,7 @@ type gpuConfig = {useHardwareInstance: bool};
 type mainConfigData = {
   canvasId: option(string),
   isDebug: bool,
+  workerFileDir: string,
   contextConfig,
   bufferConfig,
   gpuConfig
