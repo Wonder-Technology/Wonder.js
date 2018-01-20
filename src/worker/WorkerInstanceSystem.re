@@ -23,18 +23,34 @@ let _setRenderWorker = (state: StateDataType.state, worker: WorkerType.worker) =
   workerInstanceData: {renderWorker: Some(worker)}
 };
 
-/* var _getValidFileDir = (dir: string) => {
-       if (dir.slice(-1) !== '/') {
-           return `${dir}/`;
-       }
+let _getValidFileDir = (dir: string) =>
+  switch (dir |> Js.String.sliceToEnd(~from=(-1))) {
+  | lastChar when lastChar !== "/" => {j|$(dir)/|j}
+  | _ => dir
+  };
 
-       return dir;
-   } */
-/* let _getRenderWorkerFilePath = () => "/Wonder.js/dist/wd.render.worker.js"; */
-let _getRenderWorkerFilePath = () => "../dist/wd.render.worker.js";
+let _getRenderWorkerFilePath = (workerFileDir: string) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|workerFileDir be defined|j},
+                ~actual={j|is empty string||j}
+              ),
+              () => 0 |> assertGt(Int, workerFileDir |> Js.String.length)
+            )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  (workerFileDir |> _getValidFileDir) ++ "wd.render.worker.js"
+};
 
-/* return `${_getValidFileDir(WorkerDetectData.renderWorkerFileDir)}wd.renderWorker.js` */
 let _createWorker = (workerFilePath: string) => Worker.newWorker(workerFilePath);
 
-let initWorkInstances = (state: StateDataType.state) =>
-  _getRenderWorkerFilePath() |> _createWorker |> _setRenderWorker(state);
+let initWorkInstances = (workerFileDir, state: StateDataType.state) =>
+  workerFileDir |> _getRenderWorkerFilePath |> _createWorker |> _setRenderWorker(state);
