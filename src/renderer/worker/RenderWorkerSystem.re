@@ -10,4 +10,4 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
     )
   );
 
-let onmessage = (e) => Js.log("onmessage!");
+let onmessage = (e) => Js.log(e);

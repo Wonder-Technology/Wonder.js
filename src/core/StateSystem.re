@@ -107,5 +107,7 @@ let createState = () => {
   timeControllerData: TimeControllerHelper.initData(),
   vboBufferData: VboBufferHelper.initData(),
   globalTempData: GlobalTempHelper.initData(),
-  typeArrayPoolData: TypeArrayPoolHelper.initData()
+  typeArrayPoolData: TypeArrayPoolHelper.initData(),
+  workerInstanceData: WorkerInstanceHelper.initData(),
+  workerDetectData: WorkerDetectHelper.initData()
 };

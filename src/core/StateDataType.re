@@ -60,6 +60,10 @@ open LogicJobConfigType;
 
 open RenderJobConfigType;
 
+open WorkerInstanceType;
+
+open WorkerDetectType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -196,7 +200,9 @@ and state = {
   timeControllerData,
   vboBufferData,
   globalTempData,
-  typeArrayPoolData
+  typeArrayPoolData,
+  workerInstanceData,
+  workerDetectData
 };
 
 type sharedDataForRestoreState = {

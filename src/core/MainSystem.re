@@ -64,6 +64,19 @@ let setConfig = (config: Js.t({..}), state: state) => {
   (config, state)
 };
 
+/* TODO use conditional compile */
+let _initWorkInstances = (state: state) =>
+  WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
+    WorkerInstanceSystem.initWorkInstances(state) : state;
+
+/* TODO refactor: move to WorkerSystem? */
+let _initWorker = (state: state) => {
+  let state = state |> WorkerDetectSystem.detect |> _initWorkInstances;
+  /* TODO remove */
+  state |> WorkerInstanceSystem.unsafeGetRenderWorker |> Worker.postMessage({"testMsg": "haha"});
+  state
+};
+
 /* TODO set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
@@ -76,4 +89,5 @@ let init = ((config: mainConfigData, state: state)) => {
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> GPUDetectSystem.detect(gl)
+  |> _initWorker;
 };
