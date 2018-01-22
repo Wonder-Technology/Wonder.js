@@ -37,5 +37,5 @@ let setViewportOfGl = (gl, newViewportData, state: RenderWorkerStateDataType.ren
     state
   );
 
-let createGl = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
-  DeviceManagerShare.createGl(canvas, contextConfig);
+let createGL = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
+  DeviceManagerShare.createGL(canvas, contextConfig);

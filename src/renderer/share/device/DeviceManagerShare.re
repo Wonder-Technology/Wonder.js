@@ -5,7 +5,7 @@
    }; */
 /*
 
- let createGl = (contextConfig, canvas) =>
+ let createGL = (contextConfig, canvas) =>
    ViewShare.getContext(canvas, contextConfig); */
 let setViewportOfGl = (gl, oldViewport, (x, y, width, height), state) =>
   switch oldViewport {
@@ -16,5 +16,5 @@ let setViewportOfGl = (gl, oldViewport, (x, y, width, height), state) =>
     state
   };
 
-let createGl = (canvas, contextConfig: ContextShareType.contextConfigJsObj) =>
+let createGL = (canvas, contextConfig: ContextShareType.contextConfigJsObj) =>
   ViewShare.getContext(canvas, contextConfig);

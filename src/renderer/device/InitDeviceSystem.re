@@ -76,7 +76,7 @@ let initDevice = (config, state: StateDataType.state) =>
       let canvas = createCanvas(config);
       let gl =
         canvas
-        |> DeviceManagerSystem.createGl(_convertContextConfigDataToJsObj(config.contextConfig));
+        |> DeviceManagerSystem.createGL(_convertContextConfigDataToJsObj(config.contextConfig));
       let (x, y, width, height, _, _) as screenData = ViewSystem.getFullScreenData();
       let canvas = canvas |> ViewSystem.setToFullScreen(screenData);
       let viewportData = (x, y, width, height);
