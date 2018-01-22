@@ -37,10 +37,8 @@ let setGl = (gl: webgl1Context, state: state) => {
   deviceManagerData: {...state.deviceManagerData, gl: Some(gl)}
 };
 
-/* let createGl (state: state) =>
-   state |> getCanvas |> getContext options::(getContextConfig state); */
-let createGl = (contextConfig: MainConfigType.contextConfig, canvas) =>
-  getContext(canvas, contextConfig);
+let createGL = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
+  DeviceManagerShare.createGL(canvas, contextConfig);
 
 let setColorWrite =
     (
@@ -150,16 +148,13 @@ let setViewportData = ((x, y, width, height), state: StateDataType.state) => {
   deviceManagerData: {...state.deviceManagerData, viewport: Some((x, y, width, height))}
 };
 
-let setViewportOfGl = (gl, (x, y, width, height), state: StateDataType.state) => {
-  let {viewport} = _getDeviceManagerData(state);
-  switch viewport {
-  | Some((oldX, oldY, oldWidth, oldHeight))
-      when oldX === x && oldY === y && oldWidth === width && oldHeight === height => state
-  | _ =>
-    Gl.viewport(x, y, width, height, gl);
+let setViewportOfGl = (gl, newViewportData, state: StateDataType.state) =>
+  DeviceManagerShare.setViewportOfGl(
+    gl,
+    _getDeviceManagerData(state).viewport,
+    newViewportData,
     state
-  }
-};
+  );
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   open DeviceManagerType;
