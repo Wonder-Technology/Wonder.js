@@ -4,9 +4,6 @@ open Dom;
 
 open DomUtils;
 
-external convertViewportTupleToArray : ((float, float, float, float)) => array(float) =
-  "%identity";
-
 let _getCanvasId = (domId: string) =>
   String.contains(domId, '#') ?
     domId :
@@ -44,55 +41,10 @@ let createCanvas = ({canvasId}) =>
   )
   |> Obj.magic;
 
-/* TODO refactor: with ViewSystem */
-let _convertContextConfigDataToJsObj =
-    ({alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer}) => {
-  "alpha": Js.Boolean.to_js_boolean(alpha),
-  "depth": Js.Boolean.to_js_boolean(depth),
-  "stencil": Js.Boolean.to_js_boolean(stencil),
-  "antialias": Js.Boolean.to_js_boolean(antialias),
-  "premultipliedAlpha": Js.Boolean.to_js_boolean(premultipliedAlpha),
-  "preserveDrawingBuffer": Js.Boolean.to_js_boolean(preserveDrawingBuffer)
-};
+let getFullScreenData = () => ViewSystem.getFullScreenData();
 
-let initDevice = (config, state: StateDataType.state) =>
-  WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
-    {
-      /* TODO refactor: use ViewReWoSystem */
-      let canvas = createCanvas(config);
-      let (x, y, width, height, _, _) as screenData = ViewSystem.getFullScreenData();
-      let canvas = canvas |> ViewSystem.setToFullScreen(screenData);
-      let viewportData = (x, y, width, height);
-      /* let (state, canvas) =
-         state
-         |> DeviceManagerReWoSystem.setViewportData(viewportData)
-         |> ViewSystem.setToFullScreen(screenData, canvas); */
-      DeviceManagerReWoSystem.sendCreateGLData(
-        canvas,
-        WorkerInstanceSystem.unsafeGetRenderWorker(state),
-        _convertContextConfigDataToJsObj(config.contextConfig),
-        convertViewportTupleToArray(viewportData)
-      );
-      state
-      |> DeviceManagerReWoSystem.setViewportData(viewportData)
-      |> ViewSystem.setCanvas(canvas)
-      |> ViewSystem.setContextConfig(config.contextConfig)
-    } :
-    {
-      let canvas = createCanvas(config);
-      let gl = canvas |> DeviceManagerSystem.createGL(config.contextConfig);
-      let (x, y, width, height, _, _) as screenData = ViewSystem.getFullScreenData();
-      let canvas = canvas |> ViewSystem.setToFullScreen(screenData);
-      let viewportData = (x, y, width, height);
-      /* let (state, canvas) = */
-      state
-      |> DeviceManagerSystem.setGl(gl)
-      |> DeviceManagerSystem.setViewportData(viewportData)
-      |> DeviceManagerSystem.setViewportOfGl(gl, viewportData)
-      /* |> ViewSystem.setToFullScreen(screenData, canvas); */
-      /* state */
-      |> ViewSystem.setCanvas(canvas)
-      |> ViewSystem.setContextConfig(config.contextConfig)
-      |> GPUDetectSystem.detect(gl)
-      /* () */
-    };
+let setToFullScreen =
+    ((x, y, width, height, styleWidth, styleHeight) as screenData, gl, canvas, state) => (
+  state |> DeviceManagerSystem.setViewport(gl, (x, y, width, height)),
+  ViewSystem.setToFullScreen(screenData, canvas)
+);

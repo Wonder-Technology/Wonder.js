@@ -73,28 +73,24 @@ let _initWorkInstances = (workerFileDir: string, state: state) =>
 
 /* TODO refactor: move to WorkerSystem? */
 let _initWorker = (workerFileDir: string, state: state) => {
-  /* let state = state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir); */
-  state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir);
+  let state = state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir);
   /* TODO remove */
-  /* state |> WorkerInstanceSystem.unsafeGetRenderWorker |> Worker.postMessage({"testMsg": "haha"}); */
-  /* state |> WorkerInstanceSystem.unsafeGetRenderWorker;
-  state */
+  state |> WorkerInstanceSystem.unsafeGetRenderWorker |> Worker.postMessage({"testMsg": "haha"});
+  state
 };
 
 /* TODO set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
-/* let canvas = createCanvas(config); */
-  /* 
+  let canvas = createCanvas(config);
   let gl = canvas |> createGL(config.contextConfig);
-  let (state, canvas) = state |> setToFullScreen(getFullScreenData(), gl, canvas); */
+  let (state, canvas) = state |> setToFullScreen(getFullScreenData(), gl, canvas);
   state
-  /* |> setGl(gl) */
-  /* |> ViewSystem.setCanvas(canvas)
-  |> ViewSystem.setContextConfig(config.contextConfig) */
+  |> setGl(gl)
+  |> ViewSystem.setCanvas(canvas)
+  |> ViewSystem.setContextConfig(config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
-  /* |> GPUDetectSystem.detect(gl) */
+  |> GPUDetectSystem.detect(gl)
   |> GameObjectAdmin.initDataFromState
   |> _initWorker(config.workerFileDir)
-  |> InitDeviceSystem.initDevice(config)
 };

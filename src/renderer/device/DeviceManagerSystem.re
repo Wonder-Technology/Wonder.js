@@ -103,19 +103,17 @@ let clearColor = (gl, (r: float, g: float, b: float, a: float), state: StateData
   }
 };
 
-let setViewportData = ((x, y, width, height), state: StateDataType.state) => {
-  ...state,
-  deviceManagerData: {...state.deviceManagerData, viewport: Some((x, y, width, height))}
-};
-
-let setViewportOfGl = (gl, (x, y, width, height), state: StateDataType.state) => {
+let setViewport = (gl, (x, y, width, height), state: StateDataType.state) => {
   let {viewport} = _getDeviceManagerData(state);
   switch viewport {
   | Some((oldX, oldY, oldWidth, oldHeight))
       when oldX === x && oldY === y && oldWidth === width && oldHeight === height => state
   | _ =>
     Gl.viewport(x, y, width, height, gl);
-    state
+    {
+      ...state,
+      deviceManagerData: {...state.deviceManagerData, viewport: Some((x, y, width, height))}
+    }
   }
 };
 
