@@ -66,31 +66,10 @@ let setConfig = (config: Js.t({..}), state: state) => {
   (config, state)
 };
 
-/* TODO use conditional compile */
-let _initWorkInstances = (workerFileDir: string, state: state) =>
-  WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
-    WorkerInstanceSystem.initWorkInstances(workerFileDir, state) : state;
-
-/* TODO refactor: move to WorkerSystem? */
-let _initWorker = (workerFileDir: string, state: state) =>
-  /* let state = state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir); */
-  state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir)/* TODO remove */
-                                                                    /* state |> WorkerInstanceSystem.unsafeGetRenderWorker |> Worker.postMessage({"testMsg": "haha"}); */
-                                                                    ;
-                                                                    /* state |> WorkerInstanceSystem.unsafeGetRenderWorker;
-                                                                       state */
-
 /* TODO set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) =>
-  /* let canvas = createCanvas(config); */
-  /*
-   let gl = canvas |> createGL(config.contextConfig);
-   let (state, canvas) = state |> setToFullScreen(getFullScreenData(), gl, canvas); */
   state
-  /* |> setGl(gl) */
-  /* |> ViewSystem.setCanvas(canvas)
-     |> ViewSystem.setContextConfig(config.contextConfig) */
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
-  |> _initWorker(config.workerFileDir)
+  |> WorkerManagerSystem.initWorker(config.workerFileDir)
   |> InitDeviceSystem.initDevice(config);
