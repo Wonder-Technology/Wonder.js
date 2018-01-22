@@ -1,8 +1,5 @@
-open MessageDataType;
-
 external convertViewportArrayToTuple : array(float) => (float, float, float, float) = "%identity";
 
-/* let initGL = (data: messageInitGLData, renderWorkerState) => { */
 let initGL = (data, renderWorkerState) => {
   let gl = DeviceManagerReWoSystem.createGL(data##contextConfig, data##canvas);
   WonderLog.Log.print(("gl: ", gl)) |> ignore;
