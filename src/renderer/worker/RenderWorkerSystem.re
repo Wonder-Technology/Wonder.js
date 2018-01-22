@@ -61,7 +61,7 @@ let onmessage = (e) => {
   | INIT_GL =>
   WonderLog.Log.print(("data:",  data )) |> ignore;
     RenderWorkerStateSystem.createState()
-    |> InitGlSystem.initGL(data)
+    |> InitGlSystem.initGl(data)
     |> RenderWorkerStateSystem.setState(RenderWorkerStateData.renderWorkerStateData)
     |> ignore
   | operateType =>

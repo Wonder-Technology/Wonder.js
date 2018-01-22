@@ -37,8 +37,8 @@ let setGl = (gl: webgl1Context, state: state) => {
   deviceManagerData: {...state.deviceManagerData, gl: Some(gl)}
 };
 
-let createGL = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
-  DeviceManagerShare.createGL(canvas, contextConfig);
+let createGl = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
+  DeviceManagerShare.createGl(canvas, contextConfig);
 
 let setColorWrite =
     (
