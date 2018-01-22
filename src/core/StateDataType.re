@@ -70,6 +70,7 @@ type initConfig = {isDebug: bool};
 
 type colorRgba = (float, float, float, float);
 
+/* TODO refactor: move to DeviceManagerType? */
 type deviceManagerData = {
   gl: option(webgl1Context),
   colorWrite: option((Js.boolean, Js.boolean, Js.boolean, Js.boolean)),
