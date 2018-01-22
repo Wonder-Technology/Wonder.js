@@ -44,10 +44,6 @@ open GlobalTempType;
 
 open TypeArrayPoolType;
 
-open WorkerInstanceType;
-
-open WorkerDetectType;
-
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -309,9 +305,7 @@ and state = {
   timeControllerData,
   vboBufferData,
   globalTempData,
-  typeArrayPoolData,
-  workerInstanceData,
-  workerDetectData
+  typeArrayPoolData
 };
 
 type sharedDataForRestoreState = {

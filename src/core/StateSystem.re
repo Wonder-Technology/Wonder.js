@@ -39,8 +39,10 @@ let restore =
   let intersectShaderIndexDataArray =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
-  let (targetState, sharedData) = targetState |> GeometryAdmin.restore(currentState, sharedData);
-  let (targetState, sharedData) = targetState |> TransformAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> GeometryAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> TransformAdmin.restore(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
@@ -57,17 +59,17 @@ let restore =
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
   /* |> WonderLog.Contract.ensureCheck ((state) => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      test
-      (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}),
-      (
-      () => {
-     [@bs]DeviceManagerSystem.unsafeGetGl(state)
-      })
-      );
-      }, StateData.stateData.isDebug); */
+  open WonderLog;
+  open Contract;
+  open Operators;
+  test
+  (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}), 
+  (
+  () => {
+ [@bs]DeviceManagerSystem.unsafeGetGl(state)  
+  })
+  );
+  }, StateData.stateData.isDebug); */
 };
 
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
@@ -121,7 +123,7 @@ let createState =
     initConfig: {isDebug: false},
     sourceInstanceData: SourceInstanceHelper.initData(),
     objectInstanceData: ObjectInstanceHelper.initData(),
-    deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport: None},
+    deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport:None},
     gameObjectData: GameObjectHelper.initData(),
     transformData: None,
     cameraControllerData: CameraControllerHelper.initData(),
@@ -138,8 +140,6 @@ let createState =
     timeControllerData: TimeControllerHelper.initData(),
     vboBufferData: VboBufferHelper.initData(),
     globalTempData: GlobalTempHelper.initData(),
-    typeArrayPoolData: TypeArrayPoolHelper.initData(),
-    workerInstanceData: WorkerInstanceHelper.initData(),
-    workerDetectData: WorkerDetectHelper.initData()
+    typeArrayPoolData: TypeArrayPoolHelper.initData()
   }
 };
