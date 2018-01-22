@@ -18,6 +18,7 @@ module.exports = {
     // { name: "exampleScope" },
     // { name: "changeMe" }
       { name: "shader" },
+      { name: "redo-undo" },
       { name: "transform" }
   ],
 

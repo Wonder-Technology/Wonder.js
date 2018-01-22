@@ -168,9 +168,9 @@ let _ =
           );
           describe(
             "deep copy transform data",
-            () =>
+            () => {
               test(
-                "change copied state shouldn't affect source state",
+                "deep copy localToWorldMatrixMap, localPositionMap",
                 () => {
                   open TransformType;
                   let (
@@ -186,15 +186,46 @@ let _ =
                   let _ = Transform.getTransformPosition(transform2, state);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let data = TransformTool.getTransformData(copiedState);
+                  data.localToWorldMatrixMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
                   data.localPositionMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
-                  TransformTool.getTransformData(state).localPositionMap
-                  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                  (
+                    TransformTool.getTransformData(state).localToWorldMatrixMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2),
+                    TransformTool.getTransformData(state).localPositionMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                  )
                   |> expect
-                  |> not_ == (Js.Undefined.empty |> Obj.magic)
+                  |> not_ == (Js.Undefined.empty |> Obj.magic, Js.Undefined.empty |> Obj.magic)
+                }
+              );
+              test(
+                "deep copy childMap",
+                () => {
+                  open TransformType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    transform1,
+                    transform2,
+                    transform3
+                  ) =
+                    _prepareTransformData(state);
+                  let _ = Transform.getTransformPosition(transform2, state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let (copiedState, transform4) = Transform.createTransform(copiedState);
+                  let _ =
+                    copiedState
+                    |> Transform.setTransformParent(Js.Nullable.return(transform4), transform2);
+                  state |> Transform.getTransformChildren(transform1) |> expect == [|transform2|]
                 }
               )
+            }
           );
           describe(
             "deep copy geometry data",
@@ -656,7 +687,7 @@ let _ =
                 _prepareCameraControllerData,
                 CameraControllerTool.getCameraControllerData
               )
-          );
+          )
         }
       )
     }
