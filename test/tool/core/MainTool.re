@@ -47,7 +47,6 @@ let buildMainConfig =
       ~gpuConfig=Js.Nullable.undefined,
       ~canvasId=Js.Nullable.undefined,
       ~isDebug=Js.Nullable.undefined,
-      ~workerFileDir=Js.Nullable.undefined,
       ~contextConfig=Js.Nullable.undefined,
       ()
     ) => {
@@ -55,6 +54,5 @@ let buildMainConfig =
   "gpuConfig": gpuConfig,
   "canvasId": canvasId,
   "isDebug": isDebug,
-  "workerFileDir": workerFileDir,
   "contextConfig": contextConfig
 };
