@@ -35,9 +35,9 @@ let setGl = (gl: webgl1Context, state: state) => {
   deviceManagerData: {...state.deviceManagerData, gl: Some(gl)}
 };
 
-/* let createGL (state: state) =>
+/* let createGl (state: state) =>
    state |> getCanvas |> getContext options::(getContextConfig state); */
-let createGL = (contextConfig: MainConfigType.contextConfig, canvas) =>
+let createGl = (contextConfig: MainConfigType.contextConfig, canvas) =>
   getContext(canvas, contextConfig);
 
 let setColorWrite =

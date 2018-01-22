@@ -67,7 +67,7 @@ let setConfig = (config: Js.t({..}), state: state) => {
 /* TODO set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
-  let gl = canvas |> createGL(config.contextConfig);
+  let gl = canvas |> createGl(config.contextConfig);
   let (state, canvas) = state |> setToFullScreen(getFullScreenData(), gl, canvas);
   state
   |> setGl(gl)
