@@ -1,4 +1,4 @@
-open StateDataType;
+open RenderConfigType;
 
 let getJob = ((flags: jobFlags, _), gl, state) =>
   switch flags {

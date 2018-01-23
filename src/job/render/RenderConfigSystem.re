@@ -1,6 +1,6 @@
 open GameObjectType;
 
-open StateDataType;
+open RenderConfigType;
 
 let getInitPipelines = (state: StateDataType.state) => state.renderConfig.init_pipelines;
 

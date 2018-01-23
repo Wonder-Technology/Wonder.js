@@ -1,5 +1,7 @@
 open StateDataType;
 
+open RenderConfigType;
+
 let _initMaterialShader = (gl, materialIndex: int, initShaderFuncTuple, state: StateDataType.state) => {
   open RenderConfigSystem;
   let {basic_material} as shaderData = getShaders(state);

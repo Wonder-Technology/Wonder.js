@@ -2,6 +2,8 @@ open StateDataType;
 
 open RenderConfigSystem;
 
+open RenderConfigType;
+
 let filterHardwareRelatedSetting =
     ({platform, backend, browser}: render_setting)
     : hardwareRelatedSetting => {

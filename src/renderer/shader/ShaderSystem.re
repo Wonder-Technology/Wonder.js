@@ -1,8 +1,8 @@
-
-
 open ShaderType;
 
 open StateDataType;
+
+open RenderConfigType;
 
 let getAllShaderIndexArray = (state: StateDataType.state) =>
   ArraySystem.range(0, ShaderStateCommon.getShaderData(state).index - 1);
@@ -67,4 +67,3 @@ let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndex
 let deepCopyStateForRestore = ShaderStateCommon.deepCopyStateForRestore;
 
 let restore = ShaderStateCommon.restore;
-

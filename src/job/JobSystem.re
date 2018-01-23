@@ -2,6 +2,8 @@ open StateDataType;
 
 open RenderConfigSystem;
 
+open RenderConfigType;
+
 let _getAllRenderJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
   executableJobs
   |> WonderCommonlib.ArraySystem.reduceOneParam(

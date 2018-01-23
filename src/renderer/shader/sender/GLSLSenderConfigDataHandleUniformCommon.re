@@ -12,6 +12,8 @@ open GLSLSenderSendDataUtils;
 
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
+open RenderConfigType;
+
 let _getModelMNoCachableData =
   [@bs]
   (
