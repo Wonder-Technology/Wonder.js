@@ -257,8 +257,12 @@ and glslSenderData = {
   mutable lastSendElementArrayBuffer: option(buffer),
   mutable lastSendMaterial: option(material)
 }
+and jobData = {
+  renderInitJobList: list(((webgl1Context, state) => state)),
+  renderRenderJobList: list(((webgl1Context, state) => state))
+}
+/* TODO refactor: move out */
 and renderConfig = {
-  jobHandleMap: Js.Dict.t(((executableJobFlags, webgl1Context, state) => state)),
   render_setting,
   init_pipelines: pipelines,
   render_pipelines: pipelines,
@@ -282,6 +286,7 @@ and state = {
   bufferConfig: option(bufferConfig),
   gpuConfig: option(gpuConfig),
   memoryConfig,
+  jobData,
   renderConfig,
   gpuDetectData,
   sourceInstanceData,

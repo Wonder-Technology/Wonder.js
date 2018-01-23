@@ -16,8 +16,6 @@ let getShaderLibs = (state: StateDataType.state) => state.renderConfig.shader_li
 
 let getRenderSetting = (state: StateDataType.state) => state.renderConfig.render_setting;
 
-let _getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHandleMap;
-
 let findFirst = (arr: array('a), func) =>
   arr
   |> ArraySystem.unsafeFind(func)
@@ -55,22 +53,6 @@ let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: arra
 
 let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs: array(job)) =>
   _getPipelineExecutableJobs(render_pipeline, render_pipelines, jobs);
-
-let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : state => {
-  let jobHandleMap = _getJobHandleMap(state);
-  jobs
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, {name, flags, shader}: executableJob) =>
-           switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
-           | None => state
-           | Some(handle) => handle((flags, shader), gl, state)
-           }
-       ),
-       state
-     )
-};
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   findFirst(shaderLibs, (item: shaderLib) => _filterTargetName(item.name, shaderLibName));

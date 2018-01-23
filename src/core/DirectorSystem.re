@@ -4,6 +4,7 @@ open StateData;
 
 let init = (state: StateDataType.state) =>
   state
+  |> JobSystem.init
   |> GameObjectAdmin.init
   |> WebGLRenderAdmin.init
   |> TimeControllerSystem.start

@@ -19,6 +19,7 @@ module.exports = {
     // { name: "changeMe" }
       { name: "shader" },
       { name: "redo-undo" },
+      { name: "job" },
       { name: "transform" }
   ],
 

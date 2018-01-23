@@ -60,5 +60,3 @@ let _render = (gl, state: StateDataType.state) => {
 };
 
 let getJob = (configData, gl, state) => _render(gl, state);
-
-let getJob = (configData, gl, state) => _render(gl, state);

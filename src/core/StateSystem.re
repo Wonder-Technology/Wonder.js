@@ -108,8 +108,9 @@ let createState =
     bufferConfig: None,
     gpuConfig: None,
     memoryConfig: MemoryConfigSystem.initData(),
+    jobData : JobHelper.initData(),
     renderConfig: {
-      jobHandleMap: JobHandleSystem.createJobHandleMap(),
+      /* jobHandleMap: JobHandleSystem.createJobHandleMap(), */
       render_setting: convertRenderSettingToRecord(render_setting),
       init_pipelines: convertInitPipelinesToRecord(init_pipelines),
       render_pipelines: convertRenderPipelinesToRecord(render_pipelines),

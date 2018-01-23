@@ -69,7 +69,7 @@ let prepareGameObject = (sandbox, state) => {
 };
 
 let initSystemAndRender = (state: StateDataType.state) =>
-  state |> DirectorTool.initSystem |> WebGLRenderAdmin.init;
+  state |> JobSystem.init |> DirectorTool.initSystem |> WebGLRenderAdmin.init;
 
 let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem;
 

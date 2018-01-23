@@ -37,6 +37,7 @@ let prepareForJudgeGLSL = (sandbox, state) => {
   let state =
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
-  let state = state |> GeometryTool.initGeometrys |> WebGLRenderAdmin.init;
+  let state = state |> JobSystem.init |> GeometryTool.initGeometrys |> WebGLRenderAdmin.init;
+  /* let state = state |> DirectorTool.init |> WebGLRenderAdmin.init; */
   shaderSource
 };

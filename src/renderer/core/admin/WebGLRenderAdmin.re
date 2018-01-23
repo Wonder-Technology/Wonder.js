@@ -25,8 +25,8 @@ let decideSpecificRenderSettingAndSetToState =
      */
   state;
 
-let _execJobs = (executableJobs, state) =>
-  state |> execJobs([@bs] DeviceManagerSystem.unsafeGetGl(state), executableJobs);
+/* let _execJobs = (executableJobs, state) =>
+  state |> execJobs([@bs] DeviceManagerSystem.unsafeGetGl(state), executableJobs); */
 
 let init = (state: StateDataType.state) =>
   Render_setting.(
@@ -36,13 +36,14 @@ let init = (state: StateDataType.state) =>
         |> getRenderSetting
         |> filterHardwareRelatedSetting
         |> decideSpecificRenderSettingAndSetToState(state)
-        |> _execJobs(
+        |> JobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
+        /* |> _execJobs(
              getInitPipelineExecutableJobs(
                getRenderSetting(state),
                getInitPipelines(state),
                getInitJobs(state)
              )
-           )
+           ) */
       )
     )
   );
@@ -52,13 +53,15 @@ let render = (state: StateDataType.state) =>
     Json.(
       Decode.(
         state
-        |> _execJobs(
+        /* |> _execJobs(
              getRenderPipelineExecutableJobs(
                getRenderSetting(state),
                getRenderPipelines(state),
                getRenderJobs(state)
              )
-           )
+           ) */
+
+        |> JobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
       )
     )
   );
