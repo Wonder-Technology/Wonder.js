@@ -23,7 +23,6 @@ To build a elegant, high performance 3D engine with full functions.
 - Data Oriented Design
 - Data Driven
 - Entity Component System
-- Multi Thread Render
 - Defer Shading
 - Design By Contract
 
