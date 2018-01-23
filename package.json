@@ -1,11 +1,12 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.14.2",
+  "version": "1.0.0-alpha.14.3",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
+  "repository": "git@github.com:Wonder-Technology/Wonder.js.git",
   "license": "MIT",
-  "main": "",
+  "main": "dist/wd.js",
   "scripts": {
     "start": "node ./server/app.js",
     "watch": "bsb -clean-world -make-world -w",
