@@ -130,8 +130,8 @@ and glslSenderData = {
   mutable lastSendMaterial: option(material)
 }
 and jobData = {
-  renderInitJobList: list(((webgl1Context, state) => state)),
-  renderRenderJobList: list(((webgl1Context, state) => state))
+  renderInitJobList: list((string, (webgl1Context, state) => state)),
+  renderRenderJobList: list((string, (webgl1Context, state) => state))
 }
 and geometryData = {
   mutable index: int,

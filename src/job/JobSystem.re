@@ -22,7 +22,7 @@ let _getAllRenderJobs = (executableJobs, jobHandleMap, state: StateDataType.stat
                  ~params={j|jobHandleMap: $jobHandleMap|j}
                )
              )
-           | Some(handleFunc) => list @ [handleFunc((flags, shader))]
+           | Some(handleFunc) => list @ [(name, handleFunc((flags, shader)))]
            }
        ),
        []
@@ -32,15 +32,16 @@ let _getRenderInitJobList = (state: StateDataType.state) => state.jobData.render
 
 let _getRenderRenderJobList = (state: StateDataType.state) => state.jobData.renderRenderJobList;
 
+/* TODO refactor */
 let execRenderInitJobs = (gl, state: StateDataType.state) : state =>
   state
   |> _getRenderInitJobList
-  |> List.fold_left((state, handleFunc) => handleFunc(gl, state), state);
+  |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
 
 let execRenderRenderJobs = (gl, state: StateDataType.state) : state =>
   state
   |> _getRenderRenderJobList
-  |> List.fold_left((state, handleFunc) => handleFunc(gl, state), state);
+  |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
 
 let init = (state: StateDataType.state) => {
   let jobHandleMap = JobHandleSystem.createJobHandleMap();
@@ -68,5 +69,58 @@ let init = (state: StateDataType.state) => {
           state
         )
     }
+  }
+};
+
+let _addRenderJob = ((targetJobName: string, afterJobName: string, targetHandleFunc), jobList) =>
+  afterJobName |> Js.String.length === 0 ?
+    [(targetJobName, targetHandleFunc), ...jobList] :
+    jobList
+    |> List.fold_left(
+         (list, (jobName, handleFunc) as jobItem) =>
+           jobName === afterJobName ?
+             list @ [jobItem, (targetJobName, targetHandleFunc)] : list @ [jobItem],
+         []
+       );
+
+let _removeRenderJob = (targetJobName: string, jobList) =>
+  jobList |> List.filter(((jobName, handleFunc)) => jobName !== targetJobName);
+
+let addRenderInitJob =
+    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    renderInitJobList:
+      _addRenderJob((targetJobName, afterJobName, targetHandleFunc), _getRenderInitJobList(state))
+  }
+};
+
+let addRenderRenderJob =
+    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    renderRenderJobList:
+      _addRenderJob(
+        (targetJobName, afterJobName, targetHandleFunc),
+        _getRenderRenderJobList(state)
+      )
+  }
+};
+
+let removeRenderInitJob = (targetJobName: string, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    renderInitJobList: _removeRenderJob(targetJobName, _getRenderInitJobList(state))
+  }
+};
+
+let removeRenderRenderJob = (targetJobName: string, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    renderRenderJobList: _removeRenderJob(targetJobName, _getRenderRenderJobList(state))
   }
 };
