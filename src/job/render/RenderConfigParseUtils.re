@@ -7,7 +7,7 @@ let convertRenderSettingToRecord = (render_setting) => {
   open Decode;
   let json = render_setting |> Js.Json.parseExn;
   {
-    platform: json |> field("platform", string),
+    /* platform: json |> field("platform", string),
     backend:
       json
       |> field(
@@ -29,7 +29,7 @@ let convertRenderSettingToRecord = (render_setting) => {
                     version: json |> field("version", string)
                   }
                 )
-         ),
+         ), */
     init_pipeline: json |> field("init_pipeline", string),
     render_pipeline: json |> field("render_pipeline", string)
   }
