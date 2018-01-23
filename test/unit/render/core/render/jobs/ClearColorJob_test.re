@@ -46,6 +46,6 @@ let _ =
           let state = state |> _render;
           getCallCount(clearColor) |> expect == 1
         }
-      );
+      )
     }
   );
