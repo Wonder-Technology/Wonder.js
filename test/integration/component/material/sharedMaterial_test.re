@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init(~sandbox, ())
+          state := TestTool.initWithRenderConfig(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

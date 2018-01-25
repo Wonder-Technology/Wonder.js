@@ -89,7 +89,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init(~sandbox, ())
+          state := TestTool.initWithRenderConfig(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -488,7 +488,7 @@ let _ =
         () => {
           let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
             let (state, _, _, _, _, _, _) = prepareDataFunc(state);
-            let currentState = StateTool.createNewCompleteState();
+            let currentState = StateTool.createNewCompleteStateWithRenderConfig();
             let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
             let _ = StateTool.restore(currentState, state);
             StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)

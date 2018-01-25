@@ -149,7 +149,7 @@ and state = {
   gpuConfig: option(gpuConfig),
   memoryConfig,
   jobData,
-  renderConfig,
+  renderConfig:option(renderConfig),
   gpuDetectData,
   sourceInstanceData,
   objectInstanceData,

@@ -45,7 +45,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init(~sandbox, ())
+          state := TestTool.initWithRenderConfig(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -189,7 +189,7 @@ let _ =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let state = state |> DirectorTool.prepare |> DirectorTool.init;
                       let copiedState = StateTool.deepCopyStateForRestore(state);
-                      let currentState = StateTool.createNewCompleteState();
+                      let currentState = StateTool.createNewCompleteStateWithRenderConfig();
                       let (currentState, gameObject) =
                         _prepareBasicMaterialGameObject(sandbox, currentState);
                       let (currentStateCreateProgram, initShaderCount) =
@@ -209,7 +209,7 @@ let _ =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> DirectorTool.prepare |> DirectorTool.init;
                           let copiedState = StateTool.deepCopyStateForRestore(state);
-                          let currentState = StateTool.createNewCompleteState();
+                          let currentState = StateTool.createNewCompleteStateWithRenderConfig();
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
                           let (currentStateCreateProgram, initShaderCount) =

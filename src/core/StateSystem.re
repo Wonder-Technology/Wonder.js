@@ -1,7 +1,5 @@
 open StateDataType;
 
-open RenderConfigParseUtils;
-
 let getState = (stateData: stateData) : state => Js.Option.getExn(stateData.state);
 
 let setState = (stateData: stateData, state: state) => {
@@ -39,10 +37,8 @@ let restore =
   let intersectShaderIndexDataArray =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
-  let (targetState, sharedData) =
-    targetState |> GeometryAdmin.restore(currentState, sharedData);
-  let (targetState, sharedData) =
-    targetState |> TransformAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) = targetState |> GeometryAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) = targetState |> TransformAdmin.restore(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
@@ -59,88 +55,46 @@ let restore =
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
   /* |> WonderLog.Contract.ensureCheck ((state) => {
-  open WonderLog;
-  open Contract;
-  open Operators;
-  test
-  (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}), 
-  (
-  () => {
- [@bs]DeviceManagerSystem.unsafeGetGl(state)  
-  })
-  );
-  }, StateData.stateData.isDebug); */
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test
+      (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}),
+      (
+      () => {
+     [@bs]DeviceManagerSystem.unsafeGetGl(state)
+      })
+      );
+      }, StateData.stateData.isDebug); */
 };
 
-/* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
-let createState =
-    /* ~renderConfig=(
-         Render_setting.render_setting,
-         Init_pipelines.init_pipelines,
-         Render_pipelines.render_pipelines,
-         Init_jobs.init_jobs,
-         Render_jobs.render_jobs,
-         Shaders.shaders,
-         Shader_libs.shader_libs
-       ), */
-    (
-      ~renderConfig=(
-                      Render_setting.render_setting,
-                      Init_pipelines.init_pipelines,
-                      Render_pipelines.render_pipelines,
-                      Init_jobs.init_jobs,
-                      Render_jobs.render_jobs,
-                      Shaders.shaders,
-                      Shader_libs.shader_libs
-                    ),
-      ()
-    ) => {
-  let (
-    render_setting,
-    init_pipelines,
-    render_pipelines,
-    init_jobs,
-    render_jobs,
-    shaders,
-    shader_libs
-  ) = renderConfig;
-  {
-    bufferConfig: None,
-    gpuConfig: None,
-    memoryConfig: MemoryConfigSystem.initData(),
-    jobData : JobHelper.initData(),
-    renderConfig: {
-      /* jobHandleMap: JobHandleSystem.createJobHandleMap(), */
-      render_setting: convertRenderSettingToRecord(render_setting),
-      init_pipelines: convertInitPipelinesToRecord(init_pipelines),
-      render_pipelines: convertRenderPipelinesToRecord(render_pipelines),
-      init_jobs: convertInitJobsToRecord(init_jobs),
-      render_jobs: convertRenderJobsToRecord(render_jobs),
-      shaders: convertShadersToRecord(shaders),
-      shader_libs: convertShaderLibsToRecord(shader_libs)
-    },
-    gpuDetectData: {extensionInstancedArrays: None, precision: None},
-    viewData: {canvas: None, contextConfig: None},
-    initConfig: {isDebug: false},
-    sourceInstanceData: SourceInstanceHelper.initData(),
-    objectInstanceData: ObjectInstanceHelper.initData(),
-    deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport:None},
-    gameObjectData: GameObjectHelper.initData(),
-    transformData: None,
-    cameraControllerData: CameraControllerHelper.initData(),
-    materialData: None,
-    geometryData: None,
-    meshRendererData: MeshRendererHelper.initData(),
-    shaderData: ShaderHelper.initData(),
-    programData: ProgramHelper.initData(),
-    glslLocationData: GLSLLocationHelper.initData(),
-    glslSenderData: GLSLSenderHelper.initData(),
-    glslChunkData: ShaderChunkSystem.initData(),
-    renderData: RenderDataHelper.initData(),
-    schedulerData: ScheduleControllerHelper.initData(),
-    timeControllerData: TimeControllerHelper.initData(),
-    vboBufferData: VboBufferHelper.initData(),
-    globalTempData: GlobalTempHelper.initData(),
-    typeArrayPoolData: TypeArrayPoolHelper.initData()
-  }
+let createState = () => {
+  bufferConfig: None,
+  gpuConfig: None,
+  memoryConfig: MemoryConfigSystem.initData(),
+  jobData: JobHelper.initData(),
+  renderConfig: None,
+  gpuDetectData: {extensionInstancedArrays: None, precision: None},
+  viewData: {canvas: None, contextConfig: None},
+  initConfig: {isDebug: false},
+  sourceInstanceData: SourceInstanceHelper.initData(),
+  objectInstanceData: ObjectInstanceHelper.initData(),
+  deviceManagerData: {gl: None, colorWrite: None, clearColor: None, viewport: None},
+  gameObjectData: GameObjectHelper.initData(),
+  transformData: None,
+  cameraControllerData: CameraControllerHelper.initData(),
+  materialData: None,
+  geometryData: None,
+  meshRendererData: MeshRendererHelper.initData(),
+  shaderData: ShaderHelper.initData(),
+  programData: ProgramHelper.initData(),
+  glslLocationData: GLSLLocationHelper.initData(),
+  glslSenderData: GLSLSenderHelper.initData(),
+  glslChunkData: ShaderChunkSystem.initData(),
+  renderData: RenderDataHelper.initData(),
+  schedulerData: ScheduleControllerHelper.initData(),
+  timeControllerData: TimeControllerHelper.initData(),
+  vboBufferData: VboBufferHelper.initData(),
+  globalTempData: GlobalTempHelper.initData(),
+  typeArrayPoolData: TypeArrayPoolHelper.initData()
 };

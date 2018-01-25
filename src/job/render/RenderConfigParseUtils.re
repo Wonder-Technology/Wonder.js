@@ -5,75 +5,69 @@ open RenderConfigType;
 let convertRenderSettingToRecord = (render_setting) => {
   open Json;
   open Decode;
-  let json = render_setting |> Js.Json.parseExn;
+  let json = render_setting;
   {
     /* platform: json |> field("platform", string),
-    backend:
-      json
-      |> field(
-           "backend",
-           (json) => {
-             name: json |> field("name", string),
-             fail: json |> optional(field("fail", string))
-           }
-         ),
-    browser:
-      json
-      |> field(
-           "browser",
-           (json) =>
-             json
-             |> array(
-                  (json) => {
-                    name: json |> field("name", string),
-                    version: json |> field("version", string)
-                  }
-                )
-         ), */
+       backend:
+         json
+         |> field(
+              "backend",
+              (json) => {
+                name: json |> field("name", string),
+                fail: json |> optional(field("fail", string))
+              }
+            ),
+       browser:
+         json
+         |> field(
+              "browser",
+              (json) =>
+                json
+                |> array(
+                     (json) => {
+                       name: json |> field("name", string),
+                       version: json |> field("version", string)
+                     }
+                   )
+            ), */
     init_pipeline: json |> field("init_pipeline", string),
     render_pipeline: json |> field("render_pipeline", string)
   }
 };
 
 let _convertPipelinesToRecord = (pipelines) =>
-  Render_setting.(
-    Json.(
-      Decode.(
-        pipelines
-        |> Js.Json.parseExn
-        |> array(
-             (json) => {
-               name: json |> field("name", string),
-               jobs:
-                 json
-                 |> field(
-                      "jobs",
-                      array(
-                        (json) => {
-                          name: json |> field("name", string),
-                          flags: json |> optional(field("flags", (json) => json |> array(string)))
-                        }
-                      )
+  Json.(
+    Decode.(
+      pipelines
+      |> array(
+           (json) => {
+             name: json |> field("name", string),
+             jobs:
+               json
+               |> field(
+                    "jobs",
+                    array(
+                      (json) => {
+                        name: json |> field("name", string),
+                        flags: json |> optional(field("flags", (json) => json |> array(string)))
+                      }
                     )
-             }
-           )
-      )
+                  )
+           }
+         )
     )
   );
 
 let _convertJobsToRecord = (jobs) =>
-  Render_setting.(
-    Json.(
-      Decode.(
-        jobs
-        |> Js.Json.parseExn
-        |> array(
-             (json) => {
-               name: json |> field("name", string),
-               shader: json |> optional(field("shader", string))
-             }
-           )
-      )
+  Json.(
+    Decode.(
+      jobs
+      |> array(
+           (json) => {
+             name: json |> field("name", string),
+             shader: json |> optional(field("shader", string))
+           }
+         )
     )
   );
 
@@ -102,7 +96,7 @@ let _convertShaderMapData = (json) =>
 let convertShadersToRecord = (shaders) => {
   open Json;
   open Decode;
-  let json = shaders |> Js.Json.parseExn;
+  let json = shaders;
   {
     static_branchs: json |> field("static_branchs", (json) => _convertShaderMapData(json)),
     groups: json |> field("groups", (json) => _convertShaderMapData(json)),
@@ -207,7 +201,6 @@ let convertShaderLibsToRecord = (shader_libs) =>
   Json.(
     Decode.(
       shader_libs
-      |> Js.Json.parseExn
       |> array(
            (json) => {
              name: json |> field("name", string),

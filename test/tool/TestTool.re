@@ -31,10 +31,11 @@ let initWithRenderConfigWithoutBuildFakeDom =
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
-      ~renderConfig,
+      ~renderConfig=RenderConfigTool.buildRenderConfig(),
       ()
     ) =>
   Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
+  |> ((state) => state |> RenderConfigTool.initData(renderConfig))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
@@ -56,7 +57,7 @@ let initWithRenderConfig =
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
-      ~renderConfig,
+      ~renderConfig=RenderConfigTool.buildRenderConfig(),
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;

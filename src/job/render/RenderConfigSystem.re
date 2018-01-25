@@ -2,19 +2,26 @@ open GameObjectType;
 
 open RenderConfigType;
 
-let getInitPipelines = (state: StateDataType.state) => state.renderConfig.init_pipelines;
+/* TODO add requireCheck */
+let _unsafeGetRenderConfig = (state: StateDataType.state) =>
+  state.renderConfig |> Js.Option.getExn;
 
-let getInitJobs = (state: StateDataType.state) => state.renderConfig.init_jobs;
+let getInitPipelines = (state: StateDataType.state) =>
+  _unsafeGetRenderConfig(state).init_pipelines;
 
-let getRenderPipelines = (state: StateDataType.state) => state.renderConfig.render_pipelines;
+let getInitJobs = (state: StateDataType.state) => _unsafeGetRenderConfig(state).init_jobs;
 
-let getRenderJobs = (state: StateDataType.state) => state.renderConfig.render_jobs;
+let getRenderPipelines = (state: StateDataType.state) =>
+  _unsafeGetRenderConfig(state).render_pipelines;
 
-let getShaders = (state: StateDataType.state) => state.renderConfig.shaders;
+let getRenderJobs = (state: StateDataType.state) => _unsafeGetRenderConfig(state).render_jobs;
 
-let getShaderLibs = (state: StateDataType.state) => state.renderConfig.shader_libs;
+let getShaders = (state: StateDataType.state) => _unsafeGetRenderConfig(state).shaders;
 
-let getRenderSetting = (state: StateDataType.state) => state.renderConfig.render_setting;
+let getShaderLibs = (state: StateDataType.state) => _unsafeGetRenderConfig(state).shader_libs;
+
+let getRenderSetting = (state: StateDataType.state) =>
+  _unsafeGetRenderConfig(state).render_setting;
 
 let findFirst = (arr: array('a), func) =>
   arr

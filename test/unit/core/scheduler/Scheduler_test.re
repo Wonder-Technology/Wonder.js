@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init(~sandbox, ()) |> DirectorTool.prepare
+          state := TestTool.initWithRenderConfig(~sandbox, ()) |> DirectorTool.prepare
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

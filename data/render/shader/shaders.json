@@ -1,4 +1,3 @@
-let shaders = {|
 {
   "static_branchs": [
     {
@@ -50,4 +49,3 @@ let shaders = {|
     }
   }
 }
-|};

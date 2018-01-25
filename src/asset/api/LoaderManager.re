@@ -1,0 +1,1 @@
+let load = (dataDir: string, state:StateDataType.state) => LoaderManagerSystem.load(dataDir, state);

@@ -1,5 +1,7 @@
 var gulp = require("gulp");
 var rollup = require("rollup");
+var nodeResolve = require("rollup-plugin-node-resolve");
+var commonjs = require("rollup-plugin-commonjs");
 
 gulp.task("rollup", function () {
     // function buildEntry (config) {
@@ -27,6 +29,16 @@ gulp.task("rollup", function () {
     var inputConfig = {
         input: "./lib/es6_global/src/Index.js",
         plugins: [
+        nodeResolve({
+            skip:[
+            ],
+            extensions: [".js"]
+        }),
+        commonjs({
+            namedExports: {
+            },
+            extensions: [".js"]
+        })
         ]
     };
     var outputConfig = {

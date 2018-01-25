@@ -1,12 +1,12 @@
 let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
-  TestTool.initWithoutBuildFakeDom(
+  TestTool.initWithRenderConfigWithoutBuildFakeDom(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ()
   );
 
 let initWithRenderConfig = (sandbox) =>
-  TestTool.init(
+  TestTool.initWithRenderConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ()
