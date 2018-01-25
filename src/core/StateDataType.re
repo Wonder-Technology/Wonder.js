@@ -77,17 +77,7 @@ type deviceManagerData = {
   viewport: option((float, float, float, float))
 };
 
-type schedulerFuncRecord = {
-  update: (float, state) => state,
-  isFinish: state => bool,
-  start: state => state
-}
-and schedulerData = {
-  mutable count: int,
-  funcRecordArray: array(schedulerFuncRecord),
-  isFinishMap: array(bool)
-}
-and attributeSendData = {
+type attributeSendData = {
   pos: attributeLocation,
   size: int,
   buffer: string,
@@ -173,7 +163,6 @@ and state = {
   glslSenderData,
   glslChunkData,
   renderData,
-  schedulerData,
   timeControllerData,
   vboBufferData,
   globalTempData,

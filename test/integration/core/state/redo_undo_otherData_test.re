@@ -70,23 +70,6 @@ let _ =
         "deepCopyStateForRestore",
         () => {
           describe(
-            "deep copy scheduler data",
-            () =>
-              test(
-                "shadow copy funcRecordArray, isFinishMap",
-                () =>
-                  StateDataType.(
-                    StateTool.testShadowCopyArrayLikeMapData(
-                      (state) => {
-                        let {funcRecordArray, isFinishMap} = SchedulerTool.getSchedulerData(state);
-                        [|funcRecordArray |> Obj.magic, isFinishMap |> Obj.magic|]
-                      },
-                      state^
-                    )
-                  )
-              )
-          );
-          describe(
             "deep copy deviceManager data",
             () => {
               test(

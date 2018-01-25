@@ -23,8 +23,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> TypeArrayPoolSystem.deepCopyStateForRestore
   |> SourceInstanceAdmin.deepCopyStateForRestore
   |> ObjectInstanceAdmin.deepCopyStateForRestore
-  |> GameObjectAdmin.deepCopyStateForRestore
-  |> ScheduleControllerSystem.deepCopyStateForRestore;
+  |> GameObjectAdmin.deepCopyStateForRestore;
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.unsafeGetGl(currentState),
@@ -93,7 +92,6 @@ let createState = () => {
   glslSenderData: GLSLSenderHelper.initData(),
   glslChunkData: ShaderChunkSystem.initData(),
   renderData: RenderDataHelper.initData(),
-  schedulerData: ScheduleControllerHelper.initData(),
   timeControllerData: TimeControllerHelper.initData(),
   vboBufferData: VboBufferHelper.initData(),
   globalTempData: GlobalTempHelper.initData(),

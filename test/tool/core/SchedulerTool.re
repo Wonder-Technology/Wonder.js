@@ -1,1 +1,0 @@
-let getSchedulerData = ScheduleStateCommon.getSchedulerData;

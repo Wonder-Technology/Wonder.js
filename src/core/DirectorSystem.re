@@ -3,17 +3,14 @@ open StateSystem;
 open StateData;
 
 let init = (state: StateDataType.state) =>
-  /* TODO remove ScheduleControllerSystem */
   state
   |> JobSystem.execLogicInitJobs
-  |> ScheduleControllerSystem.start
   |> JobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let _run = (time: float, state: StateDataType.state) => {
   let elapsed = TimeControllerSystem.computeElapseTime(time, state);
   state
   |> JobSystem.execLogicUpdateJobs(elapsed)
-  |> ScheduleControllerSystem.update(elapsed)
   |> JobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
 };
 
