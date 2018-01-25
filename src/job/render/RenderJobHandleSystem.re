@@ -13,7 +13,6 @@ let _getRenderJobHandles = () => [
   ("render_basic", RenderBasicJob.getJob)
 ];
 
-let createInitJobHandleMap = () => WonderCommonlib.HashMapSystem.fromList(_getInitJobHandles());
+let createInitJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getInitJobHandles());
 
-let createRenderJobHandleMap = () =>
-  WonderCommonlib.HashMapSystem.fromList(_getRenderJobHandles());
+let createRenderJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getRenderJobHandles());

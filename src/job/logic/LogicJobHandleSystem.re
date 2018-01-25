@@ -11,7 +11,6 @@ let _getUpdateJobHandles = () => [
   ("update_cameraController", UpdateCameraControllerJob.getJob)
 ];
 
-let createInitJobHandleMap = () => WonderCommonlib.HashMapSystem.fromList(_getInitJobHandles());
+let createInitJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getInitJobHandles());
 
-let createUpdateJobHandleMap = () =>
-  WonderCommonlib.HashMapSystem.fromList(_getUpdateJobHandles());
+let createUpdateJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getUpdateJobHandles());

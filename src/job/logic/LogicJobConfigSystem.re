@@ -1,9 +1,11 @@
 open LogicJobConfigType;
 
 /* TODO add requireCheck */
-let _unsafeGetLogicJobConfig = (state: StateDataType.state) => state.logicJobConfig |> Js.Option.getExn;
+let _unsafeGetLogicJobConfig = (state: StateDataType.state) =>
+  state.logicJobConfig |> Js.Option.getExn;
 
-let getInitPipelines = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).init_pipelines;
+let getInitPipelines = (state: StateDataType.state) =>
+  _unsafeGetLogicJobConfig(state).init_pipelines;
 
 let getInitJobs = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).init_jobs;
 
@@ -12,38 +14,17 @@ let getUpdatePipelines = (state: StateDataType.state) =>
 
 let getUpdateJobs = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).update_jobs;
 
-let getLogicSetting = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).logic_setting;
+let getLogicSetting = (state: StateDataType.state) =>
+  _unsafeGetLogicJobConfig(state).logic_setting;
 
-/* TODO duplicate */
-let findFirst = (arr: array('a), func) =>
-  arr
-  |> ArraySystem.unsafeFind(func)
-  |> WonderLog.Contract.ensureCheck(
-       (first) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|find result|j}, ~actual={j|not|j}),
-                 () => first |> assertNullableExist
-               )
-             )
-           )
-         ),
-       StateData.stateData.isDebug
-     );
-
-let _filterTargetName = (name, targetName) => name == targetName;
-
-let _getExecutableJob = (jobs: array(job), {name: jobItemName}: jobItem) => {
-  /* let : job =
-     findFirst(jobs, ({name: jobName}: job) => _filterTargetName(jobName, jobItemName)); */
-  name: jobItemName
-};
+let _getExecutableJob = (jobs: array(job), {name: jobItemName}: jobItem) => {name: jobItemName};
 
 let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
-    findFirst(pipelines, ({name}: pipeline) => _filterTargetName(name, pipeline));
+    JobConfigSystem.findFirst(
+      pipelines,
+      ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
+    );
   pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 

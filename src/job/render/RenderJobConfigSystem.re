@@ -23,35 +23,21 @@ let getShaderLibs = (state: StateDataType.state) => _unsafeGetRenderJobConfig(st
 let getRenderSetting = (state: StateDataType.state) =>
   _unsafeGetRenderJobConfig(state).render_setting;
 
-let findFirst = (arr: array('a), func) =>
-  arr
-  |> ArraySystem.unsafeFind(func)
-  |> WonderLog.Contract.ensureCheck(
-       (first) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|find result|j}, ~actual={j|not|j}),
-                 () => first |> assertNullableExist
-               )
-             )
-           )
-         ),
-       StateData.stateData.isDebug
-     );
-
-let _filterTargetName = (name, targetName) => name == targetName;
-
 let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) => {
   let {shader}: job =
-    findFirst(jobs, ({name: jobName}: job) => _filterTargetName(jobName, jobItemName));
+    JobConfigSystem.findFirst(
+      jobs,
+      ({name: jobName}: job) => JobConfigSystem.filterTargetName(jobName, jobItemName)
+    );
   {name: jobItemName, flags, shader}
 };
 
 let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
-    findFirst(pipelines, ({name}: pipeline) => _filterTargetName(name, pipeline));
+    JobConfigSystem.findFirst(
+      pipelines,
+      ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
+    );
   pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 
@@ -62,12 +48,16 @@ let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs
   _getPipelineExecutableJobs(render_pipeline, render_pipelines, jobs);
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
-  findFirst(shaderLibs, (item: shaderLib) => _filterTargetName(item.name, shaderLibName));
+  JobConfigSystem.findFirst(
+    shaderLibs,
+    (item: shaderLib) => JobConfigSystem.filterTargetName(item.name, shaderLibName)
+  );
 
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
   Js.Array.concat(
-    findFirst(groups, (item) => _filterTargetName(item.name, name)).value
+    JobConfigSystem.findFirst(groups, (item) => JobConfigSystem.filterTargetName(item.name, name)).
+      value
     |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs)),
     resultDataArr
   );
@@ -92,7 +82,12 @@ let _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance =
 
 let _getMaterialShaderLibDataArrByStaticBranch =
     ((gameObject, name, state), (static_branchs: array(shaderMapData), shaderLibs), resultDataArr) => {
-  let {value} = findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
+  let {value} =
+    JobConfigSystem.findFirst(
+      static_branchs,
+      (item) => JobConfigSystem.filterTargetName(item.name, name)
+    );
+  /* TODO handle case */
   switch name {
   | "modelMatrix_instance" =>
     _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance(
