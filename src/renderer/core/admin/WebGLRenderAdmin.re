@@ -1,7 +1,7 @@
 /* TODO remove */
 /* open StateDataType;
 
-open RenderConfigSystem;
+open RenderJobConfigSystem;
 
 let init = (state: StateDataType.state) =>
   Json.(

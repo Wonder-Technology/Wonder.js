@@ -2,7 +2,7 @@ open StateDataType;
 
 /* TODO duplicate with render job */
 let _getAllLogicJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
-  LogicConfigType.(
+  LogicJobConfigType.(
     executableJobs
     |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
@@ -43,7 +43,7 @@ let execLogicUpdateJobs = (elapsed: float, state: StateDataType.state) : state =
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(elapsed, state), state);
 
 let _getAllRenderJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
-  RenderConfigType.(
+  RenderJobConfigType.(
     executableJobs
     |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
@@ -89,20 +89,20 @@ let _initLogic = (state: StateDataType.state) => {
     ...state.jobData,
     logicInitJobList:
       _getAllLogicJobs(
-        LogicConfigSystem.getInitPipelineExecutableJobs(
-          LogicConfigSystem.getLogicSetting(state),
-          LogicConfigSystem.getInitPipelines(state),
-          LogicConfigSystem.getInitJobs(state)
+        LogicJobConfigSystem.getInitPipelineExecutableJobs(
+          LogicJobConfigSystem.getLogicSetting(state),
+          LogicJobConfigSystem.getInitPipelines(state),
+          LogicJobConfigSystem.getInitJobs(state)
         ),
         LogicJobHandleSystem.createInitJobHandleMap(),
         state
       ),
     logicUpdateJobList:
       _getAllLogicJobs(
-        LogicConfigSystem.getUpdatePipelineExecutableJobs(
-          LogicConfigSystem.getLogicSetting(state),
-          LogicConfigSystem.getUpdatePipelines(state),
-          LogicConfigSystem.getUpdateJobs(state)
+        LogicJobConfigSystem.getUpdatePipelineExecutableJobs(
+          LogicJobConfigSystem.getLogicSetting(state),
+          LogicJobConfigSystem.getUpdatePipelines(state),
+          LogicJobConfigSystem.getUpdateJobs(state)
         ),
         LogicJobHandleSystem.createUpdateJobHandleMap(),
         state
@@ -116,20 +116,20 @@ let _initRender = (state: StateDataType.state) => {
     ...state.jobData,
     renderInitJobList:
       _getAllRenderJobs(
-        RenderConfigSystem.getInitPipelineExecutableJobs(
-          RenderConfigSystem.getRenderSetting(state),
-          RenderConfigSystem.getInitPipelines(state),
-          RenderConfigSystem.getInitJobs(state)
+        RenderJobConfigSystem.getInitPipelineExecutableJobs(
+          RenderJobConfigSystem.getRenderSetting(state),
+          RenderJobConfigSystem.getInitPipelines(state),
+          RenderJobConfigSystem.getInitJobs(state)
         ),
         RenderJobHandleSystem.createInitJobHandleMap(),
         state
       ),
     renderRenderJobList:
       _getAllRenderJobs(
-        RenderConfigSystem.getRenderPipelineExecutableJobs(
-          RenderConfigSystem.getRenderSetting(state),
-          RenderConfigSystem.getRenderPipelines(state),
-          RenderConfigSystem.getRenderJobs(state)
+        RenderJobConfigSystem.getRenderPipelineExecutableJobs(
+          RenderJobConfigSystem.getRenderSetting(state),
+          RenderJobConfigSystem.getRenderPipelines(state),
+          RenderJobConfigSystem.getRenderJobs(state)
         ),
         RenderJobHandleSystem.createRenderJobHandleMap(),
         state

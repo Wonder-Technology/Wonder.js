@@ -1,8 +1,8 @@
-open RenderConfigType;
+open RenderJobConfigType;
 
 let getJob = ((flags: jobFlags, _), gl, state) =>
   switch flags {
-  | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
+  | None => RenderJobConfigSystem.throwJobFlagsShouldBeDefined()
   | Some(flags) =>
     DeviceManagerSystem.clearColor(gl, ColorSystem.convert16HexToRGBA(flags[0]), state)
   };

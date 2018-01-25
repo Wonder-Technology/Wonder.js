@@ -14,7 +14,7 @@ let initData =
       state
     ) => {
   ...state,
-  renderConfig:
+  renderJobConfig:
     /* Some({
          render_setting: recordArr[0],
          init_pipelines: recordArr[1],

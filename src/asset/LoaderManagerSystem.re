@@ -10,24 +10,24 @@ let _createFetchLogicJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "logic/setting/logic_setting.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicConfigParseUtils.convertLogicSettingToRecord(json)),
+  |> map((json) => LogicJobConfigParseUtils.convertLogicSettingToRecord(json)),
   _createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicConfigParseUtils.convertInitPipelinesToRecord(json))
+  |> map((json) => LogicJobConfigParseUtils.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/pipeline/update_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicConfigParseUtils.convertUpdatePipelinesToRecord(json))
+  |> map((json) => LogicJobConfigParseUtils.convertUpdatePipelinesToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "logic/job/init_jobs.json"|]), fetchFunc)
-  |> map((json) => LogicConfigParseUtils.convertInitJobsToRecord(json))
+  |> map((json) => LogicJobConfigParseUtils.convertInitJobsToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "logic/job/update_jobs.json"|]), fetchFunc)
-  |> map((json) => LogicConfigParseUtils.convertUpdateJobsToRecord(json))
+  |> map((json) => LogicJobConfigParseUtils.convertUpdateJobsToRecord(json))
   |> Obj.magic
 |];
 
@@ -36,30 +36,30 @@ let _createFetchRenderJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "render/setting/render_setting.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderConfigParseUtils.convertRenderSettingToRecord(json)),
+  |> map((json) => RenderJobConfigParseUtils.convertRenderSettingToRecord(json)),
   _createFetchJsonStream(
     PathUtils.join([|dataDir, "render/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderConfigParseUtils.convertInitPipelinesToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(
     PathUtils.join([|dataDir, "render/pipeline/render_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderConfigParseUtils.convertRenderPipelinesToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertRenderPipelinesToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "render/job/init_jobs.json"|]), fetchFunc)
-  |> map((json) => RenderConfigParseUtils.convertInitJobsToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertInitJobsToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "render/job/render_jobs.json"|]), fetchFunc)
-  |> map((json) => RenderConfigParseUtils.convertRenderJobsToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertRenderJobsToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "render/shader/shaders.json"|]), fetchFunc)
-  |> map((json) => RenderConfigParseUtils.convertShadersToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertShadersToRecord(json))
   |> Obj.magic,
   _createFetchJsonStream(PathUtils.join([|dataDir, "render/shader/shader_libs.json"|]), fetchFunc)
-  |> map((json) => RenderConfigParseUtils.convertShaderLibsToRecord(json))
+  |> map((json) => RenderJobConfigParseUtils.convertShaderLibsToRecord(json))
   |> Obj.magic
 |];
 
@@ -74,12 +74,12 @@ let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
       mergeArray(_createFetchLogicJobStreamArr(dataDir, fetchFunc))
       /* TODO duplicate */
       |> reduce((arr, record) => arr |> ArraySystem.push(record), [||])
-      |> then_((recordArr) => (recordArr, LogicConfigHelper.initData) |> resolve)
+      |> then_((recordArr) => (recordArr, LogicJobConfigHelper.initData) |> resolve)
     ),
     fromPromise(
       mergeArray(_createFetchRenderJobStreamArr(dataDir, fetchFunc))
       |> reduce((arr, record) => arr |> ArraySystem.push(record), [||])
-      |> then_((recordArr) => (recordArr, RenderConfigHelper.initData) |> resolve)
+      |> then_((recordArr) => (recordArr, RenderJobConfigHelper.initData) |> resolve)
     )
     |> Obj.magic
   |])

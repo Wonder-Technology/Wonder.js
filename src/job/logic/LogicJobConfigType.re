@@ -29,7 +29,7 @@ type executableJob = {
 };
 
 /* type executableJobFlags = (jobFlags, option(string)); */
-type logicConfig = {
+type logicJobConfig = {
   logic_setting,
   init_pipelines: pipelines,
   update_pipelines: pipelines,

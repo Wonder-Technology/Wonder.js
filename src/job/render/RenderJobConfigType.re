@@ -90,7 +90,7 @@ type shader_libs = array(shaderLib);
 
 type executableJobFlags = (jobFlags, option(string));
 
-type renderConfig = {
+type renderJobConfig = {
   render_setting,
   init_pipelines: pipelines,
   render_pipelines: pipelines,

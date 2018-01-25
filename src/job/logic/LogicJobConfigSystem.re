@@ -1,18 +1,18 @@
-open LogicConfigType;
+open LogicJobConfigType;
 
 /* TODO add requireCheck */
-let _unsafeGetLogicConfig = (state: StateDataType.state) => state.logicConfig |> Js.Option.getExn;
+let _unsafeGetLogicJobConfig = (state: StateDataType.state) => state.logicJobConfig |> Js.Option.getExn;
 
-let getInitPipelines = (state: StateDataType.state) => _unsafeGetLogicConfig(state).init_pipelines;
+let getInitPipelines = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).init_pipelines;
 
-let getInitJobs = (state: StateDataType.state) => _unsafeGetLogicConfig(state).init_jobs;
+let getInitJobs = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).init_jobs;
 
 let getUpdatePipelines = (state: StateDataType.state) =>
-  _unsafeGetLogicConfig(state).update_pipelines;
+  _unsafeGetLogicJobConfig(state).update_pipelines;
 
-let getUpdateJobs = (state: StateDataType.state) => _unsafeGetLogicConfig(state).update_jobs;
+let getUpdateJobs = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).update_jobs;
 
-let getLogicSetting = (state: StateDataType.state) => _unsafeGetLogicConfig(state).logic_setting;
+let getLogicSetting = (state: StateDataType.state) => _unsafeGetLogicJobConfig(state).logic_setting;
 
 /* TODO duplicate */
 let findFirst = (arr: array('a), func) =>

@@ -2,9 +2,9 @@ let initWithJobConfig = (sandbox) =>
   TestTool.initWithJobConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ~logicConfig=LogicConfigTool.buildLogicConfig(),
-    ~renderConfig=
-      RenderConfigTool.buildRenderConfig(
+    ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
+    ~renderJobConfig=
+      RenderJobConfigTool.buildRenderJobConfig(
         ~renderSetting={|
     {
     "init_pipeline": "simple_basic_render",

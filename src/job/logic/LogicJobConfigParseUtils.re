@@ -1,6 +1,6 @@
 open StateDataType;
 
-open LogicConfigType;
+open LogicJobConfigType;
 
 let convertLogicSettingToRecord = (update_setting) => {
   open Json;

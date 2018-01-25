@@ -1,8 +1,8 @@
-open LogicConfigType;
+open LogicJobConfigType;
 
-open LogicConfigParseUtils;
+open LogicJobConfigParseUtils;
 
-let buildLogicConfig =
+let buildLogicJobConfig =
     (
       ~logicSetting={|
     {
@@ -81,7 +81,7 @@ let initData =
       state: StateDataType.state
     ) => {
   ...state,
-  logicConfig:
+  logicJobConfig:
     Some({
       logic_setting: convertLogicSettingToRecord(logicSetting |> Js.Json.parseExn),
       init_pipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
@@ -91,12 +91,12 @@ let initData =
     })
 };
 
-let getLogicSetting = LogicConfigSystem.getLogicSetting;
+let getLogicSetting = LogicJobConfigSystem.getLogicSetting;
 
-let getInitPipelines = LogicConfigSystem.getInitPipelines;
+let getInitPipelines = LogicJobConfigSystem.getInitPipelines;
 
-let getInitJobs = LogicConfigSystem.getInitJobs;
+let getInitJobs = LogicJobConfigSystem.getInitJobs;
 
-let getUpdatePipelines = LogicConfigSystem.getUpdatePipelines;
+let getUpdatePipelines = LogicJobConfigSystem.getUpdatePipelines;
 
-let getUpdateJobs = LogicConfigSystem.getUpdateJobs;
+let getUpdateJobs = LogicJobConfigSystem.getUpdateJobs;

@@ -1,6 +1,6 @@
 open StateDataType;
 
-open RenderConfigType;
+open RenderJobConfigType;
 
 let convertRenderSettingToRecord = (render_setting) => {
   open Json;

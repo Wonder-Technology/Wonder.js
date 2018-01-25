@@ -31,14 +31,14 @@ let initWithJobConfigWithoutBuildFakeDom =
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
-      ~logicConfig=LogicConfigTool.buildLogicConfig(),
-      ~renderConfig=RenderConfigTool.buildRenderConfig(),
+      ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
+      ~renderJobConfig=RenderJobConfigTool.buildRenderJobConfig(),
       ()
     ) =>
   Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
   |> (
     (state) =>
-      state |> LogicConfigTool.initData(logicConfig) |> RenderConfigTool.initData(renderConfig)
+      state |> LogicJobConfigTool.initData(logicJobConfig) |> RenderJobConfigTool.initData(renderJobConfig)
   )
   |> (
     (state) => {
@@ -52,12 +52,12 @@ let initWithJobConfig =
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({"geometryPointDataBufferCount": Js.Nullable.return(5)}),
-      ~logicConfig=LogicConfigTool.buildLogicConfig(),
-      ~renderConfig=RenderConfigTool.buildRenderConfig(),
+      ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
+      ~renderJobConfig=RenderJobConfigTool.buildRenderJobConfig(),
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderConfig, ())
+  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderJobConfig, ())
 };
 
 let openContractCheck = () =>

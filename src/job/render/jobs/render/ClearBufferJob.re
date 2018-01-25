@@ -20,6 +20,6 @@ let _getBit = (gl, flags) =>
 
 let getJob = ((flags, _), gl, state) =>
   switch flags {
-  | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
+  | None => RenderJobConfigSystem.throwJobFlagsShouldBeDefined()
   | Some(flags) => DeviceManagerSystem.clearBuffer(gl, _getBit(gl, flags), state)
   };

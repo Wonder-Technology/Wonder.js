@@ -2,7 +2,7 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open RenderConfigType;
+open RenderJobConfigType;
 
 let _ =
   describe(
@@ -28,7 +28,7 @@ let _ =
           let _buildFakeFetch = (sandbox) => {
             let fetch = createEmptyStubWithJsObjSandbox(sandbox);
             let (logicSetting, initPipelines, updatePipelines, initJobs, updateJobs) =
-              LogicConfigTool.buildLogicConfig();
+              LogicJobConfigTool.buildLogicJobConfig();
             fetch
             |> onCall(0)
             |> returns(_buildFakeFetchJsonResponse(logicSetting))
@@ -49,7 +49,7 @@ let _ =
               shaders,
               shaderLibs
             ) =
-              RenderConfigTool.buildRenderConfig();
+              RenderJobConfigTool.buildRenderJobConfig();
             fetch
             |> onCall(5)
             |> returns(_buildFakeFetchJsonResponse(renderSetting))
@@ -97,11 +97,11 @@ let _ =
                       |> then_(
                            (state) =>
                              (
-                               LogicConfigTool.getLogicSetting(state),
-                               LogicConfigTool.getInitPipelines(state),
-                               LogicConfigTool.getUpdatePipelines(state),
-                               LogicConfigTool.getInitJobs(state),
-                               LogicConfigTool.getUpdateJobs(state)
+                               LogicJobConfigTool.getLogicSetting(state),
+                               LogicJobConfigTool.getInitPipelines(state),
+                               LogicJobConfigTool.getUpdatePipelines(state),
+                               LogicJobConfigTool.getInitJobs(state),
+                               LogicJobConfigTool.getUpdateJobs(state)
                              )
                              |>
                              expect == (
@@ -153,7 +153,7 @@ let _ =
                      shaders,
                      shaderLibs
                    ) =
-                     RenderConfigTool.buildRenderConfig();
+                     RenderJobConfigTool.buildRenderJobConfig();
                    fetch
                    |> onCall(5)
                    |> returns(_buildFakeFetchJsonResponse(renderSetting))
@@ -198,11 +198,11 @@ let _ =
                       |> then_(
                            (state) =>
                              (
-                               RenderConfigTool.getRenderSetting(state),
-                               RenderConfigTool.getInitPipelines(state),
-                               RenderConfigTool.getRenderPipelines(state),
-                               RenderConfigTool.getInitJobs(state),
-                               RenderConfigTool.getRenderJobs(state)
+                               RenderJobConfigTool.getRenderSetting(state),
+                               RenderJobConfigTool.getInitPipelines(state),
+                               RenderJobConfigTool.getRenderPipelines(state),
+                               RenderJobConfigTool.getInitJobs(state),
+                               RenderJobConfigTool.getRenderJobs(state)
                              )
                              |>
                              expect == (
@@ -263,7 +263,7 @@ let _ =
                       |> LoaderManagerSystem.load("", fetch)
                       |> then_(
                            (state) =>
-                             RenderConfigTool.getShaders(state)
+                             RenderJobConfigTool.getShaders(state)
                              |>
                              expect == {
                                          static_branchs: [|
@@ -307,7 +307,7 @@ let _ =
                       |> LoaderManagerSystem.load("", fetch)
                       |> then_(
                            (state) =>
-                             RenderConfigTool.getShaderLibs(state)[0]
+                             RenderJobConfigTool.getShaderLibs(state)[0]
                              |>
                              expect == {
                                          name: "common",

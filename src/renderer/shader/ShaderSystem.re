@@ -2,7 +2,7 @@ open ShaderType;
 
 open StateDataType;
 
-open RenderConfigType;
+open RenderJobConfigType;
 
 let getAllShaderIndexArray = (state: StateDataType.state) =>
   ArraySystem.range(0, ShaderStateCommon.getShaderData(state).index - 1);

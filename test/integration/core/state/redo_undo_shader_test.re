@@ -189,7 +189,7 @@ let _ =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let state = state |> DirectorTool.prepare |> DirectorTool.initWithJob;
                       let copiedState = StateTool.deepCopyStateForRestore(state);
-                      let currentState = StateTool.createNewCompleteStateWithRenderConfig();
+                      let currentState = StateTool.createNewCompleteStateWithRenderJobConfig();
                       let (currentState, gameObject) =
                         _prepareBasicMaterialGameObject(sandbox, currentState);
                       let (currentStateCreateProgram, initShaderCount) =
@@ -209,7 +209,7 @@ let _ =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> DirectorTool.prepare |> DirectorTool.initWithJob;
                           let copiedState = StateTool.deepCopyStateForRestore(state);
-                          let currentState = StateTool.createNewCompleteStateWithRenderConfig();
+                          let currentState = StateTool.createNewCompleteStateWithRenderJobConfig();
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
                           let (currentStateCreateProgram, initShaderCount) =

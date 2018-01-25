@@ -44,9 +44,9 @@ open GlobalTempType;
 
 open TypeArrayPoolType;
 
-open LogicConfigType;
+open LogicJobConfigType;
 
-open RenderConfigType;
+open RenderJobConfigType;
 
 type contextConfig = {
   alpha: bool,
@@ -143,8 +143,8 @@ and state = {
   gpuConfig: option(gpuConfig),
   memoryConfig,
   jobData,
-  logicConfig: option(logicConfig),
-  renderConfig: option(renderConfig),
+  logicJobConfig: option(logicJobConfig),
+  renderJobConfig: option(renderJobConfig),
   gpuDetectData,
   sourceInstanceData,
   objectInstanceData,

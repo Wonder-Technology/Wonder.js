@@ -1,8 +1,8 @@
-open RenderConfigType;
+open RenderJobConfigType;
 
-open RenderConfigParseUtils;
+open RenderJobConfigParseUtils;
 
-let buildRenderConfig =
+let buildRenderJobConfig =
     (
       ~renderSetting={|
     {
@@ -314,7 +314,7 @@ let initData =
       state: StateDataType.state
     ) => {
   ...state,
-  renderConfig:
+  renderJobConfig:
     Some({
       render_setting: convertRenderSettingToRecord(renderSetting |> Js.Json.parseExn),
       init_pipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
@@ -325,16 +325,16 @@ let initData =
       shader_libs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
     })
 };
-let getRenderSetting = RenderConfigSystem.getRenderSetting;
+let getRenderSetting = RenderJobConfigSystem.getRenderSetting;
 
-let getInitPipelines = RenderConfigSystem.getInitPipelines;
+let getInitPipelines = RenderJobConfigSystem.getInitPipelines;
 
-let getInitJobs = RenderConfigSystem.getInitJobs;
+let getInitJobs = RenderJobConfigSystem.getInitJobs;
 
-let getRenderPipelines = RenderConfigSystem.getRenderPipelines;
+let getRenderPipelines = RenderJobConfigSystem.getRenderPipelines;
 
-let getRenderJobs = RenderConfigSystem.getRenderJobs;
+let getRenderJobs = RenderJobConfigSystem.getRenderJobs;
 
-let getShaders = RenderConfigSystem.getShaders;
+let getShaders = RenderJobConfigSystem.getShaders;
 
-let getShaderLibs = RenderConfigSystem.getShaderLibs;
+let getShaderLibs = RenderJobConfigSystem.getShaderLibs;
