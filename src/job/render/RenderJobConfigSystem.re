@@ -87,13 +87,30 @@ let _getMaterialShaderLibDataArrByStaticBranch =
       static_branchs,
       (item) => JobConfigSystem.filterTargetName(item.name, name)
     );
-  /* TODO handle case */
   switch name {
   | "modelMatrix_instance" =>
     _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance(
       (gameObject, state),
       (shaderLibs, value),
       resultDataArr
+    )
+  | _ =>
+    WonderLog.Log.debugJson(
+      () =>
+        WonderLog.Log.buildDebugJsonMessage(
+          ~description={j|static_branchs|j},
+          ~var=static_branchs
+        ),
+      StateData.stateData.isDebug
+    );
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getMaterialShaderLibDataArrByStaticBranch",
+        ~description={j|unknown name:$name|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
     )
   }
 };
@@ -111,6 +128,20 @@ let _getMaterialShaderLibDataArrByType =
       (gameObject, name, state),
       (static_branchs: array(shaderMapData), shaderLibs),
       resultDataArr
+    )
+  | _ =>
+    WonderLog.Log.debugJson(
+      () => WonderLog.Log.buildDebugJsonMessage(~description={j|shaderLibs|j}, ~var=shaderLibs),
+      StateData.stateData.isDebug
+    );
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getMaterialShaderLibDataArrByType",
+        ~description={j|unknown type_:$type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
     )
   };
 
