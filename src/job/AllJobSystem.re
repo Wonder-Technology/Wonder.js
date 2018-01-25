@@ -1,0 +1,1 @@
+let init = (state: StateDataType.state) => state |> LogicJobSystem.init |> RenderJobSystem.init;

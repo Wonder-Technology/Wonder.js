@@ -1,27 +1,27 @@
 let addLogicInitJob =
     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) =>
-  JobSystem.addLogicInitJob(targetJobName, afterJobName, targetHandleFunc, state);
+  LogicJobSystem.addLogicInitJob(targetJobName, afterJobName, targetHandleFunc, state);
 
 let addLogicUpdateJob =
     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) =>
-  JobSystem.addLogicUpdateJob(targetJobName, afterJobName, targetHandleFunc, state);
+  LogicJobSystem.addLogicUpdateJob(targetJobName, afterJobName, targetHandleFunc, state);
 
 let removeLogicInitJob = (targetJobName: string, state: StateDataType.state) =>
-  JobSystem.removeLogicInitJob(targetJobName, state);
+  LogicJobSystem.removeLogicInitJob(targetJobName, state);
 
 let removeLogicUpdateJob = (targetJobName: string, state: StateDataType.state) =>
-  JobSystem.removeLogicUpdateJob(targetJobName, state);
+  LogicJobSystem.removeLogicUpdateJob(targetJobName, state);
 
 let addRenderInitJob =
     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) =>
-  JobSystem.addRenderInitJob(targetJobName, afterJobName, targetHandleFunc, state);
+  RenderJobSystem.addRenderInitJob(targetJobName, afterJobName, targetHandleFunc, state);
 
 let addRenderRenderJob =
     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) =>
-  JobSystem.addRenderRenderJob(targetJobName, afterJobName, targetHandleFunc, state);
+  RenderJobSystem.addRenderRenderJob(targetJobName, afterJobName, targetHandleFunc, state);
 
 let removeRenderInitJob = (targetJobName: string, state: StateDataType.state) =>
-  JobSystem.removeRenderInitJob(targetJobName, state);
+  RenderJobSystem.removeRenderInitJob(targetJobName, state);
 
 let removeRenderRenderJob = (targetJobName: string, state: StateDataType.state) =>
-  JobSystem.removeRenderRenderJob(targetJobName, state);
+  RenderJobSystem.removeRenderRenderJob(targetJobName, state);

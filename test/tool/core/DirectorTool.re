@@ -5,7 +5,7 @@ let prepare = (state: StateDataType.state) => {
 
 let init = (state: StateDataType.state) => state |> DirectorSystem.init;
 
-let initWithJob = (state: StateDataType.state) => state |> JobSystem.init |> DirectorSystem.init;
+let initWithJob = (state: StateDataType.state) => state |> JobTool.init |> DirectorSystem.init;
 
 let initLogic = (state: StateDataType.state) => state |> JobTool.initLogic |> DirectorSystem.init;
 

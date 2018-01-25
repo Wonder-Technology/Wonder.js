@@ -100,4 +100,4 @@ let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
        (state, (recordArr, initDataFunc)) => initDataFunc(recordArr |> Obj.magic, state),
        state
      )
-  |> then_((state) => state |> JobSystem.init |> resolve);
+  |> then_((state) => state |> AllJobSystem.init |> resolve);

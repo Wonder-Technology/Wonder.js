@@ -4,14 +4,14 @@ open StateData;
 
 let init = (state: StateDataType.state) =>
   state
-  |> JobSystem.execLogicInitJobs
-  |> JobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state));
+  |> LogicJobSystem.execLogicInitJobs
+  |> RenderJobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let _run = (time: float, state: StateDataType.state) => {
   let elapsed = TimeControllerSystem.computeElapseTime(time, state);
   state
-  |> JobSystem.execLogicUpdateJobs(elapsed)
-  |> JobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
+  |> LogicJobSystem.execLogicUpdateJobs(elapsed)
+  |> RenderJobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
 };
 
 /* TODO unit test */

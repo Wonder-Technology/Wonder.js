@@ -1,18 +1,19 @@
-let getRenderInitJobList = (state: StateDataType.state) => JobSystem._getRenderInitJobList(state);
+let getRenderInitJobList = (state: StateDataType.state) =>
+  RenderJobSystem._getRenderInitJobList(state);
 
 let isJobExistInJobList = (jobName, jobList) =>
   jobList |> List.exists(((name, _)) => name === jobName);
 
-let initLogic = JobSystem._initLogic;
+let initLogic = LogicJobSystem.init;
 
-let initRender = JobSystem._initRender;
+let initRender = RenderJobSystem.init;
 
-let getLogicInitJobList = JobSystem._getLogicInitJobList;
+let getLogicInitJobList = LogicJobSystem._getLogicInitJobList;
 
-let getLogicUpdateJobList = JobSystem._getLogicUpdateJobList;
+let getLogicUpdateJobList = LogicJobSystem._getLogicUpdateJobList;
 
-let init = (state: StateDataType.state) => JobSystem.init(state);
+let init = (state: StateDataType.state) => AllJobSystem.init(state);
 
-let execLogicInitJobs = JobSystem.execLogicInitJobs;
+let execLogicInitJobs = LogicJobSystem.execLogicInitJobs;
 
-let execLogicUpdateJobs = JobSystem.execLogicUpdateJobs;
+let execLogicUpdateJobs = LogicJobSystem.execLogicUpdateJobs;
