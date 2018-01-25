@@ -1,7 +1,6 @@
 open StateDataType;
 
 let handleGetNoneJob = (name, jobHandleMap) =>
-  /* TODO test */
   WonderLog.Log.fatal(
     WonderLog.Log.buildFatalMessage(
       ~title="_getAllInitJobs",

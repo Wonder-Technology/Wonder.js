@@ -38,7 +38,9 @@ let initWithJobConfigWithoutBuildFakeDom =
   Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
   |> (
     (state) =>
-      state |> LogicJobConfigTool.initData(logicJobConfig) |> RenderJobConfigTool.initData(renderJobConfig)
+      state
+      |> LogicJobConfigTool.initData(logicJobConfig)
+      |> RenderJobConfigTool.initData(renderJobConfig)
   )
   |> (
     (state) => {
@@ -57,7 +59,14 @@ let initWithJobConfig =
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderJobConfig, ())
+  initWithJobConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~isDebug,
+    ~bufferConfig,
+    ~logicJobConfig,
+    ~renderJobConfig,
+    ()
+  )
 };
 
 let openContractCheck = () =>

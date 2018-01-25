@@ -20,7 +20,6 @@ let _getLogicInitJobList = (state: StateDataType.state) => state.jobData.logicIn
 
 let _getLogicUpdateJobList = (state: StateDataType.state) => state.jobData.logicUpdateJobList;
 
-/* TODO refactor */
 let execLogicInitJobs = (state: StateDataType.state) : state =>
   state
   |> _getLogicInitJobList
