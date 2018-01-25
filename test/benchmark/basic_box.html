@@ -29,6 +29,36 @@
                 var [state, camera] = createCamera(state);
 
 
+
+                var state = wd.addLogicInitJob("initJob1", "", function(state){
+                    console.log("initJob1");
+                    return state
+                }, state);
+
+
+                var state = wd.addLogicUpdateJob("updateJob1", "", function(elapsed, state){
+                    console.log("updateJob1", elapsed);
+                    return state
+                }, state);
+
+
+                var state = wd.addRenderInitJob("initRenderJob1", "", function(gl, state){
+                    console.log("initRenderJob1", gl);
+                    return state
+                }, state);
+
+                var state = wd.addRenderInitJob("initRenderJob2", "preget_glslData", function(gl, state){
+                    console.log("initRenderJob2", gl);
+                    return state
+                }, state);
+
+
+                var state = wd.addRenderRenderJob("renderRenderJob1", "", function(gl, state){
+                    console.log("renderRenderJob1");
+                    return state
+                }, state);
+
+
                 wd.startDirector(state);
             }
 

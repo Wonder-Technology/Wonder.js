@@ -139,10 +139,11 @@ let _initRender = (state: StateDataType.state) => {
 
 let init = (state: StateDataType.state) => state |> _initLogic |> _initRender;
 
-let _addRenderJob = ((targetJobName: string, afterJobName: string, targetHandleFunc), jobList) =>
+let _addJob = ((targetJobName: string, afterJobName: string, targetHandleFunc), jobList) =>
   afterJobName |> Js.String.length === 0 ?
     [(targetJobName, targetHandleFunc), ...jobList] :
     jobList
+    |> WonderLog.Log.print
     |> List.fold_left(
          (list, (jobName, handleFunc) as jobItem) =>
            jobName === afterJobName ?
@@ -150,8 +151,44 @@ let _addRenderJob = ((targetJobName: string, afterJobName: string, targetHandleF
          []
        );
 
-let _removeRenderJob = (targetJobName: string, jobList) =>
+let _removeJob = (targetJobName: string, jobList) =>
   jobList |> List.filter(((jobName, handleFunc)) => jobName !== targetJobName);
+
+let addLogicInitJob =
+    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    logicInitJobList:
+      _addJob((targetJobName, afterJobName, targetHandleFunc), _getLogicInitJobList(state))
+  }
+};
+
+let addLogicUpdateJob =
+    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    logicUpdateJobList:
+      _addJob((targetJobName, afterJobName, targetHandleFunc), _getLogicUpdateJobList(state))
+  }
+};
+
+let removeLogicInitJob = (targetJobName: string, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    logicInitJobList: _removeJob(targetJobName, _getLogicInitJobList(state))
+  }
+};
+
+let removeLogicUpdateJob = (targetJobName: string, state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    logicUpdateJobList: _removeJob(targetJobName, _getLogicUpdateJobList(state))
+  }
+};
 
 let addRenderInitJob =
     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
@@ -159,7 +196,7 @@ let addRenderInitJob =
   jobData: {
     ...state.jobData,
     renderInitJobList:
-      _addRenderJob((targetJobName, afterJobName, targetHandleFunc), _getRenderInitJobList(state))
+      _addJob((targetJobName, afterJobName, targetHandleFunc), _getRenderInitJobList(state))
   }
 };
 
@@ -169,10 +206,7 @@ let addRenderRenderJob =
   jobData: {
     ...state.jobData,
     renderRenderJobList:
-      _addRenderJob(
-        (targetJobName, afterJobName, targetHandleFunc),
-        _getRenderRenderJobList(state)
-      )
+      _addJob((targetJobName, afterJobName, targetHandleFunc), _getRenderRenderJobList(state))
   }
 };
 
@@ -180,7 +214,7 @@ let removeRenderInitJob = (targetJobName: string, state: StateDataType.state) =>
   ...state,
   jobData: {
     ...state.jobData,
-    renderInitJobList: _removeRenderJob(targetJobName, _getRenderInitJobList(state))
+    renderInitJobList: _removeJob(targetJobName, _getRenderInitJobList(state))
   }
 };
 
@@ -188,6 +222,6 @@ let removeRenderRenderJob = (targetJobName: string, state: StateDataType.state) 
   ...state,
   jobData: {
     ...state.jobData,
-    renderRenderJobList: _removeRenderJob(targetJobName, _getRenderRenderJobList(state))
+    renderRenderJobList: _removeJob(targetJobName, _getRenderRenderJobList(state))
   }
 };
