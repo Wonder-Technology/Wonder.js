@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox)
+          state := InitBasicMaterialJobTool.initWithJobConfig(sandbox)
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

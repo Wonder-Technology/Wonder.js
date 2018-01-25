@@ -959,7 +959,7 @@ let _ =
               beforeEach(
                 () =>
                   state :=
-                    InitBasicMaterialJobTool.initWithRenderConfigWithoutBuildFakeDom(sandbox)
+                    InitBasicMaterialJobTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
               );
               test(
                 "init material component",

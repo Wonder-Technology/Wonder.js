@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            RenderJobsTool.initWithRenderConfigAndBufferConfig(
+            RenderJobsTool.initWithJobConfigAndBufferConfig(
               sandbox,
               Js.Nullable.return(GeometryTool.buildBufferConfig(3000))
             )

@@ -26,7 +26,7 @@ let init =
   initWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ())
 };
 
-let initWithRenderConfigWithoutBuildFakeDom =
+let initWithJobConfigWithoutBuildFakeDom =
     (
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
@@ -47,16 +47,7 @@ let initWithRenderConfigWithoutBuildFakeDom =
     }
   );
 
-let initWithRenderConfig =
-    /* ~renderConfig=(
-         Render_setting.render_setting,
-         Init_pipelines.init_pipelines,
-         Render_pipelines.render_pipelines,
-         Init_jobs.init_jobs,
-         Render_jobs.render_jobs,
-         Shaders.shaders,
-         Shader_libs.shader_libs
-       ), */
+let initWithJobConfig =
     (
       ~sandbox,
       ~isDebug=Js.Nullable.return(Js.true_),
@@ -66,7 +57,7 @@ let initWithRenderConfig =
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithRenderConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderConfig, ())
+  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~renderConfig, ())
 };
 
 let openContractCheck = () =>

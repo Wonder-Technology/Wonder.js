@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.initWithRenderConfig(~sandbox, ());
+          state := TestTool.initWithJobConfig(~sandbox, ());
           TimeControllerTool.setStartTime(0.);
           TestTool.closeContractCheck()
         }

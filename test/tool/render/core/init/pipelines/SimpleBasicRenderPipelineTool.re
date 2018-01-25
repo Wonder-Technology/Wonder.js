@@ -1,5 +1,5 @@
-let initWithRenderConfig = (sandbox) =>
-  TestTool.initWithRenderConfig(
+let initWithJobConfig = (sandbox) =>
+  TestTool.initWithJobConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ~logicConfig=LogicConfigTool.buildLogicConfig(),

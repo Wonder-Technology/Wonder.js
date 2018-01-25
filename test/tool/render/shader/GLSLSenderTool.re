@@ -33,7 +33,7 @@ module JudgeSendUniformData = {
               () => {
                 let state = ref(StateTool.createState());
                 beforeEach(
-                  () => state := RenderJobsTool.initWithRenderConfigWithoutBuildFakeDom(sandbox)
+                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
                 );
                 test(
                   "test send",
@@ -120,7 +120,7 @@ module JudgeSendUniformData = {
                   (state, pos, uniform3f)
                 };
                 beforeEach(
-                  () => state := RenderJobsTool.initWithRenderConfigWithoutBuildFakeDom(sandbox)
+                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
                 );
                 test(
                   "if cached, not send",

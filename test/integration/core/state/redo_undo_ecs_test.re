@@ -89,7 +89,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.initWithRenderConfig(~sandbox, ())
+          state := TestTool.initWithJobConfig(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

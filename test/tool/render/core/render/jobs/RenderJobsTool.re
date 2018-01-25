@@ -1,7 +1,7 @@
 let _getDefaultRenderConfig = () => RenderConfigTool.buildRenderConfig();
 
-let initWithRenderConfig = (sandbox) =>
-  TestTool.initWithRenderConfig(
+let initWithJobConfig = (sandbox) =>
+  TestTool.initWithJobConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ~logicConfig=LogicConfigTool.buildLogicConfig(),
@@ -9,8 +9,8 @@ let initWithRenderConfig = (sandbox) =>
     ()
   );
 
-let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
-  TestTool.initWithRenderConfigWithoutBuildFakeDom(
+let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
+  TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ~logicConfig=LogicConfigTool.buildLogicConfig(),
@@ -18,8 +18,8 @@ let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
     ()
   );
 
-let initWithRenderConfigAndBufferConfig = (sandbox, bufferConfig) =>
-  TestTool.initWithRenderConfig(
+let initWithJobConfigAndBufferConfig = (sandbox, bufferConfig) =>
+  TestTool.initWithJobConfig(
     ~sandbox,
     ~bufferConfig,
     ~logicConfig=LogicConfigTool.buildLogicConfig(),

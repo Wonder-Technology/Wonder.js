@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := RenderJobsTool.initWithRenderConfig(sandbox)
+          state := RenderJobsTool.initWithJobConfig(sandbox)
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

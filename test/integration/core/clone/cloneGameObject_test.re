@@ -28,7 +28,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.initWithRenderConfig(
+            TestTool.initWithJobConfig(
               ~sandbox,
               ~bufferConfig=Js.Nullable.return(BufferConfigTool.buildBufferConfig(1000)),
               ()

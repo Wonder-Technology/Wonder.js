@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := SimpleBasicRenderPipelineTool.initWithRenderConfig(sandbox)
+          state := SimpleBasicRenderPipelineTool.initWithJobConfig(sandbox)
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
