@@ -53,7 +53,7 @@ let _ =
                                        state
                                      }
                                    );
-                              let state = state |> WebGLRenderAdmin.init;
+                              let state = state |> WebGLRenderTool.init;
                               customData |> expect == [|gl|]
                             }
                           );
@@ -80,7 +80,7 @@ let _ =
                                        state
                                      }
                                    );
-                              let state = state |> WebGLRenderAdmin.init;
+                              let state = state |> WebGLRenderTool.init;
                               customData |> expect == [|gl, gl|]
                             }
                           )
@@ -109,7 +109,7 @@ let _ =
                                    state
                                  }
                                );
-                          let state = state |> WebGLRenderAdmin.init;
+                          let state = state |> WebGLRenderTool.init;
                           customData |> expect == [|1, 2|]
                         }
                       )
@@ -135,7 +135,7 @@ let _ =
                              }
                            )
                         |> Job.removeRenderInitJob("customJob");
-                      let state = state |> WebGLRenderAdmin.init;
+                      let state = state |> WebGLRenderTool.init;
                       customData |> expect == [||]
                     }
                   );
@@ -189,7 +189,7 @@ let _ =
                                        state
                                      }
                                    );
-                              let state = state |> WebGLRenderAdmin.render;
+                              let state = state |> WebGLRenderTool.render;
                               customData |> expect == [|gl|]
                             }
                           )
@@ -215,7 +215,7 @@ let _ =
                              }
                            )
                         |> Job.removeRenderRenderJob("customJob");
-                      let state = state |> WebGLRenderAdmin.render;
+                      let state = state |> WebGLRenderTool.render;
                       customData |> expect == [||]
                     }
                   )

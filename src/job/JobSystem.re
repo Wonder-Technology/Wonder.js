@@ -1,32 +1,72 @@
 open StateDataType;
 
-open RenderConfigSystem;
+/* TODO duplicate with render job */
+let _getAllLogicJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
+  LogicConfigType.(
+    executableJobs
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
+         [@bs]
+         (
+           (list, {name}: executableJob) =>
+             switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
+             | None =>
+               /* TODO test */
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="_getAllLogicInitJobs",
+                   ~description={j|can't find job handle function whose job name is $name|j},
+                   ~reason="",
+                   ~solution={j|make sure that the job name defined in config be correctly|j},
+                   ~params={j|jobHandleMap: $jobHandleMap|j}
+                 )
+               )
+             | Some(handleFunc) => list @ [(name, handleFunc)]
+             }
+         ),
+         []
+       )
+  );
 
-open RenderConfigType;
+let _getLogicInitJobList = (state: StateDataType.state) => state.jobData.logicInitJobList;
+
+let _getLogicUpdateJobList = (state: StateDataType.state) => state.jobData.logicUpdateJobList;
+
+/* TODO refactor */
+let execLogicInitJobs = (state: StateDataType.state) : state =>
+  state
+  |> _getLogicInitJobList
+  |> List.fold_left((state, (_, handleFunc)) => handleFunc(state), state);
+
+let execLogicUpdateJobs = (elapsed: float, state: StateDataType.state) : state =>
+  state
+  |> _getLogicUpdateJobList
+  |> List.fold_left((state, (_, handleFunc)) => handleFunc(elapsed, state), state);
 
 let _getAllRenderJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
-  executableJobs
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
-       [@bs]
-       (
-         (list, {name, flags, shader}: executableJob) =>
-           switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
-           | None =>
-             /* TODO test */
-             WonderLog.Log.fatal(
-               WonderLog.Log.buildFatalMessage(
-                 ~title="_getAllRenderInitJobs",
-                 ~description={j|can't find job handle function whose job name is $name|j},
-                 ~reason="",
-                 ~solution={j|make sure that the job name defined in config be correctly|j},
-                 ~params={j|jobHandleMap: $jobHandleMap|j}
+  RenderConfigType.(
+    executableJobs
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
+         [@bs]
+         (
+           (list, {name, flags, shader}: executableJob) =>
+             switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
+             | None =>
+               /* TODO test */
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="_getAllRenderInitJobs",
+                   ~description={j|can't find job handle function whose job name is $name|j},
+                   ~reason="",
+                   ~solution={j|make sure that the job name defined in config be correctly|j},
+                   ~params={j|jobHandleMap: $jobHandleMap|j}
+                 )
                )
-             )
-           | Some(handleFunc) => list @ [(name, handleFunc((flags, shader)))]
-           }
-       ),
-       []
-     );
+             | Some(handleFunc) => list @ [(name, handleFunc((flags, shader)))]
+             }
+         ),
+         []
+       )
+  );
 
 let _getRenderInitJobList = (state: StateDataType.state) => state.jobData.renderInitJobList;
 
@@ -43,34 +83,61 @@ let execRenderRenderJobs = (gl, state: StateDataType.state) : state =>
   |> _getRenderRenderJobList
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
 
-let init = (state: StateDataType.state) => {
-  let jobHandleMap = JobHandleSystem.createJobHandleMap();
-  {
-    ...state,
-    jobData: {
-      renderInitJobList:
-        _getAllRenderJobs(
-          getInitPipelineExecutableJobs(
-            getRenderSetting(state),
-            getInitPipelines(state),
-            getInitJobs(state)
-          ),
-          jobHandleMap,
-          state
+let _initLogic = (state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    logicInitJobList:
+      _getAllLogicJobs(
+        LogicConfigSystem.getInitPipelineExecutableJobs(
+          LogicConfigSystem.getLogicSetting(state),
+          LogicConfigSystem.getInitPipelines(state),
+          LogicConfigSystem.getInitJobs(state)
         ),
-      renderRenderJobList:
-        _getAllRenderJobs(
-          getRenderPipelineExecutableJobs(
-            getRenderSetting(state),
-            getRenderPipelines(state),
-            getRenderJobs(state)
-          ),
-          jobHandleMap,
-          state
-        )
-    }
+        LogicJobHandleSystem.createInitJobHandleMap(),
+        state
+      ),
+    logicUpdateJobList:
+      _getAllLogicJobs(
+        LogicConfigSystem.getUpdatePipelineExecutableJobs(
+          LogicConfigSystem.getLogicSetting(state),
+          LogicConfigSystem.getUpdatePipelines(state),
+          LogicConfigSystem.getUpdateJobs(state)
+        ),
+        LogicJobHandleSystem.createUpdateJobHandleMap(),
+        state
+      )
   }
 };
+
+let _initRender = (state: StateDataType.state) => {
+  ...state,
+  jobData: {
+    ...state.jobData,
+    renderInitJobList:
+      _getAllRenderJobs(
+        RenderConfigSystem.getInitPipelineExecutableJobs(
+          RenderConfigSystem.getRenderSetting(state),
+          RenderConfigSystem.getInitPipelines(state),
+          RenderConfigSystem.getInitJobs(state)
+        ),
+        RenderJobHandleSystem.createInitJobHandleMap(),
+        state
+      ),
+    renderRenderJobList:
+      _getAllRenderJobs(
+        RenderConfigSystem.getRenderPipelineExecutableJobs(
+          RenderConfigSystem.getRenderSetting(state),
+          RenderConfigSystem.getRenderPipelines(state),
+          RenderConfigSystem.getRenderJobs(state)
+        ),
+        RenderJobHandleSystem.createRenderJobHandleMap(),
+        state
+      )
+  }
+};
+
+let init = (state: StateDataType.state) => state |> _initLogic |> _initRender;
 
 let _addRenderJob = ((targetJobName: string, afterJobName: string, targetHandleFunc), jobList) =>
   afterJobName |> Js.String.length === 0 ?

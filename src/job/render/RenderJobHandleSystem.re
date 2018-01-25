@@ -1,8 +1,9 @@
 open StateDataType;
 
 let _getInitJobHandles = () => [
- ("preget_glslData", PregetGLSLDataJob.getJob),
-("init_basic_material", InitBasicMaterialJob.getJob)];
+  ("preget_glslData", PregetGLSLDataJob.getJob),
+  ("init_basic_material", InitBasicMaterialJob.getJob)
+];
 
 let _getRenderJobHandles = () => [
   ("get_render_array", GetRenderArrayJob.getJob),
@@ -12,7 +13,7 @@ let _getRenderJobHandles = () => [
   ("render_basic", RenderBasicJob.getJob)
 ];
 
-let createJobHandleMap = () =>
-  WonderCommonlib.HashMapSystem.fromList(
-    List.concat([_getInitJobHandles(), _getRenderJobHandles()])
-  );
+let createInitJobHandleMap = () => WonderCommonlib.HashMapSystem.fromList(_getInitJobHandles());
+
+let createRenderJobHandleMap = () =>
+  WonderCommonlib.HashMapSystem.fromList(_getRenderJobHandles());

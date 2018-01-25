@@ -29,17 +29,17 @@ let _ =
               test(
                 "gameTime's unit is second",
                 () => {
-                  let state = state^ |> DirectorTool.init;
-                  let state = DirectorTool.sync(state, ~time=1000., ());
+                  let state = state^ |> DirectorTool.initLogic;
+                  let state = DirectorTool.run(state, ~time=1000., ());
                   state |> getGameTime |> expect == 1.
                 }
               );
               test(
                 "record total game time",
                 () => {
-                  let state = state^ |> DirectorTool.init;
-                  let state = DirectorTool.sync(state, ~time=1000., ());
-                  let state = DirectorTool.sync(state, ~time=2000., ());
+                  let state = state^ |> DirectorTool.initLogic;
+                  let state = DirectorTool.run(state, ~time=1000., ());
+                  let state = DirectorTool.run(state, ~time=2000., ());
                   state |> getGameTime |> expect == 2.
                 }
               )
@@ -51,17 +51,17 @@ let _ =
               test(
                 "fps is 60 on the first loop",
                 () => {
-                  let state = state^ |> DirectorTool.init;
-                  let state = DirectorTool.sync(state, ~time=1000., ());
+                  let state = state^ |> DirectorTool.initLogic;
+                  let state = DirectorTool.run(state, ~time=1000., ());
                   state |> getFps |> expect == 60.
                 }
               );
               test(
                 "test compute",
                 () => {
-                  let state = state^ |> DirectorTool.init;
-                  let state = DirectorTool.sync(state, ~time=1000., ());
-                  let state = DirectorTool.sync(state, ~time=1050., ());
+                  let state = state^ |> DirectorTool.initLogic;
+                  let state = DirectorTool.run(state, ~time=1000., ());
+                  let state = DirectorTool.run(state, ~time=1050., ());
                   state |> getFps |> expect == 20.
                 }
               )

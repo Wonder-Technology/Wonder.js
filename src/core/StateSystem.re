@@ -73,6 +73,7 @@ let createState = () => {
   gpuConfig: None,
   memoryConfig: MemoryConfigSystem.initData(),
   jobData: JobHelper.initData(),
+  logicConfig: None,
   renderConfig: None,
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
   viewData: {canvas: None, contextConfig: None},

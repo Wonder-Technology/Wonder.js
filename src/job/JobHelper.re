@@ -1,3 +1,8 @@
 open StateDataType;
 
-let initData = () => {renderInitJobList: [], renderRenderJobList: []};
+let initData = () => {
+  logicInitJobList: [],
+  logicUpdateJobList: [],
+  renderInitJobList: [],
+  renderRenderJobList: []
+};

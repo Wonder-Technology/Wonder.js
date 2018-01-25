@@ -4,6 +4,7 @@ let initWithRenderConfig = (sandbox) =>
   TestTool.initWithRenderConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ~logicConfig=LogicConfigTool.buildLogicConfig(),
     ~renderConfig=_getDefaultRenderConfig(),
     ()
   );
@@ -12,6 +13,7 @@ let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
   TestTool.initWithRenderConfigWithoutBuildFakeDom(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ~logicConfig=LogicConfigTool.buildLogicConfig(),
     ~renderConfig=_getDefaultRenderConfig(),
     ()
   );
@@ -20,6 +22,7 @@ let initWithRenderConfigAndBufferConfig = (sandbox, bufferConfig) =>
   TestTool.initWithRenderConfig(
     ~sandbox,
     ~bufferConfig,
+    ~logicConfig=LogicConfigTool.buildLogicConfig(),
     ~renderConfig=_getDefaultRenderConfig(),
     ()
   );
@@ -43,7 +46,7 @@ let prepareGameObject = (sandbox, state) => {
 };
 
 let initSystemAndRender = (state: StateDataType.state) =>
-  state |> JobSystem.init |> DirectorTool.initSystem |> WebGLRenderAdmin.init;
+  state |> JobSystem.init |> DirectorTool.initSystem |> WebGLRenderTool.init;
 
 let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem;
 

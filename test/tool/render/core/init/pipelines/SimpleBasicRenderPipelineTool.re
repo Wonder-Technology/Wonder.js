@@ -1,7 +1,8 @@
-let initWithRenderConfig = (sandbox) => {
+let initWithRenderConfig = (sandbox) =>
   TestTool.initWithRenderConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ~logicConfig=LogicConfigTool.buildLogicConfig(),
     ~renderConfig=
       RenderConfigTool.buildRenderConfig(
         ~renderSetting={|
@@ -13,8 +14,7 @@ let initWithRenderConfig = (sandbox) => {
         ()
       ),
     ()
-  )
-};
+  );
 
 let prepareForJudgeGLSL = (sandbox, state) => {
   open Sinon;
@@ -24,7 +24,6 @@ let prepareForJudgeGLSL = (sandbox, state) => {
   let state =
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
-  let state = state |> JobSystem.init |> GeometryTool.initGeometrys |> WebGLRenderAdmin.init;
-  /* let state = state |> DirectorTool.init |> WebGLRenderAdmin.init; */
+  let state = state |> JobSystem.init |> GeometryTool.initGeometrys |> WebGLRenderTool.init;
   shaderSource
 };

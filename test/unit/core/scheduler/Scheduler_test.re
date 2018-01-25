@@ -33,8 +33,8 @@ let _ =
                      state |> Transform.setTransformLocalPosition(transform, localPos)
                  )
                );
-          let state = state |> DirectorTool.init;
-          let state = DirectorTool.sync(state, ~time=1., ());
+          let state = state |> DirectorTool.initLogic;
+          let state = DirectorTool.run(state, ~time=1., ());
           state |> Transform.getTransformLocalPosition(transform) |> expect == localPos
         }
       );
@@ -47,7 +47,7 @@ let _ =
               let result = ref(0.);
               expect(
                 () => {
-                  let _ = state^ |> DirectorTool.init;
+                  let _ = state^ |> DirectorTool.initLogic;
                   ()
                 }
               )
@@ -71,9 +71,9 @@ let _ =
                        }
                      )
                    );
-              let state = state |> DirectorTool.init;
-              let state = DirectorTool.sync(state, ~time=1., ());
-              let state = DirectorTool.sync(state, ~time=2., ());
+              let state = state |> DirectorTool.initLogic;
+              let state = DirectorTool.run(state, ~time=1., ());
+              let state = DirectorTool.run(state, ~time=2., ());
               result^ |> expect == 3.
             }
           )

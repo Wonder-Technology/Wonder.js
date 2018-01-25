@@ -44,6 +44,8 @@ open GlobalTempType;
 
 open TypeArrayPoolType;
 
+open LogicConfigType;
+
 open RenderConfigType;
 
 type contextConfig = {
@@ -130,7 +132,9 @@ and glslSenderData = {
   mutable lastSendMaterial: option(material)
 }
 and jobData = {
+  logicInitJobList: list((string, state => state)),
   renderInitJobList: list((string, (webgl1Context, state) => state)),
+  logicUpdateJobList: list((string, (float, state) => state)),
   renderRenderJobList: list((string, (webgl1Context, state) => state))
 }
 and geometryData = {
@@ -149,7 +153,8 @@ and state = {
   gpuConfig: option(gpuConfig),
   memoryConfig,
   jobData,
-  renderConfig:option(renderConfig),
+  logicConfig: option(logicConfig),
+  renderConfig: option(renderConfig),
   gpuDetectData,
   sourceInstanceData,
   objectInstanceData,

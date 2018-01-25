@@ -3,24 +3,19 @@ open StateSystem;
 open StateData;
 
 let init = (state: StateDataType.state) =>
+  /* TODO remove ScheduleControllerSystem */
   state
-  |> JobSystem.init
-  |> GameObjectAdmin.init
-  |> WebGLRenderAdmin.init
-  |> TimeControllerSystem.start
-  |> ScheduleControllerSystem.start;
+  |> JobSystem.execLogicInitJobs
+  |> ScheduleControllerSystem.start
+  |> JobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
-let _sync = (time: float, state: StateDataType.state) => {
+let _run = (time: float, state: StateDataType.state) => {
   let elapsed = TimeControllerSystem.computeElapseTime(time, state);
   state
-  |> TimeControllerSystem.tick(elapsed)
+  |> JobSystem.execLogicUpdateJobs(elapsed)
   |> ScheduleControllerSystem.update(elapsed)
-  |> GameObjectAdmin.update(elapsed)
+  |> JobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
 };
-
-let _run = (time: float, state: StateDataType.state) =>
-  /* let elapsed = TimeControllerSystem.computeElapseTime(time, state); */
-  state |> _sync(time) |> WebGLRenderAdmin.render;
 
 /* TODO unit test */
 let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
