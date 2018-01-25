@@ -1,13 +1,4 @@
-let _getDefaultRenderConfig = () =>
-  RenderConfigTool.buildRenderConfig(
-    ~renderSetting={|
-    {
-    "init_pipeline": "simple_basic_render",
-    "render_pipeline": "simple_basic_render"
-}
-|},
-    ()
-  );
+let _getDefaultRenderConfig = () => RenderConfigTool.buildRenderConfig();
 
 let initWithRenderConfig = (sandbox) =>
   TestTool.initWithRenderConfig(
@@ -17,7 +8,6 @@ let initWithRenderConfig = (sandbox) =>
     ()
   );
 
-
 let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
   TestTool.initWithRenderConfigWithoutBuildFakeDom(
     ~sandbox,
@@ -25,8 +15,6 @@ let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
     ~renderConfig=_getDefaultRenderConfig(),
     ()
   );
-
-
 
 let initWithRenderConfigAndBufferConfig = (sandbox, bufferConfig) =>
   TestTool.initWithRenderConfig(

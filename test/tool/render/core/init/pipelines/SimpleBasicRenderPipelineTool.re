@@ -1,4 +1,4 @@
-let initWithRenderConfig = (sandbox) =>
+let initWithRenderConfig = (sandbox) => {
   TestTool.initWithRenderConfig(
     ~sandbox,
     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
@@ -13,7 +13,8 @@ let initWithRenderConfig = (sandbox) =>
         ()
       ),
     ()
-  );
+  )
+};
 
 let prepareForJudgeGLSL = (sandbox, state) => {
   open Sinon;

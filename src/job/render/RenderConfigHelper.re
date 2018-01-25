@@ -1,6 +1,5 @@
 open StateDataType;
 
-/* open RenderConfigType; */
 let initData =
     (
       (
@@ -26,12 +25,12 @@ let initData =
          shader_libs: recordArr[6]
        }) */
     Some({
-        render_setting,
-        init_pipelines,
-        render_pipelines,
-        init_jobs,
-        render_jobs,
-        shaders,
-        shader_libs
+      render_setting,
+      init_pipelines,
+      render_pipelines,
+      init_jobs,
+      render_jobs,
+      shaders,
+      shader_libs
     })
 };
