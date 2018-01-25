@@ -25,7 +25,7 @@ let _ =
               test(
                 "should exist job config",
                 () =>
-                  expect(() => RenderConfigJobTool.getInitPipelines(state^))
+                  expect(() => RenderJobConfigTool.getInitPipelines(state^))
                   |> toThrowMessage("expect render job config exist, but actual not")
               )
           )

@@ -25,7 +25,7 @@ let _ =
               test(
                 "should exist job config",
                 () =>
-                  expect(() => LogicConfigJobTool.getInitPipelines(state^))
+                  expect(() => LogicJobConfigTool.getInitPipelines(state^))
                   |> toThrowMessage("expect logic job config exist, but actual not")
               )
           )

@@ -325,6 +325,7 @@ let initData =
       shader_libs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
     })
 };
+
 let getRenderSetting = RenderJobConfigSystem.getRenderSetting;
 
 let getInitPipelines = RenderJobConfigSystem.getInitPipelines;
@@ -338,3 +339,5 @@ let getRenderJobs = RenderJobConfigSystem.getRenderJobs;
 let getShaders = RenderJobConfigSystem.getShaders;
 
 let getShaderLibs = RenderJobConfigSystem.getShaderLibs;
+
+let getInitPipelines = RenderJobConfigSystem.getInitPipelines;

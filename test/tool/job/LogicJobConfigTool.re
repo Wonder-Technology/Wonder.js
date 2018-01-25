@@ -100,3 +100,5 @@ let getInitJobs = LogicJobConfigSystem.getInitJobs;
 let getUpdatePipelines = LogicJobConfigSystem.getUpdatePipelines;
 
 let getUpdateJobs = LogicJobConfigSystem.getUpdateJobs;
+
+let getInitPipelines = LogicJobConfigSystem.getInitPipelines;
