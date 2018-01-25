@@ -1,6 +1,6 @@
 open LogicJobConfigType;
 
-open LogicJobConfigParseUtils;
+open LogicJobConfigParseSystem;
 
 let buildLogicJobConfig =
     (

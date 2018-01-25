@@ -7,30 +7,30 @@ let _createFetchLogicJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "logic/setting/logic_setting.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicJobConfigParseUtils.convertLogicSettingToRecord(json)),
+  |> map((json) => LogicJobConfigParseSystem.convertLogicSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicJobConfigParseUtils.convertInitPipelinesToRecord(json))
+  |> map((json) => LogicJobConfigParseSystem.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/pipeline/update_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicJobConfigParseUtils.convertUpdatePipelinesToRecord(json))
+  |> map((json) => LogicJobConfigParseSystem.convertUpdatePipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/job/init_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicJobConfigParseUtils.convertInitJobsToRecord(json))
+  |> map((json) => LogicJobConfigParseSystem.convertInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/job/update_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => LogicJobConfigParseUtils.convertUpdateJobsToRecord(json))
+  |> map((json) => LogicJobConfigParseSystem.convertUpdateJobsToRecord(json))
   |> Obj.magic
 |];
 
@@ -39,42 +39,42 @@ let _createFetchRenderJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "render/setting/render_setting.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertRenderSettingToRecord(json)),
+  |> map((json) => RenderJobConfigParseSystem.convertRenderSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertInitPipelinesToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/pipeline/render_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertRenderPipelinesToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertRenderPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/job/init_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertInitJobsToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/job/render_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertRenderJobsToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertRenderJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/shader/shaders.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertShadersToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertShadersToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/shader/shader_libs.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderJobConfigParseUtils.convertShaderLibsToRecord(json))
+  |> map((json) => RenderJobConfigParseSystem.convertShaderLibsToRecord(json))
   |> Obj.magic
 |];
 
@@ -83,7 +83,6 @@ let _collectAllRecords = (stream) =>
 
 let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
   /* TODO load gloal_resources */
-  /* TODO refactor: use System instead of Utils,Helper */
   mergeArray([|
     fromPromise(
       mergeArray(_createFetchLogicJobStreamArr(dataDir, fetchFunc))
