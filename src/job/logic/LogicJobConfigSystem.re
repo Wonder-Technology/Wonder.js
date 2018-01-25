@@ -1,8 +1,22 @@
 open LogicJobConfigType;
 
-/* TODO add requireCheck */
-let _unsafeGetLogicJobConfig = (state: StateDataType.state) =>
-  state.logicJobConfig |> Js.Option.getExn;
+let _unsafeGetLogicJobConfig = (state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(~expect={j|logic job config exist|j}, ~actual={j|not|j}),
+              () => state.logicJobConfig |> assertExist
+            )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  state.logicJobConfig |> Js.Option.getExn
+};
 
 let getInitPipelines = (state: StateDataType.state) =>
   _unsafeGetLogicJobConfig(state).init_pipelines;

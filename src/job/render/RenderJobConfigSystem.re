@@ -2,9 +2,23 @@ open GameObjectType;
 
 open RenderJobConfigType;
 
-/* TODO add requireCheck */
-let _unsafeGetRenderJobConfig = (state: StateDataType.state) =>
-  state.renderJobConfig |> Js.Option.getExn;
+let _unsafeGetRenderJobConfig = (state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(~expect={j|render job config exist|j}, ~actual={j|not|j}),
+              () => state.renderJobConfig |> assertExist
+            )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  state.renderJobConfig |> Js.Option.getExn
+};
 
 let getInitPipelines = (state: StateDataType.state) =>
   _unsafeGetRenderJobConfig(state).init_pipelines;

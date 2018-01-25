@@ -1,0 +1,1 @@
+let getInitPipelines = LogicJobConfigSystem.getInitPipelines;
