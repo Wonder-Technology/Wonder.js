@@ -1,3 +1,5 @@
+let load = LoaderManager.load;
+
 let loopBody = Director.loopBody;
 
 let initDirector = Director.initDirector;
@@ -5,8 +7,6 @@ let initDirector = Director.initDirector;
 let startDirector = Director.startDirector;
 
 let setMainConfig = Main.setMainConfig;
-
-let scheduleLoop = Scheduler.scheduleLoop;
 
 let setState = State.setState;
 
@@ -162,6 +162,8 @@ let getTransformLocalPosition = Transform.getTransformLocalPosition;
 
 let getTransformChildren = Transform.getTransformChildren;
 
+let setTransformParentKeepOrder = Transform.setTransformParentKeepOrder;
+
 let setTransformParent = Transform.setTransformParent;
 
 let getTransformParent = Transform.getTransformParent;
@@ -170,6 +172,24 @@ let getTransformGameObject = Transform.getTransformGameObject;
 
 let createTransform = Transform.createTransform;
 
+let removeRenderRenderJob = Job.removeRenderRenderJob;
+
+let removeRenderInitJob = Job.removeRenderInitJob;
+
+let addRenderRenderJob = Job.addRenderRenderJob;
+
+let addRenderInitJob = Job.addRenderInitJob;
+
+let removeLogicUpdateJob = Job.removeLogicUpdateJob;
+
+let removeLogicInitJob = Job.removeLogicInitJob;
+
+let addLogicUpdateJob = Job.addLogicUpdateJob;
+
+let addLogicInitJob = Job.addLogicInitJob;
+
+let load = LoaderManager.load;
+
 let loopBody = Director.loopBody;
 
 let initDirector = Director.initDirector;
@@ -177,8 +197,6 @@ let initDirector = Director.initDirector;
 let startDirector = Director.startDirector;
 
 let setMainConfig = Main.setMainConfig;
-
-let scheduleLoop = Scheduler.scheduleLoop;
 
 let setState = State.setState;
 
@@ -259,3 +277,19 @@ let disposeGameObjectTransformComponent = GameObject.disposeGameObjectTransformC
 let addGameObjectTransformComponent = GameObject.addGameObjectTransformComponent;
 
 let createGameObject = GameObject.createGameObject;
+
+let removeRenderRenderJob = Job.removeRenderRenderJob;
+
+let removeRenderInitJob = Job.removeRenderInitJob;
+
+let addRenderRenderJob = Job.addRenderRenderJob;
+
+let addRenderInitJob = Job.addRenderInitJob;
+
+let removeLogicUpdateJob = Job.removeLogicUpdateJob;
+
+let removeLogicInitJob = Job.removeLogicInitJob;
+
+let addLogicUpdateJob = Job.addLogicUpdateJob;
+
+let addLogicInitJob = Job.addLogicInitJob;
