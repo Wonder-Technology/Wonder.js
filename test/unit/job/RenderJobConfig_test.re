@@ -29,6 +29,60 @@ let _ =
                   |> toThrowMessage("expect render job config exist, but actual not")
               )
           )
+      );
+      describe(
+        "getMaterialShaderLibDataArr",
+        () =>
+          describe(
+            "test fatal",
+            () => {
+              open RenderJobConfigType;
+              test(
+                "if shaderLibItem->type_ unknown, fatal",
+                () => {
+                  TestTool.closeContractCheck();
+                  expect(
+                    () =>
+                      state^
+                      |> RenderJobConfigTool.getMaterialShaderLibDataArr(
+                           0,
+                           (1 |> Obj.magic, [|{type_: Some("type1"), name: ""}|], 1 |> Obj.magic)
+                         )
+                  )
+                  |> toThrowMessage("unknown type_")
+                }
+              );
+              test(
+                "if shaderLibItem->name unknown with type=static_branch, fatal",
+                () => {
+                  TestTool.closeContractCheck();
+                  expect(
+                    () =>
+                      state^
+                      |> RenderJobConfigTool.getMaterialShaderLibDataArr(
+                           0,
+                           (
+                             1 |> Obj.magic,
+                             [|{type_: Some("static_branch"), name: "name1"}|],
+                             1 |> Obj.magic
+                           )
+                         )
+                  )
+                  |> toThrowMessage("unknown name")
+                }
+              )
+            }
+          )
+      );
+      describe(
+        "throwJobFlagsShouldBeDefined",
+        () =>
+          test(
+            "throw error",
+            () =>
+              expect(() => RenderJobConfigTool.throwJobFlagsShouldBeDefined())
+              |> toThrowMessage("jobFlags should be defined")
+          )
       )
     }
   );

@@ -341,3 +341,7 @@ let getShaders = RenderJobConfigSystem.getShaders;
 let getShaderLibs = RenderJobConfigSystem.getShaderLibs;
 
 let getInitPipelines = RenderJobConfigSystem.getInitPipelines;
+
+let getMaterialShaderLibDataArr = RenderJobConfigSystem.getMaterialShaderLibDataArr;
+
+let throwJobFlagsShouldBeDefined = RenderJobConfigSystem.throwJobFlagsShouldBeDefined;
