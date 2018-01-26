@@ -81,18 +81,21 @@ let _createFetchRenderJobStreamArr = (dataDir, fetchFunc) => [|
 let _collectAllRecords = (stream) =>
   stream |> reduce((arr, record) => arr |> ArraySystem.push(record), [||]);
 
+let _addInitDataFunc = (initDataFunc, promise) =>
+  promise |> then_((recordArr) => (recordArr, initDataFunc) |> resolve);
+
 let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
   /* TODO load gloal_resources */
   mergeArray([|
     fromPromise(
       mergeArray(_createFetchLogicJobStreamArr(dataDir, fetchFunc))
       |> _collectAllRecords
-      |> then_((recordArr) => (recordArr, LogicJobConfigHelper.initData) |> resolve)
+      |> _addInitDataFunc(LogicJobConfigHelper.initData)
     ),
     fromPromise(
       mergeArray(_createFetchRenderJobStreamArr(dataDir, fetchFunc))
       |> _collectAllRecords
-      |> then_((recordArr) => (recordArr, RenderJobConfigHelper.initData) |> resolve)
+      |> _addInitDataFunc(RenderJobConfigHelper.initData)
     )
     |> Obj.magic
   |])

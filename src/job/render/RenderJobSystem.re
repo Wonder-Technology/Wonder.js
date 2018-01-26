@@ -20,15 +20,14 @@ let _getRenderInitJobList = (state: StateDataType.state) => state.jobData.render
 
 let _getRenderRenderJobList = (state: StateDataType.state) => state.jobData.renderRenderJobList;
 
+let _execRenderJobs = (gl, jobList, state: StateDataType.state) : state =>
+  jobList |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
+
 let execRenderInitJobs = (gl, state: StateDataType.state) : state =>
-  state
-  |> _getRenderInitJobList
-  |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
+  state |> _execRenderJobs(gl, _getRenderInitJobList(state));
 
 let execRenderRenderJobs = (gl, state: StateDataType.state) : state =>
-  state
-  |> _getRenderRenderJobList
-  |> List.fold_left((state, (_, handleFunc)) => handleFunc(gl, state), state);
+  state |> _execRenderJobs(gl, _getRenderRenderJobList(state));
 
 let init = (state: StateDataType.state) => {
   ...state,
