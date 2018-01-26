@@ -90,7 +90,8 @@ var InstanceBasicBoxesTool = (function () {
 
             // setTimeout(() => {
 
-            //     scheduleLoop((elapsed, state) => {
+
+            // ScheduleTool.scheduleLoop(function (elapsed, state) {
             //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state)
             //     }, state);
 
@@ -99,7 +100,8 @@ var InstanceBasicBoxesTool = (function () {
 
             // setTimeout(() => {
 
-            //     scheduleLoop((elapsed, state) => {
+
+            // ScheduleTool.scheduleLoop(function (elapsed, state) {
             //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, true, state)
             //     }, state);
 
@@ -227,14 +229,14 @@ var InstanceBasicBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return wd.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 return _setData(boxes, state)
             }, state)
         },
         createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
             window.boxes = [];
 
-            return wd.scheduleLoop((elapsed, state) => {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 // for (let i = 0, len = window.boxes.length; i < len; i++) {
                 //     let box = window.boxes[i];
                 //     state = disposeGameObject(box, state);
@@ -271,7 +273,7 @@ var InstanceBasicBoxesTool = (function () {
         createAndDisposeObjectInstanceGameObjects: function (boxes, state) {
             window.boxes = [];
 
-            return wd.scheduleLoop((elapsed, state) => {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 for (let i = 0, len = window.boxes.length; i < len; i++) {
                     let box = window.boxes[i];
                     state = wd.disposeGameObject(box, state);

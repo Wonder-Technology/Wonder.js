@@ -14,11 +14,15 @@ let performanceTestData = {
     baseDir: "./dist/base",
     scriptFilePathList: [
       "./dist/wd.js",
+      "./test/e2e/js/ReplaceFetchTool.js",
+      "./test/e2e/js/ScheduleTool.js",
       "./test/e2e/js/BasicBoxesTool.js",
       "./test/e2e/js/CameraTool.js",
       "./test/e2e/js/InstanceBasicBoxesTool.js",
       "./test/e2e/js/RedoUndoTool.js"
-    ]
+    ],
+    replaceBodyFuncStrWhenDebug:
+      Some((bodyFuncStr) => bodyFuncStr |> Js.String.replace("./data", "../../../../data"))
   },
   testDataList: [
     {
@@ -27,11 +31,17 @@ let performanceTestData = {
         {
           name: "create_5k_boxes",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
@@ -81,193 +91,211 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
         {
           name: "create_5k_boxes+transform",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                               var data = BasicBoxesTool.createBoxesByClone(5000, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = BasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = BasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = BasicBoxesTool.createCamera(state);
-
-
-
-                    var state = data[0];
-
-
-                    var state = BasicBoxesTool.setData(boxes, state);
+                               var data = BasicBoxesTool.createCamera(state);
 
 
 
+                               var state = data[0];
 
 
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var state = BasicBoxesTool.setData(boxes, state);
 
 
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
 
 
 
 
-var n4 = performance.now();
-
-
-                    /* return state; */
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
-}
-|},
+           var n4 = performance.now();
+
+
+                               /* return state; */
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
+           }
+           |},
           errorRate: 10
         },
         {
           name: "create_5k_boxes+transform+set_parent",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                               var data = BasicBoxesTool.createBoxesByClone(5000, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = BasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = BasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = BasicBoxesTool.createCamera(state);
-
-
-
-                    var state = data[0];
-
-
-                    var state = BasicBoxesTool.setData(boxes, state);
-
-                    var state = BasicBoxesTool.setParent(boxes, state);
+                               var data = BasicBoxesTool.createCamera(state);
 
 
 
+                               var state = data[0];
 
-var n2 = performance.now();
 
-                    var state = wd.initDirector(state);
+                               var state = BasicBoxesTool.setData(boxes, state);
+
+                               var state = BasicBoxesTool.setParent(boxes, state);
 
 
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
 
 
 
 
-var n4 = performance.now();
-
-
-                    /* return state; */
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
-}
-|},
+           var n4 = performance.now();
+
+
+                               /* return state; */
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
+           }
+           |},
           errorRate: 10
         },
         {
           name: "create_dispose_1k_boxes",
           bodyFuncStr: {|
-                         var state = wd.setMainConfig({
-                             isDebug: false
-                         });
-
-                         return initSample(state);
+                    ReplaceFetchTool.replaceFetchForTest();
 
 
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
 
-                         function initSample(state) {
-         var n1 = performance.now();
 
-                             var data = BasicBoxesTool.createBoxesByClone(1, state);
-
-                             var state = data[0];
-                             var boxes = data[1];
-
-                             var data = BasicBoxesTool.setPosition(boxes, state);
-                             var state = data[0];
-                             var boxes = data[1];
-
-                             var data = BasicBoxesTool.createCamera(state);
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
 
 
 
-                             var state = data[0];
+                                    function initSample(state) {
+                    var n1 = performance.now();
+
+                                        var data = BasicBoxesTool.createBoxesByClone(1, state);
+
+                                        var state = data[0];
+                                        var boxes = data[1];
+
+                                        var data = BasicBoxesTool.setPosition(boxes, state);
+                                        var state = data[0];
+                                        var boxes = data[1];
+
+                                        var data = BasicBoxesTool.createCamera(state);
 
 
-                             var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
+
+                                        var state = data[0];
 
 
-
-
-         var n2 = performance.now();
-
-                             var state = wd.initDirector(state);
-
-
-
-
-         var n3 = performance.now();
-                             var state = wd.loopBody(100.0, state);
+                                        var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
 
 
 
 
-         var n4 = performance.now();
+                    var n2 = performance.now();
 
-
-
-                             var state = wd.loopBody(200.0, state);
+                                        var state = wd.initDirector(state);
 
 
 
 
-         var n5 = performance.now();
+                    var n3 = performance.now();
+                                        var state = wd.loopBody(100.0, state);
 
 
 
-return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
-}
 
-|},
+                    var n4 = performance.now();
+
+
+
+                                        var state = wd.loopBody(200.0, state);
+
+
+
+
+                    var n5 = performance.now();
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
+           }
+
+           |},
           errorRate: 10
         }
       ]
@@ -278,339 +306,375 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
         {
           name: "static_hardware_create_100k_boxes",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 60000, true, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 60000, true, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
-var n2 = performance.now();
+           var n2 = performance.now();
 
-                    var state = wd.initDirector(state);
-
-
-
-                    /* var state = wd.setState(state); */
-
-
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+                               var state = wd.initDirector(state);
 
 
 
+                               /* var state = wd.setState(state); */
 
-var n4 = performance.now();
 
-
-                    /* return state; */
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+           var n4 = performance.now();
 
-}
-|},
+
+                               /* return state; */
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+
+           }
+           |},
           errorRate: 10
         },
         {
           name: "static_batch_create_5k_boxes",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false,
-                    gpuConfig: {
-useHardwareInstance:false
-                    }
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                               isDebug: false,
+                               gpuConfig: {
+           useHardwareInstance:false
+                               }
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 5000, true, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 5000, true, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
-var n2 = performance.now();
+           var n2 = performance.now();
 
-                    var state = wd.initDirector(state);
-
-
-
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+                               var state = wd.initDirector(state);
 
 
 
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
 
-var n4 = performance.now();
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
 
-}
-|},
+           var n4 = performance.now();
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+
+           }
+           |},
           errorRate: 10
         },
         {
           name: "dynamic_hardware_create_10k_boxes+transform",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 10000, false, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 10000, false, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                    var state = InstanceBasicBoxesTool.setData(boxes, state);
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
 
 
+                               var state = InstanceBasicBoxesTool.setData(boxes, state);
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
 
-
-
-
-var n4 = performance.now();
+                               var state = wd.initDirector(state);
 
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
-}
-|},
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+
+
+
+           var n4 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+           }
+           |},
           errorRate: 10
         },
         {
           name: "dynamic_hardware_create_10k_boxes+transform+set_parent",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxesWithHierachy(5000, 5000, false, state);
+                           var data = InstanceBasicBoxesTool.createBoxesWithHierachy(5000, 5000, false, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                    var state = InstanceBasicBoxesTool.setData(boxes, state);
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
 
 
+                               var state = InstanceBasicBoxesTool.setData(boxes, state);
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
 
-
-
-
-var n4 = performance.now();
+                               var state = wd.initDirector(state);
 
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
 
-}
 
-|},
+
+
+           var n4 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+
+           }
+
+           |},
           errorRate: 10
         },
         {
           name: "dynamic_hardware_create_dispose_200(sourceInstance box)*5(objectInstance box)",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                var state = InstanceBasicBoxesTool.createAndDisposeSourceInstanceGameObjects(200, 5, boxes, state);
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
 
 
+                           var state = InstanceBasicBoxesTool.createAndDisposeSourceInstanceGameObjects(200, 5, boxes, state);
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
 
-var n4 = performance.now();
-                    var state = wd.loopBody(200.0, state);
-
-
-
-var n5 = performance.now();
+                               var state = wd.initDirector(state);
 
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+           var n4 = performance.now();
+                               var state = wd.loopBody(200.0, state);
 
 
-}
 
-|},
+           var n5 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+
+
+           }
+
+           |},
           errorRate: 10
         },
         {
           name: "dynamic_hardware_create_dispose_1[(sourceInstance box)*2k(objectInstance box)",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                var state = InstanceBasicBoxesTool.createAndDisposeSourceInstanceGameObjects(1, 2000, boxes, state);
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var data = InstanceBasicBoxesTool.createCamera(state);
+                               var state = data[0];
 
 
 
+                           var state = InstanceBasicBoxesTool.createAndDisposeSourceInstanceGameObjects(1, 2000, boxes, state);
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
 
-var n4 = performance.now();
-                    var state = wd.loopBody(200.0, state);
-
-
-
-var n5 = performance.now();
+                               var state = wd.initDirector(state);
 
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+           var n4 = performance.now();
+                               var state = wd.loopBody(200.0, state);
 
 
-}
 
-|},
+           var n5 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+
+
+           }
+
+           |},
           errorRate: 10
         }
       ]
@@ -621,57 +685,63 @@ return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray":
         {
           name: "copy_1k_boxes(objectInstance)+restore_from_1k_boxes(not instance)_1k_boxes(objectInstance)",
           bodyFuncStr: {|
-                var state = wd.setMainConfig({
-                    isDebug: false
-                });
+                    ReplaceFetchTool.replaceFetchForTest();
 
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
                 return initSample(state);
+            });
 
 
 
-                function initSample(state) {
-var n1 = performance.now();
+                           function initSample(state) {
+           var n1 = performance.now();
 
 
-                var data = RedoUndoTool.createBoxesByInstance(1000, state);
-                    var state = data[0];
-                    var box = data[1];
+                           var data = RedoUndoTool.createBoxesByInstance(1000, state);
+                               var state = data[0];
+                               var box = data[1];
 
-                    var data = RedoUndoTool.setPosition([box], state);
-                    var state = data[0];
-                    var boxes = data[1];
+                               var data = RedoUndoTool.setPosition([box], state);
+                               var state = data[0];
+                               var boxes = data[1];
 
-                    var data = RedoUndoTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                    var state = RedoUndoTool.redoUndoShader(1000, state);
-
-
-var n2 = performance.now();
-
-                    var state = wd.initDirector(state);
+                               var data = RedoUndoTool.createCamera(state);
+                               var state = data[0];
 
 
 
+                               var state = RedoUndoTool.redoUndoShader(1000, state);
 
 
-var n3 = performance.now();
-                    var state = wd.loopBody(100.0, state);
+           var n2 = performance.now();
 
-
-
-
-var n4 = performance.now();
+                               var state = wd.initDirector(state);
 
 
 
 
 
-return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
-}
-|},
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+
+
+
+           var n4 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+           }
+           |},
           errorRate: 10
         }
       ]

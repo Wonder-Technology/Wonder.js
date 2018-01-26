@@ -120,7 +120,7 @@ var BasicBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return wd.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 return _setData(boxes, state)
             }, state)
         },
@@ -134,7 +134,7 @@ var BasicBoxesTool = (function () {
                 state = wd.setTransformParent(boxes[i - 1], box, state)
             }
 
-            return wd.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 var box = boxes[i];
                 state = wd.setTransformParent(boxes[_getRandomParentIndex(10)], box, state);
 
@@ -145,7 +145,7 @@ var BasicBoxesTool = (function () {
             window.sourceBox = boxes[0];
             window.boxes = [];
 
-            return wd.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (elapsed, state) {
                 // for(var i = 0, len = window.boxes.length; i < len; i++){
                 //     var box = window.boxes[i];
                 //     state = disposeGameObject(box, state);
