@@ -1,3 +1,35 @@
+<a name="1.0.0-alpha.15"></a>
+# [1.0.0-alpha.15](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2018-01-26)
+
+
+### Bug Fixes
+
+* **redo-undo:** fix deepCopyStateForRestore: now deep copy transform->childMap ([6343eb5](https://github.com/Wonder-Technology/Wonder.js/commit/6343eb5))
+* **specHelper:** fix "toCalledWith"-> error message ([f3a6b54](https://github.com/Wonder-Technology/Wonder.js/commit/f3a6b54))
+
+
+### Features
+
+* **job:** add json data files instead of reason wraped json data files ([ba91ca7](https://github.com/Wonder-Technology/Wonder.js/commit/ba91ca7))
+* **job:** add logic job config ([477b253](https://github.com/Wonder-Technology/Wonder.js/commit/477b253))
+* **job:** handle RenderJobConfigSystem.re->switch unknown cases ([d447ab0](https://github.com/Wonder-Technology/Wonder.js/commit/d447ab0))
+* **job:** implement "add,remove custom job" ([187de58](https://github.com/Wonder-Technology/Wonder.js/commit/187de58))
+* **job:** renderJobConfigSystem,LogicJobConfigSystem->_unsafeGetXXXJobConfig add contract check ([e5ebc4d](https://github.com/Wonder-Technology/Wonder.js/commit/e5ebc4d))
+* **job): feat(job:** implement logic->"add,remove custom job" ([30c1abd](https://github.com/Wonder-Technology/Wonder.js/commit/30c1abd))
+* **render-worker:** create render worker and set to state ([0eece66](https://github.com/Wonder-Technology/Wonder.js/commit/0eece66))
+* **render-worker:** finish "init gl" logic ([78233a7](https://github.com/Wonder-Technology/Wonder.js/commit/78233a7))
+* **render-worker:** now can build wd.render.worker.js file ([9de0ff7](https://github.com/Wonder-Technology/Wonder.js/commit/9de0ff7))
+* **render-worker:** pass render-worker-file-dir via setMainConfig ([5beec9a](https://github.com/Wonder-Technology/Wonder.js/commit/5beec9a)), closes [#e2b637](https://github.com/Wonder-Technology/Wonder.js/issues/e2b637)
+* **transform:** add "setTransformParentKeepOrder" api ([4c59d98](https://github.com/Wonder-Technology/Wonder.js/commit/4c59d98))
+
+
+### Performance Improvements
+
+* **job:** now only get render jobs from config once ([8901be8](https://github.com/Wonder-Technology/Wonder.js/commit/8901be8))
+* **transform:** "getChilren" now not copy children ([3d5e2a7](https://github.com/Wonder-Technology/Wonder.js/commit/3d5e2a7))
+
+
+
 <a name="1.0.0-alpha.14.3"></a>
 # [1.0.0-alpha.14.3](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.14...v1.0.0-alpha.14.3) (2018-01-26)
 
