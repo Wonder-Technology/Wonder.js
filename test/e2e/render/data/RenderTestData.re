@@ -6,6 +6,8 @@ let renderTestData = {
   commonData: {
     imagePath: "test/e2e/render/screenshot/",
     scriptFilePathList: [
+      "./test/e2e/js/ReplaceFetchTool.js",
+      "./test/e2e/js/ScheduleTool.js",
       "./test/e2e/js/BasicBoxesTool.js",
       "./test/e2e/js/CameraTool.js",
       "./test/e2e/js/InstanceBasicBoxesTool.js",
@@ -18,11 +20,21 @@ let renderTestData = {
     {
       name: "basic_box",
       bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
                     var state = wd.setMainConfig({
-                        isDebug: false
+                        isDebug: true
                     });
 
-                    return initSample(state);
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+
 
 
 
@@ -54,32 +66,39 @@ let renderTestData = {
     {
       name: "instance_basic_box",
       bodyFuncStr: {|
+
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
                     var state = wd.setMainConfig({
-                        isDebug: false
+                        isDebug: true
                     });
 
-                    return initSample(state);
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
 
 
 
-                    function initSample(state) {
-                    RandomTool.stubMathRandom(10000);
+                       function initSample(state) {
+                       RandomTool.stubMathRandom(10000);
 
-                    var data = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                       var data = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
+                       var state = data[0];
+                       var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                       var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                       var state = data[0];
+                       var boxes = data[1];
 
-                    var data = InstanceBasicBoxesTool.createCamera(state);
-                    var state = data[0];
+                       var data = InstanceBasicBoxesTool.createCamera(state);
+                       var state = data[0];
 
 
-                    return wd.startDirector(state);
-                    }
-    |},
+                       return wd.startDirector(state);
+                       }
+       |},
       scriptFilePathList: None,
       distance: None,
       diffPercent: Some(0.00001),
@@ -89,38 +108,44 @@ let renderTestData = {
     {
       name: "redo_undo",
       bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
                     var state = wd.setMainConfig({
-                        isDebug: false
+                        isDebug: true
                     });
 
-                    return initSample(state);
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
 
 
 
-                    function initSample(state) {
-                    RandomTool.stubMathRandom(10000);
+                       function initSample(state) {
+                       RandomTool.stubMathRandom(10000);
 
 
-                    var data = RedoUndoTool.createBoxesByInstance(10, state);
-                    var state = data[0];
-                    var box = data[1];
+                       var data = RedoUndoTool.createBoxesByInstance(10, state);
+                       var state = data[0];
+                       var box = data[1];
 
-                    var data = RedoUndoTool.setPosition([box], state);
-                    var state = data[0];
-                    var boxes = data[1];
+                       var data = RedoUndoTool.setPosition([box], state);
+                       var state = data[0];
+                       var boxes = data[1];
 
-                    var data = RedoUndoTool.createCamera(state);
-                    var state = data[0];
-
-
-
-                    var state = RedoUndoTool.redoUndoShader(5, state);
+                       var data = RedoUndoTool.createCamera(state);
+                       var state = data[0];
 
 
 
-                    return wd.startDirector(state);
-                    }
-    |},
+                       var state = RedoUndoTool.redoUndoShader(5, state);
+
+
+
+                       return wd.startDirector(state);
+                       }
+       |},
       scriptFilePathList: None,
       distance: None,
       diffPercent: Some(0.00001),

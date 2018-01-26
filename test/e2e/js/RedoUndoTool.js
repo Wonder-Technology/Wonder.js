@@ -3,7 +3,14 @@ var RedoUndoTool = (function () {
         redoUndoShader: function (count, state) {
             var index = 1;
 
-            var state = wd.scheduleLoop((elapsed, state) => {
+
+
+            var state = wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
+                console.log("updateJob1", elapsed);
+                return state
+            }, state);
+
+            var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
                 if (index == 1) {
                     index += 1;
 
@@ -51,6 +58,7 @@ var RedoUndoTool = (function () {
                 index += 1;
                 return state;
             }, state);
+
 
             return state;
         },

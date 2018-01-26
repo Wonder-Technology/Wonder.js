@@ -60,11 +60,16 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
         console.log("generate report...");
 
-        generateReportFunc(reportFilePath, compareResultData).then(function () {
-            _exit();
-        }, function (e) {
+        try {
+            generateReportFunc(reportFilePath, compareResultData).then(function () {
+                _exit();
+            }, function (e) {
+                _fail(e, done);
+            })
+        }
+        catch (e) {
             _fail(e, done);
-        })
+        }
     })
 }
 
