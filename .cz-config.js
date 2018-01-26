@@ -47,7 +47,8 @@ module.exports = {
       { name: "publish" },
       { name: "bumped" },
       { name: "code-climate" },
-      { name: "readme" }
+      { name: "readme" },
+      { name: "changelog" }
     ]
   },
   // override the messages, defaults are as follows
