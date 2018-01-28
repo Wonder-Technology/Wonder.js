@@ -4,8 +4,14 @@ open MaterialType;
 
 open BasicMaterialType;
 
-let _getShaderLibs = (shaderData) => shaderData.basic_material.material_shader.shader_libs;
+let _getShaderLibs = ({material_shaders}) =>
+  JobConfigUtils.findFirst(
+    material_shaders,
+    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, "render_basic")
+  ).
+    shader_libs;
 
+/* shaderData.basic_material.material_shader.shader_libs; */
 let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
   let shaderData = RenderJobConfigSystem.getShaders(state);
   (materialIndex, _getShaderLibs(shaderData), shaderData)

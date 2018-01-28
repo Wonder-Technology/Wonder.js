@@ -280,8 +280,9 @@ let _ =
                                            {name: "top", value: [|"common", "vertex"|]},
                                            {name: "end", value: [|"end"|]}
                                          |],
-                                         basic_material: {
-                                           material_shader: {
+                                         material_shaders: [|
+                                           {
+                                             name: "render_basic",
                                              shader_libs: [|
                                                {type_: Some("group"), name: "top"},
                                                {
@@ -293,7 +294,7 @@ let _ =
                                                {type_: Some("group"), name: "end"}
                                              |]
                                            }
-                                         }
+                                         |]
                                        }
                              |> resolve
                          )

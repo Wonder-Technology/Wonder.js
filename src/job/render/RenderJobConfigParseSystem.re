@@ -100,32 +100,30 @@ let convertShadersToRecord = (shaders) => {
   {
     static_branchs: json |> field("static_branchs", (json) => _convertShaderMapData(json)),
     groups: json |> field("groups", (json) => _convertShaderMapData(json)),
-    basic_material:
+    material_shaders:
       json
       |> field(
-           "basic_material",
-           (json) => {
-             material_shader:
-               json
-               |> field(
-                    "material_shader",
-                    (json) => {
-                      shader_libs:
-                        json
-                        |> field(
-                             "shader_libs",
-                             array(
-                               fun (json) => (
-                                 {
-                                   type_: json |> optional(field("type", string)),
-                                   name: json |> field("name", string)
-                                 }: shaderLibItem
-                               )
+           "material_shaders",
+           (json) =>
+             json
+             |> array(
+                  (json) => {
+                    name: json |> field("name", string),
+                    shader_libs:
+                      json
+                      |> field(
+                           "shader_libs",
+                           array(
+                             fun (json) => (
+                               {
+                                 type_: json |> optional(field("type", string)),
+                                 name: json |> field("name", string)
+                               }: shaderLibItem
                              )
                            )
-                    }
-                  )
-           }
+                         )
+                  }
+                )
          )
   }
 };

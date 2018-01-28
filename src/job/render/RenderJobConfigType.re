@@ -47,14 +47,15 @@ type shaderLibItem = {
   name: string
 };
 
-type material_shader = {shader_libs: array(shaderLibItem)};
-
-type shader = {material_shader};
+type material_shader = {
+  name: string,
+  shader_libs: array(shaderLibItem)
+};
 
 type shaders = {
   static_branchs: array(shaderMapData),
   groups: array(shaderMapData),
-  basic_material: shader
+  material_shaders: array(material_shader)
 };
 
 type glsl = {

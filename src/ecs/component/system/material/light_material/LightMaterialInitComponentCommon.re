@@ -4,9 +4,12 @@ open RenderJobConfigType;
 
 open LightMaterialType;
 
-/* let _getShaderLibs = (shaderData) => shaderData.light_material.material_shader.shader_libs; */
-/* TODO change to light_material */
-let _getShaderLibs = (shaderData) => shaderData.basic_material.material_shader.shader_libs;
+let _getShaderLibs = ({material_shaders}) =>
+  JobConfigUtils.findFirst(
+    material_shaders,
+    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, "FrontRenderLight")
+  ).
+    shader_libs;
 
 let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
   let shaderData = RenderJobConfigSystem.getShaders(state);
@@ -21,7 +24,7 @@ let _getStateTuple = (state: StateDataType.state) => {
 let initMaterial =
   [@bs]
   (
-    (gl, materialIndex: int, state:StateDataType.state) =>
+    (gl, materialIndex: int, state: StateDataType.state) =>
       MaterialInitComponentCommon.initMaterial(
         gl,
         _getShaderTuple(materialIndex, state),

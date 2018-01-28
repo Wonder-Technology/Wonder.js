@@ -113,8 +113,9 @@ let buildRenderJobConfig =
       ]
     }
   ],
-  "basic_material": {
-    "material_shader": {
+  "material_shaders": [
+    {
+      "name": "render_basic",
       "shader_libs": [
         {
           "type": "group",
@@ -136,7 +137,7 @@ let buildRenderJobConfig =
         }
       ]
     }
-  }
+  ]
 }
         |},
       ~shaderLibs={|
