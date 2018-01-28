@@ -2,9 +2,9 @@ open StateDataType;
 
 open MaterialType;
 
-let getMaterialData = (state: StateDataType.state) => Js.Option.getExn(state.materialData);
+/* let getMaterialData = (state: StateDataType.state) => Js.Option.getExn(state.materialData); */
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+/* let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
     state |> getMaterialData;
   {
@@ -24,4 +24,4 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
 let restore = (currentState, targetState) => {
   ...targetState,
   materialData: Some({...getMaterialData(targetState), shaderIndexMap: [||]})
-};
+}; */

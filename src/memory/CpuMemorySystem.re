@@ -11,7 +11,8 @@ let _setNewDataToState =
         newMeshRendererMap,
         newGeometryMap,
         newCameraControllerMap,
-        newMaterialMap,
+        newBasicMaterialMap,
+        newLightMaterialMap,
         newSourceInstanceMap,
         newObjectInstanceMap
       )
@@ -25,7 +26,9 @@ let _setNewDataToState =
     meshRendererMap: newMeshRendererMap,
     geometryMap: newGeometryMap,
     cameraControllerMap: newCameraControllerMap,
-    materialMap: newMaterialMap,
+    basicMaterialMap: newBasicMaterialMap,
+    /* TODO test */
+    lightMaterialMap: newLightMaterialMap,
     sourceInstanceMap: newSourceInstanceMap,
     objectInstanceMap: newObjectInstanceMap
   }
@@ -36,7 +39,8 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     transformMap,
     meshRendererMap,
     geometryMap,
-    materialMap,
+    basicMaterialMap,
+    lightMaterialMap,
     cameraControllerMap,
     sourceInstanceMap,
     objectInstanceMap
@@ -52,7 +56,8 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
              newMeshRendererMap,
              newGeometryMap,
              newCameraControllerMap,
-             newMaterialMap,
+             newBasicMaterialMap,
+             newLightMaterialMap,
              newSourceInstanceMap,
              newObjectInstanceMap
            ),
@@ -77,9 +82,15 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
            | Some(cameraController) =>
              newCameraControllerMap |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
            },
-           switch (materialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newMaterialMap
-           | Some(material) => newMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
+           switch (basicMaterialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newBasicMaterialMap
+           | Some(material) =>
+             newBasicMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
+           },
+           switch (lightMaterialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newLightMaterialMap
+           | Some(material) =>
+             newLightMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
            },
            switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => newSourceInstanceMap
@@ -94,6 +105,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
          )
        ),
        (
+         WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),

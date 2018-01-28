@@ -1,4 +1,4 @@
-open MaterialType;
+/* open MaterialType;
 
 let initData = (state: StateDataType.state) => {
   state.materialData =
@@ -11,4 +11,4 @@ let initData = (state: StateDataType.state) => {
       disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
     });
   state
-};
+}; */

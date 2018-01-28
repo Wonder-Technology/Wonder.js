@@ -74,16 +74,16 @@ let _ =
         let state = state |> setGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
         (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3)
       };
-      let _prepareMaterialData = (state) => {
-        open Material;
+      let _prepareBasicMaterialData = (state) => {
+        open BasicMaterial;
         open Js.Typed_array;
         let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
         let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
         let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
-        let state = MaterialTool.prepareForInit(state);
+        let state = AllMaterialTool.prepareForInit(state);
         let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
         let state = BasicMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state), state);
-        let state = state |> setMaterialColor(material2, [|1., 0.1, 0.2|]);
+        let state = state |> setBasicMaterialColor(material2, [|1., 0.1, 0.2|]);
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
       beforeEach(
@@ -268,7 +268,7 @@ let _ =
               test(
                 "change copied state shouldn't affect source state",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (
                     state,
                     gameObject1,
@@ -278,13 +278,13 @@ let _ =
                     material2,
                     material3
                   ) =
-                    _prepareMaterialData(state);
+                    _prepareBasicMaterialData(state);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let data = MaterialTool.getMaterialData(copiedState);
+                  let data = BasicMaterialTool.getMaterialData(copiedState);
                   data.colorMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
-                  let {colorMap} = MaterialTool.getMaterialData(state);
+                  let {colorMap} = BasicMaterialTool.getMaterialData(state);
                   colorMap
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
                   |> expect
@@ -372,7 +372,7 @@ let _ =
             "deep copy gameObject data",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, materialMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   GameObjectType.(
                     StateTool.testShadowCopyArrayLikeMapData(
@@ -384,7 +384,8 @@ let _ =
                           cameraControllerMap,
                           geometryMap,
                           meshRendererMap,
-                          materialMap,
+                          basicMaterialMap,
+                          lightMaterialMap,
                           sourceInstanceMap,
                           objectInstanceMap
                         } =
@@ -396,7 +397,8 @@ let _ =
                           cameraControllerMap |> Obj.magic,
                           geometryMap |> Obj.magic,
                           meshRendererMap |> Obj.magic,
-                          materialMap |> Obj.magic,
+                          basicMaterialMap |> Obj.magic,
+                          lightMaterialMap |> Obj.magic,
                           sourceInstanceMap |> Obj.magic,
                           objectInstanceMap |> Obj.magic
                         |]
@@ -631,8 +633,8 @@ let _ =
             () =>
               _testRestoreStateEqualTargetState(
                 state,
-                _prepareMaterialData,
-                MaterialTool.getMaterialData
+                _prepareBasicMaterialData,
+                BasicMaterialTool.getMaterialData
               )
           );
           describe(

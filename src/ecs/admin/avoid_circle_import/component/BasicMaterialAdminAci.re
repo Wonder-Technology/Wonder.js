@@ -1,0 +1,1 @@
+let unsafeGetColor = BasicMaterialOperateCommon.unsafeGetColor;

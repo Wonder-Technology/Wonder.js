@@ -699,7 +699,7 @@ let _ =
             sandbox,
             "u_color",
             ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
-              state |> Material.setMaterialColor(material, [|0., 1., 0.2|]),
+              state |> BasicMaterial.setBasicMaterialColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
             ~testFunc=
               (_prepareSendUinformData) =>
@@ -714,7 +714,7 @@ let _ =
                           _prepareSendUinformData(sandbox, state^);
                         let (state, gameObject2, _, material2, _) =
                           RenderJobsTool.prepareGameObject(sandbox, state);
-                        let state = state |> Material.setMaterialColor(material1, [|0., 1., 0.2|]);
+                        let state = state |> BasicMaterial.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =

@@ -15,7 +15,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> GeometryAdmin.deepCopyStateForRestore
   |> VboBufferSystem.deepCopyStateForRestore
   |> GLSLSenderSystem.deepCopyStateForRestore
-  |> MaterialAdmin.deepCopyStateForRestore
+  |> BasicMaterialAdmin.deepCopyStateForRestore
+  |> LightMaterialAdmin.deepCopyStateForRestore
   |> ShaderSystem.deepCopyStateForRestore
   |> ProgramSystem.deepCopyStateForRestore
   |> GLSLLocationSystem.deepCopyStateForRestore
@@ -49,7 +50,8 @@ let restore =
   |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
-  |> MaterialAdmin.restore(gl, currentState)
+  |> BasicMaterialAdmin.restore(gl, currentState)
+  |> LightMaterialAdmin.restore(gl, currentState)
   |> RenderDataSystem.restore(currentState)
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
@@ -83,7 +85,8 @@ let createState = () => {
   gameObjectData: GameObjectHelper.initData(),
   transformData: None,
   cameraControllerData: CameraControllerHelper.initData(),
-  materialData: None,
+  basicMaterialData: BasicMaterialHelper.initData(),
+  lightMaterialData: LightMaterialHelper.initData(),
   geometryData: None,
   meshRendererData: MeshRendererHelper.initData(),
   shaderData: ShaderHelper.initData(),

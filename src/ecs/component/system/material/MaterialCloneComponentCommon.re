@@ -1,47 +1,40 @@
 open MaterialType;
 
-let _handleShareMaterial = (sourceComponent, countRangeArr, state) => (
+let _handleShareMaterial = (sourceComponent, countRangeArr, (_, state)) => (
   state,
   countRangeArr |> Js.Array.map((_) => sourceComponent)
 );
 
-let _handleNotShareMaterial = (sourceComponent, countRangeArr, state) => {
-  let hasShaderIndex = MaterialShaderIndexCommon.hasShaderIndex(sourceComponent, state);
+let _handleNotShareMaterial =
+    (
+      sourceComponent,
+      countRangeArr,
+      (createFunc, getDataFunc, setDataFunc, setShaderIndexFunc),
+      (shaderIndexMap, state)
+    ) => {
+  let hasShaderIndex = MaterialShaderIndexCommon.hasShaderIndex(sourceComponent, shaderIndexMap);
   let shaderIndex =
-    hasShaderIndex ? MaterialShaderIndexCommon.unsafeGetShaderIndex(sourceComponent, state) : (-1);
-  let createFunc =
-    if (MaterialJudgeCommon.isBasicMaterial(sourceComponent, state)) {
-      BasicMaterialCreateCommon.create
-    } else {
-      ExceptionHandleSystem.throwMessage({j|unknown material:$sourceComponent|j})
-    };
-  let color = MaterialOperateCommon.unsafeGetColor(sourceComponent, state);
-  let componentArr: array(int) = [||];
-  let state =
-    countRangeArr
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, _) => {
-             let (state, index) = createFunc(state);
-             componentArr |> Js.Array.push(index) |> ignore;
-             let state = state |> MaterialOperateCommon.setColor(index, color);
-             hasShaderIndex ?
-               state |> MaterialShaderIndexCommon.setShaderIndex(index, shaderIndex) : state
-           }
-         ),
-         state
-       );
-  (state, componentArr)
+    hasShaderIndex ?
+      MaterialShaderIndexCommon.unsafeGetShaderIndex(sourceComponent, shaderIndexMap) : (-1);
+  let dataTuple = [@bs] getDataFunc(sourceComponent, state);
+  countRangeArr
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         ((state, componentArr), _) => {
+           let (state, index) = [@bs] createFunc(state);
+           let state = [@bs] setDataFunc(index, dataTuple, state);
+           let state =
+             hasShaderIndex ? [@bs] setShaderIndexFunc(index, shaderIndex, state) : state;
+           (state, componentArr |> ArraySystem.push(index))
+         }
+       ),
+       (state, [||])
+     )
 };
 
 let handleCloneComponent =
-    (
-      sourceComponent: material,
-      countRangeArr: array(int),
-      isShareMaterial: bool,
-      state: StateDataType.state
-    ) =>
+    ((sourceComponent, countRangeArr: array(int), isShareMaterial: bool), funcTuple, stateTuple) =>
   isShareMaterial ?
-    _handleShareMaterial(sourceComponent, countRangeArr, state) :
-    _handleNotShareMaterial(sourceComponent, countRangeArr, state);
+    _handleShareMaterial(sourceComponent, countRangeArr, stateTuple) :
+    _handleNotShareMaterial(sourceComponent, countRangeArr, funcTuple, stateTuple);

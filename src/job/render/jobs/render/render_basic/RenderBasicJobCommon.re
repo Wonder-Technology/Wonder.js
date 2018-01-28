@@ -76,8 +76,8 @@ let _sendUniformCachableData = (gl, shaderIndex, materialIndex, state) =>
 
 let render = (gl, uid, state: StateDataType.state) => {
   let transformIndex: int = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
-  let materialIndex: int = GameObjectAdmin.unsafeGetMaterialComponent(uid, state);
-  let shaderIndex = MaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
+  let materialIndex: int = GameObjectAdmin.unsafeGetBasicMaterialComponent(uid, state);
+  let shaderIndex = BasicMaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   let state =

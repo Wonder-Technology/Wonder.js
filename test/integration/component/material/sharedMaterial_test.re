@@ -22,7 +22,7 @@ let _ =
           let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
           let (state, gameObject2, material2) =
             MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
-          state |> GameObject.getGameObjectMaterialComponent(gameObject2) |> expect == material1
+          state |> GameObject.getGameObjectBasicMaterialComponent(gameObject2) |> expect == material1
         }
       );
       test(
@@ -32,8 +32,8 @@ let _ =
           let (state, gameObject2, material2) =
             MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
           (
-            state |> Material.getMaterialGameObject(material1),
-            state |> Material.getMaterialGameObject(material2)
+            state |> BasicMaterial.getBasicMaterialGameObject(material1),
+            state |> BasicMaterial.getBasicMaterialGameObject(material2)
           )
           |> expect == (gameObject1, gameObject1)
         }
@@ -48,7 +48,7 @@ let _ =
           let _prepare = (count, state) => {
             open GameObjectType;
             let (state, gameObject1, material1) = _createGameObject(state);
-            CloneTool.cloneWithMaterial(state, gameObject1, material1, count, true)
+            CloneTool.cloneWithBasicMaterial(state, gameObject1, material1, count, true)
           };
           open GameObject;
           test(
@@ -68,14 +68,14 @@ let _ =
               };
               let _prepare = (state) => {
                 open GameObjectType;
-                let state = MaterialTool.prepareForInit(state);
+                let state = AllMaterialTool.prepareForInit(state);
                 let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
                 let state =
                   state
                   |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
                 let (state, gameObject1, material1) = _createAndInitGameObject(state);
                 (
-                  CloneTool.cloneWithMaterial(state, gameObject1, material1, 2, true),
+                  CloneTool.cloneWithBasicMaterial(state, gameObject1, material1, 2, true),
                   createProgram
                 )
               };
@@ -83,13 +83,13 @@ let _ =
                 clonedMaterialArr
                 |> ArraySystem.reduceState(
                      [@bs]
-                     ((state, clonedMaterial) => MaterialTool.initMaterial(clonedMaterial, state)),
+                     ((state, clonedMaterial) => BasicMaterialTool.initMaterial(clonedMaterial, state)),
                      state
                    );
               test(
                 "not init cloned material shader",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let ((state, _, material1, _, clonedMaterialArr), createProgram) =
                     _prepare(state^);
                   let callCount = createProgram |> getCallCount;
@@ -105,32 +105,32 @@ let _ =
               test(
                 "not collect dispose index",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
-                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
-                  let {disposedIndexArray} = MaterialTool.getMaterialData(state);
+                  let state = state |> BasicMaterialTool.dispose(clonedMaterialArr[0]);
+                  let {disposedIndexArray} = BasicMaterialTool.getMaterialData(state);
                   disposedIndexArray |> expect == [||]
                 }
               );
               test(
                 "dispose all cloned material shouldn't cause really dispose",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
-                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
-                  let {gameObjectMap} = MaterialTool.getMaterialData(state);
+                  let state = state |> BasicMaterialTool.dispose(clonedMaterialArr[0]);
+                  let {gameObjectMap} = BasicMaterialTool.getMaterialData(state);
                   gameObjectMap |> expect == [|0|]
                 }
               );
               test(
                 "dispose all cloned material and source material should cause really dispose",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, gameObject1, material1, clonedGameObjectArr, clonedMaterialArr) =
                     _prepare(1, state^);
-                  let state = state |> MaterialTool.dispose(clonedMaterialArr[0]);
-                  let state = state |> MaterialTool.dispose(material1);
-                  state |> MaterialTool.isMaterialDisposed(material1) |> expect == true
+                  let state = state |> BasicMaterialTool.dispose(clonedMaterialArr[0]);
+                  let state = state |> BasicMaterialTool.dispose(material1);
+                  state |> BasicMaterialTool.isMaterialDisposed(material1) |> expect == true
                 }
               )
             }
@@ -141,35 +141,35 @@ let _ =
               test(
                 "not collect dispose index",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
                   let state =
                     state |> GameObject.batchDisposeGameObject([|clonedGameObjectArr[0]|]);
-                  let {disposedIndexArray} = MaterialTool.getMaterialData(state);
+                  let {disposedIndexArray} = BasicMaterialTool.getMaterialData(state);
                   disposedIndexArray |> expect == [||]
                 }
               );
               test(
                 "dispose all cloned material shouldn't cause really dispose",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare(1, state^);
                   let state =
                     state |> GameObject.batchDisposeGameObject([|clonedGameObjectArr[0]|]);
-                  let {gameObjectMap} = MaterialTool.getMaterialData(state);
+                  let {gameObjectMap} = BasicMaterialTool.getMaterialData(state);
                   gameObjectMap |> expect == [|0|]
                 }
               );
               test(
                 "dispose all cloned material and source material should cause really dispose",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, gameObject1, material1, clonedGameObjectArr, clonedMaterialArr) =
                     _prepare(1, state^);
                   let state =
                     state
                     |> GameObject.batchDisposeGameObject([|gameObject1, clonedGameObjectArr[0]|]);
-                  state |> MaterialTool.isMaterialDisposed(material1) |> expect == true
+                  state |> BasicMaterialTool.isMaterialDisposed(material1) |> expect == true
                 }
               )
             }
@@ -180,8 +180,8 @@ let _ =
               let (state, gameObject, _, clonedGameObjectArr, clonedMaterialArr) =
                 _prepare(2, state^);
               (
-                Material.getMaterialGameObject(clonedMaterialArr[0], state),
-                Material.getMaterialGameObject(clonedMaterialArr[1], state)
+                BasicMaterial.getBasicMaterialGameObject(clonedMaterialArr[0], state),
+                BasicMaterial.getBasicMaterialGameObject(clonedMaterialArr[1], state)
               )
               |> expect == (gameObject, gameObject)
             }
@@ -213,7 +213,7 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state =
                   state
-                  |> addGameObjectMaterialComponent(gameObject, material)
+                  |> addGameObjectBasicMaterialComponent(gameObject, material)
                   |> addGameObjectGeometryComponent(gameObject, geometry)
                   |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
                 (state, gameObject, geometry, meshRenderer)
@@ -226,7 +226,8 @@ let _ =
                   let (state, _, (_, material1), _, _) = _prepareSendUinformData(sandbox, state^);
                   let (state, gameObject2, _, _) = _prepareGameObject(material1, state);
                   let color = [|0., 1., 0.2|];
-                  let state = state |> Material.setMaterialColor(material1, color);
+                  let state = state |> BasicMaterial.setBasicMaterialColor(material1, color);
+                  /* WonderLog.Log.print(BasicMaterial.getBasicMaterialColor(material1, state)) |> ignore; */
                   let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                   let pos = 0;
                   let getUniformLocation =
@@ -236,11 +237,13 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
+                       WonderLog.Log.print(111) |> ignore;
                   let state =
                     state
                     |> RenderJobsTool.initSystemAndRender
                     |> RenderJobsTool.updateSystem
                     |> _render;
+                  WonderLog.Log.print(333) |> ignore;
                   (
                     uniform3f |> withOneArg(pos) |> getCallCount,
                     uniform3f |> withOneArg(pos) |> getCall(0) |> getArgs

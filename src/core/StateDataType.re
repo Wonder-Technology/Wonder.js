@@ -14,6 +14,10 @@ open MeshRendererType;
 
 open MaterialType;
 
+open BasicMaterialType;
+
+open LightMaterialType;
+
 open ShaderType;
 
 open ProgramType;
@@ -152,9 +156,11 @@ and state = {
   initConfig,
   deviceManagerData,
   gameObjectData,
+  /* TODO transformData, geometryData, meshRendererData not mutable? */
   mutable transformData: option(transformData),
   cameraControllerData,
-  mutable materialData: option(materialData),
+  basicMaterialData,
+  lightMaterialData,
   mutable geometryData: option(geometryData),
   mutable meshRendererData,
   shaderData,

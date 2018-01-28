@@ -4,12 +4,5 @@ open MaterialType;
 
 open MaterialStateCommon;
 
-let handleAddComponent =
-  [@bs]
-  (
-    (material: material, gameObjectUid: int, state: StateDataType.state) => {
-      let {gameObjectMap} = getMaterialData(state);
-      ComponentSystem.addComponentToGameObjectMap(material, gameObjectUid, gameObjectMap) |> ignore;
-      state
-    }
-  );
+let handleAddComponent = (material, gameObjectUid: int, gameObjectMap) =>
+  ComponentSystem.addComponentToGameObjectMap(material, gameObjectUid, gameObjectMap);

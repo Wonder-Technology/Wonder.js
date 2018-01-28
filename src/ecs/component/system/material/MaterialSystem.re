@@ -2,34 +2,50 @@ open MaterialType;
 
 open StateDataType;
 
-let handleInitComponent = MaterialInitComponentCommon.handleInitComponent;
+/* let handleInitComponent = MaterialInitComponentCommon.handleInitComponent;
 
-let getGameObject = (material: material, state: StateDataType.state) =>
-  MaterialGameObjectCommon.getGameObject(material, state);
+   let getGameObject = (material, state: StateDataType.state) =>
+     MaterialGameObjectCommon.getGameObject(material, state);
 
-let getMaterialData = MaterialStateCommon.getMaterialData;
+   let getMaterialData = MaterialStateCommon.getMaterialData;
 
-let unsafeGetShaderIndex = MaterialShaderIndexCommon.unsafeGetShaderIndex;
+   let unsafeGetShaderIndex = MaterialShaderIndexCommon.unsafeGetShaderIndex;
 
-let setShaderIndex = MaterialShaderIndexCommon.setShaderIndex;
+   let setShaderIndex = MaterialShaderIndexCommon.setShaderIndex;
 
-let isAlive = (material: material, state: StateDataType.state) =>
-  MaterialDisposeComponentCommon.isAlive(material, state);
+   let isAlive = (material, state: StateDataType.state) =>
+     MaterialDisposeComponentCommon.isAlive(material, state); */
+/*
+ let deepCopyStateForRestore = MaterialStateCommon.deepCopyStateForRestore;
 
-let getColor = (material: material, state: StateDataType.state) =>
-  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.get(material);
-
-let unsafeGetColor = (material: material, state: StateDataType.state) =>
-  MaterialOperateCommon.unsafeGetColor(material, state);
-
-let setColor = (material: material, color, state: StateDataType.state) => {
-  getMaterialData(state).colorMap |> WonderCommonlib.SparseMapSystem.set(material, color) |> ignore;
-  state
+ let restore = MaterialStateCommon.restore; */
+let init = (gl, (index, disposedIndexArray), initMaterialFunc, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|not dispose any material before init|j},
+                ~actual={j|do|j}
+              ),
+              () => MaterialDisposeComponentCommon.isNotDisposed(disposedIndexArray) |> assertTrue
+            )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  ArraySystem.range(0, index - 1)
+  |> ArraySystem.reduceState(
+       [@bs] ((state, materialIndex: int) => [@bs] initMaterialFunc(gl, materialIndex, state)),
+       state
+     )
 };
 
-let deepCopyStateForRestore = MaterialStateCommon.deepCopyStateForRestore;
-
-let restore = MaterialStateCommon.restore;
+let initMaterial = (materialIndex, gl, initMaterialFunc, state: StateDataType.state) =>
+  [@bs] initMaterialFunc(gl, materialIndex, state);
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */

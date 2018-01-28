@@ -17,8 +17,11 @@ let hasGeometryComponent = (uid: int, state: StateDataType.state) : bool =>
 let hasMeshRendererComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).meshRendererMap);
 
-let hasMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
-  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).materialMap);
+let hasBasicMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
+  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).basicMaterialMap);
+
+let hasLightMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
+  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).lightMaterialMap);
 
 let hasTransformComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).transformMap);

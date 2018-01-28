@@ -75,15 +75,25 @@ let getMeshRendererComponent =
       GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> getComponent(uid)
   );
 
-let getMaterialComponent =
+let getBasicMaterialComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).materialMap |> getComponent(uid)
+      GameObjectStateCommon.getGameObjectData(state).basicMaterialMap |> getComponent(uid)
   );
 
-let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
+let getLightMaterialComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).lightMaterialMap |> getComponent(uid)
+  );
+
+let unsafeGetBasicMaterialComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).basicMaterialMap |> _unsafeGetComponent(uid);
+
+let unsafeGetLightMaterialComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).lightMaterialMap |> _unsafeGetComponent(uid);
 
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
@@ -111,8 +121,19 @@ let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.
     state
   );
 
-let batchGetMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).materialMap, state);
+let batchGetBasicMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).basicMaterialMap,
+    state
+  );
+
+let batchGetLightMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).lightMaterialMap,
+    state
+  );
 
 let batchGetGeometryComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).geometryMap, state);

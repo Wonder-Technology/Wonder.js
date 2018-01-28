@@ -29,8 +29,8 @@ let _ =
               let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
               (
-                MaterialTool.unsafeGetShaderIndex(material1, state),
-                MaterialTool.unsafeGetShaderIndex(material2, state)
+                BasicMaterialTool.unsafeGetShaderIndex(material1, state),
+                BasicMaterialTool.unsafeGetShaderIndex(material2, state)
               )
               |> expect == (0, 0)
             }
@@ -43,7 +43,7 @@ let _ =
               InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
               let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
-              MaterialTool.unsafeGetShaderIndex(material1, state) |> expect == 0
+              BasicMaterialTool.unsafeGetShaderIndex(material1, state) |> expect == 0
             }
           );
           test(
@@ -67,7 +67,7 @@ let _ =
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
-              let shaderIndex = MaterialTool.unsafeGetShaderIndex(material, state);
+              let shaderIndex = BasicMaterialTool.unsafeGetShaderIndex(material, state);
               state |> ProgramTool.getProgram(shaderIndex) |> Js.Option.getExn |> expect == program
             }
           );

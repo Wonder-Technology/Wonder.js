@@ -14,14 +14,28 @@ let cloneGeometryComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   GeometryCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
 
-let cloneMaterialComponent =
+let cloneBasicMaterialComponent =
     (
       isShareMaterial: bool,
       sourceComponent: component,
       countRangeArr: array(int),
       state: StateDataType.state
     ) =>
-  MaterialCloneComponentCommon.handleCloneComponent(
+  BasicMaterialCloneComponentCommon.handleCloneComponent(
+    sourceComponent,
+    countRangeArr,
+    isShareMaterial,
+    state
+  );
+
+let cloneLightMaterialComponent =
+    (
+      isShareMaterial: bool,
+      sourceComponent: component,
+      countRangeArr: array(int),
+      state: StateDataType.state
+    ) =>
+  LightMaterialCloneComponentCommon.handleCloneComponent(
     sourceComponent,
     countRangeArr,
     isShareMaterial,
@@ -62,10 +76,17 @@ let cloneComponent =
          (cloneGeometryComponent, GameObjectAddComponentCommon.batchAddGeometryComponentForClone)
        )
     |> _cloneComponent(
-         (uid, [@bs] getMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (uid, [@bs] getBasicMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
-           cloneMaterialComponent(isShareMaterial),
-           GameObjectAddComponentCommon.batchAddMaterialComponentForClone(isShareMaterial)
+           cloneBasicMaterialComponent(isShareMaterial),
+           GameObjectAddComponentCommon.batchAddBasicMaterialComponentForClone(isShareMaterial)
+         )
+       )
+    |> _cloneComponent(
+         (uid, [@bs] getLightMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneLightMaterialComponent(isShareMaterial),
+           GameObjectAddComponentCommon.batchAddLightMaterialComponentForClone(isShareMaterial)
          )
        )
     |> _cloneComponent(

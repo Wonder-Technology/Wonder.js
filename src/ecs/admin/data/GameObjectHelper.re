@@ -9,7 +9,8 @@ let initData = () => {
   cameraControllerMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   geometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  materialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  basicMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  lightMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   objectInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

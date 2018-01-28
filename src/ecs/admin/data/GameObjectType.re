@@ -43,7 +43,8 @@ type gameObjectData = {
   mutable cameraControllerMap: gameObjectCameraControllerMap,
   mutable geometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
-  mutable materialMap: gameObjectMaterialMap,
+  mutable basicMaterialMap: gameObjectMaterialMap,
+  mutable lightMaterialMap: gameObjectMaterialMap,
   mutable sourceInstanceMap: gameObjectSourceInstanceMap,
   mutable objectInstanceMap: gameObjectObjectInstanceMap
 };

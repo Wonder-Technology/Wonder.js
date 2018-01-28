@@ -117,28 +117,30 @@ let _ =
             "test material component",
             () => {
               describe(
-                "getGameObjectMaterialComponent",
+                "getGameObjectBasicMaterialComponent",
                 () =>
                   test(
                     "get material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
                       let (state, material) = BasicMaterial.createBasicMaterial(state);
-                      let state = state |> addGameObjectMaterialComponent(gameObject, material);
-                      getGameObjectMaterialComponent(gameObject, state) |> MaterialTool.isMaterial
+                      let state =
+                        state |> addGameObjectBasicMaterialComponent(gameObject, material);
+                      hasGameObjectBasicMaterialComponent(gameObject, state) |> expect == true
                     }
                   )
               );
               describe(
-                "hasGameObjectMaterialComponent",
+                "hasGameObjectBasicMaterialComponent",
                 () =>
                   test(
                     "has material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
                       let (state, material) = BasicMaterial.createBasicMaterial(state);
-                      let state = state |> addGameObjectMaterialComponent(gameObject, material);
-                      hasGameObjectMaterialComponent(gameObject, state) |> expect == true
+                      let state =
+                        state |> addGameObjectBasicMaterialComponent(gameObject, material);
+                      hasGameObjectBasicMaterialComponent(gameObject, state) |> expect == true
                     }
                   )
               )
@@ -148,7 +150,7 @@ let _ =
             "test geometry component",
             () => {
               describe(
-                "getGameObjectMaterialComponent",
+                "getGameObjectBasicMaterialComponent",
                 () =>
                   test(
                     "get geometry component",
@@ -359,11 +361,11 @@ let _ =
               test(
                 "dispose material component",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
-                  let {disposedIndexArray} = state |> MaterialTool.getMaterialData;
+                  let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
                   (
                     disposedIndexArray |> Js.Array.includes(material1),
                     disposedIndexArray |> Js.Array.includes(material2)
@@ -519,8 +521,9 @@ let _ =
                           |> expect == (false, false, true)
                         }
                       );
+                      /* TODO test light material map */
                       test(
-                        "new materialMap should only has alive data",
+                        "new basicMaterialMap should only has alive data",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
@@ -532,11 +535,11 @@ let _ =
                             BasicMaterialTool.createGameObject(state);
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {materialMap} = GameObjectTool.getGameObjectData(state);
+                          let {basicMaterialMap} = GameObjectTool.getGameObjectData(state);
                           (
-                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -712,11 +715,11 @@ let _ =
               test(
                 "batch dispose material componets",
                 () => {
-                  open MaterialType;
+                  open BasicMaterialType;
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexArray} = state |> MaterialTool.getMaterialData;
+                  let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
                   (
                     disposedIndexArray |> Js.Array.includes(material1),
                     disposedIndexArray |> Js.Array.includes(material2)
@@ -958,8 +961,7 @@ let _ =
             () => {
               beforeEach(
                 () =>
-                  state :=
-                    InitBasicMaterialJobTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  state := InitBasicMaterialJobTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
               );
               test(
                 "init material component",
@@ -970,7 +972,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()));
-                  let state = MaterialTool.prepareForInit(state);
+                  let state = AllMaterialTool.prepareForInit(state);
                   let state = state |> initGameObject(gameObject);
                   getCallCount(attachShader) |> expect == 2
                 }
@@ -1013,8 +1015,8 @@ let _ =
                 () => _testTwoParamFunc(getGameObjectTransformComponent)
               );
               test(
-                "getGameObjectMaterialComponent should error",
-                () => _testTwoParamFunc(getGameObjectMaterialComponent)
+                "getGameObjectBasicMaterialComponent should error",
+                () => _testTwoParamFunc(getGameObjectBasicMaterialComponent)
               );
               test(
                 "getGameObjectMeshRendererComponent should error",
@@ -1060,12 +1062,12 @@ let _ =
                 () => _testThreeParmFunc(disposeGameObjectCameraControllerComponent)
               );
               test(
-                "addGameObjectMaterialComponent should error",
-                () => _testThreeParmFunc(addGameObjectMaterialComponent)
+                "addGameObjectBasicMaterialComponent should error",
+                () => _testThreeParmFunc(addGameObjectBasicMaterialComponent)
               );
               test(
-                "disposeGameObjectMaterialComponent should error",
-                () => _testThreeParmFunc(disposeGameObjectMaterialComponent)
+                "disposeGameObjectBasicMaterialComponent should error",
+                () => _testThreeParmFunc(disposeGameObjectBasicMaterialComponent)
               );
               test(
                 "addGameObjectMeshRendererComponent should error",

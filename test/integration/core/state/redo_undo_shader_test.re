@@ -145,7 +145,7 @@ let _ =
                     let (state, gameObject) = state |> createGameObject;
                     let state =
                       state
-                      |> addGameObjectMaterialComponent(gameObject, material)
+                      |> addGameObjectBasicMaterialComponent(gameObject, material)
                       |> addGameObjectGeometryComponent(gameObject, geometry);
                     (state, gameObject)
                   };
@@ -161,7 +161,7 @@ let _ =
                     let state =
                       state
                       |> addGameObjectSourceInstanceComponent(gameObject, sourceInstance)
-                      |> addGameObjectMaterialComponent(gameObject, material)
+                      |> addGameObjectBasicMaterialComponent(gameObject, material)
                       |> addGameObjectGeometryComponent(gameObject, geometry);
                     (state, gameObject)
                   };

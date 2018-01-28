@@ -62,7 +62,7 @@ let _addMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendData
     _addUniformSendDataByType(
       (type_, uniformCacheMap, name, pos),
       sendDataArrTuple,
-      MaterialAdminAci.unsafeGetColor
+      BasicMaterialAdminAci.unsafeGetColor
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
   };

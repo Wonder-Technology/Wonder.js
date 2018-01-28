@@ -20,7 +20,8 @@ module.exports = {
       { name: "shader" },
       { name: "redo-undo" },
       { name: "job" },
-      { name: "transform" }
+      { name: "transform" },
+      { name: "lightMaterial" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

@@ -1,1 +1,0 @@
-let unsafeGetColor = MaterialOperateCommon.unsafeGetColor;

@@ -65,13 +65,13 @@
             function createBox(state) {
                 var [state, material] = wd.createBasicMaterial(state);
 
-                state = wd.setMaterialColor(material, [0.0, 0.5, 0.2], state);
+                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
 
                 var [state, meshRenderer] = wd.createMeshRenderer(state);
 
                 var [state, obj] = wd.createGameObject(state);
 
-                state = wd.addGameObjectMaterialComponent(obj, material, state);
+                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
                 state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 

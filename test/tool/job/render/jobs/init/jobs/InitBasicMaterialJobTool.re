@@ -22,7 +22,7 @@ let prepareGameObject = (sandbox, state) => {
   let (state, gameObject) = state |> createGameObject;
   let state =
     state
-    |> addGameObjectMaterialComponent(gameObject, material)
+    |> addGameObjectBasicMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
@@ -30,7 +30,7 @@ let prepareGameObject = (sandbox, state) => {
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
-  |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.unsafeGetGl(state))
+  |> AllMaterialTool.pregetGLSLData
   |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {

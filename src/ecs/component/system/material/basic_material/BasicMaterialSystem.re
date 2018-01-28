@@ -1,71 +1,39 @@
-open ComponentSystem;
-
-open StateDataType;
-
-open MaterialSystem;
-
-open GlType;
-
 open MaterialType;
 
-open MaterialStateCommon;
+open BasicMaterialType;
 
-/* let getMaxCount = (state: StateDataType.state) =>
-   BufferConfigCommon.getConfig(state).basicMaterialDataBufferCount; */
-let create = (state: StateDataType.state) => BasicMaterialCreateCommon.create(state);
+let create = (state: StateDataType.state) => [@bs] BasicMaterialCreateCommon.create(state);
 
-/* let buildInitShaderFuncTuple = () => ShaderSourceBuildCommon.buildGLSLSource;
+let unsafeGetColor = (material, state: StateDataType.state) =>
+  BasicMaterialOperateCommon.unsafeGetColor(material, state);
 
-   let initMaterialShaders = (gl, state: state) : state => {
-     let {basic_material} = getShaders(state);
-     MaterialCommon.initMaterialShaders(gl, basic_material, buildInitShaderFuncTuple(), state)
-   }; */
-let init = (gl, state: state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|not dispose any material before init|j},
-                ~actual={j|do|j}
-              ),
-              () =>
-                MaterialDisposeComponentCommon.isNotDisposed(
-                  MaterialStateCommon.getMaterialData(state)
-                )
-                |> assertTrue
-            )
-          )
-        )
-      ),
-    StateData.stateData.isDebug
-  );
-  ArraySystem.range(0, MaterialStateCommon.getMaterialData(state).index - 1)
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, materialIndex: int) =>
-           /* _initMaterialShader(
-                gl,
-                materialIndex,
-                material_shader,
-                attributeLocationMap,
-                uniformLocationMap,
-                initShaderFuncTuple,
-                state
-              ) */
-           MaterialInitComponentCommon.initMaterial(
-             gl,
-             materialIndex,
-             /* Js.Option.getExn(MaterialCommon.getGameObject(materialIndex, state)), */
-             state
-           )
-       ),
-       state
-     )
+let setColor = (material, color, state: StateDataType.state) =>
+  BasicMaterialOperateCommon.setColor(material, color, state);
+
+let init = (gl, state: StateDataType.state) => {
+  let {index, disposedIndexArray} = BasicMaterialStateCommon.getMaterialData(state);
+  MaterialSystem.init(
+    gl,
+    (index, disposedIndexArray),
+    BasicMaterialInitComponentCommon.initMaterial,
+    state
+  )
 };
 
-let initMaterial = (materialIndex, gl, state: state) =>
-  MaterialInitComponentCommon.initMaterial(gl, materialIndex, state);
+let initMaterial = (material, gl, state: StateDataType.state) =>
+  MaterialSystem.initMaterial(material, gl, BasicMaterialInitComponentCommon.initMaterial, state);
+
+let handleInitComponent = (gl, material, state: StateDataType.state) =>
+  BasicMaterialInitComponentCommon.handleInitComponent(gl, material, state);
+
+let getGameObject = BasicMaterialGameObjectCommon.getGameObject;
+
+let getMaterialData = BasicMaterialStateCommon.getMaterialData;
+
+let deepCopyStateForRestore = BasicMaterialStateCommon.deepCopyStateForRestore;
+
+let restore = BasicMaterialStateCommon.restore;
+
+let isAlive = BasicMaterialDisposeComponentCommon.isAlive;
+
+let unsafeGetShaderIndex = BasicMaterialShaderIndexCommon.unsafeGetShaderIndex;

@@ -19,7 +19,7 @@ let cloneWithGeometry = (state, gameObject1, geometry1, count) => {
   )
 };
 
-let cloneWithMaterial = (state, gameObject1, material1, count, isShareMaterial) => {
+let cloneWithBasicMaterial = (state, gameObject1, material1, count, isShareMaterial) => {
   let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, count, isShareMaterial, state);
   (
     state,
@@ -28,6 +28,8 @@ let cloneWithMaterial = (state, gameObject1, material1, count, isShareMaterial) 
     clonedGameObjectArr |> getFlattenClonedGameObjectArr,
     clonedGameObjectArr
     |> getFlattenClonedGameObjectArr
-    |> Js.Array.map((clonedGameObject) => getGameObjectMaterialComponent(clonedGameObject, state))
+    |> Js.Array.map(
+         (clonedGameObject) => getGameObjectBasicMaterialComponent(clonedGameObject, state)
+       )
   )
 };
