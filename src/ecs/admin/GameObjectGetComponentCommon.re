@@ -95,6 +95,16 @@ let unsafeGetBasicMaterialComponent = (uid: int, state: StateDataType.state) =>
 let unsafeGetLightMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).lightMaterialMap |> _unsafeGetComponent(uid);
 
+let getAmbientLightComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).ambientLightMap |> getComponent(uid)
+  );
+
+let unsafeGetAmbientLightComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).ambientLightMap |> _unsafeGetComponent(uid);
+
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(
@@ -156,5 +166,12 @@ let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataTyp
   _batchGetComponent(
     uidArray,
     GameObjectStateCommon.getGameObjectData(state).objectInstanceMap,
+    state
+  );
+
+let batchGetAmbientLightComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).ambientLightMap,
     state
   );

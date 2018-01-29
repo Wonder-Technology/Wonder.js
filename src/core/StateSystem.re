@@ -87,6 +87,7 @@ let createState = () => {
   cameraControllerData: CameraControllerHelper.initData(),
   basicMaterialData: BasicMaterialHelper.initData(),
   lightMaterialData: LightMaterialHelper.initData(),
+  ambientLightData: AmbientLightHelper.initData(),
   geometryData: None,
   meshRendererData: MeshRendererHelper.initData(),
   shaderData: ShaderHelper.initData(),

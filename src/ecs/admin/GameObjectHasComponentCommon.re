@@ -25,3 +25,6 @@ let hasLightMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
 
 let hasTransformComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).transformMap);
+
+let hasAmbientLightComponent = (uid: int, state: StateDataType.state) : bool =>
+  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).ambientLightMap);

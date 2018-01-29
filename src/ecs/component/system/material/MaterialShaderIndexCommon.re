@@ -1,5 +1,3 @@
-open MaterialStateCommon;
-
 let unsafeGetShaderIndex = (materialIndex: int, shaderIndexMap) =>
   shaderIndexMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)

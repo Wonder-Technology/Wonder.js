@@ -21,7 +21,8 @@ module.exports = {
       { name: "redo-undo" },
       { name: "job" },
       { name: "transform" },
-      { name: "lightMaterial" }
+      { name: "lightMaterial" },
+      { name: "light" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

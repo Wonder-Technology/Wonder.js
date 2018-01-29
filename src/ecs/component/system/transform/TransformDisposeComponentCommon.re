@@ -16,7 +16,8 @@ let _disposeFromParentAndChildMap = (transform, data) => {
      );
   switch (TransformHierachyCommon.getParent(transform, data)) {
   | None => ()
-  | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform, false) |> ignore
+  | Some(parent) =>
+    data |> TransformHierachyCommon.removeFromChildMap(parent, transform, false) |> ignore
   };
   data
 };
@@ -81,7 +82,9 @@ let handleBatchDisposeComponent =
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
       /* TODO optimize: batch remove parent,child? */
       transformArray
-      |> WonderCommonlib.ArraySystem.forEach([@bs] ((transform) => _disposeData(transform, state)));
-      state
+      |> ArraySystem.reduceState(
+           [@bs] ((state, transform) => _disposeData(transform, state)),
+           state
+         )
     }
   );

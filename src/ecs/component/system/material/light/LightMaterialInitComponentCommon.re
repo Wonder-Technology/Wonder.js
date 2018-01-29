@@ -7,7 +7,7 @@ open LightMaterialType;
 let _getShaderLibs = ({material_shaders}) =>
   JobConfigUtils.findFirst(
     material_shaders,
-    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, "FrontRenderLight")
+    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, "front_render_light")
   ).
     shader_libs;
 

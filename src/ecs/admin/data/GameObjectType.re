@@ -34,6 +34,8 @@ type gameObjectSourceInstanceMap = array(sourceInstance);
 
 type gameObjectObjectInstanceMap = array(objectInstance);
 
+type gameObjectAmbientLightMap = array(int);
+
 type gameObjectData = {
   mutable uid: int,
   mutable disposeCount: int,
@@ -46,5 +48,6 @@ type gameObjectData = {
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,
   mutable sourceInstanceMap: gameObjectSourceInstanceMap,
-  mutable objectInstanceMap: gameObjectObjectInstanceMap
+  mutable objectInstanceMap: gameObjectObjectInstanceMap,
+  mutable ambientLightMap: gameObjectAmbientLightMap
 };

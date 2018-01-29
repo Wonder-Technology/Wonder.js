@@ -35,3 +35,9 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
          SparseMapSystem.isDeleted(itemArr) ?
            Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
      );
+
+let copyArrayBuffer = (buffer) => buffer |> Js.Typed_array.ArrayBuffer.sliceFrom(0);
+
+let copyFloat32TypeArrayFromBuffer = (buffer) => Js.Typed_array.Float32Array.fromBuffer(buffer);
+
+let copyUint8TypeArrayFromBuffer = (buffer) => Js.Typed_array.Uint8Array.fromBuffer(buffer);

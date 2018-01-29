@@ -104,6 +104,18 @@ let addLightMaterialComponent = GameObjectAddComponentCommon.addLightMaterialCom
 let disposeLightMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeLightMaterialComponent(uid, component, state);
 
+let hasAmbientLightComponent = GameObjectHasComponentCommon.hasAmbientLightComponent;
+
+let getAmbientLightComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getAmbientLightComponent(uid, state);
+
+let unsafeGetAmbientLightComponent = GameObjectGetComponentCommon.unsafeGetAmbientLightComponent;
+
+let addAmbientLightComponent = GameObjectAddComponentCommon.addAmbientLightComponent;
+
+let disposeAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeAmbientLightComponent(uid, component, state);
+
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
   let (state, transform) = TransformSystem.create(state);

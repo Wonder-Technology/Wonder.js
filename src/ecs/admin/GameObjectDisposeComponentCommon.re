@@ -64,6 +64,13 @@ let disposeLightMaterialComponent =
       LightMaterialDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
+let disposeAmbientLightComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      AmbientLightDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
+
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
   [@bs] handleFunc(componentArray, uidMap, state);
@@ -145,6 +152,15 @@ let batchDisposeObjectInstanceComponent =
     )
   };
 
+let batchDisposeAmbientLightComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    AmbientLightDisposeComponentCommon.handleBatchDisposeComponent,
+    componentArray
+  );
+
 let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), state) =>
   switch ([@bs] getComponentFunc(uid, state)) {
   | Some(component) => [@bs] disposeComponentFunc(uid, component, state)
@@ -162,6 +178,7 @@ let disposeComponent = (uid, batchDisposeFunc, state) =>
   state
   |> _disposeCommonComponent(uid, (getTransformComponent, disposeTransformComponent))
   |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
+  |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
   |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
   |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent))
   |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
@@ -177,6 +194,8 @@ let batchDisposeCommonComponent =
   state
   |> batchGetMeshRendererComponent(uidArray)
   |> batchDisposeMeshRendererComponent(disposedUidMap, state)
+  |> batchGetAmbientLightComponent(uidArray)
+  |> batchDisposeAmbientLightComponent(disposedUidMap, state)
   |> batchGetTransformComponent(uidArray)
   |> batchDisposeTransformComponent(disposedUidMap, state)
   |> batchGetBasicMaterialComponent(uidArray)

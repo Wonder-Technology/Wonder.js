@@ -24,8 +24,9 @@
       ]
     }
   ],
-  "basic_material": {
-    "material_shader": {
+  "material_shaders": [
+    {
+      "name": "render_basic",
       "shader_libs": [
         {
           "type": "group",
@@ -46,6 +47,46 @@
           "name": "end"
         }
       ]
+    },
+    {
+      "name": "front_render_light",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normalMatrix_noInstance"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "light_common"
+        },
+        {
+          "name": "light_setWorldPosition"
+        },
+        {
+          "name": "no_diffuseMap"
+        },
+        {
+          "name": "no_specularMap"
+        },
+        {
+          "name": "light"
+        },
+        {
+          "name": "ambient_light"
+        },
+        {
+          "name": "light_end"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
     }
-  }
+  ]
 }

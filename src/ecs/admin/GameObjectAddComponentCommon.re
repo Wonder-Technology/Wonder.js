@@ -121,6 +121,13 @@ let addLightMaterialComponent = (uid: int, component: component, state: StateDat
        )
      );
 
+let addAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
+  _addCommonComponent(
+    (uid, component, GameObjectStateCommon.getGameObjectData(state).ambientLightMap),
+    AmbientLightAddComponentCommon.handleAddComponent,
+    state
+  );
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {
@@ -254,5 +261,13 @@ let batchAddCameraControllerComponentForClone =
   _batchAddComponent(
     (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).cameraControllerMap),
     CameraControllerAddComponentCommon.handleAddComponent,
+    state
+  );
+
+let batchAddAmbientLightComponentForClone =
+    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).ambientLightMap),
+    AmbientLightAddComponentCommon.handleAddComponent,
     state
   );

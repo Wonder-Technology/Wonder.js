@@ -1,5 +1,3 @@
-open MaterialType;
-
 open BasicMaterialType;
 
 let create = (state: StateDataType.state) => [@bs] BasicMaterialCreateCommon.create(state);

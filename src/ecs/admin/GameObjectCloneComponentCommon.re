@@ -42,6 +42,10 @@ let cloneLightMaterialComponent =
     state
   );
 
+let cloneAmbientLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  AmbientLightCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
+
 let _cloneComponent =
     (
       (uid, component: option(int), countRangeArr, clonedGameObjectArr: array(int)),
@@ -94,6 +98,13 @@ let cloneComponent =
          (
            cloneCameraControllerComponent,
            GameObjectAddComponentCommon.batchAddCameraControllerComponentForClone
+         )
+       )
+    |> _cloneComponent(
+         (uid, [@bs] getAmbientLightComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneAmbientLightComponent,
+           GameObjectAddComponentCommon.batchAddAmbientLightComponentForClone
          )
        )
     |> cloneTransformComponent(transform, countRangeArr);

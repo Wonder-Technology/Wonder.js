@@ -18,6 +18,8 @@ open BasicMaterialType;
 
 open LightMaterialType;
 
+open AmbientLightType;
+
 open ShaderType;
 
 open ProgramType;
@@ -161,6 +163,7 @@ and state = {
   cameraControllerData,
   basicMaterialData,
   lightMaterialData,
+  ambientLightData,
   mutable geometryData: option(geometryData),
   mutable meshRendererData,
   shaderData,
