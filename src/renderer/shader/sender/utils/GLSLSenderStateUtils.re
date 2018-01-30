@@ -44,6 +44,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     uniformSendNoCachableDataMap,
     uniformSendCachableDataMap,
     shaderUniformSendNoCachableDataMap,
+    shaderUniformSendCachableFunctionDataMap,
     instanceUniformSendNoCachableDataMap
     /* drawPointsFuncMap */
   } =
@@ -82,16 +83,22 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
           intersectShaderIndexDataArray,
           shaderUniformSendNoCachableDataMap
         ),
+      /* TODO test */
+      shaderUniformSendCachableFunctionDataMap:
+        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+          intersectShaderIndexDataArray,
+          shaderUniformSendCachableFunctionDataMap
+        ),
       instanceUniformSendNoCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           instanceUniformSendNoCachableDataMap
         ),
       /* drawPointsFuncMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
-          intersectShaderIndexDataArray,
-          drawPointsFuncMap
-        ), */
+         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+           intersectShaderIndexDataArray,
+           drawPointsFuncMap
+         ), */
       vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
       lastSendArrayBuffer: None,
       lastSendElementArrayBuffer: None,

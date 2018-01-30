@@ -310,8 +310,8 @@
         {
           "name": "sendAmbientLight",
           "from": "ambientLight",
-          "field": "",
-          "type": ""
+          "field": "send",
+          "type": "function"
         }
       ]
     }

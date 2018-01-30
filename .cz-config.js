@@ -22,14 +22,12 @@ module.exports = {
       { name: "job" },
       { name: "transform" },
       { name: "lightMaterial" },
+      { name: "geometry" },
       { name: "light" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
-    feat: [
-      { name: "geometry" }
-    ],
     refactor: [
       { name: "duplication" },
       { name: "shader" },

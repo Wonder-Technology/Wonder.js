@@ -108,6 +108,13 @@ and shaderUniformSendNoCachableData = {
   getNoCachableDataFunc: [@bs] (state => Float32Array.t),
   sendNoCachableDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
+and shaderUniformSendCachableFunctionData = {
+  program,
+  shaderCacheMap,
+  locationMap: uniformLocationMapOfShader,
+  sendCachableFunctionDataFunc:
+    [@bs] ((webgl1Context, (program, shaderCacheMap, uniformLocationMapOfShader), state) => state)
+}
 and instanceUniformSendNoCachableData = {
   pos: uniformLocation,
   getNoCachableDataFunc: [@bs] ((transform, state) => Float32Array.t),
@@ -120,6 +127,7 @@ and glslSenderData = {
   uniformSendNoCachableDataMap: array(array(uniformSendNoCachableData)),
   uniformSendCachableDataMap: array(array(uniformSendCachableData)),
   shaderUniformSendNoCachableDataMap: array(array(shaderUniformSendNoCachableData)),
+  shaderUniformSendCachableFunctionDataMap: array(array(shaderUniformSendCachableFunctionData)),
   instanceUniformSendNoCachableDataMap: array(array(instanceUniformSendNoCachableData)),
   /* drawPointsFuncMap: array((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray: array(bool),

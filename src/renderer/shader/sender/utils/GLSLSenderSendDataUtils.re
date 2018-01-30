@@ -89,3 +89,14 @@ let sendFloat3 =
         ()
       }
   );
+
+let sendVec3 =
+  [@bs]
+  (
+    (gl, shaderCacheMap, (name: string, pos: uniformLocation), (x, y, z) as dataTuple) =>
+      if (_isNotCacheVector3(shaderCacheMap, name, dataTuple)) {
+        uniform3f(pos, x, y, z, gl)
+      } else {
+        ()
+      }
+  );

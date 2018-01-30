@@ -1,4 +1,10 @@
+type attributeLocationMap = array(Js.Dict.t(int));
+
+type uniformLocationMapOfShader = Js.Dict.t(GlType.uniformLocation);
+
+type uniformLocationMap = array(uniformLocationMapOfShader);
+
 type glslLocationData = {
-  attributeLocationMap: array(Js.Dict.t(int)),
-  uniformLocationMap: array(Js.Dict.t(GlType.uniformLocation))
+  attributeLocationMap,
+  uniformLocationMap
 };
