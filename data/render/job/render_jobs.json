@@ -13,5 +13,8 @@
   },
   {
     "name": "render_basic"
+  },
+  {
+    "name": "front_render_light"
   }
 ]

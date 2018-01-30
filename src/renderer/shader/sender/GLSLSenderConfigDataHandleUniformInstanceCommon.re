@@ -16,8 +16,8 @@ let addUniformSendDataByType =
     (
       (type_, pos),
       (
-        sendNoCachableDataArr,
-        sendCachableDataArr,
+        renderObjectSendModelDataArr,
+        renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
@@ -26,26 +26,26 @@ let addUniformSendDataByType =
     ) =>
   switch type_ {
   | "mat4" => (
-      sendNoCachableDataArr,
-      sendCachableDataArr,
+      renderObjectSendModelDataArr,
+      renderObjectSendMaterialDataArr,
       shaderSendNoCachableDataArr,
       shaderSendCachableFunctionDataArr,
       instanceSendNoCachableDataArr
       |> ArraySystem.push(
-           {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc}: instanceUniformSendNoCachableData
+           {pos, sendDataFunc: sendMatrix4, getDataFunc: getDataFunc}: uniformInstanceSendNoCachableData
          )
     )
   | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
   };
 
 let setToUniformSendMap =
-    (shaderIndex, instanceUniformSendNoCachableDataMap, instanceSendNoCachableDataArr) =>
-  instanceUniformSendNoCachableDataMap
+    (shaderIndex, uniformInstanceSendNoCachableDataMap, instanceSendNoCachableDataArr) =>
+  uniformInstanceSendNoCachableDataMap
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
 
 let unsafeGetUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
   GLSLSenderConfigDataHandleUniformUtils.unsafeGetUniformSendData(
     shaderIndex,
-    getGLSLSenderData(state).instanceUniformSendNoCachableDataMap
+    getGLSLSenderData(state).uniformInstanceSendNoCachableDataMap
   );

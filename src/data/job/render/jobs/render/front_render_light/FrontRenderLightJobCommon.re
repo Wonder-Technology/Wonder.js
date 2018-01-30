@@ -1,9 +1,11 @@
+/* TODO duplicate with RenderBasicJobCommon */
 open StateDataType;
 
 open VboBufferType;
 
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  let {vertexBufferMap, elementArrayBufferMap} =
+  /* let {vertexBufferMap, elementArrayBufferMap} = */
+  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
     VboBufferGetStateDataUtils.getVboBufferData(state);
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
@@ -18,6 +20,13 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
                  gl,
                  (geometryIndex, vertexBufferMap),
                  [@bs] GeometryAdmin.unsafeGetVertices,
+                 state
+               )
+             | "normal" =>
+               ArrayBufferSystem.getOrCreateBuffer(
+                 gl,
+                 (geometryIndex, normalBufferMap),
+                 [@bs] GeometryAdmin.unsafeGetNormals,
                  state
                )
              | "index" =>
@@ -43,8 +52,7 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state)
        [@bs]
        (
          (state, {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData) => {
-           [@bs]
-           sendDataFunc(gl, pos, [@bs] getDataFunc(transformIndex, state));
+           [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(transformIndex, state));
            state
          }
        ),
@@ -62,12 +70,7 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
            {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendMaterialData
          ) => {
            [@bs]
-           sendDataFunc(
-             gl,
-             shaderCacheMap,
-             (name, pos),
-             [@bs] getDataFunc(materialIndex, state)
-           );
+           sendDataFunc(gl, shaderCacheMap, (name, pos), [@bs] getDataFunc(materialIndex, state));
            state
          }
        ),
@@ -76,8 +79,10 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
 
 let render = (gl, uid, state: StateDataType.state) => {
   let transformIndex: int = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
-  let materialIndex: int = GameObjectAdmin.unsafeGetBasicMaterialComponent(uid, state);
-  let shaderIndex = BasicMaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
+  /* let materialIndex: int = GameObjectAdmin.unsafeGetBasicMaterialComponent(uid, state); */
+  let materialIndex: int = GameObjectAdmin.unsafeGetLightMaterialComponent(uid, state);
+  /* let shaderIndex = BasicMaterialAdmin.unsafeGetShaderIndex(materialIndex, state); */
+  let shaderIndex = LightMaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   let state =
