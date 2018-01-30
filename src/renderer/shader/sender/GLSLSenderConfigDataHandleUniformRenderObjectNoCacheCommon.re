@@ -22,11 +22,11 @@ let addUniformSendDataByType =
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       ),
-      getDataFunc
+      ( getDataFunc, sendDataFunc )
     ) => (
   sendNoCachableDataArr
   |> ArraySystem.push(
-       {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCachableData
+       {pos, sendNoCachableDataFunc: sendDataFunc, getNoCachableDataFunc: getDataFunc |> Obj.magic}: uniformSendNoCachableData
      ),
   sendCachableDataArr,
   shaderSendNoCachableDataArr,

@@ -38,6 +38,14 @@ let sendBuffer =
     }
   );
 
+/* TODO test */
+let sendMatrix3 =
+  [@bs]
+  (
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+      uniformMatrix3fv(pos, Js.false_, data, gl)
+  );
+
 let sendMatrix4 =
   [@bs]
   (

@@ -14,18 +14,30 @@ let getCameraVMatrixDataFromState =
 let getCameraPMatrixDataFromState =
   [@bs] ((state: StateDataType.state) => _getCameraData(state).pMatrix);
 
+let getCameraNormalMatrixDataFromState =
+  [@bs] ((state: StateDataType.state) => _getCameraData(state).normalMatrix);
+
+let getCameraPositionDataFromState =
+  [@bs] ((state: StateDataType.state) => _getCameraData(state).position);
+
 let getRenderArrayFromState = (state: StateDataType.state) => state.renderData.renderArray;
 
-let setRenderArray = (renderArray, state: StateDataType.state) =>
-  _getRenderData(state).renderArray = (
-    switch (Js.Array.length(renderArray)) {
-    | 0 => None
-    | _ => Some(renderArray)
-    }
-  );
+let setRenderArray = (renderArray, state: StateDataType.state) => {
+  ...state,
+  renderData: {
+    ..._getRenderData(state),
+    renderArray:
+      switch (Js.Array.length(renderArray)) {
+      | 0 => None
+      | _ => Some(renderArray)
+      }
+  }
+};
 
-let setCameraData = (cameraData, state: StateDataType.state) =>
-  _getRenderData(state).cameraData = cameraData;
+let setCameraData = (cameraData, state: StateDataType.state) => {
+  ...state,
+  renderData: {..._getRenderData(state), cameraData}
+};
 
 let restore = (currentState, targetState) => {
   ...targetState,

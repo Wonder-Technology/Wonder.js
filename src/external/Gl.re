@@ -119,6 +119,10 @@ external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, in
 [@bs.send.pipe : webgl1Context] external enableVertexAttribArray : attributeLocation => unit = "";
 
 [@bs.send.pipe : webgl1Context]
+external uniformMatrix3fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
+  "";
+
+[@bs.send.pipe : webgl1Context]
 external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
   "";
 

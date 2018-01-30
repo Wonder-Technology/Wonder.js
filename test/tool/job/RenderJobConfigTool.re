@@ -271,7 +271,7 @@ let buildRenderJobConfig =
         {
           "name": "u_color",
           "field": "color",
-          "type": "vec3",
+          "type": "float3",
           "from": "basicMaterial"
         }
       ]

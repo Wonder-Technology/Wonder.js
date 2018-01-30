@@ -101,18 +101,21 @@ let _getCameraToWorldMatrix = (transform, state: StateDataType.state) =>
   _getCameraToWorldMatrixByTransform(transform, state);
 
 let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
-  /* CacheUtils.mapDataInCacheType( */
   Matrix4System.invert(
     _getCameraToWorldMatrixByTransform(transform, state),
     Matrix4System.createIdentityMatrix4()
   );
 
-/* [@bs] ((data) => data |> Matrix4System.invert) */
-/* ); */
-/* switch (_getCameraToWorldMatrix(cameraController, state)) {
-   | CacheType.Cache(data) => CacheType.Cache(data |> Matrix4System.invert)
-   | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
-   }; */
+let getNormalMatrix = (transform, state: StateDataType.state) =>
+  Matrix4System.invertTo3x3(
+    _getCameraToWorldMatrixByTransform(transform, state),
+    Matrix4System.createIdentityMatrix4()
+  )
+  |> Matrix4System.transposeSelf;
+
+let getPosition = (transform, state: StateDataType.state) =>
+  TransformSystem.getPositionTuple(transform, state);
+
 let unsafeGetPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(
     cameraController,

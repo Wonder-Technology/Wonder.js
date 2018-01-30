@@ -128,7 +128,7 @@
         {
           "name": "u_color",
           "field": "color",
-          "type": "vec3",
+          "type": "float3",
           "from": "basicMaterial"
         }
       ]
@@ -157,7 +157,7 @@
           "name": "u_normalMatrix",
           "field": "normalMatrix",
           "type": "mat3",
-          "from": "model"
+          "from": "camera"
         }
       ]
     }
@@ -209,7 +209,7 @@
         {
           "name": "u_diffuse",
           "field": "diffuseColor",
-          "type": "vec3",
+          "type": "float3",
           "from": "lightMaterial"
         }
       ]
@@ -228,7 +228,7 @@
         {
           "name": "u_specular",
           "field": "specularColor",
-          "type": "vec3",
+          "type": "float3",
           "from": "lightMaterial"
         }
       ]

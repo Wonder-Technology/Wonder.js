@@ -22,7 +22,7 @@ let addUniformSendDataByType =
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       ),
-      getDataFunc
+      (getDataFunc, sendDataFunc)
     ) => (
   sendNoCachableDataArr,
   sendCachableDataArr
@@ -31,7 +31,7 @@ let addUniformSendDataByType =
          shaderCacheMap,
          name,
          pos,
-         sendCachableDataFunc: sendFloat3,
+         sendCachableDataFunc: sendDataFunc,
          getCachableDataFunc: getDataFunc |> Obj.magic
        }: uniformSendCachableData
      ),

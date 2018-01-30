@@ -28,13 +28,13 @@ let _addUniformRenderObjectSendDataByType =
     GLSLSenderConfigDataHandleUniformRenderObjectNoCacheCommon.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      getDataFunc
+      ( getDataFunc, sendMatrix4 )
     )
-  | "vec3" =>
+  | "float3" =>
     GLSLSenderConfigDataHandleUniformRenderObjectCacheCommon.addUniformSendDataByType(
       (shaderCacheMap, name, pos),
       sendDataArrTuple,
-      getDataFunc
+      (getDataFunc, sendFloat3)
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -61,6 +61,19 @@ let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
+    )
+  /* TODO test */
+  | "position" =>
+    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
+      (type_, pos),
+      sendDataArrTuple,
+      RenderDataSystem.getCameraPositionDataFromState
+    )
+  | "normalMatrix" =>
+    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
+      (type_, pos),
+      sendDataArrTuple,
+      RenderDataSystem.getCameraNormalMatrixDataFromState
     )
   | _ =>
     WonderLog.Log.fatal(

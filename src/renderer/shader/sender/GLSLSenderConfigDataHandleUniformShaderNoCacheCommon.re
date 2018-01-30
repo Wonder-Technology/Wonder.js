@@ -23,20 +23,25 @@ let addUniformSendDataByType =
         instanceSendNoCachableDataArr
       ),
       getDataFunc
-    ) =>
-  switch type_ {
-  | "mat4" => (
-      sendNoCachableDataArr,
-      sendCachableDataArr,
-      shaderSendNoCachableDataArr
-      |> ArraySystem.push(
-           {pos, sendNoCachableDataFunc: sendMatrix4, getNoCachableDataFunc: getDataFunc}: shaderUniformSendNoCachableData
-         ),
-      shaderSendCachableFunctionDataArr,
-      instanceSendNoCachableDataArr
-    )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
-  };
+    ) => {
+  let sendDataFunc =
+    switch type_ {
+    | "mat4" => sendMatrix4
+    | "mat3" => sendMatrix3 |> Obj.magic
+    | "vec3" => sendVec3 |> Obj.magic
+    | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
+    };
+  (
+    sendNoCachableDataArr,
+    sendCachableDataArr,
+    shaderSendNoCachableDataArr
+    |> ArraySystem.push(
+         {pos, sendNoCachableDataFunc: sendDataFunc, getNoCachableDataFunc: getDataFunc |> Obj.magic}: shaderUniformSendNoCachableData
+       ),
+    shaderSendCachableFunctionDataArr,
+    instanceSendNoCachableDataArr
+  )
+};
 
 let setToUniformSendMap =
     (shaderIndex, shaderUniformSendNoCachableDataMap, shaderSendNoCachableDataArr) =>

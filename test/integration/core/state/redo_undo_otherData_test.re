@@ -163,14 +163,23 @@ let _ =
           describe(
             "restore render data to target state",
             () =>
+              /* TODO test more render data */
               test(
                 "clean renderArray, cameraData",
                 () => {
                   open RenderDataType;
                   let state = state^;
-                  let data = RenderDataTool.getRenderData(state);
-                  data.renderArray = Some([|0|]);
-                  data.cameraData = Some(Obj.magic(1));
+                  /* let data = RenderDataTool.getRenderData(state);
+                     data.renderArray = Some([|0|]);
+                     data.cameraData = Some(Obj.magic(1)); */
+                  let state = {
+                    ...state,
+                    renderData: {
+                      ...RenderDataTool.getRenderData(state),
+                      renderArray: Some([|0|]),
+                      cameraData: Some(Obj.magic(1))
+                    }
+                  };
                   let _ = StateTool.restore(StateTool.createNewCompleteState(), state);
                   let {renderArray, cameraData} =
                     RenderDataTool.getRenderData(StateTool.getState());
