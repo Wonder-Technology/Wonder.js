@@ -30,6 +30,19 @@ let unsafeGetVertices =
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) =>
   GeometryOperateVerticesCommon.setVertices(index, data, state);
 
+let getNormals = (index: int, state: StateDataType.state) =>
+  GeometryOperateNormalsCommon.getNormals(index, state);
+
+let unsafeGetNormals =
+  [@bs]
+  (
+    (index: int, state: StateDataType.state) =>
+      GeometryOperateNormalsCommon.unsafeGetNormals(index, state)
+  );
+
+let setNormals = (index: int, data: Float32Array.t, state: StateDataType.state) =>
+  GeometryOperateNormalsCommon.setNormals(index, data, state);
+
 let getIndices = (index: int, state: StateDataType.state) =>
   GeometryOperateIndicesCommon.getIndices(index, state);
 

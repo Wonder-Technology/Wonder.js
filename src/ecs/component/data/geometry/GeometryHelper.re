@@ -5,6 +5,7 @@ let initData = (state: StateDataType.state) => {
     Some({
       index: 0,
       verticesMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      normalsMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       indicesMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       configDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       computeDataFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),

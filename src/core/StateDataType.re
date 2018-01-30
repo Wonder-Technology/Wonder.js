@@ -136,6 +136,7 @@ and jobData = {
 and geometryData = {
   mutable index: int,
   verticesMap: geometryVerticesMap,
+  normalsMap: geometryNormalsMap,
   indicesMap: geometryIndicesMap,
   mutable computeDataFuncMap: array(((int, state) => geometryComputeData)),
   mutable configDataMap: geometryConfigDataMap,

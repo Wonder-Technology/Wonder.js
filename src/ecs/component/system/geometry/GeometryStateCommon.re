@@ -6,6 +6,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     index,
     verticesMap,
+    normalsMap,
     indicesMap,
     configDataMap,
     isInitMap,
@@ -24,6 +25,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
           because vertices, indices are read-only data, so need to deep copy
           */
         verticesMap: verticesMap |> SparseMapSystem.copy,
+        /* TODO test */
+        normalsMap: normalsMap |> SparseMapSystem.copy,
         indicesMap: indicesMap |> SparseMapSystem.copy,
         computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
         configDataMap: configDataMap |> SparseMapSystem.copy,

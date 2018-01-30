@@ -1,5 +1,7 @@
 let unsafeGetVertices = GeometrySystem.unsafeGetVertices;
 
+let unsafeGetNormals = GeometrySystem.unsafeGetNormals;
+
 let unsafeGetIndices = GeometrySystem.unsafeGetIndices;
 
 let getDrawMode = GeometrySystem.getDrawMode;

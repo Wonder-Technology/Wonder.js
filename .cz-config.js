@@ -27,6 +27,9 @@ module.exports = {
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
+    feat: [
+      { name: "geometry" }
+    ],
     refactor: [
       { name: "duplication" },
       { name: "shader" },

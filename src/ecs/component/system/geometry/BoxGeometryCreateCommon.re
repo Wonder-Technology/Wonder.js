@@ -29,6 +29,20 @@ let _buildFaceData = (width, height, depth) => (
     [|5, 0, 6|]
   |],
   [|
+    /* front */
+    [|0., 0., 1.|],
+    /* back */
+    [|0., 0., (-1.)|],
+    /* top */
+    [|0., 1., 0.|],
+    /* bottom */
+    [|0., (-1.), 0.|],
+    /* right */
+    [|1., 0., 0.|],
+    /* left */
+    [|(-1.), 0., 0.|]
+  |],
+  [|
     (-. width, -. height, depth),
     (width, -. height, depth),
     (width, height, depth),
@@ -68,6 +82,15 @@ let _generateVertex =
   vertices |> WonderCommonlib.ArraySystem.pushMany([|vx, vy, vz|]) |> ignore
 };
 
+let _generateNormal = (side, faceNormals, normals) =>
+  normals
+  |> WonderCommonlib.ArraySystem.pushMany([|
+       faceNormals[side][0],
+       faceNormals[side][1],
+       faceNormals[side][2]
+     |])
+  |> ignore;
+
 let _generateIndex = ((uSegment, vSegment, offset), (uSegmentIndex, vSegmentIndex), indices) =>
   switch (uSegmentIndex, vSegmentIndex) {
   | (i, j) when i < uSegment && j < vSegment =>
@@ -84,17 +107,23 @@ let _generateIndex = ((uSegment, vSegment, offset), (uSegmentIndex, vSegmentInde
   | (_, _) => ()
   };
 
-let _generateFace = (directionDataTuple, faceDataTuple, (vertices, indices)) => {
+let _generateFace =
+    (
+      (side, uSegment, vSegment) as directionDataTuple,
+      (faceAxes, faceNormals, corners),
+      (vertices, normals, indices)
+    ) => {
   let (side: int, uSegment: int, vSegment: int) = directionDataTuple;
   let offset: int = Js.Array.length(vertices) / 3;
   for (i in 0 to uSegment) {
     for (j in 0 to vSegment) {
       let segmentIndexTuple = (i, j);
-      _generateVertex(directionDataTuple, faceDataTuple, segmentIndexTuple, vertices);
+      _generateVertex(directionDataTuple, (faceAxes, corners), segmentIndexTuple, vertices);
+      _generateNormal(side, faceNormals, normals);
       _generateIndex((uSegment, vSegment, offset), segmentIndexTuple, indices)
     }
   };
-  (vertices, indices)
+  (vertices, normals, indices)
 };
 
 let _buildAllFaceDirectionDataTupleArr = (widthSegment, heightSegment, depthSegment) => [|
@@ -117,7 +146,11 @@ let _generateAllFaces = (configDataMap) => {
          (pointsTuple, directionDataTuple) =>
            pointsTuple |> _generateFace(directionDataTuple, faceDataTuple)
        ),
-       (WonderCommonlib.ArraySystem.createEmpty(), WonderCommonlib.ArraySystem.createEmpty())
+       (
+         WonderCommonlib.ArraySystem.createEmpty(),
+         WonderCommonlib.ArraySystem.createEmpty(),
+         WonderCommonlib.ArraySystem.createEmpty()
+       )
      )
 };
 
@@ -125,8 +158,8 @@ let _computeData = (index: int, state: StateDataType.state) =>
   switch (GeometryConfigDataCommon.getConfigData(index, state)) {
   | None => ExceptionHandleSystem.throwMessage("configData should exist")
   | Some(configDataMap) =>
-    let (vertices, indices) = _generateAllFaces(configDataMap);
-    {vertices, indices}
+    let (vertices, normals, indices) = _generateAllFaces(configDataMap);
+    {vertices, normals, indices}
   };
 
 let create = (state: StateDataType.state) => {
