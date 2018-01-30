@@ -86,14 +86,17 @@ let _addInitDataFunc = (initDataFunc, promise) =>
 
 let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
   /* TODO load gloal_resources */
+  /* TODO perf: use mergeArray instead of concatArray */
   mergeArray([|
     fromPromise(
-      mergeArray(_createFetchLogicJobStreamArr(dataDir, fetchFunc))
+      _createFetchLogicJobStreamArr(dataDir, fetchFunc)
+      |> MostUtils.concatArray
       |> _collectAllRecords
       |> _addInitDataFunc(LogicJobConfigHelper.initData)
     ),
     fromPromise(
-      mergeArray(_createFetchRenderJobStreamArr(dataDir, fetchFunc))
+      _createFetchRenderJobStreamArr(dataDir, fetchFunc)
+      |> MostUtils.concatArray
       |> _collectAllRecords
       |> _addInitDataFunc(RenderJobConfigHelper.initData)
     )

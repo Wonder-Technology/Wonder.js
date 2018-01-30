@@ -71,7 +71,7 @@ let _ =
             "test load logic config files",
             () => {
               testPromise(
-                "should dataDir for get json file path",
+                "should pass dataDir for get json file path",
                 () => {
                   let fetch = _buildFakeFetch(sandbox);
                   state^
@@ -87,7 +87,7 @@ let _ =
               );
               describe(
                 "parse job data and set to state",
-                () =>
+                () => {
                   testPromise(
                     "test parse logic setting, init pipeline, logic pipeleint, init job, logic job",
                     () => {
@@ -135,7 +135,35 @@ let _ =
                              |> resolve
                          )
                     }
+                  );
+                  describe(
+                    "fix bug",
+                    () =>
+                      testPromise(
+                        "if the order of the fetch of logic json data change, shouldn't affect the setted data in state",
+                        () => {
+                          let fetch = _buildFakeFetch(sandbox);
+                          let (logicSetting, initPipelines, updatePipelines, initJobs, updateJobs) =
+                            LogicJobConfigTool.buildLogicJobConfig();
+                          fetch
+                          |> onCall(0)
+                          |> SinonTool.deferReturns(
+                               100.,
+                               _buildFakeFetchJsonResponse(logicSetting)
+                             );
+                          state^
+                          |> LoaderManagerSystem.load("", fetch)
+                          |> then_(
+                               (state) =>
+                                 LogicJobConfigTool.getLogicSetting(state)
+                                 |>
+                                 expect == {init_pipeline: "default", update_pipeline: "default"}
+                                 |> resolve
+                             )
+                        }
+                      )
                   )
+                }
               )
             }
           );
@@ -172,7 +200,7 @@ let _ =
                    fetch
                  }; */
               testPromise(
-                "should dataDir for get json file path",
+                "should pass dataDir for get json file path",
                 () => {
                   let fetch = _buildFakeFetch(sandbox);
                   state^
@@ -340,6 +368,44 @@ let _ =
                              |> resolve
                          )
                     }
+                  );
+                  describe(
+                    "fix bug",
+                    () =>
+                      testPromise(
+                        "if the order of the fetch of render json data change, shouldn't affect the setted data in state",
+                        () => {
+                          let fetch = _buildFakeFetch(sandbox);
+                          let (
+                            renderSetting,
+                            initPipelines,
+                            renderPipelines,
+                            initJobs,
+                            renderJobs,
+                            shaders,
+                            shaderLibs
+                          ) =
+                            RenderJobConfigTool.buildRenderJobConfig();
+                          fetch
+                          |> onCall(5)
+                          |> SinonTool.deferReturns(
+                               100.,
+                               _buildFakeFetchJsonResponse(renderSetting)
+                             );
+                          state^
+                          |> LoaderManagerSystem.load("", fetch)
+                          |> then_(
+                               (state) =>
+                                 RenderJobConfigTool.getRenderSetting(state)
+                                 |>
+                                 expect == {
+                                             init_pipeline: "simple_basic_render",
+                                             render_pipeline: "simple_basic_render"
+                                           }
+                                 |> resolve
+                             )
+                        }
+                      )
                   )
                 }
               )
