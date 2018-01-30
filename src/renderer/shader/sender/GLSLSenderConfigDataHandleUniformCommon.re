@@ -36,7 +36,16 @@ let _addUniformRenderObjectSendDataByType =
       sendDataArrTuple,
       getDataFunc
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addUniformRenderObjectSendDataByType",
+        ~description={j|unknow type:$type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
@@ -53,7 +62,16 @@ let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addCameraSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _addAmbientLightSendData =
@@ -65,13 +83,16 @@ let _addAmbientLightSendData =
       sendDataArrTuple,
       SendAmbientLightHandle.send
     )
-  /* | "pMatrix" =>
-     GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
-       (type_, pos),
-       sendDataArrTuple,
-       RenderDataSystem.getCameraPMatrixDataFromState
-     ) */
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addAmbientLightSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
@@ -82,7 +103,16 @@ let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sen
       sendDataArrTuple,
       BasicMaterialAdminAci.unsafeGetColor
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addBasicMaterialSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
@@ -99,7 +129,16 @@ let _addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sen
       sendDataArrTuple,
       LightMaterialAdminAci.unsafeGetSpecularColor
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addLightMaterialSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
@@ -116,7 +155,16 @@ let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr
       sendDataArrTuple,
       _getModelMNoCachableData
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addModelSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _setToUniformSendMap =
@@ -229,7 +277,16 @@ let _readUniforms =
                  ),
                  sendDataArrTuple
                )
-             | _ => ExceptionHandleSystem.throwMessage({j|unknow from:$from|j})
+             | _ =>
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="_readUniforms",
+                   ~description={j|unknow from:$from|j},
+                   ~reason="",
+                   ~solution={j||j},
+                   ~params={j||j}
+                 )
+               )
              }
          ),
          sendDataArrTuple
