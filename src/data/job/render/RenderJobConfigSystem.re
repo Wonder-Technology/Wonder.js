@@ -41,6 +41,7 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) 
   let {shader}: job =
     JobConfigSystem.findFirst(
       jobs,
+      jobItemName,
       ({name: jobName}: job) => JobConfigSystem.filterTargetName(jobName, jobItemName)
     );
   {name: jobItemName, flags, shader}
@@ -50,6 +51,7 @@ let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
     JobConfigSystem.findFirst(
       pipelines,
+      pipeline,
       ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
     );
   pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
@@ -64,13 +66,31 @@ let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   JobConfigSystem.findFirst(
     shaderLibs,
+    shaderLibName,
     (item: shaderLib) => JobConfigSystem.filterTargetName(item.name, shaderLibName)
   );
 
+/* |> WonderLog.Contract.ensureCheck(
+     (first) => {
+       open WonderLog;
+       open Contract;
+       open Operators;
+       let shaderLibsJson = WonderLog.Log.getJsonStr(shaderLibs);
+       test(
+         Log.buildAssertMessage(~expect={j|find $shaderLibName in $shaderLibsJson|j}, ~actual={j|not|j}),
+         () => first |> assertNullableExist
+       )
+     },
+     StateData.stateData.isDebug
+   ); */
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
   Js.Array.concat(
-    JobConfigSystem.findFirst(groups, (item) => JobConfigSystem.filterTargetName(item.name, name)).
+    JobConfigSystem.findFirst(
+      groups,
+      name,
+      (item) => JobConfigSystem.filterTargetName(item.name, name)
+    ).
       value
     |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs)),
     resultDataArr
@@ -101,6 +121,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     let {value} =
       JobConfigSystem.findFirst(
         static_branchs,
+        name,
         (item) => JobConfigSystem.filterTargetName(item.name, name)
       );
     _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance(

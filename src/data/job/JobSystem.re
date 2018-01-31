@@ -3,7 +3,7 @@ open StateDataType;
 let handleGetNoneJob = (name, jobHandleMap) =>
   WonderLog.Log.fatal(
     WonderLog.Log.buildFatalMessage(
-      ~title="_getAllInitJobs",
+      ~title="get no job",
       ~description={j|can't find job handle function whose job name is $name|j},
       ~reason="",
       ~solution={j|make sure that the job name defined in config be correctly|j},

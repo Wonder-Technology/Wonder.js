@@ -37,6 +37,7 @@ let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
     JobConfigSystem.findFirst(
       pipelines,
+      pipeline,
       ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
     );
   pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))

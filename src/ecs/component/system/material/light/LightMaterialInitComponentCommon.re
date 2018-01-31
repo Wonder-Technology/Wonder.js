@@ -4,12 +4,15 @@ open RenderJobConfigType;
 
 open LightMaterialType;
 
-let _getShaderLibs = ({material_shaders}) =>
+let _getShaderLibs = ({material_shaders}) => {
+  let shaderName = "front_render_light";
   JobConfigUtils.findFirst(
     material_shaders,
-    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, "front_render_light")
+    shaderName,
+    ({name}: material_shader) => JobConfigSystem.filterTargetName(name, shaderName)
   ).
-    shader_libs;
+    shader_libs
+};
 
 let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
   let shaderData = RenderJobConfigSystem.getShaders(state);
