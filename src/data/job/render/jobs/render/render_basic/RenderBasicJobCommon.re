@@ -3,37 +3,43 @@ open StateDataType;
 open VboBufferType;
 
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  let {vertexBufferMap, elementArrayBufferMap} =
-    VboBufferGetStateDataUtils.getVboBufferData(state);
-  state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, {pos, size, buffer, sendFunc}) => {
-           let arrayBuffer =
-             switch buffer {
-             | "vertex" =>
-               ArrayBufferSystem.getOrCreateBuffer(
-                 gl,
-                 (geometryIndex, vertexBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetVertices,
-                 state
-               )
-             | "index" =>
-               ElementArrayBufferSystem.getOrCreateBuffer(
-                 gl,
-                 (geometryIndex, elementArrayBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetIndices,
-                 state
-               )
-             | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-             };
-           [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
-         }
-       ),
-       state
-     )
+  let {lastSendGeometry} as data = GLSLSenderSystem.getGLSLSenderData(state);
+  switch lastSendGeometry {
+  | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
+  | _ =>
+    data.lastSendGeometry = Some(geometryIndex);
+    let {vertexBufferMap, elementArrayBufferMap} =
+      VboBufferGetStateDataUtils.getVboBufferData(state);
+    state
+    |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
+    |> ArraySystem.reduceState(
+         [@bs]
+         (
+           (state, {pos, size, buffer, sendFunc}) => {
+             let arrayBuffer =
+               switch buffer {
+               | "vertex" =>
+                 ArrayBufferSystem.getOrCreateBuffer(
+                   gl,
+                   (geometryIndex, vertexBufferMap),
+                   [@bs] GeometryAdmin.unsafeGetVertices,
+                   state
+                 )
+               | "index" =>
+                 ElementArrayBufferSystem.getOrCreateBuffer(
+                   gl,
+                   (geometryIndex, elementArrayBufferMap),
+                   [@bs] GeometryAdmin.unsafeGetIndices,
+                   state
+                 )
+               | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+               };
+             [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
+           }
+         ),
+         state
+       )
+  }
 };
 
 let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state) =>
@@ -43,8 +49,7 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state)
        [@bs]
        (
          (state, {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData) => {
-           [@bs]
-           sendDataFunc(gl, pos, [@bs] getDataFunc(transformIndex, state));
+           [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(transformIndex, state));
            state
          }
        ),
@@ -62,12 +67,7 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
            {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendMaterialData
          ) => {
            [@bs]
-           sendDataFunc(
-             gl,
-             shaderCacheMap,
-             (name, pos),
-             [@bs] getDataFunc(materialIndex, state)
-           );
+           sendDataFunc(gl, shaderCacheMap, (name, pos), [@bs] getDataFunc(materialIndex, state));
            state
          }
        ),

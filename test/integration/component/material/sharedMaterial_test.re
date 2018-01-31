@@ -22,7 +22,9 @@ let _ =
           let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
           let (state, gameObject2, material2) =
             MaterialGroupTool.createGameObjectWithSharedMaterial(material1, state);
-          state |> GameObject.getGameObjectBasicMaterialComponent(gameObject2) |> expect == material1
+          state
+          |> GameObject.getGameObjectBasicMaterialComponent(gameObject2)
+          |> expect == material1
         }
       );
       test(
@@ -83,7 +85,10 @@ let _ =
                 clonedMaterialArr
                 |> ArraySystem.reduceState(
                      [@bs]
-                     ((state, clonedMaterial) => BasicMaterialTool.initMaterial(clonedMaterial, state)),
+                     (
+                       (state, clonedMaterial) =>
+                         BasicMaterialTool.initMaterial(clonedMaterial, state)
+                     ),
                      state
                    );
               test(
@@ -227,7 +232,6 @@ let _ =
                   let (state, gameObject2, _, _) = _prepareGameObject(material1, state);
                   let color = [|0., 1., 0.2|];
                   let state = state |> BasicMaterial.setBasicMaterialColor(material1, color);
-                  /* WonderLog.Log.print(BasicMaterial.getBasicMaterialColor(material1, state)) |> ignore; */
                   let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                   let pos = 0;
                   let getUniformLocation =
@@ -237,13 +241,11 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
-                       WonderLog.Log.print(111) |> ignore;
                   let state =
                     state
                     |> RenderJobsTool.initSystemAndRender
                     |> RenderJobsTool.updateSystem
                     |> _render;
-                  WonderLog.Log.print(333) |> ignore;
                   (
                     uniform3f |> withOneArg(pos) |> getCallCount,
                     uniform3f |> withOneArg(pos) |> getCall(0) |> getArgs

@@ -13,7 +13,7 @@
 
         window.onload = function () {
             var state = wd.setMainConfig({
-                isDebug: true
+                isDebug: false
             });
 
             wd.load("../../data/", state).then(function (state) {
@@ -22,8 +22,32 @@
             });
 
 
-            function initSample(state) {
+
+            function createBoxes(count, state) {
+                var boxes = [];
+
                 var [state, box] = createBox(state);
+
+
+                var [state, newBoxes] = wd.cloneGameObject(box, count, true, state);
+
+
+                let flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        let arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                newBoxes = flatten(newBoxes);
+
+                return [state, newBoxes];
+            }
+
+
+            function initSample(state) {
+                // var [state, box1] = createBox(state);
+                // var [state, box2] = createBox(state);
+                var [state, boxes] = createBoxes(20000, state);
 
                 var [state, ambientLight] = createAmbientLight(state);
 

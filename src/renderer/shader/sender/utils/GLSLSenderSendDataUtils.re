@@ -26,15 +26,16 @@ let sendBuffer =
   [@bs]
   (
     (gl, (size: int, pos: attributeLocation), buffer: buffer, state: StateDataType.state) => {
-      let {vertexAttribHistoryArray, lastSendArrayBuffer} as data = getGLSLSenderData(state);
-      switch lastSendArrayBuffer {
-      | Some(lastSendArrayBuffer) when lastSendArrayBuffer === buffer => state
-      | _ =>
-        data.lastSendArrayBuffer = Some(buffer);
-        bindBuffer(getArrayBuffer(gl), buffer, gl);
-        vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-        _enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
-      }
+      /* let {vertexAttribHistoryArray, lastSendArrayBuffer} as data = getGLSLSenderData(state); */
+      let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
+      /* switch lastSendArrayBuffer {
+         | Some(lastSendArrayBuffer) when lastSendArrayBuffer === buffer => state
+         | _ => */
+      /* data.lastSendArrayBuffer = Some(buffer); */
+      bindBuffer(getArrayBuffer(gl), buffer, gl);
+      vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
+      _enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
+      /* } */
     }
   );
 

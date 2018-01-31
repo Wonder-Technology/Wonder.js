@@ -3,7 +3,7 @@ open StateDataType;
 let _getLightMaterialRenderArray = (renderArray, state: StateDataType.state) =>
   renderArray |> Js.Array.filter((uid) => GameObjectAdmin.hasLightMaterialComponent(uid, state));
 
-let _render = (gl, state: StateDataType.state) => {
+let _render = (gl, state: StateDataType.state) =>
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
   | Some(renderArray) =>
@@ -32,7 +32,6 @@ let _render = (gl, state: StateDataType.state) => {
          ),
          state
        )
-  }
-};
+  };
 
 let getJob = (configData, gl, state) => _render(gl, state);

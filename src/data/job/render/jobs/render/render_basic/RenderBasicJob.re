@@ -7,6 +7,11 @@ let _render = (gl, state: StateDataType.state) =>
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
   | Some(renderArray) =>
+    /* TODO move to new render job */
+    let state = {
+      ...state,
+      glslSenderData: {...GLSLSenderSystem.getGLSLSenderData(state), lastSendGeometry: None}
+    };
     state
     |> _getBasicMaterialRenderArray(renderArray)
     |> ArraySystem.reduceState(

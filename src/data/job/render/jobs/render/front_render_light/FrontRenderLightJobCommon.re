@@ -4,45 +4,85 @@ open StateDataType;
 open VboBufferType;
 
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  /* let {vertexBufferMap, elementArrayBufferMap} = */
-  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
-    VboBufferGetStateDataUtils.getVboBufferData(state);
-  state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
-  |> ArraySystem.reduceState(
+  let {lastSendGeometry} as data = GLSLSenderSystem.getGLSLSenderData(state);
+  switch lastSendGeometry {
+  | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
+  | _ =>
+    data.lastSendGeometry = Some(geometryIndex);
+    let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
+      VboBufferGetStateDataUtils.getVboBufferData(state);
+    state
+    |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
+    |> ArraySystem.reduceState(
+         [@bs]
+         (
+           (state, {pos, size, buffer, sendFunc}) => {
+             let arrayBuffer =
+               switch buffer {
+               | "vertex" =>
+                 ArrayBufferSystem.getOrCreateBuffer(
+                   gl,
+                   (geometryIndex, vertexBufferMap),
+                   [@bs] GeometryAdmin.unsafeGetVertices,
+                   state
+                 )
+               | "normal" =>
+                 ArrayBufferSystem.getOrCreateBuffer(
+                   gl,
+                   (geometryIndex, normalBufferMap),
+                   [@bs] GeometryAdmin.unsafeGetNormals,
+                   state
+                 )
+               | "index" =>
+                 ElementArrayBufferSystem.getOrCreateBuffer(
+                   gl,
+                   (geometryIndex, elementArrayBufferMap),
+                   [@bs] GeometryAdmin.unsafeGetIndices,
+                   state
+                 )
+               | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+               };
+             [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
+           }
+         ),
+         state
+       )
+  /* |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
-         (state, {pos, size, buffer, sendFunc}) => {
-           let arrayBuffer =
-             switch buffer {
-             | "vertex" =>
-               ArrayBufferSystem.getOrCreateBuffer(
-                 gl,
-                 (geometryIndex, vertexBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetVertices,
-                 state
-               )
-             | "normal" =>
-               ArrayBufferSystem.getOrCreateBuffer(
-                 gl,
-                 (geometryIndex, normalBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetNormals,
-                 state
-               )
-             | "index" =>
-               ElementArrayBufferSystem.getOrCreateBuffer(
-                 gl,
-                 (geometryIndex, elementArrayBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetIndices,
-                 state
-               )
-             | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-             };
-           [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
-         }
+         (bufferArr, {pos, size, buffer, sendFunc}) =>
+           bufferArr
+           |> ArraySystem.push(
+                switch buffer {
+                | "vertex" =>
+                  ArrayBufferSystem.getOrCreateBuffer(
+                    gl,
+                    (geometryIndex, vertexBufferMap),
+                    [@bs] GeometryAdmin.unsafeGetVertices,
+                    state
+                  )
+                | "normal" =>
+                  ArrayBufferSystem.getOrCreateBuffer(
+                    gl,
+                    (geometryIndex, normalBufferMap),
+                    [@bs] GeometryAdmin.unsafeGetNormals,
+                    state
+                  )
+                | "index" =>
+                  ElementArrayBufferSystem.getOrCreateBuffer(
+                    gl,
+                    (geometryIndex, elementArrayBufferMap),
+                    [@bs] GeometryAdmin.unsafeGetIndices,
+                    state
+                  )
+                | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+                }
+              )
+           /* [@bs] sendFunc(gl, (size, pos), arrayBuffer, state) */
        ),
-       state
-     )
+       [||]
+     )  |>  [@bs] sendFunc(gl, (size, pos), state)  */
+  }
 };
 
 let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state) =>

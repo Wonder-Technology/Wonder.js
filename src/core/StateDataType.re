@@ -142,7 +142,8 @@ and glslSenderData = {
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendArrayBuffer: option(buffer),
   mutable lastSendElementArrayBuffer: option(buffer),
-  mutable lastSendMaterial: option(material)
+  mutable lastSendMaterial: option(material),
+  mutable lastSendGeometry: option(geometry)
 }
 and jobData = {
   logicInitJobList: list((string, state => state)),

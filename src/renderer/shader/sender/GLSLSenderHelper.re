@@ -14,5 +14,6 @@ let initData = () => {
   vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
   lastSendArrayBuffer: None,
   lastSendElementArrayBuffer: None,
-  lastSendMaterial: None
+  lastSendMaterial: None,
+  lastSendGeometry: None
 };
