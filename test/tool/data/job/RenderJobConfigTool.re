@@ -20,6 +20,9 @@ let buildRenderJobConfig =
         },
         {
           "name": "init_basic_material"
+        },
+{
+          "name": "init_light_material"
         }
       ]
     }
@@ -52,6 +55,9 @@ let buildRenderJobConfig =
       },
       {
         "name": "render_basic"
+      },
+      {
+        "name": "front_render_light"
       }
     ]
   }
@@ -64,7 +70,10 @@ let buildRenderJobConfig =
     },
     {
         "name": "init_basic_material"
-    }
+    },
+    {
+          "name": "init_light_material"
+        }
 ]
         |},
       ~renderJobs={|
@@ -83,6 +92,9 @@ let buildRenderJobConfig =
   },
   {
     "name": "render_basic"
+  },
+  {
+    "name": "front_render_light"
   }
 ]
         |},
@@ -130,6 +142,61 @@ let buildRenderJobConfig =
         },
         {
           "name": "basic_end"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
+      "name": "front_render_light",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "normalMatrix_noInstance"
+        },
+        {
+          "name": "light_common"
+        },
+        {
+          "name": "light_setWorldPosition"
+        },
+        {
+          "name": "noDiffuseMap"
+        },
+        {
+          "name": "noSpecularMap"
+        },
+        {
+          "name": "noLightMap"
+        },
+        {
+          "name": "noEmissionMap"
+        },
+        {
+          "name": "noNormalMap"
+        },
+        {
+          "name": "noShadowMap"
+        },
+        {
+          "name": "light"
+        },
+        {
+          "name": "ambient_light"
+        },
+        {
+          "name": "light_end"
         },
         {
           "type": "group",
@@ -283,6 +350,188 @@ let buildRenderJobConfig =
       {
         "type": "fs",
         "name": "webgl1_basic_end_fragment"
+      }
+    ]
+  },
+  {
+    "name": "normalMatrix_noInstance",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "normalMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_normalMatrix",
+          "field": "normalMatrix",
+          "type": "mat3",
+          "from": "camera"
+        }
+      ]
+    }
+  },
+  {
+    "name": "normal",
+    "variables": {
+      "attributes": [
+        {
+          "name": "a_normal",
+          "buffer": "normal",
+          "type": "vec3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "light_common",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_frontLight_common_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_frontLight_common_fragment"
+      }
+    ]
+  },
+  {
+    "name": "light_setWorldPosition",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_frontLight_setWorldPosition_vertex"
+      }
+    ]
+  },
+  {
+    "name": "noDiffuseMap",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_noDiffuseMap_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_diffuse",
+          "field": "diffuseColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "noSpecularMap",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_noSpecularMap_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_specular",
+          "field": "specularColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "noLightMap",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_noLightMap_fragment"
+      }
+    ]
+  },
+  {
+    "name": "noEmissionMap",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_noEmissionMap_fragment"
+      }
+    ]
+  },
+  {
+    "name": "noNormalMap",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_noNormalMap_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_noNormalMap_fragment"
+      }
+    ]
+  },
+  {
+    "name": "noShadowMap",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_noShadowMap_fragment"
+      }
+    ]
+  },
+  {
+    "name": "light",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_frontLight_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_frontLight_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_cameraPos",
+          "from": "camera",
+          "field": "position",
+          "type": "vec3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "ambient_light",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_ambientLight_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "sendAmbientLight",
+          "from": "ambientLight",
+          "field": "send",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  {
+    "name": "light_end",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_frontLight_end_fragment"
       }
     ]
   },

@@ -2,7 +2,8 @@ open StateDataType;
 
 let _getInitJobHandles = () => [
   ("preget_glslData", PregetGLSLDataJob.getJob),
-  ("init_basic_material", InitBasicMaterialJob.getJob)
+  ("init_basic_material", InitBasicMaterialJob.getJob),
+  ("init_light_material", InitLightMaterialJob.getJob)
 ];
 
 let _getRenderJobHandles = () => [
@@ -10,7 +11,8 @@ let _getRenderJobHandles = () => [
   ("get_camera_data", GetCameraDataJob.getJob),
   ("clear_color", ClearColorJob.getJob),
   ("clear_buffer", ClearBufferJob.getJob),
-  ("render_basic", RenderBasicJob.getJob)
+  ("render_basic", RenderBasicJob.getJob),
+  ("front_render_light", FrontRenderLightJob.getJob)
 ];
 
 let createInitJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getInitJobHandles());

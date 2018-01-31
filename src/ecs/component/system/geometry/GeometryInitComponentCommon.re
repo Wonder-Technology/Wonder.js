@@ -23,10 +23,11 @@ let initGeometry = (index: int, state: StateDataType.state) =>
     switch (computeDataFuncMap |> WonderCommonlib.SparseMapSystem.get(index)) {
     | None => state
     | Some(computeDataFunc) =>
-      let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
+      let {vertices, normals, indices}: geometryComputeData = computeDataFunc(index, state);
       /* TODO compute normals */
       state
       |> GeometryOperateVerticesCommon.setVerticesWithArray(index, vertices)
+      |> GeometryOperateNormalsCommon.setNormalsWithArray(index, normals)
       |> GeometryOperateIndicesCommon.setIndicesWithArray(index, indices)
       |> _markIsInit(index, true)
     }

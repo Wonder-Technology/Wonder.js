@@ -22,6 +22,22 @@ let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
 
+let removeRenderRenderJob = Job.removeRenderRenderJob;
+
+let removeRenderInitJob = Job.removeRenderInitJob;
+
+let addRenderRenderJob = Job.addRenderRenderJob;
+
+let addRenderInitJob = Job.addRenderInitJob;
+
+let removeLogicUpdateJob = Job.removeLogicUpdateJob;
+
+let removeLogicInitJob = Job.removeLogicInitJob;
+
+let addLogicUpdateJob = Job.addLogicUpdateJob;
+
+let addLogicInitJob = Job.addLogicInitJob;
+
 let cloneGameObject = GameObject.cloneGameObject;
 
 let batchDisposeGameObject = GameObject.batchDisposeGameObject;
@@ -31,6 +47,14 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
+
+let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
+
+let getGameObjectAmbientLightComponent = GameObject.getGameObjectAmbientLightComponent;
+
+let disposeGameObjectAmbientLightComponent = GameObject.disposeGameObjectAmbientLightComponent;
+
+let addGameObjectAmbientLightComponent = GameObject.addGameObjectAmbientLightComponent;
 
 let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
 
@@ -148,6 +172,14 @@ let createSourceInstanceObjectInstance = SourceInstance.createSourceInstanceObje
 
 let createSourceInstance = SourceInstance.createSourceInstance;
 
+let setAmbientLightColor = AmbientLight.setAmbientLightColor;
+
+let getAmbientLightColor = AmbientLight.getAmbientLightColor;
+
+let getAmbientLightGameObject = AmbientLight.getAmbientLightGameObject;
+
+let createAmbientLight = AmbientLight.createAmbientLight;
+
 let setBasicMaterialColor = BasicMaterial.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterial.getBasicMaterialColor;
@@ -192,22 +224,6 @@ let getTransformGameObject = Transform.getTransformGameObject;
 
 let createTransform = Transform.createTransform;
 
-let removeRenderRenderJob = Job.removeRenderRenderJob;
-
-let removeRenderInitJob = Job.removeRenderInitJob;
-
-let addRenderRenderJob = Job.addRenderRenderJob;
-
-let addRenderInitJob = Job.addRenderInitJob;
-
-let removeLogicUpdateJob = Job.removeLogicUpdateJob;
-
-let removeLogicInitJob = Job.removeLogicInitJob;
-
-let addLogicUpdateJob = Job.addLogicUpdateJob;
-
-let addLogicInitJob = Job.addLogicInitJob;
-
 let load = LoaderManager.load;
 
 let loopBody = Director.loopBody;
@@ -232,6 +248,22 @@ let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
 
+let removeRenderRenderJob = Job.removeRenderRenderJob;
+
+let removeRenderInitJob = Job.removeRenderInitJob;
+
+let addRenderRenderJob = Job.addRenderRenderJob;
+
+let addRenderInitJob = Job.addRenderInitJob;
+
+let removeLogicUpdateJob = Job.removeLogicUpdateJob;
+
+let removeLogicInitJob = Job.removeLogicInitJob;
+
+let addLogicUpdateJob = Job.addLogicUpdateJob;
+
+let addLogicInitJob = Job.addLogicInitJob;
+
 let cloneGameObject = GameObject.cloneGameObject;
 
 let batchDisposeGameObject = GameObject.batchDisposeGameObject;
@@ -241,6 +273,14 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
+
+let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
+
+let getGameObjectAmbientLightComponent = GameObject.getGameObjectAmbientLightComponent;
+
+let disposeGameObjectAmbientLightComponent = GameObject.disposeGameObjectAmbientLightComponent;
+
+let addGameObjectAmbientLightComponent = GameObject.addGameObjectAmbientLightComponent;
 
 let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
 
@@ -305,19 +345,3 @@ let disposeGameObjectTransformComponent = GameObject.disposeGameObjectTransformC
 let addGameObjectTransformComponent = GameObject.addGameObjectTransformComponent;
 
 let createGameObject = GameObject.createGameObject;
-
-let removeRenderRenderJob = Job.removeRenderRenderJob;
-
-let removeRenderInitJob = Job.removeRenderInitJob;
-
-let addRenderRenderJob = Job.addRenderRenderJob;
-
-let addRenderInitJob = Job.addRenderInitJob;
-
-let removeLogicUpdateJob = Job.removeLogicUpdateJob;
-
-let removeLogicInitJob = Job.removeLogicInitJob;
-
-let addLogicUpdateJob = Job.addLogicUpdateJob;
-
-let addLogicInitJob = Job.addLogicInitJob;

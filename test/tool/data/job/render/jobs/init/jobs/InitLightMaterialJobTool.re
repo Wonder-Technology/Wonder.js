@@ -1,10 +1,9 @@
-let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
-  TestTool.initWithJobConfigWithoutBuildFakeDom(
-    ~sandbox,
-    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ()
-  );
-
+/* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
+   TestTool.initWithJobConfigWithoutBuildFakeDom(
+     ~sandbox,
+     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+     ()
+   ); */
 let initWithJobConfig = (sandbox) =>
   TestTool.initWithJobConfig(
     ~sandbox,
@@ -14,26 +13,24 @@ let initWithJobConfig = (sandbox) =>
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
-  open BasicMaterial;
+  open LightMaterial;
   open BoxGeometry;
   open Sinon;
-  let (state, material) = createBasicMaterial(state);
+  let (state, material) = createLightMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =
     state
-    |> addGameObjectBasicMaterialComponent(gameObject, material)
+    |> addGameObjectLightMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
-
-let _getConfigData = () => 1 |> Obj.magic;
 
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
   |> AllMaterialTool.pregetGLSLData
-  |> InitBasicMaterialJob.getJob(_getConfigData(), [@bs] DeviceManagerSystem.unsafeGetGl(state));
+  |> LightMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;

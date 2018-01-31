@@ -9,4 +9,5 @@ let containSpecifyCount = (source: string, target: string, ~count=1, ()) =>
   };
 
 let containMultiline = (source: string, targetLineArray: list(string)) =>
-  targetLineArray |> List.for_all((targetLine) => Js.String.includes(targetLine, source));
+  targetLineArray
+  |> List.for_all((targetLine) => Js.String.includes(targetLine |> Js.String.trim, source));

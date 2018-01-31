@@ -158,6 +158,16 @@ let _ =
                   |> expect == true
                 }
               );
+              test(
+                "test vertex shader lib's glsl",
+                () => {
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                  GLSLTool.getVsSource(shaderSource)
+                  |> expect
+                  |> toContainString({|attribute vec3 a_position;
+|})
+                }
+              );
               describe(
                 "test modelMatrix instance shader libs",
                 () => {
@@ -251,16 +261,6 @@ let _ =
                       )
                     }
                   )
-                }
-              );
-              test(
-                "test vertex shader lib's glsl",
-                () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.getVsSource(shaderSource)
-                  |> expect
-                  |> toContainString({|attribute vec3 a_position;
-|})
                 }
               );
               describe(

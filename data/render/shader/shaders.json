@@ -56,10 +56,13 @@
           "name": "top"
         },
         {
-          "name": "normalMatrix_noInstance"
+          "name": "normal"
         },
         {
-          "name": "normal"
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "normalMatrix_noInstance"
         },
         {
           "name": "light_common"
@@ -68,10 +71,22 @@
           "name": "light_setWorldPosition"
         },
         {
-          "name": "no_diffuseMap"
+          "name": "noDiffuseMap"
         },
         {
-          "name": "no_specularMap"
+          "name": "noSpecularMap"
+        },
+        {
+          "name": "noLightMap"
+        },
+        {
+          "name": "noEmissionMap"
+        },
+        {
+          "name": "noNormalMap"
+        },
+        {
+          "name": "noShadowMap"
         },
         {
           "name": "light"

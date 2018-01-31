@@ -79,7 +79,6 @@ let getPMatrixOfCreateCameraControllerPerspectiveCamera = () =>
 let createCameraGameObject = (state) => {
   open GameObject;
   open CameraController;
-  open Sinon;
   let (state, cameraController) = createCameraControllerPerspectiveCamera(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
