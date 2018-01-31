@@ -7,6 +7,7 @@ let initData = () => {
   uniformRenderObjectSendModelDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformRenderObjectSendMaterialDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformShaderSendNoCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  uniformShaderSendCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformShaderSendCachableFunctionDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformInstanceSendNoCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(), */

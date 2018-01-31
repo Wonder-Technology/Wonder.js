@@ -14,27 +14,34 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 let addUniformSendDataByType =
     (
-      pos,
+      (pos, type_),
       (
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
+        shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       ),
-      ( getDataFunc, sendDataFunc )
+      getDataFunc
     ) => (
   renderObjectSendModelDataArr
   |> ArraySystem.push(
-       {pos, sendDataFunc: sendDataFunc, getDataFunc: getDataFunc |> Obj.magic}: uniformRenderObjectSendModelData
+       {
+         pos,
+         sendDataFunc: GLSLSenderUniformUtils.getSendNoCachableDataByType(type_),
+         getDataFunc: getDataFunc |> Obj.magic
+       }: uniformRenderObjectSendModelData
      ),
   renderObjectSendMaterialDataArr,
   shaderSendNoCachableDataArr,
+  shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
   instanceSendNoCachableDataArr
 );
 
-let setToUniformSendMap = (shaderIndex, uniformRenderObjectSendModelDataMap, renderObjectSendModelDataArr) =>
+let setToUniformSendMap =
+    (shaderIndex, uniformRenderObjectSendModelDataMap, renderObjectSendModelDataArr) =>
   uniformRenderObjectSendModelDataMap
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, renderObjectSendModelDataArr)
   |> ignore;

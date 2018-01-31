@@ -108,6 +108,14 @@ and uniformShaderSendNoCachableData = {
   getDataFunc: [@bs] (state => Float32Array.t),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
+and uniformShaderSendCachableData = {
+  shaderCacheMap,
+  name: string,
+  pos: uniformLocation,
+  getDataFunc: [@bs] (state => array(float)),
+  sendDataFunc:
+    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
+}
 and uniformShaderSendCachableFunctionData = {
   program,
   shaderCacheMap,
@@ -127,6 +135,7 @@ and glslSenderData = {
   uniformRenderObjectSendModelDataMap: array(array(uniformRenderObjectSendModelData)),
   uniformRenderObjectSendMaterialDataMap: array(array(uniformRenderObjectSendMaterialData)),
   uniformShaderSendNoCachableDataMap: array(array(uniformShaderSendNoCachableData)),
+  uniformShaderSendCachableDataMap: array(array(uniformShaderSendCachableData)),
   uniformShaderSendCachableFunctionDataMap: array(array(uniformShaderSendCachableFunctionData)),
   uniformInstanceSendNoCachableDataMap: array(array(uniformInstanceSendNoCachableData)),
   /* drawPointsFuncMap: array((webgl1Context => unit)), */

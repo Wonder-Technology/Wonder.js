@@ -224,8 +224,7 @@ let _ =
                   let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GLSLTool.getVsSource(shaderSource)
                   |> expect
-                  |> toContainString({|attribute vec3 a_normal;
-|})
+                  |> toContainString({|attribute vec3 a_normal;|})
                 }
               );
               test(

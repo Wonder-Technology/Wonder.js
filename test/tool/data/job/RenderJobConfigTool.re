@@ -54,6 +54,9 @@ let buildRenderJobConfig =
         ]
       },
       {
+        "name": "send_uniform_shader_data"
+      },
+      {
         "name": "render_basic"
       },
       {
@@ -89,6 +92,9 @@ let buildRenderJobConfig =
   },
   {
     "name": "clear_buffer"
+  },
+  {
+    "name": "send_uniform_shader_data"
   },
   {
     "name": "render_basic"

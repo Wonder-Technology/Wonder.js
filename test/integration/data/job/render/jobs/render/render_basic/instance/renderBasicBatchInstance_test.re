@@ -122,7 +122,7 @@ let _ =
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
             "u_color",
-            ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
+            (_, (gameObjectTransform, material), (cameraTransform, cameraController), state) =>
               state |> BasicMaterial.setBasicMaterialColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
             ()

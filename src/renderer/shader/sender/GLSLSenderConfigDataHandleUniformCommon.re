@@ -21,7 +21,7 @@ let _getModelMNoCachableData =
       TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
   );
 
-let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
+let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "vMatrix" =>
     GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
@@ -36,17 +36,17 @@ let _addCameraSendData = ((field, pos, type_), sendDataArrTuple) =>
       RenderDataSystem.getCameraPMatrixDataFromState
     )
   /* TODO test */
-  | "position" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
-      (type_, pos),
-      sendDataArrTuple,
-      RenderDataSystem.getCameraPositionDataFromState
-    )
   | "normalMatrix" =>
     GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraNormalMatrixDataFromState
+    )
+  | "position" =>
+    GLSLSenderConfigDataHandleUniformShaderCacheCommon.addUniformSendDataByType(
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+      RenderDataSystem.getCameraPositionDataFromState
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -85,9 +85,9 @@ let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sen
   switch field {
   | "color" =>
     GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos),
+      (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      (BasicMaterialAdminAci.unsafeGetColor, sendFloat3)
+      BasicMaterialAdminAci.unsafeGetColor
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -105,15 +105,15 @@ let _addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sen
   switch field {
   | "diffuseColor" =>
     GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos),
+      (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      (LightMaterialAdminAci.unsafeGetDiffuseColor, sendFloat3)
+      LightMaterialAdminAci.unsafeGetDiffuseColor
     )
   | "specularColor" =>
     GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos),
+      (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      (LightMaterialAdminAci.unsafeGetSpecularColor, sendFloat3)
+      LightMaterialAdminAci.unsafeGetSpecularColor
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -131,13 +131,13 @@ let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr
   switch field {
   | "mMatrix" =>
     GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
-      pos,
+      (pos, type_),
       sendDataArrTuple,
-      (_getModelMNoCachableData, sendMatrix4)
+      _getModelMNoCachableData
     )
   | "instance_mMatrix" =>
     GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
-      (type_, pos),
+      (pos, type_),
       sendDataArrTuple,
       _getModelMNoCachableData
     )
@@ -160,6 +160,7 @@ let _setToUniformSendMap =
         uniformRenderObjectSendModelDataMap,
         uniformRenderObjectSendMaterialDataMap,
         uniformShaderSendNoCachableDataMap,
+        uniformShaderSendCachableDataMap,
         uniformShaderSendCachableFunctionDataMap,
         uniformInstanceSendNoCachableDataMap
       },
@@ -168,6 +169,7 @@ let _setToUniformSendMap =
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
+        shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       )
@@ -190,12 +192,19 @@ let _setToUniformSendMap =
     shaderSendNoCachableDataArr
   )
   |> ignore;
+  GLSLSenderConfigDataHandleUniformShaderCacheCommon.setToUniformSendMap(
+    shaderIndex,
+    uniformShaderSendCachableDataMap,
+    shaderSendCachableDataArr
+  )
+  |> ignore;
   GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendCachableFunctionDataMap,
     shaderSendCachableFunctionDataArr
   )
   |> ignore;
+  /* TODO rename to GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon? */
   GLSLSenderConfigDataHandleUniformInstanceCommon.setToUniformSendMap(
     shaderIndex,
     uniformInstanceSendNoCachableDataMap,
@@ -206,8 +215,13 @@ let _setToUniformSendMap =
 };
 
 let _readUniforms =
-    ((gl, program, uniformLocationMap, uniformCacheMap), sendDataArrTuple, uniforms) =>
+    (
+      (gl, program, uniformLocationMap, uniformCacheMap: GLSLSenderType.shaderCacheMap),
+      sendDataArrTuple,
+      uniforms
+    ) =>
   switch uniforms {
+  /* TODO use record instead of tuple */
   | None => sendDataArrTuple
   | Some(uniforms) =>
     uniforms
@@ -221,7 +235,9 @@ let _readUniforms =
                  (
                    field,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
-                   type_
+                   name,
+                   type_,
+                   uniformCacheMap
                  ),
                  sendDataArrTuple
                )
@@ -295,7 +311,7 @@ let _readUniformSendData = (shaderLibDataArr, gl, program, (uniformLocationMap, 
              )
            }
        ),
-       ([||], [||], [||], [||], [||])
+       ([||], [||], [||], [||], [||], [||])
      );
 
 let _checkShouldNotAddBefore = (shaderIndex, state) =>
@@ -346,6 +362,8 @@ let unsafeGetUniformRenderObjectSendMaterialData = GLSLSenderConfigDataHandleUni
 let unsafeGetUniformRenderObjectSendModelData = GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.unsafeGetUniformSendData;
 
 let unsafeGetUniformShaderSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.unsafeGetUniformSendData;
+
+let unsafeGetUniformShaderSendCachableData = GLSLSenderConfigDataHandleUniformShaderCacheCommon.unsafeGetUniformSendData;
 
 let unsafeGetUniformShaderSendCachableFunctionData = GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.unsafeGetUniformSendData;
 

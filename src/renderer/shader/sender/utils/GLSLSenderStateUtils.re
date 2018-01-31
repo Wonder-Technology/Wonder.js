@@ -44,6 +44,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     uniformRenderObjectSendModelDataMap,
     uniformRenderObjectSendMaterialDataMap,
     uniformShaderSendNoCachableDataMap,
+    uniformShaderSendCachableDataMap,
     uniformShaderSendCachableFunctionDataMap,
     uniformInstanceSendNoCachableDataMap
     /* drawPointsFuncMap */
@@ -84,6 +85,11 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
           uniformShaderSendNoCachableDataMap
         ),
       /* TODO test */
+      uniformShaderSendCachableDataMap:
+        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+          intersectShaderIndexDataArray,
+          uniformShaderSendCachableDataMap
+        ),
       uniformShaderSendCachableFunctionDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,

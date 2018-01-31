@@ -158,6 +158,10 @@ let setGeometryIndices = Geometry.setGeometryIndices;
 
 let getGeometryIndices = Geometry.getGeometryIndices;
 
+let setGeometryNormals = Geometry.setGeometryNormals;
+
+let getGeometryNormals = Geometry.getGeometryNormals;
+
 let setGeometryVertices = Geometry.setGeometryVertices;
 
 let getGeometryVertices = Geometry.getGeometryVertices;

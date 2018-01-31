@@ -14,11 +14,12 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 let addUniformSendDataByType =
     (
-      (type_, pos),
+      (pos, type_),
       (
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
+        shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       ),
@@ -29,13 +30,23 @@ let addUniformSendDataByType =
       renderObjectSendModelDataArr,
       renderObjectSendMaterialDataArr,
       shaderSendNoCachableDataArr,
+      shaderSendCachableDataArr,
       shaderSendCachableFunctionDataArr,
       instanceSendNoCachableDataArr
       |> ArraySystem.push(
-           {pos, sendDataFunc: sendMatrix4, getDataFunc: getDataFunc}: uniformInstanceSendNoCachableData
+           {pos, sendDataFunc: sendMatrix4, getDataFunc}: uniformInstanceSendNoCachableData
          )
     )
-  | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="addUniformSendDataByType",
+        ~description={j|unknown type:$type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let setToUniformSendMap =

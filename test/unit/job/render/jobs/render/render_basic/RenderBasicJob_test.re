@@ -54,7 +54,7 @@ let _ =
               let state = state |> _render;
               useProgram |> getCallCount |> expect == 1
             }
-          );
+          )
           /* test
              ("different shader use different program",
              (
@@ -64,49 +64,49 @@ let _ =
              ); */
           /* TODO should test with more attribute */
           /* describe(
-            "disable all attributes",
-            () => {
-              let _prepareForDisable = (sandbox, state) => {
-                let state = _prepare(sandbox, state);
-                let pos = 0;
-                let getAttribLocation =
-                  GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
-                let disableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(
-                         ~sandbox,
-                         ~getAttribLocation,
-                         ~disableVertexAttribArray,
-                         ()
-                       )
-                     );
-                (state, pos, disableVertexAttribArray)
-              };
-              test(
-                "if switch program, disable all attributes",
-                () => {
-                  let (state, pos, disableVertexAttribArray) = _prepareForDisable(sandbox, state^);
-                  let state = state |> RenderJobsTool.initSystemAndRender;
-                  let state = state |> _render;
-                  let state = state |> ProgramTool.clearLastUsedProgram;
-                  let state = state |> _render;
-                  disableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 1
-                }
-              );
-              test(
-                "else, not disable",
-                () => {
-                  let (state, pos, disableVertexAttribArray) = _prepareForDisable(sandbox, state^);
-                  let state = state |> RenderJobsTool.initSystemAndRender;
-                  let state = state |> _render;
-                  let state = state |> _render;
-                  disableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 0
-                }
-              )
-            }
-          ) */
+               "disable all attributes",
+               () => {
+                 let _prepareForDisable = (sandbox, state) => {
+                   let state = _prepare(sandbox, state);
+                   let pos = 0;
+                   let getAttribLocation =
+                     GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                   let disableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
+                   let state =
+                     state
+                     |> FakeGlTool.setFakeGl(
+                          FakeGlTool.buildFakeGl(
+                            ~sandbox,
+                            ~getAttribLocation,
+                            ~disableVertexAttribArray,
+                            ()
+                          )
+                        );
+                   (state, pos, disableVertexAttribArray)
+                 };
+                 test(
+                   "if switch program, disable all attributes",
+                   () => {
+                     let (state, pos, disableVertexAttribArray) = _prepareForDisable(sandbox, state^);
+                     let state = state |> RenderJobsTool.initSystemAndRender;
+                     let state = state |> _render;
+                     let state = state |> ProgramTool.clearLastUsedProgram;
+                     let state = state |> _render;
+                     disableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 1
+                   }
+                 );
+                 test(
+                   "else, not disable",
+                   () => {
+                     let (state, pos, disableVertexAttribArray) = _prepareForDisable(sandbox, state^);
+                     let state = state |> RenderJobsTool.initSystemAndRender;
+                     let state = state |> _render;
+                     let state = state |> _render;
+                     disableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 0
+                   }
+                 )
+               }
+             ) */
         }
       );
       describe(
@@ -533,7 +533,11 @@ let _ =
               "send shader uniform data only once",
               () => {
                 let (state, _, gameObjectTransform, cameraTransform, cameraController) =
-                  prepareSendUinformDataFunc(sandbox, state^);
+                  prepareSendUinformDataFunc(
+                    sandbox,
+                    RenderBasicJobTool.prepareGameObject,
+                    state^
+                  );
                 let (state, gameObject2, _, _, _) =
                   RenderJobsTool.prepareGameObject(sandbox, state);
                 let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
@@ -575,13 +579,18 @@ let _ =
               3.,
               1.
             |]),
+            ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) => {
                 test(
                   "if not do any transform operation, should still send identity matrix value on the first send",
                   () => {
                     let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
-                      _prepareSendUinformData(sandbox, state^);
+                      _prepareSendUinformData(
+                        sandbox,
+                        RenderBasicJobTool.prepareGameObject,
+                        state^
+                      );
                     let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
                     let getUniformLocation =
@@ -617,7 +626,11 @@ let _ =
                       "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
                       () => {
                         let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
-                          _prepareSendUinformData(sandbox, state^);
+                          _prepareSendUinformData(
+                            sandbox,
+                            RenderBasicJobTool.prepareGameObject,
+                            state^
+                          );
                         let (state, gameObject2, _, _, _) =
                           RenderJobsTool.prepareGameObject(sandbox, state);
                         let state =
@@ -680,6 +693,7 @@ let _ =
               (-3.),
               1.
             |]),
+            ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) =>
                 testSendShaderUniformDataOnlyOnce("u_vMatrix", _prepareSendUinformData),
@@ -690,6 +704,7 @@ let _ =
             "u_pMatrix",
             (gameObjectTransform, cameraTransform, cameraController, state) => state,
             CameraControllerTool.getPMatrixOfCreateCameraControllerPerspectiveCamera(),
+            ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) =>
                 testSendShaderUniformDataOnlyOnce("u_pMatrix", _prepareSendUinformData),
@@ -698,9 +713,10 @@ let _ =
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
             "u_color",
-            ((gameObjectTransform, material), cameraTransform, cameraController, state) =>
+            (_, (gameObjectTransform, material), (cameraTransform, cameraController), state) =>
               state |> BasicMaterial.setBasicMaterialColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
+            ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) =>
                 describe(
@@ -711,10 +727,15 @@ let _ =
                       () => {
                         let name = "u_color";
                         let (state, _, (_, material1), _, _) =
-                          _prepareSendUinformData(sandbox, state^);
+                          _prepareSendUinformData(
+                            sandbox,
+                            RenderBasicJobTool.prepareGameObject,
+                            state^
+                          );
                         let (state, gameObject2, _, material2, _) =
                           RenderJobsTool.prepareGameObject(sandbox, state);
-                        let state = state |> BasicMaterial.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
+                        let state =
+                          state |> BasicMaterial.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =

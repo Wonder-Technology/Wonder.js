@@ -28,6 +28,29 @@ let setGeometryVertices =
   setVertices(geometry, data, state)
 };
 
+let getGeometryNormals = (geometry: int, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
+      ),
+    StateData.stateData.isDebug
+  );
+  [@bs] unsafeGetNormals(geometry, state)
+};
+
+let setGeometryNormals =
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)))
+      ),
+    StateData.stateData.isDebug
+  );
+  setNormals(geometry, data, state)
+};
+
 let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
