@@ -54,6 +54,19 @@ let _ =
                 }
               );
               test(
+                "compute and set normals",
+                () => {
+                  let (state, geometry1, geometry2) = _prepare();
+                  let state = state |> GeometryTool.initGeometrys;
+                  (getGeometryNormals(geometry1, state), getGeometryNormals(geometry2, state))
+                  |>
+                  expect == (
+                              BoxGeometryTool.getDefaultNormals(),
+                              BoxGeometryTool.getDefaultNormals()
+                            )
+                }
+              );
+              test(
                 "compute and set indices",
                 () => {
                   let (state, geometry1, geometry2) = _prepare();
@@ -91,64 +104,91 @@ let _ =
         }
       );
       describe(
-        "set vertices with array",
-        () =>
-          test(
-            "if vertices already exist, fill new data in it",
-            () => {
-              open GameObject;
-              let (state, geometry) = createBoxGeometry(state^);
-              let state = state |> GeometryTool.setVerticesWithArray(geometry, [|1., 2., 3.|]);
-              let newData = [|3., 3., 5.|];
-              let state = state |> GeometryTool.setVerticesWithArray(geometry, newData);
-              getGeometryVertices(geometry, state) |> expect == Float32Array.make(newData)
-            }
+        "test set points",
+        () => {
+          let _testSetVertexDataWithArray = (type_, getFunc, setFunc) =>
+            test(
+              {j|if $type_ already exist, fill new data in it|j},
+              () => {
+                open GameObject;
+                let (state, geometry) = createBoxGeometry(state^);
+                let state = state |> setFunc(geometry, [|1., 2., 3.|]);
+                let newData = [|3., 3., 5.|];
+                let state = state |> setFunc(geometry, newData);
+                getFunc(geometry, state) |> expect == Float32Array.make(newData)
+              }
+            );
+          let _testSetVertexDataWithTypeArray = (type_, getFunc, setFunc) =>
+            test(
+              {j|directly set it|j},
+              () => {
+                open GameObject;
+                let (state, geometry) = createBoxGeometry(state^);
+                let state = state |> setFunc(geometry, Float32Array.make([|1., 2., 3.|]));
+                let newData = Float32Array.make([|3., 5., 5.|]);
+                let state = state |> setFunc(geometry, newData);
+                getFunc(geometry, state) |> expect == newData
+              }
+            );
+          describe(
+            "set vertices with array",
+            () =>
+              _testSetVertexDataWithArray(
+                "vertices",
+                getGeometryVertices,
+                GeometryTool.setVerticesWithArray
+              )
+          );
+          describe(
+            "set vertices with type array",
+            () =>
+              _testSetVertexDataWithTypeArray("vertices", getGeometryVertices, setGeometryVertices)
+          );
+          describe(
+            "set normals with array",
+            () =>
+              _testSetVertexDataWithArray(
+                "normals",
+                getGeometryNormals,
+                GeometryTool.setNormalsWithArray
+              )
+          );
+          describe(
+            "set normals with type array",
+            () =>
+              _testSetVertexDataWithTypeArray("normals", getGeometryNormals, setGeometryNormals)
+          );
+          describe(
+            "set indices with array",
+            () =>
+              test(
+                "if indices already exist, fill new data in it",
+                () => {
+                  open GameObject;
+                  let (state, geometry) = createBoxGeometry(state^);
+                  let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
+                  let newData = [|3, 3, 5|];
+                  let state = state |> GeometryTool.setIndicesWithArray(geometry, newData);
+                  getGeometryIndices(geometry, state) |> expect == Uint16Array.make(newData)
+                }
+              )
+          );
+          describe(
+            "set indices with type array",
+            () =>
+              test(
+                "directly set it",
+                () => {
+                  open GameObject;
+                  let (state, geometry) = createBoxGeometry(state^);
+                  let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
+                  let newData = Uint16Array.make([|3, 5, 5|]);
+                  let state = state |> setGeometryIndices(geometry, newData);
+                  getGeometryIndices(geometry, state) |> expect == newData
+                }
+              )
           )
-      );
-      describe(
-        "set vertices with type array",
-        () =>
-          test(
-            "directly set it",
-            () => {
-              open GameObject;
-              let (state, geometry) = createBoxGeometry(state^);
-              let state = state |> GeometryTool.setVerticesWithArray(geometry, [|1., 2., 3.|]);
-              let newData = Float32Array.make([|3., 5., 5.|]);
-              let state = state |> setGeometryVertices(geometry, newData);
-              getGeometryVertices(geometry, state) |> expect == newData
-            }
-          )
-      );
-      describe(
-        "set indices with array",
-        () =>
-          test(
-            "if indices already exist, fill new data in it",
-            () => {
-              open GameObject;
-              let (state, geometry) = createBoxGeometry(state^);
-              let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
-              let newData = [|3, 3, 5|];
-              let state = state |> GeometryTool.setIndicesWithArray(geometry, newData);
-              getGeometryIndices(geometry, state) |> expect == Uint16Array.make(newData)
-            }
-          )
-      );
-      describe(
-        "set indices with type array",
-        () =>
-          test(
-            "directly set it",
-            () => {
-              open GameObject;
-              let (state, geometry) = createBoxGeometry(state^);
-              let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
-              let newData = Uint16Array.make([|3, 5, 5|]);
-              let state = state |> setGeometryIndices(geometry, newData);
-              getGeometryIndices(geometry, state) |> expect == newData
-            }
-          )
+        }
       );
       describe(
         "getDrawMode",
@@ -182,18 +222,23 @@ let _ =
           describe(
             "dispose data",
             () => {
+              let _prepare = (state) => {
+                let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                let state =
+                  VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                let state = state |> GeometryTool.initGeometrys;
+                let state =
+                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                (state, gameObject1, geometry1)
+              };
               test(
-                "remove from verticesMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
+                "remove from verticesMap, normalsMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
                 () => {
                   open StateDataType;
-                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
-                  let state = state |> GeometryTool.initGeometrys;
-                  let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  let (state, gameObject1, geometry1) = _prepare(state);
                   let {
                     verticesMap,
+                    normalsMap,
                     indicesMap,
                     configDataMap,
                     isInitMap,
@@ -203,13 +248,14 @@ let _ =
                     GeometryTool.getGeometryData(state);
                   (
                     verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    normalsMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     indicesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     configDataMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     isInitMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     computeDataFuncMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     gameObjectMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
                   )
-                  |> expect == (false, false, false, false, false, false)
+                  |> expect == (false, false, false, false, false, false, false)
                 }
               );
               test(
@@ -231,19 +277,37 @@ let _ =
                 "remove from buffer map",
                 () => {
                   open VboBufferType;
-                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
-                  let state = state |> GeometryTool.initGeometrys;
-                  let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-                  let {vertexBufferMap, elementArrayBufferMap} =
+                  let (state, gameObject1, geometry1) = _prepare(state);
+                  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
                     VboBufferTool.getVboBufferData(state);
                   (
                     vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    normalBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
                   )
-                  |> expect == (false, false)
+                  |> expect == (false, false, false)
+                }
+              );
+              test(
+                "collect typeArr to pool",
+                () => {
+                  open TypeArrayPoolType;
+                  let (state, gameObject1, geometry1) = _prepare(state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap} =
+                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                  (
+                    float32ArrayPoolMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                         BoxGeometryTool.getDefaultVertices() |> Float32Array.length
+                       )
+                    |> Js.Array.length,
+                    uint16ArrayPoolMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                         BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
+                       )
+                    |> Js.Array.length
+                  )
+                  |> expect == (2, 1)
                 }
               )
             }
@@ -433,7 +497,7 @@ let _ =
             "contract check",
             () =>
               test(
-                "expect dispose the alive component, but actual not",
+                "shouldn't dispose the alive component",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObject.initGameObject(gameObject1);
@@ -490,6 +554,7 @@ let _ =
                     "getGeometryVertices should error",
                     () => _testGetFunc(getGeometryVertices)
                   );
+                  test("getGeometryNormals should error", () => _testGetFunc(getGeometryNormals));
                   test("getGeometryIndices should error", () => _testGetFunc(getGeometryIndices));
                   test(
                     "getGeometryConfigData should error",
@@ -503,6 +568,7 @@ let _ =
                     "setGeometryVertices should error",
                     () => _testSetFunc(setGeometryVertices)
                   );
+                  test("setGeometryNormals should error", () => _testSetFunc(setGeometryNormals));
                   test("setGeometryIndices should error", () => _testSetFunc(setGeometryIndices))
                 }
               )

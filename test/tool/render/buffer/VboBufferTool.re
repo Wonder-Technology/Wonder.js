@@ -27,10 +27,11 @@ let getOrCreateInstanceBuffer = (sourceInstanceIndex: int, state: StateDataType.
 
 let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: StateDataType.state) => {
   open VboBufferType;
-  let {vertexBufferMap, elementArrayBufferMap} =
+  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
     VboBufferGetStateDataUtils.getVboBufferData(state);
   WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), vertexBufferMap);
-  WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), elementArrayBufferMap);
+  WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(1), normalBufferMap);
+  WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(2), elementArrayBufferMap);
   state
 };
 

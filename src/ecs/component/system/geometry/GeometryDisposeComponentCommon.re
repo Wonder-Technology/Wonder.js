@@ -12,6 +12,7 @@ let isAlive = (geometry: geometry, state: StateDataType.state) =>
 let _disposeData = (geometry: geometry, state: StateDataType.state) => {
   let {
     verticesMap,
+    normalsMap,
     indicesMap,
     configDataMap,
     isInitMap,
@@ -25,10 +26,11 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     |> GeometryTypeArrayPoolCommon.addTypeArrayToPool(
          geometry,
          MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
-         (verticesMap, indicesMap)
+         (verticesMap, normalsMap, indicesMap)
        );
   groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0) |> ignore;
   disposeSparseMapData(geometry, verticesMap) |> ignore;
+  disposeSparseMapData(geometry, normalsMap) |> ignore;
   disposeSparseMapData(geometry, indicesMap) |> ignore;
   disposeSparseMapData(geometry, configDataMap) |> ignore;
   disposeSparseMapData(geometry, isInitMap) |> ignore;

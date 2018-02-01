@@ -83,4 +83,6 @@ let getGroupCount = (geometry, state) => GeometryGroupCommon.getGroupCount(geome
 
 let setVerticesWithArray = GeometryOperateVerticesCommon.setVerticesWithArray;
 
+let setNormalsWithArray = GeometryOperateNormalsCommon.setNormalsWithArray;
+
 let setIndicesWithArray = GeometryOperateIndicesCommon.setIndicesWithArray;
