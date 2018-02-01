@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test front_render_light job",
+    "test front render light",
     () => {
       open Expect;
       open Expect.Operators;
