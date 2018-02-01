@@ -43,9 +43,47 @@
                 return [state, newBoxes];
             }
 
+            function createBasicBox(state) {
+                var [state, material] = wd.createBasicMaterial(state);
+
+                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+                var [state, meshRenderer] = wd.createMeshRenderer(state);
+
+                var [state, obj] = wd.createGameObject(state);
+
+                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var [state, geometry] = wd.createBoxGeometry(state);
+
+                state = wd.setBoxGeometryConfigData(geometry, {
+                    width: 5,
+                    height: 5,
+                    depth: 5
+                }, state);
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            }
 
             function initSample(state) {
                 // var [state, box1] = createBox(state);
+
+
+                // var [state, box2] = createBasicBox(state);
+
+
+                // var transform = wd.getGameObjectTransformComponent(box2, state);
+
+                // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
+
                 // var [state, box2] = createBox(state);
                 var [state, boxes] = createBoxes(20000, state);
 
