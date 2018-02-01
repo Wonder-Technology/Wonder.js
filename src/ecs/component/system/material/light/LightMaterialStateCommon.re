@@ -4,7 +4,6 @@ open LightMaterialType;
 
 let getMaterialData = (state: StateDataType.state) => state.lightMaterialData;
 
-/* TODO test */
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, diffuseColorMap, specularColorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
     state |> getMaterialData;

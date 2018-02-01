@@ -86,6 +86,21 @@ let _ =
         let state = state |> setBasicMaterialColor(material2, [|1., 0.1, 0.2|]);
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
+      let _prepareLightMaterialData = (state) => {
+        open LightMaterial;
+        open Js.Typed_array;
+        let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
+        let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
+        let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
+        let state = AllMaterialTool.prepareForInit(state);
+        let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        let state = LightMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state), state);
+        /* let diffuseColor2 = [|1., 0.1, 0.2|];
+           let specularColor2 = [|0., 0.1, 0.2|];
+           let state = state |> setLightMaterialDiffuseColor(material2, diffuseColor2);
+           let state = state |> setLightMaterialSpecularColor(material2, specularColor2); */
+        (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -194,12 +209,13 @@ let _ =
                   |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
                   (
                     TransformTool.getTransformData(state).localToWorldMatrixMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2),
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                    |> JudgeTool.isUndefined,
                     TransformTool.getTransformData(state).localPositionMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                    |> JudgeTool.isUndefined
                   )
-                  |> expect
-                  |> not_ == (Js.Undefined.empty |> Obj.magic, Js.Undefined.empty |> Obj.magic)
+                  |> expect == (false, false)
                 }
               );
               test(
@@ -249,46 +265,144 @@ let _ =
                   data.verticesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  data.normalsMap
+                  |> Obj.magic
+                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
                   data.indicesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                  let {verticesMap, indicesMap} = GeometryTool.getGeometryData(state);
+                  let {verticesMap, normalsMap, indicesMap} = GeometryTool.getGeometryData(state);
                   (
-                    verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2),
-                    indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    verticesMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> JudgeTool.isUndefined,
+                    normalsMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> JudgeTool.isUndefined,
+                    indicesMap
+                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> JudgeTool.isUndefined
                   )
-                  |> expect
-                  |> not_ == (Js.Undefined.empty |> Obj.magic)
+                  |> expect == (false, false, false)
                 }
               )
           );
           describe(
             "deep copy material data",
+            () => {
+              describe(
+                "test basic material",
+                () =>
+                  test(
+                    "change copied state shouldn't affect source state",
+                    () => {
+                      open BasicMaterialType;
+                      let (
+                        state,
+                        gameObject1,
+                        gameObject2,
+                        gameObject3,
+                        material1,
+                        material2,
+                        material3
+                      ) =
+                        _prepareBasicMaterialData(state);
+                      let copiedState = StateTool.deepCopyStateForRestore(state);
+                      let data = BasicMaterialTool.getMaterialData(copiedState);
+                      data.colorMap
+                      |> Obj.magic
+                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      let {colorMap} = BasicMaterialTool.getMaterialData(state);
+                      colorMap
+                      |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                      |> JudgeTool.isUndefined
+                      |> expect == false
+                    }
+                  )
+              );
+              describe(
+                "test light material",
+                () =>
+                  test(
+                    "change copied state shouldn't affect source state",
+                    () => {
+                      open LightMaterialType;
+                      let (
+                        state,
+                        gameObject1,
+                        gameObject2,
+                        gameObject3,
+                        material1,
+                        material2,
+                        material3
+                      ) =
+                        _prepareLightMaterialData(state);
+                      let copiedState = StateTool.deepCopyStateForRestore(state);
+                      let data = LightMaterialTool.getMaterialData(copiedState);
+                      data.diffuseColorMap
+                      |> Obj.magic
+                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      data.specularColorMap
+                      |> Obj.magic
+                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      let {diffuseColorMap, specularColorMap} =
+                        LightMaterialTool.getMaterialData(state);
+                      (
+                        diffuseColorMap
+                        |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                        |> JudgeTool.isUndefined,
+                        specularColorMap
+                        |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                        |> JudgeTool.isUndefined
+                      )
+                      |> expect == (false, false)
+                    }
+                  )
+              )
+            }
+          );
+          describe(
+            "deep copy light data",
             () =>
-              test(
-                "change copied state shouldn't affect source state",
+              describe(
+                "test ambient light",
                 () => {
-                  open BasicMaterialType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    material1,
-                    material2,
-                    material3
-                  ) =
-                    _prepareBasicMaterialData(state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let data = BasicMaterialTool.getMaterialData(copiedState);
-                  data.colorMap
-                  |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
-                  let {colorMap} = BasicMaterialTool.getMaterialData(state);
-                  colorMap
-                  |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
-                  |> expect
-                  |> not_ == (Js.Undefined.empty |> Obj.magic)
+                  describe(
+                    "copy type array data",
+                    () =>
+                      test(
+                        "copy colors",
+                        () => {
+                          open StateDataType;
+                          open SourceInstanceType;
+                          let (state, gameObject1, light1) =
+                            AmbientLightTool.createGameObject(state^);
+                          let color1 = [|1., 1., 0.|];
+                          let state = state |> AmbientLight.setAmbientLightColor(light1, color1);
+                          let copiedState = StateTool.deepCopyStateForRestore(state);
+                          let color2 = [|0., 1., 0.|];
+                          let copiedState =
+                            copiedState |> AmbientLight.setAmbientLightColor(light1, color2);
+                          AmbientLight.getAmbientLightColor(light1, state) |> expect == color1
+                        }
+                      )
+                  );
+                  test(
+                    "shadow copy mappedIndexMap, gameObjectMap",
+                    () =>
+                      StateDataType.(
+                        AmbientLightType.(
+                          StateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {mappedIndexMap, gameObjectMap} =
+                                AmbientLightTool.getLightData(state);
+                              [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
+                            },
+                            state^
+                          )
+                        )
+                      )
+                  )
                 }
               )
           );
@@ -372,7 +486,7 @@ let _ =
             "deep copy gameObject data",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   GameObjectType.(
                     StateTool.testShadowCopyArrayLikeMapData(
@@ -386,6 +500,7 @@ let _ =
                           meshRendererMap,
                           basicMaterialMap,
                           lightMaterialMap,
+                          ambientLightMap,
                           sourceInstanceMap,
                           objectInstanceMap
                         } =
@@ -399,6 +514,7 @@ let _ =
                           meshRendererMap |> Obj.magic,
                           basicMaterialMap |> Obj.magic,
                           lightMaterialMap |> Obj.magic,
+                          ambientLightMap |> Obj.magic,
                           sourceInstanceMap |> Obj.magic,
                           objectInstanceMap |> Obj.magic
                         |]
@@ -590,7 +706,7 @@ let _ =
             "restore geometry data to target state",
             () =>
               test(
-                "add current state->geometryData->verticesMap, indicesMap typeArr to pool",
+                "add current state->geometryData->verticesMap, normalsMap, indicesMap typeArr to pool",
                 () => {
                   open StateDataType;
                   open TypeArrayPoolType;
@@ -614,28 +730,64 @@ let _ =
                     float32ArrayPoolMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(
                          BoxGeometryTool.getDefaultVertices() |> Float32Array.length
-                       ),
+                       )
+                    |> Js.Array.length,
                     uint16ArrayPoolMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(
                          BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
                        )
+                    |> Js.Array.length
                   )
-                  |>
-                  expect == (
-                              [|BoxGeometryTool.getDefaultVertices()|],
-                              [|BoxGeometryTool.getDefaultIndices()|]
-                            )
+                  |> expect == (2, 1)
                 }
               )
           );
-          test(
+          describe(
             "restore material data to target state",
-            () =>
-              _testRestoreStateEqualTargetState(
-                state,
-                _prepareBasicMaterialData,
-                BasicMaterialTool.getMaterialData
+            () => {
+              test(
+                "test basic material",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareBasicMaterialData,
+                    BasicMaterialTool.getMaterialData
+                  )
+              );
+              test(
+                "test light material",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareLightMaterialData,
+                    LightMaterialTool.getMaterialData
+                  )
               )
+            }
+          );
+          describe(
+            "restore light data to target state",
+            () => {
+              let _prepareAmbientLightData = (state) => {
+                open LightMaterial;
+                open Js.Typed_array;
+                let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
+                let (state, gameObject2, light2) = AmbientLightTool.createGameObject(state);
+                let (state, gameObject3, light3) = AmbientLightTool.createGameObject(state);
+                let state = AllMaterialTool.prepareForInit(state);
+                let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                (state, gameObject1, gameObject2, gameObject3, light1, light2, light3)
+              };
+              test(
+                "test ambient light",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareAmbientLightData,
+                    AmbientLightTool.getLightData
+                  )
+              )
+            }
           );
           describe(
             "restore sourceInstance data to target state",

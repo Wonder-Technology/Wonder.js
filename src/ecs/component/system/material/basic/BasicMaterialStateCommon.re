@@ -6,7 +6,6 @@ open BasicMaterialType;
 
 let getMaterialData = (state: StateDataType.state) => state.basicMaterialData;
 
-/* TODO duplicate */
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
     state |> getMaterialData;

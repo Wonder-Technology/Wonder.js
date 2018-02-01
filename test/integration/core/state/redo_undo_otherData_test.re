@@ -36,6 +36,7 @@ let _ =
         open VboBufferType;
         let {
           vertexBufferMap,
+          normalBufferMap,
           elementArrayBufferMap,
           modelMatrixInstanceBufferMap,
           vertexArrayBufferPool,
@@ -46,18 +47,27 @@ let _ =
         let buffer1 = Obj.magic(0);
         let buffer2 = Obj.magic(1);
         let buffer3 = Obj.magic(2);
+        let buffer4 = Obj.magic(3);
         vertexArrayBufferPool |> Js.Array.push(buffer1) |> ignore;
-        elementArrayBufferPool |> Js.Array.push(buffer2) |> ignore;
-        modelMatrixInstanceBufferPool |> Js.Array.push(buffer3) |> ignore;
+        vertexArrayBufferPool |> Js.Array.push(buffer2) |> ignore;
+        elementArrayBufferPool |> Js.Array.push(buffer3) |> ignore;
+        modelMatrixInstanceBufferPool |> Js.Array.push(buffer4) |> ignore;
         let geometry1 = 0;
         let bufferInMap1 = Obj.magic(10);
         let bufferInMap2 = Obj.magic(11);
         let bufferInMap3 = Obj.magic(12);
+        let bufferInMap4 = Obj.magic(13);
         vertexBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap1);
-        elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap2);
+        normalBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap2);
+        elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
         modelMatrixInstanceBufferMap
-        |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
-        (state, geometry1, (bufferInMap1, bufferInMap2, bufferInMap3), (buffer1, buffer2, buffer3))
+        |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap4);
+        (
+          state,
+          geometry1,
+          (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4),
+          (buffer1, buffer2, buffer3, buffer4)
+        )
       };
       beforeEach(
         () => {
@@ -105,16 +115,11 @@ let _ =
                 "clean all buffer map and all buffer pool data",
                 () => {
                   open VboBufferType;
-                  let (
-                    state,
-                    geometry1,
-                    (bufferInMap1, bufferInMap2, bufferInMap3),
-                    (buffer1, buffer2, buffer3)
-                  ) =
-                    _prepareVboBufferData(state^);
+                  let (state, _, _, _) = _prepareVboBufferData(state^);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {
                     vertexBufferMap,
+                    normalBufferMap,
                     elementArrayBufferMap,
                     modelMatrixInstanceBufferMap,
                     vertexArrayBufferPool,
@@ -124,13 +129,14 @@ let _ =
                     VboBufferTool.getVboBufferData(copiedState);
                   (
                     vertexBufferMap,
+                    normalBufferMap,
                     elementArrayBufferMap,
                     modelMatrixInstanceBufferMap,
                     vertexArrayBufferPool,
                     elementArrayBufferPool,
                     modelMatrixInstanceBufferPool
                   )
-                  |> expect == ([||], [||], [||], [||], [||], [||])
+                  |> expect == ([||], [||], [||], [||], [||], [||], [||])
                 }
               )
           );
@@ -211,38 +217,42 @@ let _ =
                 "clean buffer map data",
                 () => {
                   open VboBufferType;
-                  let (
-                    state,
-                    geometry1,
-                    (bufferInMap1, bufferInMap2, bufferInMap3),
-                    (buffer1, buffer2, buffer3)
-                  ) =
-                    _prepareVboBufferData(state^);
+                  let (state, _, _, _) = _prepareVboBufferData(state^);
                   let (currentState, _, _, _) =
                     _prepareVboBufferData(StateTool.createNewCompleteState());
                   let newState = StateTool.restore(currentState, state);
-                  let {vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap} =
+                  let {
+                    vertexBufferMap,
+                    normalBufferMap,
+                    elementArrayBufferMap,
+                    modelMatrixInstanceBufferMap
+                  } =
                     newState |> VboBufferTool.getVboBufferData;
-                  (vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap)
-                  |> expect == ([||], [||], [||])
+                  (
+                    vertexBufferMap,
+                    normalBufferMap,
+                    elementArrayBufferMap,
+                    modelMatrixInstanceBufferMap
+                  )
+                  |> expect == ([||], [||], [||], [||])
                 }
               );
               test(
-                "add current state->vboBufferData->vertexBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap buffer to pool",
+                "add current state->vboBufferData->vertexBufferMap, normalBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap buffer to pool",
                 () => {
                   open VboBufferType;
                   let (
                     state,
                     geometry1,
-                    (bufferInMap1, bufferInMap2, bufferInMap3),
-                    (buffer1, buffer2, buffer3)
+                    (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4),
+                    (buffer1, buffer2, buffer3, buffer4)
                   ) =
                     _prepareVboBufferData(state^);
                   let (
                     currentState,
                     _,
-                    (bufferInMap4, bufferInMap5, bufferInMap6),
-                    (buffer4, buffer5, buffer6)
+                    (bufferInMap4, bufferInMap5, bufferInMap6, bufferInMap7),
+                    (buffer4, buffer5, buffer6, buffer7)
                   ) =
                     _prepareVboBufferData(StateTool.createNewCompleteState());
                   let _ = StateTool.restore(currentState, state);
@@ -255,9 +265,9 @@ let _ =
                   (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool)
                   |>
                   expect == (
-                              [|buffer4, bufferInMap4|],
-                              [|buffer5, bufferInMap5|],
-                              [|buffer6, bufferInMap6|]
+                              [|buffer4, buffer5, bufferInMap4, bufferInMap5|],
+                              [|buffer6, bufferInMap6|],
+                              [|buffer7, bufferInMap7|]
                             )
                 }
               )

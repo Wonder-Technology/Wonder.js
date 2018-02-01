@@ -17,6 +17,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> GLSLSenderSystem.deepCopyStateForRestore
   |> BasicMaterialAdmin.deepCopyStateForRestore
   |> LightMaterialAdmin.deepCopyStateForRestore
+  |> AmbientLightAdmin.deepCopyStateForRestore
   |> ShaderSystem.deepCopyStateForRestore
   |> ProgramSystem.deepCopyStateForRestore
   |> GLSLLocationSystem.deepCopyStateForRestore
@@ -52,6 +53,7 @@ let restore =
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
   |> BasicMaterialAdmin.restore(gl, currentState)
   |> LightMaterialAdmin.restore(gl, currentState)
+  |> AmbientLightAdmin.restore(currentState)
   |> RenderDataSystem.restore(currentState)
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)

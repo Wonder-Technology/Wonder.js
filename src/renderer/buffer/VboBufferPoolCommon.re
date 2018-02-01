@@ -21,6 +21,9 @@ let getInstanceBuffer = (gl, state: StateDataType.state) => {
   _getBufferAndSetBufferMap(gl, modelMatrixInstanceBufferPool)
 };
 
+let _getBufferFromBufferMap = (index: int, bufferMap) =>
+  WonderCommonlib.SparseMapSystem.get(index, bufferMap);
+
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(index, bufferMap)
   |> WonderLog.Contract.ensureCheck(
@@ -41,21 +44,39 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
        StateData.stateData.isDebug
      );
 
+let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
+  switch (_getBufferFromBufferMap(geometryIndex, bufferMap)) {
+  | Some(buffer) => pool |> ArraySystem.push(buffer)
+  | None => pool
+  };
+
 let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
-  let {vertexBufferMap, elementArrayBufferMap, vertexArrayBufferPool, elementArrayBufferPool} =
+  let {
+        vertexBufferMap,
+        normalBufferMap,
+        elementArrayBufferMap,
+        vertexArrayBufferPool,
+        elementArrayBufferPool
+      } as data =
     VboBufferGetStateDataUtils.getVboBufferData(state);
-  vertexArrayBufferPool
-  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, vertexBufferMap))
-  |> ignore;
-  elementArrayBufferPool
-  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, elementArrayBufferMap))
-  |> ignore;
-  state
+  {
+    ...state,
+    vboBufferData: {
+      ...data,
+      vertexArrayBufferPool:
+        vertexArrayBufferPool
+        |> _addBufferToPool(geometryIndex, vertexBufferMap)
+        |> _addBufferToPool(geometryIndex, normalBufferMap),
+      elementArrayBufferPool:
+        elementArrayBufferPool |> _addBufferToPool(geometryIndex, elementArrayBufferMap)
+    }
+  }
 };
 
 let addAllBufferToPool = (state: StateDataType.state) => {
   let {
     vertexBufferMap,
+    normalBufferMap,
     elementArrayBufferMap,
     modelMatrixInstanceBufferMap,
     vertexArrayBufferPool,
@@ -64,6 +85,10 @@ let addAllBufferToPool = (state: StateDataType.state) => {
   } =
     VboBufferGetStateDataUtils.getVboBufferData(state);
   vertexBufferMap
+  |> SparseMapSystem.forEachValid(
+       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
+  normalBufferMap
   |> SparseMapSystem.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );

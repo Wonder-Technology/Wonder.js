@@ -28,7 +28,7 @@ let _ =
         () =>
           describe(
             "test create gameObject after dispose one",
-            () => {
+            () =>
               test(
                 "should send new one's material uniform data",
                 () => {
@@ -58,7 +58,6 @@ let _ =
                   |> toCalledWith([|pos|] |> Js.Array.concat(colorArr2 |> Obj.magic))
                 }
               )
-            }
           )
       );
       describe(

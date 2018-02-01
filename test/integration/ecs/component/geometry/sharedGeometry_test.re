@@ -18,11 +18,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state :=
-            TestTool.init(
-              ~sandbox,
-              ()
-            )
+          state := TestTool.init(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -296,37 +292,25 @@ let _ =
           let _prepare = (state) => {
             open StateDataType;
             let (state, gameObject1, geometry1, gameObject2, geometry2) = _createAndInit(state);
-            let arrayBuffer1 = Obj.magic(10);
-            let arrayBuffer2 = Obj.magic(11);
-            let elementArrayBuffer1 = Obj.magic(12);
-            let elementArrayBuffer2 = Obj.magic(13);
-            let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-            createBuffer |> onCall(0) |> returns(arrayBuffer1);
-            createBuffer |> onCall(1) |> returns(elementArrayBuffer1);
-            createBuffer |> onCall(2) |> returns(arrayBuffer2);
-            createBuffer |> onCall(3) |> returns(elementArrayBuffer2);
-            let state =
-              state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-            let resultArrayBuffer1 = VboBufferTool.getOrCreateArrayBuffer(geometry1, state);
-            let resultElementArrayBuffer1 =
-              VboBufferTool.getOrCreateElementArrayBuffer(geometry1, state);
-            let resultArrayBuffer2 = VboBufferTool.getOrCreateArrayBuffer(geometry2, state);
-            let resultElementArrayBuffer2 =
-              VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
+            let (
+              state,
+              (arrayBuffer1, arrayBuffer2, arrayBuffer3, arrayBuffer4),
+              (elementArrayBuffer1, elementArrayBuffer2),
+              createBuffer
+            ) =
+              VboBufferTool.prepareCreatedBuffer(sandbox, state);
+            let (resultVertexArrayBuffer1, resultNormalArrayBuffer1, resultElementArrayBuffer1) =
+              VboBufferTool.getOrCreateAllBuffers(geometry1, state);
+            let (resultVertexArrayBuffer2, resultNormalArrayBuffer2, resultElementArrayBuffer2) =
+              VboBufferTool.getOrCreateAllBuffers(geometry2, state);
             (
               state,
               (gameObject1, geometry1, gameObject2, geometry2),
-              (
-                createBuffer,
-                arrayBuffer1,
-                elementArrayBuffer1,
-                resultArrayBuffer1,
-                resultElementArrayBuffer1,
-                arrayBuffer2,
-                elementArrayBuffer2,
-                resultArrayBuffer2,
-                resultElementArrayBuffer2
-              )
+              (arrayBuffer1, arrayBuffer2, arrayBuffer3, arrayBuffer4),
+              (elementArrayBuffer1, elementArrayBuffer2),
+              (resultVertexArrayBuffer1, resultNormalArrayBuffer1, resultElementArrayBuffer1),
+              (resultVertexArrayBuffer2, resultNormalArrayBuffer2, resultElementArrayBuffer2),
+              createBuffer
             )
           };
           describe(
@@ -339,7 +323,7 @@ let _ =
                 "if has other alive shared geometry, not add buffer to pool",
                 () => {
                   open VboBufferType;
-                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _) =
+                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _, _, _, _, _) =
                     _prepare(state^);
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
@@ -356,7 +340,7 @@ let _ =
                 "else, add buffer to pool",
                 () => {
                   open VboBufferType;
-                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _) =
+                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _, _, _, _, _) =
                     _prepare(state^);
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
@@ -368,7 +352,7 @@ let _ =
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length
                   )
-                  |> expect == (1, 1)
+                  |> expect == (2, 1)
                 }
               )
             }
@@ -383,7 +367,7 @@ let _ =
                 "if has other alive shared geometry, not add buffer to pool",
                 () => {
                   open VboBufferType;
-                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _) =
+                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _, _, _, _, _) =
                     _prepare(state^);
                   let state = state |> GameObject.batchDisposeGameObject([|gameObject1|]);
                   let {vertexArrayBufferPool, elementArrayBufferPool} =
@@ -399,7 +383,7 @@ let _ =
                 "else, add buffer to pool",
                 () => {
                   open VboBufferType;
-                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _) =
+                  let (state, (gameObject1, geometry1, gameObject2, geometry2), _, _, _, _, _) =
                     _prepare(state^);
                   let state =
                     state |> GameObject.batchDisposeGameObject([|gameObject1, gameObject2|]);
@@ -409,7 +393,7 @@ let _ =
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length
                   )
-                  |> expect == (1, 1)
+                  |> expect == (2, 1)
                 }
               )
             }
@@ -420,21 +404,20 @@ let _ =
               let (
                 state,
                 _,
-                (
-                  createBuffer,
-                  arrayBuffer1,
-                  elementArrayBuffer1,
-                  resultArrayBuffer1,
-                  resultElementArrayBuffer1,
-                  arrayBuffer2,
-                  elementArrayBuffer2,
-                  resultArrayBuffer2,
-                  resultElementArrayBuffer2
-                )
+                (arrayBuffer1, arrayBuffer2, arrayBuffer3, arrayBuffer4),
+                (elementArrayBuffer1, elementArrayBuffer2),
+                (resultVertexArrayBuffer1, resultNormalArrayBuffer1, resultElementArrayBuffer1),
+                (resultVertexArrayBuffer2, resultNormalArrayBuffer2, resultElementArrayBuffer2),
+                createBuffer
               ) =
                 _prepare(state^);
-              (createBuffer |> getCallCount, resultArrayBuffer2, resultElementArrayBuffer2)
-              |> expect == (2, arrayBuffer1, elementArrayBuffer1)
+              (
+                createBuffer |> getCallCount,
+                resultVertexArrayBuffer2,
+                resultNormalArrayBuffer2,
+                resultElementArrayBuffer2
+              )
+              |> expect == (3, arrayBuffer1, arrayBuffer2, elementArrayBuffer1)
             }
           )
         }

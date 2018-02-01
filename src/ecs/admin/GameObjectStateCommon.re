@@ -30,7 +30,6 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       cameraControllerMap: cameraControllerMap |> SparseMapSystem.copy,
       geometryMap: geometryMap |> SparseMapSystem.copy,
       meshRendererMap: meshRendererMap |> SparseMapSystem.copy,
-      /* TODO test */
       basicMaterialMap: basicMaterialMap |> SparseMapSystem.copy,
       lightMaterialMap: lightMaterialMap |> SparseMapSystem.copy,
       sourceInstanceMap: sourceInstanceMap |> SparseMapSystem.copy,

@@ -8,7 +8,6 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
   ...state,
   vboBufferData: {
     vertexBufferMap: [||],
-    /* TODO test */
     normalBufferMap: [||],
     elementArrayBufferMap: [||],
     modelMatrixInstanceBufferMap: [||],
@@ -19,7 +18,11 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
 };
 
 let restore = (currentState, targetState) => {
-  let (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool) =
+  let (
+    vertexArrayBufferPool,
+    elementArrayBufferPool,
+    modelMatrixInstanceBufferPool
+  ) =
     VboBufferPoolCommon.addAllBufferToPool(currentState);
   {
     ...targetState,

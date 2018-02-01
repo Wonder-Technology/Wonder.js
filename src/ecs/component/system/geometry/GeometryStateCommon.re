@@ -25,7 +25,6 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
           because vertices, indices are read-only data, so need to deep copy
           */
         verticesMap: verticesMap |> SparseMapSystem.copy,
-        /* TODO test */
         normalsMap: normalsMap |> SparseMapSystem.copy,
         indicesMap: indicesMap |> SparseMapSystem.copy,
         computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
@@ -39,11 +38,11 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
 };
 
 let restore = (currentState, {float32ArrayPoolMap, uint16ArrayPoolMap} as sharedData, targetState) => {
-  let {verticesMap, indicesMap} = getGeometryData(currentState);
+  let {verticesMap, normalsMap, indicesMap} = getGeometryData(currentState);
   let (float32ArrayPoolMap, uint16ArrayPoolMap) =
     GeometryTypeArrayPoolCommon.addAllTypeArrayToPool(
       MemoryConfigSystem.getMaxTypeArrayPoolSize(targetState),
-      (verticesMap, indicesMap),
+      (verticesMap, normalsMap, indicesMap),
       (float32ArrayPoolMap, uint16ArrayPoolMap)
     );
   (targetState, {...sharedData, float32ArrayPoolMap, uint16ArrayPoolMap})

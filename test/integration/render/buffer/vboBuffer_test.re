@@ -38,30 +38,50 @@ let _ =
                 () => {
                   open StateDataType;
                   let (state, gameObject1, geometry1) = _prepare(state^);
-                  let arrayBuffer1 = Obj.magic(10);
-                  let arrayBuffer2 = Obj.magic(11);
-                  let elementArrayBuffer1 = Obj.magic(12);
-                  let elementArrayBuffer2 = Obj.magic(13);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                  createBuffer |> onCall(0) |> returns(arrayBuffer1);
-                  createBuffer |> onCall(1) |> returns(elementArrayBuffer1);
-                  createBuffer |> onCall(2) |> returns(arrayBuffer2);
-                  createBuffer |> onCall(3) |> returns(elementArrayBuffer2);
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let resultArrayBuffer1 = VboBufferTool.getOrCreateArrayBuffer(geometry1, state);
-                  let resultElementArrayBuffer1 =
-                    VboBufferTool.getOrCreateElementArrayBuffer(geometry1, state);
+                  /* let arrayBuffer1 = Obj.magic(20);
+                     let arrayBuffer2 = Obj.magic(21);
+                     let arrayBuffer3 = Obj.magic(22);
+                     let arrayBuffer4 = Obj.magic(23);
+                     let elementArrayBuffer1 = Obj.magic(12);
+                     let elementArrayBuffer2 = Obj.magic(13);
+                     let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                     createBuffer |> onCall(0) |> returns(arrayBuffer1);
+                     createBuffer |> onCall(1) |> returns(arrayBuffer2);
+                     createBuffer |> onCall(2) |> returns(elementArrayBuffer1);
+                     createBuffer |> onCall(3) |> returns(arrayBuffer3);
+                     createBuffer |> onCall(4) |> returns(arrayBuffer4);
+                     createBuffer |> onCall(5) |> returns(elementArrayBuffer2); */
+                  let (
+                    state,
+                    (arrayBuffer1, arrayBuffer2, arrayBuffer3, arrayBuffer4),
+                    (elementArrayBuffer1, elementArrayBuffer2),
+                    createBuffer
+                  ) =
+                    VboBufferTool.prepareCreatedBuffer(sandbox, state);
+                  VboBufferTool.getOrCreateAllBuffers(geometry1, state);
+                  let (
+                    resultVertexArrayBuffer1,
+                    resultNormalArrayBuffer1,
+                    resultElementArrayBuffer1
+                  ) =
+                    VboBufferTool.getOrCreateAllBuffers(geometry1, state);
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GameObject.initGameObject(gameObject2);
-                  let resultArrayBuffer2 = VboBufferTool.getOrCreateArrayBuffer(geometry2, state);
-                  let resultElementArrayBuffer2 =
-                    VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
-                  (createBuffer |> getCallCount, resultArrayBuffer2, resultElementArrayBuffer2)
-                  |> expect == (2, arrayBuffer1, elementArrayBuffer1)
+                  let (
+                    resultVertexArrayBuffer2,
+                    resultNormalArrayBuffer2,
+                    resultElementArrayBuffer2
+                  ) =
+                    VboBufferTool.getOrCreateAllBuffers(geometry2, state);
+                  (
+                    createBuffer |> getCallCount,
+                    resultVertexArrayBuffer2,
+                    resultNormalArrayBuffer2,
+                    resultElementArrayBuffer2
+                  )
+                  |> expect == (3, arrayBuffer2, arrayBuffer1, elementArrayBuffer1)
                 }
               )
             }

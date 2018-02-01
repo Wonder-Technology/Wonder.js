@@ -12,11 +12,7 @@ let _getData =
 let _setData =
   [@bs]
   (
-    (
-      sourceComponent,
-      (diffuseColor, specularColor: array(float)),
-      state: StateDataType.state
-    ) =>
+    (sourceComponent, (diffuseColor, specularColor: array(float)), state: StateDataType.state) =>
       LightMaterialOperateCommon.(
         state
         |> setDiffuseColor(sourceComponent, diffuseColor)
@@ -25,12 +21,7 @@ let _setData =
   );
 
 let handleCloneComponent =
-    (
-      sourceComponent,
-      countRangeArr: array(int),
-      isShareMaterial: bool,
-      state: StateDataType.state
-    ) =>
+    (sourceComponent, countRangeArr: array(int), isShareMaterial: bool, state: StateDataType.state) =>
   MaterialCloneComponentCommon.handleCloneComponent(
     (sourceComponent, countRangeArr, isShareMaterial),
     (

@@ -6,13 +6,13 @@ let getLightData = (state: StateDataType.state) => state.ambientLightData;
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {index, buffer, colors, gameObjectMap} = state |> getLightData;
+  let copiedBuffer = CopyStateUtils.copyArrayBuffer(buffer);
   {
     ...state,
     ambientLightData: {
       index,
-      /* TODO test */
-      buffer: CopyStateUtils.copyArrayBuffer(buffer),
-      colors: CopyStateUtils.copyFloat32TypeArrayFromBuffer(buffer),
+      buffer: copiedBuffer,
+      colors: CopyStateUtils.copyFloat32TypeArrayFromBuffer(copiedBuffer),
       mappedIndexMap: gameObjectMap |> SparseMapSystem.copy,
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy
     }
