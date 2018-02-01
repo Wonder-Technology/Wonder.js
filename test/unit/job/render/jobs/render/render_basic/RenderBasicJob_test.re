@@ -9,11 +9,6 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateTool.createState());
-      let _prepare = (sandbox, state) => {
-        let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
-        let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
-        state
-      };
       let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
       beforeEach(
         () => {
@@ -25,18 +20,13 @@ let _ =
       describe(
         "use program",
         () => {
-          let _prepareForUseProgram = (sandbox, state) => {
-            let state = _prepare(sandbox, state);
-            let program = Obj.magic(1);
-            let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
-            let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
-                 );
-            (state, program, useProgram)
+          let _prepare = (sandbox, state) => {
+            let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+            state
           };
+          let _prepareForUseProgram = (sandbox, state) =>
+            RenderJobsTool.prepareForUseProgram(sandbox, _prepare, state);
           test(
             "test",
             () => {
@@ -112,6 +102,11 @@ let _ =
       describe(
         "send attribute data",
         () => {
+          let _prepare = (sandbox, state) => {
+            let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+            state
+          };
           describe(
             "init vbo buffers when first send",
             () => {
@@ -121,23 +116,21 @@ let _ =
                 let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
                 (state, geometry)
               };
+              test(
+                "create buffer",
+                () => {
+                  let (state, _) = _prepare(sandbox, state^);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                  getCallCount(createBuffer) |> expect == 2
+                }
+              );
               describe(
                 "init vertex buffer",
                 () => {
-                  test(
-                    "create buffer",
-                    () => {
-                      let (state, _) = _prepare(sandbox, state^);
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                           );
-                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      getCallCount(createBuffer) |> expect == 2
-                    }
-                  );
                   test(
                     "bufferData",
                     () => {
@@ -202,20 +195,6 @@ let _ =
               describe(
                 "init index buffer",
                 () => {
-                  test(
-                    "create buffer",
-                    () => {
-                      let (state, geometry) = _prepare(sandbox, state^);
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                           );
-                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      getCallCount(createBuffer) |> expect == 2
-                    }
-                  );
                   test(
                     "bufferData",
                     () => {
@@ -288,12 +267,16 @@ let _ =
               describe(
                 "optimize",
                 () => {
+                  let _prepare = (sandbox, state) => {
+                    let (state, _, geometry, _, _) =
+                      RenderBasicJobTool.prepareGameObject(sandbox, state);
+                    let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+                    (state, geometry)
+                  };
                   test(
                     "if lastSendGeometry === geometryIndex, not send",
                     () => {
-                      let (state, _, geometry, _, _) =
-                        RenderBasicJobTool.prepareGameObject(sandbox, state^);
-                      let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+                      let (state, geometry) = _prepare(sandbox, state^);
                       let (state, _, _, _, _) =
                         RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
                           sandbox,
@@ -315,7 +298,7 @@ let _ =
                   test(
                     "else, send",
                     () => {
-                      let state = _prepare(sandbox, state^);
+                      let (state, geometry) = _prepare(sandbox, state^);
                       let (state, _, _, _, _) =
                         RenderBasicJobTool.prepareGameObject(sandbox, state);
                       let float = 1;
@@ -553,33 +536,12 @@ let _ =
       describe(
         "send uniform data",
         () => {
-          let testSendShaderUniformDataOnlyOnce = (name, prepareSendUinformDataFunc) =>
-            test(
-              "send shader uniform data only once",
-              () => {
-                let (state, _, gameObjectTransform, cameraTransform, cameraController) =
-                  prepareSendUinformDataFunc(
-                    sandbox,
-                    RenderBasicJobTool.prepareGameObject,
-                    state^
-                  );
-                let (state, gameObject2, _, _, _) =
-                  RenderBasicJobTool.prepareGameObject(sandbox, state);
-                let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-                let pos = 0;
-                let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
-                     );
-                let state =
-                  state
-                  |> RenderJobsTool.initSystemAndRender
-                  |> RenderJobsTool.updateSystem
-                  |> _render;
-                uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 1
-              }
+          let testSendShaderUniformMatrix4DataOnlyOnce = (name, prepareSendUinformDataFunc) =>
+            RenderJobsTool.testSendShaderUniformMatrix4DataOnlyOnce(
+              sandbox,
+              name,
+              (prepareSendUinformDataFunc, RenderBasicJobTool.prepareGameObject),
+              state
             );
           GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
@@ -721,7 +683,7 @@ let _ =
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) =>
-                testSendShaderUniformDataOnlyOnce("u_vMatrix", _prepareSendUinformData),
+                testSendShaderUniformMatrix4DataOnlyOnce("u_vMatrix", _prepareSendUinformData),
             ()
           );
           GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
@@ -732,7 +694,7 @@ let _ =
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
               (_prepareSendUinformData) =>
-                testSendShaderUniformDataOnlyOnce("u_pMatrix", _prepareSendUinformData),
+                testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", _prepareSendUinformData),
             ()
           );
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
@@ -871,34 +833,6 @@ let _ =
                         }
                       )
                     }
-                  );
-                  describe(
-                    "test create gameObject after dispose one",
-                    () =>
-                      test(
-                        "should bind new one's index buffer",
-                        () => {
-                          let (state, gameObject1, _, _, _) =
-                            RenderBasicJobTool.prepareGameObject(sandbox, state^);
-                          let (state, _, _, _) =
-                            CameraControllerTool.createCameraGameObject(state);
-                          let (state, bindBuffer, element_array_buffer) =
-                            _prepareForElementArrayBuffer(state);
-                          let state = state |> _render;
-                          let state = state |> GameObject.disposeGameObject(gameObject1);
-                          let (state, gameObject2, geometry2, _, _) =
-                            RenderBasicJobTool.prepareGameObject(sandbox, state);
-                          let state = state |> GameObject.initGameObject(gameObject2);
-                          let bindElementArrayBufferCallCountAfterFirstRender =
-                            bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
-                          let state = state |> _render;
-                          let bindElementArrayBufferCallCountAfterSecondRender =
-                            bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
-                          bindElementArrayBufferCallCountAfterSecondRender
-                          |> expect == bindElementArrayBufferCallCountAfterFirstRender
-                          * 2
-                        }
-                      )
                   )
                 }
               );
