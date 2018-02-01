@@ -7,10 +7,9 @@ open AmbientLightStateCommon;
 let isAlive = (light, state: StateDataType.state) =>
   LightDisposeComponentCommon.isAlive(light, AmbientLightHelper.getBufferMaxCount());
 
-let _disposeData = (sourceIndex, {index, colors, isColorDirtys, gameObjectMap} as data) => {
+let _disposeData = (sourceIndex, {index, colors, gameObjectMap} as data) => {
   let gameObjectMap = LightDisposeComponentCommon.disposeData(sourceIndex, gameObjectMap);
   let colorDataSize = AmbientLightHelper.getColorDataSize();
-  let isColorDirtyDataSize = AmbientLightHelper.getIsDirtyDataSize();
   let lastComponentIndex = pred(index);
   {
     ...data,
@@ -22,13 +21,6 @@ let _disposeData = (sourceIndex, {index, colors, isColorDirtys, gameObjectMap} a
         colors,
         colorDataSize,
         AmbientLightHelper.getDefaultColor()
-      ),
-    isColorDirtys:
-      LightDisposeComponentCommon.deleteSingleValueBySwapAndResetUint8TypeArr(
-        sourceIndex * isColorDirtyDataSize,
-        lastComponentIndex * isColorDirtyDataSize,
-        isColorDirtys,
-        AmbientLightHelper.getDefaultIsColorDirty()
       ),
     gameObjectMap
   }

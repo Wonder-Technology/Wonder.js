@@ -17,9 +17,3 @@ let deepCopyStateForRestore = AmbientLightStateCommon.deepCopyStateForRestore;
 let restore = AmbientLightStateCommon.restore;
 
 let isAlive = AmbientLightDisposeComponentCommon.isAlive;
-
-let isColorDirty = (light, state: StateDataType.state) =>
-  AmbientLightOperateCommon.isColorDirty(light, state);
-
-let cleanColorDirty = (light, state: StateDataType.state) =>
-  AmbientLightOperateCommon.cleanColorDirty(light, state);

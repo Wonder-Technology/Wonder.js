@@ -5,7 +5,7 @@ open AmbientLightType;
 let getLightData = (state: StateDataType.state) => state.ambientLightData;
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
-  let {index, buffer, colors, isColorDirtys, gameObjectMap} = state |> getLightData;
+  let {index, buffer, colors, gameObjectMap} = state |> getLightData;
   {
     ...state,
     ambientLightData: {
@@ -13,7 +13,6 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       /* TODO test */
       buffer: CopyStateUtils.copyArrayBuffer(buffer),
       colors: CopyStateUtils.copyFloat32TypeArrayFromBuffer(buffer),
-      isColorDirtys: CopyStateUtils.copyUint8TypeArrayFromBuffer(buffer),
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy
     }
   }
