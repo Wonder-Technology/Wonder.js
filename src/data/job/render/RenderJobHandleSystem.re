@@ -11,6 +11,7 @@ let _getRenderJobHandles = () => [
   ("get_camera_data", GetCameraDataJob.getJob),
   ("clear_color", ClearColorJob.getJob),
   ("clear_buffer", ClearBufferJob.getJob),
+  ("clear_last_send_component", ClearLastSendComponentJob.getJob),
   ("send_uniform_shader_data", SendUniformShaderDataJob.getJob),
   ("render_basic", RenderBasicJob.getJob),
   ("front_render_light", FrontRenderLightJob.getJob)

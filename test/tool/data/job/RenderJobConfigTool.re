@@ -54,6 +54,9 @@ let buildRenderJobConfig =
         ]
       },
       {
+        "name": "clear_last_send_component"
+      },
+      {
         "name": "send_uniform_shader_data"
       },
       {
@@ -65,6 +68,7 @@ let buildRenderJobConfig =
     ]
   }
 ]
+
         |},
       ~initJobs={|
 [
@@ -92,6 +96,9 @@ let buildRenderJobConfig =
   },
   {
     "name": "clear_buffer"
+  },
+  {
+    "name": "clear_last_send_component"
   },
   {
     "name": "send_uniform_shader_data"
