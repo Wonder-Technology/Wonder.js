@@ -170,35 +170,6 @@ let _ =
           describe(
             "test load render config files",
             () => {
-              /* let _buildFakeFetch = (sandbox) => {
-                   let fetch = createEmptyStubWithJsObjSandbox(sandbox);
-                   let (
-                     renderSetting,
-                     initPipelines,
-                     renderPipelines,
-                     initJobs,
-                     renderJobs,
-                     shaders,
-                     shaderLibs
-                   ) =
-                     RenderJobConfigTool.buildRenderJobConfig();
-                   fetch
-                   |> onCall(5)
-                   |> returns(_buildFakeFetchJsonResponse(renderSetting))
-                   |> onCall(6)
-                   |> returns(_buildFakeFetchJsonResponse(initPipelines))
-                   |> onCall(7)
-                   |> returns(_buildFakeFetchJsonResponse(renderPipelines))
-                   |> onCall(8)
-                   |> returns(_buildFakeFetchJsonResponse(initJobs))
-                   |> onCall(9)
-                   |> returns(_buildFakeFetchJsonResponse(renderJobs))
-                   |> onCall(10)
-                   |> returns(_buildFakeFetchJsonResponse(shaders))
-                   |> onCall(11)
-                   |> returns(_buildFakeFetchJsonResponse(shaderLibs));
-                   fetch
-                 }; */
               testPromise(
                 "should pass dataDir for get json file path",
                 () => {
@@ -243,7 +214,8 @@ let _ =
                                              name: "simple_basic_render",
                                              jobs: [|
                                                {name: "preget_glslData", flags: None},
-                                               {name: "init_basic_material", flags: None}
+                                               {name: "init_basic_material", flags: None},
+                                               {name: "init_light_material", flags: None}
                                              |]
                                            }
                                          |],
@@ -263,20 +235,27 @@ let _ =
                                                      "STENCIL_BUFFER"
                                                    |])
                                                },
-                                               {name: "render_basic", flags: None}
+                                               {name: "clear_last_send_component", flags: None},
+                                               {name: "send_uniform_shader_data", flags: None},
+                                               {name: "render_basic", flags: None},
+                                               {name: "front_render_light", flags: None}
                                              |]
                                            }
                                          |],
                                          [|
                                            {name: "preget_glslData", shader: None},
-                                           {name: "init_basic_material", shader: None}
+                                           {name: "init_basic_material", shader: None},
+                                           {name: "init_light_material", shader: None}
                                          |],
                                          [|
                                            {name: "get_render_array", shader: None},
                                            {name: "get_camera_data", shader: None},
                                            {name: "clear_color", shader: None},
                                            {name: "clear_buffer", shader: None},
-                                           {name: "render_basic", shader: None}
+                                           {name: "clear_last_send_component", shader: None},
+                                           {name: "send_uniform_shader_data", shader: None},
+                                           {name: "render_basic", shader: None},
+                                           {name: "front_render_light", shader: None}
                                          |]
                                        )
                              |> resolve
@@ -291,39 +270,18 @@ let _ =
                       |> LoaderManagerSystem.load("", fetch)
                       |> then_(
                            (state) =>
-                             RenderJobConfigTool.getShaders(state)
+                             RenderJobConfigTool.getShaders(state).static_branchs
                              |>
-                             expect == {
-                                         static_branchs: [|
-                                           {
-                                             name: "modelMatrix_instance",
-                                             value: [|
-                                               "modelMatrix_noInstance",
-                                               "modelMatrix_hardware_instance",
-                                               "modelMatrix_batch_instance"
-                                             |]
-                                           }
-                                         |],
-                                         groups: [|
-                                           {name: "top", value: [|"common", "vertex"|]},
-                                           {name: "end", value: [|"end"|]}
-                                         |],
-                                         material_shaders: [|
-                                           {
-                                             name: "render_basic",
-                                             shader_libs: [|
-                                               {type_: Some("group"), name: "top"},
-                                               {
-                                                 type_: Some("static_branch"),
-                                                 name: "modelMatrix_instance"
-                                               },
-                                               {type_: None, name: "basic"},
-                                               {type_: None, name: "basic_end"},
-                                               {type_: Some("group"), name: "end"}
-                                             |]
-                                           }
-                                         |]
-                                       }
+                             expect == [|
+                                         {
+                                           name: "modelMatrix_instance",
+                                           value: [|
+                                             "modelMatrix_noInstance",
+                                             "modelMatrix_hardware_instance",
+                                             "modelMatrix_batch_instance"
+                                           |]
+                                         }
+                                       |]
                              |> resolve
                          )
                     }
