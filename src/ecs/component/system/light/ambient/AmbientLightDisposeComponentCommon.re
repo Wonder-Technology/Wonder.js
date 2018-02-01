@@ -13,25 +13,41 @@ let isAlive = (light, state: StateDataType.state) =>
       )
     );
 
+let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
+  mappedSourceIndex >= lastComponentIndex ?
+    mappedIndexMap :
+    mappedIndexMap |> AmbientLightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
+
+let _swapData =
+    ((mappedSourceIndex, lastComponentIndex), (mappedIndexMap, dataSize, defaultData), typeArr) =>
+  mappedSourceIndex >= lastComponentIndex ?
+    typeArr :
+    LightDisposeComponentCommon.deleteBySwapAndResetFloat32TypeArr(
+      mappedSourceIndex * dataSize,
+      lastComponentIndex * dataSize,
+      typeArr,
+      dataSize,
+      defaultData
+    );
+
 let _disposeData = (sourceIndex, {index, colors, gameObjectMap, mappedIndexMap} as data) => {
   let gameObjectMap = LightDisposeComponentCommon.disposeData(sourceIndex, gameObjectMap);
   let colorDataSize = AmbientLightHelper.getColorDataSize();
   let lastComponentIndex = pred(index);
+  let mappedSourceIndex = mappedIndexMap |> AmbientLightIndexCommon.getMappedIndex(sourceIndex);
   {
     ...data,
     index: pred(index),
     mappedIndexMap:
       mappedIndexMap
-      |> AmbientLightIndexCommon.setMappedIndex(lastComponentIndex, sourceIndex)
+      |> _swapIndex(mappedSourceIndex, lastComponentIndex)
       |> AmbientLightIndexCommon.markDisposed(sourceIndex),
     colors:
-      LightDisposeComponentCommon.deleteBySwapAndResetFloat32TypeArr(
-        sourceIndex * colorDataSize,
-        lastComponentIndex * colorDataSize,
-        colors,
-        colorDataSize,
-        AmbientLightHelper.getDefaultColor()
-      ),
+      colors
+      |> _swapData(
+           (mappedSourceIndex, lastComponentIndex),
+           (mappedIndexMap, colorDataSize, AmbientLightHelper.getDefaultColor())
+         ),
     gameObjectMap
   }
 };

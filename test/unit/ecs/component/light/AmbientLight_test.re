@@ -204,6 +204,39 @@ let _ =
                               light3 |> expect == 1
                             }
                           )
+                      );
+                      test(
+                        "test dispose multi ones",
+                        () => {
+                          open AmbientLightType;
+                          let (state, gameObject1, light1) =
+                            AmbientLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            AmbientLightTool.createGameObject(state);
+                          let (state, gameObject3, light3) =
+                            AmbientLightTool.createGameObject(state);
+                          let color1 = [|1., 1., 0.|];
+                          let color2 = [|0., 1., 0.|];
+                          let color3 = [|0., 1., 1.|];
+                          let state = state |> AmbientLight.setAmbientLightColor(light1, color1);
+                          let state = state |> AmbientLight.setAmbientLightColor(light2, color2);
+                          let state = state |> AmbientLight.setAmbientLightColor(light3, color3);
+                          let state =
+                            state
+                            |> GameObject.disposeGameObjectAmbientLightComponent(
+                                 gameObject1,
+                                 light1
+                               );
+                          let state =
+                            state
+                            |> GameObject.disposeGameObjectAmbientLightComponent(
+                                 gameObject3,
+                                 light3
+                               );
+                          /* let {colors} = AmbientLightTool.getLightData(state);
+                             WonderLog.Log.print(colors) |> ignore; */
+                          AmbientLight.getAmbientLightColor(light2, state) |> expect == color2
+                        }
                       )
                       /* test(
                            "the light in [0-(lightData.index-1)] should be all alive",
