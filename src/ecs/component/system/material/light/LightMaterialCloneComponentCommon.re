@@ -20,7 +20,7 @@ let _setData =
       LightMaterialOperateCommon.(
         state
         |> setDiffuseColor(sourceComponent, diffuseColor)
-        |> setSpecularColor(sourceComponent, diffuseColor)
+        |> setSpecularColor(sourceComponent, specularColor)
       )
   );
 
