@@ -1,4 +1,4 @@
-let isAlive = (light, maxCount) => light < maxCount;
+/* let isAlive = (light, maxCount) => light < maxCount; */
 
 let deleteBySwapAndResetFloat32TypeArr =
     (sourceIndex, targetIndex, typeArr, length, defaultValueArr) => {

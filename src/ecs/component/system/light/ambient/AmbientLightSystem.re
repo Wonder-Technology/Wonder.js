@@ -17,3 +17,9 @@ let deepCopyStateForRestore = AmbientLightStateCommon.deepCopyStateForRestore;
 let restore = AmbientLightStateCommon.restore;
 
 let isAlive = AmbientLightDisposeComponentCommon.isAlive;
+
+let getMappedIndex = AmbientLightIndexCommon.getMappedIndex;
+
+let setMappedIndex = AmbientLightIndexCommon.setMappedIndex;
+
+let getMappedIndexMap = AmbientLightIndexCommon.getMappedIndexMap

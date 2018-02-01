@@ -12,7 +12,7 @@ let send =
              (state, index) => {
                let name = "u_ambient";
                [@bs]
-               GLSLSenderSystem.sendVec3(
+               GLSLSenderSystem.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (

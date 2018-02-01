@@ -1,10 +1,10 @@
 open Js.Typed_array;
 
-let getFloat3 = (index: int, typeArray: Float32Array.t) => (
+let getFloat3 = (index: int, typeArray: Float32Array.t) => [|
   Float32Array.unsafe_get(typeArray, index),
   Float32Array.unsafe_get(typeArray, index + 1),
   Float32Array.unsafe_get(typeArray, index + 2)
-);
+|];
 
 let setFloat3 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(

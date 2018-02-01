@@ -4,13 +4,13 @@ open StateDataType;
 
 open AmbientLightStateCommon;
 
-let getColor = (light, state: StateDataType.state) =>
-  AmbientLightHelper.getColor(light, getLightData(state).colors);
+let getColor = (mappedIndex, state: StateDataType.state) =>
+  AmbientLightHelper.getColor(mappedIndex, getLightData(state).colors);
 
-let setColor = (light, color: array(float), state: StateDataType.state) => {
+let setColor = (mappedIndex, color: array(float), state: StateDataType.state) => {
   ...state,
   ambientLightData: {
     ...getLightData(state),
-    colors: AmbientLightHelper.setColor(light, color, getLightData(state).colors)
+    colors: AmbientLightHelper.setColor(mappedIndex, color, getLightData(state).colors)
   }
 };

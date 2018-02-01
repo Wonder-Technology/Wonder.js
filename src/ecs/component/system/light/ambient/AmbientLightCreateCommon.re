@@ -7,10 +7,20 @@ let create =
   (
     (state: StateDataType.state) =>
       {
-        let {index} as data = AmbientLightStateCommon.getLightData(state);
-        ({...state, ambientLightData: {...data, index: succ(index)}}, index)
+        let {index, mappedIndexMap} as data = AmbientLightStateCommon.getLightData(state);
+        (
+          {
+            ...state,
+            ambientLightData: {
+              ...data,
+              index: succ(index),
+              mappedIndexMap:
+                mappedIndexMap |> AmbientLightIndexCommon.setMappedIndex(index, index)
+            }
+          },
+          index
+        )
       }
-      /* TODO test */
       |> WonderLog.Contract.ensureCheck(
            ((state, index)) => {
              open WonderLog;
@@ -18,8 +28,8 @@ let create =
              open Operators;
              let maxIndex = AmbientLightHelper.getBufferMaxCount() - 1;
              test(
-               Log.buildAssertMessage(~expect={j|index <= $maxIndex|j}, ~actual={j|is $index|j}),
-               () => index |> assertLte(Int, maxIndex)
+               Log.buildAssertMessage(~expect={j|<= $maxIndex|j}, ~actual={j|is $index|j}),
+               () => assertLte(Int, index, maxIndex)
              )
            },
            StateData.stateData.isDebug

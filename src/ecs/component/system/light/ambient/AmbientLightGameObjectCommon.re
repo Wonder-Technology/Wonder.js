@@ -2,8 +2,8 @@ open AmbientLightType;
 
 open AmbientLightStateCommon;
 
-let getGameObject = (light, state: StateDataType.state) =>
-  LightGameObjectCommon.getGameObject(light, getLightData(state).gameObjectMap);
+let getGameObject = (mappedIndex, state: StateDataType.state) =>
+  LightGameObjectCommon.getGameObject(mappedIndex, getLightData(state).gameObjectMap);
 
-let unsafeGetGameObject = (light, state: StateDataType.state) =>
-  LightGameObjectCommon.unsafeGetGameObject(light, getLightData(state).gameObjectMap);
+let unsafeGetGameObject = (mappedIndex, state: StateDataType.state) =>
+  LightGameObjectCommon.unsafeGetGameObject(mappedIndex, getLightData(state).gameObjectMap);

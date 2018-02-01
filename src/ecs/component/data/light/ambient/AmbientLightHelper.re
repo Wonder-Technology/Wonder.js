@@ -2,7 +2,7 @@ open AmbientLightType;
 
 open StateDataType;
 
-let getBufferMaxCount = () => 1;
+let getBufferMaxCount = () => 3;
 
 let getColorDataSize = () => 3;
 
@@ -46,5 +46,11 @@ let _initBufferData = () => {
 
 let initData = () => {
   let (buffer, colors) = _initBufferData();
-  {index: 0, buffer, colors, gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty()}
+  {
+    index: 0,
+    buffer,
+    colors,
+    mappedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+    gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  }
 };

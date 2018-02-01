@@ -12,7 +12,11 @@ let getAmbientLightGameObject = (light, state: StateDataType.state) => {
       ),
     StateData.stateData.isDebug
   );
-  getGameObject(light, state) |> Js.Option.getExn
+  getGameObject(
+    AmbientLightSystem.getMappedIndex(light, AmbientLightSystem.getMappedIndexMap(state)),
+    state
+  )
+  |> Js.Option.getExn
 };
 
 let getAmbientLightColor = (light, state: StateDataType.state) => {
@@ -23,7 +27,10 @@ let getAmbientLightColor = (light, state: StateDataType.state) => {
       ),
     StateData.stateData.isDebug
   );
-  getColor(light, state)
+  getColor(
+    AmbientLightSystem.getMappedIndex(light, AmbientLightSystem.getMappedIndexMap(state)),
+    state
+  )
 };
 
 let setAmbientLightColor = (light, color, state: StateDataType.state) => {
@@ -34,5 +41,9 @@ let setAmbientLightColor = (light, color, state: StateDataType.state) => {
       ),
     StateData.stateData.isDebug
   );
-  setColor(light, color, state)
+  setColor(
+    AmbientLightSystem.getMappedIndex(light, AmbientLightSystem.getMappedIndexMap(state)),
+    color,
+    state
+  )
 };

@@ -13,6 +13,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       /* TODO test */
       buffer: CopyStateUtils.copyArrayBuffer(buffer),
       colors: CopyStateUtils.copyFloat32TypeArrayFromBuffer(buffer),
+      mappedIndexMap: gameObjectMap |> SparseMapSystem.copy,
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy
     }
   }

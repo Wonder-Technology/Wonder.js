@@ -22,7 +22,7 @@ let _ =
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _) = AmbientLightTool.createAmbientLightGameObject(state);
+            let (state, _, _) = AmbientLightTool.createGameObject(state);
             let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
             state
           };
@@ -53,7 +53,7 @@ let _ =
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _) = AmbientLightTool.createAmbientLightGameObject(state);
+            let (state, _, _) = AmbientLightTool.createGameObject(state);
             let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
             state
           };
@@ -250,7 +250,7 @@ let _ =
                   let _prepare = (sandbox, state) => {
                     let (state, _, geometry, _, _) =
                       FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                    let (state, _, _) = AmbientLightTool.createAmbientLightGameObject(state);
+                    let (state, _, _) = AmbientLightTool.createGameObject(state);
                     let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
                     (state, geometry)
                   };
@@ -371,7 +371,7 @@ let _ =
           let _prepare = (sandbox, state) => {
             let (state, gameObject, _, material, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, light) = AmbientLightTool.createAmbientLightGameObject(state);
+            let (state, _, light) = AmbientLightTool.createGameObject(state);
             let (state, _, cameraTransform, _) =
               CameraControllerTool.createCameraGameObject(state);
             (state, gameObject, material, light, cameraTransform)
@@ -489,7 +489,7 @@ let _ =
                            let (state, gameObject, _, material, _) =
                              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                            let (state, _, light) =
-                             AmbientLightTool.createAmbientLightGameObject(state);
+                             AmbientLightTool.createGameObject(state);
                            let (state, _, cameraTransform, _) =
                              CameraControllerTool.createCameraGameObject(state);
                            (state, gameObject, material, light, cameraTransform)
@@ -527,6 +527,23 @@ let _ =
                   describe(
                     "test send ambient light data",
                     () => {
+                      let _setFakeGl = (sandbox, state) => {
+                        let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                        let pos = 0;
+                        let getUniformLocation =
+                          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_ambient");
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~uniform3f,
+                                 ~getUniformLocation,
+                                 ()
+                               )
+                             );
+                        (state, pos, uniform3f)
+                      };
                       test(
                         "send u_ambient",
                         () => {
@@ -534,20 +551,7 @@ let _ =
                             _prepare(sandbox, state^);
                           let state =
                             state |> AmbientLight.setAmbientLightColor(light, [|1., 0., 0.5|]);
-                          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                          let pos = 0;
-                          let getUniformLocation =
-                            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_ambient");
-                          let state =
-                            state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(
-                                   ~sandbox,
-                                   ~uniform3f,
-                                   ~getUniformLocation,
-                                   ()
-                                 )
-                               );
+                          let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
                             |> RenderJobsTool.initSystemAndRender
@@ -570,26 +574,49 @@ let _ =
                             FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                           let state =
                             state |> AmbientLight.setAmbientLightColor(light, [|1., 0., 0.5|]);
-                          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                          let pos = 0;
-                          let getUniformLocation =
-                            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_ambient");
-                          let state =
-                            state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(
-                                   ~sandbox,
-                                   ~uniform3f,
-                                   ~getUniformLocation,
-                                   ()
-                                 )
-                               );
+                          let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
                             |> RenderJobsTool.initSystemAndRender
                             |> RenderJobsTool.updateSystem
                             |> _render;
                           uniform3f |> withOneArg(pos) |> getCallCount |> expect == 1
+                        }
+                      );
+                      test(
+                        "test send after dispose one",
+                        () => {
+                          let (state, gameObject, material, light, cameraTransform) =
+                            _prepare(sandbox, state^);
+                          let lightGameObject1 =
+                            AmbientLight.getAmbientLightGameObject(light, state);
+                          let (state, lightGameObject2, light2) =
+                            AmbientLightTool.createGameObject(state);
+                          let (state, lightGameObject3, light3) =
+                            AmbientLightTool.createGameObject(state);
+                          let color1 = [|1., 0., 0.5|];
+                          let color2 = [|0., 1., 0.5|];
+                          let color3 = [|0., 0., 1.|];
+                          let state = state |> AmbientLight.setAmbientLightColor(light, color1);
+                          let state = state |> AmbientLight.setAmbientLightColor(light2, color2);
+                          let state = state |> AmbientLight.setAmbientLightColor(light3, color3);
+                          let state = state |> GameObject.disposeGameObject(lightGameObject1);
+                          let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
+                          let state =
+                            state
+                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.updateSystem
+                            |> _render;
+                          let stub = uniform3f |> withOneArg(pos);
+                          (
+                            stub |> Obj.magic |> getSpecificArg(0),
+                            stub |> Obj.magic |> getSpecificArg(1)
+                          )
+                          |>
+                          expect == (
+                                      [pos |> Obj.magic, ...color3 |> Array.to_list],
+                                      [pos |> Obj.magic, ...color2 |> Array.to_list]
+                                    )
                         }
                       )
                     }
@@ -613,7 +640,7 @@ let _ =
                          FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                        /* (state, gameObject, geometry, material, meshRenderer) */
                        let (state, lightGameObject, light) =
-                         AmbientLightTool.createAmbientLightGameObject(state);
+                         AmbientLightTool.createGameObject(state);
                        (state, lightGameObject, light, material, geometry)
                      },
                    ~testFunc=
