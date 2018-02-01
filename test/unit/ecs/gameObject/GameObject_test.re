@@ -143,6 +143,34 @@ let _ =
                       hasGameObjectBasicMaterialComponent(gameObject, state) |> expect == true
                     }
                   )
+              );
+              describe(
+                "getGameObjectLightMaterialComponent",
+                () =>
+                  test(
+                    "get material component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, material) = LightMaterial.createLightMaterial(state);
+                      let state =
+                        state |> addGameObjectLightMaterialComponent(gameObject, material);
+                      hasGameObjectLightMaterialComponent(gameObject, state) |> expect == true
+                    }
+                  )
+              );
+              describe(
+                "hasGameObjectLightMaterialComponent",
+                () =>
+                  test(
+                    "has material component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, material) = LightMaterial.createLightMaterial(state);
+                      let state =
+                        state |> addGameObjectLightMaterialComponent(gameObject, material);
+                      hasGameObjectLightMaterialComponent(gameObject, state) |> expect == true
+                    }
+                  )
               )
             }
           );
@@ -150,7 +178,7 @@ let _ =
             "test geometry component",
             () => {
               describe(
-                "getGameObjectBasicMaterialComponent",
+                "",
                 () =>
                   test(
                     "get geometry component",
@@ -206,6 +234,37 @@ let _ =
                       let state =
                         state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
                       hasGameObjectMeshRendererComponent(gameObject, state) |> expect == true
+                    }
+                  )
+              )
+            }
+          );
+          describe(
+            "test light component",
+            () => {
+              describe(
+                "getGameObjectAmbientLightComponent",
+                () =>
+                  test(
+                    "get light component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, light) = AmbientLight.createAmbientLight(state);
+                      let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
+                      getGameObjectAmbientLightComponent(gameObject, state) |> expect == light
+                    }
+                  )
+              );
+              describe(
+                "hasGameObjectAmbientLightComponent",
+                () =>
+                  test(
+                    "has light component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, light) = AmbientLight.createAmbientLight(state);
+                      let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
+                      hasGameObjectAmbientLightComponent(gameObject, state) |> expect == true
                     }
                   )
               )
@@ -358,19 +417,43 @@ let _ =
                   state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
                 }
               );
-              test(
+              describe(
                 "dispose material component",
                 () => {
-                  open BasicMaterialType;
-                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
-                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
-                  let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
-                  (
-                    disposedIndexArray |> Js.Array.includes(material1),
-                    disposedIndexArray |> Js.Array.includes(material2)
+                  test(
+                    "test basic material component",
+                    () => {
+                      open BasicMaterialType;
+                      let (state, gameObject1, material1) =
+                        BasicMaterialTool.createGameObject(state^);
+                      let (state, gameObject2, material2) =
+                        BasicMaterialTool.createGameObject(state);
+                      let state = state |> disposeGameObject(gameObject1);
+                      let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
+                      (
+                        disposedIndexArray |> Js.Array.includes(material1),
+                        disposedIndexArray |> Js.Array.includes(material2)
+                      )
+                      |> expect == (true, false)
+                    }
+                  );
+                  test(
+                    "test light material component",
+                    () => {
+                      open LightMaterialType;
+                      let (state, gameObject1, material1) =
+                        LightMaterialTool.createGameObject(state^);
+                      let (state, gameObject2, material2) =
+                        LightMaterialTool.createGameObject(state);
+                      let state = state |> disposeGameObject(gameObject1);
+                      let {disposedIndexArray} = state |> LightMaterialTool.getMaterialData;
+                      (
+                        disposedIndexArray |> Js.Array.includes(material1),
+                        disposedIndexArray |> Js.Array.includes(material2)
+                      )
+                      |> expect == (true, false)
+                    }
                   )
-                  |> expect == (true, false)
                 }
               );
               test(
@@ -388,6 +471,78 @@ let _ =
                   )
                   |> expect == (true, false)
                 }
+              );
+              describe(
+                "dispose light component",
+                () =>
+                  describe(
+                    "test ambient light component",
+                    () => {
+                      test(
+                        "test dispose one",
+                        () => {
+                          TestTool.closeContractCheck();
+                          open StateDataType;
+                          let (state, gameObject1, light1) =
+                            AmbientLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            AmbientLightTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          (
+                            AmbientLightTool.isAlive(light1, state),
+                            AmbientLightTool.isAlive(light2, state)
+                          )
+                          |> expect == (false, true)
+                        }
+                      );
+                      test(
+                        "test dispose two",
+                        () => {
+                          TestTool.closeContractCheck();
+                          open StateDataType;
+                          let (state, gameObject1, light1) =
+                            AmbientLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            AmbientLightTool.createGameObject(state);
+                          let (state, gameObject3, light3) =
+                            AmbientLightTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject3);
+                          let state = state |> disposeGameObject(gameObject1);
+                          (
+                            AmbientLightTool.isAlive(light1, state),
+                            AmbientLightTool.isAlive(light2, state),
+                            AmbientLightTool.isAlive(light3, state)
+                          )
+                          |> expect == (false, true, false)
+                        }
+                      );
+                      test(
+                        "test dispose three",
+                        () => {
+                          TestTool.closeContractCheck();
+                          open StateDataType;
+                          let (state, gameObject1, light1) =
+                            AmbientLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            AmbientLightTool.createGameObject(state);
+                          let (state, gameObject3, light3) =
+                            AmbientLightTool.createGameObject(state);
+                          let (state, gameObject4, light4) =
+                            AmbientLightTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let state = state |> disposeGameObject(gameObject3);
+                          (
+                            AmbientLightTool.isAlive(light1, state),
+                            AmbientLightTool.isAlive(light2, state),
+                            AmbientLightTool.isAlive(light3, state),
+                            AmbientLightTool.isAlive(light4, state)
+                          )
+                          |> expect == (false, false, false, true)
+                        }
+                      )
+                    }
+                  )
               );
               test(
                 "dispose cameraController component",
@@ -521,28 +676,87 @@ let _ =
                           |> expect == (false, false, true)
                         }
                       );
-                      /* TODO test light material map */
-                      test(
-                        "new basicMaterialMap should only has alive data",
+                      describe(
+                        "test light material map",
                         () => {
-                          open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
-                          let (state, gameObject1, material1) =
-                            BasicMaterialTool.createGameObject(state);
-                          let (state, gameObject2, material2) =
-                            BasicMaterialTool.createGameObject(state);
-                          let (state, gameObject3, material3) =
-                            BasicMaterialTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
-                          let {basicMaterialMap} = GameObjectTool.getGameObjectData(state);
-                          (
-                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                          test(
+                            "new basicMaterialMap should only has alive data",
+                            () => {
+                              open GameObjectType;
+                              let state =
+                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                              let (state, gameObject1, material1) =
+                                BasicMaterialTool.createGameObject(state);
+                              let (state, gameObject2, material2) =
+                                BasicMaterialTool.createGameObject(state);
+                              let (state, gameObject3, material3) =
+                                BasicMaterialTool.createGameObject(state);
+                              let state = state |> disposeGameObject(gameObject1);
+                              let state = state |> disposeGameObject(gameObject2);
+                              let {basicMaterialMap} = GameObjectTool.getGameObjectData(state);
+                              (
+                                basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                                basicMaterialMap
+                                |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                                basicMaterialMap
+                                |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                              )
+                              |> expect == (false, false, true)
+                            }
+                          );
+                          test(
+                            "new lightMaterialMap should only has alive data",
+                            () => {
+                              open GameObjectType;
+                              let state =
+                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                              let (state, gameObject1, material1) =
+                                LightMaterialTool.createGameObject(state);
+                              let (state, gameObject2, material2) =
+                                LightMaterialTool.createGameObject(state);
+                              let (state, gameObject3, material3) =
+                                LightMaterialTool.createGameObject(state);
+                              let state = state |> disposeGameObject(gameObject1);
+                              let state = state |> disposeGameObject(gameObject2);
+                              let {lightMaterialMap} = GameObjectTool.getGameObjectData(state);
+                              (
+                                lightMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                                lightMaterialMap
+                                |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                                lightMaterialMap
+                                |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                              )
+                              |> expect == (false, false, true)
+                            }
                           )
-                          |> expect == (false, false, true)
                         }
+                      );
+                      describe(
+                        "test light map",
+                        () =>
+                          test(
+                            "new ambientLightMap should only has alive data",
+                            () => {
+                              open GameObjectType;
+                              let state =
+                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                              let (state, gameObject1, ambientLight1) =
+                                AmbientLightTool.createGameObject(state);
+                              let (state, gameObject2, ambientLight2) =
+                                AmbientLightTool.createGameObject(state);
+                              let (state, gameObject3, ambientLight3) =
+                                AmbientLightTool.createGameObject(state);
+                              let state = state |> disposeGameObject(gameObject1);
+                              let state = state |> disposeGameObject(gameObject2);
+                              let {ambientLightMap} = GameObjectTool.getGameObjectData(state);
+                              (
+                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                              )
+                              |> expect == (false, false, true)
+                            }
+                          )
                       );
                       test(
                         "new cameraControllerMap should only has alive data",
@@ -712,20 +926,63 @@ let _ =
                   state |> Transform.getTransformPosition(transform3) |> expect == pos3
                 }
               );
-              test(
-                "batch dispose material componets",
+              describe(
+                "batch dispose material components",
                 () => {
-                  open BasicMaterialType;
-                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
-                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
-                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
-                  (
-                    disposedIndexArray |> Js.Array.includes(material1),
-                    disposedIndexArray |> Js.Array.includes(material2)
+                  test(
+                    "test basic material componet",
+                    () => {
+                      open BasicMaterialType;
+                      let (state, gameObject1, material1) =
+                        BasicMaterialTool.createGameObject(state^);
+                      let (state, gameObject2, material2) =
+                        BasicMaterialTool.createGameObject(state);
+                      let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                      let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialData;
+                      (
+                        disposedIndexArray |> Js.Array.includes(material1),
+                        disposedIndexArray |> Js.Array.includes(material2)
+                      )
+                      |> expect == (true, true)
+                    }
+                  );
+                  test(
+                    "test light material componet",
+                    () => {
+                      open LightMaterialType;
+                      let (state, gameObject1, material1) =
+                        LightMaterialTool.createGameObject(state^);
+                      let (state, gameObject2, material2) =
+                        LightMaterialTool.createGameObject(state);
+                      let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                      let {disposedIndexArray} = state |> LightMaterialTool.getMaterialData;
+                      (
+                        disposedIndexArray |> Js.Array.includes(material1),
+                        disposedIndexArray |> Js.Array.includes(material2)
+                      )
+                      |> expect == (true, true)
+                    }
                   )
-                  |> expect == (true, true)
                 }
+              );
+              describe(
+                "batch dispose light components",
+                () =>
+                  test(
+                    "test ambient light component",
+                    () => {
+                      TestTool.closeContractCheck();
+                      open StateDataType;
+                      let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
+                      let (state, gameObject2, light2) = AmbientLightTool.createGameObject(state);
+                      let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                      (
+                        AmbientLightTool.isAlive(light1, state),
+                        AmbientLightTool.isAlive(light2, state)
+                      )
+                      |> expect == (false, false)
+                    }
+                  )
               );
               test(
                 "batch dispose geometry componets",
@@ -1019,6 +1276,14 @@ let _ =
                 () => _testTwoParamFunc(getGameObjectBasicMaterialComponent)
               );
               test(
+                "getGameObjectLightMaterialComponent should error",
+                () => _testTwoParamFunc(getGameObjectLightMaterialComponent)
+              );
+              test(
+                "getGameObjectAmbientLightComponent should error",
+                () => _testTwoParamFunc(getGameObjectAmbientLightComponent)
+              );
+              test(
                 "getGameObjectMeshRendererComponent should error",
                 () => _testTwoParamFunc(getGameObjectMeshRendererComponent)
               );
@@ -1070,12 +1335,24 @@ let _ =
                 () => _testThreeParmFunc(disposeGameObjectBasicMaterialComponent)
               );
               test(
-                "addGameObjectMeshRendererComponent should error",
-                () => _testThreeParmFunc(addGameObjectTransformComponent)
+                "addGameObjectLightMaterialComponent should error",
+                () => _testThreeParmFunc(addGameObjectLightMaterialComponent)
+              );
+              test(
+                "disposeGameObjectLightMaterialComponent should error",
+                () => _testThreeParmFunc(disposeGameObjectLightMaterialComponent)
+              );
+              test(
+                "addGameObjectAmbientLightComponent should error",
+                () => _testThreeParmFunc(addGameObjectAmbientLightComponent)
+              );
+              test(
+                "disposeGameObjectAmbientLightComponent should error",
+                () => _testThreeParmFunc(disposeGameObjectAmbientLightComponent)
               );
               test(
                 "addGameObjectMeshRendererComponent should error",
-                () => _testThreeParmFunc(addGameObjectTransformComponent)
+                () => _testThreeParmFunc(addGameObjectMeshRendererComponent)
               );
               test(
                 "disposeGameObjectMeshRendererComponent should error",

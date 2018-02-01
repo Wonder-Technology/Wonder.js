@@ -13,6 +13,7 @@ let _setNewDataToState =
         newCameraControllerMap,
         newBasicMaterialMap,
         newLightMaterialMap,
+        newAmbientLightMap,
         newSourceInstanceMap,
         newObjectInstanceMap
       )
@@ -27,8 +28,8 @@ let _setNewDataToState =
     geometryMap: newGeometryMap,
     cameraControllerMap: newCameraControllerMap,
     basicMaterialMap: newBasicMaterialMap,
-    /* TODO test */
     lightMaterialMap: newLightMaterialMap,
+    ambientLightMap: newAmbientLightMap,
     sourceInstanceMap: newSourceInstanceMap,
     objectInstanceMap: newObjectInstanceMap
   }
@@ -41,6 +42,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     geometryMap,
     basicMaterialMap,
     lightMaterialMap,
+    ambientLightMap,
     cameraControllerMap,
     sourceInstanceMap,
     objectInstanceMap
@@ -58,6 +60,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
              newCameraControllerMap,
              newBasicMaterialMap,
              newLightMaterialMap,
+             newAmbientLightMap,
              newSourceInstanceMap,
              newObjectInstanceMap
            ),
@@ -92,6 +95,10 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
            | Some(material) =>
              newLightMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
            },
+           switch (ambientLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newAmbientLightMap
+           | Some(light) => newAmbientLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
+           },
            switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => newSourceInstanceMap
            | Some(sourceInstance) =>
@@ -105,6 +112,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
          )
        ),
        (
+         WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
