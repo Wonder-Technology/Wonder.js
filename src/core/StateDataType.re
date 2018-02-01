@@ -140,8 +140,6 @@ and glslSenderData = {
   uniformInstanceSendNoCachableDataMap: array(array(uniformInstanceSendNoCachableData)),
   /* drawPointsFuncMap: array((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray: array(bool),
-  mutable lastSendArrayBuffer: option(buffer),
-  mutable lastSendElementArrayBuffer: option(buffer),
   mutable lastSendMaterial: option(material),
   mutable lastSendGeometry: option(geometry)
 }

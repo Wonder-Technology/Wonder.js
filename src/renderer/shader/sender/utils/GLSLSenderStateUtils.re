@@ -2,39 +2,7 @@ open StateDataType;
 
 let getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) =>
-  /* let {
-       attributeSendDataMap,
-       instanceAttributeSendDataMap,
-       uniformCacheMap,
-       uniformRenderObjectSendModelDataMap,
-       uniformRenderObjectSendMaterialDataMap,
-       uniformShaderSendNoCachableDataMap,
-       uniformInstanceSendNoCachableDataMap,
-       drawPointsFuncMap,
-       vertexAttribHistoryArray
-     } =
-       state |> getGLSLSenderData;
-     {
-       ...state,
-       glslSenderData: {
-         attributeSendDataMap: attributeSendDataMap |> SparseMapSystem.copy,
-         instanceAttributeSendDataMap: instanceAttributeSendDataMap |> SparseMapSystem.copy,
-         uniformCacheMap: uniformCacheMap |> SparseMapSystem.copy,
-         uniformRenderObjectSendModelDataMap: uniformRenderObjectSendModelDataMap |> SparseMapSystem.copy,
-         uniformRenderObjectSendMaterialDataMap: uniformRenderObjectSendMaterialDataMap |> SparseMapSystem.copy,
-         uniformShaderSendNoCachableDataMap:
-           uniformShaderSendNoCachableDataMap |> SparseMapSystem.copy,
-         uniformInstanceSendNoCachableDataMap:
-           uniformInstanceSendNoCachableDataMap |> SparseMapSystem.copy,
-         drawPointsFuncMap: drawPointsFuncMap |> SparseMapSystem.copy,
-         vertexAttribHistoryArray: vertexAttribHistoryArray |> SparseMapSystem.copy,
-         lastSendArrayBuffer: None,
-         lastSendElementArrayBuffer: None,
-         lastSendMaterial: None
-       }
-     }*/
-  state;
+let deepCopyStateForRestore = (state: StateDataType.state) => state;
 
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {
@@ -106,8 +74,6 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
            drawPointsFuncMap
          ), */
       vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
-      lastSendArrayBuffer: None,
-      lastSendElementArrayBuffer: None,
       lastSendMaterial: None,
       lastSendGeometry: None
     }

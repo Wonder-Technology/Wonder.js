@@ -64,10 +64,10 @@ let _ =
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState());
                   let newState = StateTool.restore(currentState, state);
-                  let {lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial} =
+                  let {lastSendMaterial, lastSendGeometry} =
                     newState |> GLSLSenderTool.getGLSLSenderData;
-                  (lastSendArrayBuffer, lastSendElementArrayBuffer, lastSendMaterial)
-                  |> expect == (None, None, None)
+                  (lastSendMaterial, lastSendGeometry)
+                  |> expect == (None, None)
                 }
               );
               test(

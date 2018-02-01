@@ -320,10 +320,23 @@ let _ =
               describe(
                 "optimize",
                 () => {
+                  let _prepare = (sandbox, state) => {
+                    let (state, _, geometry, _, _) =
+                      FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+                    let (state, _, _) = AmbientLightTool.createAmbientLightGameObject(state);
+                    let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+                    (state, geometry)
+                  };
                   test(
                     "if lastSendGeometry === geometryIndex, not send",
                     () => {
-                      let state = _prepare(sandbox, state^);
+                      let (state, geometry) = _prepare(sandbox, state^);
+                      let (state, _, _, _, _) =
+                        FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                          sandbox,
+                          geometry,
+                          state
+                        );
                       let float = 1;
                       let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -333,14 +346,13 @@ let _ =
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender;
                       let state = state |> _render;
-                      let state = state |> _render;
                       vertexAttribPointer |> getCallCount |> expect == 2 * 1
                     }
                   );
                   test(
                     "else, send",
                     () => {
-                      let state = _prepare(sandbox, state^);
+                      let (state, geometry) = _prepare(sandbox, state^);
                       let (state, _, _, _, _) =
                         FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                       let float = 1;
