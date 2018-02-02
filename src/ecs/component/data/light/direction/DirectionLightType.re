@@ -1,5 +1,11 @@
 open ComponentType;
 
+type lightGLSLDataStructureMember = {
+  position: string,
+  color: string,
+  intensity: string
+};
+
 type directionLightData = {
   mutable index: int,
   buffer: Js.Typed_array.array_buffer,

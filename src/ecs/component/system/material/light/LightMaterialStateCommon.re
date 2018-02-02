@@ -5,7 +5,15 @@ open LightMaterialType;
 let getMaterialData = (state: StateDataType.state) => state.lightMaterialData;
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
-  let {index, diffuseColorMap, specularColorMap, groupCountMap, gameObjectMap, disposedIndexArray} =
+  let {
+    index,
+    diffuseColorMap,
+    specularColorMap,
+    shininessMap,
+    groupCountMap,
+    gameObjectMap,
+    disposedIndexArray
+  } =
     state |> getMaterialData;
   {
     ...state,
@@ -14,6 +22,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       shaderIndexMap: [||],
       diffuseColorMap: diffuseColorMap |> SparseMapSystem.copy,
       specularColorMap: specularColorMap |> SparseMapSystem.copy,
+      shininessMap: shininessMap |> SparseMapSystem.copy,
       groupCountMap: groupCountMap |> SparseMapSystem.copy,
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
       disposedIndexArray: disposedIndexArray |> Js.Array.copy

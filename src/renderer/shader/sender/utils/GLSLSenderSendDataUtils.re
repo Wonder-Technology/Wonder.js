@@ -90,6 +90,26 @@ let _isNotCacheVector3 = (shaderCacheMap, name: string, (x: float, y: float, z: 
   | Some(cache) => _queryIsNotCacheWithCache(cache, x, y, z)
   };
 
+let _isNotCacheFloat = (shaderCacheMap, name: string, value: float) =>
+  switch (_getCache(shaderCacheMap, name)) {
+  | None =>
+    _setCache(shaderCacheMap, name, value) |> ignore;
+    true
+  | Some(cache) => cache !== value
+  };
+
+/* TODO test */
+let sendFloat =
+  [@bs]
+  (
+    (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
+      if (_isNotCacheFloat(shaderCacheMap |> Obj.magic, name, value)) {
+        uniform1f(pos, value, gl)
+      } else {
+        ()
+      }
+  );
+
 let sendFloat3 =
   [@bs]
   (

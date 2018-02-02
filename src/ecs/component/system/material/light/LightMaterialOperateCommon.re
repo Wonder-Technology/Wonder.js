@@ -29,3 +29,16 @@ let setSpecularColor = (material, color: array(float), state: StateDataType.stat
       MaterialOperateCommon.setColor(material, color, getMaterialData(state).specularColorMap)
   }
 };
+
+let unsafeGetShininess = (material, state: StateDataType.state) =>
+  getMaterialData(state).shininessMap |> WonderCommonlib.SparseMapSystem.get(material);
+
+let setShininess = (material, shininess: float, state: StateDataType.state) => {
+  ...state,
+  lightMaterialData: {
+    ...getMaterialData(state),
+    shininessMap:
+      getMaterialData(state).shininessMap
+      |> WonderCommonlib.SparseMapSystem.set(material, shininess)
+  }
+};

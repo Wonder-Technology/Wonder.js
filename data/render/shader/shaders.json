@@ -95,6 +95,9 @@
           "name": "ambient_light"
         },
         {
+          "name": "direction_light"
+        },
+        {
           "name": "light_end"
         },
         {

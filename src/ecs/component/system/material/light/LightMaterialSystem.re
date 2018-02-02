@@ -16,6 +16,12 @@ let unsafeGetSpecularColor = (material, state: StateDataType.state) =>
 let setSpecularColor = (material, color, state: StateDataType.state) =>
   LightMaterialOperateCommon.setSpecularColor(material, color, state);
 
+let unsafeGetShininess = (material, state: StateDataType.state) =>
+  LightMaterialOperateCommon.unsafeGetShininess(material, state);
+
+let setShininess = (material, color, state: StateDataType.state) =>
+  LightMaterialOperateCommon.setShininess(material, color, state);
+
 let init = (gl, state: StateDataType.state) => {
   let {index, disposedIndexArray} = LightMaterialStateCommon.getMaterialData(state);
   MaterialSystem.init(

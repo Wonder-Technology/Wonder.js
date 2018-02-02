@@ -126,6 +126,8 @@ external uniformMatrix3fv : (uniformLocation, Js.boolean, Float32Array.t) => uni
 external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
   "";
 
+[@bs.send.pipe : webgl1Context] external uniform1f : (uniformLocation, float) => unit = "";
+
 [@bs.send.pipe : webgl1Context]
 external uniform3f : (uniformLocation, float, float, float) => unit =
   "";

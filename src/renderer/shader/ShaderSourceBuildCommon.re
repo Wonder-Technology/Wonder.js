@@ -126,6 +126,11 @@ let _buildTop = ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
 let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =>
   top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
 
+let _execHandle = (name, state) => {
+  let handleFunc = GlslHandleSystem.getHandle(name, state);
+  handleFunc(state)
+};
+
 let buildGLSLSource =
   [@bs]
   (
@@ -161,7 +166,10 @@ let buildGLSLSource =
                     ({type_, name}: glsl) =>
                       switch type_ {
                       | "vs" => _setSource(vs, getChunk(name, state))
+                      /* TODO test */
+                      | "vs_function" => _setSource(vs, _execHandle(name, state))
                       | "fs" => _setSource(fs, getChunk(name, state))
+                      | "fs_function" => _setSource(fs, _execHandle(name, state))
                       | _ =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(

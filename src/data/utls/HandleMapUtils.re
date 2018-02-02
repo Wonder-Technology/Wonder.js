@@ -1,0 +1,1 @@
+let createHandleMap = (handleList) => WonderCommonlib.HashMapSystem.fromList(handleList);

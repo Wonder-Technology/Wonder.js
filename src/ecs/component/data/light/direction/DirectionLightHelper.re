@@ -19,8 +19,7 @@ let getColor = (index, typeArr) => TypeArrayUtils.getFloat3(_getColorIndex(index
 let setColor = (index, color, typeArr) =>
   TypeArrayUtils.setFloat3(_getColorIndex(index), color, typeArr);
 
-let getIntensity = (index, typeArr) =>
-  TypeArrayUtils.getFloat3(_getIntensityIndex(index), typeArr);
+let getIntensity = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setIntensity = (index, intensity, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, intensity);

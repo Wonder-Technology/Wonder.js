@@ -5,18 +5,24 @@ let _getData =
   (
     (sourceComponent, state: StateDataType.state) => (
       LightMaterialOperateCommon.unsafeGetDiffuseColor(sourceComponent, state),
-      LightMaterialOperateCommon.unsafeGetSpecularColor(sourceComponent, state)
+      LightMaterialOperateCommon.unsafeGetSpecularColor(sourceComponent, state),
+      LightMaterialOperateCommon.unsafeGetShininess(sourceComponent, state)
     )
   );
 
 let _setData =
   [@bs]
   (
-    (sourceComponent, (diffuseColor, specularColor: array(float)), state: StateDataType.state) =>
+    (
+      sourceComponent,
+      (diffuseColor, specularColor: array(float), shininess: float),
+      state: StateDataType.state
+    ) =>
       LightMaterialOperateCommon.(
         state
         |> setDiffuseColor(sourceComponent, diffuseColor)
         |> setSpecularColor(sourceComponent, specularColor)
+        |> setShininess(sourceComponent, shininess)
       )
   );
 

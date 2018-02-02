@@ -35,7 +35,6 @@ let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataAr
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
     )
-  /* TODO test */
   | "normalMatrix" =>
     GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
       (type_, pos),
@@ -81,6 +80,27 @@ let _addAmbientLightSendData =
     )
   };
 
+let _addDirectionLightSendData =
+    ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
+  switch field {
+  | "send" =>
+    GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.addUniformSendDataByType(
+      (program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+      SendDirectionLightHandle.send
+    )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addDirectionLightSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  };
+
 let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "color" =>
@@ -114,6 +134,12 @@ let _addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sen
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       LightMaterialAdminAci.unsafeGetSpecularColor
+    )
+  | "shininess" =>
+    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+      LightMaterialAdminAci.unsafeGetShininess
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -265,6 +291,11 @@ let _readUniforms =
                )
              | "ambientLight" =>
                _addAmbientLightSendData(
+                 (field, program, uniformCacheMap, uniformLocationMap),
+                 sendDataArrTuple
+               )
+             | "directionLight" =>
+               _addDirectionLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )

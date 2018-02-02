@@ -1,4 +1,5 @@
 open MaterialType;
+
 open LightMaterialType;
 
 open ComponentDisposeComponentCommon;
@@ -11,7 +12,14 @@ let isAlive = (material, state: StateDataType.state) =>
 let _disposeData =
     (
       material,
-      {diffuseColorMap, specularColorMap, shaderIndexMap, groupCountMap, gameObjectMap} as data
+      {
+        diffuseColorMap,
+        specularColorMap,
+        shininessMap,
+        shaderIndexMap,
+        groupCountMap,
+        gameObjectMap
+      } as data
     ) => {
   let (shaderIndexMap, groupCountMap, gameObjectMap) =
     MaterialDisposeComponentCommon.disposeData(
@@ -22,6 +30,8 @@ let _disposeData =
     ...data,
     diffuseColorMap: disposeSparseMapData(material, diffuseColorMap),
     specularColorMap: disposeSparseMapData(material, specularColorMap),
+    /* TODO test */
+    shininessMap: disposeSparseMapData(material, shininessMap),
     shaderIndexMap,
     groupCountMap,
     gameObjectMap

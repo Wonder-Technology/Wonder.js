@@ -17,16 +17,16 @@ varying vec3 v_worldPosition;
 // #endif
 
 
-// #if DIRECTION_LIGHTS_COUNT > 0
-// struct DirectionLight {
-//     vec3 position;
+#if DIRECTION_LIGHTS_COUNT > 0
+struct DirectionLight {
+    vec3 position;
 
-//     float intensity;
+    float intensity;
 
-//     vec3 color;
-// };
-// uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
-// #endif
+    vec3 color;
+};
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+#endif
 @end
 
 @funcDeclare

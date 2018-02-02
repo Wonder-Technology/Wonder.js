@@ -59,6 +59,8 @@ let deepCopyStateForRestore = GLSLSenderStateUtils.deepCopyStateForRestore;
 
 let restore = GLSLSenderStateUtils.restore;
 
+let sendFloat = GLSLSenderSendDataUtils.sendFloat;
+
 let sendFloat3 = GLSLSenderSendDataUtils.sendFloat3;
 
 let sendVec3 = GLSLSenderSendDataUtils.sendVec3;

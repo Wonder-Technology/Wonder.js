@@ -7,6 +7,7 @@ type lightMaterialData = {
   shaderIndexMap,
   diffuseColorMap: colorMap,
   specularColorMap: colorMap,
+  shininessMap: array(float),
   gameObjectMap,
   groupCountMap,
   mutable disposedIndexArray

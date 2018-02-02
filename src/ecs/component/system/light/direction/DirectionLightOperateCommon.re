@@ -16,7 +16,7 @@ let setColor = (mappedIndex, color: array(float), state: StateDataType.state) =>
 };
 
 let getIntensity = (mappedIndex, state: StateDataType.state) =>
-  DirectionLightHelper.getIntensity(mappedIndex, getLightData(state).colors);
+  DirectionLightHelper.getIntensity(mappedIndex, getLightData(state).intensities);
 
 let setIntensity = (mappedIndex, intensity, state: StateDataType.state) => {
   ...state,

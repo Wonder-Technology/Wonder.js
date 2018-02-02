@@ -1,1 +1,1 @@
-let createJobHandleMap = (jobHandleList) => WonderCommonlib.HashMapSystem.fromList(jobHandleList);
+let createJobHandleMap = (handleList) => HandleMapUtils.createHandleMap(handleList)
