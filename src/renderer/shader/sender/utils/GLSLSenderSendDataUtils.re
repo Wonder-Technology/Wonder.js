@@ -33,7 +33,6 @@ let sendBuffer =
     }
   );
 
-/* TODO test */
 let sendMatrix3 =
   [@bs]
   (

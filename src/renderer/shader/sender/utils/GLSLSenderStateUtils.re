@@ -52,7 +52,6 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
           intersectShaderIndexDataArray,
           uniformShaderSendNoCachableDataMap
         ),
-      /* TODO test */
       uniformShaderSendCachableDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,

@@ -34,7 +34,6 @@ let _addOtherArrayBufferSendData =
   |> ArraySystem.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: getBufferSizeByType(type_),
-       /* TODO perf: create buffer here? */
        buffer,
        sendFunc: sendBuffer
      }),

@@ -10,7 +10,6 @@ open StateDataType;
 
 open GeometryOperateCommon;
 
-/* TODO duplicate with vertices */
 let getNormals = (index: int, state: StateDataType.state) =>
   getPoints(index, getGeometryData(state).normalsMap);
 
