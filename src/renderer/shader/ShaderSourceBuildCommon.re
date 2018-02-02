@@ -154,7 +154,9 @@ let buildGLSLSource =
       };
       vs.body = vs.body ++ webgl1_main_begin;
       fs.body = fs.body ++ webgl1_main_begin;
-      fs.top = (precision |> Js.Option.getExn) ++ fs.top;
+      let precision = precision |> Js.Option.getExn;
+      vs.top = precision ++ vs.top;
+      fs.top = precision ++ fs.top;
       shaderLibDataArr
       |> Js.Array.forEach(
            ({glsls}) =>
