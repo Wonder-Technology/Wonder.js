@@ -162,7 +162,16 @@ let buildGLSLSource =
                       switch type_ {
                       | "vs" => _setSource(vs, getChunk(name, state))
                       | "fs" => _setSource(fs, getChunk(name, state))
-                      | _ => ExceptionHandleSystem.throwMessage({j|unknow glsl type:$type_|j})
+                      | _ =>
+                        WonderLog.Log.fatal(
+                          WonderLog.Log.buildFatalMessage(
+                            ~title="buildGLSLSource",
+                            ~description={j|unknown glsl type: $type_|j},
+                            ~reason="",
+                            ~solution={j||j},
+                            ~params={j|name: $name|j}
+                          )
+                        )
                       }
                   )
              }

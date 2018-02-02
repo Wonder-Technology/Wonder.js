@@ -250,7 +250,16 @@ let invert = (mat: Float32Array.t, resultFloat32Arr) => {
   /* Calculate the determinant */
   let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
   switch det^ {
-  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
+  | 0. =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="invert",
+        ~description={j|det shouldn't be 0.|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   | _ =>
     det := 1.0 /. det^;
     Float32Array.unsafe_set(resultFloat32Arr, 0, (a11 *. b11 -. a12 *. b10 +. a13 *. b09) *. det^);
@@ -326,7 +335,16 @@ let invertTo3x3 = (mat: Float32Array.t, resultFloat32Arr) => {
   /* Calculate the determinant */
   let det = ref(a00 *. b11 +. a01 *. b12 +. a02 *. b13);
   switch det^ {
-  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
+  | 0. =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="invertTo3x3",
+        ~description={j|det shouldn't be 0.|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   | _ =>
     det := 1.0 /. det^;
     Float32Array.unsafe_set(resultFloat32Arr, 0, b11 *. det^);

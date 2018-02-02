@@ -69,7 +69,16 @@ let update = (index: int, cameraControllerData: cameraControllerData) => {
       _unsafeGetPMatrix(index, cameraControllerData)
     )
     |> ignore
-  | (_, _, _, _) => ExceptionHandleSystem.throwMessage("fovy,aspect,near,far should all exist")
+  | (_, _, _, _) =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="update",
+        ~description={j|fovy,aspect,near,far should all exist|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|cameraController: $index|j}
+      )
+    )
   };
   ()
 };

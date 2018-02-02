@@ -156,7 +156,16 @@ let _generateAllFaces = (configDataMap) => {
 
 let _computeData = (index: int, state: StateDataType.state) =>
   switch (GeometryConfigDataCommon.getConfigData(index, state)) {
-  | None => ExceptionHandleSystem.throwMessage("configData should exist")
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_computeData",
+        ~description={j|configData should exist|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|geometry: $index|j}
+      )
+    )
   | Some(configDataMap) =>
     let (vertices, normals, indices) = _generateAllFaces(configDataMap);
     {vertices, normals, indices}

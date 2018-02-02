@@ -14,7 +14,16 @@ let _getBit = (gl, flags) =>
     |> _getBitFromFlags(gl, ("DEPTH_BUFFER", flags), Gl.getDepthBufferBit)
     |> _getBitFromFlags(gl, ("STENCIL_BUFFER", flags), Gl.getStencilBufferBit)
   ) {
-  | None => ExceptionHandleSystem.throwMessage("should find bit")
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getBit",
+        ~description={j|should find bit|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|flags:$flags|j}
+      )
+    )
   | Some(bit) => bit
   };
 

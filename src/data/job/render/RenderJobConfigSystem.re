@@ -204,4 +204,12 @@ let getMaterialShaderLibDataArr =
      );
 
 let throwJobFlagsShouldBeDefined = () =>
-  ExceptionHandleSystem.throwMessage("jobFlags should be defined");
+  WonderLog.Log.fatal(
+    WonderLog.Log.buildFatalMessage(
+      ~title="throwJobFlagsShouldBeDefined",
+      ~description={j|jobFlags should be defined|j},
+      ~reason="",
+      ~solution={j||j},
+      ~params={j||j}
+    )
+  );

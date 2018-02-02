@@ -10,7 +10,16 @@ let getBufferSizeByType = (type_: string) =>
   switch type_ {
   /* | "vec2" => 2 */
   | "vec3" => 3
-  | _ => ExceptionHandleSystem.throwMessage({j|invalide type_:$type_|j})
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getBufferSizeByType",
+        ~description={j|invalide type_: $type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>

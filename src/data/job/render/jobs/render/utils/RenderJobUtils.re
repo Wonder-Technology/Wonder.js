@@ -39,7 +39,16 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
                    [@bs] GeometryAdmin.unsafeGetIndices,
                    state
                  )
-               | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+               | _ =>
+                 WonderLog.Log.fatal(
+                   WonderLog.Log.buildFatalMessage(
+                     ~title="_sendAttributeData",
+                     ~description={j|unknonw buffer: $buffer|j},
+                     ~reason="",
+                     ~solution={j||j},
+                     ~params={j||j}
+                   )
+                 )
                };
              [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
            }

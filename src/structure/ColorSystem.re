@@ -1,12 +1,23 @@
 /* let regex_num = [%re "/^\\#([0-9a-f]{6})$/i"]; */
 let regex_num = [%re {|/^\#([0-9a-f]{6})$/i|}];
 
+let _handleInValidHexStr = (hexStr: string) =>
+  WonderLog.Log.fatal(
+    WonderLog.Log.buildFatalMessage(
+      ~title="convert16HexToRGBA",
+      ~description={j|color should be #xxxxxx, but actual is $hexStr|j},
+      ~reason="",
+      ~solution={j||j},
+      ~params={j||j}
+    )
+  );
+
 let convert16HexToRGBA = (hexStr: string) =>
   switch (regex_num |> Js.Re.exec(hexStr)) {
-  | None => ExceptionHandleSystem.throwMessage("color should be #xxxxxx")
+  | None => _handleInValidHexStr(hexStr)
   | Some(result) =>
     switch (Js.Nullable.to_opt(Js.Re.captures(result)[1])) {
-    | None => ExceptionHandleSystem.throwMessage("color should be #xxxxxx")
+    | None => _handleInValidHexStr(hexStr)
     | Some(result) =>
       let hex =
         Js.Math.floor

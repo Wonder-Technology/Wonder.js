@@ -41,7 +41,15 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
          isEnable ?
            disableVertexAttribArray(pos, gl) :
            /* if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) { */
-           ExceptionHandleSystem.throwMessage("should always be true")
+           WonderLog.Log.fatal(
+             WonderLog.Log.buildFatalMessage(
+               ~title="disableVertexAttribArray",
+               ~description={j|should always be true|j},
+               ~reason="",
+               ~solution={j||j},
+               ~params={j||j}
+             )
+           )
      );
   data.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state
