@@ -66,17 +66,17 @@ v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
 |},({|
 
 |},{|
-// float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
-//         vec3 halfAngle = normalize(lightDir + viewDir);
+float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
+        vec3 halfAngle = normalize(lightDir + viewDir);
 
-//         float blinnTerm = dot(normal, halfAngle);
+        float blinnTerm = dot(normal, halfAngle);
 
-//         blinnTerm = clamp(blinnTerm, 0.0, 1.0);
-//         blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;
-//         blinnTerm = pow(blinnTerm, shininess);
+        blinnTerm = clamp(blinnTerm, 0.0, 1.0);
+        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;
+        blinnTerm = pow(blinnTerm, shininess);
 
-//         return blinnTerm;
-// }
+        return blinnTerm;
+}
 
 // float getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
 //         vec3 reflectDir = reflect(-lightDir, normal);
@@ -89,44 +89,47 @@ v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
 //         return phongTerm;
 // }
 
-// vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
-// {
-//         vec3 materialLight = getMaterialLight();
-//         vec3 materialDiffuse = getMaterialDiffuse();
-//         vec3 materialSpecular = u_specular;
-//         vec3 materialEmission = getMaterialEmission();
+vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
+{
+        vec3 materialLight = getMaterialLight();
+        vec3 materialDiffuse = getMaterialDiffuse();
+        vec3 materialSpecular = u_specular;
+        vec3 materialEmission = getMaterialEmission();
 
-//         float specularStrength = getSpecularStrength();
+        float specularStrength = getSpecularStrength();
 
-//         float dotResultBetweenNormAndLight = dot(normal, lightDir);
-//         float diff = max(dotResultBetweenNormAndLight, 0.0);
+        float dotResultBetweenNormAndLight = dot(normal, lightDir);
+        float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-//         vec3 emissionColor = materialEmission;
+        vec3 emissionColor = materialEmission;
 
-//         vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;
+        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;
 
 
-//         if(u_lightModel == 3){
-//             return emissionColor + ambientColor;
-//         }
+        // if(u_lightModel == 3){
+        //     return emissionColor + ambientColor;
+        // }
 
-// //        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);
-//         vec3 diffuseColor = color * materialDiffuse.rgb * diff * intensity;
+//        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);
+        vec3 diffuseColor = color * materialDiffuse.rgb * diff * intensity;
 
-//         float spec = 0.0;
+        float spec = 0.0;
 
-//         if(u_lightModel == 2){
-//                 spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);
-//         }
-//         else if(u_lightModel == 1){
-//                 spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
-//         }
+        // if(u_lightModel == 2){
+        //         spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);
+        // }
+        // else if(u_lightModel == 1){
+        //         spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
+        // }
 
-//         vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
+        spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
 
-// //        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
-//         return emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor);
-// }
+
+        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
+
+//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
+        return emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor);
+}
 
 
 
@@ -152,16 +155,16 @@ v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
 
 
 
-// #if DIRECTION_LIGHTS_COUNT > 0
-//         vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
-// {
-//         float attenuation = 1.0;
+#if DIRECTION_LIGHTS_COUNT > 0
+        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
+{
+        float attenuation = 1.0;
 
-//         lightDir = normalize(lightDir);
+        lightDir = normalize(lightDir);
 
-//         return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-// }
-// #endif
+        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
+}
+#endif
 
 
 
@@ -174,14 +177,11 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 //         }
 //     #endif
 
-//     #if DIRECTION_LIGHTS_COUNT > 0
-//                 for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
-//                 totalLight += vec4(calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir), 0.0);
-//         }
-//     #endif
-
-        // TODO remove
-        totalLight += vec4(u_ambient, 1.0);
+    #if DIRECTION_LIGHTS_COUNT > 0
+                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
+                totalLight += vec4(calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir), 0.0);
+        }
+    #endif
 
         return totalLight;
 }
@@ -262,16 +262,16 @@ varying vec3 v_worldPosition;
 // #endif
 
 
-// #if DIRECTION_LIGHTS_COUNT > 0
-//     struct DirectionLight {
-//     vec3 position;
+#if DIRECTION_LIGHTS_COUNT > 0
+    struct DirectionLight {
+    vec3 position;
 
-//     float intensity;
+    float intensity;
 
-//     vec3 color;
-// };
-// uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
-// #endif
+    vec3 color;
+};
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+#endif
 |},({|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
@@ -313,16 +313,16 @@ varying vec3 v_worldPosition;
 // #endif
 
 
-// #if DIRECTION_LIGHTS_COUNT > 0
-// struct DirectionLight {
-//     vec3 position;
+#if DIRECTION_LIGHTS_COUNT > 0
+struct DirectionLight {
+    vec3 position;
 
-//     float intensity;
+    float intensity;
 
-//     vec3 color;
-// };
-// uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
-// #endif
+    vec3 color;
+};
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+#endif
 |},({|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
@@ -431,23 +431,23 @@ vec3 getNormal(){
 // }
 // #endif
 
-// #if DIRECTION_LIGHTS_COUNT > 0
-// vec3 getDirectionLightDir(int index){
-//     //workaround '[] : Index expression must be constant' error
-//     for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {
-//         if(x == index){
-//             return getDirectionLightDirByLightPos(u_directionLights[x].position);
-//         }
-//     }
+#if DIRECTION_LIGHTS_COUNT > 0
+vec3 getDirectionLightDir(int index){
+    //workaround '[] : Index expression must be constant' error
+    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {
+        if(x == index){
+            return getDirectionLightDirByLightPos(u_directionLights[x].position);
+        }
+    }
 
-//     /*!
-//     solve error in window7 chrome/firefox:
-//     not all control paths return a value.
-//     failed to create d3d shaders
-//     */
-//     return vec3(0.0);
-// }
-// #endif
+    /*!
+    solve error in window7 chrome/firefox:
+    not all control paths return a value.
+    failed to create d3d shaders
+    */
+    return vec3(0.0);
+}
+#endif
 
 
 vec3 getViewDir(){

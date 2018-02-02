@@ -116,9 +116,6 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
         }
     #endif
 
-        // TODO remove
-        // totalLight += vec4(u_ambient, 1.0);
-
         return totalLight;
 }
 @end

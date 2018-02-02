@@ -21,6 +21,7 @@ let getSendCachableDataByType = (type_) =>
     switch type_ {
     | "vec3" => sendVec3 |> Obj.magic
     | "float3" => sendFloat3 |> Obj.magic
+    | "float" => sendFloat |> Obj.magic
     | _ =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(

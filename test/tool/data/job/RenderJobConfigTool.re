@@ -209,6 +209,9 @@ let buildRenderJobConfig =
           "name": "ambient_light"
         },
         {
+          "name": "direction_light"
+        },
+        {
           "name": "light_end"
         },
         {
@@ -505,12 +508,26 @@ let buildRenderJobConfig =
         "name": "webgl1_frontLight_vertex"
       },
       {
+        "type": "vs_function",
+        "name": "defineLightCount"
+      },
+      {
         "type": "fs",
         "name": "webgl1_frontLight_fragment"
+      },
+      {
+        "type": "fs_function",
+        "name": "defineLightCount"
       }
     ],
     "variables": {
       "uniforms": [
+        {
+          "name": "u_shininess",
+          "from": "lightMaterial",
+          "field": "shininess",
+          "type": "float"
+        },
         {
           "name": "u_cameraPos",
           "from": "camera",
@@ -533,6 +550,19 @@ let buildRenderJobConfig =
         {
           "name": "sendAmbientLight",
           "from": "ambientLight",
+          "field": "send",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  {
+    "name": "direction_light",
+    "variables": {
+      "uniforms": [
+        {
+          "name": "sendDirectionLight",
+          "from": "directionLight",
           "field": "send",
           "type": "function"
         }
