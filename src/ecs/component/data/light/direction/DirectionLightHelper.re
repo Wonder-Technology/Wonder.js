@@ -63,6 +63,7 @@ let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELE
 
 let getIntensitiesLength = () => getBufferMaxCount() * getIntensityDataSize();
 
+
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer =

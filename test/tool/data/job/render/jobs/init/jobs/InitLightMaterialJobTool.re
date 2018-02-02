@@ -32,9 +32,9 @@ let exec = (state: StateDataType.state) =>
   |> AllMaterialTool.pregetGLSLData
   |> LightMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state));
 
-let prepareForJudgeGLSLNotExec = (sandbox, state) => {
+let prepareForJudgeGLSLNotExec = (sandbox, prepareGameObjectFunc, state) => {
   open Sinon;
-  let (state, gameObject, _, _) = prepareGameObject(sandbox, state);
+  let (state, gameObject, _, _) = prepareGameObjectFunc(sandbox, state);
   let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
@@ -43,8 +43,8 @@ let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   (state, shaderSource, gameObject)
 };
 
-let prepareForJudgeGLSL = (sandbox, state) => {
-  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(sandbox, state);
+let prepareForJudgeGLSL = (~prepareGameObjectFunc=prepareGameObject, sandbox, state) => {
+  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(sandbox, prepareGameObjectFunc, state);
   let state = state |> exec;
   shaderSource
 };

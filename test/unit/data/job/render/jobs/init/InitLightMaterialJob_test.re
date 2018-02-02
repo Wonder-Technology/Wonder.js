@@ -551,17 +551,31 @@ vec3 getViewDir(){
               describe(
                 "test light shader lib",
                 () => {
+                  let _prepareForJudgeGLSL = (state) =>
+                    InitLightMaterialJobTool.prepareForJudgeGLSL(
+                      sandbox,
+                      ~prepareGameObjectFunc=
+                        (sandbox, state) => {
+                          let (state, gameObject, geometry, material) =
+                            InitLightMaterialJobTool.prepareGameObject(sandbox, state);
+                          let (state, gameObject, light) =
+                            DirectionLightTool.createGameObject(state);
+                          let (state, gameObject, light) =
+                            DirectionLightTool.createGameObject(state);
+                          (state, gameObject, geometry, material)
+                        },
+                      state^
+                    );
                   describe(
                     "test vs glsl",
                     () => {
                       test(
                         "define light count",
                         () => {
-                          let shaderSource =
-                            InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                          let shaderSource = _prepareForJudgeGLSL(state);
                           GLSLTool.containMultiline(
                             GLSLTool.getVsSource(shaderSource),
-                            [{|#define DIRECTION_LIGHTS_COUNT 4
+                            [{|#define DIRECTION_LIGHTS_COUNT 2
 |}]
                           )
                           |> expect == true
@@ -587,11 +601,10 @@ vec3 getViewDir(){
                       test(
                         "define light count",
                         () => {
-                          let shaderSource =
-                            InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                          let shaderSource = _prepareForJudgeGLSL(state);
                           GLSLTool.containMultiline(
                             GLSLTool.getFsSource(shaderSource),
-                            [{|#define DIRECTION_LIGHTS_COUNT 4
+                            [{|#define DIRECTION_LIGHTS_COUNT 2
 |}]
                           )
                           |> expect == true

@@ -1,10 +1,10 @@
 open ShaderChunkType;
 
 let execHandle = (state: StateDataType.state) => {
-  let maxCount = DirectionLightHelper.getBufferMaxCount();
+  let count = DirectionLightAdmin.getLightCount(state);
   {
     top: "",
-    define: {j|#define DIRECTION_LIGHTS_COUNT $maxCount|j},
+    define: {j|#define DIRECTION_LIGHTS_COUNT $count|j},
     varDeclare: "",
     funcDeclare: "",
     funcDefine: "",

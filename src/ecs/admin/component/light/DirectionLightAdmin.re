@@ -16,3 +16,5 @@ let getPosition = (index, state) =>
 let deepCopyStateForRestore = DirectionLightSystem.deepCopyStateForRestore;
 
 let restore = DirectionLightSystem.restore;
+
+let getLightCount = DirectionLightSystem.getLightCount;
