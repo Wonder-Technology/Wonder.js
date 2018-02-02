@@ -28,14 +28,3 @@ gulp.task("generateIndex", function (done) {
 
 
 
-
-
-gulp.task("buildForRunTest", gulpSync.sync(["createShaderChunkSystemFile", "generateIndex", "rollup"]));
-
-
-
-
-
-
-
-gulp.task("build", gulpSync.sync(["createShaderChunkSystemFile", "generateIndex", "rollup"]));

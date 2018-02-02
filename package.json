@@ -11,7 +11,7 @@
     "start": "node ./server/app.js",
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
-    "buildAll": "npm run build && gulp build",
+    "buildAll": "gulp createShaderChunkSystemFile && gulp generateIndex && npm run build && gulp rollup",
     "test": "jest --config jest.json",
     "test:coverage": "npm run build && jest --config jest_coverage.json",
     "test:ci": "npm run buildAll && jest --maxWorkers=4 --config jest_coverage.json",
