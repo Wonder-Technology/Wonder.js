@@ -457,7 +457,8 @@ let _ =
                 "u_normalMatrix",
                 (gameObjectTransform, cameraTransform, _, state) =>
                   state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
-                Js.Typed_array.Float32Array.make([|1., 0., 0., (-1.), 1., 0., 0., 0., 1.|]),
+                /* Js.Typed_array.Float32Array.make([|1., 0., 0., (-1.), 1., 0., 0., 0., 1.|]), */
+                Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
                   (_prepareSendUinformData) =>

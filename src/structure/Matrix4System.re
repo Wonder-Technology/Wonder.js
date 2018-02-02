@@ -324,7 +324,7 @@ let invertTo3x3 = (mat: Float32Array.t, resultFloat32Arr) => {
   let a32 = Float32Array.unsafe_get(mat, 14);
   let a33 = Float32Array.unsafe_get(mat, 15);
   let b11 = a22 *. a11 -. a12 *. a21;
-  let b21 = -. a22 *. a00 +. a02 *. a21;
+  let b21 = -. a22 *. a01 +. a02 *. a21;
   let b31 = a12 *. a01 -. a02 *. a11;
   let b12 = -. a22 *. a10 +. a12 *. a20;
   let b22 = a22 *. a00 -. a02 *. a20;
