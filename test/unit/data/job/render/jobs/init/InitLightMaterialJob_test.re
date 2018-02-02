@@ -573,10 +573,9 @@ vec3 getViewDir(){
                         "define light count",
                         () => {
                           let shaderSource = _prepareForJudgeGLSL(state);
-                          GLSLTool.containMultiline(
+                          GLSLTool.contain(
                             GLSLTool.getVsSource(shaderSource),
-                            [{|#define DIRECTION_LIGHTS_COUNT 2
-|}]
+                            "#define DIRECTION_LIGHTS_COUNT 2\n"
                           )
                           |> expect == true
                         }
@@ -602,10 +601,9 @@ vec3 getViewDir(){
                         "define light count",
                         () => {
                           let shaderSource = _prepareForJudgeGLSL(state);
-                          GLSLTool.containMultiline(
+                          GLSLTool.contain(
                             GLSLTool.getFsSource(shaderSource),
-                            [{|#define DIRECTION_LIGHTS_COUNT 2
-|}]
+                            "#define DIRECTION_LIGHTS_COUNT 2\n"
                           )
                           |> expect == true
                         }

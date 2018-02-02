@@ -120,8 +120,8 @@ let _setSource =
 
 let _buildBody = ({body}, webgl1_main_end) => body ++ webgl1_main_end;
 
-let _buildTop = ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
-  top ++ _generateUniformSource(shaderLibDataArr, varDeclare, funcDefine, body);
+let _buildVarDeclare = ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
+  varDeclare ++ _generateUniformSource(shaderLibDataArr, varDeclare, funcDefine, body);
 
 let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =>
   top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
@@ -188,9 +188,9 @@ let buildGLSLSource =
          );
       vs.body = _buildBody(vs, webgl1_main_end);
       fs.body = _buildBody(fs, webgl1_main_end);
-      vs.top = vs.top ++ _generateAttributeSource(shaderLibDataArr);
-      vs.top = _buildTop(vs, shaderLibDataArr);
-      fs.top = _buildTop(fs, shaderLibDataArr);
+      vs.varDeclare = _generateAttributeSource(shaderLibDataArr) ++ vs.varDeclare;
+      vs.varDeclare = _buildVarDeclare(vs, shaderLibDataArr);
+      fs.varDeclare = _buildVarDeclare(fs, shaderLibDataArr);
       (_addAlllParts(vs), _addAlllParts(fs))
     }
   );

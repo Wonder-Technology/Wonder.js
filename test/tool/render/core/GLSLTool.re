@@ -8,6 +8,8 @@ let containSpecifyCount = (source: string, target: string, ~count=1, ()) =>
   | Some(result) => Js.Array.length(result) == count
   };
 
+let contain = (source: string, targetLine: string) => Js.String.includes(targetLine, source);
+
 let containMultiline = (source: string, targetLineArray: list(string)) =>
   targetLineArray
   |> List.for_all((targetLine) => Js.String.includes(targetLine |> Js.String.trim, source));
