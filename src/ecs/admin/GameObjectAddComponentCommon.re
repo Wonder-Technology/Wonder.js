@@ -128,6 +128,13 @@ let addAmbientLightComponent = (uid: int, component: component, state: StateData
     state
   );
 
+let addDirectionLightComponent = (uid: int, component: component, state: StateDataType.state) =>
+  _addCommonComponent(
+    (uid, component, GameObjectStateCommon.getGameObjectData(state).directionLightMap),
+    DirectionLightAddComponentCommon.handleAddComponent,
+    state
+  );
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {
@@ -269,5 +276,13 @@ let batchAddAmbientLightComponentForClone =
   _batchAddComponent(
     (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).ambientLightMap),
     AmbientLightAddComponentCommon.handleAddComponent,
+    state
+  );
+
+let batchAddDirectionLightComponentForClone =
+    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).directionLightMap),
+    DirectionLightAddComponentCommon.handleAddComponent,
     state
   );

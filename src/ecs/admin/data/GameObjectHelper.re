@@ -13,5 +13,6 @@ let initData = () => {
   lightMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   objectInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  ambientLightMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  ambientLightMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  directionLightMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

@@ -98,7 +98,6 @@ let _isNotCacheFloat = (shaderCacheMap, name: string, value: float) =>
   | Some(cache) => cache !== value
   };
 
-/* TODO test */
 let sendFloat =
   [@bs]
   (

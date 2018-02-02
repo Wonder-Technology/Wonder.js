@@ -58,3 +58,25 @@ let setLightMaterialSpecularColor = (material, color, state: StateDataType.state
   );
   setSpecularColor(material, color, state)
 };
+
+let getLightMaterialShininess = (material, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(material, isAlive, state)))
+      ),
+    StateData.stateData.isDebug
+  );
+  unsafeGetShininess(material, state)
+};
+
+let setLightMaterialShininess = (material, shininess, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(material, isAlive, state)))
+      ),
+    StateData.stateData.isDebug
+  );
+  setShininess(material, shininess, state)
+};

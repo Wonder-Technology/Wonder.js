@@ -314,6 +314,40 @@ let hasGameObjectAmbientLightComponent = (gameObject: gameObject, state: StateDa
   hasAmbientLightComponent(gameObject, state)
 };
 
+let addGameObjectDirectionLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addDirectionLightComponent(gameObject, component, state)
+};
+
+let disposeGameObjectDirectionLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  disposeDirectionLightComponent(gameObject, component, state)
+};
+
+let getGameObjectDirectionLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetDirectionLightComponent(gameObject, state)
+};
+
+let hasGameObjectDirectionLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasDirectionLightComponent(gameObject, state)
+};
+
 let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
   isAlive(gameObject, state);
 

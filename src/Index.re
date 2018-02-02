@@ -48,6 +48,14 @@ let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
 
+let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
+
+let getGameObjectDirectionLightComponent = GameObject.getGameObjectDirectionLightComponent;
+
+let disposeGameObjectDirectionLightComponent = GameObject.disposeGameObjectDirectionLightComponent;
+
+let addGameObjectDirectionLightComponent = GameObject.addGameObjectDirectionLightComponent;
+
 let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
 
 let getGameObjectAmbientLightComponent = GameObject.getGameObjectAmbientLightComponent;
@@ -184,6 +192,18 @@ let getAmbientLightGameObject = AmbientLight.getAmbientLightGameObject;
 
 let createAmbientLight = AmbientLight.createAmbientLight;
 
+let setDirectionLightIntensity = DirectionLight.setDirectionLightIntensity;
+
+let getDirectionLightIntensity = DirectionLight.getDirectionLightIntensity;
+
+let setDirectionLightColor = DirectionLight.setDirectionLightColor;
+
+let getDirectionLightColor = DirectionLight.getDirectionLightColor;
+
+let getDirectionLightGameObject = DirectionLight.getDirectionLightGameObject;
+
+let createDirectionLight = DirectionLight.createDirectionLight;
+
 let setBasicMaterialColor = BasicMaterial.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterial.getBasicMaterialColor;
@@ -191,6 +211,10 @@ let getBasicMaterialColor = BasicMaterial.getBasicMaterialColor;
 let getBasicMaterialGameObject = BasicMaterial.getBasicMaterialGameObject;
 
 let createBasicMaterial = BasicMaterial.createBasicMaterial;
+
+let setLightMaterialShininess = LightMaterial.setLightMaterialShininess;
+
+let getLightMaterialShininess = LightMaterial.getLightMaterialShininess;
 
 let setLightMaterialSpecularColor = LightMaterial.setLightMaterialSpecularColor;
 
@@ -277,6 +301,14 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
+
+let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
+
+let getGameObjectDirectionLightComponent = GameObject.getGameObjectDirectionLightComponent;
+
+let disposeGameObjectDirectionLightComponent = GameObject.disposeGameObjectDirectionLightComponent;
+
+let addGameObjectDirectionLightComponent = GameObject.addGameObjectDirectionLightComponent;
 
 let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
 

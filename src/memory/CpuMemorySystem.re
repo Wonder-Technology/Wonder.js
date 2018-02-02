@@ -14,6 +14,7 @@ let _setNewDataToState =
         newBasicMaterialMap,
         newLightMaterialMap,
         newAmbientLightMap,
+        newDirectionLightMap,
         newSourceInstanceMap,
         newObjectInstanceMap
       )
@@ -30,6 +31,7 @@ let _setNewDataToState =
     basicMaterialMap: newBasicMaterialMap,
     lightMaterialMap: newLightMaterialMap,
     ambientLightMap: newAmbientLightMap,
+    directionLightMap: newDirectionLightMap,
     sourceInstanceMap: newSourceInstanceMap,
     objectInstanceMap: newObjectInstanceMap
   }
@@ -43,6 +45,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     basicMaterialMap,
     lightMaterialMap,
     ambientLightMap,
+    directionLightMap,
     cameraControllerMap,
     sourceInstanceMap,
     objectInstanceMap
@@ -61,6 +64,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
              newBasicMaterialMap,
              newLightMaterialMap,
              newAmbientLightMap,
+             newDirectionLightMap,
              newSourceInstanceMap,
              newObjectInstanceMap
            ),
@@ -99,6 +103,10 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
            | None => newAmbientLightMap
            | Some(light) => newAmbientLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
            },
+           switch (directionLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newDirectionLightMap
+           | Some(light) => newDirectionLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
+           },
            switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => newSourceInstanceMap
            | Some(sourceInstance) =>
@@ -112,6 +120,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
          )
        ),
        (
+         WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),

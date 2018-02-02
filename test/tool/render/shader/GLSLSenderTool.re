@@ -301,4 +301,83 @@ module JudgeSendUniformData = {
         )
       )
     );
+  let testSendFloat =
+      (
+        sandbox,
+        name,
+        setFunc,
+        targetData,
+        ~prepareGameObjectFunc=RenderJobsTool.prepareGameObject,
+        ~testFunc=(_prepareSendUinformData) => (),
+        ()
+      ) =>
+    Wonder_jest.(
+      Expect.(
+        Expect.Operators.(
+          Sinon.(
+            describe(
+              {j|send $name|j},
+              () => {
+                let state = ref(StateTool.createState());
+                let _prepare = (sandbox, state) => {
+                  let (
+                    state,
+                    gameObject,
+                    (gameObjectTransform, material),
+                    cameraTransform,
+                    cameraController
+                  ) =
+                    _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
+                  let state =
+                    setFunc(
+                      gameObject,
+                      (gameObjectTransform, material),
+                      (cameraTransform, cameraController),
+                      state
+                    );
+                  let uniform1f = createEmptyStubWithJsObjSandbox(sandbox);
+                  let pos = 0;
+                  let getUniformLocation =
+                    GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(~sandbox, ~uniform1f, ~getUniformLocation, ())
+                       );
+                  let state =
+                    state
+                    |> RenderJobsTool.initSystemAndRender
+                    |> RenderJobsTool.updateSystem
+                    |> _render;
+                  (state, pos, uniform1f)
+                };
+                beforeEach(
+                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                );
+                test(
+                  "if cached, not send",
+                  () => {
+                    let (state, pos, uniform1f) = _prepare(sandbox, state);
+                    let state = state |> _render;
+                    uniform1f |> withOneArg(pos) |> getCallCount |> expect == 1
+                  }
+                );
+                test(
+                  "test send",
+                  () => {
+                    let (state, pos, uniform1f) = _prepare(sandbox, state);
+                    uniform1f
+                    |> expect
+                    |> toCalledWith
+                         /* [|pos|] |> Js.Array.concat(targetData |> Obj.magic |> Array.of_list) */
+                         ([|pos |> Obj.magic, targetData|])
+                  }
+                );
+                testFunc(_prepareSendUinformData)
+              }
+            )
+          )
+        )
+      )
+    );
 };

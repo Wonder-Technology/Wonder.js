@@ -105,6 +105,17 @@ let getAmbientLightComponent =
 let unsafeGetAmbientLightComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).ambientLightMap |> _unsafeGetComponent(uid);
 
+let getDirectionLightComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).directionLightMap |> getComponent(uid)
+  );
+
+let unsafeGetDirectionLightComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).directionLightMap |> _unsafeGetComponent(uid);
+
+
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(
@@ -173,5 +184,12 @@ let batchGetAmbientLightComponent = (uidArray: array(int), state: StateDataType.
   _batchGetComponent(
     uidArray,
     GameObjectStateCommon.getGameObjectData(state).ambientLightMap,
+    state
+  );
+
+let batchGetDirectionLightComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).directionLightMap,
     state
   );

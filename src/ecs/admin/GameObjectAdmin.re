@@ -116,6 +116,18 @@ let addAmbientLightComponent = GameObjectAddComponentCommon.addAmbientLightCompo
 let disposeAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeAmbientLightComponent(uid, component, state);
 
+let hasDirectionLightComponent = GameObjectHasComponentCommon.hasDirectionLightComponent;
+
+let getDirectionLightComponent = (uid: int, state: StateDataType.state) =>
+  [@bs] GameObjectGetComponentCommon.getDirectionLightComponent(uid, state);
+
+let unsafeGetDirectionLightComponent = GameObjectGetComponentCommon.unsafeGetDirectionLightComponent;
+
+let addDirectionLightComponent = GameObjectAddComponentCommon.addDirectionLightComponent;
+
+let disposeDirectionLightComponent = (uid: int, component: component, state: StateDataType.state) =>
+  [@bs] GameObjectDisposeComponentCommon.disposeDirectionLightComponent(uid, component, state);
+
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
   let (state, transform) = TransformSystem.create(state);

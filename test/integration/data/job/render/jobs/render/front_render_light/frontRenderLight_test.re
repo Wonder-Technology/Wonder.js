@@ -523,7 +523,7 @@ let _ =
                  ); */
               describe(
                 "test send light data",
-                () =>
+                () => {
                   describe(
                     "test send ambient light data",
                     () => {
@@ -620,59 +620,291 @@ let _ =
                         }
                       )
                     }
+                  );
+                  describe(
+                    "test send direction light data",
+                    () => {
+                      let _prepareOne = (sandbox, state) => {
+                        let (state, gameObject, _, material, _) =
+                          FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+                        let (state, lightGameObject, light) =
+                          DirectionLightTool.createGameObject(state);
+                        let (state, _, cameraTransform, _) =
+                          CameraControllerTool.createCameraGameObject(state);
+                        (state, lightGameObject, material, light, cameraTransform)
+                      };
+                      let _prepareFour = (sandbox, state) => {
+                        let (state, gameObject, _, material, _) =
+                          FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+                        let (state, lightGameObject1, light1) =
+                          DirectionLightTool.createGameObject(state);
+                        let (state, lightGameObject2, light2) =
+                          DirectionLightTool.createGameObject(state);
+                        let (state, lightGameObject3, light3) =
+                          DirectionLightTool.createGameObject(state);
+                        let (state, lightGameObject4, light4) =
+                          DirectionLightTool.createGameObject(state);
+                        let (state, _, cameraTransform, _) =
+                          CameraControllerTool.createCameraGameObject(state);
+                        (
+                          state,
+                          (lightGameObject1, lightGameObject2, lightGameObject3, lightGameObject4),
+                          material,
+                          (light1, light2, light3, light4),
+                          cameraTransform
+                        )
+                      };
+                      let _setFakeGl = (sandbox, nameArr, state) => {
+                        let uniform1f = createEmptyStubWithJsObjSandbox(sandbox);
+                        let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                        let posArr = nameArr |> Js.Array.mapi((_, index) => index);
+                        let getUniformLocation =
+                          GLSLLocationTool.getUniformLocationWithNameArr(
+                            sandbox,
+                            Sinon.createEmptyStubWithJsObjSandbox(sandbox),
+                            nameArr,
+                            posArr
+                          );
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~uniform1f,
+                                 ~uniform3f,
+                                 ~getUniformLocation,
+                                 ()
+                               )
+                             );
+                        (state, posArr, (uniform1f, uniform3f))
+                      };
+                      describe(
+                        "send structure data",
+                        () => {
+                          describe(
+                            "send position",
+                            () => {
+                              test(
+                                "test one light",
+                                () => {
+                                  let (state, lightGameObject, material, light, cameraTransform) =
+                                    _prepareOne(sandbox, state^);
+                                  let position = (1., 2., 3.);
+                                  let state =
+                                    state
+                                    |> Transform.setTransformPosition(
+                                         GameObject.getGameObjectTransformComponent(
+                                           lightGameObject,
+                                           state
+                                         ),
+                                         position
+                                       );
+                                  let (state, posArr, (uniform1f, uniform3f)) =
+                                    _setFakeGl(
+                                      sandbox,
+                                      [|"u_directionLights[0].position"|],
+                                      state
+                                    );
+                                  let state =
+                                    state
+                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.updateSystem
+                                    |> _render;
+                                  uniform3f
+                                  |> expect
+                                  |> toCalledWith([|posArr[0] |> Obj.magic, 1., 2., 3.|])
+                                }
+                              );
+                              test(
+                                "test four lights",
+                                () => {
+                                  let (
+                                    state,
+                                    (
+                                      lightGameObject1,
+                                      lightGameObject2,
+                                      lightGameObject3,
+                                      lightGameObject4
+                                    ),
+                                    material,
+                                    (light1, light2, light3, light4),
+                                    cameraTransform
+                                  ) =
+                                    _prepareFour(sandbox, state^);
+                                  let state =
+                                    state
+                                    |> Transform.setTransformPosition(
+                                         GameObject.getGameObjectTransformComponent(
+                                           lightGameObject1,
+                                           state
+                                         ),
+                                         (1., 2., 3.)
+                                       )
+                                    |> Transform.setTransformPosition(
+                                         GameObject.getGameObjectTransformComponent(
+                                           lightGameObject2,
+                                           state
+                                         ),
+                                         (2., 2., 3.)
+                                       )
+                                    |> Transform.setTransformPosition(
+                                         GameObject.getGameObjectTransformComponent(
+                                           lightGameObject3,
+                                           state
+                                         ),
+                                         (3., 2., 3.)
+                                       )
+                                    |> Transform.setTransformPosition(
+                                         GameObject.getGameObjectTransformComponent(
+                                           lightGameObject4,
+                                           state
+                                         ),
+                                         (4., 2., 3.)
+                                       );
+                                  let (state, posArr, (uniform1f, uniform3f)) =
+                                    _setFakeGl(
+                                      sandbox,
+                                      [|
+                                        "u_directionLights[0].position",
+                                        "u_directionLights[1].position",
+                                        "u_directionLights[2].position",
+                                        "u_directionLights[3].position"
+                                      |],
+                                      state
+                                    );
+                                  let state =
+                                    state
+                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.updateSystem
+                                    |> _render;
+                                  (
+                                    uniform3f |> withOneArg(posArr[0]) |> getCall(0) |> getArgs,
+                                    uniform3f |> withOneArg(posArr[1]) |> getCall(0) |> getArgs,
+                                    uniform3f |> withOneArg(posArr[2]) |> getCall(0) |> getArgs,
+                                    uniform3f |> withOneArg(posArr[3]) |> getCall(0) |> getArgs
+                                  )
+                                  |>
+                                  expect == (
+                                              [posArr[0] |> Obj.magic, 1., 2., 3.],
+                                              [posArr[1] |> Obj.magic, 2., 2., 3.],
+                                              [posArr[2] |> Obj.magic, 3., 2., 3.],
+                                              [posArr[3] |> Obj.magic, 4., 2., 3.]
+                                            )
+                                }
+                              )
+                            }
+                          );
+                          describe(
+                            "send color",
+                            () =>
+                              test(
+                                "test one light",
+                                () => {
+                                  let (state, lightGameObject, material, light, cameraTransform) =
+                                    _prepareOne(sandbox, state^);
+                                  let color = [|1., 0., 0.|];
+                                  let state =
+                                    state |> DirectionLight.setDirectionLightColor(light, color);
+                                  let (state, posArr, (uniform1f, uniform3f)) =
+                                    _setFakeGl(sandbox, [|"u_directionLights[0].color"|], state);
+                                  let state =
+                                    state
+                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.updateSystem
+                                    |> _render;
+                                  uniform3f
+                                  |> expect
+                                  |> toCalledWith(
+                                       [|posArr[0] |> Obj.magic|] |> Js.Array.concat(color)
+                                     )
+                                }
+                              )
+                          );
+                          describe(
+                            "send intensity",
+                            () =>
+                              test(
+                                "test one light",
+                                () => {
+                                  let (state, lightGameObject, material, light, cameraTransform) =
+                                    _prepareOne(sandbox, state^);
+                                  let intensity = 2.;
+                                  let state =
+                                    state
+                                    |> DirectionLight.setDirectionLightIntensity(light, intensity);
+                                  let (state, posArr, (uniform1f, uniform3f)) =
+                                    _setFakeGl(
+                                      sandbox,
+                                      [|"u_directionLights[0].intensity"|],
+                                      state
+                                    );
+                                  let state =
+                                    state
+                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.updateSystem
+                                    |> _render;
+                                  uniform1f
+                                  |> expect
+                                  |> toCalledWith(
+                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(intensity)
+                                     )
+                                }
+                              )
+                          )
+                        }
+                      )
+                    }
                   )
+                }
               )
-              /* GLSLSenderTool.JudgeSendUniformData.testSendShaderVector3(
-                   sandbox,
-                   "u_ambient",
-                   (lightGameObject, _, _, state) => {
-                     let light =
-                       GameObject.getGameObjectAmbientLightComponent(
-                         lightGameObject,
-                         state
-                       );
-                     AmbientLight.setAmbientLightColor(light, [|1., 0., 0.5|], state)
-                   },
-                   [1., 0., 0.5],
-                   ~prepareGameObjectFunc=
-                     (sandbox, state) => {
-                       let (state, gameObject, geometry, material, meshRenderer) =
-                         FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                       /* (state, gameObject, geometry, material, meshRenderer) */
-                       let (state, lightGameObject, light) =
-                         AmbientLightTool.createGameObject(state);
-                       (state, lightGameObject, light, material, geometry)
-                     },
-                   ~testFunc=
-                     (_prepareSendUinformData) =>
-                       testSendShaderUniformVec3DataOnlyOnce(
-                         "u_ambient",
-                         _prepareSendUinformData
-                       ),
-                   ()
-                 ) */
             }
           );
           describe(
-            "test send map data",
+            "test send light material data",
             () => {
-              GLSLSenderTool.JudgeSendUniformData.testSendVector3(
+              GLSLSenderTool.JudgeSendUniformData.testSendFloat(
                 sandbox,
-                "u_diffuse",
+                "u_shininess",
                 (_, (gameObjectTransform, material), (cameraTransform, cameraController), state) =>
-                  state |> LightMaterial.setLightMaterialDiffuseColor(material, [|1., 0., 0.5|]),
-                [1., 0., 0.5],
+                  state |> LightMaterial.setLightMaterialShininess(material, 30.),
+                30.,
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ()
               );
-              GLSLSenderTool.JudgeSendUniformData.testSendVector3(
-                sandbox,
-                "u_specular",
-                (_, (gameObjectTransform, material), (cameraTransform, cameraController), state) =>
-                  state |> LightMaterial.setLightMaterialSpecularColor(material, [|1., 0., 0.5|]),
-                [1., 0., 0.5],
-                ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
-                ()
+              describe(
+                "test send map data",
+                () => {
+                  GLSLSenderTool.JudgeSendUniformData.testSendVector3(
+                    sandbox,
+                    "u_diffuse",
+                    (
+                      _,
+                      (gameObjectTransform, material),
+                      (cameraTransform, cameraController),
+                      state
+                    ) =>
+                      state
+                      |> LightMaterial.setLightMaterialDiffuseColor(material, [|1., 0., 0.5|]),
+                    [1., 0., 0.5],
+                    ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
+                    ()
+                  );
+                  GLSLSenderTool.JudgeSendUniformData.testSendVector3(
+                    sandbox,
+                    "u_specular",
+                    (
+                      _,
+                      (gameObjectTransform, material),
+                      (cameraTransform, cameraController),
+                      state
+                    ) =>
+                      state
+                      |> LightMaterial.setLightMaterialSpecularColor(material, [|1., 0., 0.5|]),
+                    [1., 0., 0.5],
+                    ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
+                    ()
+                  )
+                }
               )
             }
           );
