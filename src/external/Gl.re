@@ -40,6 +40,20 @@ open Js.Typed_array;
 
 [@bs.get] external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
 
+[@bs.get] external getCullFace : webgl1Context => int = "CULL_FACE";
+
+[@bs.get] external getFrontAndBack : webgl1Context => int = "FRONT_AND_BACK";
+
+[@bs.get] external getBack : webgl1Context => int = "BACK";
+
+[@bs.get] external getFront : webgl1Context => int = "FRONT";
+
+[@bs.send.pipe : webgl1Context] external enable : int => unit = "";
+
+[@bs.send.pipe : webgl1Context] external disable : int => unit = "";
+
+[@bs.send.pipe : webgl1Context] external cullFace : int => unit = "";
+
 [@bs.send] external getWebgl1Context : ('canvas, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
 

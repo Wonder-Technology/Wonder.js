@@ -1,7 +1,5 @@
 open StateDataType;
 
-open DeviceManagerType;
-
 open ViewSystem;
 
 open GlType;
@@ -53,6 +51,7 @@ let setColorWrite =
       ),
       state: StateDataType.state
     ) => {
+  open DeviceManagerType;
   let {colorWrite} = _getDeviceManagerData(state);
   switch colorWrite {
   | Some((oldWriteRed, oldWriteGreen, oldWriteBlue, oldWriteAlpha))
@@ -79,7 +78,41 @@ let setColorWrite =
   }
 };
 
+/* TODO test */
+let setSide = (gl, targetSide, state: StateDataType.state) => {
+  open DeviceManagerType;
+  let {side} = _getDeviceManagerData(state);
+  switch side {
+  | Some(oldSide) when oldSide === targetSide => state
+  | _ =>
+    switch targetSide {
+    | NONE =>
+      gl |> Gl.enable(Gl.getCullFace(gl));
+      gl |> Gl.cullFace(Gl.getFrontAndBack(gl))
+    | BOTH => gl |> Gl.disable(Gl.getCullFace(gl))
+    | FRONT =>
+      gl |> Gl.enable(Gl.getCullFace(gl));
+      gl |> Gl.cullFace(Gl.getBack(gl))
+    | BACK =>
+      gl |> Gl.enable(Gl.getCullFace(gl));
+      gl |> Gl.cullFace(Gl.getFront(gl))
+    | _ =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="setSide",
+          ~description={j|unknown targetSide: $targetSide|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j}
+        )
+      )
+    };
+    {...state, deviceManagerData: {...state.deviceManagerData, side: Some(targetSide)}}
+  }
+};
+
 let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
+  open DeviceManagerType;
   let state = setColorWrite(gl, (Js.true_, Js.true_, Js.true_, Js.true_), state);
   /*! optimize in ANGLE:
     (need more verify:set color mask all false before clear?
@@ -96,6 +129,7 @@ let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
 };
 
 let clearColor = (gl, (r: float, g: float, b: float, a: float), state: StateDataType.state) => {
+  open DeviceManagerType;
   let {clearColor} = _getDeviceManagerData(state);
   switch clearColor {
   | Some((oldR, oldG, oldB, oldA)) when oldR === r && oldG === g && oldB === b && oldA === a => state
@@ -106,6 +140,7 @@ let clearColor = (gl, (r: float, g: float, b: float, a: float), state: StateData
 };
 
 let setViewport = (gl, (x, y, width, height), state: StateDataType.state) => {
+  open DeviceManagerType;
   let {viewport} = _getDeviceManagerData(state);
   switch viewport {
   | Some((oldX, oldY, oldWidth, oldHeight))
@@ -120,8 +155,9 @@ let setViewport = (gl, (x, y, width, height), state: StateDataType.state) => {
 };
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
-  let {colorWrite, clearColor, viewport} = state |> _getDeviceManagerData;
-  {...state, deviceManagerData: {gl: None, colorWrite, clearColor, viewport}}
+  open DeviceManagerType;
+  let {colorWrite, clearColor, side, viewport} = state |> _getDeviceManagerData;
+  {...state, deviceManagerData: {gl: None, colorWrite, clearColor, side, viewport}}
 };
 
 let restore = (currentState, {gl}: StateDataType.sharedDataForRestoreState, targetState) => {

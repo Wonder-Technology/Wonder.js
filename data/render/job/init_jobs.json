@@ -3,6 +3,9 @@
         "name": "preget_glslData"
     },
     {
+        "name": "init_state"
+    },
+    {
         "name": "init_basic_material"
     },
     {

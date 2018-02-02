@@ -12,15 +12,17 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateTool.createState());
       let _prepareDeviceManagerData = (state) => {
+        open DeviceManagerType;
         let data = DeviceManagerTool.getDeviceManagerData(state);
         let gl = Obj.magic(RandomTool.getRandomFloat(10.));
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
+        let side = Some(BOTH);
         let viewport = Some((1., 0.1, 10., 20.));
         (
-          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor, viewport}},
+          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor, side, viewport}},
           Some(gl),
-          (colorWrite, clearColor, viewport)
+          (colorWrite, clearColor, side, viewport)
         )
       };
       let _prepareTypeArrayPoolData = (state) => {
@@ -97,13 +99,24 @@ let _ =
                 "directly use readonly data",
                 () => {
                   open StateDataType;
-                  let (state, gl, (colorWrite, clearColor, viewport)) =
+                  let (state, gl, (colorWrite, clearColor, side, viewport)) =
                     _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
-                  (copiedData.colorWrite, copiedData.clearColor, copiedData.viewport)
-                  |> expect == (targetData.colorWrite, targetData.clearColor, targetData.viewport)
+                  (
+                    copiedData.colorWrite,
+                    copiedData.clearColor,
+                    copiedData.side,
+                    copiedData.viewport
+                  )
+                  |>
+                  expect == (
+                              targetData.colorWrite,
+                              targetData.clearColor,
+                              targetData.side,
+                              targetData.viewport
+                            )
                 }
               )
             }

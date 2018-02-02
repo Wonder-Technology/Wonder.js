@@ -74,7 +74,7 @@
             }
 
             function initSample(state) {
-                // var [state, box1] = createBox(state);
+                var [state, box1] = createBox(state);
 
 
                 // var [state, box2] = createBasicBox(state);
@@ -85,9 +85,10 @@
                 // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
 
                 // var [state, box2] = createBox(state);
-                var [state, boxes] = createBoxes(20000, state);
+                // var [state, boxes] = createBoxes(20000, state);
 
-                var [state, ambientLight] = createAmbientLight(state);
+                // var [state, ambientLight] = createAmbientLight(state);
+                var [state, directionLight] = createDirectionLight(state);
 
 
                 var [state, camera] = createCamera(state);
@@ -173,6 +174,27 @@
                 return [state, obj];
             }
 
+            function createDirectionLight(state) {
+                var [state, light] = wd.createDirectionLight(state);
+
+                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+                var [state, obj] = wd.createGameObject(state);
+
+
+
+                var transform = wd.getGameObjectTransformComponent(obj, state);
+
+                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+
+
+                state = wd.addGameObjectDirectionLightComponent(obj, light, state);
+
+                return [state, obj];
+            }
+
             function createCamera(state) {
 
                 var [state, cameraController] = wd.createCameraController(state);
@@ -193,7 +215,8 @@
 
                 var transform = wd.getGameObjectTransformComponent(obj, state);
 
-                state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+                // state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+                state = wd.setTransformLocalPosition(transform, [0, 0, 15], state);
 
                 return [state, obj];
             }

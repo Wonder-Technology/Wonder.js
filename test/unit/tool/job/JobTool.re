@@ -17,3 +17,5 @@ let init = (state: StateDataType.state) => AllJobSystem.init(state);
 let execLogicInitJobs = LogicJobSystem.execLogicInitJobs;
 
 let execLogicUpdateJobs = LogicJobSystem.execLogicUpdateJobs;
+
+let getConfigData = () => 1 |> Obj.magic;

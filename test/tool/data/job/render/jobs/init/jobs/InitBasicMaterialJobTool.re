@@ -27,13 +27,14 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let _getConfigData = () => 1 |> Obj.magic;
-
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
   |> AllMaterialTool.pregetGLSLData
-  |> InitBasicMaterialJob.getJob(_getConfigData(), [@bs] DeviceManagerSystem.unsafeGetGl(state));
+  |> InitBasicMaterialJob.getJob(
+       JobTool.getConfigData(),
+       [@bs] DeviceManagerSystem.unsafeGetGl(state)
+     );
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;
