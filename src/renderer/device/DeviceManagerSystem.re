@@ -1,5 +1,7 @@
 open StateDataType;
 
+open DeviceManagerType;
+
 open ViewSystem;
 
 open GlType;
@@ -122,7 +124,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
   {...state, deviceManagerData: {gl: None, colorWrite, clearColor, viewport}}
 };
 
-let restore = (currentState, {gl}, targetState) => {
+let restore = (currentState, {gl}: StateDataType.sharedDataForRestoreState, targetState) => {
   ...targetState,
   deviceManagerData: {..._getDeviceManagerData(targetState), gl: Some(gl)}
 };

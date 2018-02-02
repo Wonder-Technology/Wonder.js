@@ -85,7 +85,7 @@ let _ =
               test(
                 "clean gl",
                 () => {
-                  open StateDataType;
+                  open DeviceManagerType;
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
                   let {gl}: deviceManagerData =
