@@ -18,6 +18,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> BasicMaterialAdmin.deepCopyStateForRestore
   |> LightMaterialAdmin.deepCopyStateForRestore
   |> AmbientLightAdmin.deepCopyStateForRestore
+  |> DirectionLightAdmin.deepCopyStateForRestore
   |> ShaderSystem.deepCopyStateForRestore
   |> ProgramSystem.deepCopyStateForRestore
   |> GLSLLocationSystem.deepCopyStateForRestore
@@ -54,6 +55,7 @@ let restore =
   |> BasicMaterialAdmin.restore(gl, currentState)
   |> LightMaterialAdmin.restore(gl, currentState)
   |> AmbientLightAdmin.restore(currentState)
+  |> DirectionLightAdmin.restore(currentState)
   |> RenderDataSystem.restore(currentState)
   |> GlobalTempSystem.restore(currentState)
   |> setState(stateData)
@@ -90,6 +92,7 @@ let createState = () => {
   basicMaterialData: BasicMaterialHelper.initData(),
   lightMaterialData: LightMaterialHelper.initData(),
   ambientLightData: AmbientLightHelper.initData(),
+  directionLightData: DirectionLightHelper.initData(),
   geometryData: None,
   meshRendererData: MeshRendererHelper.initData(),
   shaderData: ShaderHelper.initData(),

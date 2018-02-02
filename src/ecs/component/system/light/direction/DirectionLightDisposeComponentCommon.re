@@ -1,34 +1,27 @@
-open AmbientLightType;
+/* TODO duplicate */
+open DirectionLightType;
 
 open ComponentDisposeComponentCommon;
 
-open AmbientLightStateCommon;
+open DirectionLightStateCommon;
 
 let isAlive = (light, state: StateDataType.state) =>
   !
-    AmbientLightIndexCommon.isDisposed(
-      AmbientLightIndexCommon.getMappedIndex(
-        light,
-        AmbientLightIndexCommon.getMappedIndexMap(state)
-      )
+    LightIndexCommon.isDisposed(
+      LightIndexCommon.getMappedIndex(light, DirectionLightIndexCommon.getMappedIndexMap(state))
     );
 
 let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
   mappedSourceIndex >= lastComponentIndex ?
     mappedIndexMap :
-    mappedIndexMap |> AmbientLightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
+    mappedIndexMap
+    |> LightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
 
 let _swapData =
-    (
-      (mappedSourceIndex, lastComponentIndex),
-      (mappedIndexMap, dataSize, defaultData),
-      deleteBySwapAndResetTypeArrFunc,
-      typeArr
-    ) =>
+    ((mappedSourceIndex, lastComponentIndex), (mappedIndexMap, dataSize, defaultData), deleteBySwapAndResetTypeArrFunc, typeArr) =>
   mappedSourceIndex >= lastComponentIndex ?
     typeArr :
-    [@bs]
-    deleteBySwapAndResetTypeArrFunc(
+    [@bs]deleteBySwapAndResetTypeArrFunc(
       mappedSourceIndex * dataSize,
       lastComponentIndex * dataSize,
       typeArr,
@@ -36,24 +29,32 @@ let _swapData =
       defaultData
     );
 
-let _disposeData = (sourceIndex, {index, colors, gameObjectMap, mappedIndexMap} as data) => {
+let _disposeData = (sourceIndex, {index, colors, intensities, gameObjectMap, mappedIndexMap} as data) => {
   let gameObjectMap = LightDisposeComponentCommon.disposeData(sourceIndex, gameObjectMap);
-  let colorDataSize = AmbientLightHelper.getColorDataSize();
+  let colorDataSize = DirectionLightHelper.getColorDataSize();
+  let intensityDataSize = DirectionLightHelper.getIntensityDataSize();
   let lastComponentIndex = pred(index);
-  let mappedSourceIndex = mappedIndexMap |> AmbientLightIndexCommon.getMappedIndex(sourceIndex);
+  let mappedSourceIndex = mappedIndexMap |> LightIndexCommon.getMappedIndex(sourceIndex);
   {
     ...data,
     index: pred(index),
     mappedIndexMap:
       mappedIndexMap
       |> _swapIndex(mappedSourceIndex, lastComponentIndex)
-      |> AmbientLightIndexCommon.markDisposed(sourceIndex),
+      |> LightIndexCommon.markDisposed(sourceIndex),
     colors:
       colors
       |> _swapData(
            (mappedSourceIndex, lastComponentIndex),
-           (mappedIndexMap, colorDataSize, AmbientLightHelper.getDefaultColor()),
+           (mappedIndexMap, colorDataSize, DirectionLightHelper.getDefaultColor()),
            LightDisposeComponentCommon.deleteBySwapAndResetFloat32TypeArr
+         ),
+    intensities:
+      intensities
+      |> _swapData(
+           (mappedSourceIndex, lastComponentIndex),
+           (mappedIndexMap, intensityDataSize, DirectionLightHelper.getDefaultIntensity()),
+           LightDisposeComponentCommon.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     gameObjectMap
   }
@@ -64,7 +65,7 @@ let _handleDispose =
   (
     (light, state: StateDataType.state) => {
       ...state,
-      ambientLightData: getLightData(state) |> _disposeData(light)
+      directionLightData: getLightData(state) |> _disposeData(light)
     }
   );
 

@@ -20,6 +20,8 @@ open LightMaterialType;
 
 open AmbientLightType;
 
+open DirectionLightType;
+
 open ShaderType;
 
 open ProgramType;
@@ -181,6 +183,7 @@ and state = {
   basicMaterialData,
   lightMaterialData,
   ambientLightData,
+  directionLightData,
   mutable geometryData: option(geometryData),
   mutable meshRendererData,
   shaderData,
