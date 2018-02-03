@@ -74,16 +74,13 @@ let _ =
       describe(
         "test get uniform location",
         () => {
-          let _testGetLocation = (name) => {
-            let (state, gameObject, geometry, material) =
-              InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-            let getUniformLocation = GLSLLocationTool.getUniformLocation(sandbox, name);
-            let state =
+          let _testGetLocation = (name) =>
+            InitMaterialTool.testGetLocation(
+              sandbox,
+              name,
+              (InitBasicMaterialJobTool.prepareGameObject, InitBasicMaterialJobTool.exec),
               state
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ()));
-            let state = state |> InitBasicMaterialJobTool.exec;
-            getUniformLocation |> withTwoArgs(matchAny, name) |> expect |> toCalledOnce
-          };
+            );
           describe(
             "test get u_mMatrix location",
             () => {
@@ -93,24 +90,16 @@ let _ =
                 () =>
                   test(
                     "if cached, not query gl location",
-                    () => {
-                      let (state, gameObject, geometry, material) =
-                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-                      let (state, _, _, _) =
-                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
-                      let getUniformLocation =
-                        GLSLLocationTool.getUniformLocation(sandbox, "u_mMatrix");
-                      let state =
+                    () =>
+                      InitMaterialTool.testLocationCache(
+                        sandbox,
+                        "u_mMatrix",
+                        (
+                          InitBasicMaterialJobTool.prepareGameObject,
+                          InitBasicMaterialJobTool.exec
+                        ),
                         state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ())
-                           );
-                      let state = state |> InitBasicMaterialJobTool.exec;
-                      getUniformLocation
-                      |> withTwoArgs(matchAny, "u_mMatrix")
-                      |> expect
-                      |> toCalledOnce
-                    }
+                      )
                   )
               )
             }
@@ -123,50 +112,33 @@ let _ =
         () => {
           test(
             "glsl only set glPosition,glFragColor once",
-            () => {
-              let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-              (
-                GLSLTool.containSpecifyCount(
-                  GLSLTool.getVsSource(shaderSource),
-                  "gl_Position =",
-                  ~count=1,
-                  ()
-                ),
-                GLSLTool.containSpecifyCount(
-                  GLSLTool.getFsSource(shaderSource),
-                  "gl_FragColor =",
-                  ~count=1,
-                  ()
-                )
+            () =>
+              InitMaterialTool.testOnlySeGlPositionGlFragColorOnce(
+                sandbox,
+                InitBasicMaterialJobTool.prepareForJudgeGLSL,
+                state
               )
-              |> expect == (true, true)
-            }
           );
           describe(
             "test shader lib's glsl",
             () => {
               test(
                 "test common shader lib's glsl",
-                () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.containMultiline(
-                    GLSLTool.getVsSource(shaderSource),
-                    [{|uniform mat4 u_vMatrix;
-|}, {|uniform mat4 u_pMatrix;
-|}]
+                () =>
+                  InitMaterialTool.testCommonShaderLibGlsl(
+                    sandbox,
+                    InitBasicMaterialJobTool.prepareForJudgeGLSL,
+                    state
                   )
-                  |> expect == true
-                }
               );
               test(
                 "test vertex shader lib's glsl",
-                () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.getVsSource(shaderSource)
-                  |> expect
-                  |> toContainString({|attribute vec3 a_position;
-|})
-                }
+                () =>
+                  InitMaterialTool.testVertexShaderLibGlsl(
+                    sandbox,
+                    InitBasicMaterialJobTool.prepareForJudgeGLSL,
+                    state
+                  )
               );
               describe(
                 "test modelMatrix instance shader libs",

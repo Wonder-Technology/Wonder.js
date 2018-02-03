@@ -24,7 +24,7 @@ let _ =
         () => {
           describe(
             "test get a_position location",
-            () => {
+            () =>
               test(
                 "test get location",
                 () => {
@@ -43,33 +43,7 @@ let _ =
                   |> expect
                   |> toCalledOnce
                 }
-              );
-              describe(
-                "test cache",
-                () =>
-                  test(
-                    "if cached, not query gl location",
-                    () => {
-                      let (state, gameObject, geometry, material) =
-                        InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
-                      let (state, _, _, _) =
-                        InitLightMaterialJobTool.prepareGameObject(sandbox, state);
-                      let getAttribLocation =
-                        GLSLLocationTool.getAttribLocation(sandbox, "a_position");
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ())
-                           );
-                      let state = state |> InitLightMaterialJobTool.exec;
-                      getAttribLocation
-                      |> withTwoArgs(matchAny, "a_position")
-                      |> expect
-                      |> toCalledOnce
-                    }
-                  )
               )
-            }
           );
           describe(
             "test get a_normal location",
@@ -121,16 +95,13 @@ let _ =
       describe(
         "test get uniform location",
         () => {
-          let _testGetLocation = (name) => {
-            let (state, gameObject, geometry, material) =
-              InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
-            let getUniformLocation = GLSLLocationTool.getUniformLocation(sandbox, name);
-            let state =
+          let _testGetLocation = (name) =>
+            InitMaterialTool.testGetLocation(
+              sandbox,
+              name,
+              (InitLightMaterialJobTool.prepareGameObject, InitLightMaterialJobTool.exec),
               state
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ()));
-            let state = state |> InitLightMaterialJobTool.exec;
-            getUniformLocation |> withTwoArgs(matchAny, name) |> expect |> toCalledOnce
-          };
+            );
           describe(
             "test get u_normalMatrix location",
             () => {
@@ -140,24 +111,16 @@ let _ =
                 () =>
                   test(
                     "if cached, not query gl location",
-                    () => {
-                      let (state, gameObject, geometry, material) =
-                        InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
-                      let (state, _, _, _) =
-                        InitLightMaterialJobTool.prepareGameObject(sandbox, state);
-                      let getUniformLocation =
-                        GLSLLocationTool.getUniformLocation(sandbox, "u_normalMatrix");
-                      let state =
+                    () =>
+                      InitMaterialTool.testLocationCache(
+                        sandbox,
+                        "u_normalMatrix",
+                        (
+                          InitLightMaterialJobTool.prepareGameObject,
+                          InitLightMaterialJobTool.exec
+                        ),
                         state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ())
-                           );
-                      let state = state |> InitLightMaterialJobTool.exec;
-                      getUniformLocation
-                      |> withTwoArgs(matchAny, "u_normalMatrix")
-                      |> expect
-                      |> toCalledOnce
-                    }
+                      )
                   )
               )
             }
@@ -174,50 +137,33 @@ let _ =
         () => {
           test(
             "glsl only set glPosition,glFragColor once",
-            () => {
-              let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-              (
-                GLSLTool.containSpecifyCount(
-                  GLSLTool.getVsSource(shaderSource),
-                  "gl_Position =",
-                  ~count=1,
-                  ()
-                ),
-                GLSLTool.containSpecifyCount(
-                  GLSLTool.getFsSource(shaderSource),
-                  "gl_FragColor =",
-                  ~count=1,
-                  ()
-                )
+            () =>
+              InitMaterialTool.testOnlySeGlPositionGlFragColorOnce(
+                sandbox,
+                InitLightMaterialJobTool.prepareForJudgeGLSL,
+                state
               )
-              |> expect == (true, true)
-            }
           );
           describe(
             "test shader lib's glsl",
             () => {
               test(
                 "test common shader lib's glsl",
-                () => {
-                  let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.containMultiline(
-                    GLSLTool.getVsSource(shaderSource),
-                    [{|uniform mat4 u_vMatrix;
-|}, {|uniform mat4 u_pMatrix;
-|}]
+                () =>
+                  InitMaterialTool.testCommonShaderLibGlsl(
+                    sandbox,
+                    InitLightMaterialJobTool.prepareForJudgeGLSL,
+                    state
                   )
-                  |> expect == true
-                }
               );
               test(
                 "test vertex shader lib's glsl",
-                () => {
-                  let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.getVsSource(shaderSource)
-                  |> expect
-                  |> toContainString({|attribute vec3 a_position;
-|})
-                }
+                () =>
+                  InitMaterialTool.testVertexShaderLibGlsl(
+                    sandbox,
+                    InitLightMaterialJobTool.prepareForJudgeGLSL,
+                    state
+                  )
               );
               test(
                 "test normal shader lib's glsl",
