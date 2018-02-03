@@ -18,8 +18,8 @@ let restore = AmbientLightStateCommon.restore;
 
 let isAlive = AmbientLightDisposeComponentCommon.isAlive;
 
-let getMappedIndex = AmbientLightIndexCommon.getMappedIndex;
+let getMappedIndex = LightIndexCommon.getMappedIndex;
 
-let setMappedIndex = AmbientLightIndexCommon.setMappedIndex;
+let setMappedIndex = LightIndexCommon.setMappedIndex;
 
 let getMappedIndexMap = AmbientLightIndexCommon.getMappedIndexMap

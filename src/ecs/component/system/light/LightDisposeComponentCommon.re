@@ -1,4 +1,7 @@
 /* let isAlive = (light, maxCount) => light < maxCount; */
+let isAlive = (light, mappedIndexMap) =>
+  ! LightIndexCommon.isDisposed(LightIndexCommon.getMappedIndex(light, mappedIndexMap));
+
 let deleteBySwapAndResetFloat32TypeArr =
   [@bs]
   (
@@ -19,7 +22,7 @@ let deleteBySwapAndResetFloat32TypeArr =
 let deleteSingleValueBySwapAndResetFloat32TypeArr =
   [@bs]
   (
-    (sourceIndex, targetIndex, typeArr, length:int, defaultValue) => {
+    (sourceIndex, targetIndex, typeArr, length: int, defaultValue) => {
       open Js.Typed_array;
       Float32Array.unsafe_set(typeArr, sourceIndex, Float32Array.unsafe_get(typeArr, targetIndex));
       Float32Array.unsafe_set(typeArr, targetIndex, defaultValue);
@@ -36,6 +39,54 @@ let deleteSingleValueBySwapAndResetUint8TypeArr = (sourceIndex, lastIndex, typeA
 
 let disposeData = (light, gameObjectMap) =>
   ComponentDisposeComponentCommon.disposeSparseMapData(light, gameObjectMap);
+
+
+let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
+  mappedSourceIndex >= lastComponentIndex ?
+    mappedIndexMap :
+    mappedIndexMap |> LightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
+
+
+let swapData =
+    (
+      (mappedSourceIndex, lastComponentIndex),
+      (mappedIndexMap, dataSize, defaultData),
+      deleteBySwapAndResetTypeArrFunc,
+      typeArr
+    ) =>
+  mappedSourceIndex >= lastComponentIndex ?
+    typeArr :
+    [@bs]
+    deleteBySwapAndResetTypeArrFunc(
+      mappedSourceIndex * dataSize,
+      lastComponentIndex * dataSize,
+      typeArr,
+      dataSize,
+      defaultData
+    );
+
+
+  let setMappedIndexMap = (sourceIndex, mappedSourceIndex, lastComponentIndex, mappedIndexMap) => {
+
+      mappedIndexMap
+      |> _swapIndex(mappedSourceIndex, lastComponentIndex)
+      |> LightIndexCommon.markDisposed(sourceIndex)
+  };
+
+let handleDisposeComponent = (light, (isAliveFunc, handleDisposeFunc), state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            ComponentDisposeComponentCommon.checkComponentShouldAlive(light, isAliveFunc, state)
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  [@bs] handleDisposeFunc(light, state)
+};
 
 let handleBatchDisposeComponent =
     (lightArray, (isAliveFunc, handleDisposeFunc), state: StateDataType.state) => {

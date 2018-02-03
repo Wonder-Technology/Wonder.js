@@ -46,7 +46,7 @@ let _ =
                           ()
                         }
                       )
-                      |> toThrowMessage("expect <= 2, but actual is 3")
+                      |> toThrowMessage("expect index: 3 <= maxIndex: 2, but actual not")
                     }
                   );
                   test(

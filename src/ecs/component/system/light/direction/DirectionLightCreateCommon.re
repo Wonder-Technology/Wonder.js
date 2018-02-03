@@ -1,4 +1,3 @@
-/* TODO duplicate */
 open StateDataType;
 
 open DirectionLightType;
@@ -21,17 +20,5 @@ let create =
           index
         )
       }
-      |> WonderLog.Contract.ensureCheck(
-           ((state, index)) => {
-             open WonderLog;
-             open Contract;
-             open Operators;
-             let maxIndex = DirectionLightHelper.getBufferMaxCount() - 1;
-             test(
-               Log.buildAssertMessage(~expect={j|<= $maxIndex|j}, ~actual={j|is $index|j}),
-               () => assertLte(Int, index, maxIndex)
-             )
-           },
-           StateData.stateData.isDebug
-         )
+      |> LightCreateCommon.checkNotExceedMaxCount(DirectionLightHelper.getBufferMaxCount())
   );

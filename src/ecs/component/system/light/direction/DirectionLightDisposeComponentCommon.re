@@ -1,4 +1,3 @@
-/* TODO duplicate */
 open DirectionLightType;
 
 open ComponentDisposeComponentCommon;
@@ -6,30 +5,10 @@ open ComponentDisposeComponentCommon;
 open DirectionLightStateCommon;
 
 let isAlive = (light, state: StateDataType.state) =>
-  !
-    LightIndexCommon.isDisposed(
-      LightIndexCommon.getMappedIndex(light, DirectionLightIndexCommon.getMappedIndexMap(state))
-    );
+  LightDisposeComponentCommon.isAlive(light, DirectionLightIndexCommon.getMappedIndexMap(state));
 
-let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
-  mappedSourceIndex >= lastComponentIndex ?
-    mappedIndexMap :
-    mappedIndexMap
-    |> LightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
-
-let _swapData =
-    ((mappedSourceIndex, lastComponentIndex), (mappedIndexMap, dataSize, defaultData), deleteBySwapAndResetTypeArrFunc, typeArr) =>
-  mappedSourceIndex >= lastComponentIndex ?
-    typeArr :
-    [@bs]deleteBySwapAndResetTypeArrFunc(
-      mappedSourceIndex * dataSize,
-      lastComponentIndex * dataSize,
-      typeArr,
-      dataSize,
-      defaultData
-    );
-
-let _disposeData = (sourceIndex, {index, colors, intensities, gameObjectMap, mappedIndexMap} as data) => {
+let _disposeData =
+    (sourceIndex, {index, colors, intensities, gameObjectMap, mappedIndexMap} as data) => {
   let gameObjectMap = LightDisposeComponentCommon.disposeData(sourceIndex, gameObjectMap);
   let colorDataSize = DirectionLightHelper.getColorDataSize();
   let intensityDataSize = DirectionLightHelper.getIntensityDataSize();
@@ -39,19 +18,22 @@ let _disposeData = (sourceIndex, {index, colors, intensities, gameObjectMap, map
     ...data,
     index: pred(index),
     mappedIndexMap:
-      mappedIndexMap
-      |> _swapIndex(mappedSourceIndex, lastComponentIndex)
-      |> LightIndexCommon.markDisposed(sourceIndex),
+      LightDisposeComponentCommon.setMappedIndexMap(
+        sourceIndex,
+        mappedSourceIndex,
+        lastComponentIndex,
+        mappedIndexMap
+      ),
     colors:
       colors
-      |> _swapData(
+      |> LightDisposeComponentCommon.swapData(
            (mappedSourceIndex, lastComponentIndex),
            (mappedIndexMap, colorDataSize, DirectionLightHelper.getDefaultColor()),
            LightDisposeComponentCommon.deleteBySwapAndResetFloat32TypeArr
          ),
     intensities:
       intensities
-      |> _swapData(
+      |> LightDisposeComponentCommon.swapData(
            (mappedSourceIndex, lastComponentIndex),
            (mappedIndexMap, intensityDataSize, DirectionLightHelper.getDefaultIntensity()),
            LightDisposeComponentCommon.deleteSingleValueBySwapAndResetFloat32TypeArr
@@ -69,20 +51,8 @@ let _handleDispose =
     }
   );
 
-let handleDisposeComponent = (light, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            ComponentDisposeComponentCommon.checkComponentShouldAlive(light, isAlive, state)
-          )
-        )
-      ),
-    StateData.stateData.isDebug
-  );
-  [@bs] _handleDispose(light, state)
-};
+let handleDisposeComponent = (light, state: StateDataType.state) =>
+  LightDisposeComponentCommon.handleDisposeComponent(light, (isAlive, _handleDispose), state);
 
 let handleBatchDisposeComponent =
   [@bs]

@@ -16,4 +16,4 @@ let getColor = AmbientLightSystem.getColor;
 let getDefaultColor = AmbientLightHelper.getDefaultColor;
 
 let getMappedIndex = (index, state) =>
-  state |> AmbientLightIndexCommon.getMappedIndexMap |> AmbientLightIndexCommon.getMappedIndex(index)
+  state |> AmbientLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index)

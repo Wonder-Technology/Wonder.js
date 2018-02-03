@@ -14,24 +14,11 @@ let create =
             ambientLightData: {
               ...data,
               index: succ(index),
-              mappedIndexMap:
-                mappedIndexMap |> AmbientLightIndexCommon.setMappedIndex(index, index)
+              mappedIndexMap: mappedIndexMap |> LightIndexCommon.setMappedIndex(index, index)
             }
           },
           index
         )
       }
-      |> WonderLog.Contract.ensureCheck(
-           ((state, index)) => {
-             open WonderLog;
-             open Contract;
-             open Operators;
-             let maxIndex = AmbientLightHelper.getBufferMaxCount() - 1;
-             test(
-               Log.buildAssertMessage(~expect={j|<= $maxIndex|j}, ~actual={j|is $index|j}),
-               () => assertLte(Int, index, maxIndex)
-             )
-           },
-           StateData.stateData.isDebug
-         )
+      |> LightCreateCommon.checkNotExceedMaxCount(AmbientLightHelper.getBufferMaxCount())
   );
