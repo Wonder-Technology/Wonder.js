@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (elapsed, state) => state |> TimeControllerSystem.tick(elapsed);
+let execJob = (elapsed, state) => state |> TimeControllerSystem.tick(elapsed);

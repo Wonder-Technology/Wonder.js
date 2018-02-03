@@ -5,6 +5,6 @@
      expect(material) >= 0
    }; */
 let pregetGLSLData = (state) =>
-  state |> PregetGLSLDataJob.getJob(1 |> Obj.magic, [@bs] DeviceManagerSystem.unsafeGetGl(state));
+  state |> PregetGLSLDataJob.execJob(1 |> Obj.magic, [@bs] DeviceManagerSystem.unsafeGetGl(state));
 
 let prepareForInit = (state) => state |> pregetGLSLData;

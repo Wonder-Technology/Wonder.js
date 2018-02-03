@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (elapsed, state) => state |> CameraControllerSystem.update;
+let execJob = (elapsed, state) => state |> CameraControllerSystem.update;

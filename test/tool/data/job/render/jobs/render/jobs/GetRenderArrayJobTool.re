@@ -1,1 +1,1 @@
-let getJob = (configData, state) => GetRenderArrayJob.getJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);
+let execJob = (configData, state) => GetRenderArrayJob.execJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);

@@ -31,7 +31,7 @@ let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
   |> AllMaterialTool.pregetGLSLData
-  |> InitBasicMaterialJob.getJob(
+  |> InitBasicMaterialJob.execJob(
        JobTool.getConfigData(),
        [@bs] DeviceManagerSystem.unsafeGetGl(state)
      );

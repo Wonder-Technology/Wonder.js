@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getJob = (configData, gl, state) =>
+let execJob = (configData, gl, state) =>
   ShaderSystem.getAllShaderIndexArray(state)
   |> ArraySystem.reduceState(
        [@bs]

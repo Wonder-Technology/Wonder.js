@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (state) => TimeControllerSystem.start(state);
+let execJob = (state) => TimeControllerSystem.start(state);

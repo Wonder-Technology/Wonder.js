@@ -22,7 +22,7 @@ let _ =
           let (state, gameObject1, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
           let (state, gameObject2, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
           let render = (state: StateDataType.state) =>
-            state |> GetRenderArrayJobTool.getJob(RenderJobsTool.buildConfigData());
+            state |> GetRenderArrayJobTool.execJob(RenderJobsTool.buildConfigData());
           let state = RenderJobsTool.passGl(sandbox, state);
           let state = state |> RenderJobsTool.initSystemAndRender |> render;
           state.renderData.renderArray |> expect == Some([|gameObject1, gameObject2|])

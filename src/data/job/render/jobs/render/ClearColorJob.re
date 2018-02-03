@@ -1,6 +1,6 @@
 open RenderJobConfigType;
 
-let getJob = ((flags: jobFlags, _), gl, state) =>
+let execJob = ((flags: jobFlags, _), gl, state) =>
   switch flags {
   | None => RenderJobConfigSystem.throwJobFlagsShouldBeDefined()
   | Some(flags) =>

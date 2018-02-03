@@ -10,7 +10,7 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateTool.createState());
       let _render = (~flags=[|"COLOR_BUFFER"|], state: StateDataType.state) =>
-        state |> ClearBufferJobTool.getJob(RenderJobsTool.buildConfigData(~flags=Some(flags), ()));
+        state |> ClearBufferJobTool.execJob(RenderJobsTool.buildConfigData(~flags=Some(flags), ()));
       beforeEach(
         () => {
           sandbox := createSandbox();

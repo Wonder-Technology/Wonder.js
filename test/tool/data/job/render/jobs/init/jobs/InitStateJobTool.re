@@ -1,3 +1,3 @@
 let exec = (state: StateDataType.state) =>
   state
-  |> InitStateJob.getJob(JobTool.getConfigData(), [@bs] DeviceManagerSystem.unsafeGetGl(state));
+  |> InitStateJob.execJob(JobTool.getConfigData(), [@bs] DeviceManagerSystem.unsafeGetGl(state));

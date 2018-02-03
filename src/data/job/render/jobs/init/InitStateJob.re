@@ -2,4 +2,4 @@ open StateDataType;
 
 open DeviceManagerType;
 
-let getJob = (configData, gl, state) => DeviceManagerSystem.setSide(gl, FRONT, state);
+let execJob = (configData, gl, state) => DeviceManagerSystem.setSide(gl, FRONT, state);

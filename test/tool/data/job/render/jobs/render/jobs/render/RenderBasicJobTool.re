@@ -1,5 +1,5 @@
-let getJob = (configData, state) =>
-  RenderBasicJob.getJob(configData, [@bs] DeviceManagerSystem.unsafeGetGl(state), state);
+let execJob = (configData, state) =>
+  RenderBasicJob.execJob(configData, [@bs] DeviceManagerSystem.unsafeGetGl(state), state);
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject;

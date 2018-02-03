@@ -1,1 +1,1 @@
-let getJob = (configData, state) => ClearBufferJob.getJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);
+let execJob = (configData, state) => ClearBufferJob.execJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);

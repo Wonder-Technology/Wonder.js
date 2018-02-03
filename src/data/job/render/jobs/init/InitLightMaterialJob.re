@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (configData, gl, state) => LightMaterialAdmin.init(gl, state);
+let execJob = (configData, gl, state) => LightMaterialAdmin.init(gl, state);

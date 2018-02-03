@@ -11,7 +11,7 @@ let _ =
       let state = ref(StateTool.createState());
       let _render = (~colorHexStr="#123456", state: StateDataType.state) =>
         state
-        |> ClearColorJobTool.getJob(
+        |> ClearColorJobTool.execJob(
              RenderJobsTool.buildConfigData(~flags=Some([|colorHexStr|]), ())
            );
       beforeEach(

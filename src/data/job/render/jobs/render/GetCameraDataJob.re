@@ -36,5 +36,5 @@ let _getCameraData = (state: StateDataType.state) =>
     })
   };
 
-let getJob = (configData, gl, state) =>
+let execJob = (configData, gl, state) =>
   RenderDataSystem.setCameraData(_getCameraData(state), state);

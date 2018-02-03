@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (state) => CameraControllerSystem.init(state);
+let execJob = (state) => CameraControllerSystem.init(state);
