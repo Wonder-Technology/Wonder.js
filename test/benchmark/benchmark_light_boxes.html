@@ -13,7 +13,7 @@
 
         window.onload = function () {
             var state = wd.setMainConfig({
-                isDebug: true
+                isDebug: false
             });
 
             wd.load("../../data/", state).then(function (state) {
@@ -84,27 +84,14 @@
 
                 // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
 
-                var [state, box2] = createBox(state);
-                // var [state, boxes] = createBoxes(20000, state);
+                // var [state, box2] = createBox(state);
+                var [state, boxes] = createBoxes(20000, state);
 
-                // var [state, ambientLight] = createAmbientLight(state);
-                var [state, directionLightObj] = createDirectionLight(state);
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
-
-
-
-                var [state, directionLightObj] = createDirectionLight(state);
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
-
-
+                var [state, ambientLight] = createAmbientLight(state);
+                var [state, directionLight] = createDirectionLight(state);
+                // var [state, directionLight] = createDirectionLight(state);
+                // var [state, directionLight] = createDirectionLight(state);
+                // var [state, directionLight] = createDirectionLight(state);
 
 
                 var [state, camera] = createCamera(state);
@@ -201,6 +188,9 @@
 
 
 
+                var transform = wd.getGameObjectTransformComponent(obj, state);
+
+                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
 
                 state = wd.addGameObjectDirectionLightComponent(obj, light, state);
@@ -228,8 +218,8 @@
 
                 var transform = wd.getGameObjectTransformComponent(obj, state);
 
-                // state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+                state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+                // state = wd.setTransformLocalPosition(transform, [0, 0, 15], state);
 
                 return [state, obj];
             }
