@@ -134,24 +134,24 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 
-// #if POINT_LIGHTS_COUNT > 0
-//         vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
-// {
-//         //lightDir is not normalize computing distance
-//         float distance = length(lightDir);
+#if POINT_LIGHTS_COUNT > 0
+        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
+{
+        //lightDir is not normalize computing distance
+        float distance = length(lightDir);
 
-//         float attenuation = 0.0;
+        float attenuation = 0.0;
 
-//         if(distance < light.range)
-//         {
-//             attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-//         }
+        if(distance < light.range)
+        {
+            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+        }
 
-//         lightDir = normalize(lightDir);
+        lightDir = normalize(lightDir);
 
-//         return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-// }
-// #endif
+        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
+}
+#endif
 
 
 
@@ -171,11 +171,11 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 vec4 calcTotalLight(vec3 norm, vec3 viewDir){
     vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
 
-//     #if POINT_LIGHTS_COUNT > 0
-//                 for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
-//                 totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
-//         }
-//     #endif
+    #if POINT_LIGHTS_COUNT > 0
+                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
+                totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
+        }
+    #endif
 
     #if DIRECTION_LIGHTS_COUNT > 0
                 for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
@@ -220,7 +220,34 @@ gl_FragColor = totalColor;
 |},{|
 
 |}),{|
+varying vec3 v_worldPosition;
 
+#if POINT_LIGHTS_COUNT > 0
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    float intensity;
+
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+};
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+
+#endif
+
+
+#if DIRECTION_LIGHTS_COUNT > 0
+struct DirectionLight {
+    vec3 position;
+
+    float intensity;
+
+    vec3 color;
+};
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+#endif
 |},({|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
@@ -246,24 +273,24 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
 |}),{|
 varying vec3 v_worldPosition;
 
-// #if POINT_LIGHTS_COUNT > 0
-//     struct PointLight {
-//     vec3 position;
-//     vec3 color;
-//     float intensity;
+#if POINT_LIGHTS_COUNT > 0
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    float intensity;
 
-//     float range;
-//     float constant;
-//     float linear;
-//     float quadratic;
-// };
-// uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+};
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
-// #endif
+#endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-    struct DirectionLight {
+struct DirectionLight {
     vec3 position;
 
     float intensity;
@@ -297,20 +324,20 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
 |}),{|
 varying vec3 v_worldPosition;
 
-// #if POINT_LIGHTS_COUNT > 0
-// struct PointLight {
-//     vec3 position;
-//     vec3 color;
-//     float intensity;
+#if POINT_LIGHTS_COUNT > 0
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    float intensity;
 
-//     float range;
-//     float constant;
-//     float linear;
-//     float quadratic;
-// };
-// uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+};
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
-// #endif
+#endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
@@ -414,22 +441,22 @@ vec3 getNormal(){
     return v_normal;
 }
 
-// #if POINT_LIGHTS_COUNT > 0
-// vec3 getPointLightDir(int index){
-//     //workaround '[] : Index expression must be constant' error
-//     for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {
-//         if(x == index){
-//             return getPointLightDirByLightPos(u_pointLights[x].position);
-//         }
-//     }
-//     /*!
-//     solve error in window7 chrome/firefox:
-//     not all control paths return a value.
-//     failed to create d3d shaders
-//     */
-//     return vec3(0.0);
-// }
-// #endif
+#if POINT_LIGHTS_COUNT > 0
+vec3 getPointLightDir(int index){
+    //workaround '[] : Index expression must be constant' error
+    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {
+        if(x == index){
+            return getPointLightDirByLightPos(u_pointLights[x].position);
+        }
+    }
+    /*!
+    solve error in window7 chrome/firefox:
+    not all control paths return a value.
+    failed to create d3d shaders
+    */
+    return vec3(0.0);
+}
+#endif
 
 #if DIRECTION_LIGHTS_COUNT > 0
 vec3 getDirectionLightDir(int index){

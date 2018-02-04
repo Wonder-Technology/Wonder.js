@@ -212,6 +212,9 @@ let buildRenderJobConfig =
           "name": "direction_light"
         },
         {
+          "name": "point_light"
+        },
+        {
           "name": "light_end"
         },
         {
@@ -563,6 +566,19 @@ let buildRenderJobConfig =
         {
           "name": "sendDirectionLight",
           "from": "directionLight",
+          "field": "send",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  {
+    "name": "point_light",
+    "variables": {
+      "uniforms": [
+        {
+          "name": "sendPointLight",
+          "from": "pointLight",
           "field": "send",
           "type": "function"
         }

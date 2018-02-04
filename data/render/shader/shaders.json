@@ -98,6 +98,9 @@
           "name": "direction_light"
         },
         {
+          "name": "point_light"
+        },
+        {
           "name": "light_end"
         },
         {

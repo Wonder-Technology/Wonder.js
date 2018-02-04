@@ -344,6 +344,19 @@
     }
   },
   {
+    "name": "point_light",
+    "variables": {
+      "uniforms": [
+        {
+          "name": "sendPointLight",
+          "from": "pointLight",
+          "field": "send",
+          "type": "function"
+        }
+      ]
+    }
+  },
+  {
     "name": "light_end",
     "glsls": [
       {

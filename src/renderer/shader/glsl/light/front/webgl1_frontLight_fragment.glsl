@@ -67,24 +67,24 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 
-// #if POINT_LIGHTS_COUNT > 0
-//         vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
-// {
-//         //lightDir is not normalize computing distance
-//         float distance = length(lightDir);
+#if POINT_LIGHTS_COUNT > 0
+        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
+{
+        //lightDir is not normalize computing distance
+        float distance = length(lightDir);
 
-//         float attenuation = 0.0;
+        float attenuation = 0.0;
 
-//         if(distance < light.range)
-//         {
-//             attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-//         }
+        if(distance < light.range)
+        {
+            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+        }
 
-//         lightDir = normalize(lightDir);
+        lightDir = normalize(lightDir);
 
-//         return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-// }
-// #endif
+        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
+}
+#endif
 
 
 
@@ -104,11 +104,11 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 vec4 calcTotalLight(vec3 norm, vec3 viewDir){
     vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
 
-//     #if POINT_LIGHTS_COUNT > 0
-//                 for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
-//                 totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
-//         }
-//     #endif
+    #if POINT_LIGHTS_COUNT > 0
+                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
+                totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
+        }
+    #endif
 
     #if DIRECTION_LIGHTS_COUNT > 0
                 for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){

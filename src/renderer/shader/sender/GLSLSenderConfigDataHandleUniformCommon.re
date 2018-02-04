@@ -101,6 +101,27 @@ let _addDirectionLightSendData =
     )
   };
 
+let _addPointLightSendData =
+    ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
+  switch field {
+  | "send" =>
+    GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.addUniformSendDataByType(
+      (program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+      SendPointLightHandle.send
+    )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addPointLightSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  };
+
 let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "color" =>
@@ -296,6 +317,11 @@ let _readUniforms =
                )
              | "directionLight" =>
                _addDirectionLightSendData(
+                 (field, program, uniformCacheMap, uniformLocationMap),
+                 sendDataArrTuple
+               )
+             | "pointLight" =>
+               _addPointLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )

@@ -204,6 +204,34 @@ let getDirectionLightGameObject = DirectionLight.getDirectionLightGameObject;
 
 let createDirectionLight = DirectionLight.createDirectionLight;
 
+let setPointLightRange = PointLight.setPointLightRange;
+
+let getPointLightRange = PointLight.getPointLightRange;
+
+let setPointLightQuadratic = PointLight.setPointLightQuadratic;
+
+let getPointLightQuadratic = PointLight.getPointLightQuadratic;
+
+let setPointLightLinear = PointLight.setPointLightLinear;
+
+let getPointLightLinear = PointLight.getPointLightLinear;
+
+let setPointLightConstant = PointLight.setPointLightConstant;
+
+let getPointLightConstant = PointLight.getPointLightConstant;
+
+let setPointLightIntensity = PointLight.setPointLightIntensity;
+
+let getPointLightIntensity = PointLight.getPointLightIntensity;
+
+let setPointLightColor = PointLight.setPointLightColor;
+
+let getPointLightColor = PointLight.getPointLightColor;
+
+let getPointLightGameObject = PointLight.getPointLightGameObject;
+
+let createPointLight = PointLight.createPointLight;
+
 let setBasicMaterialColor = BasicMaterial.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterial.getBasicMaterialColor;
