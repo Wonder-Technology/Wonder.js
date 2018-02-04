@@ -363,7 +363,18 @@ let _ =
           );
           describe(
             "deep copy light data",
-            () =>
+            () => {
+              let _testCopyTypeArraySingleValue =
+                  ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
+                open StateDataType;
+                open SourceInstanceType;
+                let (state, gameObject1, light1) = createGameObjectFunc(state^);
+                let (data1, data2) = getTargetDataFunc();
+                let state = state |> setDataFunc(light1, data1);
+                let copiedState = StateTool.deepCopyStateForRestore(state);
+                let copiedState = copiedState |> setDataFunc(light1, data2);
+                getDataFunc(light1, state) |> expect == data1
+              };
               describe(
                 "test ambient light",
                 () => {
@@ -372,19 +383,16 @@ let _ =
                     () =>
                       test(
                         "copy colors",
-                        () => {
-                          open StateDataType;
-                          open SourceInstanceType;
-                          let (state, gameObject1, light1) =
-                            AmbientLightTool.createGameObject(state^);
-                          let color1 = [|1., 1., 0.|];
-                          let state = state |> AmbientLight.setAmbientLightColor(light1, color1);
-                          let copiedState = StateTool.deepCopyStateForRestore(state);
-                          let color2 = [|0., 1., 0.|];
-                          let copiedState =
-                            copiedState |> AmbientLight.setAmbientLightColor(light1, color2);
-                          AmbientLight.getAmbientLightColor(light1, state) |> expect == color1
-                        }
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              AmbientLightTool.createGameObject,
+                              AmbientLight.getAmbientLightColor,
+                              AmbientLight.setAmbientLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
+                            ),
+                            state
+                          )
                       )
                   );
                   test(
@@ -404,7 +412,164 @@ let _ =
                       )
                   )
                 }
+              );
+              describe(
+                "test direction light",
+                () => {
+                  describe(
+                    "copy type array data",
+                    () => {
+                      test(
+                        "copy colors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              DirectionLightTool.createGameObject,
+                              DirectionLight.getDirectionLightColor,
+                              DirectionLight.setDirectionLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy intensities",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              DirectionLightTool.createGameObject,
+                              DirectionLight.getDirectionLightIntensity,
+                              DirectionLight.setDirectionLightIntensity,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      )
+                    }
+                  );
+                  test(
+                    "shadow copy mappedIndexMap, gameObjectMap",
+                    () =>
+                      StateDataType.(
+                        DirectionLightType.(
+                          StateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {mappedIndexMap, gameObjectMap} =
+                                DirectionLightTool.getLightData(state);
+                              [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
+                            },
+                            state^
+                          )
+                        )
+                      )
+                  )
+                }
+              );
+              describe(
+                "test point light",
+                () => {
+                  describe(
+                    "copy type array data",
+                    () => {
+                      test(
+                        "copy colors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightColor,
+                              PointLight.setPointLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy intensities",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightIntensity,
+                              PointLight.setPointLightIntensity,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy constants",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightConstant,
+                              PointLight.setPointLightConstant,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy linears",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightLinear,
+                              PointLight.setPointLightLinear,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy quadratics",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightQuadratic,
+                              PointLight.setPointLightQuadratic,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy ranges",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLight.getPointLightRange,
+                              PointLight.setPointLightRange,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      )
+                    }
+                  );
+                  test(
+                    "shadow copy mappedIndexMap, gameObjectMap",
+                    () =>
+                      StateDataType.(
+                        PointLightType.(
+                          StateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {mappedIndexMap, gameObjectMap} =
+                                PointLightTool.getLightData(state);
+                              [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
+                            },
+                            state^
+                          )
+                        )
+                      )
+                  )
+                }
               )
+            }
           );
           describe(
             "deep copy sourceInstance data",
@@ -486,7 +651,7 @@ let _ =
             "deep copy gameObject data",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, cameraControllerMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   GameObjectType.(
                     StateTool.testShadowCopyArrayLikeMapData(
@@ -501,6 +666,8 @@ let _ =
                           basicMaterialMap,
                           lightMaterialMap,
                           ambientLightMap,
+                          directionLightMap,
+                          pointLightMap,
                           sourceInstanceMap,
                           objectInstanceMap
                         } =
@@ -515,6 +682,8 @@ let _ =
                           basicMaterialMap |> Obj.magic,
                           lightMaterialMap |> Obj.magic,
                           ambientLightMap |> Obj.magic,
+                          directionLightMap |> Obj.magic,
+                          pointLightMap |> Obj.magic,
                           sourceInstanceMap |> Obj.magic,
                           objectInstanceMap |> Obj.magic
                         |]
@@ -768,6 +937,16 @@ let _ =
           describe(
             "restore light data to target state",
             () => {
+              let _prepareLightData = (createGameObjectFunc, state) => {
+                open LightMaterial;
+                open Js.Typed_array;
+                let (state, gameObject1, light1) = createGameObjectFunc(state^);
+                let (state, gameObject2, light2) = createGameObjectFunc(state);
+                let (state, gameObject3, light3) = createGameObjectFunc(state);
+                let state = AllMaterialTool.prepareForInit(state);
+                let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                (state, gameObject1, gameObject2, gameObject3, light1, light2, light3)
+              };
               let _prepareAmbientLightData = (state) => {
                 open LightMaterial;
                 open Js.Typed_array;
@@ -783,8 +962,26 @@ let _ =
                 () =>
                   _testRestoreStateEqualTargetState(
                     state,
-                    _prepareAmbientLightData,
+                    _prepareLightData(AmbientLightTool.createGameObject),
                     AmbientLightTool.getLightData
+                  )
+              );
+              test(
+                "test direction light",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareLightData(DirectionLightTool.createGameObject),
+                    DirectionLightTool.getLightData
+                  )
+              );
+              test(
+                "test point light",
+                () =>
+                  _testRestoreStateEqualTargetState(
+                    state,
+                    _prepareLightData(PointLightTool.createGameObject),
+                    PointLightTool.getLightData
                   )
               )
             }

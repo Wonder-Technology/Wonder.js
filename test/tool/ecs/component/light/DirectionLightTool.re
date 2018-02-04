@@ -13,7 +13,11 @@ let isAlive = DirectionLightSystem.isAlive;
 
 let getColor = DirectionLightSystem.getColor;
 
+let getIntensity = DirectionLightSystem.getIntensity;
+
 let getDefaultColor = DirectionLightHelper.getDefaultColor;
+
+let getDefaultIntensity = DirectionLightHelper.getDefaultIntensity;
 
 let getMappedIndex = (index, state) =>
   state |> DirectionLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);

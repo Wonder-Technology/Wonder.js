@@ -12,10 +12,10 @@ let _convertStringToFloat: string => float = [%bs.raw
     |}
 ];
 
-let _truncateFloatValue = (value: float, count: int) => {
+let truncateFloatValue = (count, value: float) => {
   let res = toFixed(value, count);
-  convertString(convertNumberToString(res))
+  convertString(convertNumberToString(res)) |> _convertStringToFloat
 };
 
 let truncateArray = (arr: array(Js.Typed_array.Float32Array.elt)) =>
-  arr |> Js.Array.map((item) => _truncateFloatValue(item |> Obj.magic, 5) |> _convertStringToFloat);
+  arr |> Js.Array.map((item) => truncateFloatValue(5, item |> Obj.magic));

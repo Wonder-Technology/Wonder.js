@@ -474,7 +474,7 @@ let _ =
               );
               describe(
                 "dispose light component",
-                () =>
+                () => {
                   describe(
                     "test ambient light component",
                     () => {
@@ -542,7 +542,50 @@ let _ =
                         }
                       )
                     }
+                  );
+                  describe(
+                    "test direction light component",
+                    () =>
+                      test(
+                        "test dispose one",
+                        () => {
+                          TestTool.closeContractCheck();
+                          open StateDataType;
+                          let (state, gameObject1, light1) =
+                            DirectionLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            DirectionLightTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          (
+                            DirectionLightTool.isAlive(light1, state),
+                            DirectionLightTool.isAlive(light2, state)
+                          )
+                          |> expect == (false, true)
+                        }
+                      )
+                  );
+                  describe(
+                    "test point light component",
+                    () =>
+                      test(
+                        "test dispose one",
+                        () => {
+                          TestTool.closeContractCheck();
+                          open StateDataType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let (state, gameObject2, light2) =
+                            PointLightTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          (
+                            PointLightTool.isAlive(light1, state),
+                            PointLightTool.isAlive(light2, state)
+                          )
+                          |> expect == (false, true)
+                        }
+                      )
                   )
+                }
               );
               test(
                 "dispose cameraController component",
@@ -733,30 +776,57 @@ let _ =
                       );
                       describe(
                         "test light map",
-                        () =>
+                        () => {
+                          let _test = (createGameObjectFunc, getDataMapFunc, state) => {
+                            open GameObjectType;
+                            let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                            let (state, gameObject1, light1) = createGameObjectFunc(state);
+                            let (state, gameObject2, light2) = createGameObjectFunc(state);
+                            let (state, gameObject3, light3) = createGameObjectFunc(state);
+                            let state = state |> disposeGameObject(gameObject1);
+                            let state = state |> disposeGameObject(gameObject2);
+                            let lightMap = getDataMapFunc(GameObjectTool.getGameObjectData(state));
+                            (
+                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            )
+                            |> expect == (false, false, true)
+                          };
                           test(
                             "new ambientLightMap should only has alive data",
-                            () => {
-                              open GameObjectType;
-                              let state =
-                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
-                              let (state, gameObject1, ambientLight1) =
-                                AmbientLightTool.createGameObject(state);
-                              let (state, gameObject2, ambientLight2) =
-                                AmbientLightTool.createGameObject(state);
-                              let (state, gameObject3, ambientLight3) =
-                                AmbientLightTool.createGameObject(state);
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
-                              let {ambientLightMap} = GameObjectTool.getGameObjectData(state);
-                              (
-                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                                ambientLightMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            () =>
+                              GameObjectType.(
+                                _test(
+                                  AmbientLightTool.createGameObject,
+                                  ({ambientLightMap}) => ambientLightMap,
+                                  state
+                                )
                               )
-                              |> expect == (false, false, true)
-                            }
+                          );
+                          test(
+                            "new directionLightMap should only has alive data",
+                            () =>
+                              GameObjectType.(
+                                _test(
+                                  DirectionLightTool.createGameObject,
+                                  ({directionLightMap}) => directionLightMap,
+                                  state
+                                )
+                              )
+                          );
+                          test(
+                            "new pointLightMap should only has alive data",
+                            () =>
+                              GameObjectType.(
+                                _test(
+                                  PointLightTool.createGameObject,
+                                  ({pointLightMap}) => pointLightMap,
+                                  state
+                                )
+                              )
                           )
+                        }
                       );
                       test(
                         "new cameraControllerMap should only has alive data",
@@ -967,22 +1037,34 @@ let _ =
               );
               describe(
                 "batch dispose light components",
-                () =>
+                () => {
+                  let _test = ((createGameObjectFunc, isAliveFunc), state) => {
+                    TestTool.closeContractCheck();
+                    open StateDataType;
+                    let (state, gameObject1, light1) = createGameObjectFunc(state^);
+                    let (state, gameObject2, light2) = createGameObjectFunc(state);
+                    let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                    (isAliveFunc(light1, state), isAliveFunc(light2, state))
+                    |> expect == (false, false)
+                  };
                   test(
                     "test ambient light component",
-                    () => {
-                      TestTool.closeContractCheck();
-                      open StateDataType;
-                      let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
-                      let (state, gameObject2, light2) = AmbientLightTool.createGameObject(state);
-                      let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      (
-                        AmbientLightTool.isAlive(light1, state),
-                        AmbientLightTool.isAlive(light2, state)
+                    () =>
+                      _test((AmbientLightTool.createGameObject, AmbientLightTool.isAlive), state)
+                  );
+                  test(
+                    "test direction light component",
+                    () =>
+                      _test(
+                        (DirectionLightTool.createGameObject, DirectionLightTool.isAlive),
+                        state
                       )
-                      |> expect == (false, false)
-                    }
+                  );
+                  test(
+                    "test point light component",
+                    () => _test((PointLightTool.createGameObject, PointLightTool.isAlive), state)
                   )
+                }
               );
               test(
                 "batch dispose geometry componets",

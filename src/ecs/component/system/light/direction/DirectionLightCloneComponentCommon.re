@@ -14,8 +14,7 @@ let _setData =
   (
     (sourceComponent, (color, intensity), state: StateDataType.state) =>
       DirectionLightOperateCommon.(
-        state |> setColor(sourceComponent, color),
-        state |> setIntensity(sourceComponent, intensity)
+        state |> setColor(sourceComponent, color) |> setIntensity(sourceComponent, intensity)
       )
   );
 

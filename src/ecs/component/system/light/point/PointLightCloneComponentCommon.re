@@ -22,12 +22,13 @@ let _setData =
       state: StateDataType.state
     ) =>
       PointLightOperateCommon.(
-        state |> setColor(sourceComponent, color),
-        state |> setIntensity(sourceComponent, intensity),
-        state |> setConstant(sourceComponent, constant),
-        state |> setLinear(sourceComponent, linear),
-        state |> setQuadratic(sourceComponent, quadratic),
-        state |> setRange(sourceComponent, range)
+        state
+        |> setColor(sourceComponent, color)
+        |> setIntensity(sourceComponent, intensity)
+        |> setConstant(sourceComponent, constant)
+        |> setLinear(sourceComponent, linear)
+        |> setQuadratic(sourceComponent, quadratic)
+        |> setRange(sourceComponent, range)
       )
   );
 

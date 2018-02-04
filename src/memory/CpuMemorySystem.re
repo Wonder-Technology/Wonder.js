@@ -15,6 +15,7 @@ let _setNewDataToState =
         newLightMaterialMap,
         newAmbientLightMap,
         newDirectionLightMap,
+        newPointLightMap,
         newSourceInstanceMap,
         newObjectInstanceMap
       )
@@ -32,6 +33,7 @@ let _setNewDataToState =
     lightMaterialMap: newLightMaterialMap,
     ambientLightMap: newAmbientLightMap,
     directionLightMap: newDirectionLightMap,
+    pointLightMap: newPointLightMap,
     sourceInstanceMap: newSourceInstanceMap,
     objectInstanceMap: newObjectInstanceMap
   }
@@ -46,6 +48,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     lightMaterialMap,
     ambientLightMap,
     directionLightMap,
+    pointLightMap,
     cameraControllerMap,
     sourceInstanceMap,
     objectInstanceMap
@@ -65,6 +68,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
              newLightMaterialMap,
              newAmbientLightMap,
              newDirectionLightMap,
+             newPointLightMap,
              newSourceInstanceMap,
              newObjectInstanceMap
            ),
@@ -107,6 +111,10 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
            | None => newDirectionLightMap
            | Some(light) => newDirectionLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
            },
+           switch (pointLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+           | None => newPointLightMap
+           | Some(light) => newPointLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
+           },
            switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => newSourceInstanceMap
            | Some(sourceInstance) =>
@@ -120,6 +128,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
          )
        ),
        (
+         WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty(),

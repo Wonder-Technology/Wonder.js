@@ -75,7 +75,7 @@ let _ =
             "test clone meshRenderer component",
             () => {
               test(
-                "test clone specific count of meshRenderers",
+                "test clone specific count",
                 () => {
                   open GameObjectType;
                   let (state, gameObject1, meshRenderer1) =
@@ -113,7 +113,7 @@ let _ =
           );
           describe(
             "test clone light component",
-            () =>
+            () => {
               describe(
                 "test clone ambient light component",
                 () => {
@@ -131,7 +131,7 @@ let _ =
                     )
                   };
                   test(
-                    "test clone specific count of meshRenderers",
+                    "test clone specific count",
                     () => {
                       open GameObjectType;
                       let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
@@ -160,7 +160,205 @@ let _ =
                       )
                   )
                 }
+              );
+              describe(
+                "test clone direction light component",
+                () => {
+                  let _clone = (gameObject, state) => {
+                    let (state, clonedGameObjectArr) = _cloneGameObject(gameObject, 2, state);
+                    (
+                      state,
+                      clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+                      clonedGameObjectArr
+                      |> CloneTool.getFlattenClonedGameObjectArr
+                      |> Js.Array.map(
+                           (clonedGameObject) =>
+                             getGameObjectDirectionLightComponent(clonedGameObject, state)
+                         )
+                    )
+                  };
+                  test(
+                    "test clone specific count",
+                    () => {
+                      open GameObjectType;
+                      let (state, gameObject1, light1) =
+                        DirectionLightTool.createGameObject(state^);
+                      let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                      clonedComponentArr |> Js.Array.length |> expect == 2
+                    }
+                  );
+                  describe(
+                    "set cloned data",
+                    () => {
+                      test(
+                        "set color",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            DirectionLightTool.createGameObject(state^);
+                          let color1 = [|1., 0., 1.|];
+                          let state =
+                            state |> DirectionLight.setDirectionLightColor(light1, color1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            DirectionLight.getDirectionLightColor(clonedComponentArr[0], state),
+                            DirectionLight.getDirectionLightColor(clonedComponentArr[1], state)
+                          )
+                          |> expect == (color1, color1)
+                        }
+                      );
+                      test(
+                        "set intensity",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            DirectionLightTool.createGameObject(state^);
+                          let intensity1 = 2.;
+                          let state =
+                            state |> DirectionLight.setDirectionLightIntensity(light1, intensity1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            DirectionLight.getDirectionLightIntensity(clonedComponentArr[0], state),
+                            DirectionLight.getDirectionLightIntensity(clonedComponentArr[1], state)
+                          )
+                          |> expect == (intensity1, intensity1)
+                        }
+                      )
+                    }
+                  )
+                }
+              );
+              describe(
+                "test clone point light component",
+                () => {
+                  let _clone = (gameObject, state) => {
+                    let (state, clonedGameObjectArr) = _cloneGameObject(gameObject, 2, state);
+                    (
+                      state,
+                      clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+                      clonedGameObjectArr
+                      |> CloneTool.getFlattenClonedGameObjectArr
+                      |> Js.Array.map(
+                           (clonedGameObject) =>
+                             getGameObjectPointLightComponent(clonedGameObject, state)
+                         )
+                    )
+                  };
+                  test(
+                    "test clone specific count",
+                    () => {
+                      open GameObjectType;
+                      let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
+                      let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                      clonedComponentArr |> Js.Array.length |> expect == 2
+                    }
+                  );
+                  describe(
+                    "set cloned data",
+                    () => {
+                      test(
+                        "set color",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let color1 = [|1., 0., 1.|];
+                          let state = state |> PointLight.setPointLightColor(light1, color1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightColor(clonedComponentArr[0], state),
+                            PointLight.getPointLightColor(clonedComponentArr[1], state)
+                          )
+                          |> expect == (color1, color1)
+                        }
+                      );
+                      test(
+                        "set intensity",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let intensity1 = 2.;
+                          let state =
+                            state |> PointLight.setPointLightIntensity(light1, intensity1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightIntensity(clonedComponentArr[0], state),
+                            PointLight.getPointLightIntensity(clonedComponentArr[1], state)
+                          )
+                          |> expect == (intensity1, intensity1)
+                        }
+                      );
+                      test(
+                        "set constant",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let constant1 = 2.;
+                          let state = state |> PointLight.setPointLightConstant(light1, constant1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightConstant(clonedComponentArr[0], state),
+                            PointLight.getPointLightConstant(clonedComponentArr[1], state)
+                          )
+                          |> expect == (constant1, constant1)
+                        }
+                      );
+                      test(
+                        "set linear",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let linear1 = 2.;
+                          let state = state |> PointLight.setPointLightLinear(light1, linear1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightLinear(clonedComponentArr[0], state),
+                            PointLight.getPointLightLinear(clonedComponentArr[1], state)
+                          )
+                          |> expect == (linear1, linear1)
+                        }
+                      );
+                      test(
+                        "set quadratic",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let quadratic1 = 2.;
+                          let state =
+                            state |> PointLight.setPointLightQuadratic(light1, quadratic1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightQuadratic(clonedComponentArr[0], state),
+                            PointLight.getPointLightQuadratic(clonedComponentArr[1], state)
+                          )
+                          |> expect == (quadratic1, quadratic1)
+                        }
+                      );
+                      test(
+                        "set range",
+                        () => {
+                          open GameObjectType;
+                          let (state, gameObject1, light1) =
+                            PointLightTool.createGameObject(state^);
+                          let range1 = 2.;
+                          let state = state |> PointLight.setPointLightRange(light1, range1);
+                          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+                          (
+                            PointLight.getPointLightRange(clonedComponentArr[0], state),
+                            PointLight.getPointLightRange(clonedComponentArr[1], state)
+                          )
+                          |> expect == (range1, range1)
+                        }
+                      )
+                    }
+                  )
+                }
               )
+            }
           );
           describe(
             "test clone geometry component",
