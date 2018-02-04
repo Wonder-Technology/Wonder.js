@@ -85,13 +85,20 @@
                 // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
 
                 // var [state, box2] = createBox(state);
+
                 var [state, boxes] = createBoxes(20000, state);
+
+ var [state, boxes] = setPosition(boxes, state);
+
 
                 var [state, ambientLight] = createAmbientLight(state);
                 var [state, directionLight] = createDirectionLight(state);
                 // var [state, directionLight] = createDirectionLight(state);
                 // var [state, directionLight] = createDirectionLight(state);
                 // var [state, directionLight] = createDirectionLight(state);
+
+
+
 
 
                 var [state, camera] = createCamera(state);
@@ -129,6 +136,31 @@
 
                 wd.startDirector(state);
             }
+
+
+            function setPosition(boxes, state) {
+                var playgroundSize = 500;
+
+                for (let i = 0, len = boxes.length; i < len; i++) {
+                    let box = boxes[i];
+                    // state = initGameObject(box, state);
+
+
+                    var transform = wd.getGameObjectTransformComponent(box, state);
+
+
+                    // var pos = getTransformPosition(transform, state);
+                    var localPos = wd.getTransformLocalPosition(transform, state);
+
+                    state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+
+
+                    // console.log(getTransformLocalPosition(transform, state));
+                }
+
+                return [state, boxes];
+            }
+
 
             function createBox(state) {
                 var [state, material] = wd.createLightMaterial(state);
