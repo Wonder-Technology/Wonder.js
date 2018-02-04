@@ -47,7 +47,7 @@ var InstanceBasicBoxesTool = (function () {
             var state = data[0];
             var material = data[1];
 
-            state = wd.setMaterialColor(material, [0.0, 0.5, 0.2], state);
+            state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
 
             var data = wd.createMeshRenderer(state);
             var state = data[0];
@@ -57,7 +57,7 @@ var InstanceBasicBoxesTool = (function () {
             var state = data[0];
             var obj = data[1];
 
-            state = wd.addGameObjectMaterialComponent(obj, material, state);
+            state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
             state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
