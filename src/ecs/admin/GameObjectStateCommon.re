@@ -17,7 +17,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     sourceInstanceMap,
     objectInstanceMap,
     ambientLightMap,
-    directionLightMap
+    directionLightMap,
+    pointLightMap
   } =
     state |> getGameObjectData;
   {
@@ -36,7 +37,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       sourceInstanceMap: sourceInstanceMap |> SparseMapSystem.copy,
       objectInstanceMap: objectInstanceMap |> SparseMapSystem.copy,
       ambientLightMap: ambientLightMap |> SparseMapSystem.copy,
-      directionLightMap: directionLightMap |> SparseMapSystem.copy
+      directionLightMap: directionLightMap |> SparseMapSystem.copy,
+      pointLightMap: pointLightMap |> SparseMapSystem.copy
     }
   }
 };

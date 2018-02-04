@@ -22,6 +22,8 @@ open AmbientLightType;
 
 open DirectionLightType;
 
+open PointLightType;
+
 open ShaderType;
 
 open ProgramType;
@@ -179,6 +181,7 @@ and state = {
   lightMaterialData,
   ambientLightData,
   directionLightData,
+  pointLightData,
   mutable geometryData: option(geometryData),
   mutable meshRendererData,
   shaderData,

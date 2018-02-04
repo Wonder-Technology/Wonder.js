@@ -31,3 +31,6 @@ let hasAmbientLightComponent = (uid: int, state: StateDataType.state) : bool =>
 
 let hasDirectionLightComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).directionLightMap);
+
+let hasPointLightComponent = (uid: int, state: StateDataType.state) : bool =>
+  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).pointLightMap);

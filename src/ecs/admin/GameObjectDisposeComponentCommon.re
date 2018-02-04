@@ -78,6 +78,13 @@ let disposeDirectionLightComponent =
       DirectionLightDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
+let disposePointLightComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state: StateDataType.state) =>
+      PointLightDisposeComponentCommon.handleDisposeComponent(component, state)
+  );
+
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
   [@bs] handleFunc(componentArray, uidMap, state);
@@ -177,6 +184,15 @@ let batchDisposeDirectionLightComponent =
     componentArray
   );
 
+let batchDisposePointLightComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    PointLightDisposeComponentCommon.handleBatchDisposeComponent,
+    componentArray
+  );
+
 let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), state) =>
   switch ([@bs] getComponentFunc(uid, state)) {
   | Some(component) => [@bs] disposeComponentFunc(uid, component, state)
@@ -196,6 +212,7 @@ let disposeComponent = (uid, batchDisposeFunc, state) =>
   |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
   |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
   |> _disposeCommonComponent(uid, (getDirectionLightComponent, disposeDirectionLightComponent))
+  |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent))
   |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
   |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent))
   |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
@@ -215,6 +232,8 @@ let batchDisposeCommonComponent =
   |> batchDisposeAmbientLightComponent(disposedUidMap, state)
   |> batchGetDirectionLightComponent(uidArray)
   |> batchDisposeDirectionLightComponent(disposedUidMap, state)
+  |> batchGetPointLightComponent(uidArray)
+  |> batchDisposePointLightComponent(disposedUidMap, state)
   |> batchGetTransformComponent(uidArray)
   |> batchDisposeTransformComponent(disposedUidMap, state)
   |> batchGetBasicMaterialComponent(uidArray)

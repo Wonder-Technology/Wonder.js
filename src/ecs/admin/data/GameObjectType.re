@@ -50,5 +50,6 @@ type gameObjectData = {
   mutable sourceInstanceMap: gameObjectSourceInstanceMap,
   mutable objectInstanceMap: gameObjectObjectInstanceMap,
   mutable ambientLightMap: gameObjectLightMap,
-  mutable directionLightMap: gameObjectLightMap
+  mutable directionLightMap: gameObjectLightMap,
+  mutable pointLightMap: gameObjectLightMap
 };

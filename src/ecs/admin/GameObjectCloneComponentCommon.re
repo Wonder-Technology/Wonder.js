@@ -46,6 +46,14 @@ let cloneAmbientLightComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   AmbientLightCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
 
+let cloneDirectionLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  DirectionLightCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
+
+let clonePointLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  PointLightCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
+
 let _cloneComponent =
     (
       (uid, component: option(int), countRangeArr, clonedGameObjectArr: array(int)),
@@ -107,6 +115,20 @@ let cloneComponent =
            GameObjectAddComponentCommon.batchAddAmbientLightComponentForClone
          )
        )
+    |> _cloneComponent(
+         (uid, [@bs] getDirectionLightComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           cloneDirectionLightComponent,
+           GameObjectAddComponentCommon.batchAddDirectionLightComponentForClone
+         )
+       )
+    |> _cloneComponent(
+         (uid, [@bs] getPointLightComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (
+           clonePointLightComponent,
+           GameObjectAddComponentCommon.batchAddPointLightComponentForClone
+         )
+       )
     |> cloneTransformComponent(transform, countRangeArr);
   (
     state
@@ -116,4 +138,4 @@ let cloneComponent =
        ),
     clonedTransformArr
   )
-};
+}; 

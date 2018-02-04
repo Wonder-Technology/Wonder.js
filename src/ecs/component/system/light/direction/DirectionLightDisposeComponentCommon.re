@@ -10,8 +10,6 @@ let isAlive = (light, state: StateDataType.state) =>
 let _disposeData =
     (sourceIndex, {index, colors, intensities, gameObjectMap, mappedIndexMap} as data) => {
   let gameObjectMap = LightDisposeComponentCommon.disposeData(sourceIndex, gameObjectMap);
-  let colorDataSize = DirectionLightHelper.getColorDataSize();
-  let intensityDataSize = DirectionLightHelper.getIntensityDataSize();
   let lastComponentIndex = pred(index);
   let mappedSourceIndex = mappedIndexMap |> LightIndexCommon.getMappedIndex(sourceIndex);
   {
@@ -28,14 +26,22 @@ let _disposeData =
       colors
       |> LightDisposeComponentCommon.swapData(
            (mappedSourceIndex, lastComponentIndex),
-           (mappedIndexMap, colorDataSize, DirectionLightHelper.getDefaultColor()),
+           (
+             mappedIndexMap,
+             DirectionLightHelper.getColorDataSize(),
+             DirectionLightHelper.getDefaultColor()
+           ),
            LightDisposeComponentCommon.deleteBySwapAndResetFloat32TypeArr
          ),
     intensities:
       intensities
       |> LightDisposeComponentCommon.swapData(
            (mappedSourceIndex, lastComponentIndex),
-           (mappedIndexMap, intensityDataSize, DirectionLightHelper.getDefaultIntensity()),
+           (
+             mappedIndexMap,
+             DirectionLightHelper.getIntensityDataSize(),
+             DirectionLightHelper.getDefaultIntensity()
+           ),
            LightDisposeComponentCommon.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     gameObjectMap

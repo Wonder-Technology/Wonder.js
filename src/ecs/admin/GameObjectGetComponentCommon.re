@@ -115,6 +115,15 @@ let getDirectionLightComponent =
 let unsafeGetDirectionLightComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).directionLightMap |> _unsafeGetComponent(uid);
 
+let getPointLightComponent =
+  [@bs]
+  (
+    (uid: int, state: StateDataType.state) =>
+      GameObjectStateCommon.getGameObjectData(state).pointLightMap |> getComponent(uid)
+  );
+
+let unsafeGetPointLightComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateCommon.getGameObjectData(state).pointLightMap |> _unsafeGetComponent(uid);
 
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
@@ -191,5 +200,12 @@ let batchGetDirectionLightComponent = (uidArray: array(int), state: StateDataTyp
   _batchGetComponent(
     uidArray,
     GameObjectStateCommon.getGameObjectData(state).directionLightMap,
+    state
+  );
+
+let batchGetPointLightComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).pointLightMap,
     state
   );
