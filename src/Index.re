@@ -48,6 +48,14 @@ let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
 
+let hasGameObjectPointLightComponent = GameObject.hasGameObjectPointLightComponent;
+
+let getGameObjectPointLightComponent = GameObject.getGameObjectPointLightComponent;
+
+let disposeGameObjectPointLightComponent = GameObject.disposeGameObjectPointLightComponent;
+
+let addGameObjectPointLightComponent = GameObject.addGameObjectPointLightComponent;
+
 let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
 
 let getGameObjectDirectionLightComponent = GameObject.getGameObjectDirectionLightComponent;
@@ -204,6 +212,8 @@ let getDirectionLightGameObject = DirectionLight.getDirectionLightGameObject;
 
 let createDirectionLight = DirectionLight.createDirectionLight;
 
+let setPointLightRangeLevel = PointLight.setPointLightRangeLevel;
+
 let setPointLightRange = PointLight.setPointLightRange;
 
 let getPointLightRange = PointLight.getPointLightRange;
@@ -329,6 +339,14 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
+
+let hasGameObjectPointLightComponent = GameObject.hasGameObjectPointLightComponent;
+
+let getGameObjectPointLightComponent = GameObject.getGameObjectPointLightComponent;
+
+let disposeGameObjectPointLightComponent = GameObject.disposeGameObjectPointLightComponent;
+
+let addGameObjectPointLightComponent = GameObject.addGameObjectPointLightComponent;
 
 let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
 

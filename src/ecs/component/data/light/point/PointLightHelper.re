@@ -124,19 +124,23 @@ let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELE
 
 let getIntensitiesLength = () => getBufferMaxCount() * getIntensityDataSize();
 
-let getConstantsOffset = () => getIntensitiesLength() * Float32Array._BYTES_PER_ELEMENT;
+let getConstantsOffset = () =>
+  getIntensitiesOffset() + getIntensitiesLength() * Float32Array._BYTES_PER_ELEMENT;
 
 let getConstantsLength = () => getBufferMaxCount() * getConstantDataSize();
 
-let getLinearsOffset = () => getConstantsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getLinearsOffset = () =>
+  getConstantsOffset() + getConstantsLength() * Float32Array._BYTES_PER_ELEMENT;
 
 let getLinearsLength = () => getBufferMaxCount() * getLinearDataSize();
 
-let getQuadraticsOffset = () => getLinearsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getQuadraticsOffset = () =>
+  getLinearsOffset() + getLinearsLength() * Float32Array._BYTES_PER_ELEMENT;
 
 let getQuadraticsLength = () => getBufferMaxCount() * getQuadraticDataSize();
 
-let getRangesOffset = () => getQuadraticsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getRangesOffset = () =>
+  getQuadraticsOffset() + getQuadraticsLength() * Float32Array._BYTES_PER_ELEMENT;
 
 let getRangesLength = () => getBufferMaxCount() * getRangeDataSize();
 

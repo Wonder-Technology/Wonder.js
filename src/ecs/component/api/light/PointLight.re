@@ -192,3 +192,18 @@ let setPointLightRange = (light, range, state: StateDataType.state) => {
     state
   )
 };
+
+let setPointLightRangeLevel = (light, level, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(ComponentSystem.checkComponentShouldAlive(light, isAlive, state)))
+      ),
+    StateData.stateData.isDebug
+  );
+  setRangeLevel(
+    PointLightSystem.getMappedIndex(light, PointLightSystem.getMappedIndexMap(state)),
+    level,
+    state
+  )
+};

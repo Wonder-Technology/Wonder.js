@@ -88,21 +88,25 @@
                 // var [state, boxes] = createBoxes(20000, state);
 
                 // var [state, ambientLight] = createAmbientLight(state);
-                var [state, directionLightObj] = createDirectionLight(state);
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
 
 
-                var [state, directionLightObj] = createDirectionLight(state);
+
+                var [state, lightObj] = createPointLight(state);
 
 
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+                var transform = wd.getGameObjectTransformComponent(lightObj, state);
 
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+                // var [state, directionLightObj] = createDirectionLight(state);
+
+
+                // var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
 
 
@@ -208,6 +212,69 @@
                 return [state, obj];
             }
 
+
+            function createPointLight(state) {
+                var [state, light] = wd.createPointLight(state);
+
+                var state = wd.setPointLightColor(light, [1.0, 0.0, 1.0], state);
+                var state = wd.setPointLightRangeLevel(light, 10, state);
+
+
+
+
+                var [state, obj] = wd.createGameObject(state);
+
+
+
+
+
+                state = wd.addGameObjectPointLightComponent(obj, light, state);
+
+
+
+
+                var [state, material] = wd.createLightMaterial(state);
+
+                state = wd.setLightMaterialDiffuseColor(material, [1.0, 0.5, 0.2], state);
+
+                var [state, meshRenderer] = wd.createMeshRenderer(state);
+
+                state = wd.addGameObjectLightMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var [state, geometry] = wd.createBoxGeometry(state);
+
+                state = wd.setBoxGeometryConfigData(geometry, {
+                    width: 2,
+                    height: 2,
+                    depth: 2
+                }, state);
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                return [state, obj];
+            }
+
+
             function createCamera(state) {
 
                 var [state, cameraController] = wd.createCameraController(state);
@@ -229,7 +296,7 @@
                 var transform = wd.getGameObjectTransformComponent(obj, state);
 
                 // state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
-                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+                state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);
 
                 return [state, obj];
             }

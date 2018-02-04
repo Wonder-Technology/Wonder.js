@@ -50,7 +50,7 @@ let setLinear = (mappedIndex, linear, state: StateDataType.state) => {
 };
 
 let getQuadratic = (mappedIndex, state: StateDataType.state) =>
-  PointLightHelper.getQuadratic(mappedIndex, getLightData(state).intensities);
+  PointLightHelper.getQuadratic(mappedIndex, getLightData(state).quadratics);
 
 let setQuadratic = (mappedIndex, quadratic, state: StateDataType.state) => {
   ...state,
