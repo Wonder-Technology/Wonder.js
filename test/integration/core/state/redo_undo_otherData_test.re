@@ -85,7 +85,7 @@ let _ =
             "deep copy deviceManager data",
             () => {
               test(
-                "clean gl",
+                "clear gl",
                 () => {
                   open DeviceManagerType;
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
@@ -125,7 +125,7 @@ let _ =
             "deep copy vbo buffer data",
             () =>
               test(
-                "clean all buffer map and all buffer pool data",
+                "clear all buffer map and all buffer pool data",
                 () => {
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);
@@ -157,7 +157,7 @@ let _ =
             "deep copy typeArrayPool data",
             () =>
               test(
-                "clean pool map",
+                "clear pool map",
                 () => {
                   open StateDataType;
                   open TypeArrayPoolType;
@@ -184,7 +184,7 @@ let _ =
             () =>
               /* TODO test more render data */
               test(
-                "clean renderArray, cameraData",
+                "clear renderArray, cameraData",
                 () => {
                   open RenderDataType;
                   let state = state^;
@@ -227,7 +227,7 @@ let _ =
             "restore vbo buffer data to target state",
             () => {
               test(
-                "clean buffer map data",
+                "clear buffer map data",
                 () => {
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);

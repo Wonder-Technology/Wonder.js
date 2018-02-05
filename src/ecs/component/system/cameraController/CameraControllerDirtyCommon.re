@@ -3,7 +3,7 @@ open CameraControllerType;
 let addToDirtyArray = (cameraController: cameraController, dirtyArray) =>
   ArraySystem.push(cameraController, dirtyArray);
 
-let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
+let clearDirtyArray = (cameraControllerData: cameraControllerData) => {
   ...cameraControllerData,
   dirtyArray: WonderCommonlib.ArraySystem.createEmpty()
 };
@@ -19,7 +19,7 @@ let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
    dirtyArray
  };
 
- let cleanDirtyMap = (cameraControllerData: cameraControllerData) => {
+ let clearDirtyMap = (cameraControllerData: cameraControllerData) => {
    cameraControllerData.dirtyMap = WonderCommonlib.SparseMapSystem.createEmpty();
    ()
  }; */

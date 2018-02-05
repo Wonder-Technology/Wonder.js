@@ -422,7 +422,7 @@ let _ =
                           let state =
                             state
                             |> GLSLSenderTool.disableVertexAttribArray
-                            |> GLSLSenderTool.cleanLastSendGeometry;
+                            |> GLSLSenderTool.clearLastSendGeometry;
                           let state = state |> _render;
                           enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
                         }

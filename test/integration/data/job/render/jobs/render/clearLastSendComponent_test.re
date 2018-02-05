@@ -24,7 +24,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "clean lastSendMaterial",
+        "clear lastSendMaterial",
         () =>
           describe(
             "test create gameObject after dispose one",
@@ -61,7 +61,7 @@ let _ =
           )
       );
       describe(
-        "clean lastSendGeometry",
+        "clear lastSendGeometry",
         () =>
           describe(
             "test create gameObject after dispose one",

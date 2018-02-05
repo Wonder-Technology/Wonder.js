@@ -56,7 +56,7 @@ let _ =
             "restore glsl sender data to target state",
             () => {
               test(
-                "clean last send data",
+                "clear last send data",
                 () => {
                   open StateDataType;
                   let (state, shaderIndex1, data1, func1, history1) =
@@ -71,7 +71,7 @@ let _ =
                 }
               );
               test(
-                "clean vertexAttribHistoryArray",
+                "clear vertexAttribHistoryArray",
                 () => {
                   open StateDataType;
                   let (state, shaderIndex1, data1, func1, history1) =
@@ -117,7 +117,7 @@ let _ =
             "restore program data to target state",
             () =>
               test(
-                "clean lastUsedProgram",
+                "clear lastUsedProgram",
                 () => {
                   open ProgramType;
                   let (state, shaderIndex1, program1) = _prepareProgramData(state^);

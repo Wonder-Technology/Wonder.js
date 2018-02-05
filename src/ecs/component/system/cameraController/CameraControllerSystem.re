@@ -82,7 +82,7 @@ let update = (state: StateDataType.state) => {
            [@bs] ((data, dirtyIndex) => _updateCamera(dirtyIndex, data)),
            data
          )
-      |> cleanDirtyArray
+      |> clearDirtyArray
   }
 };
 

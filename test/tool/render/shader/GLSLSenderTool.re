@@ -3,7 +3,7 @@ let getGLSLSenderData = GLSLSenderSystem.getGLSLSenderData;
 let disableVertexAttribArray = (state: StateDataType.state) =>
   GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.unsafeGetGl(state), state);
 
-let cleanLastSendGeometry = (state: StateDataType.state) => {
+let clearLastSendGeometry = (state: StateDataType.state) => {
   GLSLSenderStateUtils.getGLSLSenderData(state).lastSendGeometry = None;
   state
 };

@@ -613,7 +613,7 @@ let _ =
                }
              );
              test(
-               "clean dirty array after compute transform data",
+               "clear dirty array after compute transform data",
                () => {
                  let (state, _, _, _) = _prepareOne();
                  let len1 =

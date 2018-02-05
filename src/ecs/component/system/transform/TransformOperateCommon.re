@@ -91,6 +91,7 @@ let rec update = (transform: transform, state: StateDataType.state) => {
   switch (isDirty(transform, data)) {
   | false => state
   | true =>
+    /* TODO perf: translation not clear normalMatrixCacheMap, only rotation/scale clear */
     let data = mark(transform, false, data) |> clearCache;
     let state = {...state, transformData: data};
     switch (getParent(transform, data)) {
