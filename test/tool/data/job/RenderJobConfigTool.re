@@ -386,7 +386,7 @@ let buildRenderJobConfig =
           "name": "u_normalMatrix",
           "field": "normalMatrix",
           "type": "mat3",
-          "from": "camera"
+          "from": "model"
         }
       ]
     }

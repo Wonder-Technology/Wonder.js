@@ -19,9 +19,6 @@ let getDirtyArray = (state: StateDataType.state) => getCameraControllerData(stat
 let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
   CameraControllerSystem.getWorldToCameraMatrix(transform, state);
 
-let getNormalMatrix = (transform, state: StateDataType.state) =>
-  CameraControllerSystem.getNormalMatrix(transform, state);
-
 let getPosition = (transform, state: StateDataType.state) =>
   CameraControllerSystem.getPosition(transform, state);
 

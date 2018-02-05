@@ -452,22 +452,6 @@ let _ =
                     testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", _prepareSendUinformData),
                 ()
               );
-              GLSLSenderTool.JudgeSendUniformData.testSendMatrix3(
-                sandbox,
-                "u_normalMatrix",
-                (gameObjectTransform, cameraTransform, _, state) =>
-                  state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
-                /* Js.Typed_array.Float32Array.make([|1., 0., 0., (-1.), 1., 0., 0., 0., 1.|]), */
-                Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
-                ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
-                ~testFunc=
-                  (_prepareSendUinformData) =>
-                    testSendShaderUniformMatrix3DataOnlyOnce(
-                      "u_normalMatrix",
-                      _prepareSendUinformData
-                    ),
-                ()
-              );
               GLSLSenderTool.JudgeSendUniformData.testSendVector3(
                 sandbox,
                 "u_cameraPos",
@@ -1232,6 +1216,64 @@ let _ =
               1.
             |]),
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
+            ()
+          );
+          GLSLSenderTool.JudgeSendUniformData.testSendMatrix3(
+            sandbox,
+            "u_normalMatrix",
+            (gameObjectTransform, cameraTransform, _, state) =>
+              state |> Transform.setTransformLocalPosition(gameObjectTransform, (10., 2., 3.)),
+            Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
+            ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
+            ~testFunc=
+              (_prepareSendUinformData) =>
+                test
+                  (
+                    "send per each gameObject",
+                    () => {
+                      let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
+                        _prepareSendUinformData(
+                          sandbox,
+                          FrontRenderLightJobTool.prepareGameObject,
+                          state^
+                        );
+                      let (state, gameObject2, _, _, _) =
+                        FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+                      let state =
+                        state
+                        |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                      let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
+                      let pos = 0;
+                      let getUniformLocation =
+                        GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~uniformMatrix3fv,
+                               ~getUniformLocation,
+                               ()
+                             )
+                           );
+                      let state =
+                        state
+                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.updateSystem
+                        |> _render;
+                      uniformMatrix3fv |> expect |> toCalledTwice
+                    }
+                  ),
+                  /*
+                   TODO test cache
+
+                   test
+                   ("test in different loop",
+                   (
+                   () => {
+
+                   })
+                   ); */
             ()
           )
         }

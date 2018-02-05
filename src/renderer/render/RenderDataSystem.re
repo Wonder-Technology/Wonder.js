@@ -14,9 +14,6 @@ let getCameraVMatrixDataFromState =
 let getCameraPMatrixDataFromState =
   [@bs] ((state: StateDataType.state) => _getCameraData(state).pMatrix);
 
-let getCameraNormalMatrixDataFromState =
-  [@bs] ((state: StateDataType.state) => _getCameraData(state).normalMatrix);
-
 let getCameraPositionDataFromState =
   [@bs] ((state: StateDataType.state) => _getCameraData(state).position);
 

@@ -14,11 +14,22 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 open RenderJobConfigType;
 
-let _getModelMNoCachableData =
+let _getModelMatrixNoCachableData =
   [@bs]
   (
     (transform, state: StateDataType.state) =>
       TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
+  );
+
+let _getNormalMatrixNoCachableData =
+  [@bs]
+  (
+    (transform, state: StateDataType.state) =>
+      Matrix4System.invertTo3x3(
+        TransformSystem.getLocalToWorldMatrixTypeArray(transform, state),
+        Matrix3System.createIdentityMatrix3()
+      )
+      |> Matrix3System.transposeSelf
   );
 
 let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
@@ -34,12 +45,6 @@ let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataAr
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
-    )
-  | "normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
-      (type_, pos),
-      sendDataArrTuple,
-      RenderDataSystem.getCameraNormalMatrixDataFromState
     )
   | "position" =>
     GLSLSenderConfigDataHandleUniformShaderCachableCommon.addUniformSendDataByType(
@@ -180,13 +185,19 @@ let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr
     GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
-      _getModelMNoCachableData
+      _getModelMatrixNoCachableData
     )
   | "instance_mMatrix" =>
     GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
-      _getModelMNoCachableData
+      _getModelMatrixNoCachableData
+    )
+  | "normalMatrix" =>
+    GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
+      (pos, type_),
+      sendDataArrTuple,
+      _getNormalMatrixNoCachableData
     )
   | _ =>
     WonderLog.Log.fatal(

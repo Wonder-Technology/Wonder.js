@@ -104,13 +104,6 @@ let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
     Matrix4System.createIdentityMatrix4()
   );
 
-let getNormalMatrix = (transform, state: StateDataType.state) =>
-  Matrix4System.invertTo3x3(
-    _getCameraToWorldMatrixByTransform(transform, state),
-    Matrix3System.createIdentityMatrix3()
-  )
-  |> Matrix3System.transposeSelf;
-
 let getPosition = (transform, state: StateDataType.state) =>
   TransformSystem.getPositionTuple(transform, state);
 

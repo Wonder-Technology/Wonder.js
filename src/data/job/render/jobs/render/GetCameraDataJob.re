@@ -31,7 +31,6 @@ let _getCameraData = (state: StateDataType.state) =>
     Some({
       vMatrix: CameraControllerAdmin.getWorldToCameraMatrix(transform, state),
       pMatrix: CameraControllerAdmin.unsafeGetPMatrix(currentCameraController, state),
-      normalMatrix: CameraControllerAdmin.getNormalMatrix(transform, state),
       position: CameraControllerAdmin.getPosition(transform, state)
     })
   };
