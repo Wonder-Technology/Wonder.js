@@ -42,6 +42,7 @@ module.exports = {
       { name: "render-test" },
       { name: "e2e-test" },
       { name: "unit-test" },
+      { name: "unit-integration-test" },
       { name: "integration-test" },
       { name: "contract" },
       { name: "coverage" }

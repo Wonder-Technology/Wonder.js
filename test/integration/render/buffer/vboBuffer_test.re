@@ -111,7 +111,11 @@ let _ =
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state = state |> RenderJobsTool.initSystemAndRender |> _render;
                   let instanceBuffer1 =
-                    VboBufferTool.getOrCreateInstanceBuffer(sourceInstance1, state);
+                    VboBufferTool.getOrCreateInstanceBuffer(
+                      sourceInstance1,
+                      InstanceBufferTool.getDefaultCapacity(),
+                      state
+                    );
                   let state =
                     state
                     |> GameObject.disposeGameObjectSourceInstanceComponent(
@@ -121,7 +125,11 @@ let _ =
                   let (state, gameObject2, (_, _, _, sourceInstance2, _)) =
                     RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
                   let instanceBuffer2 =
-                    VboBufferTool.getOrCreateInstanceBuffer(sourceInstance2, state);
+                    VboBufferTool.getOrCreateInstanceBuffer(
+                      sourceInstance2,
+                      InstanceBufferTool.getDefaultCapacity(),
+                      state
+                    );
                   instanceBuffer1 |> expect == instanceBuffer2
                 }
               )

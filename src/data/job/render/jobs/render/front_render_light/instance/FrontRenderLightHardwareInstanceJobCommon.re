@@ -15,13 +15,17 @@ let _fillMatrixTypeArr = (uid, matricesArrayForInstance, (state, offset)) => {
     16
   )
   |> ignore;
+  /* WonderLog.Log.print(matricesArrayForInstance) |> ignore; */
   let (normalMatrix, _) = TransformAdmin.getNormalMatrixTypeArray(transform, state);
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
-    (matricesArrayForInstance, offset + 9),
+    (matricesArrayForInstance, offset + 16),
     (normalMatrix, 0),
     9
   )
   |> ignore;
+  /* WonderLog.Log.print(normalMatrix) |> ignore; */
+  /* WonderLog.Log.print(matricesArrayForInstance) |> ignore; */
+  /* WonderLog.Log.print(TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)) |> ignore; */
   (state, offset + 16 + 9)
 };
 
@@ -59,6 +63,8 @@ let _sendTransformMatrixDataBufferData =
   state
 };
 
+let _getDefaultCapacity = () => 64 * (16 + 9) * 4;
+
 let _sendTransformMatrixData =
     (
       (gl, extension, shaderIndex),
@@ -68,8 +74,7 @@ let _sendTransformMatrixData =
     ) => {
   let matrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
-      gl,
-      sourceInstance,
+      (gl, sourceInstance, _getDefaultCapacity()),
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
@@ -78,13 +83,13 @@ let _sendTransformMatrixData =
   let matricesArrayForInstance =
     InstanceBufferSystem.getOrCreateMatrixFloat32Array(
       sourceInstance,
-      matrixInstanceBufferCapacityMap,
-      matrixFloat32ArrayMap,
+      _getDefaultCapacity(),
+      (matrixInstanceBufferCapacityMap, matrixFloat32ArrayMap),
       state
     );
   let (matrixInstanceBuffer, matricesArrayForInstance) =
     setCapacityAndUpdateBufferTypeArray(
-      (gl, sourceInstance, instanceRenderListCount * 112),
+      (gl, sourceInstance, instanceRenderListCount * 112, _getDefaultCapacity()),
       (matrixInstanceBuffer, matricesArrayForInstance),
       (matrixInstanceBufferMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap),
       state

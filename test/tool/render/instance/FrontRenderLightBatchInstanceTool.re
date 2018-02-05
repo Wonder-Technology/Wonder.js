@@ -1,6 +1,7 @@
+/* TODO duplicate */
 let createSourceInstanceGameObject = (sandbox, count, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
-    RenderBasicJobTool.prepareGameObject(sandbox, state);
+    FrontRenderLightJobTool.prepareGameObject(sandbox, state);
   let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
   let state = state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
   let (state, objectInstanceGameObjectList) =

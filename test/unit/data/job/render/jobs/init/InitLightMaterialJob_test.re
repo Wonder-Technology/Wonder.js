@@ -174,26 +174,123 @@ let _ =
                   |> toContainString({|attribute vec3 a_normal;|})
                 }
               );
-              test(
-                "if has no sourceInstance component, use modelMatrix_noInstance shader lib",
-                () => {
-                  let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.containMultiline(
-                    GLSLTool.getVsSource(shaderSource),
-                    [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+              describe(
+                "test modelMatrix instance shader libs",
+                () =>
+                  InitMaterialJobTool.testModelMatrixInstanceShaderLibs(
+                    sandbox,
+                    (
+                      InitLightMaterialJobTool.prepareForJudgeGLSL(~prepareGameObjectFunc= InitLightMaterialJobTool.prepareGameObject),
+                      InitLightMaterialJobTool.prepareForJudgeGLSLNotExec(InitLightMaterialJobTool.prepareGameObject),
+                      InitLightMaterialJobTool.exec
+                    ),
+                    state
                   )
-                  |> expect == true
-                }
               );
-              test(
-                "if has no sourceInstance component, use normalMatrix_noInstance shader lib",
+              describe(
+                "test normalMatrix instance shader libs",
                 () => {
-                  let shaderSource = InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GLSLTool.containMultiline(
-                    GLSLTool.getVsSource(shaderSource),
-                    [{|uniform mat3 u_normalMatrix;|}, {|mat3 normalMatrix = u_normalMatrix;|}]
+                  test(
+                    "if has no sourceInstance component, use normalMatrix_noInstance shader lib",
+                    () => {
+                      let shaderSource =
+                        InitLightMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                      GLSLTool.containMultiline(
+                        GLSLTool.getVsSource(shaderSource),
+                        [{|uniform mat3 u_normalMatrix;|}, {|mat3 normalMatrix = u_normalMatrix;|}]
+                      )
+                      |> expect == true
+                    }
+                  );
+                  describe(
+                    "else",
+                    () => {
+                      test(
+                        "if support hardware instance, use normalMatrix_hardware_instance shader lib",
+                        () => {
+                          let (state, shaderSource, gameObject) =
+                            InitLightMaterialJobTool.prepareForJudgeGLSLNotExec(
+                              InitLightMaterialJobTool.prepareGameObject,
+                              sandbox,
+                              state^
+                            );
+                          let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                          let state =
+                            state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
+                          let state = state |> InitLightMaterialJobTool.exec;
+                          GLSLTool.containMultiline(
+                            GLSLTool.getVsSource(shaderSource),
+                            [
+                              {|attribute vec3 a_normalVec3_0;|},
+                              {|attribute vec3 a_normalVec3_1;|},
+                              {|attribute vec3 a_normalVec3_2;|},
+                              {|mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);|}
+                            ]
+                          )
+                          |> expect == true
+                        }
+                      );
+                      describe(
+                        "else, use normalMatrix_batch_instance shader lib",
+                        () => {
+                          open StateDataType;
+                          let _setGpuConfigDataAllowBatchInstance = (state) => {
+                            ...state,
+                            gpuConfig: Some({...state.gpuConfig, useHardwareInstance: false})
+                          };
+                          let _setGpuDetectDataAllowBatchInstance = (state) => {
+                            ...state,
+                            gpuDetectData: {...state.gpuDetectData, extensionInstancedArrays: None}
+                          };
+                          test(
+                            "if state->gpuConfig->useHardwareInstance == false, use batch",
+                            () => {
+                              let (state, shaderSource, gameObject) =
+                                InitLightMaterialJobTool.prepareForJudgeGLSLNotExec(
+                                  InitLightMaterialJobTool.prepareGameObject,
+                                  sandbox,
+                                  state^
+                                );
+                              let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                              let state = state |> _setGpuConfigDataAllowBatchInstance;
+                              let state = state |> InitLightMaterialJobTool.exec;
+                              GLSLTool.containMultiline(
+                                GLSLTool.getVsSource(shaderSource),
+                                [
+                                  {|uniform mat3 u_normalMatrix;|},
+                                  {|mat3 normalMatrix = u_normalMatrix;|}
+                                ]
+                              )
+                              |> expect == true
+                            }
+                          );
+                          test(
+                            "if gpu not support hardware instance, use batch",
+                            () => {
+                              let (state, shaderSource, gameObject) =
+                                InitLightMaterialJobTool.prepareForJudgeGLSLNotExec(
+                                  InitLightMaterialJobTool.prepareGameObject,
+                                  sandbox,
+                                  state^
+                                );
+                              let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
+                              let state = state |> _setGpuDetectDataAllowBatchInstance;
+                              let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+                              let state = state |> InitLightMaterialJobTool.exec;
+                              GLSLTool.containMultiline(
+                                GLSLTool.getVsSource(shaderSource),
+                                [
+                                  {|uniform mat3 u_normalMatrix;|},
+                                  {|mat3 normalMatrix = u_normalMatrix;|}
+                                ]
+                              )
+                              |> expect == true
+                            }
+                          )
+                        }
+                      )
+                    }
                   )
-                  |> expect == true
                 }
               );
               describe(

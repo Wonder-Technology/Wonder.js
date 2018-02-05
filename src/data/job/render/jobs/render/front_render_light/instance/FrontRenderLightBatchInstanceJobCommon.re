@@ -2,7 +2,7 @@
 open StateDataType;
 
 let render = (gl, uid, state: StateDataType.state) => {
-  let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
+  let (state, shaderIndex, geometryIndex) = state |> FrontRenderLightJobCommon.render(gl, uid);
   let uniformInstanceSendNoCachableData =
     state
     |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformInstanceSendNoCachableData(shaderIndex);

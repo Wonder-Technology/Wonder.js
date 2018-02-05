@@ -38,12 +38,7 @@ let _sendTransformMatrixDataBuffer = ((gl, extension), pos, stride, index) => {
 };
 
 let _sendTransformMatrixDataBufferData =
-    (
-      glDataTuple,
-      shaderIndex,
-      (stride, matricesArrayForInstance, matrixInstanceBuffer),
-      state
-    ) => {
+    (glDataTuple, shaderIndex, (stride, matricesArrayForInstance, matrixInstanceBuffer), state) => {
   let (gl, extension) = glDataTuple;
   let _ = updateData(gl, matricesArrayForInstance, matrixInstanceBuffer);
   state
@@ -58,21 +53,18 @@ let _sendTransformMatrixDataBufferData =
   state
 };
 
+let _getDefaultCapacity = () => 64 * (16 + 0) * 4;
+
 let _sendTransformMatrixData =
     (
       (gl, extension, shaderIndex),
       (sourceUid, sourceInstance, objectInstanceArray, instanceRenderListCount),
-      (
-        matrixInstanceBufferCapacityMap,
-        matrixInstanceBufferMap,
-        matrixFloat32ArrayMap
-      ),
+      (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap),
       state
     ) => {
   let matrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
-      gl,
-      sourceInstance,
+      (gl, sourceInstance, _getDefaultCapacity()),
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
@@ -81,19 +73,15 @@ let _sendTransformMatrixData =
   let matricesArrayForInstance =
     InstanceBufferSystem.getOrCreateMatrixFloat32Array(
       sourceInstance,
-      matrixInstanceBufferCapacityMap,
-      matrixFloat32ArrayMap,
+      _getDefaultCapacity(),
+      (matrixInstanceBufferCapacityMap, matrixFloat32ArrayMap),
       state
     );
   let (matrixInstanceBuffer, matricesArrayForInstance) =
     setCapacityAndUpdateBufferTypeArray(
-      (gl, sourceInstance, instanceRenderListCount * stride),
+      (gl, sourceInstance, instanceRenderListCount * stride, _getDefaultCapacity()),
       (matrixInstanceBuffer, matricesArrayForInstance),
-      (
-        matrixInstanceBufferMap,
-        matrixFloat32ArrayMap,
-        matrixInstanceBufferCapacityMap
-      ),
+      (matrixInstanceBufferMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap),
       state
     );
   _fillMatrixTypeArr(sourceUid, matricesArrayForInstance, (state, 0))

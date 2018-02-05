@@ -3,8 +3,8 @@ open Gl;
 open Js.Typed_array;
 
 /*! start with a maximum of 64 instances */
-let _getDefaultCapacity = () => 64 * 16 * 4;
-
+/* let _getDefaultCapacity = () => 64 * ( 16 + 9 ) * 4; */
+/* let _getDefaultCapacity = () => 64 * (16 + 0); */
 let createBuffer = (gl, capacity: int, state: StateDataType.state) => {
   let buffer = VboBufferPoolCommon.getInstanceBuffer(gl, state);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
@@ -34,11 +34,11 @@ let _getFloat32InstanceArraySize = (capacity: int) => {
 };
 
 let _createMatrixFloat32Array = (capacity) =>
-  Float32Array.fromLength(_getFloat32InstanceArraySize(capacity));
+  Float32Array.fromLength(capacity |> _getFloat32InstanceArraySize);
 
-let _getCapacity = (sourceInstance, capacityMap) =>
+let _getCapacity = (sourceInstance, defaultCapacity, capacityMap) =>
   switch (capacityMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
-  | None => _getDefaultCapacity()
+  | None => defaultCapacity
   | Some(capacity) => capacity
   };
 
@@ -48,18 +48,24 @@ let _setCapacity = (sourceInstance, capacity, capacityMap) => {
 };
 
 let getOrCreateBuffer =
-    (gl, sourceInstance: int, (capacityMap, bufferMap), state: StateDataType.state) =>
+    ((gl, sourceInstance, defaultCapacity), (capacityMap, bufferMap), state: StateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
-    let buffer = createBuffer(gl, _getCapacity(sourceInstance, capacityMap), state);
+    let buffer =
+      createBuffer(gl, _getCapacity(sourceInstance, defaultCapacity, capacityMap), state);
     bufferMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, buffer) |> ignore;
     buffer
   };
 
 let getOrCreateMatrixFloat32Array =
-    (sourceInstance: int, capacityMap, matrixFloat32ArrayMap, state: StateDataType.state) => {
-  let capacity = _getCapacity(sourceInstance, capacityMap);
+    (
+      sourceInstance: int,
+      defaultCapacity,
+      (capacityMap, matrixFloat32ArrayMap),
+      state: StateDataType.state
+    ) => {
+  let capacity = _getCapacity(sourceInstance, defaultCapacity, capacityMap);
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) => typeArr
   | None =>
@@ -77,12 +83,12 @@ let getOrCreateMatrixFloat32Array =
 
 let setCapacityAndUpdateBufferTypeArray =
     (
-      (gl, sourceInstance, capacity),
+      (gl, sourceInstance, capacity, defaultCapacity),
       (buffer, matrixFloat32Array),
       (bufferMap, matrixFloat32ArrayMap, capacityMap),
       state
     ) => {
-  let currentCapacity = ref(_getCapacity(sourceInstance, capacityMap));
+  let currentCapacity = ref(_getCapacity(sourceInstance, defaultCapacity, capacityMap));
   let needIncreaseCapacity = ref(false);
   while (currentCapacity^ < capacity) {
     currentCapacity := currentCapacity^ * 2;
