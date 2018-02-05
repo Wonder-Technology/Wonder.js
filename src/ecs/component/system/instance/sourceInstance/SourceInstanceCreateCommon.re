@@ -13,7 +13,7 @@ let create = (state: StateDataType.state) => {
   let state =
     state
     |> SourceInstanceStaticCommon.markModelMatrixIsStatic(index, true)
-    |> SourceInstanceStaticCommon.markSendModelMatrix(index, false);
+    |> SourceInstanceStaticCommon.markIsSendTransformMatrixData(index, false);
   (
     {
       ...state,

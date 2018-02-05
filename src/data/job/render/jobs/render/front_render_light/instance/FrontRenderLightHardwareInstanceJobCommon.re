@@ -1,3 +1,4 @@
+/* TODO duplicate */
 open StateDataType;
 
 open VboBufferType;
@@ -14,7 +15,14 @@ let _fillMatrixTypeArr = (uid, matricesArrayForInstance, (state, offset)) => {
     16
   )
   |> ignore;
-  (state, offset + 16)
+  let (normalMatrix, _) = TransformAdmin.getNormalMatrixTypeArray(transform, state);
+  TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
+    (matricesArrayForInstance, offset + 9),
+    (normalMatrix, 0),
+    9
+  )
+  |> ignore;
+  (state, offset + 16 + 9)
 };
 
 let _fillObjectInstanceData = (objectInstanceArray, matricesArrayForInstance, stateOffsetTuple) => {
@@ -31,29 +39,22 @@ let _fillObjectInstanceData = (objectInstanceArray, matricesArrayForInstance, st
   state
 };
 
-let _sendTransformMatrixDataBuffer = ((gl, extension), pos, stride, index) => {
+let _sendTransformMatrixDataBuffer =
+    ((gl, extension), {pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index) => {
   Gl.enableVertexAttribArray(pos, gl);
-  Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
+  Gl.vertexAttribPointer(pos, size, Gl.getFloat(gl), Js.false_, stride, getOffsetFunc(index), gl);
   [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
 };
 
 let _sendTransformMatrixDataBufferData =
-    (
-      glDataTuple,
-      shaderIndex,
-      (stride, matricesArrayForInstance, matrixInstanceBuffer),
-      state
-    ) => {
+    (glDataTuple, shaderIndex, (stride, matricesArrayForInstance, matrixInstanceBuffer), state) => {
   let (gl, extension) = glDataTuple;
   let _ = updateData(gl, matricesArrayForInstance, matrixInstanceBuffer);
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArraySystem.forEachi(
        [@bs]
-       (
-         ({pos}: instanceAttributeSendData, index) =>
-           _sendTransformMatrixDataBuffer(glDataTuple, pos, stride, index)
-       )
+       ((sendData, index) => _sendTransformMatrixDataBuffer(glDataTuple, sendData, stride, index))
      );
   state
 };
@@ -62,11 +63,7 @@ let _sendTransformMatrixData =
     (
       (gl, extension, shaderIndex),
       (sourceUid, sourceInstance, objectInstanceArray, instanceRenderListCount),
-      (
-        matrixInstanceBufferCapacityMap,
-        matrixInstanceBufferMap,
-        matrixFloat32ArrayMap
-      ),
+      (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap),
       state
     ) => {
   let matrixInstanceBuffer =
@@ -76,8 +73,8 @@ let _sendTransformMatrixData =
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
-  /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
-  let stride = 64;
+  /*! instanceCount * (modelMatrixSize:4(float size) * 4(vec count) * 4(component count) + normalMatrixSize: 4 * 3 * 3) */
+  /* let stride = 64; */
   let matricesArrayForInstance =
     InstanceBufferSystem.getOrCreateMatrixFloat32Array(
       sourceInstance,
@@ -87,13 +84,9 @@ let _sendTransformMatrixData =
     );
   let (matrixInstanceBuffer, matricesArrayForInstance) =
     setCapacityAndUpdateBufferTypeArray(
-      (gl, sourceInstance, instanceRenderListCount * stride),
+      (gl, sourceInstance, instanceRenderListCount * 112),
       (matrixInstanceBuffer, matricesArrayForInstance),
-      (
-        matrixInstanceBufferMap,
-        matrixFloat32ArrayMap,
-        matrixInstanceBufferCapacityMap
-      ),
+      (matrixInstanceBufferMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap),
       state
     );
   _fillMatrixTypeArr(sourceUid, matricesArrayForInstance, (state, 0))
@@ -101,7 +94,7 @@ let _sendTransformMatrixData =
   |> _sendTransformMatrixDataBufferData(
        (gl, extension),
        shaderIndex,
-       (stride, matricesArrayForInstance, matrixInstanceBuffer)
+       (100, matricesArrayForInstance, matrixInstanceBuffer)
      )
 };
 
@@ -148,7 +141,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   /* TODO optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
+  let (state, shaderIndex, geometryIndex) = state |> FrontRenderLightJobCommon.render(gl, uid);
   let extension =
     GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
   let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);

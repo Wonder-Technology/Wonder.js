@@ -7,6 +7,14 @@
         "modelMatrix_hardware_instance",
         "modelMatrix_batch_instance"
       ]
+    },
+    {
+      "name": "normalMatrix_instance",
+      "value": [
+        "normalMatrix_noInstance",
+        "normalMatrix_hardware_instance",
+        "normalMatrix_batch_instance"
+      ]
     }
   ],
   "groups": [
@@ -59,10 +67,12 @@
           "name": "normal"
         },
         {
-          "name": "modelMatrix_noInstance"
+          "type": "static_branch",
+          "name": "modelMatrix_instance"
         },
         {
-          "name": "normalMatrix_noInstance"
+          "type": "static_branch",
+          "name": "normalMatrix_instance"
         },
         {
           "name": "light_common"

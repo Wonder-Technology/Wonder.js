@@ -2,19 +2,19 @@ open SourceInstanceType;
 
 let markModelMatrixIsStatic =
     (sourceInstance: sourceInstance, isStatic: bool, state: StateDataType.state) => {
-  let {isModelMatrixStaticMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let {isTransformStaticMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
   {
     ...state,
     sourceInstanceData: {
       ...data,
-      isModelMatrixStaticMap:
-        isModelMatrixStaticMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isStatic)
+      isTransformStaticMap:
+        isTransformStaticMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isStatic)
     }
   }
 };
 
-let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataType.state) =>
-  SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
+let isTransformStatic = (sourceInstance: sourceInstance, state: StateDataType.state) =>
+  SourceInstanceStateCommon.getSourceInstanceData(state).isTransformStaticMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> WonderLog.Contract.ensureCheck(
        (isStatic) =>
@@ -31,20 +31,20 @@ let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataTyp
        StateData.stateData.isDebug
      );
 
-let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
-  let {isSendModelMatrixDataMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+let markIsSendTransformMatrixData = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
+  let {isSendTransformMatrixDataMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
   {
     ...state,
     sourceInstanceData: {
       ...data,
-      isSendModelMatrixDataMap:
-        isSendModelMatrixDataMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isSend)
+      isSendTransformMatrixDataMap:
+        isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isSend)
     }
   }
 };
 
-let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.state) =>
-  SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
+let isSendTransformMatrixData = (sourceInstance: sourceInstance, state: StateDataType.state) =>
+  SourceInstanceStateCommon.getSourceInstanceData(state).isSendTransformMatrixDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> WonderLog.Contract.ensureCheck(
        (isSend) =>

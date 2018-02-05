@@ -27,8 +27,8 @@ let getOrCreateInstanceBuffer = (sourceInstanceIndex: int, state: StateDataType.
     [@bs] DeviceManagerSystem.unsafeGetGl(state),
     sourceInstanceIndex,
     (
-      SourceInstanceAdmin.getSourceInstanceData(state).modelMatrixInstanceBufferCapacityMap,
-      VboBufferGetStateDataUtils.getVboBufferData(state).modelMatrixInstanceBufferMap
+      SourceInstanceAdmin.getSourceInstanceData(state).matrixInstanceBufferCapacityMap,
+      VboBufferGetStateDataUtils.getVboBufferData(state).matrixInstanceBufferMap
     ),
     state
   );
@@ -46,11 +46,11 @@ let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: State
 let passBufferShouldExistCheckWhenDisposeSourceInstance =
     (sourceInstanceIndex, state: StateDataType.state) => {
   open VboBufferType;
-  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {matrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
   WonderCommonlib.SparseMapSystem.set(
     sourceInstanceIndex,
     Obj.magic(0),
-    modelMatrixInstanceBufferMap
+    matrixInstanceBufferMap
   );
   state
 };

@@ -13,7 +13,7 @@ let _ =
       let state = ref(StateTool.createState());
       let _cloneGameObject = (gameObject, count, state) =>
         CloneTool.cloneGameObject(gameObject, count, false, state);
-      let _getClonedTransformDataArr = (gameObject, count, state) => {
+      let _getClonedTransformMatrixDataArr = (gameObject, count, state) => {
         let (state, clonedGameObjectArr) = _cloneGameObject(gameObject, count, state);
         (
           clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
@@ -589,7 +589,7 @@ let _ =
               let _prepare = () => {
                 let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                 let (clonedGameObjectArr, clonedTransformArr) =
-                  _getClonedTransformDataArr(gameObject1, 2, state);
+                  _getClonedTransformMatrixDataArr(gameObject1, 2, state);
                 (state, gameObject1, transform1, clonedGameObjectArr, clonedTransformArr)
               };
               test(
@@ -611,7 +611,7 @@ let _ =
                       let pos1 = (1., 2., 3.);
                       let state = state |> setTransformLocalPosition(transform1, pos1);
                       let (_, clonedTransformArr) =
-                        _getClonedTransformDataArr(gameObject1, 2, state);
+                        _getClonedTransformMatrixDataArr(gameObject1, 2, state);
                       clonedTransformArr
                       |> Js.Array.map((transform) => getTransformLocalPosition(transform, state))
                       |> expect == [|pos1, pos1|]
@@ -629,7 +629,7 @@ let _ =
                           let pos1 = (1., 2., 3.);
                           let state = state |> setTransformLocalPosition(transform1, pos1);
                           let (_, clonedTransformArr) =
-                            _getClonedTransformDataArr(gameObject1, 2, state);
+                            _getClonedTransformMatrixDataArr(gameObject1, 2, state);
                           let pos2 = (2., 4., 6.);
                           let state =
                             state |> setTransformLocalPosition(clonedTransformArr[1], pos2);
@@ -903,7 +903,7 @@ let _ =
                       ) =
                         _prepare();
                       let (_, clonedTransformArr) =
-                        _getClonedTransformDataArr(gameObject1, 2, state);
+                        _getClonedTransformMatrixDataArr(gameObject1, 2, state);
                       (
                         state |> getTransformParent(clonedTransformArr[0]),
                         state |> getTransformParent(clonedTransformArr[1]),
@@ -954,7 +954,7 @@ let _ =
                       let state = state |> setTransformLocalPosition(transform3, pos3);
                       let state = state |> setTransformLocalPosition(transform4, pos4);
                       let (clonedGameObjectArr, clonedTransformArr) =
-                        _getClonedTransformDataArr(gameObject1, 1, state);
+                        _getClonedTransformMatrixDataArr(gameObject1, 1, state);
                       clonedTransformArr
                       |> Js.Array.map((transform) => getTransformPosition(transform, state))
                       |>

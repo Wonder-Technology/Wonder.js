@@ -1242,12 +1242,12 @@ let _ =
                                  state
                                );
                           let state = state |> batchDisposeGameObject(gameObjectArr);
-                          let {modelMatrixInstanceBufferMap} =
+                          let {matrixInstanceBufferMap} =
                             VboBufferTool.getVboBufferData(state);
                           (
-                            modelMatrixInstanceBufferMap
+                            matrixInstanceBufferMap
                             |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
-                            modelMatrixInstanceBufferMap
+                            matrixInstanceBufferMap
                             |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
                           )
                           |> expect == (false, false)

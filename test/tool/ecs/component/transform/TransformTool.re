@@ -36,6 +36,11 @@ let isTransform = (transform: transform) => {
 let getLocalToWorldMatrixTypeArray = (transform, state: StateDataType.state) =>
   TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
 
+let getNormalMatrixTypeArray = (transform, state: StateDataType.state) => {
+  let (normalMatrix, _) = TransformSystem.getNormalMatrixTypeArray(transform, state);
+  normalMatrix
+};
+
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();
   let state = GameObject.disposeGameObjectTransformComponent(0, transform, state);

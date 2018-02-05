@@ -29,14 +29,14 @@ let _disposeData =
     |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
   let {
         objectInstanceArrayMap,
-        modelMatrixFloat32ArrayMap,
-        modelMatrixInstanceBufferCapacityMap,
-        isModelMatrixStaticMap,
-        isSendModelMatrixDataMap,
+        matrixFloat32ArrayMap,
+        matrixInstanceBufferCapacityMap,
+        isTransformStaticMap,
+        isSendTransformMatrixDataMap,
         gameObjectMap
       } as data =
     getSourceInstanceData(state);
-  switch (modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
+  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) =>
     [@bs]
     TypeArrayPoolSystem.addFloat32TypeArrayToPool(
@@ -52,12 +52,12 @@ let _disposeData =
     sourceInstanceData: {
       ...data,
       objectInstanceArrayMap: objectInstanceArrayMap |> disposeSparseMapData(sourceInstance),
-      modelMatrixFloat32ArrayMap:
-        modelMatrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
-      modelMatrixInstanceBufferCapacityMap:
-        modelMatrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
-      isModelMatrixStaticMap: isModelMatrixStaticMap |> disposeSparseMapData(sourceInstance),
-      isSendModelMatrixDataMap: isSendModelMatrixDataMap |> disposeSparseMapData(sourceInstance),
+      matrixFloat32ArrayMap:
+        matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
+      matrixInstanceBufferCapacityMap:
+        matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
+      isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
+      isSendTransformMatrixDataMap: isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
     }
   }

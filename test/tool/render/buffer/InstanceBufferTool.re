@@ -1,15 +1,15 @@
 let getOrCreateBuffer = (sourceInstance, state) => {
   open VboBufferType;
   open SourceInstanceType;
-  let {modelMatrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
-  let {modelMatrixInstanceBufferCapacityMap} =
+  let {matrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {matrixInstanceBufferCapacityMap} =
     SourceInstanceStateCommon.getSourceInstanceData(state);
   InstanceBufferSystem.getOrCreateBuffer(
     [@bs] GlTool.unsafeGetGl(state),
     sourceInstance,
-    (modelMatrixInstanceBufferCapacityMap, modelMatrixInstanceBufferMap),
+    (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
     state
   )
 };
 
-let createModelMatrixFloat32Array = InstanceBufferSystem._createModelMatrixFloat32Array;
+let createMatrixFloat32Array = InstanceBufferSystem._createMatrixFloat32Array;

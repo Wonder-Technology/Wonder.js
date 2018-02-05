@@ -12,23 +12,22 @@ let _render = (gl, state: StateDataType.state) =>
     |> ArraySystem.reduceState(
          [@bs]
          (
-           (state, uid: int) => {
-             /* TODO handle instance */
-             /* if (InstanceUtils.isSourceInstance(uid, state)) {
-                  RenderBasicInstanceJobCommon.render(gl, uid, state)
-                } else { */
-             let (state, _, geometryIndex) = state |> FrontRenderLightJobCommon.render(gl, uid);
-             GLSLSenderDrawUtils.drawElement(
-               (
-                 GeometryAdmin.getDrawMode(gl),
-                 GeometryAdmin.getIndexType(gl),
-                 GeometryAdmin.getIndexTypeSize(gl),
-                 GeometryAdmin.getIndicesCount(geometryIndex, state)
-               ),
-               gl
-             );
-             state
-           }
+           (state, uid: int) =>
+             if (InstanceUtils.isSourceInstance(uid, state)) {
+               FrontRenderLightInstanceJobCommon.render(gl, uid, state)
+             } else {
+               let (state, _, geometryIndex) = state |> FrontRenderLightJobCommon.render(gl, uid);
+               GLSLSenderDrawUtils.drawElement(
+                 (
+                   GeometryAdmin.getDrawMode(gl),
+                   GeometryAdmin.getIndexType(gl),
+                   GeometryAdmin.getIndexTypeSize(gl),
+                   GeometryAdmin.getIndicesCount(geometryIndex, state)
+                 ),
+                 gl
+               );
+               state
+             }
          ),
          state
        )

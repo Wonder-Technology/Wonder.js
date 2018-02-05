@@ -10,10 +10,10 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     vertexBufferMap: [||],
     normalBufferMap: [||],
     elementArrayBufferMap: [||],
-    modelMatrixInstanceBufferMap: [||],
+    matrixInstanceBufferMap: [||],
     vertexArrayBufferPool: [||],
     elementArrayBufferPool: [||],
-    modelMatrixInstanceBufferPool: [||]
+    matrixInstanceBufferPool: [||]
   }
 };
 
@@ -21,7 +21,7 @@ let restore = (currentState, targetState) => {
   let (
     vertexArrayBufferPool,
     elementArrayBufferPool,
-    modelMatrixInstanceBufferPool
+    matrixInstanceBufferPool
   ) =
     VboBufferPoolCommon.addAllBufferToPool(currentState);
   {
@@ -30,10 +30,10 @@ let restore = (currentState, targetState) => {
       vertexBufferMap: [||],
       normalBufferMap: [||],
       elementArrayBufferMap: [||],
-      modelMatrixInstanceBufferMap: [||],
+      matrixInstanceBufferMap: [||],
       vertexArrayBufferPool,
       elementArrayBufferPool,
-      modelMatrixInstanceBufferPool
+      matrixInstanceBufferPool
     }
   }
 };

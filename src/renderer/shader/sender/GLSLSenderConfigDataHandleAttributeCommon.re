@@ -16,12 +16,25 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 open RenderJobConfigType;
 
-let _addInstanceArrayBufferSendData =
+let _addModelMatrixInstanceArrayBufferSendData =
     ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
   sendDataArr,
   instanceSendNoCachableDataArr
   |> ArraySystem.push({
-       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl)
+       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       size: 4,
+       getOffsetFunc: (index) => index * 16
+     })
+);
+
+let _addNormalMatrixInstanceArrayBufferSendData =
+    ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
+  sendDataArr,
+  instanceSendNoCachableDataArr
+  |> ArraySystem.push({
+       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       size: 3,
+       getOffsetFunc: (index) => (index - 4) * 12 + 64
      })
 );
 
@@ -57,8 +70,13 @@ let _readAttributes = ((gl, program, attributeLocationMap), sendDataArrTuple, at
              switch (name, type_) {
              | (Some(name), Some(type_)) =>
                switch buffer {
-               | "instance" =>
-                 _addInstanceArrayBufferSendData(
+               | "instance_mMatrix" =>
+                 _addModelMatrixInstanceArrayBufferSendData(
+                   (gl, program, name, attributeLocationMap),
+                   sendDataArrTuple
+                 )
+               | "instance_normalMatrix" =>
+                 _addNormalMatrixInstanceArrayBufferSendData(
                    (gl, program, name, attributeLocationMap),
                    sendDataArrTuple
                  )

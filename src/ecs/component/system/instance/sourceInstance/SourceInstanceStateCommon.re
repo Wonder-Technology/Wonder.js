@@ -8,10 +8,10 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     index,
     objectInstanceArrayMap,
-    modelMatrixFloat32ArrayMap,
-    modelMatrixInstanceBufferCapacityMap,
-    isModelMatrixStaticMap,
-    isSendModelMatrixDataMap,
+    matrixFloat32ArrayMap,
+    matrixInstanceBufferCapacityMap,
+    isTransformStaticMap,
+    isSendTransformMatrixDataMap,
     gameObjectMap,
     disposedIndexArray
   } =
@@ -21,31 +21,31 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     sourceInstanceData: {
       index,
       objectInstanceArrayMap: objectInstanceArrayMap |> CopyStateUtils.deepCopyArrayArray,
-      modelMatrixFloat32ArrayMap:
-        modelMatrixFloat32ArrayMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-      modelMatrixInstanceBufferCapacityMap:
-        modelMatrixInstanceBufferCapacityMap |> SparseMapSystem.copy,
-      isModelMatrixStaticMap: isModelMatrixStaticMap |> SparseMapSystem.copy,
-      isSendModelMatrixDataMap,
+      matrixFloat32ArrayMap:
+        matrixFloat32ArrayMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+      matrixInstanceBufferCapacityMap:
+        matrixInstanceBufferCapacityMap |> SparseMapSystem.copy,
+      isTransformStaticMap: isTransformStaticMap |> SparseMapSystem.copy,
+      isSendTransformMatrixDataMap,
       gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
       disposedIndexArray: disposedIndexArray |> Js.Array.copy
     }
   }
 };
 
-let _buildIsNotSendModelMatrixDataMap = (isSendModelMatrixDataMap) =>
-  isSendModelMatrixDataMap
+let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
+  isSendTransformMatrixDataMap
   |> SparseMapSystem.reduceiValid(
        [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapSystem.set(index, false)),
        WonderCommonlib.SparseMapSystem.createEmpty()
      );
 
 let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
-  let {modelMatrixFloat32ArrayMap} = getSourceInstanceData(currentState);
-  let {isSendModelMatrixDataMap} as targetData = getSourceInstanceData(targetState);
+  let {matrixFloat32ArrayMap} = getSourceInstanceData(currentState);
+  let {isSendTransformMatrixDataMap} as targetData = getSourceInstanceData(targetState);
   let float32ArrayPoolMap =
     TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(
-      modelMatrixFloat32ArrayMap,
+      matrixFloat32ArrayMap,
       MemoryConfigSystem.getMaxBigTypeArrayPoolSize(targetState),
       float32ArrayPoolMap
     );
@@ -54,7 +54,7 @@ let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) =
       ...targetState,
       sourceInstanceData: {
         ...targetData,
-        isSendModelMatrixDataMap: _buildIsNotSendModelMatrixDataMap(isSendModelMatrixDataMap)
+        isSendTransformMatrixDataMap: _buildIsNotSendTransformMatrixDataMap(isSendTransformMatrixDataMap)
       }
     },
     {...sharedData, float32ArrayPoolMap}

@@ -7,9 +7,9 @@ let create = (state: StateDataType.state) => SourceInstanceCreateCommon.create(s
 
 let getSourceInstanceData = SourceInstanceStateCommon.getSourceInstanceData;
 
-let isSendModelMatrix = SourceInstanceStaticCommon.isSendModelMatrix;
+let isSendTransformMatrixData = SourceInstanceStaticCommon.isSendTransformMatrixData;
 
-let markSendModelMatrix = SourceInstanceStaticCommon.markSendModelMatrix;
+let markIsSendTransformMatrixData = SourceInstanceStaticCommon.markIsSendTransformMatrixData;
 
 let getObjectInstanceArray = (sourceInstance, state: StateDataType.state) =>
   SourceInstanceObjectInstanceArrayCommon.getObjectInstanceArray(sourceInstance, state);
@@ -50,7 +50,7 @@ let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state)
 
 let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic;
 
-let isModelMatrixIsStatic = SourceInstanceStaticCommon.isModelMatrixIsStatic;
+let isTransformStatic = SourceInstanceStaticCommon.isTransformStatic;
 
 let deepCopyStateForRestore = SourceInstanceStateCommon.deepCopyStateForRestore;
 

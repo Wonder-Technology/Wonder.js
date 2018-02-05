@@ -96,7 +96,7 @@ let _getMaterialShaderLibDataArrByGroup =
     resultDataArr
   );
 
-let _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance =
+let _getMaterialShaderLibDataArrByStaticBranchInstance =
     ((gameObject, state), (shaderLibs, value), resultDataArr) =>
   resultDataArr
   |> ArraySystem.push(
@@ -117,14 +117,15 @@ let _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance =
 let _getMaterialShaderLibDataArrByStaticBranch =
     ((gameObject, name, state), (static_branchs: array(shaderMapData), shaderLibs), resultDataArr) =>
   switch name {
-  | "modelMatrix_instance" =>
+  | "modelMatrix_instance"
+  | "normalMatrix_instance" =>
     let {value} =
       JobConfigSystem.findFirst(
         static_branchs,
         name,
         (item) => JobConfigSystem.filterTargetName(item.name, name)
       );
-    _getMaterialShaderLibDataArrByStaticBranchModelMatrixInstance(
+    _getMaterialShaderLibDataArrByStaticBranchInstance(
       (gameObject, state),
       (shaderLibs, value),
       resultDataArr

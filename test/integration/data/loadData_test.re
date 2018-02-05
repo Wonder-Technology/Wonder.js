@@ -280,6 +280,14 @@ let _ =
                                              "modelMatrix_hardware_instance",
                                              "modelMatrix_batch_instance"
                                            |]
+                                         },
+                                         {
+                                           name: "normalMatrix_instance",
+                                           value: [|
+                                             "normalMatrix_noInstance",
+                                             "normalMatrix_hardware_instance",
+                                             "normalMatrix_batch_instance"
+                                           |]
                                          }
                                        |]
                              |> resolve

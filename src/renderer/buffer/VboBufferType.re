@@ -4,8 +4,8 @@ type vboBufferData = {
   vertexBufferMap: array(buffer),
   normalBufferMap: array(buffer),
   elementArrayBufferMap: array(buffer),
-  modelMatrixInstanceBufferMap: array(buffer),
+  matrixInstanceBufferMap: array(buffer),
   vertexArrayBufferPool: array(buffer),
   elementArrayBufferPool: array(buffer),
-  modelMatrixInstanceBufferPool: array(buffer)
+  matrixInstanceBufferPool: array(buffer)
 };

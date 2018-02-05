@@ -22,13 +22,13 @@ let disposeGeometryBufferData = (geometry: geometry, state: StateDataType.state)
 };
 
 let disposeInstanceBufferData = (sourceInstance: sourceInstance, state: StateDataType.state) => {
-  let {modelMatrixInstanceBufferMap} as data = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {matrixInstanceBufferMap} as data = VboBufferGetStateDataUtils.getVboBufferData(state);
   {
     ...state,
     vboBufferData: {
       ...data,
-      modelMatrixInstanceBufferMap:
-        disposeSparseMapData(sourceInstance, modelMatrixInstanceBufferMap)
+      matrixInstanceBufferMap:
+        disposeSparseMapData(sourceInstance, matrixInstanceBufferMap)
     }
   }
 };

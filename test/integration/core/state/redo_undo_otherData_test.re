@@ -40,10 +40,10 @@ let _ =
           vertexBufferMap,
           normalBufferMap,
           elementArrayBufferMap,
-          modelMatrixInstanceBufferMap,
+          matrixInstanceBufferMap,
           vertexArrayBufferPool,
           elementArrayBufferPool,
-          modelMatrixInstanceBufferPool
+          matrixInstanceBufferPool
         } =
           VboBufferTool.getVboBufferData(state);
         let buffer1 = Obj.magic(0);
@@ -53,7 +53,7 @@ let _ =
         vertexArrayBufferPool |> Js.Array.push(buffer1) |> ignore;
         vertexArrayBufferPool |> Js.Array.push(buffer2) |> ignore;
         elementArrayBufferPool |> Js.Array.push(buffer3) |> ignore;
-        modelMatrixInstanceBufferPool |> Js.Array.push(buffer4) |> ignore;
+        matrixInstanceBufferPool |> Js.Array.push(buffer4) |> ignore;
         let geometry1 = 0;
         let bufferInMap1 = Obj.magic(10);
         let bufferInMap2 = Obj.magic(11);
@@ -62,7 +62,7 @@ let _ =
         vertexBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap1);
         normalBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap2);
         elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
-        modelMatrixInstanceBufferMap
+        matrixInstanceBufferMap
         |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap4);
         (
           state,
@@ -134,20 +134,20 @@ let _ =
                     vertexBufferMap,
                     normalBufferMap,
                     elementArrayBufferMap,
-                    modelMatrixInstanceBufferMap,
+                    matrixInstanceBufferMap,
                     vertexArrayBufferPool,
                     elementArrayBufferPool,
-                    modelMatrixInstanceBufferPool
+                    matrixInstanceBufferPool
                   } =
                     VboBufferTool.getVboBufferData(copiedState);
                   (
                     vertexBufferMap,
                     normalBufferMap,
                     elementArrayBufferMap,
-                    modelMatrixInstanceBufferMap,
+                    matrixInstanceBufferMap,
                     vertexArrayBufferPool,
                     elementArrayBufferPool,
-                    modelMatrixInstanceBufferPool
+                    matrixInstanceBufferPool
                   )
                   |> expect == ([||], [||], [||], [||], [||], [||], [||])
                 }
@@ -238,20 +238,20 @@ let _ =
                     vertexBufferMap,
                     normalBufferMap,
                     elementArrayBufferMap,
-                    modelMatrixInstanceBufferMap
+                    matrixInstanceBufferMap
                   } =
                     newState |> VboBufferTool.getVboBufferData;
                   (
                     vertexBufferMap,
                     normalBufferMap,
                     elementArrayBufferMap,
-                    modelMatrixInstanceBufferMap
+                    matrixInstanceBufferMap
                   )
                   |> expect == ([||], [||], [||], [||])
                 }
               );
               test(
-                "add current state->vboBufferData->vertexBufferMap, normalBufferMap, elementArrayBufferMap, modelMatrixInstanceBufferMap buffer to pool",
+                "add current state->vboBufferData->vertexBufferMap, normalBufferMap, elementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
                 () => {
                   open VboBufferType;
                   let (
@@ -272,10 +272,10 @@ let _ =
                   let {
                     vertexArrayBufferPool,
                     elementArrayBufferPool,
-                    modelMatrixInstanceBufferPool
+                    matrixInstanceBufferPool
                   } =
                     StateTool.getState() |> VboBufferTool.getVboBufferData;
-                  (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool)
+                  (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>
                   expect == (
                               [|buffer4, buffer5, bufferInMap4, bufferInMap5|],

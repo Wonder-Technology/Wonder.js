@@ -36,7 +36,7 @@ let _ =
             "dispose data",
             () => {
               test(
-                "remove from sourceInstanceListMap, modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap, isModelMatrixStaticMap, isSendModelMatrixDataMap, gameObjectMap",
+                "remove from sourceInstanceListMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransformStaticMap, isSendTransformMatrixDataMap, gameObjectMap",
                 () => {
                   open SourceInstanceType;
                   let (state, gameObject, sourceInstance) =
@@ -49,21 +49,21 @@ let _ =
                        );
                   let {
                     objectInstanceArrayMap,
-                    modelMatrixFloat32ArrayMap,
-                    modelMatrixInstanceBufferCapacityMap,
-                    isModelMatrixStaticMap,
-                    isSendModelMatrixDataMap,
+                    matrixFloat32ArrayMap,
+                    matrixInstanceBufferCapacityMap,
+                    isTransformStaticMap,
+                    isSendTransformMatrixDataMap,
                     gameObjectMap
                   } =
                     SourceInstanceTool.getSourceInstanceData(state);
                   (
                     objectInstanceArrayMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    modelMatrixFloat32ArrayMap
+                    matrixFloat32ArrayMap
                     |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    modelMatrixInstanceBufferCapacityMap
+                    matrixInstanceBufferCapacityMap
                     |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    isModelMatrixStaticMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    isSendModelMatrixDataMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
+                    isTransformStaticMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
+                    isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
                     gameObjectMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
                   )
                   |> expect == (false, false, false, false, false, false)
@@ -81,8 +81,8 @@ let _ =
                          gameObject,
                          sourceInstance
                        );
-                  let {modelMatrixInstanceBufferMap} = VboBufferTool.getVboBufferData(state);
-                  modelMatrixInstanceBufferMap
+                  let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferData(state);
+                  matrixInstanceBufferMap
                   |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
                   |> expect == false
                 }

@@ -24,6 +24,7 @@ module.exports = {
       { name: "job" },
       { name: "transform" },
       { name: "lightMaterial" },
+      { name: "instance" },
       { name: "geometry" },
       { name: "light" }
   ],

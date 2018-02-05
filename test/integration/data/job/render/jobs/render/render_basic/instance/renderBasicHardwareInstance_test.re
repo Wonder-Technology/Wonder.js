@@ -133,31 +133,128 @@ let _ =
       );
       describe(
         "send instance data",
-        () =>
+        () => {
           describe(
-            "send modelMatrix data",
+            "create instance buffer when first send",
+            () => {
+              test(
+                "test create buffer",
+                () => {
+                  let (state, _, _) = _prepare(sandbox, state^);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                  getCallCount(createBuffer) |> expect == 3
+                }
+              );
+              test(
+                "test not create buffer when second call",
+                () => {
+                  let (state, _, _) = _prepare(sandbox, state^);
+                  let buffer = Obj.magic(1);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                  let state = state |> _render;
+                  getCallCount(createBuffer) |> expect == 3
+                }
+              )
+            }
+          );
+          describe(
+            "set instance buffer's capacity",
             () => {
               describe(
-                "create instance buffer when first send",
-                () => {
+                "contract check",
+                () =>
                   test(
-                    "test create buffer",
+                    "capacity should be a multiplier of 4",
+                    () =>
+                      expect(() => InstanceBufferTool.createMatrixFloat32Array(3))
+                      |> toThrowMessage("capacity should be a multiplier of 4")
+                  )
+              );
+              /* TODO test matrixFloat32Array */
+              describe(
+                "if current capacity < target capacity",
+                () => {
+                  let _prepare = (sandbox, state) => {
+                    let (
+                      state,
+                      gameObject,
+                      (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject)
+                    ) =
+                      _prepare(sandbox, state);
+                    for (_ in 0 to 62) {
+                      let (state, objectInstanceGameObject) =
+                        SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+                      ()
+                    };
+                    (state, gameObject, sourceInstance, objectInstanceGameObject)
+                  };
+                  describe(
+                    "delete old instance buffer",
                     () => {
-                      let (state, _, _) = _prepare(sandbox, state^);
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                           );
-                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      getCallCount(createBuffer) |> expect == 3
+                      let _prepare = (sandbox, state) => {
+                        let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                          _prepare(sandbox, state^);
+                        let buffer1 = Obj.magic(1);
+                        let buffer2 = Obj.magic(2);
+                        let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                        createBuffer |> onCall(2) |> returns(buffer1) |> ignore;
+                        createBuffer |> onCall(3) |> returns(buffer2) |> ignore;
+                        let deleteBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                        (state, buffer1, buffer2, createBuffer, deleteBuffer)
+                      };
+                      test(
+                        "test delete",
+                        () => {
+                          let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
+                            _prepare(sandbox, state);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ~deleteBuffer, ())
+                               );
+                          let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                          deleteBuffer |> expect |> toCalledWith([|buffer1|])
+                        }
+                      );
+                      test(
+                        "not bind deleted buffer",
+                        () => {
+                          let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
+                            _prepare(sandbox, state);
+                          let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(
+                                   ~sandbox,
+                                   ~createBuffer,
+                                   ~deleteBuffer,
+                                   ~bindBuffer,
+                                   ()
+                                 )
+                               );
+                          let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                          bindBuffer
+                          |> withTwoArgs(Sinon.matchAny, buffer1)
+                          |> getCallCount
+                          |> expect == 1
+                        }
+                      )
                     }
                   );
                   test(
-                    "test not create buffer when second call",
+                    "create new one",
                     () => {
-                      let (state, _, _) = _prepare(sandbox, state^);
+                      let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                        _prepare(sandbox, state^);
                       let buffer = Obj.magic(1);
                       let createBuffer =
                         createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
@@ -167,225 +264,109 @@ let _ =
                              FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      let state = state |> _render;
-                      getCallCount(createBuffer) |> expect == 3
+                      createBuffer |> getCallCount |> expect == 4
                     }
-                  )
-                }
-              );
-              describe(
-                "set instance buffer's capacity",
-                () => {
-                  describe(
-                    "contract check",
-                    () =>
-                      test(
-                        "capacity should be a multiplier of 4",
-                        () =>
-                          expect(() => InstanceBufferTool.createModelMatrixFloat32Array(3))
-                          |> toThrowMessage("capacity should be a multiplier of 4")
-                      )
                   );
-                  /* TODO test modelMatrixFloat32Array */
-                  describe(
-                    "if current capacity < target capacity",
+                  test(
+                    "bufferData with increased capacity and dynamic draw",
                     () => {
-                      let _prepare = (sandbox, state) => {
-                        let (
-                          state,
-                          gameObject,
-                          (
-                            geometry,
-                            material,
-                            meshRenderer,
-                            sourceInstance,
-                            objectInstanceGameObject
-                          )
-                        ) =
-                          _prepare(sandbox, state);
-                        for (_ in 0 to 62) {
-                          let (state, objectInstanceGameObject) =
-                            SourceInstance.createSourceInstanceObjectInstance(
-                              sourceInstance,
-                              state
-                            );
-                          ()
-                        };
-                        (state, gameObject, sourceInstance, objectInstanceGameObject)
-                      };
+                      let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                        _prepare(sandbox, state^);
+                      let array_buffer = 1;
+                      let dynamic_draw = 2;
+                      let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~array_buffer,
+                               ~dynamic_draw,
+                               ~bufferData,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                      bufferData
+                      |> withThreeArgs(array_buffer, 8192, dynamic_draw)
+                      |> expect
+                      |> toCalledOnce
+                    }
+                  );
+                  describe(
+                    "fix bug",
+                    () =>
                       describe(
-                        "delete old instance buffer",
+                        "test in the next render(if current capacity >= target capacity)",
                         () => {
-                          let _prepare = (sandbox, state) => {
-                            let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                              _prepare(sandbox, state^);
-                            let buffer1 = Obj.magic(1);
-                            let buffer2 = Obj.magic(2);
-                            let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                            createBuffer |> onCall(2) |> returns(buffer1) |> ignore;
-                            createBuffer |> onCall(3) |> returns(buffer2) |> ignore;
-                            let deleteBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                            (state, buffer1, buffer2, createBuffer, deleteBuffer)
-                          };
                           test(
-                            "test delete",
+                            "should use the instance buffer created in the previous render",
                             () => {
-                              let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
-                                _prepare(sandbox, state);
+                              let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                                _prepare(sandbox, state^);
+                              let buffer = Obj.magic(1);
+                              let createBuffer =
+                                createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
                               let state =
                                 state
                                 |> FakeGlTool.setFakeGl(
-                                     FakeGlTool.buildFakeGl(
-                                       ~sandbox,
-                                       ~createBuffer,
-                                       ~deleteBuffer,
-                                       ()
-                                     )
+                                     FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
                                    );
-                              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                              deleteBuffer |> expect |> toCalledWith([|buffer1|])
+                              let state = state |> RenderJobsTool.initSystemAndRender;
+                              let state = state |> _render;
+                              InstanceBufferTool.getOrCreateBuffer(sourceInstance, state)
+                              |> expect == buffer
                             }
                           );
                           test(
-                            "not bind deleted buffer",
+                            "shouldn't create instance buffer",
                             () => {
-                              let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
-                                _prepare(sandbox, state);
-                              let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                              let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                                _prepare(sandbox, state^);
+                              let buffer = Obj.magic(1);
+                              let createBuffer =
+                                createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
                               let state =
                                 state
                                 |> FakeGlTool.setFakeGl(
-                                     FakeGlTool.buildFakeGl(
-                                       ~sandbox,
-                                       ~createBuffer,
-                                       ~deleteBuffer,
-                                       ~bindBuffer,
-                                       ()
-                                     )
+                                     FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
                                    );
-                              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                              bindBuffer
-                              |> withTwoArgs(Sinon.matchAny, buffer1)
-                              |> getCallCount
-                              |> expect == 1
+                              let state = state |> RenderJobsTool.initSystemAndRender;
+                              let state = state |> _render;
+                              let callCount = createBuffer |> getCallCount;
+                              let state = state |> _render;
+                              createBuffer |> getCallCount |> expect == callCount
                             }
                           )
                         }
-                      );
-                      test(
-                        "create new one",
-                        () => {
-                          let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                            _prepare(sandbox, state^);
-                          let buffer = Obj.magic(1);
-                          let createBuffer =
-                            createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
-                          let state =
-                            state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                               );
-                          let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                          createBuffer |> getCallCount |> expect == 4
-                        }
-                      );
-                      test(
-                        "bufferData with increased capacity and dynamic draw",
-                        () => {
-                          let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                            _prepare(sandbox, state^);
-                          let array_buffer = 1;
-                          let dynamic_draw = 2;
-                          let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                          let state =
-                            state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(
-                                   ~sandbox,
-                                   ~array_buffer,
-                                   ~dynamic_draw,
-                                   ~bufferData,
-                                   ()
-                                 )
-                               );
-                          let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                          bufferData
-                          |> withThreeArgs(array_buffer, 8192, dynamic_draw)
-                          |> expect
-                          |> toCalledOnce
-                        }
-                      );
-                      describe(
-                        "fix bug",
-                        () =>
-                          describe(
-                            "test in the next render(if current capacity >= target capacity)",
-                            () => {
-                              test(
-                                "should use the instance buffer created in the previous render",
-                                () => {
-                                  let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                                    _prepare(sandbox, state^);
-                                  let buffer = Obj.magic(1);
-                                  let createBuffer =
-                                    createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
-                                  let state =
-                                    state
-                                    |> FakeGlTool.setFakeGl(
-                                         FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                                       );
-                                  let state = state |> RenderJobsTool.initSystemAndRender;
-                                  let state = state |> _render;
-                                  InstanceBufferTool.getOrCreateBuffer(sourceInstance, state)
-                                  |> expect == buffer
-                                }
-                              );
-                              test(
-                                "shouldn't create instance buffer",
-                                () => {
-                                  let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                                    _prepare(sandbox, state^);
-                                  let buffer = Obj.magic(1);
-                                  let createBuffer =
-                                    createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
-                                  let state =
-                                    state
-                                    |> FakeGlTool.setFakeGl(
-                                         FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
-                                       );
-                                  let state = state |> RenderJobsTool.initSystemAndRender;
-                                  let state = state |> _render;
-                                  let callCount = createBuffer |> getCallCount;
-                                  let state = state |> _render;
-                                  createBuffer |> getCallCount |> expect == callCount
-                                }
-                              )
-                            }
-                          )
                       )
-                      /* test(
-                           "not unbind new one",
-                           () => {
-                             let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                               _prepare(sandbox, state^);
-                             let array_buffer = 1;
-                             let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                             let state =
-                               state
-                               |> FakeGlTool.setFakeGl(
-                                    FakeGlTool.buildFakeGl(~sandbox, ~array_buffer, ~bindBuffer, ())
-                                  );
-                             let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                             bindBuffer
-                             |> withTwoArgs(array_buffer, Js.Nullable.null)
-                             |> expect
-                             |> toCalledOnce
-                           }
-                         ) */
-                    }
                   )
+                  /* test(
+                       "not unbind new one",
+                       () => {
+                         let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                           _prepare(sandbox, state^);
+                         let array_buffer = 1;
+                         let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                         let state =
+                           state
+                           |> FakeGlTool.setFakeGl(
+                                FakeGlTool.buildFakeGl(~sandbox, ~array_buffer, ~bindBuffer, ())
+                              );
+                         let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                         bindBuffer
+                         |> withTwoArgs(array_buffer, Js.Nullable.null)
+                         |> expect
+                         |> toCalledOnce
+                       }
+                     ) */
                 }
-              );
+              )
+            }
+          );
+          describe(
+            "send modelMatrix data",
+            () => {
               describe(
                 "send sourceInstance gameObject's and objectInstanceGameObject gameObjects' model matrices",
                 () => {
@@ -635,7 +616,7 @@ let _ =
                 "optimize",
                 () =>
                   describe(
-                    "add isModelMatrixIsStatic logic",
+                    "add isTransformStatic logic",
                     () => {
                       let _prepare = (sandbox, isStatic, state) => {
                         let (
@@ -666,7 +647,7 @@ let _ =
                         (state, sourceInstance, bufferSubData)
                       };
                       describe(
-                        "if isModelMatrixIsStatic is true",
+                        "if isTransformStatic is true",
                         () => {
                           test(
                             "if not send data before, send data",
@@ -789,6 +770,7 @@ let _ =
               )
             }
           )
+        }
       );
       describe(
         "draw instance",

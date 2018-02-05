@@ -17,8 +17,8 @@ let getElementArrayBuffer = (gl, state: StateDataType.state) => {
 };
 
 let getInstanceBuffer = (gl, state: StateDataType.state) => {
-  let {modelMatrixInstanceBufferPool} = VboBufferGetStateDataUtils.getVboBufferData(state);
-  _getBufferAndSetBufferMap(gl, modelMatrixInstanceBufferPool)
+  let {matrixInstanceBufferPool} = VboBufferGetStateDataUtils.getVboBufferData(state);
+  _getBufferAndSetBufferMap(gl, matrixInstanceBufferPool)
 };
 
 let _getBufferFromBufferMap = (index: int, bufferMap) =>
@@ -78,10 +78,10 @@ let addAllBufferToPool = (state: StateDataType.state) => {
     vertexBufferMap,
     normalBufferMap,
     elementArrayBufferMap,
-    modelMatrixInstanceBufferMap,
+    matrixInstanceBufferMap,
     vertexArrayBufferPool,
     elementArrayBufferPool,
-    modelMatrixInstanceBufferPool
+    matrixInstanceBufferPool
   } =
     VboBufferGetStateDataUtils.getVboBufferData(state);
   vertexBufferMap
@@ -96,19 +96,19 @@ let addAllBufferToPool = (state: StateDataType.state) => {
   |> SparseMapSystem.forEachValid(
        [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
-  modelMatrixInstanceBufferMap
+  matrixInstanceBufferMap
   |> SparseMapSystem.forEachValid(
-       [@bs] ((buffer) => modelMatrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
+       [@bs] ((buffer) => matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
      );
-  (vertexArrayBufferPool, elementArrayBufferPool, modelMatrixInstanceBufferPool)
+  (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
 };
 
 let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) => {
-  let {modelMatrixInstanceBufferMap, modelMatrixInstanceBufferPool} =
+  let {matrixInstanceBufferMap, matrixInstanceBufferPool} =
     VboBufferGetStateDataUtils.getVboBufferData(state);
-  modelMatrixInstanceBufferPool
+  matrixInstanceBufferPool
   |> Js.Array.push(
-       _unsafeGetBufferFromBufferMap(sourceInstanceIndex, modelMatrixInstanceBufferMap)
+       _unsafeGetBufferFromBufferMap(sourceInstanceIndex, matrixInstanceBufferMap)
      )
   |> ignore;
   state

@@ -2,11 +2,11 @@ let getSourceInstanceData = SourceInstanceSystem.getSourceInstanceData;
 
 let getObjectInstanceArray = SourceInstanceSystem.getObjectInstanceArray;
 
-let isModelMatrixIsStatic = SourceInstanceSystem.isModelMatrixIsStatic;
+let isTransformStatic = SourceInstanceSystem.isTransformStatic;
 
-let isSendModelMatrix = SourceInstanceSystem.isSendModelMatrix;
+let isSendTransformMatrixData = SourceInstanceSystem.isSendTransformMatrixData;
 
-let markSendModelMatrix = SourceInstanceSystem.markSendModelMatrix;
+let markIsSendTransformMatrixData = SourceInstanceSystem.markIsSendTransformMatrixData;
 
 let deepCopyStateForRestore = SourceInstanceSystem.deepCopyStateForRestore;
 

@@ -121,6 +121,14 @@ let buildRenderJobConfig =
         "modelMatrix_hardware_instance",
         "modelMatrix_batch_instance"
       ]
+    },
+    {
+      "name": "normalMatrix_instance",
+      "value": [
+        "normalMatrix_noInstance",
+        "normalMatrix_hardware_instance",
+        "normalMatrix_batch_instance"
+      ]
     }
   ],
   "groups": [
@@ -173,10 +181,12 @@ let buildRenderJobConfig =
           "name": "normal"
         },
         {
-          "name": "modelMatrix_noInstance"
+          "type": "static_branch",
+          "name": "modelMatrix_instance"
         },
         {
-          "name": "normalMatrix_noInstance"
+          "type": "static_branch",
+          "name": "normalMatrix_instance"
         },
         {
           "name": "light_common"
@@ -288,22 +298,22 @@ let buildRenderJobConfig =
       "attributes": [
         {
           "name": "a_mVec4_0",
-          "buffer": "instance",
+          "buffer": "instance_mMatrix",
           "type": "vec4"
         },
         {
           "name": "a_mVec4_1",
-          "buffer": "instance",
+          "buffer": "instance_mMatrix",
           "type": "vec4"
         },
         {
           "name": "a_mVec4_2",
-          "buffer": "instance",
+          "buffer": "instance_mMatrix",
           "type": "vec4"
         },
         {
           "name": "a_mVec4_3",
-          "buffer": "instance",
+          "buffer": "instance_mMatrix",
           "type": "vec4"
         }
       ]
@@ -385,6 +395,53 @@ let buildRenderJobConfig =
         {
           "name": "u_normalMatrix",
           "field": "normalMatrix",
+          "type": "mat3",
+          "from": "model"
+        }
+      ]
+    }
+  },
+  {
+    "name": "normalMatrix_hardware_instance",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "normalMatrix_hardware_instance_vertex"
+      }
+    ],
+    "variables": {
+      "attributes": [
+        {
+          "name": "a_normalVec3_0",
+          "buffer": "instance_normalMatrix",
+          "type": "vec3"
+        },
+        {
+          "name": "a_normalVec3_1",
+          "buffer": "instance_normalMatrix",
+          "type": "vec3"
+        },
+        {
+          "name": "a_normalVec3_2",
+          "buffer": "instance_normalMatrix",
+          "type": "vec3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "normalMatrix_batch_instance",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "normalMatrix_batch_instance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_normalMatrix",
+          "field": "instance_normalMatrix",
           "type": "mat3",
           "from": "model"
         }

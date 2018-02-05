@@ -14,7 +14,7 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 let addUniformSendDataByType =
     (
-      (pos, type_),
+      pos,
       (
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
@@ -23,31 +23,16 @@ let addUniformSendDataByType =
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr
       ),
-      getDataFunc
-    ) =>
-  switch type_ {
-  | "mat4" => (
-      renderObjectSendModelDataArr,
-      renderObjectSendMaterialDataArr,
-      shaderSendNoCachableDataArr,
-      shaderSendCachableDataArr,
-      shaderSendCachableFunctionDataArr,
-      instanceSendNoCachableDataArr
-      |> ArraySystem.push(
-           {pos, sendDataFunc: sendMatrix4, getDataFunc}: uniformInstanceSendNoCachableData
-         )
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="addUniformSendDataByType",
-        ~description={j|unknown type:$type_|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
+      (getDataFunc, sendDataFunc)
+    ) => (
+  renderObjectSendModelDataArr,
+  renderObjectSendMaterialDataArr,
+  shaderSendNoCachableDataArr,
+  shaderSendCachableDataArr,
+  shaderSendCachableFunctionDataArr,
+  instanceSendNoCachableDataArr
+  |> ArraySystem.push({pos, sendDataFunc, getDataFunc}: uniformInstanceSendNoCachableData)
+);
 
 let setToUniformSendMap =
     (shaderIndex, uniformInstanceSendNoCachableDataMap, instanceSendNoCachableDataArr) =>
