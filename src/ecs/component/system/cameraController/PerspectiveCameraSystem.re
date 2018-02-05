@@ -20,15 +20,22 @@ let getNear = PerspectiveCameraOperateCommon.getNear;
 
 let setNear = PerspectiveCameraOperateCommon.setNear;
 
-let setDefaultPMatrix =
-    (cameraController: cameraController, cameraControllerData: cameraControllerData) => {
+/* let setDefaultPMatrix =
+       (cameraController: cameraController, cameraControllerData: cameraControllerData) => {
+     ...cameraControllerData,
+     pMatrixMap:
+       WonderCommonlib.SparseMapSystem.set(
+         cameraController,
+         Matrix4System.createIdentityMatrix4(),
+         cameraControllerData.pMatrixMap
+       )
+   }; */
+let setDefaultPMatrix = (cameraController: cameraController, pMatrixMap) =>
   WonderCommonlib.SparseMapSystem.set(
     cameraController,
     Matrix4System.createIdentityMatrix4(),
-    cameraControllerData.pMatrixMap
+    pMatrixMap
   );
-  cameraControllerData
-};
 
 let _unsafeGetPMatrix =
     (cameraController: cameraController, cameraControllerData: cameraControllerData) =>
@@ -68,7 +75,8 @@ let update = (index: int, cameraControllerData: cameraControllerData) => {
       (fovy, aspect, near, far),
       _unsafeGetPMatrix(index, cameraControllerData)
     )
-    |> ignore
+    |> ignore;
+    cameraControllerData
   | (_, _, _, _) =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -78,9 +86,9 @@ let update = (index: int, cameraControllerData: cameraControllerData) => {
         ~solution={j||j},
         ~params={j|cameraController: $index|j}
       )
-    )
-  };
-  ()
+    );
+    cameraControllerData
+  }
 };
 
 let init = (index: int, cameraControllerData: cameraControllerData) =>

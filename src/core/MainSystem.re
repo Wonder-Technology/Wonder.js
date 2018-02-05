@@ -76,5 +76,4 @@ let init = ((config: mainConfigData, state: state)) => {
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> GPUDetectSystem.detect(gl)
-  |> GameObjectAdmin.initDataFromState
 };

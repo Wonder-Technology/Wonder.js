@@ -6,13 +6,18 @@ let handleAddComponent =
   [@bs]
   (
     (cameraController: cameraController, gameObjectUid: int, state: StateDataType.state) => {
-      let cameraControllerData = getCameraControllerData(state);
-      ComponentSystem.addComponentToGameObjectMap(
-        cameraController,
-        gameObjectUid,
-        cameraControllerData.gameObjectMap
-      )
-      |> ignore;
-      state
+      let {gameObjectMap} as data = getCameraControllerData(state);
+      {
+        ...state,
+        cameraControllerData: {
+          ...data,
+          gameObjectMap:
+            ComponentSystem.addComponentToGameObjectMap(
+              cameraController,
+              gameObjectUid,
+              gameObjectMap
+            )
+        }
+      }
     }
   );

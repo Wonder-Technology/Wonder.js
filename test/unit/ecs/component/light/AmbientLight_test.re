@@ -233,48 +233,9 @@ let _ =
                                  gameObject3,
                                  light3
                                );
-                          /* let {colors} = AmbientLightTool.getLightData(state);
-                             WonderLog.Log.print(colors) |> ignore; */
                           AmbientLight.getAmbientLightColor(light2, state) |> expect == color2
                         }
                       )
-                      /* test(
-                           "the light in [0-(lightData.index-1)] should be all alive",
-                           () => {
-                             open AmbientLightType;
-                             let (
-                               state,
-                               (gameObject1, gameObject2),
-                               (color1, color2),
-                               (light1, light2)
-                             ) =
-                               _prepare(state);
-                             /* let (state, gameObject3, light3) =
-                               AmbientLightTool.createGameObject(state);
-                             let state =
-                               state
-                               |> GameObject.disposeGameObjectAmbientLightComponent(
-                                    gameObject2,
-                                    light2
-                                  );
-                             let (state, gameObject4, light4) =
-                               AmbientLightTool.createGameObject(state); */
-                             let {index} = AmbientLightTool.getLightData(state);
-                             WonderLog.Log.print(index) |> ignore;
-                             WonderCommonlib.ArraySystem.range(0, index - 1)
-                             |> Js.Array.filter(
-                                  (light) =>
-                                    !
-                                      AmbientLightTool.isAlive(
-                                        /* AmbientLightTool.getMappedIndex(light, state), */
-                                        light,
-                                        state
-                                      )
-                                )
-                             |> Js.Array.length
-                             |> expect == 0
-                           }
-                         ) */
                     }
                   )
               )

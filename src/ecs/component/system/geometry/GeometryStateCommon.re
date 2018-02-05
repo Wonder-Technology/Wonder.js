@@ -18,22 +18,21 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     state |> getGeometryData;
   {
     ...state,
-    geometryData:
-      Some({
-        index,
-        /*!
-          because vertices, indices are read-only data, so need to deep copy
-          */
-        verticesMap: verticesMap |> SparseMapSystem.copy,
-        normalsMap: normalsMap |> SparseMapSystem.copy,
-        indicesMap: indicesMap |> SparseMapSystem.copy,
-        computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
-        configDataMap: configDataMap |> SparseMapSystem.copy,
-        isInitMap: isInitMap |> SparseMapSystem.copy,
-        groupCountMap: groupCountMap |> SparseMapSystem.copy,
-        gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy
-      })
+    geometryData: {
+      index,
+      /*!
+        because vertices, indices are read-only data, so need to deep copy
+        */
+      verticesMap: verticesMap |> SparseMapSystem.copy,
+      normalsMap: normalsMap |> SparseMapSystem.copy,
+      indicesMap: indicesMap |> SparseMapSystem.copy,
+      computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
+      configDataMap: configDataMap |> SparseMapSystem.copy,
+      isInitMap: isInitMap |> SparseMapSystem.copy,
+      groupCountMap: groupCountMap |> SparseMapSystem.copy,
+      gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+      disposedIndexArray: disposedIndexArray |> Js.Array.copy
+    }
   }
 };
 

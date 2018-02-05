@@ -2,7 +2,7 @@ open TransformType;
 
 open Js.Typed_array;
 
-let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);
+let getTransformData = (state: StateDataType.state) => state.transformData;
 
 let getDefaultPosition = () => (0., 0., 0.);
 

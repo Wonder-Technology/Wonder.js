@@ -1,11 +1,11 @@
 open CameraControllerType;
 
-let addToDirtyArray = (cameraController: cameraController, {dirtyArray}) =>
-  Js.Array.push(cameraController, dirtyArray);
+let addToDirtyArray = (cameraController: cameraController, dirtyArray) =>
+  ArraySystem.push(cameraController, dirtyArray);
 
 let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
-  cameraControllerData.dirtyArray = WonderCommonlib.ArraySystem.createEmpty();
-  cameraControllerData
+  ...cameraControllerData,
+  dirtyArray: WonderCommonlib.ArraySystem.createEmpty()
 };
 /*
  let isDirty = (cameraController: cameraController, cameraControllerData: cameraControllerData) =>

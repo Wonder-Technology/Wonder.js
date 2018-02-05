@@ -19,18 +19,27 @@ let unsafeGetVertices = (index: int, state: StateDataType.state) =>
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   unsafeGetVertices(index, state) |> Float32Array.length;
 
-let setVerticesWithArray = (index: int, data: array(float), state: StateDataType.state) =>
-  setPointsWithArray(
-    (index, getVertices(index, state), data, getGeometryData(state).verticesMap),
-    (
-      TypeArrayPoolSystem.getFloat32TypeArrayFromPool,
-      TypeArrayUtils.fillFloat32Array,
-      TypeArrayUtils.makeFloat32Array
-    ),
-    state
-  );
+let setVerticesWithArray = (index: int, data: array(float), state: StateDataType.state) => {
+  let {verticesMap} as geometryData = getGeometryData(state);
+  {
+    ...state,
+    geometryData: {
+      ...geometryData,
+      verticesMap:
+        setPointsWithArray(
+          (index, getVertices(index, state), data, verticesMap),
+          (
+            TypeArrayPoolSystem.getFloat32TypeArrayFromPool,
+            TypeArrayUtils.fillFloat32Array,
+            TypeArrayUtils.makeFloat32Array
+          ),
+          state
+        )
+    }
+  }
+};
 
 let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
-  setPoints(index, getGeometryData(state).verticesMap, data) |> ignore;
-  state
+  let {verticesMap} as geometryData = getGeometryData(state);
+  {...state, geometryData: {...geometryData, verticesMap: verticesMap |> setPoints(index, data)}}
 };

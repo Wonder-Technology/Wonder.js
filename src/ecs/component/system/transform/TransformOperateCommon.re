@@ -30,11 +30,6 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
        StateData.stateData.isDebug
      );
 
-/* let setLocalToWorldMatrix =
-       (transform: transform, matTypeArr: Float32Array.t, localToWorldMatrixMap) => {
-     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.set(transform, matTypeArr)|>ignore;
-     localToWorldMatrixMap
-   }; */
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
@@ -62,11 +57,6 @@ let getLocalPositionTuple = (transform: transform, localPositionMap) => {
   )
 };
 
-/* let setLocalPositionByTypeArray =
-       (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
-     localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr) |> ignore;
-     data
-   }; */
 let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMap} as data) => {
   let typeArr = getLocalPositionTypeArray(transform, localPositionMap);
   Float32Array.unsafe_set(typeArr, 0, x);
@@ -80,7 +70,7 @@ let rec update = (transform: transform, state: StateDataType.state) => {
   switch (isDirty(transform, data)) {
   | false => state
   | true =>
-    mark(transform, false, data) |> ignore;
+    let data = mark(transform, false, data);
     switch (getParent(transform, data)) {
     | Some(parent) =>
       let state = update(parent, state);
@@ -138,9 +128,7 @@ let getPositionTuple = (transform: transform, state: StateDataType.state) =>
 let setPositionByTuple =
     (transform: transform, position: position, data, state: StateDataType.state) =>
   switch (getParent(transform, data)) {
-  | None =>
-    setLocalPositionByTuple(transform, position, data) |> ignore;
-    data
+  | None => setLocalPositionByTuple(transform, position, data)
   | Some(parent) =>
     let data = update(parent, state) |> getTransformData;
     setLocalPositionByTuple(
@@ -154,6 +142,4 @@ let setPositionByTuple =
       ),
       data
     )
-    |> ignore;
-    data
   };

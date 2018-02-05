@@ -224,27 +224,35 @@ let disposeComponent = (uid, batchDisposeFunc, state) =>
   |> _disposeCommonComponent(uid, (getObjectInstanceComponent, disposeObjectInstanceComponent));
 
 let batchDisposeCommonComponent =
-    (uidArray: array(int), disposedUidMap, batchDisposeFunc, state: StateDataType.state) =>
+    (uidArray: array(int), disposedUidMap, batchDisposeFunc, state: StateDataType.state) => {
+  /* TODO not split? */
+  let state =
+    state
+    |> batchGetMeshRendererComponent(uidArray)
+    |> batchDisposeMeshRendererComponent(disposedUidMap, state);
+  let state =
+    state
+    |> batchGetAmbientLightComponent(uidArray)
+    |> batchDisposeAmbientLightComponent(disposedUidMap, state)
+    |> batchGetDirectionLightComponent(uidArray)
+    |> batchDisposeDirectionLightComponent(disposedUidMap, state)
+    |> batchGetPointLightComponent(uidArray)
+    |> batchDisposePointLightComponent(disposedUidMap, state)
+    |> batchGetTransformComponent(uidArray)
+    |> batchDisposeTransformComponent(disposedUidMap, state);
+
+    let state = state 
+    |> batchGetBasicMaterialComponent(uidArray)
+    |> batchDisposeBasicMaterialComponent(disposedUidMap, state)
+    |> batchGetLightMaterialComponent(uidArray)
+    |> batchDisposeLightMaterialComponent(disposedUidMap, state)
+    |> batchGetGeometryComponent(uidArray)
+    |> batchDisposeGeometryComponent(disposedUidMap, state)
+    |> batchGetCameraControllerComponent(uidArray)
+    |> batchDisposeCameraControllerComponent(disposedUidMap, state);
   state
-  |> batchGetMeshRendererComponent(uidArray)
-  |> batchDisposeMeshRendererComponent(disposedUidMap, state)
-  |> batchGetAmbientLightComponent(uidArray)
-  |> batchDisposeAmbientLightComponent(disposedUidMap, state)
-  |> batchGetDirectionLightComponent(uidArray)
-  |> batchDisposeDirectionLightComponent(disposedUidMap, state)
-  |> batchGetPointLightComponent(uidArray)
-  |> batchDisposePointLightComponent(disposedUidMap, state)
-  |> batchGetTransformComponent(uidArray)
-  |> batchDisposeTransformComponent(disposedUidMap, state)
-  |> batchGetBasicMaterialComponent(uidArray)
-  |> batchDisposeBasicMaterialComponent(disposedUidMap, state)
-  |> batchGetLightMaterialComponent(uidArray)
-  |> batchDisposeLightMaterialComponent(disposedUidMap, state)
-  |> batchGetGeometryComponent(uidArray)
-  |> batchDisposeGeometryComponent(disposedUidMap, state)
-  |> batchGetCameraControllerComponent(uidArray)
-  |> batchDisposeCameraControllerComponent(disposedUidMap, state)
   |> batchGetObjectInstanceComponent(uidArray)
   |> batchDisposeObjectInstanceComponent(disposedUidMap, state)
   |> batchGetSourceInstanceComponent(uidArray)
-  |> batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
+  |> batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc)
+};

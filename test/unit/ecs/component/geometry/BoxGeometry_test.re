@@ -32,8 +32,8 @@ let _ =
           test(
             "create a new geometry which is just index(int)",
             () => {
-              let (_, geometry) = createBoxGeometry(state^);
-              expect(geometry) == 0
+              let (state, geometry) = createBoxGeometry(state^);
+              (GeometryTool.getGeometryData(state).index, geometry) |> expect == (1, 0)
             }
           )
       );

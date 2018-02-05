@@ -181,7 +181,6 @@ let _ =
                 () => {
                   open GameObject;
                   let (state, geometry) = createBoxGeometry(state^);
-                  let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
                   let newData = Uint16Array.make([|3, 5, 5|]);
                   let state = state |> setGeometryIndices(geometry, newData);
                   getGeometryIndices(geometry, state) |> expect == newData

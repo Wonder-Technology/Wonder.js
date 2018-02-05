@@ -19,18 +19,27 @@ let unsafeGetIndices = (index: int, state: StateDataType.state) =>
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   unsafeGetIndices(index, state) |> Uint16Array.length;
 
-let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.state) =>
-  setPointsWithArray(
-    (index, getIndices(index, state), data, getGeometryData(state).indicesMap),
-    (
-      TypeArrayPoolSystem.getUint16TypeArrayFromPool,
-      TypeArrayUtils.fillUint16Array,
-      TypeArrayUtils.makeUint16Array
-    ),
-    state
-  );
+let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.state) => {
+  let {indicesMap} as geometryData = getGeometryData(state);
+  {
+    ...state,
+    geometryData: {
+      ...geometryData,
+      indicesMap:
+        setPointsWithArray(
+          (index, getIndices(index, state), data, indicesMap),
+          (
+            TypeArrayPoolSystem.getUint16TypeArrayFromPool,
+            TypeArrayUtils.fillUint16Array,
+            TypeArrayUtils.makeUint16Array
+          ),
+          state
+        )
+    }
+  }
+};
 
 let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
-  setPoints(index, getGeometryData(state).indicesMap, data) |> ignore;
-  state
+  let {indicesMap} as geometryData = getGeometryData(state);
+  {...state, geometryData: {...geometryData, indicesMap: indicesMap |> setPoints(index, data)}}
 };

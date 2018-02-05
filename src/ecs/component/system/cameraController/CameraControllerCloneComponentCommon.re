@@ -9,25 +9,22 @@ let handleCloneComponent =
   let far = getFar(sourceComponent, cameraData) |> Js.Option.getExn;
   let fovy = getFovy(sourceComponent, cameraData) |> Js.Option.getExn;
   let aspect = getAspect(sourceComponent, cameraData) |> Js.Option.getExn;
-  let componentArr:array(cameraController) = [||];
-  let state =
-    countRangeArr
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, _) => {
-             let (state, index) = CameraControllerCreateCommon.create(state);
-             let state =
-               state
-               |> setNear(index, near)
-               |> setFar(index, far)
-               |> setFovy(index, fovy)
-               |> setAspect(index, aspect);
-             componentArr |> Js.Array.push(index) |> ignore;
+  countRangeArr
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         ((state, componentArr), _) => {
+           let (state, index) = CameraControllerCreateCommon.create(state);
+           (
              state
-           }
-         ),
-         state
-       );
-  (state, componentArr)
+             |> setNear(index, near)
+             |> setFar(index, far)
+             |> setFovy(index, fovy)
+             |> setAspect(index, aspect),
+             componentArr |> ArraySystem.push(index)
+           )
+         }
+       ),
+       (state, [||])
+     )
 };

@@ -33,10 +33,15 @@ let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceM
      );
 
 let _disposeData = (objectInstance: objectInstance, state: StateDataType.state) => {
-  let {sourceInstanceMap, gameObjectMap} = getObjectInstanceData(state);
-  disposeSparseMapData(objectInstance, sourceInstanceMap) |> ignore;
-  disposeSparseMapData(objectInstance, gameObjectMap) |> ignore;
-  state
+  let {sourceInstanceMap, gameObjectMap} as data = getObjectInstanceData(state);
+  {
+    ...state,
+    objectInstanceData: {
+      ...data,
+      sourceInstanceMap: sourceInstanceMap |> disposeSparseMapData(objectInstance),
+      gameObjectMap: gameObjectMap |> disposeSparseMapData(objectInstance)
+    }
+  }
 };
 
 let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataType.state) => {
@@ -56,13 +61,20 @@ let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataTy
     StateData.stateData.isDebug
   );
   let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
-  disposedIndexArray |> Js.Array.push(objectInstance) |> ignore;
-  state
-  |> InstanceDisposeComponentUtils.disposeObjectInstance(
-       _unsafeGetSourceInstance(objectInstance, data),
-       ObjectInstanceGameObjectCommon.unsafeGetGameObject(objectInstance, state)
-     )
-  |> _disposeData(objectInstance)
+  let state =
+    state
+    |> InstanceDisposeComponentUtils.disposeObjectInstance(
+         _unsafeGetSourceInstance(objectInstance, data),
+         ObjectInstanceGameObjectCommon.unsafeGetGameObject(objectInstance, state)
+       )
+    |> _disposeData(objectInstance);
+  {
+    ...state,
+    objectInstanceData: {
+      ...data,
+      disposedIndexArray: disposedIndexArray |> ArraySystem.push(objectInstance)
+    }
+  }
 };
 
 let handleBatchDisposeComponent =
@@ -108,7 +120,10 @@ let handleBatchDisposeComponent =
         StateData.stateData.isDebug
       );
       let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(objectInstanceArray);
+      let data = {
+        ...data,
+        disposedIndexArray: disposedIndexArray |> Js.Array.concat(objectInstanceArray)
+      };
       let disposedUidArr =
         objectInstanceArray
         |> Js.Array.map(

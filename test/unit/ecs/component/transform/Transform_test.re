@@ -58,8 +58,8 @@ let _ =
           test(
             "create a new transform which is just index(int)",
             () => {
-              let (_, transform) = createTransform(state^);
-              expect(transform) == 0
+              let (state, transform) = createTransform(state^);
+              (TransformTool.getTransformData(state).index, transform) |> expect == (1, 0)
             }
           );
           /* describe(

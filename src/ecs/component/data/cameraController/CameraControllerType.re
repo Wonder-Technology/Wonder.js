@@ -9,16 +9,16 @@ type cameraControllerDirtyArray = array(int);
 /* type worldToCameraMatrixCacheMap = array(array(float)); */
 type pMatrixMap = array(Js.Typed_array.Float32Array.t);
 
-type updateCameraFuncMap = array(((int, cameraControllerData) => unit))
+type updateCameraFuncMap = array(((int, cameraControllerData) => cameraControllerData))
 and cameraControllerData = {
-  mutable index: int,
-  mutable cameraArray: array(cameraController),
-  mutable dirtyArray: cameraControllerDirtyArray,
-  /* mutable worldToCameraMatrixCacheMap, */
-  mutable pMatrixMap,
-  mutable gameObjectMap,
-  /* mutable dirtyMap: array(bool), */
-  mutable updateCameraFuncMap,
-  mutable perspectiveCameraData,
-  mutable disposedIndexArray: array(cameraController)
+  index: int,
+  cameraArray: array(cameraController),
+  dirtyArray: cameraControllerDirtyArray,
+  /* worldToCameraMatrixCacheMap, */
+  pMatrixMap,
+  gameObjectMap,
+  /* dirtyMap: array(bool), */
+  updateCameraFuncMap,
+  perspectiveCameraData,
+  disposedIndexArray: array(cameraController)
 };

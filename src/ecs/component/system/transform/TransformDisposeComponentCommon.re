@@ -10,22 +10,24 @@ let isAlive = (transform: transform, state: StateDataType.state) =>
 let _disposeFromParentAndChildMap = (transform, data) => {
   data
   |> TransformHierachyCommon.unsafeGetChildren(transform)
-  |> WonderCommonlib.ArraySystem.forEach(
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
-       ((child: transform) => TransformHierachyCommon.removeFromParentMap(child, data) |> ignore)
+       ((data, child: transform) => TransformHierachyCommon.removeFromParentMap(child, data)),
+       data
      );
   switch (TransformHierachyCommon.getParent(transform, data)) {
-  | None => ()
-  | Some(parent) =>
-    data |> TransformHierachyCommon.removeFromChildMap(parent, transform, false) |> ignore
-  };
-  data
+  | None => data
+  | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform, false)
+  }
 };
 
 let _disposeData = (transform: transform, state: StateDataType.state) => {
+  let state = {
+    ...state,
+    transformData: _disposeFromParentAndChildMap(transform, getTransformData(state))
+  };
   let {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as data =
     getTransformData(state);
-  _disposeFromParentAndChildMap(transform, data) |> ignore;
   let state =
     TransformTypeArrayPoolCommon.addTypeArrayToPool(
       transform,
@@ -33,13 +35,18 @@ let _disposeData = (transform: transform, state: StateDataType.state) => {
       (localToWorldMatrixMap, localPositionMap),
       state
     );
-  disposeSparseMapData(transform, localToWorldMatrixMap) |> ignore;
-  disposeSparseMapData(transform, localPositionMap) |> ignore;
-  disposeSparseMapData(transform, parentMap) |> ignore;
-  disposeSparseMapData(transform, childMap) |> ignore;
-  disposeSparseMapData(transform, dirtyMap) |> ignore;
-  disposeSparseMapData(transform, gameObjectMap) |> ignore;
-  state
+  {
+    ...state,
+    transformData: {
+      ...data,
+      localToWorldMatrixMap: localToWorldMatrixMap |> disposeSparseMapData(transform),
+      localPositionMap: localPositionMap |> disposeSparseMapData(transform),
+      parentMap: parentMap |> disposeSparseMapData(transform),
+      childMap: childMap |> disposeSparseMapData(transform),
+      dirtyMap: dirtyMap |> disposeSparseMapData(transform),
+      gameObjectMap: gameObjectMap |> disposeSparseMapData(transform)
+    }
+  }
 };
 
 let handleDisposeComponent = (transform: transform, state: StateDataType.state) => {
@@ -54,9 +61,12 @@ let handleDisposeComponent = (transform: transform, state: StateDataType.state) 
       ),
     StateData.stateData.isDebug
   );
+  let state = _disposeData(transform, state);
   let {disposedIndexArray} as data = getTransformData(state);
-  disposedIndexArray |> Js.Array.push(transform) |> ignore;
-  _disposeData(transform, state)
+  {
+    ...state,
+    transformData: {...data, disposedIndexArray: disposedIndexArray |> ArraySystem.push(transform)}
+  }
 };
 
 let handleBatchDisposeComponent =
@@ -79,7 +89,13 @@ let handleBatchDisposeComponent =
         StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getTransformData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
+      let state = {
+        ...state,
+        transformData: {
+          ...data,
+          disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
+        }
+      };
       /* TODO optimize: batch remove parent,child? */
       transformArray
       |> ArraySystem.reduceState(

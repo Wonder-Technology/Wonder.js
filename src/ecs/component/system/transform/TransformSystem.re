@@ -22,10 +22,11 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType
 };
 
 let create = (state: StateDataType.state) => {
-  let data = getTransformData(state);
-  let index = TransformCreateCommon.create(state);
-  TransformDirtyCommon.mark(index, false, data) |> ignore;
-  (state, index)
+  let (state, index) = TransformCreateCommon.create(state);
+  (
+    {...state, transformData: getTransformData(state) |> TransformDirtyCommon.mark(index, false)},
+    index
+  )
 };
 
 let getParent = (child: transform, state: StateDataType.state) =>
@@ -46,14 +47,14 @@ let _setParent = (parent: Js.nullable(transform), child: transform, isKeepOrder,
   |> markHierachyDirty(child);
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
-  _setParent(parent, child, false, getTransformData(state)) |> ignore;
-  state
+  ...state,
+  transformData: _setParent(parent, child, false, getTransformData(state))
 };
 
 let setParentKeepOrder =
     (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
-  _setParent(parent, child, true, getTransformData(state)) |> ignore;
-  state
+  ...state,
+  transformData: _setParent(parent, child, true, getTransformData(state))
 };
 
 let getChildren = (transform: transform, state: StateDataType.state) =>
@@ -83,12 +84,12 @@ let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =
      state
    }; */
 let setLocalPositionByTuple = (transform: transform, localPosition, state: StateDataType.state) => {
-  state
-  |> getTransformData
-  |> TransformOperateCommon.setLocalPositionByTuple(transform, localPosition)
-  |> markHierachyDirty(transform)
-  |> ignore;
-  state
+  ...state,
+  transformData:
+    state
+    |> getTransformData
+    |> TransformOperateCommon.setLocalPositionByTuple(transform, localPosition)
+    |> markHierachyDirty(transform)
 };
 
 let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
@@ -109,10 +110,10 @@ let getPositionTuple = (transform: transform, state: StateDataType.state) =>
      state
    }; */
 let setPositionByTuple = (transform: transform, position: position, state: StateDataType.state) => {
-  TransformOperateCommon.setPositionByTuple(transform, position, getTransformData(state), state)
-  |> markHierachyDirty(transform)
-  |> ignore;
-  state
+  ...state,
+  transformData:
+    TransformOperateCommon.setPositionByTuple(transform, position, getTransformData(state), state)
+    |> markHierachyDirty(transform)
 };
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>

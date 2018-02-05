@@ -1,5 +1,7 @@
 open GeometryType;
 
+open StateDataType;
+
 open GeometryGetStateDataCommon;
 
 let getGroupCount = (geometry: geometry, state: StateDataType.state) =>
@@ -12,12 +14,24 @@ let increaseGroupCount =
   [@bs]
   (
     (geometry: geometry, state: StateDataType.state) => {
-      GroupUtils.increaseGroupCount(geometry, getGeometryData(state).groupCountMap) |> ignore;
-      state
+      let {groupCountMap} as data = getGeometryData(state);
+      {
+        ...state,
+        geometryData: {
+          ...data,
+          groupCountMap: groupCountMap |> GroupUtils.increaseGroupCount(geometry)
+        }
+      }
     }
   );
 
 let decreaseGroupCount = (geometry: geometry, state: StateDataType.state) => {
-  GroupUtils.decreaseGroupCount(geometry, getGeometryData(state).groupCountMap) |> ignore;
-  state
+  let {groupCountMap} as data = getGeometryData(state);
+  {
+    ...state,
+    geometryData: {
+      ...data,
+      groupCountMap: groupCountMap |> GroupUtils.decreaseGroupCount(geometry)
+    }
+  }
 };

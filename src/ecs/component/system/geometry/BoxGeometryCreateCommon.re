@@ -173,9 +173,19 @@ let _computeData = (index: int, state: StateDataType.state) =>
 
 let create = (state: StateDataType.state) => {
   open StateDataType;
-  let (state, index) = GeometryCreateCommon.create(state);
-  getGeometryData(state).computeDataFuncMap
-  |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
-  |> ignore;
-  (state, index)
+  let {computeDataFuncMap} as data = getGeometryData(state);
+  let (index, newIndex, disposedIndexArray) = GeometryCreateCommon.create(state);
+  (
+    {
+      ...state,
+      geometryData: {
+        ...data,
+        index: newIndex,
+        disposedIndexArray,
+        computeDataFuncMap:
+          computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
+      }
+    },
+    index
+  )
 };

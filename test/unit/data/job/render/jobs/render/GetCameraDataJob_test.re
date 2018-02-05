@@ -19,7 +19,6 @@ let _ =
       test(
         "set current camera data to state.renderData.cameraData",
         () => {
-          WonderLog.Log.print(state^) |> ignore;
           let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
           let (state, _, transform2, cameraController2) =
             CameraControllerTool.createCameraGameObject(state);

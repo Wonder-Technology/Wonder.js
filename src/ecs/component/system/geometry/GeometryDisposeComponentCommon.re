@@ -11,15 +11,15 @@ let isAlive = (geometry: geometry, state: StateDataType.state) =>
 
 let _disposeData = (geometry: geometry, state: StateDataType.state) => {
   let {
-    verticesMap,
-    normalsMap,
-    indicesMap,
-    configDataMap,
-    isInitMap,
-    computeDataFuncMap,
-    groupCountMap,
-    gameObjectMap
-  } =
+        verticesMap,
+        normalsMap,
+        indicesMap,
+        configDataMap,
+        isInitMap,
+        computeDataFuncMap,
+        groupCountMap,
+        gameObjectMap
+      } as data =
     getGeometryData(state);
   let state =
     VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state)
@@ -28,16 +28,20 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
          MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
          (verticesMap, normalsMap, indicesMap)
        );
-  groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0) |> ignore;
-  disposeSparseMapData(geometry, verticesMap) |> ignore;
-  disposeSparseMapData(geometry, normalsMap) |> ignore;
-  disposeSparseMapData(geometry, indicesMap) |> ignore;
-  disposeSparseMapData(geometry, configDataMap) |> ignore;
-  disposeSparseMapData(geometry, isInitMap) |> ignore;
-  disposeSparseMapData(geometry, computeDataFuncMap) |> ignore;
-  disposeSparseMapData(geometry, groupCountMap) |> ignore;
-  disposeSparseMapData(geometry, gameObjectMap) |> ignore;
-  state
+  {
+    ...state,
+    geometryData: {
+      ...data,
+      groupCountMap: groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0),
+      verticesMap: verticesMap |> disposeSparseMapData(geometry),
+      normalsMap: normalsMap |> disposeSparseMapData(geometry),
+      indicesMap: indicesMap |> disposeSparseMapData(geometry),
+      configDataMap: configDataMap |> disposeSparseMapData(geometry),
+      isInitMap: isInitMap |> disposeSparseMapData(geometry),
+      computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
+      gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry)
+    }
+  }
 };
 
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
@@ -52,12 +56,14 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
       ),
     StateData.stateData.isDebug
   );
-  let {disposedIndexArray} = getGeometryData(state);
+  let {disposedIndexArray} as data = getGeometryData(state);
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
   | false =>
     let state = VboBufferSystem.addGeometryBufferToPool(geometry, state) |> _disposeData(geometry);
-    disposedIndexArray |> Js.Array.push(geometry) |> ignore;
-    state
+    {
+      ...state,
+      geometryData: {...data, disposedIndexArray: disposedIndexArray |> ArraySystem.push(geometry)}
+    }
   | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
   }
 };
@@ -89,8 +95,16 @@ let handleBatchDisposeComponent =
              (state, geometry) =>
                switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
                | false =>
-                 disposedIndexArray |> Js.Array.push(geometry) |> ignore;
-                 VboBufferSystem.addGeometryBufferToPool(geometry, state) |> _disposeData(geometry)
+                 let state =
+                   VboBufferSystem.addGeometryBufferToPool(geometry, state)
+                   |> _disposeData(geometry);
+                 {
+                   ...state,
+                   geometryData: {
+                     ...getGeometryData(state),
+                     disposedIndexArray: disposedIndexArray |> ArraySystem.push(geometry)
+                   }
+                 }
                | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
                }
            ),

@@ -28,13 +28,13 @@ let _disposeData =
     |> VboBufferDisposeSystem.disposeInstanceBufferData(sourceInstance)
     |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
   let {
-    objectInstanceArrayMap,
-    modelMatrixFloat32ArrayMap,
-    modelMatrixInstanceBufferCapacityMap,
-    isModelMatrixStaticMap,
-    isSendModelMatrixDataMap,
-    gameObjectMap
-  } =
+        objectInstanceArrayMap,
+        modelMatrixFloat32ArrayMap,
+        modelMatrixInstanceBufferCapacityMap,
+        isModelMatrixStaticMap,
+        isSendModelMatrixDataMap,
+        gameObjectMap
+      } as data =
     getSourceInstanceData(state);
   switch (modelMatrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) =>
@@ -47,13 +47,20 @@ let _disposeData =
     |> ignore
   | None => ()
   };
-  disposeSparseMapData(sourceInstance, objectInstanceArrayMap) |> ignore;
-  disposeSparseMapData(sourceInstance, modelMatrixFloat32ArrayMap) |> ignore;
-  disposeSparseMapData(sourceInstance, modelMatrixInstanceBufferCapacityMap) |> ignore;
-  disposeSparseMapData(sourceInstance, isModelMatrixStaticMap) |> ignore;
-  disposeSparseMapData(sourceInstance, isSendModelMatrixDataMap) |> ignore;
-  disposeSparseMapData(sourceInstance, gameObjectMap) |> ignore;
-  state
+  {
+    ...state,
+    sourceInstanceData: {
+      ...data,
+      objectInstanceArrayMap: objectInstanceArrayMap |> disposeSparseMapData(sourceInstance),
+      modelMatrixFloat32ArrayMap:
+        modelMatrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
+      modelMatrixInstanceBufferCapacityMap:
+        modelMatrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
+      isModelMatrixStaticMap: isModelMatrixStaticMap |> disposeSparseMapData(sourceInstance),
+      isSendModelMatrixDataMap: isSendModelMatrixDataMap |> disposeSparseMapData(sourceInstance),
+      gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
+    }
+  }
 };
 
 let handleDisposeComponent =
@@ -74,9 +81,16 @@ let handleDisposeComponent =
     StateData.stateData.isDebug
   );
   let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
-  disposedIndexArray |> Js.Array.push(sourceInstance) |> ignore;
-  VboBufferSystem.addInstanceBufferToPool(sourceInstance, state)
-  |> _disposeData(sourceInstance, batchDisposeGameObjectFunc)
+  let state =
+    VboBufferSystem.addInstanceBufferToPool(sourceInstance, state)
+    |> _disposeData(sourceInstance, batchDisposeGameObjectFunc);
+  {
+    ...state,
+    sourceInstanceData: {
+      ...data,
+      disposedIndexArray: disposedIndexArray |> ArraySystem.push(sourceInstance)
+    }
+  }
 };
 
 let handleBatchDisposeComponent =
@@ -104,7 +118,13 @@ let handleBatchDisposeComponent =
         StateData.stateData.isDebug
       );
       let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(sourceInstanceArray);
+      let state = {
+        ...state,
+        sourceInstanceData: {
+          ...data,
+          disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
+        }
+      };
       sourceInstanceArray
       |> ArraySystem.reduceState(
            [@bs]

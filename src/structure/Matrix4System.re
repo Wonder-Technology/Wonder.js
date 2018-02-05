@@ -215,7 +215,8 @@ let buildPerspective = ((fovy: float, aspect: float, near: float, far: float), r
   Float32Array.unsafe_set(resultFloat32Arr, 12, 0.);
   Float32Array.unsafe_set(resultFloat32Arr, 13, 0.);
   Float32Array.unsafe_set(resultFloat32Arr, 14, (-2.) *. far *. near *. rd);
-  Float32Array.unsafe_set(resultFloat32Arr, 15, 0.)
+  Float32Array.unsafe_set(resultFloat32Arr, 15, 0.);
+  resultFloat32Arr
 };
 
 let invert = (mat: Float32Array.t, resultFloat32Arr) => {

@@ -20,7 +20,7 @@ let create =
   (
     (state: StateDataType.state) => {
       let {index, disposedIndexArray} as data = LightMaterialStateCommon.getMaterialData(state);
-      let (index, newIndex) = MaterialCreateCommon.create(index, disposedIndexArray);
+      let (index, newIndex, disposedIndexArray) = MaterialCreateCommon.create(index, disposedIndexArray);
       (
         {...state, lightMaterialData: {..._initDataWhenCreate(index, data), index: newIndex}},
         index

@@ -4,7 +4,7 @@ open StateDataType;
 
 open Js.Typed_array;
 
-let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);
+let getTransformData = (state: StateDataType.state) => state.transformData;
 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
@@ -20,17 +20,16 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     state |> getTransformData;
   {
     ...state,
-    transformData:
-      Some({
-        index,
-        localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-        localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
-        parentMap: parentMap |> SparseMapSystem.copy,
-        childMap: childMap |> CopyStateUtils.deepCopyArrayArray,
-        dirtyMap: dirtyMap |> SparseMapSystem.copy,
-        gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy
-      })
+    transformData: {
+      index,
+      localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+      localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+      parentMap: parentMap |> SparseMapSystem.copy,
+      childMap: childMap |> CopyStateUtils.deepCopyArrayArray,
+      dirtyMap: dirtyMap |> SparseMapSystem.copy,
+      gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+      disposedIndexArray: disposedIndexArray |> Js.Array.copy
+    }
   }
 };
 

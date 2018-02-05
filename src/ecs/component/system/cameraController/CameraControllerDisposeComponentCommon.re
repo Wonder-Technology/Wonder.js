@@ -14,12 +14,17 @@ let _disposeData = (cameraController: cameraController, state: StateDataType.sta
   let state = PerspectiveCameraDisposeCommon.disposeData(cameraController, state);
   let {cameraArray, dirtyArray, pMatrixMap, gameObjectMap, updateCameraFuncMap} as data =
     getCameraControllerData(state);
-  disposeSparseMapData(cameraController, cameraArray) |> ignore;
-  disposeSparseMapData(cameraController, dirtyArray) |> ignore;
-  disposeSparseMapData(cameraController, pMatrixMap) |> ignore;
-  disposeSparseMapData(cameraController, gameObjectMap) |> ignore;
-  disposeSparseMapData(cameraController, updateCameraFuncMap) |> ignore;
-  state
+  {
+    ...state,
+    cameraControllerData: {
+      ...data,
+      cameraArray: disposeSparseMapData(cameraController, cameraArray),
+      dirtyArray: disposeSparseMapData(cameraController, dirtyArray),
+      pMatrixMap: disposeSparseMapData(cameraController, pMatrixMap),
+      updateCameraFuncMap: disposeSparseMapData(cameraController, updateCameraFuncMap),
+      gameObjectMap: disposeSparseMapData(cameraController, gameObjectMap)
+    }
+  }
 };
 
 let handleDisposeComponent = (cameraController: cameraController, state: StateDataType.state) => {
@@ -38,9 +43,17 @@ let handleDisposeComponent = (cameraController: cameraController, state: StateDa
       ),
     StateData.stateData.isDebug
   );
-  let {disposedIndexArray} = getCameraControllerData(state);
-  disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
-  _disposeData(cameraController, state)
+  let {disposedIndexArray} as data = getCameraControllerData(state);
+  _disposeData(
+    cameraController,
+    {
+      ...state,
+      cameraControllerData: {
+        ...data,
+        disposedIndexArray: disposedIndexArray |> ArraySystem.push(cameraController)
+      }
+    }
+  )
 };
 
 let handleBatchDisposeComponent =
@@ -67,7 +80,13 @@ let handleBatchDisposeComponent =
         StateData.stateData.isDebug
       );
       let {disposedIndexArray} as data = getCameraControllerData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(cameraControllerArray);
+      let state = {
+        ...state,
+        cameraControllerData: {
+          ...data,
+          disposedIndexArray: disposedIndexArray |> Js.Array.concat(cameraControllerArray)
+        }
+      };
       cameraControllerArray
       |> ArraySystem.reduceState(
            [@bs] ((state, cameraController) => state |> _disposeData(cameraController)),

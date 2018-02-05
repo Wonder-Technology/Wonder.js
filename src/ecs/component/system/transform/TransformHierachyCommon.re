@@ -9,8 +9,8 @@ let getParent = (transform: transform, transformData: transformData) =>
   );
 
 let removeFromParentMap = (child: int, transformData: transformData) => {
-  WonderCommonlib.SparseMapSystem.deleteVal(child, transformData.parentMap) |> ignore;
-  transformData
+  ...transformData,
+  parentMap: WonderCommonlib.SparseMapSystem.deleteVal(child, transformData.parentMap)
 };
 
 let unsafeGetChildren = (transform: transform, transformData: transformData) =>
@@ -31,8 +31,8 @@ let unsafeGetChildren = (transform: transform, transformData: transformData) =>
      );
 
 let _setChildren = (transformData, parent, children) => {
-  WonderCommonlib.SparseMapSystem.set(parent, children, transformData.childMap) |> ignore;
-  transformData
+  ...transformData,
+  childMap: WonderCommonlib.SparseMapSystem.set(parent, children, transformData.childMap)
 };
 
 let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
@@ -58,13 +58,13 @@ let _removeFromParent =
   |> removeFromChildMap(currentParent, child, isKeepOrder);
 
 let _setParent = (parent: transform, child: int, transformData: transformData) => {
-  WonderCommonlib.SparseMapSystem.set(
-    child,
-    TransformCastTypeCommon.transformToJsUndefine(parent),
-    transformData.parentMap
-  )
-  |> ignore;
-  transformData
+  ...transformData,
+  parentMap:
+    WonderCommonlib.SparseMapSystem.set(
+      child,
+      TransformCastTypeCommon.transformToJsUndefine(parent),
+      transformData.parentMap
+    )
 };
 
 let _addChild = (parent: int, child: transform, transformData: transformData) => {

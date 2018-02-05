@@ -92,11 +92,14 @@ let init = (state: StateDataType.state) => {
   );
   let {index} = getGeometryData(state);
   ArraySystem.range(0, index - 1)
-  |> Js.Array.forEach(
-       (geometryIndex: int) =>
-         GeometryInitComponentCommon.initGeometry(geometryIndex, state) |> ignore
-     );
-  state
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, geometryIndex: int) =>
+           GeometryInitComponentCommon.initGeometry(geometryIndex, state)
+       ),
+       state
+     )
 };
 
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>

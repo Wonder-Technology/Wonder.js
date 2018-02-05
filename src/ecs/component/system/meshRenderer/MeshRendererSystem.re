@@ -25,11 +25,4 @@ let getGameObject = (meshRenderer: meshRenderer, state: StateDataType.state) => 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   MeshRendererDisposeComponentCommon.isAlive(meshRenderer, state);
 
-let batchCreate = (countRangeArr: array(int), state: StateDataType.state) => {
-  let {index, disposedIndexArray} as data = getMeshRendererData(state);
-  let (index, newIndex) = generateIndex(index, disposedIndexArray);
-  data.index = newIndex;
-  (state, index)
-};
-
 let deepCopyStateForRestore = MeshRendererStateCommon.deepCopyStateForRestore;

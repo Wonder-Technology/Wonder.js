@@ -149,16 +149,16 @@ and jobData = {
   renderRenderJobList: list((string, (webgl1Context, state) => state))
 }
 and geometryData = {
-  mutable index: int,
+  index: int,
   verticesMap: geometryVerticesMap,
   normalsMap: geometryNormalsMap,
   indicesMap: geometryIndicesMap,
-  mutable computeDataFuncMap: array(((int, state) => geometryComputeData)),
-  mutable configDataMap: geometryConfigDataMap,
-  mutable gameObjectMap,
-  mutable disposedIndexArray: geometryDisposedIndexArray,
-  mutable isInitMap: geometryIsInitMap,
-  mutable groupCountMap: geometryGroupCountMap
+  computeDataFuncMap: array(((int, state) => geometryComputeData)),
+  configDataMap: geometryConfigDataMap,
+  gameObjectMap,
+  disposedIndexArray: geometryDisposedIndexArray,
+  isInitMap: geometryIsInitMap,
+  groupCountMap: geometryGroupCountMap
 }
 and state = {
   bufferConfig: option(bufferConfig),
@@ -174,16 +174,15 @@ and state = {
   initConfig,
   deviceManagerData,
   gameObjectData,
-  /* TODO transformData, geometryData, meshRendererData not mutable? */
-  mutable transformData: option(transformData),
+  transformData,
   cameraControllerData,
   basicMaterialData,
   lightMaterialData,
   ambientLightData,
   directionLightData,
   pointLightData,
-  mutable geometryData: option(geometryData),
-  mutable meshRendererData,
+  geometryData,
+  meshRendererData,
   shaderData,
   programData,
   glslLocationData,

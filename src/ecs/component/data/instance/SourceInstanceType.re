@@ -11,12 +11,12 @@ type isModelMatrixStaticMap = array(bool);
 type isSendModelMatrixDataMap = array(bool);
 
 type sourceInstanceData = {
-  mutable index: int,
-  mutable objectInstanceArrayMap,
+  index: int,
+  objectInstanceArrayMap,
   modelMatrixInstanceBufferCapacityMap,
   modelMatrixFloat32ArrayMap: array(Js.Typed_array.Float32Array.t),
   isModelMatrixStaticMap,
   isSendModelMatrixDataMap,
-  mutable disposedIndexArray: array(sourceInstance),
+  disposedIndexArray: array(sourceInstance),
   gameObjectMap
 };

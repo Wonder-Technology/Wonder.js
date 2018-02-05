@@ -4,9 +4,6 @@ open ComponentType;
 
 /* let init = (state: StateDataType.state) =>
    state |> CameraControllerSystem.init |> GeometrySystem.init; */
-let initDataFromState = (state: StateDataType.state) =>
-  state |> TransformHelper.initData |> GeometryHelper.initData;
-
 /* let update = (elapsed: float, state: StateDataType.state) =>
    state |> CameraControllerSystem.update; */
 let hasSourceInstanceComponent = GameObjectHasComponentCommon.hasSourceInstanceComponent;

@@ -32,62 +32,60 @@ let getCurrentCameraController = (state: StateDataType.state) => {
   WonderCommonlib.ArraySystem.get(0, cameraArray)
 };
 
-/* let _clearCache = (cameraControllerData: cameraControllerData) =>
-   cameraControllerData.worldToCameraMatrixCacheMap = WonderCommonlib.SparseMapSystem.createEmpty(); */
 let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraControllerData) =>
   PerspectiveCameraSystem.init(dirtyIndex, cameraControllerData);
 
 let init = (state: StateDataType.state) => {
-  let cameraControllerData = getCameraControllerData(state);
-  let dirtyArray = cameraControllerData.dirtyArray;
+  let {dirtyArray} as data = getCameraControllerData(state);
   switch (Js.Array.length(dirtyArray)) {
   | 0 => state
-  | _ =>
-    dirtyArray
-    |> WonderCommonlib.ArraySystem.removeDuplicateItems
-    |> Js.Array.forEach(
-         (dirtyIndex) => _initCameraController(dirtyIndex, cameraControllerData) |> ignore
-       );
-    /* cameraControllerData |> cleanDirtyArray |> ignore; */
-    state
+  | _ => {
+      ...state,
+      cameraControllerData:
+        dirtyArray
+        |> WonderCommonlib.ArraySystem.removeDuplicateItems
+        |> WonderCommonlib.ArraySystem.reduceOneParam(
+             [@bs] ((data, dirtyIndex) => _initCameraController(dirtyIndex, data)),
+             data
+           )
+    }
   }
 };
 
 let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) => {
-  let cameraControllerData = getCameraControllerData(state);
-  cameraControllerData.updateCameraFuncMap
-  |> WonderCommonlib.SparseMapSystem.set(cameraController, PerspectiveCameraSystem.update)
-  |> ignore;
-  state
+  let {updateCameraFuncMap} as data = getCameraControllerData(state);
+  {
+    ...state,
+    cameraControllerData: {
+      ...data,
+      updateCameraFuncMap:
+        updateCameraFuncMap
+        |> WonderCommonlib.SparseMapSystem.set(cameraController, PerspectiveCameraSystem.update)
+    }
+  }
 };
 
-let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => {
-  let updateFunc =
-    cameraControllerData.updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index);
-  updateFunc(index, cameraControllerData) |> ignore;
-  ()
-};
+let _updateCamera = (index: int, cameraControllerData: cameraControllerData) =>
+  (cameraControllerData.updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index))(
+    index,
+    cameraControllerData
+  );
 
 let update = (state: StateDataType.state) => {
-  let cameraControllerData = getCameraControllerData(state);
-  let dirtyArray = cameraControllerData.dirtyArray;
-  /* switch (Js.Array.length(dirtyArray)) {
-     | 0 =>
-     CameraControllerDirtyCommon.cleanDirtyMap(cameraControllerData) |> ignore;
-     state;
-     | _ => */
-  dirtyArray
-  |> WonderCommonlib.ArraySystem.removeDuplicateItems
-  /* |> CameraControllerDirtyCommon.updateDirtyMap(cameraControllerData) */
-  |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
-  /* cameraControllerData |> cleanDirtyArray |> _clearCache |> ignore; */
-  cameraControllerData |> cleanDirtyArray |> ignore;
-  state
-  /* } */
+  let {dirtyArray} as data = getCameraControllerData(state);
+  {
+    ...state,
+    cameraControllerData:
+      dirtyArray
+      |> WonderCommonlib.ArraySystem.removeDuplicateItems
+      |> WonderCommonlib.ArraySystem.reduceOneParam(
+           [@bs] ((data, dirtyIndex) => _updateCamera(dirtyIndex, data)),
+           data
+         )
+      |> cleanDirtyArray
+  }
 };
 
-/* let isDirty = (cameraController: cameraController, state: StateDataType.state) =>
-   CameraControllerDirtyCommon.isDirty(cameraController, getCameraControllerData(state)); */
 let getGameObject = (cameraController: cameraController, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     cameraController,

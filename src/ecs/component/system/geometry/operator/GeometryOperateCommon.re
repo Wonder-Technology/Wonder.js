@@ -41,12 +41,11 @@ let setPointsWithArray =
       | None => [@bs] makeTypeArrayFunc(data)
       | Some(typeArr) => [@bs] fillTypeArrayFunc(typeArr, data, 0)
       };
-    pointsMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr) |> ignore;
-    state
+    pointsMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr)
   | Some(indices) =>
     [@bs] fillTypeArrayFunc(indices, data, 0) |> ignore;
-    state
+    pointsMap
   };
 
-let setPoints = (index: int, pointsMap, data) =>
-  pointsMap |> WonderCommonlib.SparseMapSystem.set(index, data);
+let setPoints = (index: int, data, pointsMap) =>
+  pointsMap |> Obj.magic |> WonderCommonlib.SparseMapSystem.set(index, data) |> Obj.magic;

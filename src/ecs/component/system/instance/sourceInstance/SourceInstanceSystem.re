@@ -14,19 +14,25 @@ let markSendModelMatrix = SourceInstanceStaticCommon.markSendModelMatrix;
 let getObjectInstanceArray = (sourceInstance, state: StateDataType.state) =>
   SourceInstanceObjectInstanceArrayCommon.getObjectInstanceArray(sourceInstance, state);
 
-let _addObjectInstnace = (sourceInstance, uid, {objectInstanceArrayMap} as data) => {
+let _addObjectInstnace = (sourceInstance, uid: int, objectInstanceArrayMap) => {
   objectInstanceArrayMap
   |> SourceInstanceObjectInstanceArrayCommon.unsafeGetObjectInstanceArray(sourceInstance)
-  |> Js.Array.push(uid)
+  |> ArraySystem.push(uid)
   |> ignore;
-  data
+  objectInstanceArrayMap
 };
 
 /* TODO init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
-  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getSourceInstanceData(state))
-  |> ignore;
+  let {objectInstanceArrayMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let state = {
+    ...state,
+    sourceInstanceData: {
+      ...data,
+      objectInstanceArrayMap: objectInstanceArrayMap |> _addObjectInstnace(sourceInstance, uid)
+    }
+  };
   let (state, transform) = TransformSystem.create(state);
   let (state, objectInstance) = ObjectInstanceSystem.create(sourceInstance, uid, state);
   let state =

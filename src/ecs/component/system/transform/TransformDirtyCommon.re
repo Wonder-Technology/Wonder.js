@@ -1,8 +1,8 @@
 open TransformType;
 
 let mark = (transform: transform, isDirty, {dirtyMap} as data) => {
-  dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) |> ignore;
-  data
+  ...data,
+  dirtyMap: dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty)
 };
 
 let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) =>

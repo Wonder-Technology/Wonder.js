@@ -158,13 +158,14 @@ let _ =
                   ) =
                     _prepareMeshRendererData(state);
                   let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let data = MeshRendererTool.getMeshRendererData(copiedState);
-                  data.index = 0;
-                  data.renderGameObjectArray |> Js.Array.pop |> ignore;
-                  data.gameObjectMap
+                  let {renderGameObjectArray, gameObjectMap, disposedIndexArray} as data =
+                    MeshRendererTool.getMeshRendererData(copiedState);
+                  let data = {...data, index: 0};
+                  renderGameObjectArray |> Js.Array.pop |> ignore;
+                  disposedIndexArray |> Js.Array.pop |> ignore;
+                  gameObjectMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(meshRenderer2);
-                  data.disposedIndexArray |> Js.Array.pop |> ignore;
                   MeshRendererTool.getMeshRendererData(state)
                   |>
                   expect == {

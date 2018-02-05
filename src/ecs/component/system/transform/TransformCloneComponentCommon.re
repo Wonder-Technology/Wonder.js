@@ -8,23 +8,33 @@ let handleCloneComponent =
   let data = getTransformData(state);
   let localPosition =
     TransformOperateCommon.getLocalPositionTuple(sourceComponent, data.localPositionMap);
-  let state =
+  let (state, componentArr) =
     countRangeArr
-    |> ArraySystem.reduceState(
+    |> WonderCommonlib.ArraySystem.reduceOneParam(
          [@bs]
          (
-           (state, _) => {
-             let index = TransformCreateCommon.create(state);
-             data
-             |> TransformOperateCommon.setLocalPositionByTuple(index, localPosition)
-             |> TransformDirtyCommon.mark(index, true)
-             |> ignore;
-             componentArr |> Js.Array.push(index) |> ignore;
-             state
+           ((state, componentArr), _) => {
+             let (state, index) = TransformCreateCommon.create(state);
+             (
+               {
+                 ...state,
+                 transformData:
+                   state
+                   |> getTransformData
+                   |> TransformOperateCommon.setLocalPositionByTuple(index, localPosition)
+                   |> TransformDirtyCommon.mark(index, true)
+               },
+               componentArr |> ArraySystem.push(index)
+             )
            }
          ),
-         state
+         (state, [||])
        );
-  TransformDirtyCommon.mark(sourceComponent, true, data) |> ignore;
-  (state, componentArr)
+  (
+    {
+      ...state,
+      transformData: getTransformData(state) |> TransformDirtyCommon.mark(sourceComponent, true)
+    },
+    componentArr
+  )
 };

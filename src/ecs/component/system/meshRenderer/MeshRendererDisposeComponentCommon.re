@@ -4,16 +4,11 @@ open ComponentDisposeComponentCommon;
 
 open MeshRendererStateCommon;
 
-let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
-  removeFromArray(disposedGameObjectUid, renderGameObjectArray) |> ignore;
-  data
-};
+let _removeFromRenderArray = (disposedGameObjectUid: int, renderGameObjectArray) =>
+  removeFromArray(disposedGameObjectUid, renderGameObjectArray);
 
-let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectArray} as data) => {
-  data.renderGameObjectArray =
-    batchRemoveFromArray(disposedGameObjectUidMap, renderGameObjectArray);
-  data
-};
+let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, renderGameObjectArray) =>
+  batchRemoveFromArray(disposedGameObjectUidMap, renderGameObjectArray);
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(
@@ -23,8 +18,10 @@ let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
 
 let _disposeData = (meshRenderer: meshRenderer, state: StateDataType.state) => {
   let {gameObjectMap} as data = getMeshRendererData(state);
-  disposeSparseMapData(meshRenderer, gameObjectMap) |> ignore;
-  state
+  {
+    ...state,
+    meshRendererData: {...data, gameObjectMap: gameObjectMap |> disposeSparseMapData(meshRenderer)}
+  }
 };
 
 let handleDisposeComponent =
@@ -40,10 +37,16 @@ let handleDisposeComponent =
       ),
     StateData.stateData.isDebug
   );
-  let {disposedIndexArray} as data = getMeshRendererData(state);
-  disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
-  _removeFromRenderArray(gameObjectUid, data) |> ignore;
-  _disposeData(meshRenderer, state)
+  let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+  let state = _disposeData(meshRenderer, state);
+  {
+    ...state,
+    meshRendererData: {
+      ...data,
+      disposedIndexArray: disposedIndexArray |> ArraySystem.push(meshRenderer),
+      renderGameObjectArray: renderGameObjectArray |> _removeFromRenderArray(gameObjectUid)
+    }
+  }
 };
 
 let handleBatchDisposeComponent =
@@ -69,9 +72,16 @@ let handleBatchDisposeComponent =
           ),
         StateData.stateData.isDebug
       );
-      let {disposedIndexArray} as data = getMeshRendererData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(meshRendererArray);
-      _batchRemoveFromRenderArray(gameObjectUidMap, data) |> ignore;
+      let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+      let state = {
+        ...state,
+        meshRendererData: {
+          ...data,
+          disposedIndexArray: disposedIndexArray |> Js.Array.concat(meshRendererArray),
+          renderGameObjectArray:
+            renderGameObjectArray |> _batchRemoveFromRenderArray(gameObjectUidMap)
+        }
+      };
       meshRendererArray
       |> ArraySystem.reduceState(
            [@bs] ((state, meshRenderer) => state |> _disposeData(meshRenderer)),

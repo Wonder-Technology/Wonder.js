@@ -38,10 +38,13 @@ let checkComponentShouldAlive = (component: component, isAliveFunc, state: State
     )
   );
 
-let _getDisposedIndex = (disposedIndexArray) => disposedIndexArray |> Js.Array.pop;
+let _getDisposedIndex = (disposedIndexArray) => (
+  disposedIndexArray,
+  disposedIndexArray |> Js.Array.pop
+);
 
 let generateIndex = (index, disposedIndexArray) =>
   switch (_getDisposedIndex(disposedIndexArray)) {
-  | None => (index, succ(index))
-  | Some(disposedIndex) => (disposedIndex, index)
+  | (disposedIndexArray, None) => (index, succ(index), disposedIndexArray)
+  | (disposedIndexArray, Some(disposedIndex)) => (disposedIndex, index, disposedIndexArray)
   };
