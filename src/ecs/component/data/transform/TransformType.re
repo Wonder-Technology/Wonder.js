@@ -18,5 +18,5 @@ type transformData = {
   localToWorldMatrixMap: array(Js.Typed_array.Float32Array.t),
   localPositionMap: array(Js.Typed_array.Float32Array.t),
   dirtyMap: transformDirtyMap,
-  mutable disposedIndexArray: array(transform)
+  disposedIndexArray: array(transform)
 };

@@ -3,10 +3,10 @@ open ComponentType;
 open MaterialType;
 
 type basicMaterialData = {
-  mutable index: int,
+  index: int,
   shaderIndexMap,
   colorMap,
   gameObjectMap,
   groupCountMap,
-  mutable disposedIndexArray
+  disposedIndexArray
 };
