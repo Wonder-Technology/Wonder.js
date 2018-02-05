@@ -30,6 +30,22 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap
        StateData.stateData.isDebug
      );
 
+let getNormalMatrixTypeArray = (transform: transform, localToWorlMatrixMap, normalMatrixCacheMap) =>
+  switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapSystem.get(transform)) {
+  | Some(normalMatrix) => (normalMatrix, normalMatrixCacheMap)
+  | None =>
+    let normalMatrix =
+      Matrix4System.invertTo3x3(
+        getLocalToWorldMatrixTypeArray(transform, localToWorlMatrixMap),
+        Matrix3System.createIdentityMatrix3()
+      )
+      |> Matrix3System.transposeSelf;
+    (
+      normalMatrix,
+      WonderCommonlib.SparseMapSystem.set(transform, normalMatrix, normalMatrixCacheMap)
+    )
+  };
+
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
@@ -65,15 +81,21 @@ let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMa
   data
 };
 
+let clearCache = (data) => {
+  ...data,
+  normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty()
+};
+
 let rec update = (transform: transform, state: StateDataType.state) => {
   let {localToWorldMatrixMap, localPositionMap} as data = getTransformData(state);
   switch (isDirty(transform, data)) {
   | false => state
   | true =>
-    let data = mark(transform, false, data);
+    let data = mark(transform, false, data) |> clearCache;
+    let state = {...state, transformData: data};
     switch (getParent(transform, data)) {
     | Some(parent) =>
-      let state = update(parent, state);
+      let state = state |> update(parent);
       multiply(
         getLocalToWorldMatrixTypeArray(parent, localToWorldMatrixMap),
         fromTranslation(

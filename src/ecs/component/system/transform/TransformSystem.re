@@ -21,6 +21,16 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType
   TransformOperateCommon.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
 };
 
+let getNormalMatrixTypeArray = (transform: transform, state: StateDataType.state) => {
+  let {localToWorldMatrixMap, normalMatrixCacheMap} =
+    TransformOperateCommon.update(transform, state) |> getTransformData;
+  TransformOperateCommon.getNormalMatrixTypeArray(
+    transform,
+    localToWorldMatrixMap,
+    normalMatrixCacheMap
+  )
+};
+
 let create = (state: StateDataType.state) => {
   let (state, index) = TransformCreateCommon.create(state);
   (

@@ -1226,54 +1226,84 @@ let _ =
             Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUinformData) =>
-                test
-                  (
-                    "send per each gameObject",
-                    () => {
-                      let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
-                        _prepareSendUinformData(
-                          sandbox,
-                          FrontRenderLightJobTool.prepareGameObject,
-                          state^
-                        );
-                      let (state, gameObject2, _, _, _) =
-                        FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                      let state =
-                        state
-                        |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
-                      let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
-                      let pos = 0;
-                      let getUniformLocation =
-                        GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~uniformMatrix3fv,
-                               ~getUniformLocation,
-                               ()
-                             )
-                           );
-                      let state =
-                        state
-                        |> RenderJobsTool.initSystemAndRender
-                        |> RenderJobsTool.updateSystem
-                        |> _render;
-                      uniformMatrix3fv |> expect |> toCalledTwice
-                    }
-                  ),
-                  /*
-                   TODO test cache
-
-                   test
-                   ("test in different loop",
-                   (
-                   () => {
-
-                   })
-                   ); */
+              (_prepareSendUinformData) => {
+                test(
+                  "send per each gameObject",
+                  () => {
+                    let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
+                      _prepareSendUinformData(
+                        sandbox,
+                        FrontRenderLightJobTool.prepareGameObject,
+                        state^
+                      );
+                    let (state, gameObject2, _, _, _) =
+                      FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+                    let state =
+                      state
+                      |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                    let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
+                    let pos = 0;
+                    let getUniformLocation =
+                      GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
+                    let state =
+                      state
+                      |> FakeGlTool.setFakeGl(
+                           FakeGlTool.buildFakeGl(
+                             ~sandbox,
+                             ~uniformMatrix3fv,
+                             ~getUniformLocation,
+                             ()
+                           )
+                         );
+                    let state =
+                      state
+                      |> RenderJobsTool.initSystemAndRender
+                      |> RenderJobsTool.updateSystem
+                      |> _render;
+                    uniformMatrix3fv |> expect |> toCalledTwice
+                  }
+                );
+                describe(
+                  "test cache",
+                  () =>
+                    /* TODO test more! when rotation/scale is enable  */
+                    test(
+                      "test in different loops",
+                      () => {
+                        let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
+                          _prepareSendUinformData(
+                            sandbox,
+                            FrontRenderLightJobTool.prepareGameObject,
+                            state^
+                          );
+                        let state =
+                          state
+                          |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                        let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
+                        let pos = 0;
+                        let getUniformLocation =
+                          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~uniformMatrix3fv,
+                                 ~getUniformLocation,
+                                 ()
+                               )
+                             );
+                        let state =
+                          state
+                          |> RenderJobsTool.initSystemAndRender
+                          |> RenderJobsTool.updateSystem
+                          |> _render;
+                        let state = state |> RenderJobsTool.updateSystem |> _render;
+                        uniformMatrix3fv |> expect |> toCalledTwice
+                      }
+                    )
+                )
+              },
             ()
           )
         }

@@ -11,6 +11,7 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     index,
     localToWorldMatrixMap,
     localPositionMap,
+    normalMatrixCacheMap,
     parentMap,
     childMap,
     dirtyMap,
@@ -24,6 +25,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       index,
       localToWorldMatrixMap: localToWorldMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
       localPositionMap: localPositionMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+      /* TODO test */
+      normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       parentMap: parentMap |> SparseMapSystem.copy,
       childMap: childMap |> CopyStateUtils.deepCopyArrayArray,
       dirtyMap: dirtyMap |> SparseMapSystem.copy,

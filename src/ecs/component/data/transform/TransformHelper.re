@@ -8,5 +8,6 @@ let initData = () => {
   dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   localToWorldMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   localPositionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
 };
