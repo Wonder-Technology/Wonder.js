@@ -24,25 +24,25 @@ let _getModelMNoCachableData =
 let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "vMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraVMatrixDataFromState
     )
   | "pMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
     )
   | "normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraNormalMatrixDataFromState
     )
   | "position" =>
-    GLSLSenderConfigDataHandleUniformShaderCacheCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderCachableCommon.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       RenderDataSystem.getCameraPositionDataFromState
@@ -63,7 +63,7 @@ let _addAmbientLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendAmbientLightHandle.send
@@ -84,7 +84,7 @@ let _addDirectionLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendDirectionLightHandle.send
@@ -105,7 +105,7 @@ let _addPointLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendPointLightHandle.send
@@ -233,19 +233,19 @@ let _setToUniformSendMap =
     renderObjectSendMaterialDataArr
   )
   |> ignore;
-  GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.setToUniformSendMap(
+  GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendNoCachableDataMap,
     shaderSendNoCachableDataArr
   )
   |> ignore;
-  GLSLSenderConfigDataHandleUniformShaderCacheCommon.setToUniformSendMap(
+  GLSLSenderConfigDataHandleUniformShaderCachableCommon.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendCachableDataMap,
     shaderSendCachableDataArr
   )
   |> ignore;
-  GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.setToUniformSendMap(
+  GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendCachableFunctionDataMap,
     shaderSendCachableFunctionDataArr
@@ -418,10 +418,10 @@ let unsafeGetUniformRenderObjectSendMaterialData = GLSLSenderConfigDataHandleUni
 
 let unsafeGetUniformRenderObjectSendModelData = GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.unsafeGetUniformSendData;
 
-let unsafeGetUniformShaderSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderNoCacheCommon.unsafeGetUniformSendData;
+let unsafeGetUniformShaderSendNoCachableData = GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.unsafeGetUniformSendData;
 
-let unsafeGetUniformShaderSendCachableData = GLSLSenderConfigDataHandleUniformShaderCacheCommon.unsafeGetUniformSendData;
+let unsafeGetUniformShaderSendCachableData = GLSLSenderConfigDataHandleUniformShaderCachableCommon.unsafeGetUniformSendData;
 
-let unsafeGetUniformShaderSendCachableFunctionData = GLSLSenderConfigDataHandleUniformShaderCacheFunctionCommon.unsafeGetUniformSendData;
+let unsafeGetUniformShaderSendCachableFunctionData = GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.unsafeGetUniformSendData;
 
 let unsafeGetUniformInstanceSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceCommon.unsafeGetUniformSendData;
