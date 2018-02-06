@@ -2,59 +2,63 @@ open StateDataType;
 
 open VboBufferType;
 
+let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
+  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
+    VboBufferGetStateDataUtils.getVboBufferData(state);
+  state
+  |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, {pos, size, buffer, sendFunc}) => {
+           let arrayBuffer =
+             switch buffer {
+             | "vertex" =>
+               ArrayBufferSystem.getOrCreateBuffer(
+                 gl,
+                 (geometryIndex, vertexBufferMap),
+                 [@bs] GeometryAdmin.unsafeGetVertices,
+                 state
+               )
+             | "normal" =>
+               ArrayBufferSystem.getOrCreateBuffer(
+                 gl,
+                 (geometryIndex, normalBufferMap),
+                 [@bs] GeometryAdmin.unsafeGetNormals,
+                 state
+               )
+             | "index" =>
+               ElementArrayBufferSystem.getOrCreateBuffer(
+                 gl,
+                 (geometryIndex, elementArrayBufferMap),
+                 [@bs] GeometryAdmin.unsafeGetIndices,
+                 state
+               )
+             | _ =>
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="_sendAttributeData",
+                   ~description={j|unknonw buffer: $buffer|j},
+                   ~reason="",
+                   ~solution={j||j},
+                   ~params={j||j}
+                 )
+               )
+             };
+           [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
+         }
+       ),
+       state
+     )
+};
+
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
   let {lastSendGeometry} as data = GLSLSenderSystem.getGLSLSenderData(state);
   switch lastSendGeometry {
   | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
   | _ =>
     data.lastSendGeometry = Some(geometryIndex);
-    let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
-      VboBufferGetStateDataUtils.getVboBufferData(state);
-    state
-    |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, {pos, size, buffer, sendFunc}) => {
-             let arrayBuffer =
-               switch buffer {
-               | "vertex" =>
-                 ArrayBufferSystem.getOrCreateBuffer(
-                   gl,
-                   (geometryIndex, vertexBufferMap),
-                   [@bs] GeometryAdmin.unsafeGetVertices,
-                   state
-                 )
-               | "normal" =>
-                 ArrayBufferSystem.getOrCreateBuffer(
-                   gl,
-                   (geometryIndex, normalBufferMap),
-                   [@bs] GeometryAdmin.unsafeGetNormals,
-                   state
-                 )
-               | "index" =>
-                 ElementArrayBufferSystem.getOrCreateBuffer(
-                   gl,
-                   (geometryIndex, elementArrayBufferMap),
-                   [@bs] GeometryAdmin.unsafeGetIndices,
-                   state
-                 )
-               | _ =>
-                 WonderLog.Log.fatal(
-                   WonderLog.Log.buildFatalMessage(
-                     ~title="_sendAttributeData",
-                     ~description={j|unknonw buffer: $buffer|j},
-                     ~reason="",
-                     ~solution={j||j},
-                     ~params={j||j}
-                   )
-                 )
-               };
-             [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
-           }
-         ),
-         state
-       )
+    _directlySendAttributeData(gl, shaderIndex, geometryIndex, state)
   }
 };
 
