@@ -44,6 +44,7 @@ module.exports = {
       { name: "unit-test" },
       { name: "unit-integration-test" },
       { name: "integration-test" },
+      { name: "benchmark" },
       { name: "contract" },
       { name: "coverage" }
     ],

@@ -86,16 +86,16 @@
 
                 // var [state, box2] = createBox(state);
 
-                // var [state, boxes] = createBoxes(20000, state);
+                // var [state, boxes] = createBoxes(10000, state);
                 var [state, boxes] = createBoxes(1, state);
 
 
-                // var [state, boxes, objectInstanceArr] = createInstanceBoxes(1, 20000, state);
+                // var [state, boxes, objectInstanceArr] = createInstanceBoxes(1, 200000, state);
                 // var [state, boxes, objectInstanceArr] = createInstanceBoxesWithHierachy(10000, state);
 
 
 
-                // var [state, boxes] = setPosition(boxes, state);
+                var [state, boxes] = setPosition(boxes, state);
                 // var [state, objectInstanceArr] = setPosition(objectInstanceArr, state);
 
 
@@ -129,10 +129,10 @@
                 var [state, camera] = createCamera(state);
 
 
-                // state = createAndDisposeGameObjects(boxes, state);
+                state = createAndDisposeGameObjects(boxes, state);
                 // state = setInstanceData(boxes, state);
                 // state = createAndDisposeSourceInstanceGameObjects(boxes, state);
-                state = createAndDisposeObjectInstanceGameObjects(boxes, state);
+                // state = createAndDisposeObjectInstanceGameObjects(boxes, state);
 
 
 
@@ -242,8 +242,8 @@
                 var [state, sourceInstance] = wd.createSourceInstance(state);
 
 
-                var state = wd.markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state);
-                // var state = wd.markSourceInstanceModelMatrixIsStatic(sourceInstance, true, state);
+                // var state = wd.markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state);
+                var state = wd.markSourceInstanceModelMatrixIsStatic(sourceInstance, true, state);
 
                 // setTimeout(() => {
 
@@ -452,7 +452,7 @@
 
 
                 return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
-                    console.log("updateJob1", elapsed);
+                    // console.log("updateJob1", elapsed);
 
 
 
