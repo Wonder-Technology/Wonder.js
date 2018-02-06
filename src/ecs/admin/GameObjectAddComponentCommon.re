@@ -226,47 +226,56 @@ let batchAddGeometryComponentForClone =
     state
   );
 
-let batchAddBasicMaterialComponentForClone =
+let _batchAddMaterialComponentForClone =
     (
       isShareBasicMaterial,
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      (increaseGroupCountFunc, handleAddComponentFunc),
+      state: StateDataType.state
+    ) =>
+  isShareBasicMaterial ?
+    _batchAddSharableComponent(
+      (uidArr, componentArr, componentMap),
+      increaseGroupCountFunc,
+      state
+    ) :
+    _batchAddComponent((uidArr, componentArr, componentMap), handleAddComponentFunc, state);
+
+let batchAddBasicMaterialComponentForClone =
+    (
+      isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
       state: StateDataType.state
     ) => {
   let componentMap = GameObjectStateCommon.getGameObjectData(state).basicMaterialMap;
-  isShareBasicMaterial ?
-    _batchAddSharableComponent(
-      (uidArr, componentArr, componentMap),
+  _batchAddMaterialComponentForClone(
+    isShareMaterial,
+    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).basicMaterialMap),
+    (
       BasicMaterialGroupCommon.increaseGroupCount,
-      state
-    ) :
-    _batchAddComponent(
-      (uidArr, componentArr, componentMap),
-      BasicMaterialAddComponentCommon.handleAddComponent,
-      state
-    )
+      BasicMaterialAddComponentCommon.handleAddComponent
+    ),
+    state
+  )
 };
 
 let batchAddLightMaterialComponentForClone =
     (
-      isShareLightMaterial,
+      isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
       state: StateDataType.state
-    ) => {
-  let componentMap = GameObjectStateCommon.getGameObjectData(state).lightMaterialMap;
-  isShareLightMaterial ?
-    _batchAddSharableComponent(
-      (uidArr, componentArr, componentMap),
+    ) =>
+  _batchAddMaterialComponentForClone(
+    isShareMaterial,
+    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).lightMaterialMap),
+    (
       LightMaterialGroupCommon.increaseGroupCount,
-      state
-    ) :
-    _batchAddComponent(
-      (uidArr, componentArr, componentMap),
-      LightMaterialAddComponentCommon.handleAddComponent,
-      state
-    )
-};
+      LightMaterialAddComponentCommon.handleAddComponent
+    ),
+    state
+  );
 
 let batchAddCameraControllerComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
