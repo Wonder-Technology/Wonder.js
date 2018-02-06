@@ -115,7 +115,8 @@ let _setSource =
   sourceChunk.varDeclare = sourceVarDeclare ++ varDeclare;
   sourceChunk.funcDeclare = sourceFuncDeclare ++ funcDeclare;
   sourceChunk.funcDefine = sourceFuncDefine ++ funcDefine;
-  sourceChunk.body = sourceBody ++ body
+  sourceChunk.body = sourceBody ++ body;
+  sourceChunk
 };
 
 let _buildBody = ({body}, webgl1_main_end) => body ++ webgl1_main_end;
@@ -131,46 +132,34 @@ let _execHandle = (name, state) => {
   handleFunc(state)
 };
 
-let buildGLSLSource =
-  [@bs]
-  (
-    (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
-      let {precision} = ShaderStateCommon.getGLSLData(state);
-      let vs: glslChunk = {
-        top: "",
-        define: "",
-        varDeclare: "",
-        funcDeclare: "",
-        funcDefine: "",
-        body: ""
-      };
-      let fs: glslChunk = {
-        top: "",
-        define: "",
-        varDeclare: "",
-        funcDeclare: "",
-        funcDefine: "",
-        body: ""
-      };
-      vs.body = vs.body ++ webgl1_main_begin;
-      fs.body = fs.body ++ webgl1_main_begin;
-      let precision = precision |> Js.Option.getExn;
-      vs.top = precision ++ vs.top;
-      fs.top = precision ++ fs.top;
-      shaderLibDataArr
-      |> Js.Array.forEach(
-           ({glsls}) =>
-             switch glsls {
-             | None => ()
-             | Some(glsls) =>
-               glsls
-               |> Js.Array.forEach(
-                    ({type_, name}: glsl) =>
+let _createEmptyChunk = () => {
+  top: "",
+  define: "",
+  varDeclare: "",
+  funcDeclare: "",
+  funcDefine: "",
+  body: ""
+};
+
+let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
+  shaderLibDataArr
+  |> WonderCommonlib.ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         (glslTuple, {glsls}) =>
+           switch glsls {
+           | None => glslTuple
+           | Some(glsls) =>
+             glsls
+             |> WonderCommonlib.ArraySystem.reduceOneParam(
+                  [@bs]
+                  (
+                    ((vs, fs), {type_, name}: glsl) =>
                       switch type_ {
-                      | "vs" => _setSource(vs, getChunk(name, state))
-                      | "vs_function" => _setSource(vs, _execHandle(name, state))
-                      | "fs" => _setSource(fs, getChunk(name, state))
-                      | "fs_function" => _setSource(fs, _execHandle(name, state))
+                      | "vs" => (_setSource(vs, getChunk(name, state)), fs)
+                      | "vs_function" => (_setSource(vs, _execHandle(name, state)), fs)
+                      | "fs" => (vs, _setSource(fs, getChunk(name, state)))
+                      | "fs_function" => (vs, _setSource(fs, _execHandle(name, state)))
                       | _ =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(
@@ -182,9 +171,27 @@ let buildGLSLSource =
                           )
                         )
                       }
-                  )
-             }
-         );
+                  ),
+                  glslTuple
+                )
+           }
+       ),
+       (vs, fs)
+     );
+
+let buildGLSLSource =
+  [@bs]
+  (
+    (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
+      let {precision} = ShaderStateCommon.getGLSLData(state);
+      let vs: glslChunk = _createEmptyChunk();
+      let fs: glslChunk = _createEmptyChunk();
+      vs.body = vs.body ++ webgl1_main_begin;
+      fs.body = fs.body ++ webgl1_main_begin;
+      let precision = precision |> Js.Option.getExn;
+      vs.top = precision ++ vs.top;
+      fs.top = precision ++ fs.top;
+      let (vs, fs) = _buildVsAndFs(vs, fs, shaderLibDataArr, state);
       vs.body = _buildBody(vs, webgl1_main_end);
       fs.body = _buildBody(fs, webgl1_main_end);
       vs.varDeclare = "\n" ++ _generateAttributeSource(shaderLibDataArr) ++ vs.varDeclare;
