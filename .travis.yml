@@ -43,7 +43,7 @@ jobs:
 
 
     - stage: deploy
-      script: npm run buildAll
+      script: npm run buildAll:ci
       deploy:
         provider: releases
         api_key:
