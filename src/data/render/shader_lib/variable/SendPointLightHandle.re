@@ -41,9 +41,8 @@ let getLightGLSLDataStructureMemberNameArr = () => [|
 
 let _sendAttenuation =
     (
-      gl,
-      (program, uniformCacheMap, uniformLocationMap),
       index,
+      (gl, program, uniformCacheMap, uniformLocationMap),
       {constant, linear, quadratic, range},
       state
     ) => {
@@ -142,9 +141,8 @@ let send =
                  PointLightAdmin.getIntensity(index, state)
                );
                _sendAttenuation(
-                 gl,
-                 (program, uniformCacheMap, uniformLocationMap),
                  index,
+                 (gl, program, uniformCacheMap, uniformLocationMap),
                  structureMemberNameData,
                  state
                )
