@@ -39,6 +39,12 @@ let _setNewDataToState =
   }
 };
 
+let _setNewMap = (uid, oldMap, newMap) =>
+  switch (oldMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+  | None => newMap
+  | Some(component) => newMap |> WonderCommonlib.SparseMapSystem.set(uid, component)
+  };
+
 let _allocateNewMaps = (newAliveUidArray, state) => {
   let {
     transformMap,
@@ -79,52 +85,16 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
                 uid,
                 transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid)
               ),
-           switch (meshRendererMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newMeshRendererMap
-           | Some(meshRenderer) =>
-             newMeshRendererMap |> WonderCommonlib.SparseMapSystem.set(uid, meshRenderer)
-           },
-           switch (geometryMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newGeometryMap
-           | Some(geometry) => newGeometryMap |> WonderCommonlib.SparseMapSystem.set(uid, geometry)
-           },
-           switch (cameraControllerMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newCameraControllerMap
-           | Some(cameraController) =>
-             newCameraControllerMap |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
-           },
-           switch (basicMaterialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newBasicMaterialMap
-           | Some(material) =>
-             newBasicMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
-           },
-           switch (lightMaterialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newLightMaterialMap
-           | Some(material) =>
-             newLightMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material)
-           },
-           switch (ambientLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newAmbientLightMap
-           | Some(light) => newAmbientLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
-           },
-           switch (directionLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newDirectionLightMap
-           | Some(light) => newDirectionLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
-           },
-           switch (pointLightMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newPointLightMap
-           | Some(light) => newPointLightMap |> WonderCommonlib.SparseMapSystem.set(uid, light)
-           },
-           switch (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newSourceInstanceMap
-           | Some(sourceInstance) =>
-             newSourceInstanceMap |> WonderCommonlib.SparseMapSystem.set(uid, sourceInstance)
-           },
-           switch (objectInstanceMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
-           | None => newObjectInstanceMap
-           | Some(objectInstance) =>
-             newObjectInstanceMap |> WonderCommonlib.SparseMapSystem.set(uid, objectInstance)
-           }
+           _setNewMap(uid, meshRendererMap, newMeshRendererMap),
+           _setNewMap(uid, geometryMap, newGeometryMap),
+           _setNewMap(uid, cameraControllerMap, newCameraControllerMap),
+           _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
+           _setNewMap(uid, lightMaterialMap, newLightMaterialMap),
+           _setNewMap(uid, ambientLightMap, newAmbientLightMap),
+           _setNewMap(uid, directionLightMap, newDirectionLightMap),
+           _setNewMap(uid, pointLightMap, newPointLightMap),
+           _setNewMap(uid, sourceInstanceMap, newSourceInstanceMap),
+           _setNewMap(uid, objectInstanceMap, newObjectInstanceMap)
          )
        ),
        (
