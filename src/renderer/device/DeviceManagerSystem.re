@@ -78,7 +78,6 @@ let setColorWrite =
   }
 };
 
-/* TODO test */
 let setSide = (gl, targetSide, state: StateDataType.state) => {
   open DeviceManagerType;
   let {side} = _getDeviceManagerData(state);

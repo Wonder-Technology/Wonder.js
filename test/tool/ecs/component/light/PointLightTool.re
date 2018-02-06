@@ -37,3 +37,5 @@ let getDefaultRange = PointLightHelper.getDefaultRange;
 
 let getMappedIndex = (index, state) =>
   state |> PointLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);
+
+let getLightCount = PointLightAdmin.getLightCount;

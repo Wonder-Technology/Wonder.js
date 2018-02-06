@@ -241,6 +241,27 @@ let _ =
                     |> Transform.setTransformParent(Js.Nullable.return(transform4), transform2);
                   state |> Transform.getTransformChildren(transform1) |> expect == [|transform2|]
                 }
+              );
+              test(
+                "clean normalMatrixCacheMap",
+                () => {
+                  open TransformType;
+                  let (
+                    state,
+                    gameObject1,
+                    gameObject2,
+                    gameObject3,
+                    transform1,
+                    transform2,
+                    transform3
+                  ) =
+                    _prepareTransformMatrixData(state);
+                  let _ = TransformTool.getNormalMatrixTypeArray(transform2, state);
+                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let (copiedState, transform4) = Transform.createTransform(copiedState);
+                  TransformTool.getTransformData(copiedState).normalMatrixCacheMap
+                  |> expect == WonderCommonlib.SparseMapSystem.createEmpty()
+                }
               )
             }
           );
@@ -1018,7 +1039,8 @@ let _ =
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;
-                  let {isSendTransformMatrixDataMap} = SourceInstanceTool.getSourceInstanceData(state);
+                  let {isSendTransformMatrixDataMap} =
+                    SourceInstanceTool.getSourceInstanceData(state);
                   isSendTransformMatrixDataMap
                   |> WonderCommonlib.SparseMapSystem.set(0, true)
                   |> WonderCommonlib.SparseMapSystem.set(1, false)

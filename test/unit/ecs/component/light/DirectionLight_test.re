@@ -289,6 +289,27 @@ let _ =
               )
             }
           )
+      );
+      describe(
+        "getLightCount",
+        () =>
+          describe(
+            "contract check",
+            () =>
+              test(
+                "count should <= max buffer count",
+                () =>
+                  expect(
+                    () => {
+                      let state =
+                        {...state^, directionLightData: {...state^.directionLightData, index: 5}}
+                        |> DirectionLightTool.getLightCount;
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("light count: 5 <= max buffer count: 4")
+              )
+          )
       )
     }
   );

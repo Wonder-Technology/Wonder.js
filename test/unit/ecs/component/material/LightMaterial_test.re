@@ -123,7 +123,7 @@ let _ =
               "dispose data",
               () => {
                 test(
-                  "remove from diffuseColorMap, specularColorMap, shaderIndexMap, gameObjectMap",
+                  "remove from diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap",
                   () => {
                     open LightMaterialType;
                     let (state, gameObject1, material1) =
@@ -131,15 +131,16 @@ let _ =
                     let state =
                       state
                       |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                    let {diffuseColorMap, specularColorMap, shaderIndexMap, gameObjectMap} =
+                    let {diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap} =
                       LightMaterialTool.getMaterialData(state);
                     (
                       diffuseColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
                       specularColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                      shininessMap |> WonderCommonlib.SparseMapSystem.has(material1),
                       shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
                       gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
                     )
-                    |> expect == (false, false, false, false)
+                    |> expect == (false, false, false, false, false)
                   }
                 );
                 test(

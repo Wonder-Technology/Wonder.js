@@ -168,7 +168,6 @@ let buildGLSLSource =
                     ({type_, name}: glsl) =>
                       switch type_ {
                       | "vs" => _setSource(vs, getChunk(name, state))
-                      /* TODO test */
                       | "vs_function" => _setSource(vs, _execHandle(name, state))
                       | "fs" => _setSource(fs, getChunk(name, state))
                       | "fs_function" => _setSource(fs, _execHandle(name, state))

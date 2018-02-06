@@ -1,6 +1,5 @@
 let getLightCount = (count, maxCount) =>
   count
-  /* TODO test */
   |> WonderLog.Contract.ensureCheck(
        (count) => {
          open WonderLog;

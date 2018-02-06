@@ -30,7 +30,6 @@ let _disposeData =
     ...data,
     diffuseColorMap: disposeSparseMapData(material, diffuseColorMap),
     specularColorMap: disposeSparseMapData(material, specularColorMap),
-    /* TODO test */
     shininessMap: disposeSparseMapData(material, shininessMap),
     shaderIndexMap,
     groupCountMap,

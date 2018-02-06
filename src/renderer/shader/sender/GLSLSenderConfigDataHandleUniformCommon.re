@@ -192,13 +192,13 @@ let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr
       _getNormalMatrixNoCachableData
     )
   | "instance_mMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
       (_getModelMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix4)
     )
   | "instance_normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceCommon.addUniformSendDataByType(
+    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
       (_getNormalMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix3)
@@ -266,8 +266,7 @@ let _setToUniformSendMap =
     shaderSendCachableFunctionDataArr
   )
   |> ignore;
-  /* TODO rename to GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon? */
-  GLSLSenderConfigDataHandleUniformInstanceCommon.setToUniformSendMap(
+  GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.setToUniformSendMap(
     shaderIndex,
     uniformInstanceSendNoCachableDataMap,
     instanceSendNoCachableDataArr
@@ -439,4 +438,4 @@ let unsafeGetUniformShaderSendCachableData = GLSLSenderConfigDataHandleUniformSh
 
 let unsafeGetUniformShaderSendCachableFunctionData = GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.unsafeGetUniformSendData;
 
-let unsafeGetUniformInstanceSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceCommon.unsafeGetUniformSendData;
+let unsafeGetUniformInstanceSendNoCachableData = GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.unsafeGetUniformSendData;

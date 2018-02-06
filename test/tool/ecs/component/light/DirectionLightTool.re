@@ -21,3 +21,5 @@ let getDefaultIntensity = DirectionLightHelper.getDefaultIntensity;
 
 let getMappedIndex = (index, state) =>
   state |> DirectionLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);
+
+let getLightCount = DirectionLightAdmin.getLightCount;

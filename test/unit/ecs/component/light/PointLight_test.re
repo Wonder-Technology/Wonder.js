@@ -524,6 +524,27 @@ let _ =
               test("getPointLightRange should error", () => _testGetFunc(getPointLightRange))
             }
           )
+      );
+      describe(
+        "getLightCount",
+        () =>
+          describe(
+            "contract check",
+            () =>
+              test(
+                "count should <= max buffer count",
+                () =>
+                  expect(
+                    () => {
+                      let state =
+                        {...state^, pointLightData: {...state^.pointLightData, index: 5}}
+                        |> PointLightTool.getLightCount;
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("light count: 5 <= max buffer count: 4")
+              )
+          )
       )
     }
   );

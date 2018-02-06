@@ -4,7 +4,6 @@ let send =
   [@bs]
   (
     (gl, (program, uniformCacheMap, uniformLocationMap), state: StateDataType.state) => {
-      /* TODO test */
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;

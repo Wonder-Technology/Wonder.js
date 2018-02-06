@@ -90,7 +90,6 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
        (GeometryGroupCommon.increaseGroupCount, GeometryAddComponentCommon.handleAddComponent)
      );
 
-/* TODO duplicate */
 let addBasicMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
   state
   |> _addSharableComponent(
@@ -227,7 +226,6 @@ let batchAddGeometryComponentForClone =
     state
   );
 
-/* TODO duplicate */
 let batchAddBasicMaterialComponentForClone =
     (
       isShareBasicMaterial,
