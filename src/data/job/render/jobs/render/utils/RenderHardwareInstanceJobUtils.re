@@ -38,10 +38,7 @@ let _sendTransformMatrixDataBuffer =
   )
 };
 
-let _sendTransformMatrixDataBufferData =
-    (glDataTuple, shaderIndex, (stride, matricesArrayForInstance, matrixInstanceBuffer), state) => {
-  let (gl, extension) = glDataTuple;
-  let _ = updateData(gl, matricesArrayForInstance, matrixInstanceBuffer);
+let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> ArraySystem.reduceStatei(
@@ -51,7 +48,17 @@ let _sendTransformMatrixDataBufferData =
            state |> _sendTransformMatrixDataBuffer(glDataTuple, (sendData, stride, index))
        ),
        state
-     )
+     );
+
+let _updateAndSendTransformMatrixDataBufferData =
+    (
+      (gl, extension) as glDataTuple,
+      shaderIndex,
+      (stride, matricesArrayForInstance, matrixInstanceBuffer),
+      state
+    ) => {
+  updateData(gl, matricesArrayForInstance, matrixInstanceBuffer) |> ignore;
+  _sendTransformMatrixDataBufferData(glDataTuple, shaderIndex, stride, state)
 };
 
 let _sendTransformMatrixData =
@@ -94,7 +101,7 @@ let _sendTransformMatrixData =
     );
   [@bs] fillMatrixTypeArrFunc(uid, matricesArrayForInstance, (state, 0))
   |> _fillObjectInstanceData(objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc)
-  |> _sendTransformMatrixDataBufferData(
+  |> _updateAndSendTransformMatrixDataBufferData(
        (gl, extension),
        shaderIndex,
        (strideForSend, matricesArrayForInstance, matrixInstanceBuffer)
@@ -121,7 +128,6 @@ let _sendStaticTransformMatrixData =
     ) =>
   SourceInstanceAdmin.isSendTransformMatrixData(sourceInstance, state) ?
     {
-      /* TODO test */
       InstanceBufferSystem.bind(
         gl,
         InstanceBufferSystem.getOrCreateBuffer(
@@ -131,18 +137,7 @@ let _sendStaticTransformMatrixData =
         )
       )
       |> ignore;
-      state
-      |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
-      |> ArraySystem.reduceStatei(
-           [@bs]
-           (
-             (state, sendData, index) =>
-               state
-               |> _sendTransformMatrixDataBuffer((gl, extension), (sendData, strideForSend, index))
-           ),
-           state
-         );
-      state
+      _sendTransformMatrixDataBufferData((gl, extension), shaderIndex, strideForSend, state)
     } :
     state
     |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc)
