@@ -224,7 +224,7 @@ let _ =
                               {|attribute vec3 a_normalVec3_0;|},
                               {|attribute vec3 a_normalVec3_1;|},
                               {|attribute vec3 a_normalVec3_2;|},
-                              {|mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);|}
+                              {|mat3 normalMatrix = mat3(a_normalVec3_0, a_normalVec3_1, a_normalVec3_2);|}
                             ]
                           )
                           |> expect == true

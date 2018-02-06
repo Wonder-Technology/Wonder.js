@@ -571,7 +571,7 @@ mat4 mMatrix = u_mMatrix;
 |},{|
 
 |}),{|
-mat3 normalMatrix = mat3(a_normalVec4_0, a_normalVec4_1, a_normalVec4_2);
+mat3 normalMatrix = mat3(a_normalVec3_0, a_normalVec3_1, a_normalVec3_2);
 |}))
 
 |> set("modelMatrix_hardware_instance_vertex", _buildChunk(({|
