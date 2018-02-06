@@ -717,33 +717,7 @@ var n1 = performance.now();
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
-
-
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+                            var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
 
 
 
@@ -811,34 +785,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
-
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
-
+                            var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
 
 
                                         var data = LightBoxesTool.createCamera(state);
@@ -921,34 +869,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
-
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
-
+                            var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
 
 
 
@@ -1017,33 +939,9 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
 
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+                            var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
                                var data = InstanceLightBoxesTool.createCamera(state);
@@ -1099,33 +997,9 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                var boxes = data[1];
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
 
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+                            var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
 
@@ -1192,33 +1066,9 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                var boxes = data[1];
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
 
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+                            var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
                                var data = InstanceLightBoxesTool.createCamera(state);
@@ -1290,33 +1140,9 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
 
 
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+                            var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
                                var data = InstanceLightBoxesTool.createCamera(state);
                                var state = data[0];

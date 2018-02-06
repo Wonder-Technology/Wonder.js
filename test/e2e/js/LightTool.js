@@ -78,6 +78,38 @@ var LightTool = (function () {
             state = wd.addGameObjectGeometryComponent(obj, geometry, state);
 
             return [state, obj];
+        },
+        createLights: function (directionLightPos, pointLightPos, state) {
+            var data = LightTool.createAmbientLight(state);
+            var state = data[0];
+
+
+
+            var data = LightTool.createDirectionLight(state);
+            var state = data[0];
+            var directionLightObj = data[1];
+
+
+
+            var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+            state = wd.setTransformLocalPosition(transform, directionLightPos, state);
+
+
+
+
+            var data = LightTool.createPointLight(state);
+            var state = data[0];
+            var directionLightObj = data[1];
+
+
+
+            var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+            state = wd.setTransformLocalPosition(transform, pointLightPos, state);
+
+            return state;
+
         }
     }
 })()

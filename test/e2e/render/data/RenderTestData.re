@@ -137,35 +137,7 @@ let renderTestData = {
 
 
 
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
-
-
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
-
-
+                            var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
 
 
 
@@ -221,40 +193,7 @@ let renderTestData = {
 
 
 
-
-                        var data = LightTool.createAmbientLight(state);
-                        var state = data[0];
-
-
-
-                        var data = LightTool.createDirectionLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [-100, 0, 100], state);
-
-
-
-
-                        var data = LightTool.createPointLight(state);
-                        var state = data[0];
-                        var directionLightObj = data[1];
-
-
-
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
-
-                state = wd.setTransformLocalPosition(transform, [150, 0, 250], state);
-
-
-
-
-
-
+                            var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
 
