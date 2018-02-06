@@ -168,6 +168,35 @@ let _geMatrixMapTuple = (state) => {
   (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
 };
 
+let _renderSourceInstanceGameObject = (gl, uid, renderFunc, state) =>
+  [@bs] renderFunc(gl, uid, state);
+
+let _prepareData =
+    (
+      gl,
+      shaderIndex,
+      (uid, defaultCapacity, strideForCapacity, strideForSend),
+      state: StateDataType.state
+    ) => {
+  let extension = GPUDetectSystem.unsafeGetInstanceExtension(state);
+  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
+  let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
+  let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
+  (
+    (gl, extension, shaderIndex),
+    (
+      uid,
+      sourceInstance,
+      defaultCapacity,
+      strideForCapacity,
+      strideForSend,
+      objectInstanceArray,
+      instanceRenderListCount
+    ),
+    _geMatrixMapTuple(state)
+  )
+};
+
 let render =
     (
       gl,
@@ -178,23 +207,14 @@ let render =
   /* TODO optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
-  let extension = GPUDetectSystem.unsafeGetInstanceExtension(state);
-  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
-  let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
-  let glDataTuple = (gl, extension, shaderIndex);
-  let instanceDataTuple = (
-    uid,
-    sourceInstance,
-    defaultCapacity,
-    strideForCapacity,
-    strideForSend,
-    objectInstanceArray,
-    instanceRenderListCount
-  );
-  let matrixMapTuple = _geMatrixMapTuple(state);
-  let dataTuple = (glDataTuple, instanceDataTuple, matrixMapTuple);
+  let (state, shaderIndex, geometryIndex) =
+    _renderSourceInstanceGameObject(gl, uid, renderFunc, state);
+  let (
+        (gl, extension, _),
+        (_, sourceInstance, _, _, _, _, instanceRenderListCount),
+        matrixMapTuple
+      ) as dataTuple =
+    _prepareData(gl, shaderIndex, (uid, defaultCapacity, strideForCapacity, strideForSend), state);
   let state =
     SourceInstanceAdmin.isTransformStatic(sourceInstance, state) ?
       _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
