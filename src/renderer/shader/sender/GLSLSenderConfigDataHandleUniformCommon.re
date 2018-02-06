@@ -24,12 +24,10 @@ let _getModelMatrixNoCachableData =
 let _getNormalMatrixNoCachableData =
   [@bs]
   (
-    (transform, state: StateDataType.state) =>
-      Matrix4System.invertTo3x3(
-        TransformSystem.getLocalToWorldMatrixTypeArray(transform, state),
-        Matrix3System.createIdentityMatrix3()
-      )
-      |> Matrix3System.transposeSelf
+    (transform, state: StateDataType.state) => {
+      let (normalMatrix, _) = TransformAdmin.getNormalMatrixTypeArray(transform, state);
+      normalMatrix
+    }
   );
 
 let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
