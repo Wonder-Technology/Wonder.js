@@ -78,12 +78,8 @@ let setColorWrite =
   }
 };
 
-let setSide = (gl, targetSide, state: StateDataType.state) => {
-  open DeviceManagerType;
-  let {side} = _getDeviceManagerData(state);
-  switch side {
-  | Some(oldSide) when oldSide === targetSide => state
-  | _ =>
+let _setSide = (gl, targetSide) =>
+  DeviceManagerType.(
     switch targetSide {
     | NONE =>
       gl |> Gl.enable(Gl.getCullFace(gl));
@@ -105,7 +101,16 @@ let setSide = (gl, targetSide, state: StateDataType.state) => {
           ~params={j||j}
         )
       )
-    };
+    }
+  );
+
+let setSide = (gl, targetSide, state: StateDataType.state) => {
+  open DeviceManagerType;
+  let {side} = _getDeviceManagerData(state);
+  switch side {
+  | Some(oldSide) when oldSide === targetSide => state
+  | _ =>
+    _setSide(gl, targetSide) |> ignore;
     {...state, deviceManagerData: {...state.deviceManagerData, side: Some(targetSide)}}
   }
 };
