@@ -82,8 +82,8 @@ let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMa
 };
 
 let clearCache = (data) => {
-  ...data,
-  normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  data.normalMatrixCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  data
 };
 
 let rec update = (transform: transform, state: StateDataType.state) => {
@@ -93,7 +93,7 @@ let rec update = (transform: transform, state: StateDataType.state) => {
   | true =>
     /* TODO perf: translation not clear normalMatrixCacheMap, only rotation/scale clear */
     let data = mark(transform, false, data) |> clearCache;
-    let state = {...state, transformData: data};
+    /* let state = {...state, transformData: data}; */
     switch (getParent(transform, data)) {
     | Some(parent) =>
       let state = state |> update(parent);

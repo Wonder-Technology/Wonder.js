@@ -94,12 +94,12 @@ let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =
      state
    }; */
 let setLocalPositionByTuple = (transform: transform, localPosition, state: StateDataType.state) => {
-  ...state,
-  transformData:
-    state
-    |> getTransformData
-    |> TransformOperateCommon.setLocalPositionByTuple(transform, localPosition)
-    |> markHierachyDirty(transform)
+  state
+  |> getTransformData
+  |> TransformOperateCommon.setLocalPositionByTuple(transform, localPosition)
+  |> markHierachyDirty(transform)
+  |> ignore;
+  state
 };
 
 let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
@@ -120,10 +120,10 @@ let getPositionTuple = (transform: transform, state: StateDataType.state) =>
      state
    }; */
 let setPositionByTuple = (transform: transform, position: position, state: StateDataType.state) => {
-  ...state,
-  transformData:
-    TransformOperateCommon.setPositionByTuple(transform, position, getTransformData(state), state)
-    |> markHierachyDirty(transform)
+  TransformOperateCommon.setPositionByTuple(transform, position, getTransformData(state), state)
+  |> markHierachyDirty(transform)
+  |> ignore;
+  state
 };
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
