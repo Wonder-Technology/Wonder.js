@@ -545,6 +545,47 @@ let _ =
                   |> toThrowMessage("light count: 5 <= max buffer count: 4")
               )
           )
+      );
+      describe(
+        "setRangeLevel",
+        () => {
+          let _test = (level, (range, linear, quadratic), state) => {
+            let (state, light) = createPointLight(state^);
+            let state = state |> PointLight.setPointLightRangeLevel(light, level);
+            (
+              PointLight.getPointLightRange(light, state) |> TypeArrayTool.truncateFloatValue(7),
+              PointLight.getPointLightLinear(light, state) |> TypeArrayTool.truncateFloatValue(7),
+              PointLight.getPointLightQuadratic(light, state)
+              |> TypeArrayTool.truncateFloatValue(7)
+            )
+            |> expect == (range, linear, quadratic)
+          };
+          test("test set level 0", () => _test(0, (7., 0.7, 1.8), state));
+          test("test set level 1", () => _test(1, (13., 0.35, 0.44), state));
+          test("test set level 2", () => _test(2, (20., 0.22, 0.20), state));
+          test("test set level 3", () => _test(3, (32., 0.14, 0.07), state));
+          test("test set level 4", () => _test(4, (50., 0.09, 0.032), state));
+          test("test set level 5", () => _test(5, (65., 0.07, 0.017), state));
+          test("test set level 6", () => _test(6, (100., 0.045, 0.0075), state));
+          test("test set level 7", () => _test(7, (160., 0.027, 0.0028), state));
+          test("test set level 8", () => _test(8, (200., 0.022, 0.0019), state));
+          test("test set level 9", () => _test(9, (325., 0.014, 0.0007), state));
+          test("test set level 10", () => _test(10, (600., 0.007, 0.0002), state));
+          test("test set level 11", () => _test(11, (3250., 0.0014, 0.000007), state));
+          test(
+            "if level > 11, fatal",
+            () => {
+              let (state, light) = createPointLight(state^);
+              expect(
+                () => {
+                  let state = state |> PointLight.setPointLightRangeLevel(light, 12);
+                  ()
+                }
+              )
+              |> toThrowMessage("shouldn't exceed point light range")
+            }
+          )
+        }
       )
     }
   );

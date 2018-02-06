@@ -115,85 +115,111 @@ let _ =
             }
           )
       );
-      describe
-        (
-          "disposeComponent",
-          () =>
-            describe(
-              "dispose data",
-              () => {
-                test(
-                  "remove from diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap",
-                  () => {
-                    open LightMaterialType;
-                    let (state, gameObject1, material1) =
-                      LightMaterialTool.createGameObject(state^);
-                    let state =
-                      state
-                      |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                    let {diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap} =
-                      LightMaterialTool.getMaterialData(state);
-                    (
-                      diffuseColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                      specularColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                      shininessMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                      shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                      gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
-                    )
-                    |> expect == (false, false, false, false, false)
-                  }
-                );
-                test(
-                  "reset group count",
-                  () => {
-                    let (state, material1) = createLightMaterial(state^);
-                    let (state, gameObject1) = GameObject.createGameObject(state);
-                    let state =
-                      state
-                      |> GameObject.addGameObjectLightMaterialComponent(gameObject1, material1);
-                    let (state, gameObject2) = GameObject.createGameObject(state);
-                    let state =
-                      state
-                      |> GameObject.addGameObjectLightMaterialComponent(gameObject2, material1);
-                    let state =
-                      state
-                      |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                    LightMaterialTool.getGroupCount(material1, state) |> expect == 0
-                  }
-                )
-              }
-            )
-        );
-        /* describe(
-             "test add new one after dispose old one",
-             () => {
-               test(
-                 "use disposed index as new index firstly",
-                 () => {
-                   let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
-                   let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
-                   let state =
-                     state
-                     |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                   let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
-                   material3 |> expect == material1
-                 }
-               );
-               test(
-                 "if has no disposed index, get index from materialData.index",
-                 () => {
-                   let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
-                   let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
-                   let state =
-                     state
-                     |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                   let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
-                   let (state, gameObject4, material4) = LightMaterialTool.createGameObject(state);
-                   (material3, material4) |> expect == (material1, material2 + 1)
-                 }
-               )
-             }
-           ) */
+      describe(
+        "getLightMaterialShininess",
+        () =>
+          test(
+            "test default shininess",
+            () => {
+              let (state, material) = createLightMaterial(state^);
+              getLightMaterialShininess(material, state) |> expect == 32.
+            }
+          )
+      );
+      describe(
+        "setLightMaterialShininess",
+        () =>
+          test(
+            "test set shininess",
+            () => {
+              let (state, material) = createLightMaterial(state^);
+              let shininess = 30.;
+              let state = state |> setLightMaterialShininess(material, shininess);
+              getLightMaterialShininess(material, state) |> expect == shininess
+            }
+          )
+      );
+      describe(
+        "disposeComponent",
+        () =>
+          describe(
+            "dispose data",
+            () => {
+              test(
+                "remove from diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap",
+                () => {
+                  open LightMaterialType;
+                  let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                  let {
+                    diffuseColorMap,
+                    specularColorMap,
+                    shininessMap,
+                    shaderIndexMap,
+                    gameObjectMap
+                  } =
+                    LightMaterialTool.getMaterialData(state);
+                  (
+                    diffuseColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                    specularColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                    shininessMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                    shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
+                  )
+                  |> expect == (false, false, false, false, false)
+                }
+              );
+              test(
+                "reset group count",
+                () => {
+                  let (state, material1) = createLightMaterial(state^);
+                  let (state, gameObject1) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectLightMaterialComponent(gameObject1, material1);
+                  let (state, gameObject2) = GameObject.createGameObject(state);
+                  let state =
+                    state |> GameObject.addGameObjectLightMaterialComponent(gameObject2, material1);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                  LightMaterialTool.getGroupCount(material1, state) |> expect == 0
+                }
+              )
+            }
+          )
+      );
+      /* describe(
+           "test add new one after dispose old one",
+           () => {
+             test(
+               "use disposed index as new index firstly",
+               () => {
+                 let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
+                 let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
+                 let state =
+                   state
+                   |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                 let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
+                 material3 |> expect == material1
+               }
+             );
+             test(
+               "if has no disposed index, get index from materialData.index",
+               () => {
+                 let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
+                 let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
+                 let state =
+                   state
+                   |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                 let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
+                 let (state, gameObject4, material4) = LightMaterialTool.createGameObject(state);
+                 (material3, material4) |> expect == (material1, material2 + 1)
+               }
+             )
+           }
+         ) */
       describe(
         "contract check: is alive",
         () =>
