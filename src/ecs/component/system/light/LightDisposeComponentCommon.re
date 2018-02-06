@@ -5,7 +5,7 @@ let isAlive = (light, mappedIndexMap) =>
 let deleteBySwapAndResetFloat32TypeArr =
   [@bs]
   (
-    (sourceIndex, targetIndex, typeArr, length, defaultValueArr) => {
+    ((sourceIndex, targetIndex), typeArr, length, defaultValueArr) => {
       open Js.Typed_array;
       for (i in 0 to length - 1) {
         Float32Array.unsafe_set(
@@ -22,7 +22,7 @@ let deleteBySwapAndResetFloat32TypeArr =
 let deleteSingleValueBySwapAndResetFloat32TypeArr =
   [@bs]
   (
-    (sourceIndex, targetIndex, typeArr, length: int, defaultValue) => {
+    ((sourceIndex, targetIndex), typeArr, length: int, defaultValue) => {
       open Js.Typed_array;
       Float32Array.unsafe_set(typeArr, sourceIndex, Float32Array.unsafe_get(typeArr, targetIndex));
       Float32Array.unsafe_set(typeArr, targetIndex, defaultValue);
@@ -40,12 +40,10 @@ let deleteSingleValueBySwapAndResetUint8TypeArr = (sourceIndex, lastIndex, typeA
 let disposeData = (light, gameObjectMap) =>
   ComponentDisposeComponentCommon.disposeSparseMapData(light, gameObjectMap);
 
-
 let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
   mappedSourceIndex >= lastComponentIndex ?
     mappedIndexMap :
     mappedIndexMap |> LightIndexCommon.setMappedIndex(lastComponentIndex, mappedSourceIndex);
-
 
 let swapData =
     (
@@ -58,20 +56,16 @@ let swapData =
     typeArr :
     [@bs]
     deleteBySwapAndResetTypeArrFunc(
-      mappedSourceIndex * dataSize,
-      lastComponentIndex * dataSize,
+      (mappedSourceIndex * dataSize, lastComponentIndex * dataSize),
       typeArr,
       dataSize,
       defaultData
     );
 
-
-  let setMappedIndexMap = (sourceIndex, mappedSourceIndex, lastComponentIndex, mappedIndexMap) => {
-
-      mappedIndexMap
-      |> _swapIndex(mappedSourceIndex, lastComponentIndex)
-      |> LightIndexCommon.markDisposed(sourceIndex)
-  };
+let setMappedIndexMap = (sourceIndex, mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
+  mappedIndexMap
+  |> _swapIndex(mappedSourceIndex, lastComponentIndex)
+  |> LightIndexCommon.markDisposed(sourceIndex);
 
 let handleDisposeComponent = (light, (isAliveFunc, handleDisposeFunc), state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
