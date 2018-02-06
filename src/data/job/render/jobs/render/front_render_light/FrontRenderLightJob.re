@@ -16,7 +16,8 @@ let _render = (gl, state: StateDataType.state) =>
              if (InstanceUtils.isSourceInstance(uid, state)) {
                FrontRenderLightInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, geometryIndex) = state |> FrontRenderLightJobCommon.render(gl, uid);
+               let (state, _, geometryIndex) =
+                 [@bs] FrontRenderLightJobCommon.render(gl, uid, state);
                GLSLSenderDrawUtils.drawElement(
                  (
                    GeometryAdmin.getDrawMode(gl),

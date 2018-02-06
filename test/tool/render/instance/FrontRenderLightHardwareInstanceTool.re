@@ -1,4 +1,3 @@
-/* TODO duplicate */
 let createSourceInstanceGameObject = (sandbox, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
     FrontRenderLightJobTool.prepareGameObject(sandbox, state);

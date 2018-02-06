@@ -25,39 +25,7 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "use program",
-        () => {
-          let _prepareForUseProgram = (sandbox, state) => {
-            let (state, _, _) = _prepare(sandbox, state);
-            let program = Obj.magic(1);
-            let createProgram =
-              createEmptyStubWithJsObjSandbox(sandbox) |> onCall(0) |> returns(program);
-            let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
-                 );
-            (state, program, createProgram, useProgram)
-          };
-          test(
-            "create program and use program only once",
-            () => {
-              let (state, program, createProgram, useProgram) =
-                _prepareForUseProgram(sandbox, state^);
-              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              createProgram |> getCallCount |> expect == 1
-            }
-          );
-          test(
-            "only use sourceInstance's gameObject's program",
-            () => {
-              let (state, program, createProgram, useProgram) =
-                _prepareForUseProgram(sandbox, state^);
-              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              useProgram |> expect |> toCalledWith([|program|])
-            }
-          )
-        }
+        () => RenderHardwareInstanceTool.testProgram(sandbox, _prepare, state)
       );
       describe(
         "send attribute data",
@@ -65,61 +33,21 @@ let _ =
           describe(
             "send sourceInstance gameObject's a_position",
             () =>
-              test(
-                "test attach buffer to attribute",
-                () => {
-                  let (state, _, _) = _prepare(sandbox, state^);
-                  let float = 1;
-                  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let pos = 0;
-                  let getAttribLocation =
-                    GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~float,
-                           ~vertexAttribPointer,
-                           ~getAttribLocation,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  vertexAttribPointer
-                  |> getCall(0)
-                  |> expect
-                  |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
-                }
+              RenderHardwareInstanceTool.testAttachBufferToAttribute(
+                sandbox,
+                ("a_position", 0, 3),
+                _prepare,
+                state
               )
           )
       );
       describe(
         "send uniform data",
         () => {
-          test(
-            "send shader uniform data only once per shader",
-            () => {
-              let name = "u_vMatrix";
-              let (state, _, _) = _prepare(sandbox, state^);
-              let (state, gameObject2, componentTuple) =
-                _createSourceInstanceGameObject(sandbox, state);
-              let (state, gameObject3, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
-              let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-              let pos = 1;
-              let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
-                   );
-              let state =
-                state
-                |> RenderJobsTool.initSystemAndRender
-                |> RenderJobsTool.updateSystem
-                |> _render;
-              uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
-            }
+          RenderHardwareInstanceTool.testSendShaderUniformData(
+            sandbox,
+            (_prepare, _createSourceInstanceGameObject),
+            state
           );
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
@@ -778,39 +706,7 @@ let _ =
       );
       describe(
         "draw instance",
-        () =>
-          /* TODO test
-             test
-             ("if sourceInstance gameObject not has indices, contract error",
-             (
-             () => {
-
-             })
-             ); */
-          test(
-            "drawElementsInstancedANGLE",
-            () => {
-              let (state, _, (geometry, _, _, _, _)) = _prepare(sandbox, state^);
-              let drawElementsInstancedANGLE =
-                Obj.magic(
-                  InstanceTool.getExtensionInstancedArrays(state)##drawElementsInstancedANGLE
-                );
-              let triangles = 1;
-              let state =
-                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~triangles, ()));
-              let state = state |> RenderJobsTool.initSystemAndRender;
-              let state = state |> _render;
-              drawElementsInstancedANGLE
-              |> expect
-              |> toCalledWith([|
-                   triangles,
-                   GeometryTool.getIndicesCount(geometry, state),
-                   GeometryTool.getIndexType(state),
-                   GeometryTool.getIndexTypeSize(state) * 0,
-                   2
-                 |])
-            }
-          )
+        () => RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(sandbox, _prepare, state)
       )
       /* test(
            "not unbind instance buffer",

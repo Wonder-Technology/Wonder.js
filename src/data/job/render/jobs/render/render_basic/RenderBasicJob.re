@@ -16,7 +16,7 @@ let _render = (gl, state: StateDataType.state) =>
              if (InstanceUtils.isSourceInstance(uid, state)) {
                RenderBasicInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, geometryIndex) = state |> RenderBasicJobCommon.render(gl, uid);
+               let (state, _, geometryIndex) = [@bs] RenderBasicJobCommon.render(gl, uid, state);
                GLSLSenderDrawUtils.drawElement(
                  (
                    GeometryAdmin.getDrawMode(gl),

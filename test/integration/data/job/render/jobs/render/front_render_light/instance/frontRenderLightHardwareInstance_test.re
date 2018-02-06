@@ -25,39 +25,7 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "use program",
-        () => {
-          let _prepareForUseProgram = (sandbox, state) => {
-            let (state, _, _) = _prepare(sandbox, state);
-            let program = Obj.magic(1);
-            let createProgram =
-              createEmptyStubWithJsObjSandbox(sandbox) |> onCall(0) |> returns(program);
-            let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
-                 );
-            (state, program, createProgram, useProgram)
-          };
-          test(
-            "create program and use program only once",
-            () => {
-              let (state, program, createProgram, useProgram) =
-                _prepareForUseProgram(sandbox, state^);
-              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              createProgram |> getCallCount |> expect == 1
-            }
-          );
-          test(
-            "only use sourceInstance's gameObject's program",
-            () => {
-              let (state, program, createProgram, useProgram) =
-                _prepareForUseProgram(sandbox, state^);
-              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-              useProgram |> expect |> toCalledWith([|program|])
-            }
-          )
-        }
+        () => RenderHardwareInstanceTool.testProgram(sandbox, _prepare, state)
       );
       describe(
         "send attribute data",
@@ -65,64 +33,21 @@ let _ =
           describe(
             "send sourceInstance gameObject's a_position",
             () =>
-              test(
-                "test attach buffer to attribute",
-                () => {
-                  let (state, _, _) = _prepare(sandbox, state^);
-                  let float = 1;
-                  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let pos = 0;
-                  let getAttribLocation =
-                    GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~float,
-                           ~vertexAttribPointer,
-                           ~getAttribLocation,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  vertexAttribPointer
-                  |> getCall(0)
-                  |> expect
-                  |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
-                }
+              RenderHardwareInstanceTool.testAttachBufferToAttribute(
+                sandbox,
+                ("a_position", 0, 3),
+                _prepare,
+                state
               )
           );
-          /* DP: diff */
           describe(
             "send sourceInstance gameObject's a_normal",
             () =>
-              test(
-                "test attach buffer to attribute",
-                () => {
-                  let (state, _, _) = _prepare(sandbox, state^);
-                  let float = 1;
-                  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let pos = 0;
-                  let getAttribLocation =
-                    GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_normal");
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~float,
-                           ~vertexAttribPointer,
-                           ~getAttribLocation,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  vertexAttribPointer
-                  |> getCall(1)
-                  |> expect
-                  |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
-                }
+              RenderHardwareInstanceTool.testAttachBufferToAttribute(
+                sandbox,
+                ("a_normal", 1, 3),
+                _prepare,
+                state
               )
           )
         }
@@ -130,30 +55,10 @@ let _ =
       describe(
         "send uniform data",
         () => {
-          test(
-            "send shader uniform data only once per shader",
-            () => {
-              let name = "u_vMatrix";
-              let (state, _, _) = _prepare(sandbox, state^);
-              let (state, gameObject2, componentTuple) =
-                _createSourceInstanceGameObject(sandbox, state);
-              let (state, gameObject3, _, _, _) =
-                FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-              let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-              let pos = 1;
-              let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
-                   );
-              let state =
-                state
-                |> RenderJobsTool.initSystemAndRender
-                |> RenderJobsTool.updateSystem
-                |> _render;
-              uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
-            }
+          RenderHardwareInstanceTool.testSendShaderUniformData(
+            sandbox,
+            (_prepare, _createSourceInstanceGameObject),
+            state
           );
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
             sandbox,
@@ -746,91 +651,6 @@ let _ =
                             }
                           )
                       )
-                      /* describe(
-                           "support switch static to dynamic",
-                           () =>
-                             describe(
-                               "test after switch",
-                               () =>
-                                 test(
-                                   "send data",
-                                   () => {
-                                     let (state, sourceInstance, bufferSubData) =
-                                       _prepare(sandbox, Js.false_, state);
-                                     let state = state |> _render;
-                                     let state =
-                                       SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                         sourceInstance,
-                                         Js.false_,
-                                         state
-                                       );
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     bufferSubData |> expect |> toCalledThrice
-                                   }
-                                 )
-                             )
-                         );
-                         describe(
-                           "support switch dynamic to static",
-                           () =>
-                             describe(
-                               "test after switch",
-                               () =>
-                                 test(
-                                   "send data in the next render, and not send data in the next next render",
-                                   () => {
-                                     let (state, sourceInstance, bufferSubData) =
-                                       _prepare(sandbox, Js.false_, state);
-                                     let state = state |> _render;
-                                     let state =
-                                       SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                         sourceInstance,
-                                         Js.true_,
-                                         state
-                                       );
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     bufferSubData |> expect |> toCalledTwice
-                                   }
-                                 )
-                             )
-                         );
-                         describe(
-                           "support switch static to dynamic to static",
-                           () =>
-                             describe(
-                               "test after switch",
-                               () =>
-                                 test(
-                                   "send data in the next render, and not send data in the next next render",
-                                   () => {
-                                     let (state, sourceInstance, bufferSubData) =
-                                       _prepare(sandbox, Js.false_, state);
-                                     let state = state |> _render;
-                                     let state =
-                                       SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                         sourceInstance,
-                                         Js.false_,
-                                         state
-                                       );
-                                     let state = state |> _render;
-                                     let state =
-                                       SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                         sourceInstance,
-                                         Js.true_,
-                                         state
-                                       );
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     let state = state |> _render;
-                                     bufferSubData |> getCallCount |> expect == 3
-                                   }
-                                 )
-                             )
-                         ) */
                     }
                   )
               )
@@ -840,31 +660,7 @@ let _ =
       );
       describe(
         "draw instance",
-        () =>
-          test(
-            "drawElementsInstancedANGLE",
-            () => {
-              let (state, _, (geometry, _, _, _, _)) = _prepare(sandbox, state^);
-              let drawElementsInstancedANGLE =
-                Obj.magic(
-                  InstanceTool.getExtensionInstancedArrays(state)##drawElementsInstancedANGLE
-                );
-              let triangles = 1;
-              let state =
-                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~triangles, ()));
-              let state = state |> RenderJobsTool.initSystemAndRender;
-              let state = state |> _render;
-              drawElementsInstancedANGLE
-              |> expect
-              |> toCalledWith([|
-                   triangles,
-                   GeometryTool.getIndicesCount(geometry, state),
-                   GeometryTool.getIndexType(state),
-                   GeometryTool.getIndexTypeSize(state) * 0,
-                   2
-                 |])
-            }
-          )
+        () => RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(sandbox, _prepare, state)
       )
     }
   );
