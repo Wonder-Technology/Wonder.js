@@ -14,207 +14,6 @@ open GLSLSenderConfigDataHandleShaderDataCommon;
 
 open RenderJobConfigType;
 
-let _getModelMatrixNoCachableData =
-  [@bs]
-  (
-    (transform, state: StateDataType.state) =>
-      TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state)
-  );
-
-let _getNormalMatrixNoCachableData =
-  [@bs]
-  (
-    (transform, state: StateDataType.state) => {
-      let (normalMatrix, _) = TransformAdmin.getNormalMatrixTypeArray(transform, state);
-      normalMatrix
-    }
-  );
-
-let _addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
-  switch field {
-  | "vMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
-      (type_, pos),
-      sendDataArrTuple,
-      RenderDataSystem.getCameraVMatrixDataFromState
-    )
-  | "pMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
-      (type_, pos),
-      sendDataArrTuple,
-      RenderDataSystem.getCameraPMatrixDataFromState
-    )
-  | "position" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      RenderDataSystem.getCameraPositionDataFromState
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addCameraSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addAmbientLightSendData =
-    ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
-  | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
-      (program, uniformCacheMap, uniformLocationMap),
-      sendDataArrTuple,
-      SendAmbientLightHandle.send
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addAmbientLightSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addDirectionLightSendData =
-    ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
-  | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
-      (program, uniformCacheMap, uniformLocationMap),
-      sendDataArrTuple,
-      SendDirectionLightHandle.send
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addDirectionLightSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addPointLightSendData =
-    ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
-  | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
-      (program, uniformCacheMap, uniformLocationMap),
-      sendDataArrTuple,
-      SendPointLightHandle.send
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addPointLightSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
-  switch field {
-  | "color" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      BasicMaterialAdminAci.unsafeGetColor
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addBasicMaterialSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
-  switch field {
-  | "diffuseColor" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      LightMaterialAdminAci.unsafeGetDiffuseColor
-    )
-  | "specularColor" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      LightMaterialAdminAci.unsafeGetSpecularColor
-    )
-  | "shininess" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      LightMaterialAdminAci.unsafeGetShininess
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addLightMaterialSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
-let _addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
-  switch field {
-  | "mMatrix" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
-      (pos, type_),
-      sendDataArrTuple,
-      _getModelMatrixNoCachableData
-    )
-  | "normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
-      (pos, type_),
-      sendDataArrTuple,
-      _getNormalMatrixNoCachableData
-    )
-  | "instance_mMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
-      pos,
-      sendDataArrTuple,
-      (_getModelMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix4)
-    )
-  | "instance_normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
-      pos,
-      sendDataArrTuple,
-      (_getNormalMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix3)
-    )
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_addModelSendData",
-        ~description={j|unknow field:$field|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
-
 let _setToUniformSendMap =
     (
       shaderIndex,
@@ -292,7 +91,7 @@ let _readUniforms =
            (sendDataArrTuple, {name, field, type_, from}) =>
              switch from {
              | "camera" =>
-               _addCameraSendData(
+               GLSLSenderConfigDataHandleCameraUniformCommon.addCameraSendData(
                  (
                    field,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
@@ -303,7 +102,7 @@ let _readUniforms =
                  sendDataArrTuple
                )
              | "basicMaterial" =>
-               _addBasicMaterialSendData(
+               GLSLSenderConfigDataHandleMaterialUniformCommon.addBasicMaterialSendData(
                  (
                    field,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
@@ -314,7 +113,7 @@ let _readUniforms =
                  sendDataArrTuple
                )
              | "lightMaterial" =>
-               _addLightMaterialSendData(
+               GLSLSenderConfigDataHandleMaterialUniformCommon.addLightMaterialSendData(
                  (
                    field,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
@@ -325,22 +124,22 @@ let _readUniforms =
                  sendDataArrTuple
                )
              | "ambientLight" =>
-               _addAmbientLightSendData(
+               GLSLSenderConfigDataHandleLightUniformCommon.addAmbientLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )
              | "directionLight" =>
-               _addDirectionLightSendData(
+               GLSLSenderConfigDataHandleLightUniformCommon.addDirectionLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )
              | "pointLight" =>
-               _addPointLightSendData(
+               GLSLSenderConfigDataHandleLightUniformCommon.addPointLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )
              | "model" =>
-               _addModelSendData(
+               GLSLSenderConfigDataHandleMoodelUniformCommon.addModelSendData(
                  (
                    field,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
