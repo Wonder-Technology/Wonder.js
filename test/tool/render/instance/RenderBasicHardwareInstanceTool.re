@@ -16,3 +16,18 @@ let prepare = (sandbox, state) => {
 };
 
 let render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
+
+let prepareForTestVertexAttribPointer = (sandbox, prepareFunc, state) => {
+  open Sinon;
+  let (state, pos1, pos2, pos3, pos4, getAttribLocation) = prepareFunc(sandbox, state);
+  let float = 1;
+  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
+  let state =
+    state
+    |> FakeGlTool.setFakeGl(
+         FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ~getAttribLocation, ())
+       );
+  let state = state |> RenderJobsTool.initSystemAndRender;
+  let state = state |> render;
+  (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer)
+};

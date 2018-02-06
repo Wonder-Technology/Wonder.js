@@ -398,7 +398,7 @@ let _ =
               describe(
                 "handle instance data position",
                 () => {
-                  let _prepare = (sandbox, state) => {
+                  let _prepareForHandleInstanceData = (sandbox, state) => {
                     let (
                       state,
                       gameObject,
@@ -425,11 +425,87 @@ let _ =
                     |> ignore;
                     (state, pos1, pos2, pos3, pos4, getAttribLocation)
                   };
+                  describe(
+                    "vertexAttribPointer instance data",
+                    () => {
+                      let _prepareForTestVertexAttribPointer = (sandbox, state) =>
+                        RenderBasicHardwareInstanceTool.prepareForTestVertexAttribPointer(
+                          sandbox,
+                          _prepareForHandleInstanceData,
+                          state
+                        );
+                      test(
+                        "test first data",
+                        () => {
+                          let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
+                            _prepareForTestVertexAttribPointer(sandbox, state);
+                          vertexAttribPointer
+                          |> expect
+                          |> toCalledWith([|pos1, 4, float, Obj.magic(Js.false_), 64, 0|])
+                        }
+                      );
+                      test(
+                        "test second data",
+                        () => {
+                          let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
+                            _prepareForTestVertexAttribPointer(sandbox, state);
+                          vertexAttribPointer
+                          |> expect
+                          |> toCalledWith([|pos2, 4, float, Obj.magic(Js.false_), 64, 16|])
+                        }
+                      );
+                      test(
+                        "test third data",
+                        () => {
+                          let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
+                            _prepareForTestVertexAttribPointer(sandbox, state);
+                          vertexAttribPointer
+                          |> expect
+                          |> toCalledWith([|pos3, 4, float, Obj.magic(Js.false_), 64, 32|])
+                        }
+                      );
+                      test(
+                        "test fourth data",
+                        () => {
+                          let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
+                            _prepareForTestVertexAttribPointer(sandbox, state);
+                          vertexAttribPointer
+                          |> expect
+                          |> toCalledWith([|pos4, 4, float, Obj.magic(Js.false_), 64, 48|])
+                        }
+                      )
+                    }
+                  );
+                  test(
+                    "vertexAttribDivisorANGLE 1",
+                    () => {
+                      let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
+                        _prepareForHandleInstanceData(sandbox, state);
+                      let vertexAttribDivisorANGLE =
+                        Obj.magic(
+                          InstanceTool.getExtensionInstancedArrays(state)##vertexAttribDivisorANGLE
+                        );
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ())
+                           );
+                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> _render;
+                      (
+                        vertexAttribDivisorANGLE |> withTwoArgs(pos1, 1) |> getCallCount,
+                        vertexAttribDivisorANGLE |> withTwoArgs(pos2, 1) |> getCallCount,
+                        vertexAttribDivisorANGLE |> withTwoArgs(pos3, 1) |> getCallCount,
+                        vertexAttribDivisorANGLE |> withTwoArgs(pos4, 1) |> getCallCount
+                      )
+                      |> expect == (1, 1, 1, 1)
+                    }
+                  );
                   test(
                     "enableVertexAttribArray instance data",
                     () => {
                       let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
-                        _prepare(sandbox, state);
+                        _prepareForHandleInstanceData(sandbox, state);
                       let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
@@ -453,252 +529,290 @@ let _ =
                     }
                   );
                   describe(
-                    "vertexAttribPointer instance data",
-                    () => {
-                      let _prepare = (sandbox, state) => {
-                        let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
-                          _prepare(sandbox, state);
-                        let float = 1;
-                        let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                        let state =
-                          state
-                          |> FakeGlTool.setFakeGl(
-                               FakeGlTool.buildFakeGl(
-                                 ~sandbox,
-                                 ~float,
-                                 ~vertexAttribPointer,
-                                 ~getAttribLocation,
-                                 ()
-                               )
-                             );
-                        let state = state |> RenderJobsTool.initSystemAndRender;
-                        let state = state |> _render;
-                        (float, pos1, pos2, pos3, pos4, vertexAttribPointer)
-                      };
-                      test(
-                        "test first data",
-                        () => {
-                          let (float, pos1, pos2, pos3, pos4, vertexAttribPointer) =
-                            _prepare(sandbox, state);
-                          vertexAttribPointer
-                          |> expect
-                          |> toCalledWith([|pos1, 4, float, Obj.magic(Js.false_), 64, 0|])
-                        }
-                      );
-                      test(
-                        "test second data",
-                        () => {
-                          let (float, pos1, pos2, pos3, pos4, vertexAttribPointer) =
-                            _prepare(sandbox, state);
-                          vertexAttribPointer
-                          |> expect
-                          |> toCalledWith([|pos2, 4, float, Obj.magic(Js.false_), 64, 16|])
-                        }
-                      );
-                      test(
-                        "test third data",
-                        () => {
-                          let (float, pos1, pos2, pos3, pos4, vertexAttribPointer) =
-                            _prepare(sandbox, state);
-                          vertexAttribPointer
-                          |> expect
-                          |> toCalledWith([|pos3, 4, float, Obj.magic(Js.false_), 64, 32|])
-                        }
-                      );
-                      test(
-                        "test fourth data",
-                        () => {
-                          let (float, pos1, pos2, pos3, pos4, vertexAttribPointer) =
-                            _prepare(sandbox, state);
-                          vertexAttribPointer
-                          |> expect
-                          |> toCalledWith([|pos4, 4, float, Obj.magic(Js.false_), 64, 48|])
-                        }
-                      )
-                    }
-                  );
-                  test(
-                    "vertexAttribDivisorANGLE 1",
-                    () => {
-                      let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
-                        _prepare(sandbox, state);
-                      let vertexAttribDivisorANGLE =
-                        Obj.magic(
-                          InstanceTool.getExtensionInstancedArrays(state)##vertexAttribDivisorANGLE
-                        );
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ())
-                           );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
-                      let state = state |> _render;
-                      (
-                        vertexAttribDivisorANGLE |> withTwoArgs(pos1, 1) |> getCallCount,
-                        vertexAttribDivisorANGLE |> withTwoArgs(pos2, 1) |> getCallCount,
-                        vertexAttribDivisorANGLE |> withTwoArgs(pos3, 1) |> getCallCount,
-                        vertexAttribDivisorANGLE |> withTwoArgs(pos4, 1) |> getCallCount
-                      )
-                      |> expect == (1, 1, 1, 1)
-                    }
-                  )
-                }
-              );
-              describe(
-                "optimize",
-                () =>
-                  describe(
-                    "add isTransformStatic logic",
-                    () => {
-                      let _prepare = (sandbox, isStatic, state) => {
-                        let (
-                          state,
-                          _,
-                          (
-                            geometry,
-                            material,
-                            meshRenderer,
-                            sourceInstance,
-                            objectInstanceGameObject
-                          )
-                        ) =
-                          _prepare(sandbox, state^);
-                        let state =
-                          SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                            sourceInstance,
-                            isStatic,
-                            state
-                          );
-                        let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
-                        let state =
-                          state
-                          |> FakeGlTool.setFakeGl(
-                               FakeGlTool.buildFakeGl(~sandbox, ~bufferSubData, ())
-                             );
-                        let state = state |> RenderJobsTool.initSystemAndRender;
-                        (state, sourceInstance, bufferSubData)
-                      };
+                    "optimize",
+                    () =>
                       describe(
-                        "if isTransformStatic is true",
+                        "add isTransformStatic logic",
                         () => {
-                          test(
-                            "if not send data before, send data",
-                            () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
-                              let state = state |> _render;
-                              bufferSubData |> expect |> toCalledOnce
-                            }
-                          );
-                          test(
-                            "else, not send data",
-                            () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
-                              let state = state |> _render;
-                              let state = state |> _render;
-                              bufferSubData |> expect |> toCalledOnce
-                            }
-                          )
-                        }
-                      );
-                      describe(
-                        "else",
-                        () =>
-                          test(
-                            "send data",
-                            () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.false_, state);
-                              let state = state |> _render;
-                              bufferSubData |> expect |> toCalledOnce
-                            }
-                          )
-                      );
-                      describe(
-                        "support switch static to dynamic",
-                        () =>
+                          let _prepareForBufferSubData = (sandbox, isStatic, state) => {
+                            let (
+                              state,
+                              gameObject,
+                              (
+                                geometry,
+                                material,
+                                meshRenderer,
+                                sourceInstance,
+                                objectInstanceGameObject
+                              )
+                            ) =
+                              _prepare(sandbox, state^);
+                            let state =
+                              SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                                sourceInstance,
+                                isStatic,
+                                state
+                              );
+                            let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
+                            let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                            let state =
+                              state
+                              |> FakeGlTool.setFakeGl(
+                                   FakeGlTool.buildFakeGl(
+                                     ~sandbox,
+                                     ~bufferSubData,
+                                     ~bindBuffer,
+                                     ()
+                                   )
+                                 );
+                            let state = state |> RenderJobsTool.initSystemAndRender;
+                            (state, sourceInstance, (bufferSubData, bindBuffer))
+                          };
                           describe(
-                            "test after switch",
+                            "if isTransformStatic is true",
+                            () => {
+                              test(
+                                "if not send data before, send data",
+                                () => {
+                                  let (state, _, (bufferSubData, bindBuffer)) =
+                                    _prepareForBufferSubData(sandbox, Js.true_, state);
+                                  let state = state |> _render;
+                                  bufferSubData |> expect |> toCalledOnce
+                                }
+                              );
+                              describe(
+                                "else",
+                                () => {
+                                  test(
+                                    "not buffer data",
+                                    () => {
+                                      let (state, _, (bufferSubData, bindBuffer)) =
+                                        _prepareForBufferSubData(sandbox, Js.true_, state);
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      bufferSubData |> expect |> toCalledOnce
+                                    }
+                                  );
+                                  test(
+                                    "bind instance buffer",
+                                    () => {
+                                      let (state, _, (bufferSubData, bindBuffer)) =
+                                        _prepareForBufferSubData(sandbox, Js.true_, state);
+                                      let state = state |> _render;
+                                      let callCount = bindBuffer |> getCallCount;
+                                      let state = state |> _render;
+                                      bindBuffer |> getCallCount |> expect == callCount + 3
+                                    }
+                                  );
+                                  describe(
+                                    "vertexAttribPointer instance data",
+                                    () => {
+                                      let _prepareForTestVertexAttribPointer = (sandbox, state) =>
+                                        RenderBasicHardwareInstanceTool.prepareForTestVertexAttribPointer(
+                                          sandbox,
+                                          _prepareForHandleInstanceData,
+                                          state
+                                        );
+                                      test(
+                                        "test first data",
+                                        () => {
+                                          let (
+                                            state,
+                                            float,
+                                            (pos1, pos2, pos3, pos4),
+                                            vertexAttribPointer
+                                          ) =
+                                            _prepareForTestVertexAttribPointer(sandbox, state);
+                                          let callCount = vertexAttribPointer |> getCallCount;
+                                          let state = state |> _render;
+                                          vertexAttribPointer
+                                          |> getCall(callCount + 1)
+                                          |> expect
+                                          |> toCalledWith([|
+                                               pos1,
+                                               4,
+                                               float,
+                                               Obj.magic(Js.false_),
+                                               64,
+                                               0
+                                             |])
+                                        }
+                                      )
+                                    }
+                                  );
+                                  test(
+                                    "vertexAttribDivisorANGLE 1",
+                                    () => {
+                                      let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
+                                        _prepareForHandleInstanceData(sandbox, state);
+                                      let vertexAttribDivisorANGLE =
+                                        Obj.magic(
+                                          InstanceTool.getExtensionInstancedArrays(state)##vertexAttribDivisorANGLE
+                                        );
+                                      let state =
+                                        state
+                                        |> FakeGlTool.setFakeGl(
+                                             FakeGlTool.buildFakeGl(
+                                               ~sandbox,
+                                               ~getAttribLocation,
+                                               ()
+                                             )
+                                           );
+                                      let state = state |> RenderJobsTool.initSystemAndRender;
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      (
+                                        vertexAttribDivisorANGLE
+                                        |> withTwoArgs(pos1, 1)
+                                        |> getCallCount,
+                                        vertexAttribDivisorANGLE
+                                        |> withTwoArgs(pos2, 1)
+                                        |> getCallCount,
+                                        vertexAttribDivisorANGLE
+                                        |> withTwoArgs(pos3, 1)
+                                        |> getCallCount,
+                                        vertexAttribDivisorANGLE
+                                        |> withTwoArgs(pos4, 1)
+                                        |> getCallCount
+                                      )
+                                      |> expect == (2, 2, 2, 2)
+                                    }
+                                  );
+                                  test(
+                                    "not enableVertexAttribArray instance data(because alreay enable before)",
+                                    () => {
+                                      let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
+                                        _prepareForHandleInstanceData(sandbox, state);
+                                      let enableVertexAttribArray =
+                                        createEmptyStubWithJsObjSandbox(sandbox);
+                                      let state =
+                                        state
+                                        |> FakeGlTool.setFakeGl(
+                                             FakeGlTool.buildFakeGl(
+                                               ~sandbox,
+                                               ~enableVertexAttribArray,
+                                               ~getAttribLocation,
+                                               ()
+                                             )
+                                           );
+                                      let state = state |> RenderJobsTool.initSystemAndRender;
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      (
+                                        enableVertexAttribArray |> withOneArg(pos1) |> getCallCount,
+                                        enableVertexAttribArray |> withOneArg(pos2) |> getCallCount,
+                                        enableVertexAttribArray |> withOneArg(pos3) |> getCallCount,
+                                        enableVertexAttribArray |> withOneArg(pos4) |> getCallCount
+                                      )
+                                      |> expect == (1, 1, 1, 1)
+                                    }
+                                  )
+                                }
+                              )
+                            }
+                          );
+                          describe(
+                            "else",
                             () =>
                               test(
                                 "send data",
                                 () => {
-                                  let (state, sourceInstance, bufferSubData) =
-                                    _prepare(sandbox, Js.false_, state);
+                                  let (state, sourceInstance, (bufferSubData, _)) =
+                                    _prepareForBufferSubData(sandbox, Js.false_, state);
                                   let state = state |> _render;
-                                  let state =
-                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                      sourceInstance,
-                                      Js.false_,
-                                      state
-                                    );
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  bufferSubData |> expect |> toCalledThrice
+                                  bufferSubData |> expect |> toCalledOnce
                                 }
                               )
-                          )
-                      );
-                      describe(
-                        "support switch dynamic to static",
-                        () =>
+                          );
                           describe(
-                            "test after switch",
+                            "support switch static to dynamic",
                             () =>
-                              test(
-                                "send data in the next render, and not send data in the next next render",
-                                () => {
-                                  let (state, sourceInstance, bufferSubData) =
-                                    _prepare(sandbox, Js.false_, state);
-                                  let state = state |> _render;
-                                  let state =
-                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                      sourceInstance,
-                                      Js.true_,
-                                      state
-                                    );
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  bufferSubData |> expect |> toCalledTwice
-                                }
+                              describe(
+                                "test after switch",
+                                () =>
+                                  test(
+                                    "send data",
+                                    () => {
+                                      let (state, sourceInstance, (bufferSubData, _)) =
+                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                      let state = state |> _render;
+                                      let state =
+                                        SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                                          sourceInstance,
+                                          Js.false_,
+                                          state
+                                        );
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      bufferSubData |> expect |> toCalledThrice
+                                    }
+                                  )
                               )
-                          )
-                      );
-                      describe(
-                        "support switch static to dynamic to static",
-                        () =>
+                          );
                           describe(
-                            "test after switch",
+                            "support switch dynamic to static",
                             () =>
-                              test(
-                                "send data in the next render, and not send data in the next next render",
-                                () => {
-                                  let (state, sourceInstance, bufferSubData) =
-                                    _prepare(sandbox, Js.false_, state);
-                                  let state = state |> _render;
-                                  let state =
-                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                      sourceInstance,
-                                      Js.false_,
-                                      state
-                                    );
-                                  let state = state |> _render;
-                                  let state =
-                                    SourceInstance.markSourceInstanceModelMatrixIsStatic(
-                                      sourceInstance,
-                                      Js.true_,
-                                      state
-                                    );
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  let state = state |> _render;
-                                  bufferSubData |> getCallCount |> expect == 3
-                                }
+                              describe(
+                                "test after switch",
+                                () =>
+                                  test(
+                                    "send data in the next render, and not send data in the next next render",
+                                    () => {
+                                      let (state, sourceInstance, (bufferSubData, _)) =
+                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                      let state = state |> _render;
+                                      let state =
+                                        SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                                          sourceInstance,
+                                          Js.true_,
+                                          state
+                                        );
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      bufferSubData |> expect |> toCalledTwice
+                                    }
+                                  )
+                              )
+                          );
+                          describe(
+                            "support switch static to dynamic to static",
+                            () =>
+                              describe(
+                                "test after switch",
+                                () =>
+                                  test(
+                                    "send data in the next render, and not send data in the next next render",
+                                    () => {
+                                      let (state, sourceInstance, (bufferSubData, _)) =
+                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                      let state = state |> _render;
+                                      let state =
+                                        SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                                          sourceInstance,
+                                          Js.false_,
+                                          state
+                                        );
+                                      let state = state |> _render;
+                                      let state =
+                                        SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                                          sourceInstance,
+                                          Js.true_,
+                                          state
+                                        );
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      let state = state |> _render;
+                                      bufferSubData |> getCallCount |> expect == 3
+                                    }
+                                  )
                               )
                           )
+                        }
                       )
-                    }
                   )
+                }
               )
             }
           )

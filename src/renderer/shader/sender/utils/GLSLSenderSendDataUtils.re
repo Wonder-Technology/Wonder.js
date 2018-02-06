@@ -22,7 +22,7 @@ let getBufferSizeByType = (type_: string) =>
     )
   };
 
-let _enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>
+let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>
   WonderCommonlib.ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
     {
       enableVertexAttribArray(pos, gl);
@@ -38,7 +38,7 @@ let sendBuffer =
       let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-      _enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
+      enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
     }
   );
 

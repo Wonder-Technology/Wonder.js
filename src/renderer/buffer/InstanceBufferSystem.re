@@ -114,4 +114,9 @@ let updateData = (gl, data: Float32Array.t, buffer) => {
   gl |> bufferSubFloat32Data(getArrayBuffer(gl), 0, data);
   buffer
 };
+
+let bind = (gl, buffer) => {
+  bindBuffer(getArrayBuffer(gl), buffer, gl);
+  buffer
+};
 /* let unbind = (gl, buffer) => {}; */

@@ -23,10 +23,19 @@ let _fillObjectInstanceData =
 };
 
 let _sendTransformMatrixDataBuffer =
-    ((gl, extension), {pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index) => {
-  Gl.enableVertexAttribArray(pos, gl);
+    (
+      (gl, extension),
+      ({pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index),
+      state
+    ) => {
   Gl.vertexAttribPointer(pos, size, Gl.getFloat(gl), Js.false_, stride, getOffsetFunc(index), gl);
-  [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
+  [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1) |> ignore;
+  GLSLSenderSendDataUtils.enableVertexAttribArray(
+    gl,
+    pos,
+    GLSLSenderStateUtils.getGLSLSenderData(state).vertexAttribHistoryArray,
+    state
+  )
 };
 
 let _sendTransformMatrixDataBufferData =
@@ -35,11 +44,14 @@ let _sendTransformMatrixDataBufferData =
   let _ = updateData(gl, matricesArrayForInstance, matrixInstanceBuffer);
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
-  |> WonderCommonlib.ArraySystem.forEachi(
+  |> ArraySystem.reduceStatei(
        [@bs]
-       ((sendData, index) => _sendTransformMatrixDataBuffer(glDataTuple, sendData, stride, index))
-     );
-  state
+       (
+         (state, sendData, index) =>
+           state |> _sendTransformMatrixDataBuffer(glDataTuple, (sendData, stride, index))
+       ),
+       state
+     )
 };
 
 let _sendTransformMatrixData =
@@ -91,12 +103,47 @@ let _sendTransformMatrixData =
 
 let _sendStaticTransformMatrixData =
     (
-      (glDataTuple, (_, sourceInstance, _, _, _, _, _), matrixMapTuple) as dataTuple,
+      (
+        (gl, extension, shaderIndex),
+        (
+          uid,
+          sourceInstance,
+          defaultCapacity,
+          strideForCapacity,
+          strideForSend,
+          objectInstanceArray,
+          instanceRenderListCount
+        ),
+        (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
+      ) as dataTuple,
       fillMatrixTypeArrFunc,
       state
     ) =>
   SourceInstanceAdmin.isSendTransformMatrixData(sourceInstance, state) ?
-    state :
+    {
+      /* TODO test */
+      InstanceBufferSystem.bind(
+        gl,
+        InstanceBufferSystem.getOrCreateBuffer(
+          (gl, sourceInstance, defaultCapacity),
+          (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
+          state
+        )
+      )
+      |> ignore;
+      state
+      |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
+      |> ArraySystem.reduceStatei(
+           [@bs]
+           (
+             (state, sendData, index) =>
+               state
+               |> _sendTransformMatrixDataBuffer((gl, extension), (sendData, strideForSend, index))
+           ),
+           state
+         );
+      state
+    } :
     state
     |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc)
     |> SourceInstanceAdmin.markIsSendTransformMatrixData(sourceInstance, true);
