@@ -171,9 +171,7 @@ let render =
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
-  /* TODO move to function */
-  let extension =
-    GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
+  let extension = GPUDetectSystem.unsafeGetInstanceExtension(state);
   let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;

@@ -68,5 +68,23 @@ let detect = (gl, state: StateDataType.state) => {
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 
-let getInstanceExtension = (state: StateDataType.state) =>
-  GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays;
+let unsafeGetInstanceExtension = (state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|extensionInstancedArrays exist|j},
+                ~actual={j|not|j}
+              ),
+              () => GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> assertExist
+            )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn
+};
