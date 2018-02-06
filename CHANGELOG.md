@@ -1,3 +1,48 @@
+<a name="1.0.0-alpha.16"></a>
+# [1.0.0-alpha.16](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.15...v1.0.0-alpha.16) (2018-02-06)
+
+
+### Bug Fixes
+
+* **job:** fix asset->JobConfigLoaderSystem->"if the order of the fetch of logic/render json data change, shouldn't affect the setted data in state" bug ([2ea157d](https://github.com/Wonder-Technology/Wonder.js/commit/2ea157d))
+* fix package.json->buildAll script bug ([7a8a8ee](https://github.com/Wonder-Technology/Wonder.js/commit/7a8a8ee))
+
+
+### Features
+
+* **geometry:** add normals ([704f8e9](https://github.com/Wonder-Technology/Wonder.js/commit/704f8e9))
+* **glsl:** vs top add precision ([c7b6b17](https://github.com/Wonder-Technology/Wonder.js/commit/c7b6b17))
+* **instance:** add normalMatrix instance data ([f6e00c5](https://github.com/Wonder-Technology/Wonder.js/commit/f6e00c5))
+* **instance:** fix "if has instance shader and other shader and mark instance static, the second draw of instance will fail" bug + optimize draw instance: if already enableVertexAttribArray before, not enable it again ([e9e33fa](https://github.com/Wonder-Technology/Wonder.js/commit/e9e33fa))
+* **job:** add "front_render_light" job; rename "send uniform data" related modules' and functions' ([bbc50d4](https://github.com/Wonder-Technology/Wonder.js/commit/bbc50d4))
+* **job:** extract ClearLastSendComponentJob ([0a2a4d4](https://github.com/Wonder-Technology/Wonder.js/commit/0a2a4d4))
+* **job:** improve shader.json->material_shaders ([45ea42b](https://github.com/Wonder-Technology/Wonder.js/commit/45ea42b))
+* **light:** add "init->direction light shader" logic ([29796bd](https://github.com/Wonder-Technology/Wonder.js/commit/29796bd))
+* **light:** add "point light->init shader" logic ([4c69ce7](https://github.com/Wonder-Technology/Wonder.js/commit/4c69ce7))
+* **light:** add ambient light; refactor(rename folder name; move job folder); add light material gl ([28a8e8e](https://github.com/Wonder-Technology/Wonder.js/commit/28a8e8e))
+* **light:** add direction light component ([a3ddb50](https://github.com/Wonder-Technology/Wonder.js/commit/a3ddb50))
+* **light:** add point light component ([f3fa8f9](https://github.com/Wonder-Technology/Wonder.js/commit/f3fa8f9))
+* **light:** fix "compute normalMatrix" bug ([de797bd](https://github.com/Wonder-Technology/Wonder.js/commit/de797bd))
+* **light:** fix "define light count" bug ([adbfd01](https://github.com/Wonder-Technology/Wonder.js/commit/adbfd01))
+* **light:** fix "send normalMatrix uniform data" bug: now send per renderObject instead of per shad ([d758294](https://github.com/Wonder-Technology/Wonder.js/commit/d758294))
+* **light:** fix ambient light->dispose->swap index/data bug ([aa18246](https://github.com/Wonder-Technology/Wonder.js/commit/aa18246))
+* **light:** optimize "send normalMatrix": add cache ([b68cbcb](https://github.com/Wonder-Technology/Wonder.js/commit/b68cbcb))
+* **light:** optimize: use "normal matrix cache" ([0cdf2eb](https://github.com/Wonder-Technology/Wonder.js/commit/0cdf2eb))
+* **light:** pass "render point light" main unit test and render test ([c84784b](https://github.com/Wonder-Technology/Wonder.js/commit/c84784b))
+* **light:** set gl side to be FRONT when init ([baefcff](https://github.com/Wonder-Technology/Wonder.js/commit/baefcff))
+* **lightMaterial:** add lightMaterial component ([b25b27a](https://github.com/Wonder-Technology/Wonder.js/commit/b25b27a))
+* **shader:** optimize: getOffsetFunc now not curry ([30648ac](https://github.com/Wonder-Technology/Wonder.js/commit/30648ac))
+* **shader:** pass lightMaterial, ambientLight related shader->send uniform data logic ([503fcf9](https://github.com/Wonder-Technology/Wonder.js/commit/503fcf9))
+* **shader:** send u_cameraPos, u_normalMatrix uniform data ([7e9d722](https://github.com/Wonder-Technology/Wonder.js/commit/7e9d722))
+* **transform:** optimize "set transform and set parent" ([d1c1be7](https://github.com/Wonder-Technology/Wonder.js/commit/d1c1be7))
+
+
+### Performance Improvements
+
+* **render:** use "lastSendGeometry" instead of "lastSendArrayBuffer", "lastSendElementArrayBuffer" ([aee8ff9](https://github.com/Wonder-Technology/Wonder.js/commit/aee8ff9))
+
+
+
 <a name="1.0.0-alpha.15"></a>
 # [1.0.0-alpha.15](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.14...v1.0.0-alpha.15) (2018-01-26)
 
