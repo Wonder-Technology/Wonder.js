@@ -23,7 +23,7 @@ let _addModelMatrixInstanceArrayBufferSendData =
   |> ArraySystem.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 4,
-       getOffsetFunc: (index) => index * 16
+       getOffsetFunc: [@bs] ((index) => index * 16)
      })
 );
 
@@ -34,7 +34,7 @@ let _addNormalMatrixInstanceArrayBufferSendData =
   |> ArraySystem.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 3,
-       getOffsetFunc: (index) => (index - 4) * 12 + 64
+       getOffsetFunc: [@bs] ((index) => (index - 4) * 12 + 64)
      })
 );
 

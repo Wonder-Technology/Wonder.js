@@ -28,7 +28,15 @@ let _sendTransformMatrixDataBuffer =
       ({pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index),
       state
     ) => {
-  Gl.vertexAttribPointer(pos, size, Gl.getFloat(gl), Js.false_, stride, getOffsetFunc(index), gl);
+  Gl.vertexAttribPointer(
+    pos,
+    size,
+    Gl.getFloat(gl),
+    Js.false_,
+    stride,
+    [@bs] getOffsetFunc(index),
+    gl
+  );
   [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1) |> ignore;
   GLSLSenderSendDataUtils.enableVertexAttribArray(
     gl,

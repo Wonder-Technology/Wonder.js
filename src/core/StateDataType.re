@@ -91,7 +91,7 @@ type attributeSendData = {
 and instanceAttributeSendData = {
   pos: attributeLocation,
   size: int,
-  getOffsetFunc: int => int
+  getOffsetFunc: [@bs] (int => int)
 }
 and uniformRenderObjectSendModelData = {
   pos: uniformLocation,
