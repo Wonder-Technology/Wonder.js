@@ -5,21 +5,25 @@ open PerformanceTestDataType;
 let performanceTestData = {
   commonData: {
     isClosePage: true,
-    execCountWhenTest: 10,
-    execCountWhenGenerateBenchmark: 15,
+    execCountWhenTest: 1,
+    execCountWhenGenerateBenchmark: 2,
     compareCount: 5,
     maxAllowDiffTimePercent: 50,
     maxAllowDiffMemoryPercent: 150,
     benchmarkPath: "./test/e2e/performance/benchmark/",
     baseDir: "./dist/base",
     scriptFilePathList: [
-      "./dist/wd.js",
       "./test/e2e/js/ReplaceFetchTool.js",
       "./test/e2e/js/ScheduleTool.js",
       "./test/e2e/js/BasicBoxesTool.js",
+      "./test/e2e/js/LightBoxesTool.js",
+      "./test/e2e/js/LightTool.js",
       "./test/e2e/js/CameraTool.js",
       "./test/e2e/js/InstanceBasicBoxesTool.js",
-      "./test/e2e/js/RedoUndoTool.js"
+      "./test/e2e/js/InstanceLightBoxesTool.js",
+      "./test/e2e/js/RedoUndoTool.js",
+      "./test/e2e/js/RandomTool.js",
+      "./dist/wd.js"
     ],
     replaceBodyFuncStrWhenDebug:
       Some((bodyFuncStr) => bodyFuncStr |> Js.String.replace("./data", "../../../../data"))
@@ -323,7 +327,7 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                            function initSample(state) {
            var n1 = performance.now();
 
-                           var data = InstanceBasicBoxesTool.createBoxes(1, 60000, true, state);
+                           var data = InstanceBasicBoxesTool.createBoxes(1, 100000, true, state);
                                var state = data[0];
                                var boxes = data[1];
 
@@ -645,6 +649,681 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
                            var state = InstanceBasicBoxesTool.createAndDisposeSourceInstanceGameObjects(1, 2000, boxes, state);
+
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
+
+
+
+
+
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+           var n4 = performance.now();
+                               var state = wd.loopBody(200.0, state);
+
+
+
+           var n5 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+
+
+           }
+
+           |},
+          errorRate: 10
+        }
+      ]
+    },
+    {
+      name: "light_boxes",
+      caseList: [
+        {
+          name: "create_3k_boxes",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                function initSample(state) {
+var n1 = performance.now();
+
+                    var data = LightBoxesTool.createBoxesByClone(3000, state);
+
+                    var state = data[0];
+                    var boxes = data[1];
+
+                    var data = LightBoxesTool.setPosition(boxes, state);
+                    var state = data[0];
+                    var boxes = data[1];
+
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+
+
+                    var data = LightBoxesTool.createCamera(state);
+                    var state = data[0];
+
+var n2 = performance.now();
+
+                    var state = wd.initDirector(state);
+
+
+
+                    /* var state = wd.setState(state); */
+
+
+var n3 = performance.now();
+                    var state = wd.loopBody(100.0, state);
+
+
+
+
+var n4 = performance.now();
+
+
+                    /* return state; */
+
+
+
+
+return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4]};
+}
+|},
+          errorRate: 10
+        },
+        {
+          name: "create_dispose_1k_boxes",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                                    function initSample(state) {
+                    var n1 = performance.now();
+
+                                        var data = LightBoxesTool.createBoxesByClone(1, state);
+
+                                        var state = data[0];
+                                        var boxes = data[1];
+
+                                        var data = LightBoxesTool.setPosition(boxes, state);
+                                        var state = data[0];
+                                        var boxes = data[1];
+
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+                                        var data = LightBoxesTool.createCamera(state);
+
+
+
+                                        var state = data[0];
+
+
+                                        var state = LightBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
+
+
+
+
+                    var n2 = performance.now();
+
+                                        var state = wd.initDirector(state);
+
+
+
+
+                    var n3 = performance.now();
+                                        var state = wd.loopBody(100.0, state);
+
+
+
+
+                    var n4 = performance.now();
+
+
+
+                                        var state = wd.loopBody(200.0, state);
+
+
+
+
+                    var n5 = performance.now();
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
+           }
+
+           |},
+          errorRate: 10
+        }
+      ]
+    },
+    {
+      name: "instance_light_boxes",
+      caseList: [
+        {
+          name: "static_hardware_create_50k_boxes",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                           function initSample(state) {
+           var n1 = performance.now();
+
+                           var data = InstanceLightBoxesTool.createBoxes(1, 50000, true, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+                               var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+
+                               var data = InstanceLightBoxesTool.createCamera(state);
+                               var state = data[0];
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
+
+
+
+                               /* var state = wd.setState(state); */
+
+
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+
+
+
+           var n4 = performance.now();
+
+
+                               /* return state; */
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+
+           }
+           |},
+          errorRate: 10
+        },
+        {
+          name: "static_batch_create_3k_boxes",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                               isDebug: false,
+                               gpuConfig: {
+           useHardwareInstance:false
+                               }
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                           function initSample(state) {
+           var n1 = performance.now();
+
+                           var data = InstanceLightBoxesTool.createBoxes(1, 3000, true, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+                               var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+                               var data = InstanceLightBoxesTool.createCamera(state);
+                               var state = data[0];
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
+
+
+
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+
+
+
+           var n4 = performance.now();
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+
+           }
+           |},
+          errorRate: 10
+        },
+        {
+          name: "dynamic_hardware_create_5k_boxes+transform",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                           function initSample(state) {
+           var n1 = performance.now();
+
+                           var data = InstanceLightBoxesTool.createBoxes(1, 5000, false, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+                               var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+                               var data = InstanceLightBoxesTool.createCamera(state);
+                               var state = data[0];
+
+
+
+                               var state = InstanceLightBoxesTool.setData(boxes, state);
+
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
+
+
+
+
+
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+
+
+
+           var n4 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
+           }
+           |},
+          errorRate: 10
+        },
+        {
+          name: "dynamic_hardware_create_dispose_100(sourceInstance box)*4(objectInstance box)",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                           function initSample(state) {
+           var n1 = performance.now();
+
+                           var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+
+                               var state = data[0];
+                               var boxes = data[1];
+
+                               var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+                               var data = InstanceLightBoxesTool.createCamera(state);
+                               var state = data[0];
+
+
+
+                           var state = InstanceLightBoxesTool.createAndDisposeSourceInstanceGameObjects(100, 4, boxes, state);
+
+
+           var n2 = performance.now();
+
+                               var state = wd.initDirector(state);
+
+
+
+
+
+           var n3 = performance.now();
+                               var state = wd.loopBody(100.0, state);
+
+           var n4 = performance.now();
+                               var state = wd.loopBody(200.0, state);
+
+
+
+           var n5 = performance.now();
+
+
+
+
+
+           return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] }
+
+
+           }
+
+           |},
+          errorRate: 10
+        },
+        {
+          name: "dynamic_hardware_create_dispose_1[(sourceInstance box)*1k(objectInstance box)",
+          bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+
+                    var state = wd.setMainConfig({
+                        isDebug: false
+                    });
+
+
+            return wd.load("./data/", state).then(function (state) {
+                return initSample(state);
+            });
+
+
+
+                           function initSample(state) {
+           var n1 = performance.now();
+
+                           var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+
+                               var state = data[0];
+                               var boxes = data[1];
+
+                               var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                               var state = data[0];
+                               var boxes = data[1];
+
+
+
+                        var data = LightTool.createAmbientLight(state);
+                        var state = data[0];
+
+
+
+                        var data = LightTool.createDirectionLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+
+                        var data = LightTool.createPointLight(state);
+                        var state = data[0];
+                        var directionLightObj = data[1];
+
+
+
+                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+                               var data = InstanceLightBoxesTool.createCamera(state);
+                               var state = data[0];
+
+
+
+                           var state = InstanceLightBoxesTool.createAndDisposeSourceInstanceGameObjects(1, 1000, boxes, state);
 
 
            var n2 = performance.now();
