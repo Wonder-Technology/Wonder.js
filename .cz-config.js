@@ -23,7 +23,7 @@ module.exports = {
       { name: "redo-undo" },
       { name: "job" },
       { name: "transform" },
-      { name: "render-worker" }
+      { name: "render-worker" },
       { name: "lightMaterial" },
       { name: "instance" },
       { name: "geometry" },
