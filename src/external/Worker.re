@@ -7,5 +7,5 @@ open WorkerType;
 [@bs.send.pipe : worker] external postMessage : Js.t({..}) => unit = "";
 
 [@bs.send.pipe : worker]
-external postMessageWithTransformData : (Js.t({..}), array('transformData)) => unit =
+external postMessageWithTransferData : (Js.t({..}), array('transferData)) => unit =
   "postMessage";

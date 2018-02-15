@@ -12,7 +12,7 @@ let sendCreateGLData =
     ) => {
   let offscreen = canvas##transferControlToOffscreen();
   renderWorker
-  |> Worker.postMessageWithTransformData(
+  |> Worker.postMessageWithTransferData(
        {
          "operateType": INIT_GL,
          "canvas": offscreen,
