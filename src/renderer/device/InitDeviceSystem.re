@@ -1,6 +1,4 @@
-open MainConfigType;
-
-open Dom;
+/* open Dom;
 
 open DomUtils;
 
@@ -57,9 +55,8 @@ let _convertContextConfigDataToJsObj =
 let initDevice = (config, state: StateDataType.state) =>
   WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
     {
-      let canvas = createCanvas(config);
       let (x, y, width, height, _, _) as screenData = ViewReWoSystem.getFullScreenData();
-      let canvas = canvas |> ViewReWoSystem.setToFullScreen(screenData);
+      let canvas = createCanvas(config) |> ViewReWoSystem.setToFullScreen(screenData);
       let viewportData = (x, y, width, height);
       DeviceManagerReWoSystem.sendCreateGLData(
         canvas,
@@ -87,4 +84,4 @@ let initDevice = (config, state: StateDataType.state) =>
       |> ViewSystem.setCanvas(canvas)
       |> ViewSystem.setContextConfig(config.contextConfig)
       |> GPUDetectSystem.detect(gl)
-    };
+    }; */

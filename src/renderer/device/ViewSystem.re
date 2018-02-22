@@ -19,13 +19,13 @@ let setToFullScreen = ViewShare.setToFullScreen;
 
 let getContextConfig = (state: state) => _getOptionValueFromState(state.viewData.contextConfig);
 
-let setContextConfig = (contextConfig: MainConfigType.contextConfig, state: state) => {
+let setContextConfig = (contextConfig: SettingType.context, state: state) => {
   ...state,
   viewData: {
     ...state.viewData,
     contextConfig:
       Some(
-        ViewShare.mainConfigTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig)
+        ViewShare.settingTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig)
       )
   }
 };

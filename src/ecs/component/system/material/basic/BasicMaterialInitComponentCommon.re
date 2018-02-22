@@ -6,7 +6,7 @@ open BasicMaterialType;
 
 let _getShaderLibs = ({material_shaders}) =>{
   let shaderName = "render_basic";
-  JobConfigUtils.findFirst(
+  JobConfigUtils.unsafeFindFirst(
     material_shaders,
     shaderName,
     ({name}: material_shader) => JobConfigSystem.filterTargetName(name, shaderName)

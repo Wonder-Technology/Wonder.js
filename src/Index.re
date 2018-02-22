@@ -1,12 +1,8 @@
 let load = LoaderManager.load;
 
-let loopBody = Director.loopBody;
-
 let initDirector = Director.initDirector;
 
 let startDirector = Director.startDirector;
-
-let setMainConfig = Main.setMainConfig;
 
 let setState = State.setState;
 
@@ -292,13 +288,9 @@ let createTransform = Transform.createTransform;
 
 let load = LoaderManager.load;
 
-let loopBody = Director.loopBody;
-
 let initDirector = Director.initDirector;
 
 let startDirector = Director.startDirector;
-
-let setMainConfig = Main.setMainConfig;
 
 let setState = State.setState;
 

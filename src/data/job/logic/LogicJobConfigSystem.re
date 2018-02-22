@@ -35,7 +35,7 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName}: jobItem) => {nam
 
 let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
-    JobConfigSystem.findFirst(
+    JobConfigSystem.unsafeFindFirst(
       pipelines,
       pipeline,
       ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)

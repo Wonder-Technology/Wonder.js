@@ -55,24 +55,41 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        Log.error(true, Log.info.FUNC_UNKNOW(`operateType:${operateType}`));
        break; */
 /* let onmessage = (e: renderWorkerMessageEvent) => { */
-let onmessage = (e) => {
-  let data = e##data;
-  switch data##operateType {
-  | INIT_GL =>
-  WonderLog.Log.print(("data:",  data )) |> ignore;
-    RenderWorkerStateSystem.createState()
-    |> InitGlSystem.initGl(data)
-    |> RenderWorkerStateSystem.setState(RenderWorkerStateData.renderWorkerStateData)
-    |> ignore
-  | operateType =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="render worker->onmessage",
-        ~description={j|unknown operateType: $operateType|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  }
-};
+/* let onmessage = (e) => {
+     let data = e##data;
+     switch data##operateType {
+     | INIT_GL =>
+       WonderLog.Log.print(("data:", data)) |> ignore;
+       RenderWorkerStateSystem.createState()
+       |> InitGlSystem.initGl(data)
+       |> RenderWorkerStateSystem.setState(RenderWorkerStateData.renderWorkerStateData)
+       |> ignore
+     | operateType =>
+       WonderLog.Log.fatal(
+         WonderLog.Log.buildFatalMessage(
+           ~title="render worker->onmessage",
+           ~description={j|unknown operateType: $operateType|j},
+           ~reason="",
+           ~solution={j||j},
+           ~params={j||j}
+         )
+       )
+     }
+   }; */
+/* TODO refactor: extract function */
+MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
+|> Most.filter((e) => e##data##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
+|> Most.forEach(
+     (e) =>
+       RenderWorkerStateSystem.setJobData(
+         e##data##pipelineJobs,
+         e##data##jobs,
+         RenderWorkerStateData.renderWorkerStateData
+       )
+   )
+|> ignore;
+
+WorkerJobSystem.getRenderWorkerJobStreamArr(RenderWorkerStateData.renderWorkerStateData)
+|> Most.mergeArray
+|> Most.drain
+|> ignore;

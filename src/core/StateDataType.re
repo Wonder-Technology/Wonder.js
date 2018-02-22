@@ -42,6 +42,10 @@ open Js.Typed_array;
 
 open MemoryConfigType;
 
+open CanvasConfigType;
+
+open WorkerConfigType;
+
 open VboBufferType;
 
 open DeviceManagerType;
@@ -59,6 +63,8 @@ open TypeArrayPoolType;
 open LogicJobConfigType;
 
 open RenderJobConfigType;
+
+open WorkerJobConfigType;
 
 open WorkerInstanceType;
 
@@ -171,10 +177,13 @@ and geometryData = {
 and state = {
   bufferConfig: option(bufferConfig),
   gpuConfig: option(gpuConfig),
+  canvasConfig: option(canvasConfig),
+  workerConfig: option(workerConfig),
   memoryConfig,
   jobData,
   logicJobConfig: option(logicJobConfig),
   renderJobConfig: option(renderJobConfig),
+  workerJobConfig: option(workerJobConfig),
   gpuDetectData,
   sourceInstanceData,
   objectInstanceData,

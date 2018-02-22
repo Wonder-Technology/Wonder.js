@@ -39,7 +39,7 @@ let getRenderSetting = (state: StateDataType.state) =>
 
 let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) => {
   let {shader}: job =
-    JobConfigSystem.findFirst(
+    JobConfigSystem.unsafeFindFirst(
       jobs,
       jobItemName,
       ({name: jobName}: job) => JobConfigSystem.filterTargetName(jobName, jobItemName)
@@ -49,7 +49,7 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) 
 
 let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
-    JobConfigSystem.findFirst(
+    JobConfigSystem.unsafeFindFirst(
       pipelines,
       pipeline,
       ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
@@ -64,7 +64,7 @@ let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs
   _getPipelineExecutableJobs(render_pipeline, render_pipelines, jobs);
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
-  JobConfigSystem.findFirst(
+  JobConfigSystem.unsafeFindFirst(
     shaderLibs,
     shaderLibName,
     (item: shaderLib) => JobConfigSystem.filterTargetName(item.name, shaderLibName)
@@ -86,7 +86,7 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
   Js.Array.concat(
-    JobConfigSystem.findFirst(
+    JobConfigSystem.unsafeFindFirst(
       groups,
       name,
       (item) => JobConfigSystem.filterTargetName(item.name, name)
@@ -120,7 +120,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
   | "modelMatrix_instance"
   | "normalMatrix_instance" =>
     let {value} =
-      JobConfigSystem.findFirst(
+      JobConfigSystem.unsafeFindFirst(
         static_branchs,
         name,
         (item) => JobConfigSystem.filterTargetName(item.name, name)

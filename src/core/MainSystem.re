@@ -1,4 +1,4 @@
-open MainConfigType;
+/* open MainConfigType;
 
 open StateDataType;
 
@@ -11,7 +11,7 @@ open DeviceManagerSystem;
 open JsObjUtils;
 
 /* TODO not set default twice! */
-let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigType.contextConfig => {
+let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : SettingType.context => {
   alpha: Js.to_bool(getValueFromJsObj(contextConfigObj##alpha, Js.true_)),
   depth: Js.to_bool(getValueFromJsObj(contextConfigObj##depth, Js.true_)),
   stencil: Js.to_bool(getValueFromJsObj(contextConfigObj##stencil, Js.false_)),
@@ -72,4 +72,4 @@ let init = ((config: mainConfigData, state: state)) =>
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GpuConfigSystem.setConfig(config.gpuConfig)
   |> WorkerManagerSystem.initWorker(config.workerFileDir)
-  |> InitDeviceSystem.initDevice(config);
+  |> InitDeviceSystem.initDevice(config); */

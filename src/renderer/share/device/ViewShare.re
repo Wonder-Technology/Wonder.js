@@ -1,5 +1,5 @@
-external mainConfigTypeContextConfigDataToStateDataTypeContextConfigData :
-  MainConfigType.contextConfig => StateDataType.contextConfig =
+external settingTypeContextConfigDataToStateDataTypeContextConfigData :
+  SettingType.context => StateDataType.contextConfig =
   "%identity";
 
 /* TODO support webgl2 */

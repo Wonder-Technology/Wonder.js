@@ -78,10 +78,13 @@ let restore =
 let createState = () => {
   bufferConfig: None,
   gpuConfig: None,
+  canvasConfig: None,
+  workerConfig: None,
   memoryConfig: MemoryConfigSystem.initData(),
   jobData: JobHelper.initData(),
   logicJobConfig: None,
   renderJobConfig: None,
+  workerJobConfig: None,
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
   viewData: {canvas: None, contextConfig: None},
   initConfig: {isDebug: false},

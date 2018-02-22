@@ -1,12 +1,12 @@
 open StateDataType;
 
-external mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData :
-  MainConfigType.gpuConfig => StateDataType.gpuConfig =
+external settingTypeBufferConfigDataToStateDataTypeBufferConfigData :
+  SettingType.gpu => StateDataType.gpuConfig =
   "%identity";
 
-let setConfig = (gpuConfig: MainConfigType.gpuConfig, state: state) => {
+let setConfig = (gpuConfig: SettingType.gpu, state: state) => {
   ...state,
-  gpuConfig: Some(mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData(gpuConfig))
+  gpuConfig: Some(settingTypeBufferConfigDataToStateDataTypeBufferConfigData(gpuConfig))
 };
 
 let getConfig = (state: StateDataType.state) => Js.Option.getExn(state.gpuConfig);

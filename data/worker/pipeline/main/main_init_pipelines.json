@@ -1,0 +1,49 @@
+  [
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "init",
+          "link": "concat",
+          "jobs": [
+            {
+              "name": "detect_worker"
+            },
+            {
+              "name": "create_worker_instance"
+            },
+            {
+              "name": "send_job_data"
+            },
+            {
+              "name": "send_init_render_data"
+            }
+          ]
+        },
+        {
+          "name": "send_job_data",
+          "link": "merge",
+          "jobs": [
+            {
+              "name": "send_job_data"
+            },
+            {
+              "name": "get_finish_send_job_data"
+            }
+          ]
+        },
+        {
+          "name": "frame",
+          "link": "merge",
+          "jobs": [
+            {
+              "name": "init"
+            },
+            {
+              "name": "get_finish_init_render_data"
+            }
+          ]
+        }
+      ]
+    }
+  ]

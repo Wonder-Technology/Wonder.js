@@ -1,12 +1,12 @@
 open DomType;
 
-let setContextConfig = (contextConfig: MainConfigType.contextConfig, state: StateDataType.state) => {
+let setContextConfig = (contextConfig: SettingType.context, state: StateDataType.state) => {
   ...state,
   viewData: {
     ...state.viewData,
     contextConfig:
       Some(
-        ViewShare.mainConfigTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig)
+        ViewShare.settingTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig)
       )
   }
 };

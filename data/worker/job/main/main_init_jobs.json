@@ -1,0 +1,32 @@
+[
+    {
+        "name": "detect_worker"
+    },
+    {
+        "name": "create_worker_instance"
+    },
+    {
+        "name": "send_job_data",
+        "flags": [
+            "SEND_JOB_DATA"
+        ]
+    },
+    {
+        "name": "get_finish_send_job_data",
+        "flags": [
+            "FINISH_SEND_JOB_DATA"
+        ]
+    },
+    {
+        "name": "send_init_render_data",
+        "flags": [
+            "INIT_RENDER"
+        ]
+    },
+    {
+        "name": "get_finish_init_render_data",
+        "flags": [
+            "FINISH_INIT_RENDER"
+        ]
+    }
+]

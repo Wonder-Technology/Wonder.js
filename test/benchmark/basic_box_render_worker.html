@@ -9,15 +9,14 @@
 <body>
     <script src="../../dist/wd.js"></script>
     <script>
-
-
         window.onload = function () {
-            var state = wd.setMainConfig({
-                isDebug: true,
-                workerFileDir: "../../dist/"
-            });
+            // var state = wd.setMainConfig({
+            //     isDebug: true,
+            //     workerFileDir: "../../dist/"
+            // });
 
-            wd.load("../../data/", state).then(function (state) {
+            // wd.load("../../data/", state).then(function (state) {
+            wd.load("./data/", state).then(function (state) {
                 console.log("complete", state);
                 initSample(state);
             });

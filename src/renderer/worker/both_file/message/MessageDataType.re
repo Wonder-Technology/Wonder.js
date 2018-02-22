@@ -4,3 +4,4 @@
        "contextConfig": contextConfig,
        "viewportData": array(float)
    }; */
+/* type messageData = {.. "operateType": string}; */

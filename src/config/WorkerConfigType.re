@@ -1,0 +1,3 @@
+type workerConfig = {
+  useWorker: bool
+};

@@ -2,6 +2,8 @@ open Js.Promise;
 
 open Most;
 
+open SettingType;
+
 let _createFetchLogicJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "logic/setting/logic_setting.json"|]),
@@ -84,26 +86,100 @@ let _collectAllRecords = (stream) =>
 let _addInitDataFunc = (initDataFunc, promise) =>
   promise |> then_((recordArr) => (recordArr, initDataFunc) |> resolve);
 
-let load = (dataDir: string, fetchFunc, state: StateDataType.state) =>
+/* TODO set all setting to one state->xxx(set together) */
+let _setSetting =
+    (stateData, state: StateDataType.state, {canvasId, isDebug, context, gpu, worker}) => {
+  InitConfigSystem.setIsDebug(isDebug, stateData) |> ignore;
+  state
+  |> CanvasConfigSystem.setConfig(canvasId)
+  |> GpuConfigSystem.setConfig(gpu)
+  |> ViewSystem.setContextConfig(context)
+  |> WorkerConfigSystem.setConfig(worker)
+};
+
+/* let _createHandleSingleJobConfigStreamArr = (state: StateDataType.state) =>
+   mergeArray([|
+     fromPromise(
+       _createFetchLogicJobStreamArr(dataDir, fetchFunc)
+       |> MostUtils.concatArray
+       |> _collectAllRecords
+       |> _addInitDataFunc(LogicJobConfigHelper.initData)
+     ),
+     fromPromise(
+       _createFetchRenderJobStreamArr(dataDir, fetchFunc)
+       |> MostUtils.concatArray
+       |> _collectAllRecords
+       |> _addInitDataFunc(RenderJobConfigHelper.initData)
+     )
+     |> Obj.magic
+   |])
+   |> reduce(
+        (state, (recordArr, initDataFunc)) => initDataFunc(recordArr |> Obj.magic, state),
+        state
+      )
+   |> then_((state) => state |> AllJobSystem.init |> resolve); */
+let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
+  FetchCommon.createFetchJsonStream(
+    PathUtils.join([|dataDir, "worker/setting/setting.json"|]),
+    fetchFunc
+  )
+  |> map((json) => WorkerJobConfigParseSystem.convertSettingToRecord(json)),
+  FetchCommon.createFetchJsonStream(
+    PathUtils.join([|dataDir, "worker/pipeline/main_init_pipelines.json"|]),
+    fetchFunc
+  )
+  |> map((json) => WorkerJobConfigParseSystem.convertMainInitPipelinesToRecord(json))
+  |> Obj.magic,
+  FetchCommon.createFetchJsonStream(
+    PathUtils.join([|dataDir, "worker/jobs/main_init_jobs.json"|]),
+    fetchFunc
+  )
+  |> map((json) => WorkerJobConfigParseSystem.convertMainInitJobsToRecord(json))
+  |> Obj.magic,
+  FetchCommon.createFetchJsonStream(
+    PathUtils.join([|dataDir, "worker/jobs/worker_jobs.json"|]),
+    fetchFunc
+  )
+  |> map((json) => WorkerJobConfigParseSystem.convertWorkerJobsToRecord(json))
+  |> Obj.magic,
+  FetchCommon.createFetchJsonStream(
+    PathUtils.join([|dataDir, "worker/pipeline/worker_pipelines.json"|]),
+    fetchFunc
+  )
+  |> map((json) => WorkerJobConfigParseSystem.convertWorkerPipelinesToRecord(json))
+  |> Obj.magic
+|];
+
+let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state: StateDataType.state) =>
+  fromPromise(
+    _createFetchWorkerJobStreamArr(dataDir, fetchFunc)
+    |> MostUtils.concatArray
+    |> _collectAllRecords
+    |> _addInitDataFunc(WorkerJobConfigHelper.initData)
+  );
+
+/* |> reduce(
+     (state, (recordArr, initDataFunc)) => initDataFunc(recordArr |> Obj.magic, state),
+     state
+   ); */
+/* |> then_((state) => state |> WorkerJobSystem.init(StateData.stateData) |> resolve); */
+let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state: StateDataType.state) =>
+  /* TODO create single stream */
+  /* WorkerConfigSystem.getConfig(state).useWorker ?
+     _createHandleWorkerJobConfigStreamArr(state) : _createHandleSingleJobConfigStreamArr(state); */
+  _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
+
+let load = (dataDir: string, fetchFunc, stateData, state: StateDataType.state) =>
   /* TODO load gloal_resources */
   /* TODO perf: use mergeArray instead of concatArray */
-  mergeArray([|
-    fromPromise(
-      _createFetchLogicJobStreamArr(dataDir, fetchFunc)
-      |> MostUtils.concatArray
-      |> _collectAllRecords
-      |> _addInitDataFunc(LogicJobConfigHelper.initData)
-    ),
-    fromPromise(
-      _createFetchRenderJobStreamArr(dataDir, fetchFunc)
-      |> MostUtils.concatArray
-      |> _collectAllRecords
-      |> _addInitDataFunc(RenderJobConfigHelper.initData)
-    )
-    |> Obj.magic
-  |])
+  FetchCommon.createFetchJsonStream(PathUtils.join([|dataDir, "setting.json"|]), fetchFunc)
+  |> flatMap(
+       (json) =>
+         SettingParseSystem.convertToRecord(json)
+         |> _setSetting(stateData, state)
+         |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
+     )
   |> reduce(
        (state, (recordArr, initDataFunc)) => initDataFunc(recordArr |> Obj.magic, state),
        state
-     )
-  |> then_((state) => state |> AllJobSystem.init |> resolve);
+     );

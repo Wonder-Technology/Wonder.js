@@ -1,4 +1,4 @@
-let findFirst = (arr: array('a), targetValue, func) =>
+let unsafeFindFirst = (arr: array('a), targetValue, func) =>
   arr
   |> ArraySystem.unsafeFind(func)
   |> WonderLog.Contract.ensureCheck(
@@ -14,5 +14,7 @@ let findFirst = (arr: array('a), targetValue, func) =>
        },
        StateData.stateData.isDebug
      );
+
+let findFirst = (arr: array('a), targetValue, func) => arr |> Js.Array.find(func);
 
 let filterTargetName = (name, targetName) => name == targetName;
