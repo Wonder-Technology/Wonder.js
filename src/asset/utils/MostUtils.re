@@ -2,15 +2,15 @@ open Most;
 
 [@bs.module "most"]
 /* (string, WorkerType.worker, Js.boolean) => stream(MessageDataType.messageData) = */
-external fromWorkerEvent :
-  (string, WorkerType.worker) => stream({.. "operateType": string}) =
+external fromWorkerEvent : (string, WorkerType.worker) => stream({.. "operateType": string}) =
   "fromEvent";
 
 /* let fromWorkerEvent = (eventName, target) => fromEvent(eventName, target |> Obj.magic, Js.false_); */
 let _isFromEventStream = [%bs.raw
   {|
   function(stream) {
-    return stream instanceof EventTargetSource || stream instanceof EventEmitterSource;
+    var source = stream.source;
+    return !!source.event && !!source.source;
   }
   |}
 ];
@@ -22,8 +22,9 @@ let concatArray = (streamArr) =>
        [@bs]
        (
          (stream1, stream2) =>
-           _isFromEventStream(stream1) ?
-             stream1 |> concatMap((e) => stream2) : stream1 |> concat(stream2)
+           _isFromEventStream(stream1) === Js.true_ ?
+             /* stream1|> concatMap((e) => stream2) : stream1 |> concat(stream2) */
+             stream1 |> concat(stream2) : stream1 |> concat(stream2)
        ),
        streamArr[0]
      );

@@ -29,16 +29,16 @@ gulp.task("rollup", function () {
     var inputConfig = {
         input: "./lib/es6_global/src/Index.js",
         plugins: [
-        nodeResolve({
-            skip:[
-            ],
-            extensions: [".js"]
-        }),
-        commonjs({
-            namedExports: {
-            },
-            extensions: [".js"]
-        })
+            nodeResolve({
+                skip: [
+                ],
+                extensions: [".js"]
+            }),
+            commonjs({
+                namedExports: {
+                },
+                extensions: [".js"]
+            })
         ]
     };
     var outputConfig = {
@@ -56,6 +56,16 @@ gulp.task("rollupRenderWorker", function () {
     var inputConfig = {
         input: "./lib/es6_global/src/renderer/worker/RenderWorkerIndex.js",
         plugins: [
+            nodeResolve({
+                skip: [
+                ],
+                extensions: [".js"]
+            }),
+            commonjs({
+                namedExports: {
+                },
+                extensions: [".js"]
+            })
         ]
     };
     var outputConfig = {

@@ -1,6 +1,50 @@
 open StateDataType;
 
-let getState = (stateData: stateData) : state => Js.Option.getExn(stateData.state);
+let createState = () => {
+  bufferConfig: None,
+  gpuConfig: None,
+  canvasConfig: None,
+  workerConfig: None,
+  memoryConfig: MemoryConfigSystem.initData(),
+  jobData: JobHelper.initData(),
+  logicJobConfig: None,
+  renderJobConfig: None,
+  workerJobConfig: None,
+  gpuDetectData: {extensionInstancedArrays: None, precision: None},
+  viewData: {canvas: None, contextConfig: None},
+  initConfig: {isDebug: false},
+  sourceInstanceData: SourceInstanceHelper.initData(),
+  objectInstanceData: ObjectInstanceHelper.initData(),
+  deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
+  gameObjectData: GameObjectHelper.initData(),
+  transformData: TransformHelper.initData(),
+  cameraControllerData: CameraControllerHelper.initData(),
+  basicMaterialData: BasicMaterialHelper.initData(),
+  lightMaterialData: LightMaterialHelper.initData(),
+  ambientLightData: AmbientLightHelper.initData(),
+  directionLightData: DirectionLightHelper.initData(),
+  pointLightData: PointLightHelper.initData(),
+  geometryData: GeometryHelper.initData(),
+  meshRendererData: MeshRendererHelper.initData(),
+  shaderData: ShaderHelper.initData(),
+  programData: ProgramHelper.initData(),
+  glslLocationData: GLSLLocationHelper.initData(),
+  glslSenderData: GLSLSenderHelper.initData(),
+  glslChunkData: ShaderChunkSystem.initData(),
+  renderData: RenderDataHelper.initData(),
+  timeControllerData: TimeControllerHelper.initData(),
+  vboBufferData: VboBufferHelper.initData(),
+  globalTempData: GlobalTempHelper.initData(),
+  typeArrayPoolData: TypeArrayPoolHelper.initData(),
+  workerInstanceData: WorkerInstanceHelper.initData(),
+  workerDetectData: WorkerDetectHelper.initData()
+};
+
+let getState = (stateData: stateData) : state =>
+  switch stateData.state {
+  | None => createState()
+  | Some(state) => state
+  };
 
 let setState = (stateData: stateData, state: state) => {
   stateData.state = Some(state);
@@ -73,44 +117,4 @@ let restore =
       })
       );
       }, StateData.stateData.isDebug); */
-};
-
-let createState = () => {
-  bufferConfig: None,
-  gpuConfig: None,
-  canvasConfig: None,
-  workerConfig: None,
-  memoryConfig: MemoryConfigSystem.initData(),
-  jobData: JobHelper.initData(),
-  logicJobConfig: None,
-  renderJobConfig: None,
-  workerJobConfig: None,
-  gpuDetectData: {extensionInstancedArrays: None, precision: None},
-  viewData: {canvas: None, contextConfig: None},
-  initConfig: {isDebug: false},
-  sourceInstanceData: SourceInstanceHelper.initData(),
-  objectInstanceData: ObjectInstanceHelper.initData(),
-  deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
-  gameObjectData: GameObjectHelper.initData(),
-  transformData: TransformHelper.initData(),
-  cameraControllerData: CameraControllerHelper.initData(),
-  basicMaterialData: BasicMaterialHelper.initData(),
-  lightMaterialData: LightMaterialHelper.initData(),
-  ambientLightData: AmbientLightHelper.initData(),
-  directionLightData: DirectionLightHelper.initData(),
-  pointLightData: PointLightHelper.initData(),
-  geometryData: GeometryHelper.initData(),
-  meshRendererData: MeshRendererHelper.initData(),
-  shaderData: ShaderHelper.initData(),
-  programData: ProgramHelper.initData(),
-  glslLocationData: GLSLLocationHelper.initData(),
-  glslSenderData: GLSLSenderHelper.initData(),
-  glslChunkData: ShaderChunkSystem.initData(),
-  renderData: RenderDataHelper.initData(),
-  timeControllerData: TimeControllerHelper.initData(),
-  vboBufferData: VboBufferHelper.initData(),
-  globalTempData: GlobalTempHelper.initData(),
-  typeArrayPoolData: TypeArrayPoolHelper.initData(),
-  workerInstanceData: WorkerInstanceHelper.initData(),
-  workerDetectData: WorkerDetectHelper.initData()
 };

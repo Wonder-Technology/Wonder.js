@@ -178,12 +178,16 @@ let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), 
   );
 
 
-let getRenderWorkerJobStreamArr = (jobHandleMap, stateData, getJobHandleFunc) => {
+let getRenderWorkerJobStreamArr = (
+ pipelineJobs, workerJobs,
+ 
+jobHandleMap, stateData, getJobHandleFunc) => {
   /* let {workerSetting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
      let {jobs} = _getPipeline(workerSetting.worker_pipeline, workerPipelines); */
   let state = RenderWorkerStateSystem.getState(stateData);
-  let workerJobs = RenderWorkerStateSystem.getJobs(state);
-  RenderWorkerStateSystem.getPipelineJobs(state)
+  /* let workerJobs = RenderWorkerStateSystem.getJobs(state); */
+  /* RenderWorkerStateSystem.getPipelineJobs(state) */
+  pipelineJobs
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (

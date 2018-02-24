@@ -53,14 +53,14 @@ let convertMainInitPipelinesToRecord = (pipelines) =>
          )
     )
   );
-/* 
-let convertRenderWorkerPipelineJobsToRecord = (jobs) =>
-  Json.(
-    Decode.(
-      jobs |> array((json) => json |> array((json) => {name: json |> field("name", string)}))
-    )
-  ); */
 
+/*
+ let convertRenderWorkerPipelineJobsToRecord = (jobs) =>
+   Json.(
+     Decode.(
+       jobs |> array((json) => json |> array((json) => {name: json |> field("name", string)}))
+     )
+   ); */
 let convertWorkerPipelinesToRecord = (pipelines) =>
   Json.(
     Decode.(
@@ -75,9 +75,15 @@ let convertWorkerPipelinesToRecord = (pipelines) =>
                     (json) => {
                       render:
                         json
-                        |> array(
+                        |> field(
+                             "render",
                              (json) =>
-                               json |> array((json) => {name: json |> field("name", string)})
+                               json
+                               |> array(
+                                    (json) =>
+                                      json
+                                      |> array((json) => {name: json |> field("name", string)})
+                                  )
                            )
                     }
                   )

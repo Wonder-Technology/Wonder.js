@@ -79,17 +79,13 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
 /* TODO refactor: extract function */
 MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
 |> Most.filter((e) => e##data##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
-|> Most.forEach(
+|> Most.concatMap(
      (e) =>
-       RenderWorkerStateSystem.setJobData(
-         e##data##pipelineJobs,
-         e##data##jobs,
+       WorkerJobSystem.getRenderWorkerJobStreamArr(
+         e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
+         e##data##jobs |> Js.Json.parseExn |> Obj.magic,
          RenderWorkerStateData.renderWorkerStateData
        )
+       |> Most.mergeArray
    )
-|> ignore;
-
-WorkerJobSystem.getRenderWorkerJobStreamArr(RenderWorkerStateData.renderWorkerStateData)
-|> Most.mergeArray
-|> Most.drain
-|> ignore;
+|> Most.drain;

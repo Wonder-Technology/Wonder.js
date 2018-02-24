@@ -36,13 +36,6 @@ let isSupportSharedArrayBuffer = (state: StateDataType.state) =>
 
 let isSupportRenderWorkerAndSharedArrayBuffer = (state: StateDataType.state) =>
   state.workerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
-/* export var isSupportRenderWorkerAndSharedArrayBuffer = () => {
-       return RenderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
-   } */
-/*
- export var setWorkerConfig = (config: WorkerConfigData, WorkerDetectData: any) => {
-     return IO.of(() => {
-         WorkerDetectData.renderWorkerFileDir = config.renderWorkerFileDir;
-     })
- } */
-/* detect(WorkerDetectData); */
+
+let isUseWorker = (state: StateDataType.state) =>
+  WorkerConfigSystem.getConfig(state).useWorker && isSupportRenderWorkerAndSharedArrayBuffer(state);

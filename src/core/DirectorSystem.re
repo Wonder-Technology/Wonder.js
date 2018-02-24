@@ -27,4 +27,8 @@ let start = (state: StateDataType.state) =>
 
    */
   /* state |> init(StateData.stateData) |> ignore; */
-  state |> init(StateData.stateData) |> Most.drain |> ignore;
+  state
+  |> StateSystem.setState(StateData.stateData)
+  |> init(StateData.stateData)
+  |> Most.drain
+  |> ignore;
