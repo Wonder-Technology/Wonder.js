@@ -86,6 +86,25 @@ MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
          e##data##jobs |> Js.Json.parseExn |> Obj.magic,
          RenderWorkerStateData.renderWorkerStateData
        )
+       |> ArraySystem.push(
+            MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
+            |> Most.filter((e) => e##data##operateType === "loop" |> Js.Boolean.to_js_boolean)
+            |> Most.map((e) => Some(e))
+            |> Most.tap(
+                 (e) =>
+                   WonderLog.Log.log({j|--in other worker-- get message from main worker: loop|j})
+               )
+            |> Most.concatMap(
+                 (e) =>
+                   MostUtils.callFunc(
+                     () => {
+                       WorkerUtils.getSelf()
+                       |> WorkerUtils.postMessage({"operateType": "finish_loop"});
+                       e
+                     }
+                   )
+               )
+          )
        |> Most.mergeArray
    )
 |> Most.drain;
