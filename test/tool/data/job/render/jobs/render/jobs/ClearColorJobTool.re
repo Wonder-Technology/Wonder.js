@@ -1,1 +1,0 @@
-let execJob = (configData, state) => ClearColorJob.execJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);

@@ -1,1 +1,0 @@
-let execJob = (configData, state) => ClearBufferJob.execJob(configData, [@bs]DeviceManagerSystem.unsafeGetGl(state), state);

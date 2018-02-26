@@ -1,117 +1,9 @@
-/* 
 open RenderConfigDataType;
 
-open RenderJobConfigParseSystem;
+open RenderConfigDataParseSystem;
 
-let buildRenderJobConfig =
+let buildRenderConfigData =
     (
-      ~renderSetting={|
-    {
-    "init_pipeline": "simple_basic_render",
-    "render_pipeline": "simple_basic_render"
-}
-|},
-      ~initPipelines={|
-[
-    {
-      "name": "simple_basic_render",
-      "jobs": [
-        {
-          "name": "preget_glslData"
-        },
-        {
-          "name": "init_basic_material"
-        },
-{
-          "name": "init_light_material"
-        }
-      ]
-    }
-  ]
-        |},
-      ~renderPipelines={|
-[
-  {
-    "name": "simple_basic_render",
-    "jobs": [
-      {
-        "name": "get_render_array"
-      },
-      {
-        "name": "get_camera_data"
-      },
-      {
-        "name": "clear_color",
-        "flags": [
-          "#000000"
-        ]
-      },
-      {
-        "name": "clear_buffer",
-        "flags": [
-          "COLOR_BUFFER",
-          "DEPTH_BUFFER",
-          "STENCIL_BUFFER"
-        ]
-      },
-      {
-        "name": "clear_last_send_component"
-      },
-      {
-        "name": "send_uniform_shader_data"
-      },
-      {
-        "name": "render_basic"
-      },
-      {
-        "name": "front_render_light"
-      }
-    ]
-  }
-]
-
-        |},
-      ~initJobs={|
-[
-    {
-        "name": "preget_glslData"
-    },
-    {
-        "name": "init_basic_material"
-    },
-    {
-          "name": "init_light_material"
-        }
-]
-        |},
-      ~renderJobs={|
-[
-  {
-    "name": "get_render_array"
-  },
-  {
-    "name": "get_camera_data"
-  },
-  {
-    "name": "clear_color"
-  },
-  {
-    "name": "clear_buffer"
-  },
-  {
-    "name": "clear_last_send_component"
-  },
-  {
-    "name": "send_uniform_shader_data"
-  },
-  {
-    "name": "render_basic"
-  },
-  {
-    "name": "front_render_light"
-  }
-]
-        |},
       ~shaders={|
 {
   "static_branchs": [
@@ -666,49 +558,21 @@ let buildRenderJobConfig =
         |},
       ()
     ) => (
-  renderSetting,
-  initPipelines,
-  renderPipelines,
-  initJobs,
-  renderJobs,
   shaders,
   shaderLibs
 );
 
-let initData =
-    (
-      (renderSetting, initPipelines, renderPipelines, initJobs, renderJobs, shaders, shaderLibs),
-      state: StateDataType.state
-    ) => {
+let initData = ((shaders, shaderLibs), state: StateDataType.state) => {
   ...state,
-  renderJobConfig:
+  renderConfigData:
     Some({
-      render_setting: convertRenderSettingToRecord(renderSetting |> Js.Json.parseExn),
-      init_pipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
-      render_pipelines: convertRenderPipelinesToRecord(renderPipelines |> Js.Json.parseExn),
-      init_jobs: convertInitJobsToRecord(initJobs |> Js.Json.parseExn),
-      render_jobs: convertRenderJobsToRecord(renderJobs |> Js.Json.parseExn),
       shaders: convertShadersToRecord(shaders |> Js.Json.parseExn),
       shader_libs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
     })
 };
 
-let getRenderSetting = RenderJobConfigSystem.getRenderSetting;
+let getShaders = RenderConfigDataSystem.getShaders;
 
-let getInitPipelines = RenderJobConfigSystem.getInitPipelines;
+let getShaderLibs = RenderConfigDataSystem.getShaderLibs;
 
-let getInitJobs = RenderJobConfigSystem.getInitJobs;
-
-let getRenderPipelines = RenderJobConfigSystem.getRenderPipelines;
-
-let getRenderJobs = RenderJobConfigSystem.getRenderJobs;
-
-let getShaders = RenderJobConfigSystem.getShaders;
-
-let getShaderLibs = RenderJobConfigSystem.getShaderLibs;
-
-let getInitPipelines = RenderJobConfigSystem.getInitPipelines;
-
-let getMaterialShaderLibDataArr = RenderJobConfigSystem.getMaterialShaderLibDataArr;
-
-let throwJobFlagsShouldBeDefined = RenderJobConfigSystem.throwJobFlagsShouldBeDefined; */
+let getMaterialShaderLibDataArr = RenderConfigDataSystem.getMaterialShaderLibDataArr;

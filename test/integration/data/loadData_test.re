@@ -2,7 +2,7 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 let _ =
   describe(
@@ -27,92 +27,83 @@ let _ =
             {"json": () => jsonStr |> Js.Json.parseExn |> Js.Promise.resolve} |> Js.Promise.resolve;
           let _buildFakeFetch = (sandbox) => {
             let fetch = createEmptyStubWithJsObjSandbox(sandbox);
-            let (logicSetting, initPipelines, updatePipelines, initJobs, updateJobs) =
-              LogicJobConfigTool.buildLogicJobConfig();
+            let (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs) =
+              NoWorkerJobConfigTool.buildNoWorkerJobConfig();
             fetch
             |> onCall(0)
-            |> returns(_buildFakeFetchJsonResponse(logicSetting))
+            |> returns(_buildFakeFetchJsonResponse(SettingTool.buildSetting(Js.true_, Js.false_)))
             |> onCall(1)
-            |> returns(_buildFakeFetchJsonResponse(initPipelines))
+            |> returns(_buildFakeFetchJsonResponse(noWorkerSetting))
             |> onCall(2)
-            |> returns(_buildFakeFetchJsonResponse(updatePipelines))
-            |> onCall(3)
-            |> returns(_buildFakeFetchJsonResponse(initJobs))
-            |> onCall(4)
-            |> returns(_buildFakeFetchJsonResponse(updateJobs));
-            let (
-              renderSetting,
-              initPipelines,
-              renderPipelines,
-              initJobs,
-              renderJobs,
-              shaders,
-              shaderLibs
-            ) =
-              RenderJobConfigTool.buildRenderJobConfig();
-            fetch
-            |> onCall(5)
-            |> returns(_buildFakeFetchJsonResponse(renderSetting))
-            |> onCall(6)
             |> returns(_buildFakeFetchJsonResponse(initPipelines))
-            |> onCall(7)
-            |> returns(_buildFakeFetchJsonResponse(renderPipelines))
-            |> onCall(8)
+            |> onCall(3)
+            |> returns(_buildFakeFetchJsonResponse(loopPipelines))
+            |> onCall(4)
             |> returns(_buildFakeFetchJsonResponse(initJobs))
-            |> onCall(9)
-            |> returns(_buildFakeFetchJsonResponse(renderJobs))
-            |> onCall(10)
+            |> onCall(5)
+            |> returns(_buildFakeFetchJsonResponse(loopJobs));
+            let (shaders, shaderLibs) = RenderConfigDataTool.buildRenderConfigData();
+            fetch
+            |> onCall(6)
             |> returns(_buildFakeFetchJsonResponse(shaders))
-            |> onCall(11)
+            |> onCall(7)
             |> returns(_buildFakeFetchJsonResponse(shaderLibs));
             fetch
           };
           describe(
-            "test load logic config files",
+            "test load noWorker config files",
             () => {
               testPromise(
                 "should pass dataDir for get json file path",
                 () => {
-                  let fetch = _buildFakeFetch(sandbox);
-                  state^
-                  |> LoaderManagerSystem.load("../../.res/job/", fetch)
+                  let fetchFunc = _buildFakeFetch(sandbox);
+                  LoadDataTool.load(~dataDir="../../.res/job/", ~fetchFunc, ())
                   |> then_(
-                       (state) =>
-                         fetch
+                       () =>
+                         fetchFunc
                          |> expect
-                         |> toCalledWith([|"../../.res/job/logic/setting/logic_setting.json"|])
+                         |> toCalledWith([|"../../.res/job/setting.json"|])
                          |> resolve
                      )
                 }
               );
               describe(
                 "parse job data and set to state",
-                () => {
+                () =>
                   testPromise(
-                    "test parse logic setting, init pipeline, logic pipeleint, init job, logic job",
+                    "test parse noWorker setting, init pipeline, noWorker pipeleint, init job, noWorker job",
                     () => {
-                      let fetch = _buildFakeFetch(sandbox);
-                      state^
-                      |> LoaderManagerSystem.load("", fetch)
+                      let fetchFunc = _buildFakeFetch(sandbox);
+                      LoadDataTool.load(~dataDir="", ~fetchFunc, ())
                       |> then_(
-                           (state) =>
+                           () => {
+                             let state = StateTool.getState();
                              (
-                               LogicJobConfigTool.getLogicSetting(state),
-                               LogicJobConfigTool.getInitPipelines(state),
-                               LogicJobConfigTool.getUpdatePipelines(state),
-                               LogicJobConfigTool.getInitJobs(state),
-                               LogicJobConfigTool.getUpdateJobs(state)
+                               NoWorkerJobConfigTool.getSetting(state),
+                               NoWorkerJobConfigTool.getInitPipelines(state),
+                               NoWorkerJobConfigTool.getLoopPipelines(state),
+                               NoWorkerJobConfigTool.getInitJobs(state),
+                               NoWorkerJobConfigTool.getLoopJobs(state)
                              )
                              |>
                              expect == (
-                                         {init_pipeline: "default", update_pipeline: "default"},
+                                         {initPipeline: "default", loopPipeline: "default"},
                                          [|
                                            {
                                              name: "default",
                                              jobs: [|
+                                               {name: "create_canvas"},
+                                               {name: "create_gl"},
+                                               {name: "set_full_screen"},
+                                               {name: "set_viewport"},
+                                               {name: "detect_gl"},
                                                {name: "init_cameraController"},
                                                {name: "init_geometry"},
-                                               {name: "start_time"}
+                                               {name: "start_time"},
+                                               {name: "preget_glslData"},
+                                               {name: "init_state"},
+                                               {name: "init_basic_material"},
+                                               {name: "init_light_material"}
                                              |]
                                            }
                                          |],
@@ -121,259 +112,157 @@ let _ =
                                              name: "default",
                                              jobs: [|
                                                {name: "tick"},
-                                               {name: "update_cameraController"}
+                                               {name: "update_cameraController"},
+                                               {name: "get_render_array"},
+                                               {name: "get_camera_data"},
+                                               {name: "clear_color"},
+                                               {name: "clear_buffer"},
+                                               {name: "clear_last_send_component"},
+                                               {name: "send_uniform_shader_data"},
+                                               {name: "render_basic"},
+                                               {name: "front_render_light"}
                                              |]
                                            }
                                          |],
                                          [|
-                                           {name: "init_cameraController"},
-                                           {name: "init_geometry"},
-                                           {name: "start_time"}
+                                           {name: "create_canvas", flags: None},
+                                           {name: "create_gl", flags: None},
+                                           {name: "set_full_screen", flags: None},
+                                           {name: "set_viewport", flags: None},
+                                           {name: "detect_gl", flags: None},
+                                           {name: "init_cameraController", flags: None},
+                                           {name: "init_geometry", flags: None},
+                                           {name: "start_time", flags: None},
+                                           {name: "preget_glslData", flags: None},
+                                           {name: "init_state", flags: None},
+                                           {name: "init_basic_material", flags: None},
+                                           {name: "init_light_material", flags: None}
                                          |],
-                                         [|{name: "tick"}, {name: "update_cameraController"}|]
+                                         [|
+                                           {name: "tick", flags: None},
+                                           {name: "update_cameraController", flags: None},
+                                           {name: "get_render_array", flags: None},
+                                           {name: "get_camera_data", flags: None},
+                                           {name: "clear_color", flags: Some([|"#000000"|])},
+                                           {
+                                             name: "clear_buffer",
+                                             flags:
+                                               Some([|
+                                                 "COLOR_BUFFER",
+                                                 "DEPTH_BUFFER",
+                                                 "STENCIL_BUFFER"
+                                               |])
+                                           },
+                                           {name: "clear_last_send_component", flags: None},
+                                           {name: "send_uniform_shader_data", flags: None},
+                                           {name: "render_basic", flags: None},
+                                           {name: "front_render_light", flags: None}
+                                         |]
                                        )
                              |> resolve
+                           }
                          )
                     }
-                  );
-                  describe(
-                    "fix bug",
-                    () =>
-                      testPromise(
-                        "if the order of the fetch of logic json data change, shouldn't affect the setted data in state",
-                        () => {
-                          let fetch = _buildFakeFetch(sandbox);
-                          let (logicSetting, initPipelines, updatePipelines, initJobs, updateJobs) =
-                            LogicJobConfigTool.buildLogicJobConfig();
-                          fetch
-                          |> onCall(0)
-                          |> SinonTool.deferReturns(
-                               100.,
-                               _buildFakeFetchJsonResponse(logicSetting)
-                             );
-                          state^
-                          |> LoaderManagerSystem.load("", fetch)
-                          |> then_(
-                               (state) =>
-                                 LogicJobConfigTool.getLogicSetting(state)
-                                 |>
-                                 expect == {init_pipeline: "default", update_pipeline: "default"}
-                                 |> resolve
-                             )
-                        }
-                      )
                   )
-                }
-              )
-            }
-          );
-          describe(
-            "test load render config files",
-            () => {
+              );
               testPromise(
-                "should pass dataDir for get json file path",
+                "test parse shaders",
                 () => {
-                  let fetch = _buildFakeFetch(sandbox);
-                  state^
-                  |> LoaderManagerSystem.load("../../.res/job/", fetch)
+                  let fetchFunc = _buildFakeFetch(sandbox);
+                  LoadDataTool.load(~dataDir="", ~fetchFunc, ())
                   |> then_(
-                       (state) =>
-                         fetch
-                         |> expect
-                         |> toCalledWith([|"../../.res/job/render/setting/render_setting.json"|])
+                       () => {
+                         let state = StateTool.getState();
+                         RenderConfigDataTool.getShaders(state).static_branchs
+                         |>
+                         expect == [|
+                                     {
+                                       name: "modelMatrix_instance",
+                                       value: [|
+                                         "modelMatrix_noInstance",
+                                         "modelMatrix_hardware_instance",
+                                         "modelMatrix_batch_instance"
+                                       |]
+                                     },
+                                     {
+                                       name: "normalMatrix_instance",
+                                       value: [|
+                                         "normalMatrix_noInstance",
+                                         "normalMatrix_hardware_instance",
+                                         "normalMatrix_batch_instance"
+                                       |]
+                                     }
+                                   |]
                          |> resolve
+                       }
+                     )
+                }
+              );
+              testPromise(
+                "test parse shader libs",
+                () => {
+                  let fetchFunc = _buildFakeFetch(sandbox);
+                  LoadDataTool.load(~dataDir="", ~fetchFunc, ())
+                  |> then_(
+                       () => {
+                         let state = StateTool.getState();
+                         RenderConfigDataTool.getShaderLibs(state)[0]
+                         |>
+                         expect == {
+                                     name: "common",
+                                     glsls:
+                                       Some([|
+                                         {type_: "vs", name: "common_vertex"},
+                                         {type_: "fs", name: "common_fragment"}
+                                       |]),
+                                     variables:
+                                       Some({
+                                         uniforms:
+                                           Some([|
+                                             {
+                                               name: "u_vMatrix",
+                                               field: "vMatrix",
+                                               type_: "mat4",
+                                               from: "camera"
+                                             },
+                                             {
+                                               name: "u_pMatrix",
+                                               field: "pMatrix",
+                                               type_: "mat4",
+                                               from: "camera"
+                                             }
+                                           |]),
+                                         attributes: None
+                                       })
+                                   }
+                         |> resolve
+                       }
                      )
                 }
               );
               describe(
-                "parse job data and set to state",
-                () => {
+                "fix bug",
+                () =>
                   testPromise(
-                    "test parse render setting, init pipeline, render pipeleint, init job, render job",
+                    "if the order of the fetch of noWorker json data change, shouldn't affect the setted data in state",
                     () => {
-                      let fetch = _buildFakeFetch(sandbox);
-                      state^
-                      |> LoaderManagerSystem.load("", fetch)
+                      let fetchFunc = _buildFakeFetch(sandbox);
+                      let (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs) =
+                        NoWorkerJobConfigTool.buildNoWorkerJobConfig();
+                      fetchFunc
+                      |> onCall(1)
+                      |> SinonTool.deferReturns(100., _buildFakeFetchJsonResponse(noWorkerSetting));
+                      LoadDataTool.load(~dataDir="", ~fetchFunc, ())
                       |> then_(
-                           (state) =>
-                             (
-                               RenderJobConfigTool.getRenderSetting(state),
-                               RenderJobConfigTool.getInitPipelines(state),
-                               RenderJobConfigTool.getRenderPipelines(state),
-                               RenderJobConfigTool.getInitJobs(state),
-                               RenderJobConfigTool.getRenderJobs(state)
-                             )
-                             |>
-                             expect == (
-                                         {
-                                           init_pipeline: "simple_basic_render",
-                                           render_pipeline: "simple_basic_render"
-                                         },
-                                         [|
-                                           {
-                                             name: "simple_basic_render",
-                                             jobs: [|
-                                               {name: "preget_glslData", flags: None},
-                                               {name: "init_basic_material", flags: None},
-                                               {name: "init_light_material", flags: None}
-                                             |]
-                                           }
-                                         |],
-                                         [|
-                                           {
-                                             name: "simple_basic_render",
-                                             jobs: [|
-                                               {name: "get_render_array", flags: None},
-                                               {name: "get_camera_data", flags: None},
-                                               {name: "clear_color", flags: Some([|"#000000"|])},
-                                               {
-                                                 name: "clear_buffer",
-                                                 flags:
-                                                   Some([|
-                                                     "COLOR_BUFFER",
-                                                     "DEPTH_BUFFER",
-                                                     "STENCIL_BUFFER"
-                                                   |])
-                                               },
-                                               {name: "clear_last_send_component", flags: None},
-                                               {name: "send_uniform_shader_data", flags: None},
-                                               {name: "render_basic", flags: None},
-                                               {name: "front_render_light", flags: None}
-                                             |]
-                                           }
-                                         |],
-                                         [|
-                                           {name: "preget_glslData", shader: None},
-                                           {name: "init_basic_material", shader: None},
-                                           {name: "init_light_material", shader: None}
-                                         |],
-                                         [|
-                                           {name: "get_render_array", shader: None},
-                                           {name: "get_camera_data", shader: None},
-                                           {name: "clear_color", shader: None},
-                                           {name: "clear_buffer", shader: None},
-                                           {name: "clear_last_send_component", shader: None},
-                                           {name: "send_uniform_shader_data", shader: None},
-                                           {name: "render_basic", shader: None},
-                                           {name: "front_render_light", shader: None}
-                                         |]
-                                       )
+                           () => {
+                             let state = StateTool.getState();
+                             NoWorkerJobConfigTool.getSetting(state)
+                             |> expect == {initPipeline: "default", loopPipeline: "default"}
                              |> resolve
+                           }
                          )
                     }
-                  );
-                  testPromise(
-                    "test parse shaders",
-                    () => {
-                      let fetch = _buildFakeFetch(sandbox);
-                      state^
-                      |> LoaderManagerSystem.load("", fetch)
-                      |> then_(
-                           (state) =>
-                             RenderJobConfigTool.getShaders(state).static_branchs
-                             |>
-                             expect == [|
-                                         {
-                                           name: "modelMatrix_instance",
-                                           value: [|
-                                             "modelMatrix_noInstance",
-                                             "modelMatrix_hardware_instance",
-                                             "modelMatrix_batch_instance"
-                                           |]
-                                         },
-                                         {
-                                           name: "normalMatrix_instance",
-                                           value: [|
-                                             "normalMatrix_noInstance",
-                                             "normalMatrix_hardware_instance",
-                                             "normalMatrix_batch_instance"
-                                           |]
-                                         }
-                                       |]
-                             |> resolve
-                         )
-                    }
-                  );
-                  testPromise(
-                    "test parse shader libs",
-                    () => {
-                      let fetch = _buildFakeFetch(sandbox);
-                      state^
-                      |> LoaderManagerSystem.load("", fetch)
-                      |> then_(
-                           (state) =>
-                             RenderJobConfigTool.getShaderLibs(state)[0]
-                             |>
-                             expect == {
-                                         name: "common",
-                                         glsls:
-                                           Some([|
-                                             {type_: "vs", name: "common_vertex"},
-                                             {type_: "fs", name: "common_fragment"}
-                                           |]),
-                                         variables:
-                                           Some({
-                                             uniforms:
-                                               Some([|
-                                                 {
-                                                   name: "u_vMatrix",
-                                                   field: "vMatrix",
-                                                   type_: "mat4",
-                                                   from: "camera"
-                                                 },
-                                                 {
-                                                   name: "u_pMatrix",
-                                                   field: "pMatrix",
-                                                   type_: "mat4",
-                                                   from: "camera"
-                                                 }
-                                               |]),
-                                             attributes: None
-                                           })
-                                       }
-                             |> resolve
-                         )
-                    }
-                  );
-                  describe(
-                    "fix bug",
-                    () =>
-                      testPromise(
-                        "if the order of the fetch of render json data change, shouldn't affect the setted data in state",
-                        () => {
-                          let fetch = _buildFakeFetch(sandbox);
-                          let (
-                            renderSetting,
-                            initPipelines,
-                            renderPipelines,
-                            initJobs,
-                            renderJobs,
-                            shaders,
-                            shaderLibs
-                          ) =
-                            RenderJobConfigTool.buildRenderJobConfig();
-                          fetch
-                          |> onCall(5)
-                          |> SinonTool.deferReturns(
-                               100.,
-                               _buildFakeFetchJsonResponse(renderSetting)
-                             );
-                          state^
-                          |> LoaderManagerSystem.load("", fetch)
-                          |> then_(
-                               (state) =>
-                                 RenderJobConfigTool.getRenderSetting(state)
-                                 |>
-                                 expect == {
-                                             init_pipeline: "simple_basic_render",
-                                             render_pipeline: "simple_basic_render"
-                                           }
-                                 |> resolve
-                             )
-                        }
-                      )
                   )
-                }
               )
             }
           )

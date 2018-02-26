@@ -26,14 +26,14 @@
 
 
             wd.load("./data/").subscribe({
-            next: (state) => {
-                console.log("next: ", state)
-            },
-            complete: () => {
-                console.log("complete");
-                initSample(wd.getState());
-            }
-        })
+                next: (state) => {
+                    console.log("next: ", state)
+                },
+                complete: () => {
+                    console.log("complete");
+                    initSample(wd.getState());
+                }
+            })
 
 
 

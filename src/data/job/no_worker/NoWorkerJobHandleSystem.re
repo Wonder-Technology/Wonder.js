@@ -1,6 +1,11 @@
 open StateDataType;
 
 let _getInitJobHandles = () => [
+  ("create_canvas", CreateCanvasJob.execJob),
+  ("create_gl", CreateGlJob.execJob),
+  ("set_full_screen", SetFullScreenJob.execJob),
+  ("set_viewport", SetViewportJob.execJob),
+  ("detect_gl", DetectGlJob.execJob),
   ("init_cameraController", InitCameraControllerJob.execJob),
   ("init_geometry", InitGeometryJob.execJob),
   ("start_time", StartTimeJob.execJob),
@@ -12,7 +17,7 @@ let _getInitJobHandles = () => [
 
 let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
-  ("update_cameraController", LoopCameraControllerJob.execJob),
+  ("update_cameraController", UpdateCameraControllerJob.execJob),
   ("get_render_array", GetRenderArrayJob.execJob),
   ("get_camera_data", GetCameraDataJob.execJob),
   ("clear_color", ClearColorJob.execJob),

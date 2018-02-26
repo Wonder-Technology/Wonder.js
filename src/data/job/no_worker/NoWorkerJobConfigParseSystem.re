@@ -34,7 +34,7 @@ let _convertJobsToRecord = (jobs) =>
              {
                name: json |> field("name", string),
                flags: json |> optional(field("flags", (json) => json |> array(string)))
-             }
+             }: job
            )
          )
     )

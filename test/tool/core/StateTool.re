@@ -6,14 +6,15 @@ let getStateData = () => State.getStateData();
 
 let getState = () => StateSystem.getState(getStateData());
 
+let setState = (state) => StateSystem.setState(getStateData(), state);
+
 let createState = StateSystem.createState;
 
-let createNewCompleteState = () => Main.setMainConfig(MainTool.buildMainConfig());
+/* let createNewCompleteState = () => Main.setMainConfig(MainTool.buildMainConfig());
 
-let createNewCompleteStateWithRenderJobConfig = () =>
-  Main.setMainConfig(MainTool.buildMainConfig())
-  |> ((state) => state |> RenderJobConfigTool.initData(RenderJobConfigTool.buildRenderJobConfig()));
-
+   let createNewCompleteStateWithRenderJobConfig = () =>
+     Main.setMainConfig(MainTool.buildMainConfig())
+     |> ((state) => state |> RenderJobConfigTool.initData(RenderJobConfigTool.buildRenderJobConfig())); */
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   open Wonder_jest;
   open Expect;

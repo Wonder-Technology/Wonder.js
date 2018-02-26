@@ -1,1 +1,0 @@
-let init = (state: StateDataType.state) => LogicJobSystem.init(state);
