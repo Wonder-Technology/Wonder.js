@@ -31,7 +31,11 @@ let _ =
               NoWorkerJobConfigTool.buildNoWorkerJobConfig();
             fetch
             |> onCall(0)
-            |> returns(_buildFakeFetchJsonResponse(SettingTool.buildSetting(Js.true_, Js.false_)))
+            |> returns(
+                 _buildFakeFetchJsonResponse(
+                   SettingTool.buildSetting(Js.true_, None, "", "false", Js.false_)
+                 )
+               )
             |> onCall(1)
             |> returns(_buildFakeFetchJsonResponse(noWorkerSetting))
             |> onCall(2)

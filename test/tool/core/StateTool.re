@@ -14,7 +14,8 @@ let createState = StateSystem.createState;
 
    let createNewCompleteStateWithRenderJobConfig = () =>
      Main.setMainConfig(MainTool.buildMainConfig())
-     |> ((state) => state |> RenderJobConfigTool.initData(RenderJobConfigTool.buildRenderJobConfig())); */
+     |> ((state) => state |> RenderJobConfigTool.initData(RenderJobConfigTool.buildRenderJobConfig()));
+     */
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   open Wonder_jest;
   open Expect;

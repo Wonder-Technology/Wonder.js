@@ -11,7 +11,7 @@ let initWithoutBuildFakeDom =
      |> ConfigDataLoaderSystem._setSetting(StateTool.getStateData(), StateSystem.getState(stateData))
      |> StateTool.setState */
   /* TODO set bufferConfig */
-  SettingTool.createState(~isDebug, ())
+  SettingTool.createStateAndSetToStateData(~isDebug, ())
   /* Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
      |> (
        (state) => {
@@ -28,7 +28,7 @@ let init =
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(300)},
       ()
     ) => {
-  MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
+  SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   initWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ())
 };
 
@@ -36,11 +36,25 @@ let initWithJobConfigWithoutBuildFakeDom =
     (
       ~sandbox,
       ~isDebug=Js.true_,
+      ~canvasId=None,
+      ~context={|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": false,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
+      ~useHardwareInstance="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
       ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ()
     ) =>
-  SettingTool.createState(~isDebug, ());
+  SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
+  |> NoWorkerJobConfigTool.initData(noWorkerJobConfig)
+  |> NoWorkerJobTool.init;
 
 let initWithJobConfig =
     (
@@ -50,7 +64,7 @@ let initWithJobConfig =
       ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ()
     ) => {
-  MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
+  SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~noWorkerJobConfig, ())
 };
 

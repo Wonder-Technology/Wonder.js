@@ -1,22 +1,15 @@
 open StateSystem;
 
-let init = (stateData, state: StateDataType.state) =>
-  /* state
-     |> LogicJobSystem.execLogicInitJobs
-     |> RenderJobSystem.execRenderInitJobs([@bs] DeviceManagerSystem.unsafeGetGl(state)); */
-  /* TODO handle single */
+let _workerInit = (stateData, state: StateDataType.state) =>
   WorkerJobSystem.getMainInitJobStream(stateData, state);
 
-/*
- let _run = (time: float, state: StateDataType.state) => {
-   let elapsed = TimeControllerSystem.computeElapseTime(time, state);
-   state
-   |> LogicJobSystem.execLogicUpdateJobs(elapsed)
-   |> RenderJobSystem.execRenderRenderJobs([@bs] DeviceManagerSystem.unsafeGetGl(state))
- }; */
+let _noWorkerInit = (state: StateDataType.state) =>
+  state |> NoWorkerJobSystem.execNoWorkerInitJobs;
+
+let init = _noWorkerInit;
+
 /* TODO unit test */
-/* let loopBody = (time: float, state: StateDataType.state) => state |> _run(time); */
-let rec _createLoopStream = () =>
+let rec _createWorkerLoopStream = () =>
   MostAnimationFrame.nextAnimationFrame()
   |> Most.flatMap(
        (time) => {
@@ -48,8 +41,25 @@ let rec _createLoopStream = () =>
          |])
        }
      )
-  |> Most.continueWith(() => _createLoopStream());
+  |> Most.continueWith(() => _createWorkerLoopStream());
 
+let _run = (time: float, state: StateDataType.state) =>
+  state
+  |> NoWorkerJobSystem.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
+
+let _loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
+
+let rec _noWorkerLoop = (time: float, state: StateDataType.state) : int =>
+  Dom.requestAnimationFrame(
+    (time: float) =>
+      state |> _loopBody(time) |> setState(StateData.stateData) |> _noWorkerLoop(time) |> ignore
+  );
+
+/*
+  TODO save loop id
+  state |> init(StateData.stateData) |> _loop(0.) |> ignore
+
+ */
 let start = (state: StateDataType.state) =>
   /*
     TODO save loop id
@@ -61,9 +71,11 @@ let start = (state: StateDataType.state) =>
 
    */
   /* state |> init(StateData.stateData) |> ignore; */
-  state
-  |> StateSystem.setState(StateData.stateData)
-  |> init(StateData.stateData)
-  |> Most.concat(_createLoopStream())
-  |> Most.drain
-  |> ignore;
+  WorkerDetectSystem.isUseWorker(state) ?
+    state
+    |> StateSystem.setState(StateData.stateData)
+    |> _workerInit(StateData.stateData)
+    |> Most.concat(_createWorkerLoopStream())
+    |> Most.drain
+    |> ignore :
+    state |> _noWorkerInit |> _noWorkerLoop(0.) |> ignore;

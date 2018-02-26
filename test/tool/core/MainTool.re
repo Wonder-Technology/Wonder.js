@@ -1,11 +1,11 @@
-open Sinon;
+/* open Sinon;
 
 open DomTool;
 
 let createGetContextStub = (fakeGl, sandbox) =>
   createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(fakeGl);
 
-let buildFakeGl = (sandbox) => {
+let _buildFakeGl = (sandbox) => {
   "VERTEX_SHADER": 0,
   "FRAGMENT_SHADER": 1,
   "HIGH_FLOAT": 2,
@@ -26,7 +26,7 @@ let buildFakeCanvas = (id, gl, sandbox) => {
 };
 
 let buildFakeDomForNotPassCanvasId = (sandbox) => {
-  let fakeGl = buildFakeGl(sandbox);
+  let fakeGl = _buildFakeGl(sandbox);
   let canvasDom = buildFakeCanvas("a", fakeGl, sandbox);
   let div = {"innerHTML": "", "firstChild": canvasDom};
   let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^)), "style": {"cssText": ""}};
@@ -41,7 +41,7 @@ let buildFakeDomForNotPassCanvasId = (sandbox) => {
   (canvasDom, fakeGl, div, body)
 };
 
-let buildMainConfig =
+/* let buildMainConfig =
     (
       ~bufferConfig=Js.Nullable.undefined,
       ~gpuConfig=Js.Nullable.undefined,
@@ -57,4 +57,4 @@ let buildMainConfig =
   "isDebug": isDebug,
   "workerFileDir": workerFileDir,
   "contextConfig": contextConfig
-};
+}; */ */
