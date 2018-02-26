@@ -56,7 +56,6 @@
 		"bs-fetch": "^0.2.1",
 		"bs-json": "^0.2.3",
 		"bs-most": "^0.1.1",
-		"most": "^1.7.3",
 		"wonder-commonlib": "^0.2.19",
 		"wonder-log": "^0.1.1"
 	},
