@@ -1,4 +1,4 @@
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 open MaterialType;
 
@@ -16,7 +16,7 @@ let _getShaderLibs = ({material_shaders}) =>{
 
 /* shaderData.basic_material.material_shader.shader_libs; */
 let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
-  let shaderData = RenderJobConfigSystem.getShaders(state);
+  let shaderData = RenderConfigDataSystem.getShaders(state);
   (materialIndex, _getShaderLibs(shaderData), shaderData)
 };
 

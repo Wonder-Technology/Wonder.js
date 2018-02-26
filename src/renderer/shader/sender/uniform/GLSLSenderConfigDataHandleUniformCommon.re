@@ -12,7 +12,7 @@ open GLSLSenderSendDataUtils;
 
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 let _setToUniformSendMap =
     (

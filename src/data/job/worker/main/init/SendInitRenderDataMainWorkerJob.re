@@ -4,6 +4,6 @@ let execJob = (flags, stateData) =>
       let state = StateSystem.getState(stateData);
       /* TODO refactor: move to utils */
       WorkerInstanceSystem.unsafeGetRenderWorker(state)
-      |> WorkerUtils.postMessage({"operateType": WorkerJobConfigSystem.unsafeGetFlags(flags)[0]})
+      |> WorkerUtils.postMessage({"operateType": JobConfigSystem.unsafeGetFlags(flags)[0]})
     }
   );

@@ -96,13 +96,13 @@ let rec _find =
 
 /* TODO refactor */
 let getMainInitJobStream = (jobHandleMap, stateData, state: StateDataType.state, getJobHandleFunc) => {
-  let {workerSetting, mainInitPipelines, mainInitJobs} = _unsafeGetWorkerJobConfig(state);
+  let {setting, mainInitPipelines, mainInitJobs} = _unsafeGetWorkerJobConfig(state);
   /* TODO refactor */
   let {jobs}: mainInitPipeline =
     JobConfigSystem.unsafeFindFirst(
       mainInitPipelines,
-      workerSetting.mainInitPipeline,
-      ({name}) => JobConfigSystem.filterTargetName(name, workerSetting.mainInitPipeline)
+      setting.mainInitPipeline,
+      ({name}) => JobConfigSystem.filterTargetName(name, setting.mainInitPipeline)
     );
   /* TODO check: frame job should only has one */
   let jobName = "frame";
@@ -136,15 +136,15 @@ let getMainInitJobStream = (jobHandleMap, stateData, state: StateDataType.state,
         ),
         [||]
       ); */
-let getWorkerSetting = (state) => _unsafeGetWorkerJobConfig(state).workerSetting;
+let getSetting = (state) => _unsafeGetWorkerJobConfig(state).setting;
 
 let _getWorkerPipelineJobs = (state) => {
-  let {workerSetting, workerPipelines} = _unsafeGetWorkerJobConfig(state);
-  /* _getPipeline(workerSetting.workerPipeline, workerPipelines).jobs */
+  let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(state);
+  /* _getPipeline(setting.workerPipeline, workerPipelines).jobs */
   JobConfigSystem.unsafeFindFirst(
     workerPipelines,
-    workerSetting.workerPipeline,
-    ({name}) => JobConfigSystem.filterTargetName(name, workerSetting.workerPipeline)
+    setting.workerPipeline,
+    ({name}) => JobConfigSystem.filterTargetName(name, setting.workerPipeline)
   ).
     jobs
 };
@@ -182,8 +182,8 @@ let getRenderWorkerJobStreamArr = (
  pipelineJobs, workerJobs,
  
 jobHandleMap, stateData, getJobHandleFunc) => {
-  /* let {workerSetting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
-     let {jobs} = _getPipeline(workerSetting.worker_pipeline, workerPipelines); */
+  /* let {setting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
+     let {jobs} = _getPipeline(setting.worker_pipeline, workerPipelines); */
   let state = RenderWorkerStateSystem.getState(stateData);
   /* let workerJobs = RenderWorkerStateSystem.getJobs(state); */
   /* RenderWorkerStateSystem.getPipelineJobs(state) */
@@ -204,22 +204,3 @@ jobHandleMap, stateData, getJobHandleFunc) => {
        [||]
      )
 };
-
-/* TODO refactor: duplicate */
-let _throwJobFlagsShouldBeDefined = () =>
-  WonderLog.Log.fatal(
-    WonderLog.Log.buildFatalMessage(
-      ~title="throwJobFlagsShouldBeDefined",
-      ~description={j|jobFlags should be defined|j},
-      ~reason="",
-      ~solution={j||j},
-      ~params={j||j}
-    )
-  );
-
-/* TODO refactor: move out? */
-let unsafeGetFlags = (flags) =>
-  switch flags {
-  | None => _throwJobFlagsShouldBeDefined()
-  | Some(flags) => flags
-  };

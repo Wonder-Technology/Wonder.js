@@ -60,11 +60,11 @@ open GlobalTempType;
 
 open TypeArrayPoolType;
 
-open LogicJobConfigType;
-
-open RenderJobConfigType;
+open NoWorkerJobConfigType;
 
 open WorkerJobConfigType;
+
+open RenderConfigDataType;
 
 open WorkerInstanceType;
 
@@ -157,10 +157,8 @@ and glslSenderData = {
   mutable lastSendGeometry: option(geometry)
 }
 and jobData = {
-  logicInitJobList: list((string, state => state)),
-  renderInitJobList: list((string, (webgl1Context, state) => state)),
-  logicUpdateJobList: list((string, (float, state) => state)),
-  renderRenderJobList: list((string, (webgl1Context, state) => state))
+  noWorkerInitJobList: list((string, state => state)),
+  noWorkerLoopJobList: list((string, (float, state) => state))
 }
 and geometryData = {
   index: int,
@@ -181,9 +179,9 @@ and state = {
   workerConfig: option(workerConfig),
   memoryConfig,
   jobData,
-  logicJobConfig: option(logicJobConfig),
-  renderJobConfig: option(renderJobConfig),
+  noWorkerJobConfig: option(noWorkerJobConfig),
   workerJobConfig: option(workerJobConfig),
+  renderConfigData: option(renderConfigData),
   gpuDetectData,
   sourceInstanceData,
   objectInstanceData,

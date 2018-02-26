@@ -6,7 +6,7 @@ open ShaderChunkType;
 
 open ShaderChunkSystem;
 
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 let webgl1_main_begin: string = "void main(void){\n";
 

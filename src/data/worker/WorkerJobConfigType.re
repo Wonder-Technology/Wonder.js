@@ -1,4 +1,4 @@
-type workerSetting = {
+type setting = {
   workerFileDir: string,
   mainInitPipeline: string,
   workerPipeline: string
@@ -54,7 +54,7 @@ type workerPipeline = {
 type workerPipelines = array(workerPipeline);
 
 type workerJobConfig = {
-  workerSetting,
+  setting,
   mainInitPipelines,
   workerPipelines,
   mainInitJobs,

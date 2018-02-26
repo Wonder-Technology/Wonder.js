@@ -3,7 +3,7 @@ let execJob = (flags, e, stateData) =>
     () => {
       /* TODO refactor: move to utils */
       WorkerUtils.getSelf()
-      |> WorkerUtils.postMessage({"operateType": WorkerJobConfigSystem.unsafeGetFlags(flags)[0]})
+      |> WorkerUtils.postMessage({"operateType": JobConfigSystem.unsafeGetFlags(flags)[0]})
       |> ignore;
       e
     }

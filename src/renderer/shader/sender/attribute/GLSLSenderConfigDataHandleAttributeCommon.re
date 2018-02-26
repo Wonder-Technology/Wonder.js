@@ -14,7 +14,7 @@ open GLSLSenderDrawUtils;
 
 open GLSLSenderConfigDataHandleShaderDataCommon;
 
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 let _addModelMatrixInstanceArrayBufferSendData =
     ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (

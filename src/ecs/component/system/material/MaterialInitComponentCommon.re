@@ -1,6 +1,6 @@
 open StateDataType;
 
-open RenderJobConfigType;
+open RenderConfigDataType;
 
 let _initMaterialShader =
     (
@@ -9,28 +9,26 @@ let _initMaterialShader =
       (initShaderFuncTuple, setShaderIndexFunc),
       (gameObjectMap, shaderIndexMap, state: StateDataType.state)
     ) =>
-  RenderJobConfigSystem.(
-    MaterialShaderIndexCommon.hasShaderIndex(materialIndex, shaderIndexMap) ?
-      state :
-      [@bs]
-      setShaderIndexFunc(
+  MaterialShaderIndexCommon.hasShaderIndex(materialIndex, shaderIndexMap) ?
+    state :
+    [@bs]
+    setShaderIndexFunc(
+      materialIndex,
+      ShaderSystem.initMaterialShader(
         materialIndex,
-        ShaderSystem.initMaterialShader(
-          materialIndex,
-          (
-            gl,
-            getMaterialShaderLibDataArr(
-              MaterialGameObjectCommon.unsafeGetGameObject(materialIndex, gameObjectMap),
-              (shaderData, shaderLibs, getShaderLibs(state)),
-              state
-            )
-          ),
-          initShaderFuncTuple,
-          state
+        (
+          gl,
+          RenderConfigDataSystem.getMaterialShaderLibDataArr(
+            MaterialGameObjectCommon.unsafeGetGameObject(materialIndex, gameObjectMap),
+            (shaderData, shaderLibs, RenderConfigDataSystem.getShaderLibs(state)),
+            state
+          )
         ),
+        initShaderFuncTuple,
         state
-      )
-  );
+      ),
+      state
+    );
 
 /* let _buildInitShaderFuncTuple = () => ShaderSourceBuildCommon.buildGLSLSource; */
 let initMaterial = (gl, shaderTuple, setShaderIndexFunc, stateTuple) =>

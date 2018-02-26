@@ -18,22 +18,6 @@ let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
 
-let removeRenderRenderJob = Job.removeRenderRenderJob;
-
-let removeRenderInitJob = Job.removeRenderInitJob;
-
-let addRenderRenderJob = Job.addRenderRenderJob;
-
-let addRenderInitJob = Job.addRenderInitJob;
-
-let removeLogicUpdateJob = Job.removeLogicUpdateJob;
-
-let removeLogicInitJob = Job.removeLogicInitJob;
-
-let addLogicUpdateJob = Job.addLogicUpdateJob;
-
-let addLogicInitJob = Job.addLogicInitJob;
-
 let cloneGameObject = GameObject.cloneGameObject;
 
 let batchDisposeGameObject = GameObject.batchDisposeGameObject;
@@ -305,22 +289,6 @@ let deepCopyStateForRestore = State.deepCopyStateForRestore;
 let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
-
-let removeRenderRenderJob = Job.removeRenderRenderJob;
-
-let removeRenderInitJob = Job.removeRenderInitJob;
-
-let addRenderRenderJob = Job.addRenderRenderJob;
-
-let addRenderInitJob = Job.addRenderInitJob;
-
-let removeLogicUpdateJob = Job.removeLogicUpdateJob;
-
-let removeLogicInitJob = Job.removeLogicInitJob;
-
-let addLogicUpdateJob = Job.addLogicUpdateJob;
-
-let addLogicInitJob = Job.addLogicInitJob;
 
 let cloneGameObject = GameObject.cloneGameObject;
 

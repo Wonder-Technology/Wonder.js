@@ -6,7 +6,7 @@ let execJob = (flags, stateData) =>
       /* TODO refactor: not dependent on WorkerJobConfigSystem??? */
       WorkerInstanceSystem.unsafeGetRenderWorker(state)
       |> WorkerUtils.postMessage({
-           "operateType": WorkerJobConfigSystem.unsafeGetFlags(flags)[0],
+           "operateType": JobConfigSystem.unsafeGetFlags(flags)[0],
            /* "pipelineJobs": WorkerJobConfigSystem.getRenderWorkerPipelineJobs(state),
               "jobs": WorkerJobConfigSystem.getWorkerJobs(state) */
            "pipelineJobs":
