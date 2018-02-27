@@ -68,7 +68,7 @@ let prepareForUseProgram = (sandbox, prepareFunc, state) => {
   (state, program, useProgram)
 };
 
-/* let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render; */
+/* let DirectorTool.runWithDefaultTime = (state: StateDataType.state) => state |> WebGLRenderTool.render; */
 let testSendShaderUniformDataOnlyOnce =
     (sandbox, name, (prepareSendUinformDataFunc, setFakeGlFunc, prepareGameObject), state) =>
   Wonder_jest.(
