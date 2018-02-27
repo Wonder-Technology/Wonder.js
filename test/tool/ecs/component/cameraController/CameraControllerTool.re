@@ -84,7 +84,7 @@ let createCameraGameObject = (state) => {
 
 let getCurrentCameraController = CameraControllerSystem.getCurrentCameraController;
 
-let testBuildPMatrix = (state, execFunc) =>
+let testBuildPMatrix = (stateFunc, execFunc) =>
   Wonder_jest.(
     CameraController.(
       Expect.(
@@ -92,7 +92,7 @@ let testBuildPMatrix = (state, execFunc) =>
           test(
             "build dirty cameraControllers' pMatrix",
             () => {
-              let (state, cameraController) = createCameraControllerPerspectiveCamera(state);
+              let (state, cameraController) = createCameraControllerPerspectiveCamera(stateFunc());
               let state = state |> execFunc;
               state
               |> getCameraControllerPMatrix(cameraController)

@@ -72,6 +72,8 @@ let _updateCamera = (index: int, cameraControllerData: cameraControllerData) =>
   );
 
 let update = (state: StateDataType.state) => {
+  WonderLog.Log.print(2222
+  ) |> ignore;
   let {dirtyArray} as data = getCameraControllerData(state);
   {
     ...state,

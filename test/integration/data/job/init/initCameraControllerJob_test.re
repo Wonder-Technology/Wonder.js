@@ -36,11 +36,12 @@ let _ =
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       CameraControllerTool.testBuildPMatrix(
-        TestTool.initWithJobConfigWithoutBuildFakeDom(
-          ~sandbox,
-          ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
-          ()
-        ),
+        () =>
+          TestTool.initWithJobConfigWithoutBuildFakeDom(
+            ~sandbox,
+            ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+            ()
+          ),
         (state) => state |> CameraControllerTool.init
       )
     }
