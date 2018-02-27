@@ -1,0 +1,1 @@
+let convert16HexToRGBA = ColorSystem.convert16HexToRGBA;
