@@ -12,14 +12,24 @@
 
 
         window.onload = function () {
-            var state = wd.setMainConfig({
-                isDebug: true
-            });
+            // var state = wd.setMainConfig({
+            //     isDebug: true
+            // });
 
-            wd.load("../../data/", state).then(function (state) {
-                console.log("complete", state);
-                initSample(state);
-            });
+            // wd.load("../../data/", state).then(function (state) {
+            //     console.log("complete", state);
+            //     initSample(state);
+            // });
+
+            wd.load("./data/").subscribe({
+                next: (state) => {
+                    console.log("next: ", state)
+                },
+                complete: () => {
+                    console.log("complete");
+                    initSample(wd.getState());
+                }
+            })
 
 
 
