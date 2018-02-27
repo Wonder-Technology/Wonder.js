@@ -72,7 +72,7 @@ let buildSetting = (isDebug, canvasId, context, useHardwareInstance, useWorker) 
 
 let createStateAndSetToStateData =
     (
-      ~isDebug=Js.true_,
+      ~isDebug="true",
       ~canvasId=None,
       ~context={|
         {
@@ -85,7 +85,7 @@ let createStateAndSetToStateData =
         }
                |},
       ~useHardwareInstance="false",
-      ~useWorker=Js.false_,
+      ~useWorker="false",
       ()
     ) => {
   let stateData = StateTool.getStateData();

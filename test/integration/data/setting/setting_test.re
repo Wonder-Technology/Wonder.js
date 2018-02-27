@@ -34,7 +34,7 @@ let _ =
                 "it will open contract check",
                 () => {
                   buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-                  SettingTool.createStateAndSetToStateData(~isDebug=Js.true_, ()) |> ignore;
+                  SettingTool.createStateAndSetToStateData(~isDebug="true", ()) |> ignore;
                   getIsDebug(StateData.stateData) |> expect == true
                 }
               )
@@ -77,7 +77,7 @@ let _ =
                     () =>
                       TestTool.initWithJobConfigWithoutBuildFakeDom(
                         ~sandbox,
-                        ~isDebug=Js.true_,
+                        ~isDebug="true",
                         ~canvasId=Some("a"),
                         ()
                       )

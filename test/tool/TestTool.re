@@ -1,30 +1,18 @@
 let initWithoutBuildFakeDom =
     (
       ~sandbox,
-      /* ~isDebug=Js.Nullable.return(Js.true_), */
-      ~isDebug=Js.true_,
+      ~isDebug="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(300)},
       ()
     ) => {
   Random.init(1);
-  /* SettingParseSystem.convertToRecord(SettingTool.buildSetting(isDebug) |> Js.Json.parseExn)
-     |> ConfigDataLoaderSystem._setSetting(StateTool.getStateData(), StateSystem.getState(stateData))
-     |> StateTool.setState */
-  /* TODO set bufferConfig */
   SettingTool.createStateAndSetToStateData(~isDebug, ())
-  /* Main.setMainConfig(MainTool.buildMainConfig(~isDebug, ~bufferConfig, ()))
-     |> (
-       (state) => {
-         StateData.stateData.state = Some(state);
-         state
-       }
-     ) */
 };
 
 let init =
     (
       ~sandbox,
-      ~isDebug=Js.true_,
+      ~isDebug="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(300)},
       ()
     ) => {
@@ -35,7 +23,7 @@ let init =
 let initWithJobConfigWithoutBuildFakeDom =
     (
       ~sandbox,
-      ~isDebug=Js.true_,
+      ~isDebug="true",
       ~canvasId=None,
       ~context={|
         {
@@ -59,7 +47,7 @@ let initWithJobConfigWithoutBuildFakeDom =
 let initWithJobConfig =
     (
       ~sandbox,
-      ~isDebug=Js.true_,
+      ~isDebug="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
       ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ()
