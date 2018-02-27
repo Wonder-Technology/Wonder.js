@@ -1,4 +1,4 @@
-/* let getGLSLSenderData = GLSLSenderSystem.getGLSLSenderData;
+let getGLSLSenderData = GLSLSenderSystem.getGLSLSenderData;
 
 let disableVertexAttribArray = (state: StateDataType.state) =>
   GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.unsafeGetGl(state), state);
@@ -9,7 +9,6 @@ let clearLastSendGeometry = (state: StateDataType.state) => {
 };
 
 module JudgeSendUniformData = {
-  let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
   let _prepareSendUinformData = (sandbox, prepareGameObjectFunc, state) => {
     let (state, gameObject, _, material, _) = prepareGameObjectFunc(sandbox, state);
     let (state, _, cameraTransform, cameraController) =
@@ -41,7 +40,12 @@ module JudgeSendUniformData = {
               () => {
                 let state = ref(StateTool.createState());
                 beforeEach(
-                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  () =>
+                    state :=
+                      RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                        sandbox,
+                        LoopRenderJobTool.buildNoWorkerJobConfig()
+                      )
                 );
                 test(
                   "test send",
@@ -67,8 +71,7 @@ module JudgeSendUniformData = {
                     let state =
                       state
                       |> RenderJobsTool.initSystemAndRender
-                      |> RenderJobsTool.updateSystem
-                      |> _render;
+                      |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
                        |> expect
@@ -104,7 +107,12 @@ module JudgeSendUniformData = {
               () => {
                 let state = ref(StateTool.createState());
                 beforeEach(
-                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  () =>
+                    state :=
+                      RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                        sandbox,
+                        LoopRenderJobTool.buildNoWorkerJobConfig()
+                      )
                 );
                 test(
                   "test send",
@@ -130,8 +138,7 @@ module JudgeSendUniformData = {
                     let state =
                       state
                       |> RenderJobsTool.initSystemAndRender
-                      |> RenderJobsTool.updateSystem
-                      |> _render;
+                      |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
                        |> expect
@@ -192,14 +199,16 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
                   let state =
-                    state
-                    |> RenderJobsTool.initSystemAndRender
-                    |> RenderJobsTool.updateSystem
-                    |> _render;
+                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
-                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  () =>
+                    state :=
+                      RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                        sandbox,
+                        LoopRenderJobTool.buildNoWorkerJobConfig()
+                      )
                 );
                 test(
                   "test send",
@@ -263,20 +272,22 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
                   let state =
-                    state
-                    |> RenderJobsTool.initSystemAndRender
-                    |> RenderJobsTool.updateSystem
-                    |> _render;
+                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
-                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  () =>
+                    state :=
+                      RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                        sandbox,
+                        LoopRenderJobTool.buildNoWorkerJobConfig()
+                      )
                 );
                 test(
                   "if cached, not send",
                   () => {
                     let (state, pos, uniform3f) = _prepare(sandbox, state);
-                    let state = state |> _render;
+                    let state = state |> DirectorTool.runWithDefaultTime;
                     uniform3f |> withOneArg(pos) |> getCallCount |> expect == 1
                   }
                 );
@@ -345,20 +356,22 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform1f, ~getUniformLocation, ())
                        );
                   let state =
-                    state
-                    |> RenderJobsTool.initSystemAndRender
-                    |> RenderJobsTool.updateSystem
-                    |> _render;
+                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform1f)
                 };
                 beforeEach(
-                  () => state := RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(sandbox)
+                  () =>
+                    state :=
+                      RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                        sandbox,
+                        LoopRenderJobTool.buildNoWorkerJobConfig()
+                      )
                 );
                 test(
                   "if cached, not send",
                   () => {
                     let (state, pos, uniform1f) = _prepare(sandbox, state);
-                    let state = state |> _render;
+                    let state = state |> DirectorTool.runWithDefaultTime;
                     uniform1f |> withOneArg(pos) |> getCallCount |> expect == 1
                   }
                 );
@@ -380,4 +393,4 @@ module JudgeSendUniformData = {
         )
       )
     );
-}; */
+};

@@ -1,5 +1,4 @@
 /* let _getDefaultRenderJobConfig = () => RenderJobConfigTool.buildRenderJobConfig(); */
-
 let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
   TestTool.initWithJobConfig(
     ~sandbox,
@@ -7,26 +6,27 @@ let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
     ~noWorkerJobConfig,
     ()
   )
-            |> DirectorTool.prepare;
-/* 
-let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
+  |> DirectorTool.prepare;
+
+let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
-    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
-    ~renderJobConfig=_getDefaultRenderJobConfig(),
+    /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
+    ~noWorkerJobConfig,
     ()
-  );
+  )
+  |> DirectorTool.prepare;
 
-let initWithJobConfigAndBufferConfig = (sandbox, bufferConfig) =>
-  TestTool.initWithJobConfig(
-    ~sandbox,
-    ~bufferConfig,
-    ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
-    ~renderJobConfig=_getDefaultRenderJobConfig(),
-    ()
-  ); */
+/*
 
+ let initWithJobConfigAndBufferConfig = (sandbox, bufferConfig) =>
+   TestTool.initWithJobConfig(
+     ~sandbox,
+     ~bufferConfig,
+     ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
+     ~renderJobConfig=_getDefaultRenderJobConfig(),
+     ()
+   ); */
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
   open BasicMaterial;
@@ -51,7 +51,6 @@ let initSystemAndRender = (state: StateDataType.state) =>
   state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.init;
 
 /* let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem; */
-
 let passGl = (sandbox, state: StateDataType.state) =>
   state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
@@ -69,8 +68,7 @@ let prepareForUseProgram = (sandbox, prepareFunc, state) => {
   (state, program, useProgram)
 };
 
-/* let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
-
+/* let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render; */
 let testSendShaderUniformDataOnlyOnce =
     (sandbox, name, (prepareSendUinformDataFunc, setFakeGlFunc, prepareGameObject), state) =>
   Wonder_jest.(
@@ -87,7 +85,7 @@ let testSendShaderUniformDataOnlyOnce =
               let pos = 0;
               let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
               let state = setFakeGlFunc(uniformDataStub, getUniformLocation, state);
-              let state = state |> initSystemAndRender |> updateSystem |> _render;
+              let state = state |> initSystemAndRender |> DirectorTool.runWithDefaultTime;
               uniformDataStub |> withOneArg(pos) |> getCallCount |> expect == 1
             }
           )
@@ -145,4 +143,4 @@ let testSendShaderUniformVec3DataOnlyOnce =
       prepareGameObject
     ),
     state
-  ); */
+  );
