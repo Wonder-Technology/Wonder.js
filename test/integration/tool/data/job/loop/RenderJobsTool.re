@@ -6,7 +6,8 @@ let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
     ~noWorkerJobConfig,
     ()
-  );
+  )
+            |> DirectorTool.prepare;
 /* 
 let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
@@ -46,7 +47,8 @@ let prepareGameObject = (sandbox, state) => {
 
 let initSystemAndRender = (state: StateDataType.state) =>
   /* state |> JobTool.init |> DirectorTool.initSystem |> WebGLRenderTool.init; */
-  state |> DirectorTool.init;
+  /* state |> DirectorTool.init; */
+  state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.init;
 
 /* let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem; */
 
