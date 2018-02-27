@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test create gl",
+    "test create gl job",
     () => {
       open Expect;
       open Expect.Operators;

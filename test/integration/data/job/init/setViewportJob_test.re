@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test set full screen",
+    "test set full screen job",
     () => {
       open Expect;
       open Expect.Operators;

@@ -4,7 +4,7 @@ open CameraController;
 
 let _ =
   describe(
-    "test init cameraController",
+    "test init cameraController job",
     () => {
       open Expect;
       open Expect.Operators;

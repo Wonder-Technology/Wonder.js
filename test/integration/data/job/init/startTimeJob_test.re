@@ -4,7 +4,7 @@ open TimeController;
 
 let _ =
   describe(
-    "test start time",
+    "test start time job",
     () => {
       open Expect;
       open Expect.Operators;

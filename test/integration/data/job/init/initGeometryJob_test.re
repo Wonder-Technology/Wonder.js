@@ -6,7 +6,7 @@ open BoxGeometry;
 
 let _ =
   describe(
-    "test init geometry",
+    "test init geometry job",
     () => {
       open Expect;
       open Expect.Operators;

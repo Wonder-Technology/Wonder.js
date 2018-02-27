@@ -5,7 +5,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test init light material",
+    "test init light material job",
     () => {
       open Expect;
       open Expect.Operators;

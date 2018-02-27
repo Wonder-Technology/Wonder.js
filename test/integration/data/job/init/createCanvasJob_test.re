@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test create canvas",
+    "test create canvas job",
     () => {
       open Expect;
       open Expect.Operators;
