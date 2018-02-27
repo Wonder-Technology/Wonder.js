@@ -5,6 +5,10 @@ let prepare = (state: StateDataType.state) => {
 
 let init = (state: StateDataType.state) => state |> DirectorSystem._noWorkerInit;
 
+
+let run = (state: StateDataType.state, ~time=0., ()) => state |> DirectorSystem._run(time);
+
+
 /* let initWithJob = (state: StateDataType.state) => state |> JobTool.init |> DirectorSystem.init;
 
    let initLogic = (state: StateDataType.state) => state |> JobTool.initLogic |> DirectorSystem.init; */
