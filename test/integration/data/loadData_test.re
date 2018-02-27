@@ -33,7 +33,22 @@ let _ =
             |> onCall(0)
             |> returns(
                  _buildFakeFetchJsonResponse(
-                   SettingTool.buildSetting(Js.true_, None, "", "false", Js.false_)
+                   SettingTool.buildSetting(
+                     "true",
+                     None,
+                     {|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": false,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
+                     "false",
+                     "false"
+                   )
                  )
                )
             |> onCall(1)
