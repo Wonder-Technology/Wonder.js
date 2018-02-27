@@ -56,7 +56,7 @@ let init = (state: StateDataType.state) => {
       )
   }
 };
-/*
+
  let addNoWorkerInitJob =
      (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
    ...state,
@@ -97,4 +97,4 @@ let init = (state: StateDataType.state) => {
      ...state.jobData,
      noWorkerLoopJobList: JobSystem.removeJob(targetJobName, _getNoWorkerLoopJobList(state))
    }
- }; */
+ };
