@@ -40,6 +40,20 @@ let _ =
         );
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      test(
+        "get webgl1 context",
+        () => {
+          let (canvasDom, _, _, _) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
+          TestTool.initWithJobConfigWithoutBuildFakeDom(
+            ~sandbox,
+            ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+            ()
+          )
+          |> DirectorTool.init
+          |> ignore;
+          expect(canvasDom##getContext) |> toCalledWith([|"webgl"|])
+        }
+      );
       describe(
         "if pass contextConfig",
         () =>

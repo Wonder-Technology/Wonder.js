@@ -17,16 +17,6 @@ let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
   )
   |> DirectorTool.prepare;
 
-/*
-
- let initWithJobConfigAndBufferConfig = (sandbox, bufferConfig) =>
-   TestTool.initWithJobConfig(
-     ~sandbox,
-     ~bufferConfig,
-     ~logicJobConfig=LogicJobConfigTool.buildLogicJobConfig(),
-     ~renderJobConfig=_getDefaultRenderJobConfig(),
-     ()
-   ); */
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
   open BasicMaterial;
@@ -46,11 +36,8 @@ let prepareGameObject = (sandbox, state) => {
 };
 
 let initSystemAndRender = (state: StateDataType.state) =>
-  /* state |> JobTool.init |> DirectorTool.initSystem |> WebGLRenderTool.init; */
-  /* state |> DirectorTool.init; */
   state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.init;
 
-/* let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem; */
 let passGl = (sandbox, state: StateDataType.state) =>
   state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
@@ -68,7 +55,6 @@ let prepareForUseProgram = (sandbox, prepareFunc, state) => {
   (state, program, useProgram)
 };
 
-/* let DirectorTool.runWithDefaultTime = (state: StateDataType.state) => state |> WebGLRenderTool.render; */
 let testSendShaderUniformDataOnlyOnce =
     (sandbox, name, (prepareSendUinformDataFunc, setFakeGlFunc, prepareGameObject), state) =>
   Wonder_jest.(

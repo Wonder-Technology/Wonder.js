@@ -10,12 +10,15 @@ let setState = (state) => StateSystem.setState(getStateData(), state);
 
 let createState = StateSystem.createState;
 
-/* let createNewCompleteState = () => Main.setMainConfig(MainTool.buildMainConfig());
+let createNewCompleteState = (sandbox) =>
+  createState() |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
-   let createNewCompleteStateWithRenderJobConfig = () =>
-     Main.setMainConfig(MainTool.buildMainConfig())
-     |> ((state) => state |> RenderJobConfigTool.initData(RenderJobConfigTool.buildRenderJobConfig()));
-     */
+let createNewCompleteStateWithRenderConfigData = (sandbox) =>
+  createNewCompleteState(sandbox)
+  |> (
+    (state) => state |> RenderConfigDataTool.initData(RenderConfigDataTool.buildRenderConfigData())
+  );
+
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   open Wonder_jest;
   open Expect;

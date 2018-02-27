@@ -1,9 +1,10 @@
-/* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
+let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
    TestTool.initWithJobConfigWithoutBuildFakeDom(
      ~sandbox,
-     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+     ~noWorkerJobConfig,
+     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
      ()
-   ); */
+   );
 let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
   TestTool.initWithJobConfig(~sandbox, ~noWorkerJobConfig, ());
 

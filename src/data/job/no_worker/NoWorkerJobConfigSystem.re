@@ -7,7 +7,7 @@ let _unsafeGetNoWorkerJobConfig = (state: StateDataType.state) => {
         Contract.(
           Operators.(
             test(
-              Log.buildAssertMessage(~expect={j|logic job config exist|j}, ~actual={j|not|j}),
+              Log.buildAssertMessage(~expect={j|noWorker job config exist|j}, ~actual={j|not|j}),
               () => state.noWorkerJobConfig |> assertExist
             )
           )

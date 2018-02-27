@@ -1,0 +1,1 @@
+let getGlobalTempData = GlobalTempStateCommon.getGlobalTempData;
