@@ -1,16 +1,11 @@
 /* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
-  TestTool.initWithJobConfigWithoutBuildFakeDom(
-    ~sandbox,
-    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ()
-  ); */
-
+   TestTool.initWithJobConfigWithoutBuildFakeDom(
+     ~sandbox,
+     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+     ()
+   ); */
 let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
-  TestTool.initWithJobConfig(
-    ~sandbox,
-    ~noWorkerJobConfig,
-    ()
-  );
+  TestTool.initWithJobConfig(~sandbox, ~noWorkerJobConfig, ());
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
@@ -27,21 +22,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let exec = (state: StateDataType.state) =>
-  state
-  /* |> GeometryTool.initGeometrys
-  |> AllMaterialTool.pregetGLSLData
-  |> InitBasicMaterialJob.execJob(
-       JobTool.getConfigData()
-     ); */
- |> (state) => {
-   ...state,
-
-            gpuDetectData: {...state.gpuDetectData, 
-           precision: Some(GPUDetectType.HIGHP)
-            }
- }
-     |> DirectorTool.init;
+let exec = (state: StateDataType.state) => InitRenderJobTool.exec(state);
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;

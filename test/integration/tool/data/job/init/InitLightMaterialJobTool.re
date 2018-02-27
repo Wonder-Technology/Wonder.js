@@ -1,15 +1,11 @@
-/* /* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
+/* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
    TestTool.initWithJobConfigWithoutBuildFakeDom(
      ~sandbox,
      ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
      ()
    ); */
-let initWithJobConfig = (sandbox) =>
-  TestTool.initWithJobConfig(
-    ~sandbox,
-    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ()
-  );
+let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
+  TestTool.initWithJobConfig(~sandbox, ~noWorkerJobConfig, ());
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
@@ -26,13 +22,14 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let exec = (state: StateDataType.state) =>
-  state
-  |> GeometryTool.initGeometrys
-  |> AllMaterialTool.pregetGLSLData
-  |> LightMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state));
+/* let exec = (state: StateDataType.state) =>
+   state
+   |> GeometryTool.initGeometrys
+   |> AllMaterialTool.pregetGLSLData
+   |> LightMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state)); */
+let exec = (state: StateDataType.state) => InitRenderJobTool.exec(state);
 
-let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc,sandbox,  state) => {
+let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc, sandbox, state) => {
   open Sinon;
   let (state, gameObject, _, _) = prepareGameObjectFunc(sandbox, state);
   let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
@@ -44,7 +41,7 @@ let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc,sandbox,  state) => {
 };
 
 let prepareForJudgeGLSL = (~prepareGameObjectFunc=prepareGameObject, sandbox, state) => {
-  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(prepareGameObjectFunc,sandbox,  state);
+  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(prepareGameObjectFunc, sandbox, state);
   let state = state |> exec;
   shaderSource
-}; */
+};
