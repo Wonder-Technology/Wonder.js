@@ -15,6 +15,6 @@ let createGetMainWorkerDataStream = (flags, target) =>
 let createGetOtherWorkerDataStream = (flags, target) =>
   _createGetWorkerDataStream(flags, target)
   |> Most.take(1)
-  |> Most.map((e) => ())
+  |> Most.map((e) => None)
   /* TODO remove */
   |> Most.tap((e) => WonderLog.Log.log({j|**in main worker** get message from other worker: $flags|j}));

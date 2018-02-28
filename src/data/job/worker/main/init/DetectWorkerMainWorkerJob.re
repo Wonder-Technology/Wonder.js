@@ -5,6 +5,6 @@ let execJob = (_, stateData) =>
       |> WorkerDetectSystem.detect
       |> StateSystem.setState(stateData)
       |> ignore;
-      ()
+      None
     }
   );

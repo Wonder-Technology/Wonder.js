@@ -12,7 +12,7 @@ let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "no_worker/setting/setting.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertNoWorkerSettingToRecord(json)),
+  |> map((json) => NoWorkerJobConfigParseSystem.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "no_worker/pipeline/init_pipelines.json"|]),
     fetchFunc

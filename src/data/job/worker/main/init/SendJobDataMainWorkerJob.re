@@ -4,9 +4,10 @@ let execJob = (flags, stateData) =>
       let state = StateSystem.getState(stateData);
       /* TODO refactor: move to utils */
       /* TODO refactor: not dependent on WorkerJobConfigSystem??? */
+      let operateType = JobConfigSystem.unsafeGetFlags(flags)[0];
       WorkerInstanceSystem.unsafeGetRenderWorker(state)
       |> WorkerUtils.postMessage({
-           "operateType": JobConfigSystem.unsafeGetFlags(flags)[0],
+           "operateType": operateType,
            /* "pipelineJobs": WorkerJobConfigSystem.getRenderWorkerPipelineJobs(state),
               "jobs": WorkerJobConfigSystem.getWorkerJobs(state) */
            "pipelineJobs":
@@ -14,6 +15,7 @@ let execJob = (flags, stateData) =>
              |> Obj.magic
              |> Js.Json.stringify,
            "jobs": WorkerJobConfigSystem.getWorkerJobs(state) |> Obj.magic |> Js.Json.stringify
-         })
+         });
+      Some(operateType)
     }
   );

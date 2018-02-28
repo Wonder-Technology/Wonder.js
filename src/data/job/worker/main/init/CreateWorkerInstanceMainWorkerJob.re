@@ -6,5 +6,5 @@ let execJob = (_, stateData) => {
      )
   |> StateSystem.setState(stateData)
   |> ignore;
-  Most.empty()
+  Most.just(None)
 };

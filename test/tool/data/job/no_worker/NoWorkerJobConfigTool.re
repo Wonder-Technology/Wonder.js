@@ -254,7 +254,7 @@ let initData =
   ...state,
   noWorkerJobConfig:
     Some({
-      setting: convertNoWorkerSettingToRecord(noWorkerSetting |> Js.Json.parseExn),
+      setting: convertSettingToRecord(noWorkerSetting |> Js.Json.parseExn),
       initPipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
       loopPipelines: convertLoopPipelinesToRecord(loopPipelines |> Js.Json.parseExn),
       initJobs: convertInitJobsToRecord(initJobs |> Js.Json.parseExn),

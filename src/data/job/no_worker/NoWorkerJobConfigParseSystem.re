@@ -2,7 +2,7 @@ open StateDataType;
 
 open NoWorkerJobConfigType;
 
-let convertNoWorkerSettingToRecord = (loop_setting) => {
+let convertSettingToRecord = (loop_setting) => {
   open Json;
   open Decode;
   let json = loop_setting;
