@@ -1,6 +1,6 @@
 open TimeControllerType;
 
-let initData = () => {
+let create = () => {
   elapsed: 0.,
   startTime: 0.,
   deltaTime: 0.,

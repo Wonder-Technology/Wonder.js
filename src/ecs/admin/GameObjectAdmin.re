@@ -3,9 +3,9 @@ open GameObjectType;
 open ComponentType;
 
 /* let init = (state: StateDataType.state) =>
-   state |> CameraControllerSystem.init |> GeometrySystem.init; */
+   state |> BasicCameraViewSystem.init |> GeometrySystem.init; */
 /* let update = (elapsed: float, state: StateDataType.state) =>
-   state |> CameraControllerSystem.update; */
+   state |> BasicCameraViewSystem.update; */
 let hasSourceInstanceComponent = GameObjectHasComponentCommon.hasSourceInstanceComponent;
 
 let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
@@ -32,16 +32,6 @@ let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceC
 
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
-
-let hasCameraControllerComponent = GameObjectHasComponentCommon.hasCameraControllerComponent;
-
-let getCameraControllerComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getCameraControllerComponent(uid, state);
-
-let addCameraControllerComponent = GameObjectAddComponentCommon.addCameraControllerComponent;
-
-let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeCameraControllerComponent(uid, component, state);
 
 let hasTransformComponent = GameObjectHasComponentCommon.hasTransformComponent;
 
@@ -149,6 +139,7 @@ let dispose = GameObjectDisposeCommon.dispose;
 
 let clone = GameObjectCloneCommon.clone;
 
+/* TODO remove */
 let isAlive = (uid: int, state: StateDataType.state) => {
   let {transformMap, disposedUidMap} = GameObjectStateCommon.getGameObjectData(state);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
@@ -184,4 +175,4 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
   state
 };
 
-let deepCopyStateForRestore = GameObjectStateCommon.deepCopyStateForRestore;
+/* let deepCopyStateForRestore = GameObjectStateCommon.deepCopyStateForRestore; */

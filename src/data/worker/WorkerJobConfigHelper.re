@@ -1,6 +1,6 @@
 open StateDataType;
 
-let initData =
+let create =
     ((setting, main_init_pipelines, main_init_jobs,worker_pipelines,  worker_jobs), state) => {
   ...state,
   workerJobConfig:

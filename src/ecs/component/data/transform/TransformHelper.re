@@ -1,6 +1,6 @@
 open TransformType;
 
-let initData = () => {
+let create = () => {
   index: 0,
   parentMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   childMap: WonderCommonlib.SparseMapSystem.createEmpty(),

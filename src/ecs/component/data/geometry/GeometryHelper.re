@@ -1,6 +1,6 @@
 open StateDataType;
 
-let initData = () => {
+let create = () => {
   index: 0,
   verticesMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   normalsMap: WonderCommonlib.SparseMapSystem.createEmpty(),

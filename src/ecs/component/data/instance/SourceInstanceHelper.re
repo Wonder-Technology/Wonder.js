@@ -1,6 +1,6 @@
 open SourceInstanceType;
 
-let initData = () => {
+let create = () => {
   index: 0,
   gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   objectInstanceArrayMap: WonderCommonlib.SparseMapSystem.createEmpty(),

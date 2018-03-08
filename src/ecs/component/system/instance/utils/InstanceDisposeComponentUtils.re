@@ -14,12 +14,12 @@ let disposeObjectInstance = (sourceInstance, objectInstanceUid: int, state: Stat
 };
 
 let batchDisposeObjectInstance =
-    (sourceInstance, disposedUidMap, disposedUidArr, state: StateDataType.state) => {
+    (sourceInstance, isUidDisposedMap, disposedUidArr, state: StateDataType.state) => {
   let {objectInstanceArrayMap} = getSourceInstanceData(state);
   objectInstanceArrayMap
   |> WonderCommonlib.SparseMapSystem.set(
        sourceInstance,
-       batchRemoveFromArray(disposedUidMap, disposedUidArr)
+       batchRemoveFromArray(isUidDisposedMap, disposedUidArr)
      )
   |> ignore;
   state

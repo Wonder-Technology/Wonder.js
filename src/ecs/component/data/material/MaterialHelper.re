@@ -1,6 +1,6 @@
 /* open MaterialType;
 
-let initData = (state: StateDataType.state) => {
+let create = (state: StateDataType.state) => {
   state.materialData =
     Some({
       index: 0,

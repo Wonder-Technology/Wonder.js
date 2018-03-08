@@ -17,17 +17,18 @@ module.exports = {
   scopes: [
     // { name: "exampleScope" },
     // { name: "changeMe" }
-      { name: "shader" },
-      { name: "glsl" },
-      { name: "render" },
-      { name: "redo-undo" },
-      { name: "job" },
-      { name: "transform" },
-      { name: "render-worker" },
-      { name: "lightMaterial" },
-      { name: "instance" },
-      { name: "geometry" },
-      { name: "light" }
+    { name: "shader" },
+    { name: "glsl" },
+    { name: "render" },
+    { name: "redo-undo" },
+    { name: "job" },
+    { name: "transform" },
+    { name: "render-worker" },
+    { name: "lightMaterial" },
+    { name: "instance" },
+    { name: "geometry" },
+    { name: "light" },
+    { name: "microservice" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

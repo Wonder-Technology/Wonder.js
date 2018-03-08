@@ -1,6 +1,6 @@
 open WorkerDetectType;
 
-let initData = () => {
+let create = () => {
   isSupportSharedArrayBuffer: false,
   isSupportRenderWorkerAndSharedArrayBuffer: false
 };

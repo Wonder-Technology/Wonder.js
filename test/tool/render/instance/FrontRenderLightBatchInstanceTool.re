@@ -23,7 +23,7 @@ let prepare = (sandbox, count, state) => {
   let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
   let (state, gameObject, componentTuple, objectInstanceGameObjectList) =
     createSourceInstanceGameObject(sandbox, count, state);
-  let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+  let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, gameObject, componentTuple, objectInstanceGameObjectList)
 };
 

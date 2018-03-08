@@ -4,7 +4,11 @@ open ComponentType;
 
 open TransformType;
 
-open CameraControllerType;
+open BasicCameraViewType;
+
+open PerspectiveCameraProjectionType;
+
+open SceneType;
 
 open GameObjectType;
 
@@ -188,9 +192,11 @@ and state = {
   viewData,
   initConfig,
   deviceManagerData,
-  gameObjectData,
+  gameObjectRecord,
   transformData,
-  cameraControllerData,
+  sceneRecord,
+  basicCameraViewRecord,
+  perspectiveCameraProjectionRecord,
   basicMaterialData,
   lightMaterialData,
   ambientLightData,

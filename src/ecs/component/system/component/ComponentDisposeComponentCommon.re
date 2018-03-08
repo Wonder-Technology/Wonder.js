@@ -3,6 +3,7 @@ open ComponentType;
 let isAlive = (component, disposedIndexArray: array(int)) =>
   ! Js.Array.includes(component, disposedIndexArray);
 
+/* TODO refactor: remove */
 let checkComponentShouldAlive = (component, isAlive, state: StateDataType.state) =>
   WonderLog.(
     Contract.(
@@ -13,6 +14,7 @@ let checkComponentShouldAlive = (component, isAlive, state: StateDataType.state)
     )
   );
 
+/* TODO refactor: remove */
 let checkComponentShouldAliveWithBatchDispose = (componentArr, isAlive, state: StateDataType.state) =>
   componentArr
   |> WonderCommonlib.ArraySystem.forEach(
@@ -22,7 +24,6 @@ let checkComponentShouldAliveWithBatchDispose = (componentArr, isAlive, state: S
 let disposeSparseMapData = (component: int, map) =>
   map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(component) |> Obj.magic;
 
-
 let removeFromArray = (target: int, arr) => {
   let index = arr |> Js.Array.indexOf(target);
   let lastIndex = arr |> Js.Array.length |> pred;
@@ -30,6 +31,6 @@ let removeFromArray = (target: int, arr) => {
   arr
 };
 
-let batchRemoveFromArray = (disposedMap, arr) =>
+let batchRemoveFromArray = (map, arr) =>
   arr
-  |> Js.Array.filter((value) => disposedMap |> WonderCommonlib.SparseMapSystem.has(value) == false);
+  |> Js.Array.filter((value) => map |> WonderCommonlib.SparseMapSystem.has(value) == false);

@@ -16,7 +16,7 @@ let createNewCompleteState = (sandbox) =>
 let createNewCompleteStateWithRenderConfigData = (sandbox) =>
   createNewCompleteState(sandbox)
   |> (
-    (state) => state |> RenderConfigDataTool.initData(RenderConfigDataTool.buildRenderConfigData())
+    (state) => state |> RenderConfigDataTool.create(RenderConfigDataTool.buildRenderConfigData())
   );
 
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {

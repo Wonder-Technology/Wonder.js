@@ -44,7 +44,7 @@ let _initBufferData = () => {
   (buffer, colors) |> _setDefaultTypeArrData(count)
 };
 
-let initData = () => {
+let create = () => {
   let (buffer, colors) = _initBufferData();
   {
     index: 0,

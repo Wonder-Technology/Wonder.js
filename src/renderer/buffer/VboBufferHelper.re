@@ -1,6 +1,6 @@
 open VboBufferType;
 
-let initData = () => {
+let create = () => {
   vertexBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   normalBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   elementArrayBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),

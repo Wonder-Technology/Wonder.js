@@ -54,7 +54,7 @@ let handleBatchDisposeComponent =
   (
     (
       meshRendererArray: array(meshRenderer),
-      gameObjectUidMap: array(bool),
+      isGameObjectDisposedMap: array(bool),
       state: StateDataType.state
     ) => {
       WonderLog.Contract.requireCheck(
@@ -79,7 +79,7 @@ let handleBatchDisposeComponent =
           ...data,
           disposedIndexArray: disposedIndexArray |> Js.Array.concat(meshRendererArray),
           renderGameObjectArray:
-            renderGameObjectArray |> _batchRemoveFromRenderArray(gameObjectUidMap)
+            renderGameObjectArray |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
         }
       };
       meshRendererArray

@@ -1,3 +1,3 @@
 open RenderDataType;
 
-let initData = () => {renderArray: None, cameraData: None};
+let create = () => {renderArray: None, cameraData: None};

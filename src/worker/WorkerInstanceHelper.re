@@ -1,3 +1,3 @@
 open WorkerInstanceType;
 
-let initData = () => {renderWorker: None};
+let create = () => {renderWorker: None};

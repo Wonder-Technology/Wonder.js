@@ -18,7 +18,7 @@
           "name": "detect_gl"
         },
         {
-          "name": "init_cameraController"
+          "name": "init_camera"
         },
         {
           "name": "init_geometry"

@@ -11,7 +11,7 @@ let getMaxBigTypeArrayPoolSize = (state: StateDataType.state) =>
   state.memoryConfig.maxBigTypeArrayPoolSize;
 
 /* TODO setMainConfig should set theses config */
-let initData = () => {
+let create = () => {
   maxDisposeCount: 1000,
   maxTypeArrayPoolSize: 5000,
   maxBigTypeArrayPoolSize: 100

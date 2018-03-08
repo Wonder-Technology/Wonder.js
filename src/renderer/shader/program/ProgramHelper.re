@@ -1,6 +1,6 @@
 open ProgramType;
 
-let initData = () => {
+let create = () => {
   programMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   lastUsedProgram: None
 };

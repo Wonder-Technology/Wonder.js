@@ -1,3 +1,51 @@
+let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
+
+let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
+
+let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+
+let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
+
+let unsafeGetGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent;
+
+let disposeGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent;
+
+let addGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.addGameObjectPerspectiveCameraProjectionComponent;
+
+let hasGameObjectBasicCameraViewComponent = GameObjectAPI.hasGameObjectBasicCameraViewComponent;
+
+let unsafeGetGameObjectBasicCameraViewComponent = GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent;
+
+let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectBasicCameraViewComponent;
+
+let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
+
+let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
+
+let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
+
+let setPerspectiveCameraNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraNear;
+
+let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
+
+let setPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraAspect;
+
+let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
+
+let setPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraFovy;
+
+let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
+
+let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionGameObject;
+
+let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
+
+let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
+
+let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
+
+let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
+
 let load = LoaderManager.load;
 
 let initDirector = Director.initDirector;
@@ -17,6 +65,14 @@ let deepCopyStateForRestore = State.deepCopyStateForRestore;
 let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
+
+let removeNoWorkerLoopJob = Job.removeNoWorkerLoopJob;
+
+let removeNoWorkerInitJob = Job.removeNoWorkerInitJob;
+
+let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
+
+let addNoWorkerInitJob = Job.addNoWorkerInitJob;
 
 let cloneGameObject = GameObject.cloneGameObject;
 
@@ -98,14 +154,6 @@ let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicM
 
 let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
 
-let hasGameObjectCameraControllerComponent = GameObject.hasGameObjectCameraControllerComponent;
-
-let getGameObjectCameraControllerComponent = GameObject.getGameObjectCameraControllerComponent;
-
-let disposeGameObjectCameraControllerComponent = GameObject.disposeGameObjectCameraControllerComponent;
-
-let addGameObjectCameraControllerComponent = GameObject.addGameObjectCameraControllerComponent;
-
 let hasGameObjectTransformComponent = GameObject.hasGameObjectTransformComponent;
 
 let getGameObjectTransformComponent = GameObject.getGameObjectTransformComponent;
@@ -115,32 +163,6 @@ let disposeGameObjectTransformComponent = GameObject.disposeGameObjectTransformC
 let addGameObjectTransformComponent = GameObject.addGameObjectTransformComponent;
 
 let createGameObject = GameObject.createGameObject;
-
-let getCameraControllerWorldToCameraMatrix = CameraController.getCameraControllerWorldToCameraMatrix;
-
-let getCameraControllerGameObject = CameraController.getCameraControllerGameObject;
-
-let getCameraControllerPMatrix = CameraController.getCameraControllerPMatrix;
-
-let setCameraControllerPerspectiveCamera = CameraController.setCameraControllerPerspectiveCamera;
-
-let createCameraController = CameraController.createCameraController;
-
-let setPerspectiveCameraFar = PerspectiveCamera.setPerspectiveCameraFar;
-
-let getPerspectiveCameraFar = PerspectiveCamera.getPerspectiveCameraFar;
-
-let setPerspectiveCameraNear = PerspectiveCamera.setPerspectiveCameraNear;
-
-let getPerspectiveCameraNear = PerspectiveCamera.getPerspectiveCameraNear;
-
-let setPerspectiveCameraAspect = PerspectiveCamera.setPerspectiveCameraAspect;
-
-let getPerspectiveCameraAspect = PerspectiveCamera.getPerspectiveCameraAspect;
-
-let setPerspectiveCameraFovy = PerspectiveCamera.setPerspectiveCameraFovy;
-
-let getPerspectiveCameraFovy = PerspectiveCamera.getPerspectiveCameraFovy;
 
 let setBoxGeometryConfigData = BoxGeometry.setBoxGeometryConfigData;
 
@@ -270,6 +292,54 @@ let getTransformGameObject = Transform.getTransformGameObject;
 
 let createTransform = Transform.createTransform;
 
+let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
+
+let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
+
+let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+
+let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
+
+let unsafeGetGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent;
+
+let disposeGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent;
+
+let addGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.addGameObjectPerspectiveCameraProjectionComponent;
+
+let hasGameObjectBasicCameraViewComponent = GameObjectAPI.hasGameObjectBasicCameraViewComponent;
+
+let unsafeGetGameObjectBasicCameraViewComponent = GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent;
+
+let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectBasicCameraViewComponent;
+
+let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
+
+let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
+
+let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
+
+let setPerspectiveCameraNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraNear;
+
+let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
+
+let setPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraAspect;
+
+let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
+
+let setPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraFovy;
+
+let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
+
+let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionGameObject;
+
+let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
+
+let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
+
+let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
+
+let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
+
 let load = LoaderManager.load;
 
 let initDirector = Director.initDirector;
@@ -289,6 +359,14 @@ let deepCopyStateForRestore = State.deepCopyStateForRestore;
 let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
+
+let removeNoWorkerLoopJob = Job.removeNoWorkerLoopJob;
+
+let removeNoWorkerInitJob = Job.removeNoWorkerInitJob;
+
+let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
+
+let addNoWorkerInitJob = Job.addNoWorkerInitJob;
 
 let cloneGameObject = GameObject.cloneGameObject;
 
@@ -369,14 +447,6 @@ let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialC
 let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
 
 let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
-
-let hasGameObjectCameraControllerComponent = GameObject.hasGameObjectCameraControllerComponent;
-
-let getGameObjectCameraControllerComponent = GameObject.getGameObjectCameraControllerComponent;
-
-let disposeGameObjectCameraControllerComponent = GameObject.disposeGameObjectCameraControllerComponent;
-
-let addGameObjectCameraControllerComponent = GameObject.addGameObjectCameraControllerComponent;
 
 let hasGameObjectTransformComponent = GameObject.hasGameObjectTransformComponent;
 

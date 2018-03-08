@@ -1,6 +1,6 @@
 open GLSLLocationType;
 
-let initData = () => {
+let create = () => {
   attributeLocationMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformLocationMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

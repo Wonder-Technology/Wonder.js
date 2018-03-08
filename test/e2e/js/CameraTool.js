@@ -1,17 +1,17 @@
 var CameraTool = (function () {
     return {
         createCamera: function (state) {
-            var data = wd.createCameraController(state);
+            var data = wd.createBasicCameraView(state);
             var state = data[0];
-            var cameraController = data[1];
+            var basicCameraView = data[1];
 
-            state = wd.setPerspectiveCameraNear(cameraController, 0.1, state);
-            state = wd.setPerspectiveCameraFar(cameraController, 2000, state);
-            state = wd.setPerspectiveCameraFovy(cameraController, 60, state);
-            state = wd.setPerspectiveCameraAspect(cameraController, 1.0, state);
+            state = wd.setPerspectiveCameraNear(basicCameraView, 0.1, state);
+            state = wd.setPerspectiveCameraFar(basicCameraView, 2000, state);
+            state = wd.setPerspectiveCameraFovy(basicCameraView, 60, state);
+            state = wd.setPerspectiveCameraAspect(basicCameraView, 1.0, state);
 
 
-            state = wd.setCameraControllerPerspectiveCamera(cameraController, state);
+            state = wd.setBasicCameraViewPerspectiveCamera(basicCameraView, state);
 
 
 
@@ -19,7 +19,7 @@ var CameraTool = (function () {
             var state = data[0];
             var obj = data[1];
 
-            state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
+            state = wd.addGameObjectBasicCameraViewComponent(obj, basicCameraView, state);
 
             var transform = wd.getGameObjectTransformComponent(obj, state);
 

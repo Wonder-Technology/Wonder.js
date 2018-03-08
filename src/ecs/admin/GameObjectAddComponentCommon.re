@@ -25,11 +25,11 @@ let _addComponent = (uid: int, component: component, componentMap: array(int)) =
   WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
 };
 
+/* TODO remove */
 let _addCommonComponent = ((uid, component, componentMap), handleAddComponentFunc, state) => {
   componentMap |> _addComponent(uid, component) |> ignore;
   [@bs] handleAddComponentFunc(component, uid, state)
 };
-
 let _addSharableComponent =
     (
       (uid, component, componentMap, gameObject),
@@ -54,13 +54,6 @@ let addObjectInstanceComponent = (uid: int, component: component, state: StateDa
   _addCommonComponent(
     (uid, component, GameObjectStateCommon.getGameObjectData(state).objectInstanceMap),
     ObjectInstanceAddComponentCommon.handleAddComponent,
-    state
-  );
-
-let addCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
-  _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).cameraControllerMap),
-    CameraControllerAddComponentCommon.handleAddComponent,
     state
   );
 
@@ -160,6 +153,7 @@ let _checkBatchAdd = (uidArr, componentArr) =>
     StateData.stateData.isDebug
   );
 
+  /* TODO remove */
 let _batchAddComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
@@ -180,6 +174,32 @@ let _batchAddComponent =
        state
      )
 };
+
+
+
+/* TODO rename */
+let _batchAddComponentWithData =
+    (
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      handleAddComponentFunc,
+componentData) => {
+  _checkBatchAdd(uidArr, componentArr);
+  uidArr
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
+       [@bs]
+       (
+         (componentData, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           _addComponent(uid, component, componentMap);
+           [@bs] handleAddComponentFunc(component, uid, componentData)
+         }
+       ),
+       componentData
+     )
+};
+
+
+
 
 let _batchAddSharableComponent =
     (
@@ -274,14 +294,6 @@ let batchAddLightMaterialComponentForClone =
       LightMaterialGroupCommon.increaseGroupCount,
       LightMaterialAddComponentCommon.handleAddComponent
     ),
-    state
-  );
-
-let batchAddCameraControllerComponentForClone =
-    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).cameraControllerMap),
-    CameraControllerAddComponentCommon.handleAddComponent,
     state
   );
 

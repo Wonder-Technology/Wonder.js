@@ -10,7 +10,7 @@ let _setNewDataToState =
         newTransformMap,
         newMeshRendererMap,
         newGeometryMap,
-        newCameraControllerMap,
+        newBasicCameraViewMap,
         newBasicMaterialMap,
         newLightMaterialMap,
         newAmbientLightMap,
@@ -21,14 +21,14 @@ let _setNewDataToState =
       )
     ) => {
   ...state,
-  gameObjectData: {
-    ...state.gameObjectData,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
     disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
     aliveUidArray: newAliveUidArray,
     transformMap: newTransformMap,
     meshRendererMap: newMeshRendererMap,
     geometryMap: newGeometryMap,
-    cameraControllerMap: newCameraControllerMap,
+    basicCameraViewMap: newBasicCameraViewMap,
     basicMaterialMap: newBasicMaterialMap,
     lightMaterialMap: newLightMaterialMap,
     ambientLightMap: newAmbientLightMap,
@@ -55,7 +55,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     ambientLightMap,
     directionLightMap,
     pointLightMap,
-    cameraControllerMap,
+    basicCameraViewMap,
     sourceInstanceMap,
     objectInstanceMap
   } =
@@ -69,7 +69,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
              newTransformMap,
              newMeshRendererMap,
              newGeometryMap,
-             newCameraControllerMap,
+             newBasicCameraViewMap,
              newBasicMaterialMap,
              newLightMaterialMap,
              newAmbientLightMap,
@@ -87,7 +87,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
               ),
            _setNewMap(uid, meshRendererMap, newMeshRendererMap),
            _setNewMap(uid, geometryMap, newGeometryMap),
-           _setNewMap(uid, cameraControllerMap, newCameraControllerMap),
+           _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
            _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
            _setNewMap(uid, lightMaterialMap, newLightMaterialMap),
            _setNewMap(uid, ambientLightMap, newAmbientLightMap),

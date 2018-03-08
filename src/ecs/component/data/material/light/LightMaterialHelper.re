@@ -2,7 +2,7 @@ open LightMaterialType;
 
 open StateDataType;
 
-let initData = () => {
+let create = () => {
   index: 0,
   shaderIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   diffuseColorMap: WonderCommonlib.SparseMapSystem.createEmpty(),

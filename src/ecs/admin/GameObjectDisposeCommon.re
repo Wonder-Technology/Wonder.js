@@ -8,7 +8,7 @@ let _handleByDisposeCount = (data, state) =>
     state
   };
 
-let rec batchDispose = (uidArray: array(int), state: StateDataType.state) => {
+let rec batchDispose = (uidArray: array(int), state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   state
@@ -20,7 +20,16 @@ let rec batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   |> _handleByDisposeCount(data)
 };
 
-let dispose = (uid: int, state: StateDataType.state) => {
+let dispose =
+    (
+      uid: int,
+      /* (
+         gameObjectRecord,
+         basicCameraViewData,
+         state: StateDataType.state
+         ) as dataTuple */
+      state
+    ) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;

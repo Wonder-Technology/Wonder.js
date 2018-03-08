@@ -1,6 +1,6 @@
 open StateDataType;
 
-let initData = () => {
+let create = () => {
   attributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   instanceAttributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),

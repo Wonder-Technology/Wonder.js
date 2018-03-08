@@ -1,3 +1,5 @@
+open StateDataType;
+
 open GameObjectType;
 
 open ComponentType;
@@ -67,13 +69,27 @@ let _cloneComponent =
   | None => state
   };
 
-let cloneCameraControllerComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  CameraControllerCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
-
 let cloneComponent =
-    ((uid, transform, countRangeArr, clonedGameObjectArr: array(int)), isShareMaterial, state) => {
+    (
+      (uid, transform, countRangeArr, clonedGameObjectArr: array(int)),
+      isShareMaterial,
+      {basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord} as state
+    ) => {
   open GameObjectGetComponentCommon;
+  open StateDataType;
+  /* TODO refactor */
+  let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =
+    CloneGameObjectComponentService.clone(
+      (uid, transform, countRangeArr, clonedGameObjectArr),
+      isShareMaterial,
+      (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
+    );
+  let state = {
+    ...state,
+    basicCameraViewRecord,
+    perspectiveCameraProjectionRecord,
+    gameObjectRecord
+  };
   let (state, clonedTransformArr) =
     state
     |> _cloneComponent(
@@ -101,13 +117,13 @@ let cloneComponent =
            GameObjectAddComponentCommon.batchAddLightMaterialComponentForClone(isShareMaterial)
          )
        )
-    |> _cloneComponent(
-         (uid, [@bs] getCameraControllerComponent(uid, state), countRangeArr, clonedGameObjectArr),
+    /* |> _cloneComponent(
+         (uid, [@bs] getBasicCameraViewComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
-           cloneCameraControllerComponent,
-           GameObjectAddComponentCommon.batchAddCameraControllerComponentForClone
+           cloneBasicCameraViewComponent,
+           GameObjectAddComponentCommon.batchAddBasicCameraViewComponentForClone
          )
-       )
+       ) */
     |> _cloneComponent(
          (uid, [@bs] getAmbientLightComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
@@ -138,4 +154,4 @@ let cloneComponent =
        ),
     clonedTransformArr
   )
-}; 
+};

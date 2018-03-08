@@ -42,9 +42,9 @@ let initWithJobConfigWithoutBuildFakeDom =
       ()
     ) =>
   SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
-  |> NoWorkerJobConfigTool.initData(noWorkerJobConfig)
+  |> NoWorkerJobConfigTool.create(noWorkerJobConfig)
   |> NoWorkerJobTool.init
-  |> RenderConfigDataTool.initData(renderConfigData);
+  |> RenderConfigDataTool.create(renderConfigData);
 
 let initWithJobConfig =
     (

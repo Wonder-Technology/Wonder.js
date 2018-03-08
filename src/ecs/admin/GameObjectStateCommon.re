@@ -1,7 +1,8 @@
+/* TODO remove */
 open GameObjectType;
 
-let getGameObjectData = (state: StateDataType.state) => state.gameObjectData;
-
+let getGameObjectData = (state: StateDataType.state) => state.gameObjectRecord;
+/* 
 let deepCopyStateForRestore = (state: StateDataType.state) => {
   let {
     uid,
@@ -9,7 +10,8 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     disposedUidMap,
     aliveUidArray,
     transformMap,
-    cameraControllerMap,
+    basicCameraViewMap,
+    perspectivePameraProjectionMap,
     geometryMap,
     meshRendererMap,
     basicMaterialMap,
@@ -23,13 +25,14 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
     state |> getGameObjectData;
   {
     ...state,
-    gameObjectData: {
+    gameObjectRecord: {
       uid,
       disposeCount,
       disposedUidMap: disposedUidMap |> SparseMapSystem.copy,
       aliveUidArray: aliveUidArray |> SparseMapSystem.copy,
       transformMap: transformMap |> SparseMapSystem.copy,
-      cameraControllerMap: cameraControllerMap |> SparseMapSystem.copy,
+      basicCameraViewMap: basicCameraViewMap |> SparseMapSystem.copy,
+      perspectivePameraProjectionMap: perspectivePameraProjectionMap |> SparseMapSystem.copy,
       geometryMap: geometryMap |> SparseMapSystem.copy,
       meshRendererMap: meshRendererMap |> SparseMapSystem.copy,
       basicMaterialMap: basicMaterialMap |> SparseMapSystem.copy,
@@ -41,4 +44,4 @@ let deepCopyStateForRestore = (state: StateDataType.state) => {
       pointLightMap: pointLightMap |> SparseMapSystem.copy
     }
   }
-};
+}; */

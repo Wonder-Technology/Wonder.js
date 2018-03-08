@@ -1,3 +1,5 @@
+open StateDataType;
+
 open GameObjectType;
 
 open ComponentType;
@@ -20,13 +22,6 @@ let disposeObjectInstanceComponent =
   (
     (uid: int, component: component, state: StateDataType.state) =>
       ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
-let disposeCameraControllerComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      CameraControllerDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
 let disposeTransformComponent =
@@ -85,6 +80,7 @@ let disposePointLightComponent =
       PointLightDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
+/* TODO refactor */
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
   [@bs] handleFunc(componentArray, uidMap, state);
@@ -131,15 +127,6 @@ let batchDisposeGeometryComponent =
     uidMap,
     state,
     GeometryDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposeCameraControllerComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    CameraControllerDisposeComponentCommon.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -193,6 +180,7 @@ let batchDisposePointLightComponent =
     componentArray
   );
 
+/* TODO refactor */
 let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), state) =>
   switch ([@bs] getComponentFunc(uid, state)) {
   | Some(component) => [@bs] disposeComponentFunc(uid, component, state)
@@ -206,7 +194,24 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   | None => state
   };
 
-let disposeComponent = (uid, batchDisposeFunc, state) =>
+/* TODO refactor: inject all component data instead of state */
+let disposeComponent =
+    (
+      uid,
+      batchDisposeFunc,
+      {basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord} as state
+    ) => {
+  let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =
+    DisposeGameObjectComponentService.dispose(
+      uid,
+      (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
+    );
+  let state = {
+    ...state,
+    basicCameraViewRecord,
+    perspectiveCameraProjectionRecord,
+    gameObjectRecord
+  };
   state
   |> _disposeCommonComponent(uid, (getTransformComponent, disposeTransformComponent))
   |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
@@ -216,15 +221,33 @@ let disposeComponent = (uid, batchDisposeFunc, state) =>
   |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
   |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent))
   |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
-  |> _disposeCommonComponent(
+  /* |> _disposeCommonComponent(
        uid,
-       (getCameraControllerComponent, disposeCameraControllerComponent)
-     )
+       (getBasicCameraViewComponent, disposeBasicCameraViewComponent)
+     ) */
   |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
-  |> _disposeCommonComponent(uid, (getObjectInstanceComponent, disposeObjectInstanceComponent));
+  |> _disposeCommonComponent(uid, (getObjectInstanceComponent, disposeObjectInstanceComponent))
+};
 
 let batchDisposeCommonComponent =
-    (uidArray: array(int), disposedUidMap, batchDisposeFunc, state: StateDataType.state) => {
+    (
+      uidArray: array(int),
+      disposedUidMap,
+      batchDisposeFunc,
+      {basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord} as state
+    ) => {
+  let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =
+    DisposeGameObjectComponentService.batchDispose(
+      uidArray,
+      disposedUidMap,
+      (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
+    );
+  let state = {
+    ...state,
+    basicCameraViewRecord,
+    perspectiveCameraProjectionRecord,
+    gameObjectRecord
+  };
   /* TODO not split? */
   let state =
     state
@@ -240,16 +263,16 @@ let batchDisposeCommonComponent =
     |> batchDisposePointLightComponent(disposedUidMap, state)
     |> batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(disposedUidMap, state);
-
-    let state = state 
+  let state =
+    state
     |> batchGetBasicMaterialComponent(uidArray)
     |> batchDisposeBasicMaterialComponent(disposedUidMap, state)
     |> batchGetLightMaterialComponent(uidArray)
     |> batchDisposeLightMaterialComponent(disposedUidMap, state)
     |> batchGetGeometryComponent(uidArray)
-    |> batchDisposeGeometryComponent(disposedUidMap, state)
-    |> batchGetCameraControllerComponent(uidArray)
-    |> batchDisposeCameraControllerComponent(disposedUidMap, state);
+    |> batchDisposeGeometryComponent(disposedUidMap, state);
+  /* |> batchGetBasicCameraViewComponent(uidArray)
+     |> batchDisposeBasicCameraViewComponent(disposedUidMap, state); */
   state
   |> batchGetObjectInstanceComponent(uidArray)
   |> batchDisposeObjectInstanceComponent(disposedUidMap, state)

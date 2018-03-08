@@ -75,6 +75,6 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
           uniformLocationMap
         )
     }
-    /* glslLocationData: GLSLLocationHelper.initData() */
+    /* glslLocationData: GLSLLocationHelper.create() */
   }
 };

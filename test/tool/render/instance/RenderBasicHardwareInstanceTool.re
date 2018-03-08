@@ -11,7 +11,7 @@ let createSourceInstanceGameObject = (sandbox, state) => {
 let prepare = (sandbox, state) => {
   let state = state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
   let (state, gameObject, componentTuple) = createSourceInstanceGameObject(sandbox, state);
-  let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
+  let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, gameObject, componentTuple)
 };
 

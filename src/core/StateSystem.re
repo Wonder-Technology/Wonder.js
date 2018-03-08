@@ -5,39 +5,41 @@ let createState = () => {
   gpuConfig: None,
   canvasConfig: None,
   workerConfig: None,
-  memoryConfig: MemoryConfigSystem.initData(),
-  jobData: JobHelper.initData(),
+  memoryConfig: MemoryConfigSystem.create(),
+  jobData: JobHelper.create(),
   noWorkerJobConfig: None,
   workerJobConfig: None,
   renderConfigData: None,
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
   viewData: {canvas: None, contextConfig: None},
   initConfig: {isDebug: false},
-  sourceInstanceData: SourceInstanceHelper.initData(),
-  objectInstanceData: ObjectInstanceHelper.initData(),
+  sourceInstanceData: SourceInstanceHelper.create(),
+  objectInstanceData: ObjectInstanceHelper.create(),
   deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
-  gameObjectData: GameObjectHelper.initData(),
-  transformData: TransformHelper.initData(),
-  cameraControllerData: CameraControllerHelper.initData(),
-  basicMaterialData: BasicMaterialHelper.initData(),
-  lightMaterialData: LightMaterialHelper.initData(),
-  ambientLightData: AmbientLightHelper.initData(),
-  directionLightData: DirectionLightHelper.initData(),
-  pointLightData: PointLightHelper.initData(),
-  geometryData: GeometryHelper.initData(),
-  meshRendererData: MeshRendererHelper.initData(),
-  shaderData: ShaderHelper.initData(),
-  programData: ProgramHelper.initData(),
-  glslLocationData: GLSLLocationHelper.initData(),
-  glslSenderData: GLSLSenderHelper.initData(),
-  glslChunkData: ShaderChunkSystem.initData(),
-  renderData: RenderDataHelper.initData(),
-  timeControllerData: TimeControllerHelper.initData(),
-  vboBufferData: VboBufferHelper.initData(),
-  globalTempData: GlobalTempHelper.initData(),
-  typeArrayPoolData: TypeArrayPoolHelper.initData(),
-  workerInstanceData: WorkerInstanceHelper.initData(),
-  workerDetectData: WorkerDetectHelper.initData()
+  gameObjectRecord: GameObjectRecordService.create(),
+  transformData: TransformHelper.create(),
+  sceneRecord: SceneRecordService.create(),
+  basicCameraViewRecord: BasicCameraViewRecordService.create(),
+  perspectiveCameraProjectionRecord: PerspectiveCameraProjectionRecordService.create(),
+  basicMaterialData: BasicMaterialHelper.create(),
+  lightMaterialData: LightMaterialHelper.create(),
+  ambientLightData: AmbientLightHelper.create(),
+  directionLightData: DirectionLightHelper.create(),
+  pointLightData: PointLightHelper.create(),
+  geometryData: GeometryHelper.create(),
+  meshRendererData: MeshRendererHelper.create(),
+  shaderData: ShaderHelper.create(),
+  programData: ProgramHelper.create(),
+  glslLocationData: GLSLLocationHelper.create(),
+  glslSenderData: GLSLSenderHelper.create(),
+  glslChunkData: ShaderChunkSystem.create(),
+  renderData: RenderDataHelper.create(),
+  timeControllerData: TimeControllerHelper.create(),
+  vboBufferData: VboBufferHelper.create(),
+  globalTempData: GlobalTempHelper.create(),
+  typeArrayPoolData: TypeArrayPoolHelper.create(),
+  workerInstanceData: WorkerInstanceHelper.create(),
+  workerDetectData: WorkerDetectHelper.create()
 };
 
 let getState = (stateData: stateData) : state =>
@@ -55,7 +57,6 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   state
   |> MeshRendererAdmin.deepCopyStateForRestore
   |> TransformAdmin.deepCopyStateForRestore
-  |> CameraControllerAdmin.deepCopyStateForRestore
   |> GeometryAdmin.deepCopyStateForRestore
   |> VboBufferSystem.deepCopyStateForRestore
   |> GLSLSenderSystem.deepCopyStateForRestore
@@ -71,7 +72,18 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> TypeArrayPoolSystem.deepCopyStateForRestore
   |> SourceInstanceAdmin.deepCopyStateForRestore
   |> ObjectInstanceAdmin.deepCopyStateForRestore
-  |> GameObjectAdmin.deepCopyStateForRestore;
+  |> (
+    (state) => {
+      ...state,
+      gameObjectRecord: GameObjectRecordService.deepCopyForRestore(state.gameObjectRecord),
+      basicCameraViewRecord:
+        BasicCameraViewRecordService.deepCopyForRestore(state.basicCameraViewRecord),
+      perspectiveCameraProjectionRecord:
+        PerspectiveCameraProjectionRecordService.deepCopyForRestore(
+          state.perspectiveCameraProjectionRecord
+        )
+    }
+  );
 
 let _getSharedData = (currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.unsafeGetGl(currentState),

@@ -8,7 +8,7 @@ let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
       "name": "default",
       "jobs": [
         {
-          "name": "init_cameraController"
+          "name": "init_camera"
         },
         {
           "name": "init_geometry"
@@ -36,7 +36,7 @@ let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
 let buildNoWorkerInitJobConfigWithoutInitMain = () => {|
 [
     {
-        "name": "init_cameraController"
+        "name": "init_camera"
     },
     {
         "name": "init_geometry"
@@ -68,7 +68,7 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "tick"
             },
             {
-                "name": "update_cameraController"
+                "name": "update_camera"
             },
             {
                 "name": "get_render_array"
@@ -105,7 +105,7 @@ let buildNoWorkerLoopJobConfig = () => {|
         "name": "tick"
     },
     {
-        "name": "update_cameraController"
+        "name": "update_camera"
     },
     {
         "name": "get_render_array"
@@ -171,7 +171,7 @@ let buildNoWorkerJobConfig =
           "name": "detect_gl"
         },
         {
-          "name": "init_cameraController"
+          "name": "init_camera"
         },
         {
           "name": "init_geometry"
@@ -214,7 +214,7 @@ let buildNoWorkerJobConfig =
         "name": "detect_gl"
     },
     {
-        "name": "init_cameraController"
+        "name": "init_camera"
     },
     {
         "name": "init_geometry"
@@ -246,7 +246,7 @@ let buildNoWorkerJobConfig =
   loopJobs
 );
 
-let initData =
+let create =
     (
       (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs),
       state: StateDataType.state

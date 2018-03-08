@@ -8,9 +8,6 @@ let hasSourceInstanceComponent = (uid: int, state: StateDataType.state) : bool =
 let hasObjectInstanceComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).objectInstanceMap);
 
-let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>
-  _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).cameraControllerMap);
-
 let hasGeometryComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, GameObjectStateCommon.getGameObjectData(state).geometryMap);
 

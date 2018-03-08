@@ -2,36 +2,47 @@ open StateDataType;
 
 open RenderDataType;
 
-open CameraControllerType;
-
-let _getCameraData = (state: StateDataType.state) =>
-  switch (CameraControllerAdmin.getCurrentCameraController(state)) {
+let _getCameraData =
+    (
+      {basicCameraViewRecord, perspectiveCameraProjectionRecord, sceneRecord, gameObjectRecord} as state
+    ) =>
+  switch (SceneCameraService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
   | None => None
-  | Some(currentCameraController) =>
+  | Some(currentCameraGameObject) =>
     let transform =
-      GetComponentUtils.getTransformFromCameraController(currentCameraController, state);
+      GetComponentUtils.getTransformFromBasicCameraView(currentCameraGameObject, state);
     /* RenderDataSystem.isFirstRender(state) ?
        Some({
          vMatrix:
-           CacheType.New(CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)),
-         pMatrix: CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state))
+           CacheType.New(BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)),
+         pMatrix: CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state))
        }) :
        Some({
          vMatrix:
            TransformSystem.isDirty(transform, state) ?
              CacheType.New(
-               CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)
+               BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)
              ) :
              CacheType.Cache,
          pMatrix:
-           CameraControllerSystem.isDirty(currentCameraController, state) ?
-             CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state)) :
+           BasicCameraViewSystem.isDirty(currentBasicCameraView, state) ?
+             CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state)) :
              CacheType.Cache
        }) */
     Some({
-      vMatrix: CameraControllerAdmin.getWorldToCameraMatrix(transform, state),
-      pMatrix: CameraControllerAdmin.unsafeGetPMatrix(currentCameraController, state),
-      position: CameraControllerAdmin.getPosition(transform, state)
+      vMatrix:
+        VMatrixService.getWorldToCameraMatrix(
+          TransformSystem.getLocalToWorldMatrixTypeArray(transform, state)
+        ),
+      pMatrix:
+        PMatrixService.unsafeGetPMatrix(
+          GameObjectGetComponentService.unsafeGetPerspectiveCameraProjectionComponent(
+            currentCameraGameObject,
+            gameObjectRecord
+          ),
+          perspectiveCameraProjectionRecord.pMatrixMap
+        ),
+      position: TransformSystem.getPositionTuple(transform, state)
     })
   };
 

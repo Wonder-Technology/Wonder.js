@@ -20,7 +20,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     getGLSLSenderData(currentState);
   {
     ...targetState,
-    /* glslSenderData: GLSLSenderHelper.initData() */
+    /* glslSenderData: GLSLSenderHelper.create() */
     glslSenderData: {
       attributeSendDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(

@@ -120,7 +120,7 @@ let handleDisposeComponent = (light, state: StateDataType.state) =>
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (lightArray, gameObjectUidMap: array(bool), state: StateDataType.state) =>
+    (lightArray, isGameObjectDisposedMap: array(bool), state: StateDataType.state) =>
       LightDisposeComponentCommon.handleBatchDisposeComponent(
         lightArray,
         (isAlive, _handleDispose),

@@ -59,7 +59,7 @@ let handleDisposeComponent = (material, state: StateDataType.state) => {
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (materialArray: array(material), gameObjectUidMap: array(bool), state: StateDataType.state) =>
+    (materialArray: array(material), isGameObjectDisposedMap: array(bool), state: StateDataType.state) =>
       MaterialDisposeComponentCommon.handleBatchDisposeComponent(
         materialArray,
         getMaterialData(state).disposedIndexArray,

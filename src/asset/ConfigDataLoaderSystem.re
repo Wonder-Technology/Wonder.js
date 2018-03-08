@@ -72,7 +72,7 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> _collectAllRecords
     |> then_(
          (recordArr) =>
-           NoWorkerJobConfigHelper.initData(recordArr |> Obj.magic, state)
+           NoWorkerJobConfigHelper.create(recordArr |> Obj.magic, state)
            |> NoWorkerJobSystem.init
            |> resolve
        )
@@ -84,7 +84,7 @@ let _createHandleRenderConfigDataStreamArr = (dataDir, fetchFunc, state) =>
     |> MostUtils.concatArray
     |> _collectAllRecords
     |> then_(
-         (recordArr) => RenderConfigDataHelper.initData(recordArr |> Obj.magic, state) |> resolve
+         (recordArr) => RenderConfigDataHelper.create(recordArr |> Obj.magic, state) |> resolve
        )
   );
 
@@ -126,7 +126,7 @@ let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> MostUtils.concatArray
     |> _collectAllRecords
     |> then_(
-         (recordArr) => WorkerJobConfigHelper.initData(recordArr |> Obj.magic, state) |> resolve
+         (recordArr) => WorkerJobConfigHelper.create(recordArr |> Obj.magic, state) |> resolve
        )
   );
 

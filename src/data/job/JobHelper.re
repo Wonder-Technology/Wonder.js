@@ -1,6 +1,6 @@
 open StateDataType;
 
-let initData = () => {
+let create = () => {
   noWorkerInitJobList: [],
   noWorkerLoopJobList: []
 };

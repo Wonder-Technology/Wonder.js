@@ -71,7 +71,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (geometryArray: array(geometry), gameObjectUidMap: array(bool), state: StateDataType.state) => {
+    (geometryArray: array(geometry), isGameObjectDisposedMap: array(bool), state: StateDataType.state) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(

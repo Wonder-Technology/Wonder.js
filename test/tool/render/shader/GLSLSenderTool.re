@@ -11,14 +11,14 @@ let clearLastSendGeometry = (state: StateDataType.state) => {
 module JudgeSendUniformData = {
   let _prepareSendUinformData = (sandbox, prepareGameObjectFunc, state) => {
     let (state, gameObject, _, material, _) = prepareGameObjectFunc(sandbox, state);
-    let (state, _, cameraTransform, cameraController) =
-      CameraControllerTool.createCameraGameObject(state);
+    let (state, _, cameraTransform, basicCameraView) =
+      CameraTool.createCameraGameObject(state);
     (
       state,
       gameObject,
       (GameObject.getGameObjectTransformComponent(gameObject, state), material),
       cameraTransform,
-      cameraController
+      basicCameraView
     )
   };
   let testSendMatrix4 =
@@ -50,10 +50,10 @@ module JudgeSendUniformData = {
                 test(
                   "test send",
                   () => {
-                    let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
+                    let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
                       _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
                     let state =
-                      setFunc(gameObjectTransform, cameraTransform, cameraController, state);
+                      setFunc(gameObjectTransform, cameraTransform, basicCameraView, state);
                     let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
                     let getUniformLocation =
@@ -117,10 +117,10 @@ module JudgeSendUniformData = {
                 test(
                   "test send",
                   () => {
-                    let (state, _, (gameObjectTransform, _), cameraTransform, cameraController) =
+                    let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
                       _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
                     let state =
-                      setFunc(gameObjectTransform, cameraTransform, cameraController, state);
+                      setFunc(gameObjectTransform, cameraTransform, basicCameraView, state);
                     let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
                     let getUniformLocation =
@@ -179,14 +179,14 @@ module JudgeSendUniformData = {
                     gameObject,
                     (gameObjectTransform, material),
                     cameraTransform,
-                    cameraController
+                    basicCameraView
                   ) =
                     _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
                       (gameObjectTransform, material),
-                      (cameraTransform, cameraController),
+                      (cameraTransform, basicCameraView),
                       state
                     );
                   let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
@@ -252,14 +252,14 @@ module JudgeSendUniformData = {
                     gameObject,
                     (gameObjectTransform, material),
                     cameraTransform,
-                    cameraController
+                    basicCameraView
                   ) =
                     _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
                       (gameObjectTransform, material),
-                      (cameraTransform, cameraController),
+                      (cameraTransform, basicCameraView),
                       state
                     );
                   let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
@@ -336,14 +336,14 @@ module JudgeSendUniformData = {
                     gameObject,
                     (gameObjectTransform, material),
                     cameraTransform,
-                    cameraController
+                    basicCameraView
                   ) =
                     _prepareSendUinformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
                       (gameObjectTransform, material),
-                      (cameraTransform, cameraController),
+                      (cameraTransform, basicCameraView),
                       state
                     );
                   let uniform1f = createEmptyStubWithJsObjSandbox(sandbox);

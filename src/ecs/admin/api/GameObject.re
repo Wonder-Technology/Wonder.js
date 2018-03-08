@@ -50,40 +50,6 @@ let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataT
   hasTransformComponent(gameObject, state)
 };
 
-let addGameObjectCameraControllerComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  addCameraControllerComponent(gameObject, component, state)
-};
-
-let disposeGameObjectCameraControllerComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  disposeCameraControllerComponent(gameObject, component, state)
-};
-
-let getGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  Js.Option.getExn(getCameraControllerComponent(gameObject, state))
-};
-
-let hasGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  hasCameraControllerComponent(gameObject, state)
-};
-
 let addGameObjectBasicMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(

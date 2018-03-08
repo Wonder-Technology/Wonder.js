@@ -82,7 +82,7 @@ let handleBatchDisposeComponent =
   (
     (
       objectInstanceArray: array(objectInstance),
-      gameObjectUidMap: array(bool),
+      isGameObjectDisposedMap: array(bool),
       state: StateDataType.state
     ) => {
       WonderLog.Contract.requireCheck(
@@ -130,7 +130,7 @@ let handleBatchDisposeComponent =
              (objectInstance) =>
                ObjectInstanceGameObjectCommon.unsafeGetGameObject(objectInstance, state)
            );
-      let disposedUidMap =
+      let isGameObjectDisposedMap =
         ECSDisposeUtils.buildMapFromArray(
           disposedUidArr,
           WonderCommonlib.SparseMapSystem.createEmpty()
@@ -139,7 +139,7 @@ let handleBatchDisposeComponent =
       let state =
         InstanceDisposeComponentUtils.batchDisposeObjectInstance(
           sourceInstance,
-          disposedUidMap,
+          isGameObjectDisposedMap,
           disposedUidArr,
           state
         );

@@ -1,6 +1,6 @@
-open TransformType;
+open ComponentType;
 
-open CameraControllerType;
+open TransformType;
 
 open GeometryType;
 
@@ -18,11 +18,13 @@ type gameObjectDisposedUidMap = array(bool);
 
 type gameObjectAliveUidArray = array(gameObject);
 
-type gameObjectComponentData = array(ComponentType.component);
+type gameObjectComponentData = array(component);
 
 type gameObjectTransformMap = array(transform);
 
-type gameObjectCameraControllerMap = array(cameraController);
+type gameObjectCameraViewMap = array(component);
+
+type gameObjectCameraProjectionMap = array(component);
 
 type gameObjectGeometryMap = array(geometry);
 
@@ -36,13 +38,14 @@ type gameObjectObjectInstanceMap = array(objectInstance);
 
 type gameObjectLightMap = array(int);
 
-type gameObjectData = {
+type gameObjectRecord = {
   mutable uid: int,
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable aliveUidArray: gameObjectAliveUidArray,
   mutable transformMap: gameObjectTransformMap,
-  mutable cameraControllerMap: gameObjectCameraControllerMap,
+  mutable basicCameraViewMap: gameObjectCameraViewMap,
+  mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
   mutable geometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,

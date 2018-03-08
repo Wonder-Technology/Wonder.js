@@ -1,6 +1,6 @@
 open ObjectInstanceType;
 
-let initData = () => {
+let create = () => {
   index: 0,
   sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
