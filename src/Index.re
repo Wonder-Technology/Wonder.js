@@ -48,6 +48,8 @@ let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
 let load = LoaderManager.load;
 
+let loopBody = Director.loopBody;
+
 let initDirector = Director.initDirector;
 
 let startDirector = Director.startDirector;
@@ -341,6 +343,8 @@ let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
 let load = LoaderManager.load;
+
+let loopBody = Director.loopBody;
 
 let initDirector = Director.initDirector;
 

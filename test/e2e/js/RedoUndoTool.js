@@ -5,7 +5,7 @@ var RedoUndoTool = (function () {
 
 
 
-            var state = wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
+            var state = wd.addNoWorkerLoopJob("updateJob1", "", function (elapsed, state) {
                 console.log("updateJob1", elapsed);
                 return state
             }, state);

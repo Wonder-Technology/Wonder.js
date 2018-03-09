@@ -1,0 +1,23 @@
+[
+    {
+        "name": "default",
+        "jobs": {
+            "render": [
+                [
+                    {
+                        "name": "send_finish_send_job_data"
+                    },
+                    {
+                        "name": "get_init_render_data"
+                    },
+                    {
+                        "name": "init_gl"
+                    },
+                    {
+                        "name": "send_finish_init_render_data"
+                    }
+                ]
+            ]
+        }
+    }
+]

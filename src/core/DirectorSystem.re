@@ -47,12 +47,12 @@ let _run = (time: float, state: StateDataType.state) =>
   state
   |> NoWorkerJobSystem.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
 
-let _loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
+let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
 
 let rec _noWorkerLoop = (time: float, state: StateDataType.state) : int =>
   Dom.requestAnimationFrame(
     (time: float) =>
-      state |> _loopBody(time) |> setState(StateData.stateData) |> _noWorkerLoop(time) |> ignore
+      state |> loopBody(time) |> setState(StateData.stateData) |> _noWorkerLoop(time) |> ignore
   );
 
 /*

@@ -1,0 +1,37 @@
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "tick"
+            },
+            {
+                "name": "update_camera"
+            },
+            {
+                "name": "get_render_array"
+            },
+            {
+                "name": "get_camera_data"
+            },
+            {
+                "name": "clear_color"
+            },
+            {
+                "name": "clear_buffer"
+            },
+            {
+                "name": "clear_last_send_component"
+            },
+            {
+                "name": "send_uniform_shader_data"
+            },
+            {
+                "name": "render_basic"
+            },
+            {
+                "name": "front_render_light"
+            }
+        ]
+    }
+]

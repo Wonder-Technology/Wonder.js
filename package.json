@@ -47,9 +47,9 @@
 		"wonder-bs-jest": "latest",
 		"wonder-bs-sinon": "^0.1.6",
 		"wonder-generate-index": "latest",
-		"wonder-glsl-compiler": "^0.1.4",
+		"wonder-glsl-compiler": "^0.1.5",
 		"wonder-most-animation-frame": "0.0.3",
-		"wonder-render-test": "^0.1.14",
+		"wonder-render-test": "^0.1.15",
 		"puppeteer": "^0.13.0"
 	},
 	"dependencies": {

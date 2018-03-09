@@ -8,6 +8,19 @@
 
 <body>
     <script src="../../dist/wd.js"></script>
+
+      <script src="../e2e/js/AssetTool.js"></script>
+      <script src="../e2e/js/ReplaceFetchTool.js"></script>
+      <script src="../e2e/js/ScheduleTool.js"></script>
+      <script src="../e2e/js/BasicBoxesTool.js"></script>
+      <script src="../e2e/js/LightBoxesTool.js"></script>
+      <script src="../e2e/js/LightTool.js"></script>
+      <script src="../e2e/js/CameraTool.js"></script>
+      <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+      <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+      <script src="../e2e/js/RedoUndoTool.js"></script>
+      <script src="../e2e/js/RandomTool.js"></script>
+
     <script>
         window.onload = function () {
             // wd.load("./data/").then(function (state) {
@@ -25,84 +38,115 @@
 
 
 
-            wd.load("./data/").subscribe({
-                next: (state) => {
-                    console.log("next: ", state)
-                },
-                complete: () => {
-                    console.log("complete");
-                    initSample(wd.getState());
-                }
-            })
+            // wd.load("./data/").subscribe({
+            //     next: (state) => {
+            //         console.log("next: ", state)
+            //     },
+            //     complete: () => {
+            //         console.log("complete");
+            //         initSample(wd.getState());
+            //     }
+            // });
 
 
 
 
+
+            AssetTool.load("./data/", null, function () {
+                return initSample(wd.getState());
+            });
 
             function initSample(state) {
-                var [state, box] = createBox(state);
+                var data = BasicBoxesTool.createBox(state);
+
+                var state = data[0];
+                var box = data[1];
 
 
-                var [state, camera] = createCamera(state);
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
 
 
-                wd.startDirector(state);
+                var transform = wd.getGameObjectTransformComponent(camera, state);
+
+                var state = wd.setTransformLocalPosition(transform, [0, 10, 30], state);
+
+                return wd.startDirector(state);
             }
 
-            function createBox(state) {
-                var [state, material] = wd.createBasicMaterial(state);
-
-                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
-
-                var [state, meshRenderer] = wd.createMeshRenderer(state);
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
-                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
-
-
-                var [state, geometry] = wd.createBoxGeometry(state);
-
-                state = wd.setBoxGeometryConfigData(geometry, {
-                    width: 5,
-                    height: 5,
-                    depth: 5
-                }, state);
 
 
 
 
-                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
 
-                return [state, obj];
-
-            }
-
-            function createCamera(state) {
-
-                var [state, cameraController] = wd.createCameraController(state);
-
-                state = wd.setPerspectiveCameraNear(cameraController, 0.1, state);
-                state = wd.setPerspectiveCameraFar(cameraController, 2000, state);
-                state = wd.setPerspectiveCameraFovy(cameraController, 60, state);
-                state = wd.setPerspectiveCameraAspect(cameraController, 1.0, state);
+            // function initSample(state) {
+            //     var [state, box] = createBox(state);
 
 
-                state = wd.setCameraControllerPerspectiveCamera(cameraController, state);
+            //     var [state, camera] = createCamera(state);
+
+
+            //     wd.startDirector(state);
+            // }
+
+            // function createBox(state) {
+            //     var [state, material] = wd.createBasicMaterial(state);
+
+            //     state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+            //     var [state, meshRenderer] = wd.createMeshRenderer(state);
+
+            //     var [state, obj] = wd.createGameObject(state);
+
+            //     state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+            //     state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+            //     var [state, geometry] = wd.createBoxGeometry(state);
+
+            //     state = wd.setBoxGeometryConfigData(geometry, {
+            //         width: 5,
+            //         height: 5,
+            //         depth: 5
+            //     }, state);
 
 
 
-                var [state, obj] = wd.createGameObject(state);
 
-                state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
+            //     state = wd.addGameObjectGeometryComponent(obj, geometry, state);
 
-                var transform = wd.getGameObjectTransformComponent(obj, state);
+            //     return [state, obj];
 
-                state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+            // }
 
-                return [state, obj];
-            }
+            // function createCamera(state) {
+
+            //     var [state, cameraProjection] = wd.createPerspectiveCameraProjection(state);
+
+            //     state = wd.setPerspectiveCameraNear(cameraProjection, 0.1, state);
+            //     state = wd.setPerspectiveCameraFar(cameraProjection, 2000, state);
+            //     state = wd.setPerspectiveCameraFovy(cameraProjection, 60, state);
+            //     state = wd.setPerspectiveCameraAspect(cameraProjection, 1.0, state);
+
+
+
+            //     var [state, cameraView] = wd.createBasicCameraView(state);
+
+
+
+            //     var [state, obj] = wd.createGameObject(state);
+
+            //     state = wd.addGameObjectBasicCameraViewComponent(obj, cameraView, state);
+
+            //     state = wd.addGameObjectPerspectiveCameraProjectionComponent(obj, cameraProjection, state);
+
+            //     var transform = wd.getGameObjectTransformComponent(obj, state);
+
+            //     state = wd.setTransformLocalPosition(transform, [0, 0, 100], state);
+
+            //     return [state, obj];
+            // }
         }
     </script>
 </body>
