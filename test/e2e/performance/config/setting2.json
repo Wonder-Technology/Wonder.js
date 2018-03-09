@@ -1,5 +1,5 @@
 {
-    "is_debug": true,
+    "is_debug": false,
     "context": {
         "alpha": true,
         "depth": true,
@@ -9,9 +9,9 @@
         "preserve_drawing_buffer": false
     },
     "gpu": {
-        "use_hardware_instance": true
+        "use_hardware_instance": false
     },
     "worker": {
-        "use_worker": true
+        "use_worker": false
     }
 }

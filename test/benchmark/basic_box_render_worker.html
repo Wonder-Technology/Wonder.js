@@ -52,7 +52,7 @@
 
 
 
-            AssetTool.load("./data/", null, function () {
+            AssetTool.load([ "./data/setting.json", "./data/" ], null, function () {
                 return initSample(wd.getState());
             });
 

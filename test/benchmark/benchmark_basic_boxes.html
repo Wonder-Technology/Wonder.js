@@ -8,287 +8,344 @@
 
 <body>
     <script src="../../dist/wd.js"></script>
+
+
+
+
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+
+
+
+
+
+
     <script>
 
 
-
-
-
-
         window.onload = function () {
-            var state = wd.setMainConfig({
-                isDebug: false,
-                //                 bufferConfig:{
-                // geometryDataBufferCount:50000,
-                // basicMaterialDataBufferCount:50000,
-                // transformDataBufferCount:50000,
-                // meshRendererDataBufferCount:50000
-                // // geometryDataBufferCount:200,
-                //                 }
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                return initSample(wd.getState());
             });
-
-
-            wd.load("../../data/", state).then(function (state) {
-                console.log("complete", state);
-                initSample(state);
-            });
-
-
-
-            function createBoxes(count, state) {
-                var boxes = [];
-                // var state$ = state;
-
-                var [state, box] = createBox(state);
-
-
-                // for (let i = 0; i < count; i++) {
-                //     // var [state$, box] = createBox(state$);
-
-
-                //     var [state, newBoxes] = wd.cloneGameObject(box, 2000, state);
-
-                //     boxes.push(box);
-                // }
-
-                // return [state, boxes];
-
-
-
-                var [state, newBoxes] = wd.cloneGameObject(box, count, true, state);
-
-
-                let flatten = (arr) => {
-                    return arr.reduce((a, b) => {
-                        let arr = a.concat(b);
-                        return arr;
-                    }, []);
-                };
-                newBoxes = flatten(newBoxes);
-
-                return [state, newBoxes];
-
-            }
-
-
-            function createBoxesWithoutClone(count, state) {
-                var boxes = [];
-                // var state$ = state;
-
-                // var [state, box] = createBox(state);
-
-
-                for (let i = 0; i < count; i++) {
-                    var [state, box] = createBox(state);
-
-
-                    // var [state, newBoxes] = wd.cloneGameObject(box, 2000, state);
-
-                    boxes.push(box);
-                }
-
-                return [state, boxes];
-            }
-
-
-
-            function setPosition(boxes, state) {
-                var playgroundSize = 500;
-
-                for (let i = 0, len = boxes.length; i < len; i++) {
-                    let box = boxes[i];
-                    // state = initGameObject(box, state);
-
-
-                    var transform = wd.getGameObjectTransformComponent(box, state);
-
-
-                    // var pos = wd.getTransformPosition(transform, state);
-                    var localPos = wd.getTransformLocalPosition(transform, state);
-
-                    state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-
-
-                    // console.log(wd.getTransformLocalPosition(transform, state));
-                }
-
-                return [state, boxes];
-            }
 
             function initSample(state) {
-                // var [state, boxes] = createBoxes(997, state);
-                // var [state, boxes] = createBoxes(20000, state);
-                var [state, boxes] = createBoxes(1, state);
+                var n1 = performance.now();
+
+                var data = BasicBoxesTool.createBoxesByClone(20000, state);
+
+                var state = data[0];
+                var boxes = data[1];
+
+                var data = BasicBoxesTool.setPosition(boxes, state);
+                var state = data[0];
+                var boxes = data[1];
+
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                        var camera = data[1];
 
 
-                var [state, boxes] = setPosition(boxes, state);
+
+                        var transform = wd.getGameObjectTransformComponent(camera, state);
+
+                        var state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 
 
 
-
-                var [state, camera] = createCamera(state);
-
-                // state = setData(boxes, state);
-                // state = setParent(boxes, state);
-                state = createAndDisposeGameObjects(boxes, state);
-
-                wd.startDirector(state);
-            }
-
-            let _getRandom = function (num) {
-                return Math.floor(Math.random() * num);
-            }
-
-            let _setData = (boxes, state) => {
-                boxes.forEach(function (box) {
-                    var transform = wd.getGameObjectTransformComponent(box, state);
-
-
-                    var pos = wd.getTransformPosition(transform, state);
-                    var localPos = wd.getTransformLocalPosition(transform, state);
-
-                    if (pos[0] >= 500) {
-                        state = wd.setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
-
-                    }
-                    else if (pos[0] < 500) {
-                        state = wd.setTransformPosition(transform, [pos[0] + 10, pos[1], pos[2]], state);
-                    }
-                });
-
-                return state;
-            };
-
-            function setData(boxes, state) {
-
-                return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
-                    return _setData(boxes, state);
-                }, state);
-            };
-
-            function getRandomParentIndex(num) {
-                return Math.floor(Math.random() * num);
+                        return wd.startDirector(state);
             }
 
 
-            function setParent(boxes, state) {
-                for (var i = 1, len = 10; i < len; i++) {
-                    var box = boxes[i];
-
-                    state = wd.setTransformParent(boxes[i - 1], box, state)
-                }
-
-
-                return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
-                    var box = boxes[i];
-
-                    state = wd.setTransformParent(boxes[getRandomParentIndex(10)], box, state);
-
-                    return _setData(boxes, state);
-                }, state)
-            }
-
-            window.newBoxes$ = null;
-
-            function createAndDisposeGameObjects(boxes, state) {
-                window.sourceBox = boxes[0];
-                window.boxes = [];
-
-
-
-                return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
-                    // for(let i = 0, len = window.boxes.length; i < len; i++){
-                    //     let box = window.boxes[i];
-                    //     state = disposeGameObject(box, state);
-                    // }
-
-                    var state = wd.batchDisposeGameObject(window.boxes, state);
-
-
-                    // var [state, newBoxes] = createBoxesWithoutClone(2000, state);
-
-                    var [state, newBoxes] = wd.cloneGameObject(window.sourceBox, 5000, true, state);
-                    let flatten = (arr) => {
-                        return arr.reduce((a, b) => {
-                            let arr = a.concat(b);
-                            return arr;
-                        }, []);
-                    };
-                    newBoxes = flatten(newBoxes);
-
-
-                    var [state, newBoxes] = setPosition(newBoxes, state);
-
-
-
-                    window.boxes = newBoxes;
-
-
-
-                    for (let i = 0, len = newBoxes.length; i < len; i++) {
-                        let box = newBoxes[i];
-                        state = wd.initGameObject(box, state);
-                    }
-
-                    return state;
-
-                }, state)
-            }
-
-            function createBox(state) {
-                var [state, material] = wd.createBasicMaterial(state);
-
-
-                var [state, meshRenderer] = wd.createMeshRenderer(state);
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
-                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
-
-
-                var [state, geometry] = wd.createBoxGeometry(state);
-
-                state = wd.setBoxGeometryConfigData(geometry, {
-                    width: 5,
-                    height: 5,
-                    depth: 5
-                }, state);
-
-
-
-
-                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
-
-                return [state, obj];
-
-            }
-
-            function createCamera(state) {
-
-                var [state, cameraController] = wd.createCameraController(state);
-
-                state = wd.setPerspectiveCameraNear(cameraController, 0.1, state);
-                state = wd.setPerspectiveCameraFar(cameraController, 2000, state);
-                state = wd.setPerspectiveCameraFovy(cameraController, 60, state);
-                state = wd.setPerspectiveCameraAspect(cameraController, 1.0, state);
-
-
-                state = wd.setCameraControllerPerspectiveCamera(cameraController, state);
-
-
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
-
-                var transform = wd.getGameObjectTransformComponent(obj, state);
-
-                state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
-
-                return [state, obj];
-            }
         }
+
+
+
+
+
+        // window.onload = function () {
+        //     var state = wd.setMainConfig({
+        //         isDebug: false,
+        //         //                 bufferConfig:{
+        //         // geometryDataBufferCount:50000,
+        //         // basicMaterialDataBufferCount:50000,
+        //         // transformDataBufferCount:50000,
+        //         // meshRendererDataBufferCount:50000
+        //         // // geometryDataBufferCount:200,
+        //         //                 }
+        //     });
+
+
+        //     wd.load("../../data/", state).then(function (state) {
+        //         console.log("complete", state);
+        //         initSample(state);
+        //     });
+
+
+
+        //     function createBoxes(count, state) {
+        //         var boxes = [];
+        //         // var state$ = state;
+
+        //         var [state, box] = createBox(state);
+
+
+        //         // for (let i = 0; i < count; i++) {
+        //         //     // var [state$, box] = createBox(state$);
+
+
+        //         //     var [state, newBoxes] = wd.cloneGameObject(box, 2000, state);
+
+        //         //     boxes.push(box);
+        //         // }
+
+        //         // return [state, boxes];
+
+
+
+        //         var [state, newBoxes] = wd.cloneGameObject(box, count, true, state);
+
+
+        //         let flatten = (arr) => {
+        //             return arr.reduce((a, b) => {
+        //                 let arr = a.concat(b);
+        //                 return arr;
+        //             }, []);
+        //         };
+        //         newBoxes = flatten(newBoxes);
+
+        //         return [state, newBoxes];
+
+        //     }
+
+
+        //     function createBoxesWithoutClone(count, state) {
+        //         var boxes = [];
+        //         // var state$ = state;
+
+        //         // var [state, box] = createBox(state);
+
+
+        //         for (let i = 0; i < count; i++) {
+        //             var [state, box] = createBox(state);
+
+
+        //             // var [state, newBoxes] = wd.cloneGameObject(box, 2000, state);
+
+        //             boxes.push(box);
+        //         }
+
+        //         return [state, boxes];
+        //     }
+
+
+
+        //     function setPosition(boxes, state) {
+        //         var playgroundSize = 500;
+
+        //         for (let i = 0, len = boxes.length; i < len; i++) {
+        //             let box = boxes[i];
+        //             // state = initGameObject(box, state);
+
+
+        //             var transform = wd.getGameObjectTransformComponent(box, state);
+
+
+        //             // var pos = wd.getTransformPosition(transform, state);
+        //             var localPos = wd.getTransformLocalPosition(transform, state);
+
+        //             state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+
+
+        //             // console.log(wd.getTransformLocalPosition(transform, state));
+        //         }
+
+        //         return [state, boxes];
+        //     }
+
+        //     function initSample(state) {
+        //         // var [state, boxes] = createBoxes(997, state);
+        //         // var [state, boxes] = createBoxes(20000, state);
+        //         var [state, boxes] = createBoxes(1, state);
+
+
+        //         var [state, boxes] = setPosition(boxes, state);
+
+
+
+
+        //         var [state, camera] = createCamera(state);
+
+        //         // state = setData(boxes, state);
+        //         // state = setParent(boxes, state);
+        //         state = createAndDisposeGameObjects(boxes, state);
+
+        //         wd.startDirector(state);
+        //     }
+
+        //     let _getRandom = function (num) {
+        //         return Math.floor(Math.random() * num);
+        //     }
+
+        //     let _setData = (boxes, state) => {
+        //         boxes.forEach(function (box) {
+        //             var transform = wd.getGameObjectTransformComponent(box, state);
+
+
+        //             var pos = wd.getTransformPosition(transform, state);
+        //             var localPos = wd.getTransformLocalPosition(transform, state);
+
+        //             if (pos[0] >= 500) {
+        //                 state = wd.setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
+
+        //             }
+        //             else if (pos[0] < 500) {
+        //                 state = wd.setTransformPosition(transform, [pos[0] + 10, pos[1], pos[2]], state);
+        //             }
+        //         });
+
+        //         return state;
+        //     };
+
+        //     function setData(boxes, state) {
+
+        //         return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
+        //             return _setData(boxes, state);
+        //         }, state);
+        //     };
+
+        //     function getRandomParentIndex(num) {
+        //         return Math.floor(Math.random() * num);
+        //     }
+
+
+        //     function setParent(boxes, state) {
+        //         for (var i = 1, len = 10; i < len; i++) {
+        //             var box = boxes[i];
+
+        //             state = wd.setTransformParent(boxes[i - 1], box, state)
+        //         }
+
+
+        //         return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
+        //             var box = boxes[i];
+
+        //             state = wd.setTransformParent(boxes[getRandomParentIndex(10)], box, state);
+
+        //             return _setData(boxes, state);
+        //         }, state)
+        //     }
+
+        //     window.newBoxes$ = null;
+
+        //     function createAndDisposeGameObjects(boxes, state) {
+        //         window.sourceBox = boxes[0];
+        //         window.boxes = [];
+
+
+
+        //         return wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
+        //             // for(let i = 0, len = window.boxes.length; i < len; i++){
+        //             //     let box = window.boxes[i];
+        //             //     state = disposeGameObject(box, state);
+        //             // }
+
+        //             var state = wd.batchDisposeGameObject(window.boxes, state);
+
+
+        //             // var [state, newBoxes] = createBoxesWithoutClone(2000, state);
+
+        //             var [state, newBoxes] = wd.cloneGameObject(window.sourceBox, 5000, true, state);
+        //             let flatten = (arr) => {
+        //                 return arr.reduce((a, b) => {
+        //                     let arr = a.concat(b);
+        //                     return arr;
+        //                 }, []);
+        //             };
+        //             newBoxes = flatten(newBoxes);
+
+
+        //             var [state, newBoxes] = setPosition(newBoxes, state);
+
+
+
+        //             window.boxes = newBoxes;
+
+
+
+        //             for (let i = 0, len = newBoxes.length; i < len; i++) {
+        //                 let box = newBoxes[i];
+        //                 state = wd.initGameObject(box, state);
+        //             }
+
+        //             return state;
+
+        //         }, state)
+        //     }
+
+        //     function createBox(state) {
+        //         var [state, material] = wd.createBasicMaterial(state);
+
+
+        //         var [state, meshRenderer] = wd.createMeshRenderer(state);
+
+        //         var [state, obj] = wd.createGameObject(state);
+
+        //         state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+        //         state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+        //         var [state, geometry] = wd.createBoxGeometry(state);
+
+        //         state = wd.setBoxGeometryConfigData(geometry, {
+        //             width: 5,
+        //             height: 5,
+        //             depth: 5
+        //         }, state);
+
+
+
+
+        //         state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+        //         return [state, obj];
+
+        //     }
+
+        //     function createCamera(state) {
+
+        //         var [state, cameraController] = wd.createCameraController(state);
+
+        //         state = wd.setPerspectiveCameraNear(cameraController, 0.1, state);
+        //         state = wd.setPerspectiveCameraFar(cameraController, 2000, state);
+        //         state = wd.setPerspectiveCameraFovy(cameraController, 60, state);
+        //         state = wd.setPerspectiveCameraAspect(cameraController, 1.0, state);
+
+
+        //         state = wd.setCameraControllerPerspectiveCamera(cameraController, state);
+
+
+
+        //         var [state, obj] = wd.createGameObject(state);
+
+        //         state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
+
+        //         var transform = wd.getGameObjectTransformComponent(obj, state);
+
+        //         state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+
+        //         return [state, obj];
+        //     }
+        // }
     </script>
 </body>
 

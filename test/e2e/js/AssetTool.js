@@ -1,13 +1,13 @@
 var AssetTool = (function () {
     return {
-        load: function (dataDir, nextFunc, completeFunc) {
-            return wd.load(dataDir).forEach(function (state) {
+        load: function (jsonPathArr, nextFunc, completeFunc) {
+            return wd.load(jsonPathArr).forEach(function (state) {
                 if (!!nextFunc) {
                     nextFunc(state)
                 }
             }).then(function () {
                 if (!!completeFunc) {
-                    completeFunc()
+                    return completeFunc()
                 }
             })
         }

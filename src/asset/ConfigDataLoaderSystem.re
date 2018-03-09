@@ -125,9 +125,7 @@ let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createFetchWorkerJobStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
-    |> then_(
-         (recordArr) => WorkerJobConfigHelper.create(recordArr |> Obj.magic, state) |> resolve
-       )
+    |> then_((recordArr) => WorkerJobConfigHelper.create(recordArr |> Obj.magic, state) |> resolve)
   );
 
 let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -135,9 +133,11 @@ let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state) :
     _createHandleNoWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
 
-let load = (dataDir: string, fetchFunc, stateData) =>
+let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
+  let settingFilePath = Array.unsafe_get(jsonPathArr, 0);
+  let dataDir = Array.unsafe_get(jsonPathArr, 1);
   /* TODO perf: use mergeArray instead of concatArray */
-  FetchCommon.createFetchJsonStream(PathUtils.join([|dataDir, "setting.json"|]), fetchFunc)
+  FetchCommon.createFetchJsonStream(settingFilePath, fetchFunc)
   |> flatMap(
        (json) =>
          SettingParseSystem.convertToRecord(json)
@@ -148,4 +148,5 @@ let load = (dataDir: string, fetchFunc, stateData) =>
               (state) => state |> _createHandleRenderConfigDataStreamArr(dataDir, fetchFunc)
             )
          |> Most.tap((state) => state |> StateSystem.setState(stateData) |> ignore)
-     );
+     )
+};

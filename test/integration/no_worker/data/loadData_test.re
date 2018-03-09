@@ -76,7 +76,11 @@ let _ =
                 "should pass dataDir for get json file path",
                 () => {
                   let fetchFunc = _buildFakeFetch(sandbox);
-                  LoadDataTool.load(~dataDir="../../.res/job/", ~fetchFunc, ())
+                  LoadDataTool.load(
+                    ~jsonPathArr=[|"../../.res/job/setting.json", "../../.res/job/"|],
+                    ~fetchFunc,
+                    ()
+                  )
                   |> then_(
                        () =>
                          fetchFunc
@@ -93,7 +97,7 @@ let _ =
                     "test parse noWorker setting, init pipeline, noWorker pipeleint, init job, noWorker job",
                     () => {
                       let fetchFunc = _buildFakeFetch(sandbox);
-                      LoadDataTool.load(~dataDir="", ~fetchFunc, ())
+                      LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                       |> then_(
                            () => {
                              let state = StateTool.getState();
@@ -188,7 +192,7 @@ let _ =
                 "test parse shaders",
                 () => {
                   let fetchFunc = _buildFakeFetch(sandbox);
-                  LoadDataTool.load(~dataDir="", ~fetchFunc, ())
+                  LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                   |> then_(
                        () => {
                          let state = StateTool.getState();
@@ -221,7 +225,7 @@ let _ =
                 "test parse shader libs",
                 () => {
                   let fetchFunc = _buildFakeFetch(sandbox);
-                  LoadDataTool.load(~dataDir="", ~fetchFunc, ())
+                  LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                   |> then_(
                        () => {
                          let state = StateTool.getState();
@@ -271,7 +275,7 @@ let _ =
                       fetchFunc
                       |> onCall(1)
                       |> SinonTool.deferReturns(100., _buildFakeFetchJsonResponse(noWorkerSetting));
-                      LoadDataTool.load(~dataDir="", ~fetchFunc, ())
+                      LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                       |> then_(
                            () => {
                              let state = StateTool.getState();
