@@ -1,0 +1,2 @@
+let setRenderWorker = WorkerInstanceSystem._setRenderWorker;
+let unsafeGetRenderWorker = WorkerInstanceSystem.unsafeGetRenderWorker;

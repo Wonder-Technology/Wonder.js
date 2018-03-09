@@ -28,7 +28,7 @@ let getPosition = (transform, state: StateDataType.state) =>
               let (state, basicCameraView) = createBasicCameraViewPerspectiveCamera(stateFunc());
               let state = state |> execFunc;
               state
-              |> unsafeGetBasicCameraViewPMatrix(basicCameraView)
+              |> unsafeGetPerspectiveCameraProjectionPMatrix(basicCameraView)
               |>
               expect == Js.Typed_array.Float32Array.make([|
                           1.7320508075688776,

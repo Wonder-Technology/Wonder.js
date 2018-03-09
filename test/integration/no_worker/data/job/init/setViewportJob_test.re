@@ -1,0 +1,61 @@
+open Wonder_jest;
+
+let _ =
+  describe(
+    "test set full screen job",
+    () => {
+      open Expect;
+      open Expect.Operators;
+      open Sinon;
+      let sandbox = getSandboxDefaultVal();
+      let _buildNoWorkerJobConfig = () =>
+        NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+          ~initPipelines={|
+        [
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "set_viewport"
+        }
+      ]
+    }
+  ]
+        |},
+          ~initJobs={|
+
+[
+        {
+          "name": "set_viewport"
+        }
+]
+        |},
+          ()
+        );
+      let _exec = () => {
+        let width = 100.;
+        let height = 200.;
+        Root.root##innerWidth#=width;
+        Root.root##innerHeight#=height;
+        let (canvasDom, fakeGl, div, body) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
+        TestTool.initWithJobConfigWithoutBuildFakeDom(
+          ~sandbox,
+          ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+          ()
+        )
+        |> FakeGlTool.setFakeGl(fakeGl)
+        |> DirectorTool.init
+        |> ignore;
+        (canvasDom, fakeGl, width, height)
+      };
+      beforeEach(() => sandbox := createSandbox());
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      test(
+        "set viewport",
+        () => {
+          let (canvasDom, fakeGl, width, height) = _exec();
+          fakeGl##viewport |> expect |> toCalledWith([|0., 0., 100., 200.|])
+        }
+      )
+    }
+  );
