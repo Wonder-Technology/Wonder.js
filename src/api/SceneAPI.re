@@ -1,7 +1,7 @@
 open StateDataType;
 
-let getCurrentCameraGameObject = (basicCameraViewRecord, state) =>
-  SceneCameraService.getCurrentCameraGameObject(basicCameraViewRecord, state.sceneRecord);
+let getCurrentCameraGameObject = (state) =>
+  SceneCameraService.getCurrentCameraGameObject(state.basicCameraViewRecord, state.sceneRecord);
 
 let setCurrentCameraGameObject = (uid, state) => {
   ...state,
