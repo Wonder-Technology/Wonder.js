@@ -4,7 +4,7 @@ open SceneAPI;
 
 let _ =
   describe(
-    "SceneCameraService",
+    "CameraSceneService",
     () => {
       open Expect;
       open Expect.Operators;

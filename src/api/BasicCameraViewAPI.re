@@ -2,23 +2,23 @@ open StateDataType;
 
 open BasicCameraViewType;
 
-open BasicCameraViewDisposeComponentService;
+open DisposeBasicCameraViewService;
 
-open BasicCameraViewGameObjectService;
+open GameObjectBasicCameraViewService;
 
 let createBasicCameraView = (state) => {
   let (basicCameraViewRecord, index) =
-    BasicCameraViewCreateService.create(state.basicCameraViewRecord);
+    CreateBasicCameraViewService.create(state.basicCameraViewRecord);
   ({...state, basicCameraViewRecord}, index)
 };
 
-let unsafeGetBasicCameraViewGameObject = (cameraView, state) => {
+let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentAliveService.checkComponentShouldAlive(
+            AliveComponentService.checkComponentShouldAlive(
               cameraView,
               isAlive,
               state.basicCameraViewRecord
@@ -37,7 +37,7 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataType.st
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentAliveService.checkComponentShouldAlive(
+            AliveComponentService.checkComponentShouldAlive(
               cameraView,
               isAlive,
               state.basicCameraViewRecord

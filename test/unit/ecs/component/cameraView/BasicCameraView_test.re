@@ -46,7 +46,7 @@ let _ =
         }
       );
       describe(
-        "unsafeGetBasicCameraViewGameObject",
+        "unsafeGetGameObjectBasicCameraView",
         () =>
           test(
             "get cameraView's gameObject",
@@ -55,7 +55,7 @@ let _ =
               let (state, cameraView) = createBasicCameraView(state^);
               let (state, gameObject) = state |> GameObject.createGameObject;
               let state = state |> addGameObjectBasicCameraViewComponent(gameObject, cameraView);
-              state |> unsafeGetBasicCameraViewGameObject(cameraView) |> expect == gameObject
+              state |> unsafeGetGameObjectBasicCameraView(cameraView) |> expect == gameObject
             }
           )
       );

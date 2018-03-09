@@ -2,13 +2,13 @@ open GameObjectType;
 
 open ComponentType;
 
-open GameObjectDisposeComponentService;
+open DisposeComponentGameObjectService;
 
-open GameObjectGetComponentService;
+open GetComponentGameObjectService;
 
-open GameObjectHasComponentService;
+open HasComponentGameObjectService;
 
-open GameObjectCloneComponentService;
+open CloneComponentGameObjectService;
 
 open AddGameObjectComponentService;
 

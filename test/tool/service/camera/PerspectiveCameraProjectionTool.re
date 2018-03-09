@@ -16,18 +16,18 @@ let unsafeGetPMatrix = (cameraProjection, state: StateDataType.state) =>
 let getDirtyArray = (state) => state.perspectiveCameraProjectionRecord.dirtyArray;
 
 let init = (state: StateDataType.state) =>
-  PerspectiveCameraProjectionInitService.init(state.perspectiveCameraProjectionRecord);
+  InitPerspectiveCameraProjectionService.init(state.perspectiveCameraProjectionRecord);
 
 let update = (state: StateDataType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
-    PerspectiveCameraProjectionUpdateService.update(state.perspectiveCameraProjectionRecord)
+    UpdatePerspectiveCameraProjectionService.update(state.perspectiveCameraProjectionRecord)
 };
 
 let updateCameraProjection = (cameraProjection, state: StateDataType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
-    PerspectiveCameraProjectionUpdateService.updateCameraProjection(
+    UpdatePerspectiveCameraProjectionService.updateCameraProjection(
       cameraProjection,
       state.perspectiveCameraProjectionRecord
     )

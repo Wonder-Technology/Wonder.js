@@ -2,7 +2,7 @@ open SceneType;
 
 let getCurrentCameraGameObject = (basicCameraViewRecord, {currentCameraGameObject}) =>
   switch currentCameraGameObject {
-  | None => BasicCameraViewGameObjectService.findFirstGameObject(basicCameraViewRecord)
+  | None => GameObjectBasicCameraViewService.findFirstGameObject(basicCameraViewRecord)
   | Some(currentCameraGameObject) => Some(currentCameraGameObject)
   };
 

@@ -1,6 +1,6 @@
 open PerspectiveCameraProjectionType;
 
-open PerspectiveCameraProjectionFrustumService;
+open FrustumPerspectiveCameraProjectionService;
 
 let updateCameraProjection = (index: int, {pMatrixMap} as record) =>
   switch (

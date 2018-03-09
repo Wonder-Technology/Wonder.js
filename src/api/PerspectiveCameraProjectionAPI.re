@@ -2,15 +2,15 @@ open StateDataType;
 
 open PerspectiveCameraProjectionType;
 
-open PerspectiveCameraProjectionDisposeComponentService;
+open DisposePerspectiveCameraProjectionService;
 
-open PerspectiveCameraProjectionGameObjectService;
+open GameObjectPerspectiveCameraProjectionService;
 
-open PerspectiveCameraProjectionFrustumService;
+open FrustumPerspectiveCameraProjectionService;
 
 let createPerspectiveCameraProjection = (state) => {
   let (perspectiveCameraProjectionRecord, index) =
-    PerspectiveCameraProjectionCreateService.create(state.perspectiveCameraProjectionRecord);
+    CreatePerspectiveCameraProjectionService.create(state.perspectiveCameraProjectionRecord);
   ({...state, perspectiveCameraProjectionRecord}, index)
 };
 
@@ -20,7 +20,7 @@ let unsafeGetPerspectiveCameraProjectionPMatrix = (cameraProjection, state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentAliveService.checkComponentShouldAlive(
+            AliveComponentService.checkComponentShouldAlive(
               cameraProjection,
               isAlive,
               state.perspectiveCameraProjectionRecord
@@ -42,7 +42,7 @@ let unsafeGetPerspectiveCameraProjectionGameObject = (cameraProjection, state) =
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentAliveService.checkComponentShouldAlive(
+            AliveComponentService.checkComponentShouldAlive(
               cameraProjection,
               isAlive,
               state.perspectiveCameraProjectionRecord

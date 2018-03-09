@@ -31,12 +31,12 @@ let clone =
     |> _clone(
          (
            uid,
-           [@bs] GameObjectGetComponentService.getBasicCameraViewComponent(uid, gameObjectRecord),
+           [@bs] GetComponentGameObjectService.getBasicCameraViewComponent(uid, gameObjectRecord),
            countRangeArr,
            clonedGameObjectArr
          ),
          (
-           GameObjectCloneComponentService.cloneBasicCameraViewComponent,
+           CloneComponentGameObjectService.cloneBasicCameraViewComponent,
            AddGameObjectComponentService.batchAddBasicCameraViewComponentForClone
          )
        );
@@ -46,7 +46,7 @@ let clone =
          (
            uid,
            [@bs]
-           GameObjectGetComponentService.getPerspectiveCameraProjectionComponent(
+           GetComponentGameObjectService.getPerspectiveCameraProjectionComponent(
              uid,
              gameObjectRecord
            ),
@@ -54,7 +54,7 @@ let clone =
            clonedGameObjectArr
          ),
          (
-           GameObjectCloneComponentService.clonePerspectiveCameraProjectionComponent,
+           CloneComponentGameObjectService.clonePerspectiveCameraProjectionComponent,
            AddGameObjectComponentService.batchAddPerspectiveCameraProjectionComponentForClone
          )
        );

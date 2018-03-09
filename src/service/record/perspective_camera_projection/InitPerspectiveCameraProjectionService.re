@@ -1,7 +1,7 @@
 open PerspectiveCameraProjectionType;
 
 let _init = (index: int, record) =>
-  PerspectiveCameraProjectionUpdateService.updateCameraProjection(index, record);
+  UpdatePerspectiveCameraProjectionService.updateCameraProjection(index, record);
 
 let init = ({dirtyArray} as record) =>
   switch (dirtyArray |> DirtyArrayService.getCount) {

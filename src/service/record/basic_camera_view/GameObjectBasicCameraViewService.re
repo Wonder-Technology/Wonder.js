@@ -12,7 +12,7 @@ let _isValidComponent = (cameraView, maxIndex) => cameraView >= 0 && cameraView 
 
 let rec _findFirstBasicCameraView = (index, maxIndex, record) =>
   _isValidComponent(index, maxIndex) ?
-    BasicCameraViewDisposeComponentService.isAlive(index, record) ?
+    DisposeBasicCameraViewService.isAlive(index, record) ?
       switch (getGameObject(index, record)) {
       | None => None
       | Some(gameObject) => Some(gameObject)

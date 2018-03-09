@@ -16,11 +16,11 @@ let createState = () => {
   sourceInstanceData: SourceInstanceHelper.create(),
   objectInstanceData: ObjectInstanceHelper.create(),
   deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
-  gameObjectRecord: GameObjectRecordService.create(),
+  gameObjectRecord: RecordGameObjectService.create(),
   transformData: TransformHelper.create(),
-  sceneRecord: SceneRecordService.create(),
-  basicCameraViewRecord: BasicCameraViewRecordService.create(),
-  perspectiveCameraProjectionRecord: PerspectiveCameraProjectionRecordService.create(),
+  sceneRecord: RecordSceneService.create(),
+  basicCameraViewRecord: RecordBasicCameraViewService.create(),
+  perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
   basicMaterialData: BasicMaterialHelper.create(),
   lightMaterialData: LightMaterialHelper.create(),
   ambientLightData: AmbientLightHelper.create(),
@@ -75,11 +75,11 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
   |> (
     (state) => {
       ...state,
-      gameObjectRecord: GameObjectRecordService.deepCopyForRestore(state.gameObjectRecord),
+      gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
       basicCameraViewRecord:
-        BasicCameraViewRecordService.deepCopyForRestore(state.basicCameraViewRecord),
+        RecordBasicCameraViewService.deepCopyForRestore(state.basicCameraViewRecord),
       perspectiveCameraProjectionRecord:
-        PerspectiveCameraProjectionRecordService.deepCopyForRestore(
+        RecordPerspectiveCameraProjectionService.deepCopyForRestore(
           state.perspectiveCameraProjectionRecord
         )
     }

@@ -1,4 +1,4 @@
-open PerspectiveCameraProjectionFrustumService;
+open FrustumPerspectiveCameraProjectionService;
 
 let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) => {
   let near = unsafeGetNear(sourceComponent, record);
@@ -10,7 +10,7 @@ let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) 
        [@bs]
        (
          ((record, componentArr), _) => {
-           let (record, index) = PerspectiveCameraProjectionCreateService.create(record);
+           let (record, index) = CreatePerspectiveCameraProjectionService.create(record);
            (
              record
              |> setNear(index, near)

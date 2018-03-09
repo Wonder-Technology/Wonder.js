@@ -312,7 +312,7 @@ let _ =
                       open BasicCameraViewAPI;
                       let (state, gameObject, _) = _prepare();
                       state
-                      |> unsafeGetBasicCameraViewGameObject(
+                      |> unsafeGetGameObjectBasicCameraView(
                            unsafeGetGameObjectBasicCameraViewComponent(gameObject, state)
                          )
                       |> expect == gameObject

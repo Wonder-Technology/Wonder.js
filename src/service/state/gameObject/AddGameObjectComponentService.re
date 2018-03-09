@@ -11,7 +11,7 @@ let addBasicCameraViewComponent =
     (uid: int, component: component, (componentRecord, gameObjectRecord)) => (
   _addComponent(
     (uid, component, gameObjectRecord.basicCameraViewMap),
-    BasicCameraViewAddComponentService.handleAddComponent,
+    AddBasicCameraViewService.handleAddComponent,
     componentRecord
   ),
   gameObjectRecord
@@ -21,7 +21,7 @@ let addPerspectiveCameraProjectionComponent =
     (uid: int, component: component, (componentRecord, gameObjectRecord)) => (
   _addComponent(
     (uid, component, gameObjectRecord.perspectiveCameraProjectionMap),
-    PerspectiveCameraProjectionAddComponentService.handleAddComponent,
+    AddPerspectiveCameraProjectionService.handleAddComponent,
     componentRecord
   ),
   gameObjectRecord
@@ -78,7 +78,7 @@ let batchAddBasicCameraViewComponentForClone =
     ) =>
   _batchAddComponent(
     (uidArr, componentArr, gameObjectRecord.basicCameraViewMap),
-    BasicCameraViewAddComponentService.handleAddComponent,
+    AddBasicCameraViewService.handleAddComponent,
     recordTuple
   );
 
@@ -90,6 +90,6 @@ let batchAddPerspectiveCameraProjectionComponentForClone =
     ) =>
   _batchAddComponent(
     (uidArr, componentArr, gameObjectRecord.perspectiveCameraProjectionMap),
-    PerspectiveCameraProjectionAddComponentService.handleAddComponent,
+    AddPerspectiveCameraProjectionService.handleAddComponent,
     recordTuple
   );

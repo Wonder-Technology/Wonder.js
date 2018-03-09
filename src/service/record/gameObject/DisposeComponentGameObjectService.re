@@ -10,7 +10,7 @@ let disposeBasicCameraViewComponent =
   [@bs]
   (
     (uid: int, component: component, basicCameraViewRecord) =>
-      BasicCameraViewDisposeComponentService.handleDisposeComponent(
+      DisposeBasicCameraViewService.handleDisposeComponent(
         component,
         basicCameraViewRecord
       )
@@ -20,7 +20,7 @@ let disposePerspectiveCameraProjectionComponent =
   [@bs]
   (
     (uid: int, component: component, perspectiveCameraProjectionRecord) =>
-      PerspectiveCameraProjectionDisposeComponentService.handleDisposeComponent(
+      DisposePerspectiveCameraProjectionService.handleDisposeComponent(
         component,
         perspectiveCameraProjectionRecord
       )
@@ -34,7 +34,7 @@ let batchDisposeBasicCameraViewComponent =
   _batchDisposeComponent(
     uidMap,
     componentRecord,
-    BasicCameraViewDisposeComponentService.handleBatchDisposeComponent,
+    DisposeBasicCameraViewService.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -43,6 +43,6 @@ let batchDisposePerspectiveCameraProjectionComponent =
   _batchDisposeComponent(
     uidMap,
     componentRecord,
-    PerspectiveCameraProjectionDisposeComponentService.handleBatchDisposeComponent,
+    DisposePerspectiveCameraProjectionService.handleBatchDisposeComponent,
     componentArray
   );

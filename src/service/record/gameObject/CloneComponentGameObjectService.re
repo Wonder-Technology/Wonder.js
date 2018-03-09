@@ -4,7 +4,7 @@ open ComponentType;
 
 let cloneBasicCameraViewComponent =
     (sourceComponent: component, countRangeArr: array(int), componentRecord) =>
-  BasicCameraViewCloneComponentService.handleCloneComponent(
+  CloneBasicCameraViewService.handleCloneComponent(
     sourceComponent,
     countRangeArr,
     componentRecord
@@ -12,7 +12,7 @@ let cloneBasicCameraViewComponent =
 
 let clonePerspectiveCameraProjectionComponent =
     (sourceComponent: component, countRangeArr: array(int), componentRecord) =>
-  PerspectiveCameraProjectionCloneComponentService.handleCloneComponent(
+  ClonePerspectiveCameraProjectionService.handleCloneComponent(
     sourceComponent,
     countRangeArr,
     componentRecord

@@ -6,7 +6,7 @@ let _getCameraData =
     (
       {basicCameraViewRecord, perspectiveCameraProjectionRecord, sceneRecord, gameObjectRecord} as state
     ) =>
-  switch (SceneCameraService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
+  switch (CameraSceneService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
   | None => None
   | Some(currentCameraGameObject) =>
     let transform =
@@ -36,7 +36,7 @@ let _getCameraData =
         ),
       pMatrix:
         PMatrixService.unsafeGetPMatrix(
-          GameObjectGetComponentService.unsafeGetPerspectiveCameraProjectionComponent(
+          GetComponentGameObjectService.unsafeGetPerspectiveCameraProjectionComponent(
             currentCameraGameObject,
             gameObjectRecord
           ),

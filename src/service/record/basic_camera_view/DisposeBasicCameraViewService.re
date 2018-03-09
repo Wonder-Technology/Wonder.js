@@ -14,7 +14,7 @@ let handleDisposeComponent = (cameraView, {disposedIndexArray} as record) => {
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentDisposeComponentService.checkComponentShouldAlive(
+            DisposeComponentService.checkComponentShouldAlive(
               cameraView,
               isAlive,
               record
@@ -43,7 +43,7 @@ let handleBatchDisposeComponent =
           WonderLog.(
             Contract.(
               Operators.(
-                ComponentDisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+                DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
                   cameraViewArray,
                   isAlive,
                   record

@@ -1,6 +1,6 @@
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
-let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
+let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
@@ -294,7 +294,7 @@ let createTransform = Transform.createTransform;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
-let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
+let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 

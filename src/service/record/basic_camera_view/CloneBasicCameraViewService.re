@@ -5,7 +5,7 @@ let handleCloneComponent =
        [@bs]
        (
          ((record, componentArr), _) => {
-           let (record, index) = BasicCameraViewCreateService.create(record);
+           let (record, index) = CreateBasicCameraViewService.create(record);
            (record, componentArr |> ArrayService.push(index))
          }
        ),

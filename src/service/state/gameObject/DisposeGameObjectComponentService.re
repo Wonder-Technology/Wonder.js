@@ -18,16 +18,16 @@ let dispose = (uid, (basicCameraViewRecord, perspectiveCameraProjectionRecord, g
   |> _dispose(
        uid,
        (
-         GameObjectGetComponentService.getBasicCameraViewComponent,
-         GameObjectDisposeComponentService.disposeBasicCameraViewComponent
+         GetComponentGameObjectService.getBasicCameraViewComponent,
+         DisposeComponentGameObjectService.disposeBasicCameraViewComponent
        )
      ),
   (perspectiveCameraProjectionRecord, gameObjectRecord)
   |> _dispose(
        uid,
        (
-         GameObjectGetComponentService.getPerspectiveCameraProjectionComponent,
-         GameObjectDisposeComponentService.disposePerspectiveCameraProjectionComponent
+         GetComponentGameObjectService.getPerspectiveCameraProjectionComponent,
+         DisposeComponentGameObjectService.disposePerspectiveCameraProjectionComponent
        )
      ),
   gameObjectRecord
@@ -41,14 +41,14 @@ let batchDispose =
       (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
     ) => (
   gameObjectRecord
-  |> GameObjectGetComponentService.batchGetBasicCameraViewComponent(uidArray)
-  |> GameObjectDisposeComponentService.batchDisposeBasicCameraViewComponent(
+  |> GetComponentGameObjectService.batchGetBasicCameraViewComponent(uidArray)
+  |> DisposeComponentGameObjectService.batchDisposeBasicCameraViewComponent(
        disposedUidMap,
        basicCameraViewRecord
      ),
   gameObjectRecord
-  |> GameObjectGetComponentService.batchGetPerspectiveCameraProjectionComponent(uidArray)
-  |> GameObjectDisposeComponentService.batchDisposePerspectiveCameraProjectionComponent(
+  |> GetComponentGameObjectService.batchGetPerspectiveCameraProjectionComponent(uidArray)
+  |> DisposeComponentGameObjectService.batchDisposePerspectiveCameraProjectionComponent(
        disposedUidMap,
        perspectiveCameraProjectionRecord
      ),
