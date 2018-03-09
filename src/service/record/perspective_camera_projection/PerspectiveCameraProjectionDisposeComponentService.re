@@ -4,8 +4,13 @@ let isAlive = (cameraView, {disposedIndexArray}) =>
   ComponentDisposeComponentCommon.isAlive(cameraView, disposedIndexArray);
 
 let _disposeRecord =
-    (cameraProjection, {gameObjectMap, nearMap, farMap, fovyMap, aspectMap} as record) => {
+    (
+      cameraProjection,
+      {gameObjectMap, dirtyArray, pMatrixMap, nearMap, farMap, fovyMap, aspectMap} as record
+    ) => {
   ...record,
+  dirtyArray: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, dirtyArray),
+  pMatrixMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, pMatrixMap),
   nearMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, nearMap),
   farMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, farMap),
   fovyMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, fovyMap),

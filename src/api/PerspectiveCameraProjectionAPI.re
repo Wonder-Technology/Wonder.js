@@ -20,7 +20,7 @@ let unsafeGetPerspectiveCameraProjectionPMatrix = (cameraProjection, state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentDisposeComponentService.checkComponentShouldAlive(
+            ComponentAliveService.checkComponentShouldAlive(
               cameraProjection,
               isAlive,
               state.perspectiveCameraProjectionRecord
@@ -42,7 +42,7 @@ let unsafeGetPerspectiveCameraProjectionGameObject = (cameraProjection, state) =
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentDisposeComponentService.checkComponentShouldAlive(
+            ComponentAliveService.checkComponentShouldAlive(
               cameraProjection,
               isAlive,
               state.perspectiveCameraProjectionRecord

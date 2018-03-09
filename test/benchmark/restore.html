@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <script type="module">
+        import { scheduleLoop } from "../../lib/es6_global/src/core/api/Scheduler.js";
+
+
+        import { setMainConfig } from "../../lib/es6_global/src/core/api/Main.js";
+
+        import { startDirector, loopBody, initDirector } from "../../lib/es6_global/src/core/api/Director.js";
+
+
+        import { deepCopyStateForRestore, restoreState, createState } from "../../lib/es6_global/src/core/api/State.js";
+
+
+
+
+        import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/ecs/component/api/geometry/BoxGeometry.js";
+
+
+
+
+        import { createMeshRenderer } from "../../lib/es6_global/src/ecs/component/api/meshRenderer/MeshRenderer.js";
+
+        import { setMaterialColor } from "../../lib/es6_global/src/ecs/component/api/material/Material.js";
+
+        import { createBasicMaterial } from "../../lib/es6_global/src/ecs/component/api/material/BasicMaterial.js";
+
+
+        import { setTransformParent, getTransformLocalPosition, getTransformPosition, setTransformLocalPosition, setTransformPosition } from "../../lib/es6_global/src/ecs/component/api/transform/Transform.js";
+
+
+        import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/ecs/component/api/cameraController/CameraController.js";
+        import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/ecs/component/api/cameraController/PerspectiveCamera.js";
+
+
+        import { markSourceInstanceModelMatrixIsStatic, getSourceInstanceObjectInstanceArray, createSourceInstance, createSourceInstanceObjectInstance } from "../../lib/es6_global/src/ecs/component/api/instance/SourceInstance.js";
+
+
+
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
+
+
+        var json = {
+            "a": new Float32Array([1,2,3])
+        };
+
+        console.log(JSON.stringify(json));
+
+        window.onload = function () {
+
+            var state = setMainConfig({
+                isDebug: false
+            });
+
+
+            var state = restoreState(
+                // createState(),
+                state,
+
+
+
+
+
+
+
+
+
+                [[[1000000]], [[1]], [1000, 5000, 100], [{}, ["pc", ["webgl1", 0], [["chrome", "newest"], ["firefox", "newest"]], "simple_basic_render", "simple_basic_render"], [["simple_basic_render", [["preget_glslData", 0], ["init_basic_material", 0]]]], [["simple_basic_render", [["get_render_array", 0], ["get_camera_data", 0], ["clear_color", [["#000000"]]], ["clear_buffer", [["COLOR_BUFFER", "DEPTH_BUFFER", "STENCIL_BUFFER"]]], ["render_basic", 0]]]], [["preget_glslData", 0], ["init_basic_material", 0]], [["get_render_array", 0], ["get_camera_data", 0], ["clear_color", 0], ["clear_buffer", 0], ["render_basic", 0]], [[["modelMatrix_instance", ["modelMatrix_noInstance", "modelMatrix_hardware_instance", "modelMatrix_batch_instance"]]], [["top", ["common", "vertex"]], ["end", ["end"]]], [[[[["group"], "top"], [["static_branch"], "modelMatrix_instance"], [0, "basic"], [0, "basic_end"], [["group"], "end"]]]]], [["common", [[["vs", "common_vertex"], ["fs", "common_fragment"]]], [[[[["u_vMatrix", "vMatrix", "mat4", "camera"], ["u_pMatrix", "pMatrix", "mat4", "camera"]]], 0]]], ["modelMatrix_noInstance", [[["vs", "modelMatrix_noInstance_vertex"]]], [[[[["u_mMatrix", "mMatrix", "mat4", "model"]]], 0]]], ["modelMatrix_hardware_instance", [[["vs", "modelMatrix_hardware_instance_vertex"]]], [[0, [[[["a_mVec4_0"], "instance", ["vec4"]], [["a_mVec4_1"], "instance", ["vec4"]], [["a_mVec4_2"], "instance", ["vec4"]], [["a_mVec4_3"], "instance", ["vec4"]]]]]]], ["modelMatrix_batch_instance", [[["vs", "modelMatrix_batch_instance_vertex"]]], [[[[["u_mMatrix", "instance_mMatrix", "mat4", "model"]]], 0]]], ["vertex", 0, [[0, [[[["a_position"], "vertex", ["vec3"]]]]]]], ["basic", [[["vs", "webgl1_basic_vertex"], ["fs", "webgl1_basic_fragment"]]], [[[[["u_color", "color", "vec3", "material"]]], 0]]], ["basic_end", [[["fs", "webgl1_basic_end_fragment"]]], 0], ["end", 0, [[0, [[[0, "index", 0]]]]]]]], [[{}], [0]], [0, [], [], [], [], [], [], []], [0, [], [], []], [[{}], [[1, 1, 0, 1, 1, 0]]], [0], [[{}], [[true, true, true, true]], [[0, 0, 0, 1]], [[0, 0, 960, 489]]], [3, 0, [], [0, 1, 2], [0, 1, 2], [null, null, 0], [0, 0], [0, 1], [0, 0], [], []], [[3, [], [[], [], []], [0, 1, 2], [{ "0": 1, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1, "6": 0, "7": 0, "8": 0, "9": 0, "10": 1, "11": 0, "12": 0, "13": 0, "14": 0, "15": 1 }, { "0": 1, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1, "6": 0, "7": 0, "8": 0, "9": 0, "10": 1, "11": 0, "12": 0, "13": 0, "14": 0, "15": 1 }, { "0": 1, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1, "6": 0, "7": 0, "8": 0, "9": 0, "10": 1, "11": 0, "12": 0, "13": 0, "14": 1500, "15": 1 }], [{ "0": 0, "1": 0, "2": 0 }, { "0": 0, "1": 0, "2": 0 }, { "0": 0, "1": 0, "2": 1500 }], [0, 0, 0], []]], [1, [0], [], [{ "0": 1.7320507764816284, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1.7320507764816284, "6": 0, "7": 0, "8": 0, "9": 0, "10": -1.000100016593933, "11": -1, "12": 0, "13": 0, "14": -0.2000100016593933, "15": 0 }], [2], [null], [[0.1], [2000], [60], [1]], []], [[1, [0], [[0, 0.5, 0.2]], [0], [1], []]], [[1, [{ "0": -5, "1": -5, "2": 5, "3": -5, "4": 5, "5": 5, "6": 5, "7": -5, "8": 5, "9": 5, "10": 5, "11": 5, "12": 5, "13": -5, "14": -5, "15": 5, "16": 5, "17": -5, "18": -5, "19": -5, "20": -5, "21": -5, "22": 5, "23": -5, "24": -5, "25": 5, "26": 5, "27": -5, "28": 5, "29": -5, "30": 5, "31": 5, "32": 5, "33": 5, "34": 5, "35": -5, "36": 5, "37": -5, "38": 5, "39": 5, "40": -5, "41": -5, "42": -5, "43": -5, "44": 5, "45": -5, "46": -5, "47": -5, "48": 5, "49": -5, "50": 5, "51": 5, "52": 5, "53": 5, "54": 5, "55": -5, "56": -5, "57": 5, "58": 5, "59": -5, "60": -5, "61": -5, "62": -5, "63": -5, "64": 5, "65": -5, "66": -5, "67": -5, "68": 5, "69": -5, "70": 5, "71": 5 }], [{ "0": 0, "1": 2, "2": 1, "3": 2, "4": 3, "5": 1, "6": 4, "7": 6, "8": 5, "9": 6, "10": 7, "11": 5, "12": 8, "13": 10, "14": 9, "15": 10, "16": 11, "17": 9, "18": 12, "19": 14, "20": 13, "21": 14, "22": 15, "23": 13, "24": 16, "25": 18, "26": 17, "27": 18, "28": 19, "29": 17, "30": 20, "31": 22, "32": 21, "33": 22, "34": 23, "35": 21 }], [null], [{ "width": 5, "height": 5, "depth": 5, "widthSegment": 1, "heightSegment": 1, "depthSegment": 1 }], [0], [], [1], [1]]], [2, [0, 1], [0, 1], []], [1, { "commonvertexmodelMatrix_noInstancebasicbasic_endend": 0 }, [["\nprecision highp float;\nprecision highp int;\n"]]], [[{}], [{}]], [[{ "a_position": 0 }], [{ "u_vMatrix": {}, "u_pMatrix": {}, "u_mMatrix": {}, "u_color": {} }]], [[[[0, 3, "vertex", null], [0, 0, "index", null]]], [[]], [], [[[{}, null, null]]], [[[{ "u_color": [0, 0.5, 0.2] }, "u_color", {}, null, null]]], [[[{}, null, null], [{}, null, null]]], [[]], [1], [{}], [{}], [0]], [{ "modelMatrix_noInstance_vertex": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\nmat4 mMatrix = u_mMatrix;\n"], "modelMatrix_hardware_instance_vertex": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\nmat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);\n"], "modelMatrix_batch_instance_vertex": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\nmat4 mMatrix = u_mMatrix;\n"], "webgl1_setPos_mvp": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\ngl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n"], "mediump_fragment": ["\nprecision mediump float;\nprecision mediump int;\n", "\n\n", "\n\n", "\n\n", "\n\n", "\n\n"], "lowp_fragment": ["\nprecision lowp float;\nprecision lowp int;\n", "\n\n", "\n\n", "\n\n", "\n\n", "\n\n"], "highp_fragment": ["\nprecision highp float;\nprecision highp int;\n", "\n\n", "\n\n", "\n\n", "\n\n", "\n\n"], "common_vertex": ["\n\n", "\n\n\n// #export \n\n// ##name\n// aaaa\n// ##end\n\n// ##body\n\n\n// ##end\n\n\n// #end\n", "\n\n", "\n\n", "\n// #import * from \"common_function\"\n// mat2 transpose(mat2 m) {\n//   return mat2(  m[0][0], m[1][0],   // new col 0\n//                 m[0][1], m[1][1]    // new col 1\n//              );\n//   }\n\n// mat3 transpose(mat3 m) {\n//   return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n//                 m[0][1], m[1][1], m[2][1],  // new col 1\n//                 m[0][2], m[1][2], m[2][2]   // new col 1\n//              );\n//   }\n\n//bool isRenderArrayEmpty(int isRenderArrayEmpty){\n//  return isRenderArrayEmpty == 1;\n//}\n", "\n\n"], "common_function": ["\n\n", "\n\n", "\n\n", "\n\n", "\n// mat2 transpose(mat2 m) {\n//   return mat2(  m[0][0], m[1][0],   // new col 0\n//                 m[0][1], m[1][1]    // new col 1\n//              );\n//   }\n\n// mat3 transpose(mat3 m) {\n//   return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n//                 m[0][1], m[1][1], m[2][1],  // new col 1\n//                 m[0][2], m[1][2], m[2][2]   // new col 1\n//              );\n//   }\n\n//bool isRenderArrayEmpty(int isRenderArrayEmpty){\n//  return isRenderArrayEmpty == 1;\n//}\n", "\n\n"], "common_fragment": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\n\n"], "common_define": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\n\n"], "webgl1_basic_vertex": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\ngl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n"], "webgl1_basic_fragment": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\nvec4 totalColor = vec4(u_color, 1.0);\n"], "webgl1_basic_end_fragment": ["\n\n", "\n\n", "\n\n", "\n\n", "\n\n", "\ngl_FragColor = vec4(totalColor.rgb, totalColor.a);\n"] }], [[[0, 1]], [[{ "0": 1, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1, "6": 0, "7": 0, "8": 0, "9": 0, "10": 1, "11": 0, "12": 0, "13": 0, "14": -1500, "15": 1 }, { "0": 1.7320507764816284, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1.7320507764816284, "6": 0, "7": 0, "8": 0, "9": 0, "10": -1.000100016593933, "11": -1, "12": 0, "13": 0, "14": -0.2000100016593933, "15": 0 }]]], [0, [], []], [5501.212999955024, 507.595, 16.68299996526912, [5501.212999955024], 5.501212999955024, 59.94125769237024], [[{}], [{}], [], [], [], []], [{ "0": 1, "1": 0, "2": 0, "3": 0, "4": 0, "5": 1, "6": 0, "7": 0, "8": 0, "9": 0, "10": 1, "11": 0, "12": 0, "13": 0, "14": 0, "15": 1 }], [[], []]]
+
+
+            );
+
+
+            var time = 200.0;
+            // var state = initDirector( state);
+
+            // var state = loopBody(time, state);
+            window.state = state;
+
+            // setInterval(() => {
+
+            //     window.state = loopBody(time, window.state);
+            // }, 60)
+
+            var state = loopBody(time, state);
+
+        }
+    </script>
+</body>
+
+</html>

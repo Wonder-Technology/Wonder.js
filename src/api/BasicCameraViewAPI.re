@@ -18,7 +18,7 @@ let unsafeGetBasicCameraViewGameObject = (cameraView, state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentDisposeComponentService.checkComponentShouldAlive(
+            ComponentAliveService.checkComponentShouldAlive(
               cameraView,
               isAlive,
               state.basicCameraViewRecord
@@ -37,7 +37,7 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataType.st
       WonderLog.(
         Contract.(
           Operators.(
-            ComponentDisposeComponentService.checkComponentShouldAlive(
+            ComponentAliveService.checkComponentShouldAlive(
               cameraView,
               isAlive,
               state.basicCameraViewRecord
