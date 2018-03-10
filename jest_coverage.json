@@ -19,6 +19,8 @@
     "<rootDir>/lib/es6_global/src/structure/",
     "<rootDir>/lib/es6_global/src/.+/LoaderManager\\.js",
     "<rootDir>/lib/es6_global/src/.+/Exception\\.js",
+    "<rootDir>/lib/es6_global/src/.+/.*Worker.*",
+    "<rootDir>/lib/es6_global/src/.+/.*ReWo.*",
     "<rootDir>/lib/es6_global/src/Index.*"
   ],
   "collectCoverageFrom": [
