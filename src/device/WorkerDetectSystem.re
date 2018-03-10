@@ -1,4 +1,10 @@
-external jsObjToTypeofTarget : Js.t({..}) => Typeof.typeofTarget = "%identity";
+let _isSupportSharedArrayBuffer = [%bs.raw
+  {|
+    function(){
+        return typeof SharedArrayBuffer !== "undefined"
+    }
+    |}
+];
 
 let detect = (state: StateDataType.state) => {
   /* /*!
@@ -10,18 +16,13 @@ let detect = (state: StateDataType.state) => {
 
          return;
      } */
-  let isSupportSharedArrayBuffer = ref(false);
-  if (Typeof.typeof(Worker.sharedArrayBuffer |> jsObjToTypeofTarget) !== "undefined") {
-    isSupportSharedArrayBuffer := true
-  } else {
-    isSupportSharedArrayBuffer := false
-  };
+  let isSupportSharedArrayBuffer = _isSupportSharedArrayBuffer();
   {
     ...state,
     workerDetectData: {
-      isSupportSharedArrayBuffer: isSupportSharedArrayBuffer^,
+      isSupportSharedArrayBuffer,
       isSupportRenderWorkerAndSharedArrayBuffer:
-        isSupportSharedArrayBuffer^ === false ?
+        ! isSupportSharedArrayBuffer ?
           false :
           DetectUtils.hasProperty(
             "transferControlToOffscreen",
