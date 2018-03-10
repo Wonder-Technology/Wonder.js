@@ -1,6 +1,8 @@
 open Wonder_jest;
 
-open GameObject; open GameObjectAPI;
+open GameObject;
+
+open GameObjectAPI;
 
 open GameObjectAPI;
 
@@ -294,11 +296,7 @@ let _ =
                       expect(
                         () => {
                           let (state, basicCameraView) = createBasicCameraView(state);
-                          addGameObjectBasicCameraViewComponent(
-                            gameObject,
-                            basicCameraView,
-                            state
-                          )
+                          addGameObjectBasicCameraViewComponent(gameObject, basicCameraView, state)
                         }
                       )
                       |> toThrowMessage(
@@ -352,9 +350,14 @@ let _ =
               let _prepare = () => {
                 open PerspectiveCameraProjectionAPI;
                 let (state, gameObject) = createGameObject(state^);
-                let (state, perspectiveCameraProjection) = createPerspectiveCameraProjection(state);
+                let (state, perspectiveCameraProjection) =
+                  createPerspectiveCameraProjection(state);
                 let state =
-                  state |> addGameObjectPerspectiveCameraProjectionComponent(gameObject, perspectiveCameraProjection);
+                  state
+                  |> addGameObjectPerspectiveCameraProjectionComponent(
+                       gameObject,
+                       perspectiveCameraProjection
+                     );
                 (state, gameObject, perspectiveCameraProjection)
               };
               describe(
@@ -367,7 +370,8 @@ let _ =
                       let (state, gameObject, _) = _prepare();
                       expect(
                         () => {
-                          let (state, perspectiveCameraProjection) = createPerspectiveCameraProjection(state);
+                          let (state, perspectiveCameraProjection) =
+                            createPerspectiveCameraProjection(state);
                           addGameObjectPerspectiveCameraProjectionComponent(
                             gameObject,
                             perspectiveCameraProjection,
@@ -387,7 +391,10 @@ let _ =
                       let (state, gameObject, _) = _prepare();
                       state
                       |> unsafeGetPerspectiveCameraProjectionGameObject(
-                           unsafeGetGameObjectPerspectiveCameraProjectionComponent(gameObject, state)
+                           unsafeGetGameObjectPerspectiveCameraProjectionComponent(
+                             gameObject,
+                             state
+                           )
                          )
                       |> expect == gameObject
                     }
@@ -414,7 +421,9 @@ let _ =
                     "has perspectiveCameraProjection component",
                     () => {
                       let (state, gameObject, _) = _prepare();
-                      state |> hasGameObjectPerspectiveCameraProjectionComponent(gameObject) |> expect == true
+                      state
+                      |> hasGameObjectPerspectiveCameraProjectionComponent(gameObject)
+                      |> expect == true
                     }
                   )
               )
@@ -667,9 +676,9 @@ let _ =
                 "dispose basicCameraView component",
                 () => {
                   open BasicCameraViewType;
-                  let (state, gameObject1, _, ( basicCameraView1, _ )) =
+                  let (state, gameObject1, _, (basicCameraView1, _)) =
                     CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, ( basicCameraView2, _ )) =
+                  let (state, gameObject2, _, (basicCameraView2, _)) =
                     CameraTool.createCameraGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
                   let {disposedIndexArray} = state.basicCameraViewRecord;
@@ -684,9 +693,9 @@ let _ =
                 "dispose perspectiveCameraProjection component",
                 () => {
                   open PerspectiveCameraProjectionType;
-                  let (state, gameObject1, _, ( _, perspectiveCameraProjection1 )) =
+                  let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
                     CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, ( _, perspectiveCameraProjection2 )) =
+                  let (state, gameObject2, _, (_, perspectiveCameraProjection2)) =
                     CameraTool.createCameraGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
                   let {disposedIndexArray} = state.perspectiveCameraProjectionRecord;
@@ -1179,13 +1188,12 @@ let _ =
                 "batch dispose basicCameraView componets",
                 () => {
                   open BasicCameraViewType;
-                  let (state, gameObject1, _, ( basicCameraView1, _ )) =
+                  let (state, gameObject1, _, (basicCameraView1, _)) =
                     CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, ( basicCameraView2, _ )) =
+                  let (state, gameObject2, _, (basicCameraView2, _)) =
                     CameraTool.createCameraGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   let {disposedIndexArray} = state.basicCameraViewRecord;
-                  WonderLog.Log.print(("aaa:", disposedIndexArray)) |> ignore;
                   (
                     disposedIndexArray |> Js.Array.includes(basicCameraView1),
                     disposedIndexArray |> Js.Array.includes(basicCameraView2)
@@ -1197,9 +1205,9 @@ let _ =
                 "batch dispose perspectiveCameraProjection componets",
                 () => {
                   open PerspectiveCameraProjectionType;
-                  let (state, gameObject1, _, ( _, perspectiveCameraProjection1 )) =
+                  let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
                     CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, ( _, perspectiveCameraProjection2  )) =
+                  let (state, gameObject2, _, (_, perspectiveCameraProjection2)) =
                     CameraTool.createCameraGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   let {disposedIndexArray} = state.perspectiveCameraProjectionRecord;
