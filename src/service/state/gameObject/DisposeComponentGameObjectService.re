@@ -4,41 +4,6 @@ open GameObjectType;
 
 open ComponentType;
 
-/* let isAlive = (uid: int, {transformMap, disposedUidMap}) =>
-     disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
-       false : transformMap |> WonderCommonlib.SparseMapSystem.has(uid) ? true : false;
-
-   let disposeBasicCameraViewComponent =
-     [@bs]
-     (
-       (uid: int, component: component, record) =>
-         DisposeBasicCameraViewService.handleDisposeComponent(component, record)
-     );
-
-   let disposePerspectiveCameraProjectionComponent =
-     [@bs]
-     (
-       (uid: int, component: component, record) =>
-         DisposePerspectiveCameraProjectionService.handleDisposeComponent(component, record)
-     );
-
-   let batchDisposeBasicCameraViewComponent =
-       (uidMap, componentRecord, componentArray: array(component)) =>
-     ComponentMapService.batchDisposeComponent(
-       uidMap,
-       componentRecord,
-       DisposeBasicCameraViewService.handleBatchDisposeComponent,
-       componentArray
-     );
-
-   let batchDisposePerspectiveCameraProjectionComponent =
-       (uidMap, componentRecord, componentArray: array(component)) =>
-     ComponentMapService.batchDisposeComponent(
-       uidMap,
-       componentRecord,
-       DisposePerspectiveCameraProjectionService.handleBatchDisposeComponent,
-       componentArray
-     ); */
 let isAlive = (uid: int, {gameObjectRecord}) => {
   let {transformMap, disposedUidMap} = gameObjectRecord;
   disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
@@ -61,7 +26,10 @@ let disposePerspectiveCameraProjectionComponent =
     (uid: int, component: component, {perspectiveCameraProjectionRecord} as state) => {
       ...state,
       perspectiveCameraProjectionRecord:
-        DisposePerspectiveCameraProjectionService.handleDisposeComponent(component, perspectiveCameraProjectionRecord)
+        DisposePerspectiveCameraProjectionService.handleDisposeComponent(
+          component,
+          perspectiveCameraProjectionRecord
+        )
     }
   );
 
@@ -101,12 +69,7 @@ let batchDisposePerspectiveCameraProjectionComponent =
 };
 
 let batchDisposeTransformComponent =
-    (
-      uidMap,
-      /* (memoryConfig, typeArrayPoolRecord, componentRecord), */
-      {memoryConfig} as state,
-      componentArray: array(component)
-    ) =>
+    (uidMap, {memoryConfig} as state, componentArray: array(component)) =>
   [@bs]
   DisposeTransformService.handleBatchDisposeComponent(
     componentArray,

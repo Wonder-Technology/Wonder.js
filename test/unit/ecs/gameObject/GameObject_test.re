@@ -1185,6 +1185,7 @@ let _ =
                     CameraTool.createCameraGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   let {disposedIndexArray} = state.basicCameraViewRecord;
+                  WonderLog.Log.print(("aaa:", disposedIndexArray)) |> ignore;
                   (
                     disposedIndexArray |> Js.Array.includes(basicCameraView1),
                     disposedIndexArray |> Js.Array.includes(basicCameraView2)

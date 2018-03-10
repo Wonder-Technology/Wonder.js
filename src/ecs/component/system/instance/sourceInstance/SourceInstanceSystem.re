@@ -42,10 +42,11 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
   /* let (transformRecord, gameObjectRecord) =
      (transformRecord, state.gameObjectRecord)
      |> AddGameObjectComponentService.addTransformComponent(uid, transform); */
-  let state = state |> AddGameObjectComponentService.addTransformComponent(uid, transform);
   /* let state = {...state, transformRecord, gameObjectRecord}; */
   let state =
-    state |> GameObjectAddComponentCommon.addObjectInstanceComponent(uid, objectInstance);
+    state
+    |> AddGameObjectComponentService.addTransformComponent(uid, transform)
+    |> GameObjectAddComponentCommon.addObjectInstanceComponent(uid, objectInstance);
   (state, uid)
 };
 

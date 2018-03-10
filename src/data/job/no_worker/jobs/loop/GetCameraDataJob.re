@@ -42,7 +42,11 @@ let _getCameraData =
     Some({
       vMatrix:
         VMatrixService.getWorldToCameraMatrix(
-          ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, transformRecord)
+          UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
+            transform,
+            globalTempRecord,
+            transformRecord
+          )
         ),
       pMatrix:
         PMatrixService.unsafeGetPMatrix(

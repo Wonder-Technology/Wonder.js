@@ -2,15 +2,6 @@ open StateDataType;
 
 open TypeArrayPoolType;
 
-/* let restore =
-       (
-         currentRecord,
-         {float32ArrayPoolMap, uint16ArrayPoolMap}: sharedDataForRestoreState,
-         targetRecord
-       ) => {
-     float32ArrayPoolMap,
-     uint16ArrayPoolMap
-   }; */
 let restore =
     (
       currentState,

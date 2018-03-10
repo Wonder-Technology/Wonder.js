@@ -60,29 +60,20 @@ let _initDataWhenCreate =
       )
     };
 
-/* let createNotMarkDirty = (typeArrayPoolRecord, {index, disposedIndexArray} as transformRecord) => { */
-let createNotMarkDirty = ({typeArrayPoolRecord, transformRecord} as state) => {
+let createWithoutMarkNotDirty = ({typeArrayPoolRecord, transformRecord} as state) => {
   let {index, disposedIndexArray} = transformRecord;
   let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);
   transformRecord.index = newIndex;
   let (typeArrayPoolRecord, transformRecord) =
     _initDataWhenCreate(index, typeArrayPoolRecord, transformRecord);
-  /* (typeArrayPoolRecord, {...transformRecord, disposedIndexArray}, index) */
   (
     {...state, typeArrayPoolRecord, transformRecord: {...transformRecord, disposedIndexArray}},
     index
   )
 };
 
-/* let create = (typeArrayPoolRecord, {index, disposedIndexArray} as transformRecord) => {
-     let (typeArrayPoolRecord, transformRecord, index) =
-       createNotMarkDirty(typeArrayPoolRecord, transformRecord);
-     (typeArrayPoolRecord, transformRecord |> DirtyTransformService.mark(index, false), index)
-   }; */
 let create = ({typeArrayPoolRecord, transformRecord} as state) => {
-  /* let (typeArrayPoolRecord, transformRecord, index) =
-     createNotMarkDirty(typeArrayPoolRecord, transformRecord); */
-  let (state, index) = createNotMarkDirty(state);
+  let (state, index) = createWithoutMarkNotDirty(state);
   (
     {
       ...state,
