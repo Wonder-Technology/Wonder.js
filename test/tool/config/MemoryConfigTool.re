@@ -1,6 +1,6 @@
-open MemoryConfigSystem;
+open ConfigMemoryService;
 
 let setConfig = (state: StateDataType.state, ~maxDisposeCount=1000, ()) => {
-  getConfig(state).maxDisposeCount = maxDisposeCount;
+  state.memoryConfig.maxDisposeCount = maxDisposeCount;
   state
 };

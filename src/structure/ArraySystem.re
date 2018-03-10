@@ -58,8 +58,8 @@ let join = (arr) => {
   };
   output^
 };
-
+/* 
 let push = (item, arr) => {
   arr |> Js.Array.push(item) |> ignore;
   arr
-};
+}; */

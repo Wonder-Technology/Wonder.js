@@ -72,7 +72,7 @@ let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataTy
     ...state,
     objectInstanceData: {
       ...data,
-      disposedIndexArray: disposedIndexArray |> ArraySystem.push(objectInstance)
+      disposedIndexArray: disposedIndexArray |> ArrayService.push(objectInstance)
     }
   }
 };

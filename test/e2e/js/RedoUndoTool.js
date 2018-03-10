@@ -14,7 +14,7 @@ var RedoUndoTool = (function () {
                 if (index == 1) {
                     index += 1;
 
-                    window.copyState1 = wd.deepCopyStateForRestore(state);
+                    window.copyState1 = wd.deepCopyForRestore(state);
 
                     // var [state, sourceInstanceBox, objectInstanceBoxes] = createBoxesByInstance(2, state);
 
@@ -71,7 +71,7 @@ var RedoUndoTool = (function () {
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
 
-                var transform = wd.getGameObjectTransformComponent(box, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
                 var localPos = wd.getTransformLocalPosition(transform, state);
 

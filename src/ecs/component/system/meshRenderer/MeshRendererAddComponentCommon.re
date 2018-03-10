@@ -10,7 +10,7 @@ let _setRenderGameObjectArray =
       gameObject: gameObject,
       renderGameObjectArray: Js.Array.t(gameObject)
     ) =>
-  renderGameObjectArray |> ArraySystem.push(gameObject);
+  renderGameObjectArray |> ArrayService.push(gameObject);
 
 let handleAddComponent =
   [@bs]

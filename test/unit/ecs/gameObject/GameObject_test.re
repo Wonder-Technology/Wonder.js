@@ -1,6 +1,6 @@
 open Wonder_jest;
 
-open GameObject;
+open GameObject; open GameObjectAPI;
 
 open GameObjectAPI;
 
@@ -65,7 +65,7 @@ let _ =
                       let (state, gameObject) = createGameObject(state^);
                       expect(
                         () => {
-                          let (state, transform) = Transform.createTransform(state);
+                          let (state, transform) = TransformAPI.createTransform(state);
                           addGameObjectTransformComponent(gameObject, transform, state)
                         }
                       )
@@ -81,8 +81,8 @@ let _ =
                     "can get component's gameObject",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      Transform.getTransformGameObject(
-                        getGameObjectTransformComponent(gameObject, state),
+                      TransformAPI.unsafeGetTransformGameObject(
+                        unsafeGetGameObjectTransformComponent(gameObject, state),
                         state
                       )
                       |> expect == gameObject
@@ -91,13 +91,13 @@ let _ =
                 }
               );
               describe(
-                "getGameObjectTransformComponent",
+                "unsafeGetGameObjectTransformComponent",
                 () =>
                   test(
                     "get transform component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      getGameObjectTransformComponent(gameObject, state)
+                      unsafeGetGameObjectTransformComponent(gameObject, state)
                       |> TransformTool.isTransform
                     }
                   )
@@ -467,19 +467,19 @@ let _ =
                 () => {
                   let (state, gameObject1) = createGameObject(state^);
                   let (state, gameObject2) = createGameObject(state);
-                  let transform1 = getGameObjectTransformComponent(gameObject1, state);
-                  let transform2 = getGameObjectTransformComponent(gameObject2, state);
+                  let transform1 = unsafeGetGameObjectTransformComponent(gameObject1, state);
+                  let transform2 = unsafeGetGameObjectTransformComponent(gameObject2, state);
                   let state =
                     state
-                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform2);
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform2);
                   let pos1 = (1., 2., 3.);
                   let pos2 = (2., 3., 4.);
                   let state =
                     state
-                    |> Transform.setTransformLocalPosition(transform1, pos1)
-                    |> Transform.setTransformLocalPosition(transform2, pos2);
+                    |> TransformAPI.setTransformLocalPosition(transform1, pos1)
+                    |> TransformAPI.setTransformLocalPosition(transform2, pos2);
                   let state = state |> disposeGameObject(gameObject1);
-                  state |> Transform.getTransformPosition(transform2) |> expect == pos2
+                  state |> TransformAPI.getTransformPosition(transform2) |> expect == pos2
                 }
               );
               test(
@@ -1075,18 +1075,18 @@ let _ =
                   let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
                   let state =
                     state
-                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform2)
-                    |> Transform.setTransformParent(Js.Nullable.return(transform2), transform3);
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform2)
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform2), transform3);
                   let pos1 = (1., 2., 3.);
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
                   let state =
                     state
-                    |> Transform.setTransformLocalPosition(transform1, pos1)
-                    |> Transform.setTransformLocalPosition(transform2, pos2)
-                    |> Transform.setTransformLocalPosition(transform3, pos3);
+                    |> TransformAPI.setTransformLocalPosition(transform1, pos1)
+                    |> TransformAPI.setTransformLocalPosition(transform2, pos2)
+                    |> TransformAPI.setTransformLocalPosition(transform3, pos3);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  state |> Transform.getTransformPosition(transform3) |> expect == pos3
+                  state |> TransformAPI.getTransformPosition(transform3) |> expect == pos3
                 }
               );
               describe(
@@ -1463,8 +1463,8 @@ let _ =
                 |> toThrowMessage(_getErrorMsg())
               };
               test(
-                "getGameObjectTransformComponent should error",
-                () => _testTwoParamFunc(getGameObjectTransformComponent)
+                "unsafeGetGameObjectTransformComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectTransformComponent)
               );
               test(
                 "getGameObjectBasicMaterialComponent should error",

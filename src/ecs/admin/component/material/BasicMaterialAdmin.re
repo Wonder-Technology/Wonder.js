@@ -10,7 +10,7 @@ let initMaterials = (materialIndexArr, gl, state: StateDataType.state) =>
 
 let init = (gl, state: StateDataType.state) => BasicMaterialSystem.init(gl, state);
 
-let deepCopyStateForRestore = BasicMaterialSystem.deepCopyStateForRestore;
+let deepCopyForRestore = BasicMaterialSystem.deepCopyForRestore;
 
 let restore = (gl, currentState, targetState) => {
   let newState = BasicMaterialSystem.restore(currentState, targetState);

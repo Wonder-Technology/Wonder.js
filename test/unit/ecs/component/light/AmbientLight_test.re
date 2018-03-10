@@ -77,7 +77,7 @@ let _ =
           test(
             "get light's gameObject",
             () => {
-              open GameObject;
+              open GameObject; open GameObjectAPI;
               let (state, light) = createAmbientLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
@@ -249,7 +249,7 @@ let _ =
             "if light is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject;
+                open GameObject; open GameObjectAPI;
                 let (state, light) = createAmbientLight(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectAmbientLightComponent(gameObject, light);

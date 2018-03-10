@@ -4,7 +4,7 @@ open StateDataType;
 
 let getSourceInstanceData = (state: StateDataType.state) => state.sourceInstanceData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {
     index,
     objectInstanceArrayMap,
@@ -44,9 +44,9 @@ let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) =
   let {matrixFloat32ArrayMap} = getSourceInstanceData(currentState);
   let {isSendTransformMatrixDataMap} as targetData = getSourceInstanceData(targetState);
   let float32ArrayPoolMap =
-    TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(
+    TypeArrayPoolService.addAllFloat32TypeArrayToPool(
       matrixFloat32ArrayMap,
-      MemoryConfigSystem.getMaxBigTypeArrayPoolSize(targetState),
+      ConfigMemoryService.getMaxBigTypeArrayPoolSize(targetState.memoryConfig),
       float32ArrayPoolMap
     );
   (

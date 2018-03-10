@@ -15,7 +15,7 @@ let getRange = (index, state) => PointLightSystem.getRange(index, state);
 let getPosition = (index, state) =>
   state |> LightAdmin.getPosition(PointLightSystem.unsafeGetGameObject(index, state));
 
-let deepCopyStateForRestore = PointLightSystem.deepCopyStateForRestore;
+let deepCopyForRestore = PointLightSystem.deepCopyForRestore;
 
 let restore = PointLightSystem.restore;
 

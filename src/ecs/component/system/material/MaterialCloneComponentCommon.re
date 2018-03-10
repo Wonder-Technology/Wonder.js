@@ -26,7 +26,7 @@ let _handleNotShareMaterial =
            let state = [@bs] setDataFunc(index, dataTuple, state);
            let state =
              hasShaderIndex ? [@bs] setShaderIndexFunc(index, shaderIndex, state) : state;
-           (state, componentArr |> ArraySystem.push(index))
+           (state, componentArr |> ArrayService.push(index))
          }
        ),
        (state, [||])

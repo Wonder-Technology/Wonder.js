@@ -47,7 +47,7 @@ let unsafeGetGameObject = PointLightGameObjectCommon.unsafeGetGameObject;
 
 let getLightData = PointLightStateCommon.getLightData;
 
-let deepCopyStateForRestore = PointLightStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = PointLightStateCommon.deepCopyForRestore;
 
 let restore = PointLightStateCommon.restore;
 

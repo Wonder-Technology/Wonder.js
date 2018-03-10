@@ -24,15 +24,15 @@ let _ =
         let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
         let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
         let state =
-          Transform.setTransformParent(Js.Nullable.return(transform1), transform2, state);
+          TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform2, state);
         let pos1 = (1., 2., 3.);
         let pos2 = (2., 4., 10.);
         let pos3 = ((-1.), 4., 5.);
-        let state = Transform.setTransformLocalPosition(transform1, pos1, state);
-        let state = Transform.setTransformLocalPosition(transform2, pos2, state);
-        let state = Transform.setTransformLocalPosition(transform3, pos3, state);
+        let state = TransformAPI.setTransformLocalPosition(transform1, pos1, state);
+        let state = TransformAPI.setTransformLocalPosition(transform2, pos2, state);
+        let state = TransformAPI.setTransformLocalPosition(transform3, pos3, state);
         let state =
-          state |> GameObject.disposeGameObjectTransformComponent(gameObject3, transform3);
+          state |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject3, transform3);
         (state, gameObject1, gameObject2, gameObject3, transform1, transform2, transform3)
       };
       let _prepareBasicCameraViewData = (state) => {
@@ -155,7 +155,7 @@ let _ =
                 meshRenderer3
               ) =
                 _prepareMeshRendererData(state);
-              let copiedState = StateTool.deepCopyStateForRestore(state);
+              let copiedState = StateTool.deepCopyForRestore(state);
               MeshRendererTool.getMeshRendererData(copiedState)
               |>
               expect == {
@@ -184,7 +184,7 @@ let _ =
                 meshRenderer3
               ) =
                 _prepareMeshRendererData(state);
-              let copiedState = StateTool.deepCopyStateForRestore(state);
+              let copiedState = StateTool.deepCopyForRestore(state);
               let {renderGameObjectArray, gameObjectMap, disposedIndexArray} as data =
                 MeshRendererTool.getMeshRendererData(copiedState);
               let data = {...data, index: 0};
@@ -210,7 +210,7 @@ let _ =
         }
       );
       describe(
-        "deepCopyStateForRestore",
+        "deepCopyForRestore",
         () => {
           describe(
             "deep copy transform data",
@@ -229,8 +229,8 @@ let _ =
                     transform3
                   ) =
                     _prepareTransformMatrixData(state);
-                  let _ = Transform.getTransformPosition(transform2, state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let _ = TransformAPI.getTransformPosition(transform2, state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let data = TransformTool.getTransformData(copiedState);
                   data.localToWorldMatrixMap
                   |> Obj.magic
@@ -263,13 +263,13 @@ let _ =
                     transform3
                   ) =
                     _prepareTransformMatrixData(state);
-                  let _ = Transform.getTransformPosition(transform2, state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let (copiedState, transform4) = Transform.createTransform(copiedState);
+                  let _ = TransformAPI.getTransformPosition(transform2, state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let (copiedState, transform4) = TransformAPI.createTransform(copiedState);
                   let _ =
                     copiedState
-                    |> Transform.setTransformParent(Js.Nullable.return(transform4), transform2);
-                  state |> Transform.getTransformChildren(transform1) |> expect == [|transform2|]
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform4), transform2);
+                  state |> TransformAPI.unsafeGetTransformChildren(transform1) |> expect == [|transform2|]
                 }
               );
               test(
@@ -287,8 +287,8 @@ let _ =
                   ) =
                     _prepareTransformMatrixData(state);
                   let _ = TransformTool.getNormalMatrixTypeArray(transform2, state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let (copiedState, transform4) = Transform.createTransform(copiedState);
+                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let (copiedState, transform4) = TransformAPI.createTransform(copiedState);
                   TransformTool.getTransformData(copiedState).normalMatrixCacheMap
                   |> expect == WonderCommonlib.SparseMapSystem.createEmpty()
                 }
@@ -312,7 +312,7 @@ let _ =
                     geometry3
                   ) =
                     _prepareGeometryData(state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let data = GeometryTool.getGeometryData(copiedState);
                   data.verticesMap
                   |> Obj.magic
@@ -359,7 +359,7 @@ let _ =
                         material3
                       ) =
                         _prepareBasicMaterialData(state);
-                      let copiedState = StateTool.deepCopyStateForRestore(state);
+                      let copiedState = StateTool.deepCopyForRestore(state);
                       let data = BasicMaterialTool.getMaterialData(copiedState);
                       data.colorMap
                       |> Obj.magic
@@ -389,7 +389,7 @@ let _ =
                         material3
                       ) =
                         _prepareLightMaterialData(state);
-                      let copiedState = StateTool.deepCopyStateForRestore(state);
+                      let copiedState = StateTool.deepCopyForRestore(state);
                       let data = LightMaterialTool.getMaterialData(copiedState);
                       data.diffuseColorMap
                       |> Obj.magic
@@ -423,7 +423,7 @@ let _ =
                 let (state, gameObject1, light1) = createGameObjectFunc(state^);
                 let (data1, data2) = getTargetDataFunc();
                 let state = state |> setDataFunc(light1, data1);
-                let copiedState = StateTool.deepCopyStateForRestore(state);
+                let copiedState = StateTool.deepCopyForRestore(state);
                 let copiedState = copiedState |> setDataFunc(light1, data2);
                 getDataFunc(light1, state) |> expect == data1
               };
@@ -649,7 +649,7 @@ let _ =
                        originObjectInstanceArray
                      )
                   |> ignore;
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let {objectInstanceArrayMap, matrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceData(copiedState);
                   let objectInstanceArray =
@@ -833,7 +833,7 @@ let _ =
                     perspectiveCameraProjection3
                   ) =
                     _preparePerspectiveCameraProjectionData(state);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let {pMatrixMap} as record = copiedState.perspectiveCameraProjectionRecord;
                   let record = {...record, index: 0};
                   Js.Typed_array.Float32Array.unsafe_set(
@@ -916,7 +916,7 @@ let _ =
                   let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
                     _prepare(state);
                   let currentState =
-                    StateTool.restore(currentState, state |> StateTool.deepCopyStateForRestore);
+                    StateTool.restore(currentState, state |> StateTool.deepCopyForRestore);
                   let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
                   MeshRendererTool.getMeshRendererData(state).renderGameObjectArray
                   |> expect == [|gameObject1, gameObject2|]
@@ -928,7 +928,7 @@ let _ =
             "restore transform data to target state",
             () =>
               test(
-                "add current state->transformData->localToWorldMatrixMap, localPositionMap typeArr to pool",
+                "add current state->transformRecord->localToWorldMatrixMap, localPositionMap typeArr to pool",
                 () => {
                   open TypeArrayPoolType;
                   let (state, _, _, _, _, _, _) = _prepareTransformMatrixData(state);
@@ -936,10 +936,10 @@ let _ =
                     GameObjectTool.createGameObject(StateTool.createNewCompleteState(sandbox));
                   let pos4 = ((-1.), 4., 5.);
                   let currentState =
-                    Transform.setTransformLocalPosition(transform4, pos4, currentState);
+                    TransformAPI.setTransformLocalPosition(transform4, pos4, currentState);
                   let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap} =
-                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                    StateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(16),
                     float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(3)
@@ -975,7 +975,7 @@ let _ =
                   let currentState = GeometryTool.initGeometry(geometry4, currentState);
                   let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                    StateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(
@@ -1084,8 +1084,8 @@ let _ =
                   let typeArr = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
                   let _ = StateTool.restore(currentState, state);
-                  let {float32ArrayPoolMap}: typeArrayPoolData =
-                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                  let {float32ArrayPoolMap}: typeArrayPoolRecord =
+                    StateTool.getState().typeArrayPoolRecord;
                   float32ArrayPoolMap
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(typeArr |> Float32Array.length)
                   |> expect == [|typeArr|]

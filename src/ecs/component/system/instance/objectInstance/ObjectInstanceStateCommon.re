@@ -2,7 +2,7 @@ open ObjectInstanceType;
 
 let getObjectInstanceData = (state: StateDataType.state) => state.objectInstanceData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {index, sourceInstanceMap, disposedIndexArray, gameObjectMap} =
     state |> getObjectInstanceData;
   {

@@ -2,7 +2,7 @@ open StateDataType;
 
 open GeometryGetStateDataCommon;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {
     index,
     verticesMap,
@@ -40,7 +40,7 @@ let restore = (currentState, {float32ArrayPoolMap, uint16ArrayPoolMap} as shared
   let {verticesMap, normalsMap, indicesMap} = getGeometryData(currentState);
   let (float32ArrayPoolMap, uint16ArrayPoolMap) =
     GeometryTypeArrayPoolCommon.addAllTypeArrayToPool(
-      MemoryConfigSystem.getMaxTypeArrayPoolSize(targetState),
+      ConfigMemoryService.getMaxTypeArrayPoolSize(targetState.memoryConfig),
       (verticesMap, normalsMap, indicesMap),
       (float32ArrayPoolMap, uint16ArrayPoolMap)
     );

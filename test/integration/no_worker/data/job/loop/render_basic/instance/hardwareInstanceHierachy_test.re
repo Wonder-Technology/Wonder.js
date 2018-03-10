@@ -20,17 +20,17 @@ let _ =
       test(
         "test hierachy transform",
         () => {
-          open Transform;
+          open TransformAPI;
           let (state, gameObject1, (_, _, _, _, objectInstanceGameObject1)) =
            RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state^);
           let (state, gameObject2, (_, _, _, _, objectInstanceGameObject2)) =
             RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
-          let sourceTransform1 = GameObject.getGameObjectTransformComponent(gameObject1, state);
-          let sourceTransform2 = GameObject.getGameObjectTransformComponent(gameObject2, state);
+          let sourceTransform1 = GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject1, state);
+          let sourceTransform2 = GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject2, state);
           let objectInstanceTransform1 =
-            GameObject.getGameObjectTransformComponent(objectInstanceGameObject1, state);
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(objectInstanceGameObject1, state);
           let objectInstanceTransform2 =
-            GameObject.getGameObjectTransformComponent(objectInstanceGameObject2, state);
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(objectInstanceGameObject2, state);
           let state =
             state |> setTransformParent(Js.Nullable.return(sourceTransform1), sourceTransform2);
           let state =

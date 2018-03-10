@@ -42,7 +42,7 @@ let getGameObject = LightMaterialGameObjectCommon.getGameObject;
 
 let getMaterialData = LightMaterialStateCommon.getMaterialData;
 
-let deepCopyStateForRestore = LightMaterialStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = LightMaterialStateCommon.deepCopyForRestore;
 
 let restore = LightMaterialStateCommon.restore;
 

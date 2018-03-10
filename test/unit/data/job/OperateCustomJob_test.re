@@ -99,7 +99,7 @@ let _ =
                                          "customJob1",
                                          "start_time",
                                          (state) => {
-                                           customData |> ArraySystem.push(1) |> ignore;
+                                           customData |> ArrayService.push(1) |> ignore;
                                            state
                                          }
                                        )
@@ -107,7 +107,7 @@ let _ =
                                          "customJob2",
                                          "customJob1",
                                          (state) => {
-                                           customData |> ArraySystem.push(2) |> ignore;
+                                           customData |> ArrayService.push(2) |> ignore;
                                            state
                                          }
                                        );
@@ -127,7 +127,7 @@ let _ =
                                      "customJob1",
                                      "",
                                      (state) => {
-                                       customData |> ArraySystem.push(1) |> ignore;
+                                       customData |> ArrayService.push(1) |> ignore;
                                        state
                                      }
                                    )
@@ -135,7 +135,7 @@ let _ =
                                      "customJob2",
                                      "start_time",
                                      (state) => {
-                                       customData |> ArraySystem.push(2) |> ignore;
+                                       customData |> ArrayService.push(2) |> ignore;
                                        state
                                      }
                                    );
@@ -160,7 +160,7 @@ let _ =
                                  "customJob",
                                  "start_time",
                                  (state) => {
-                                   customData |> ArraySystem.push(1) |> ignore;
+                                   customData |> ArrayService.push(1) |> ignore;
                                    state
                                  }
                                )
@@ -212,7 +212,7 @@ let _ =
                                      "customJob",
                                      "tick",
                                      (elapsed, state) => {
-                                       customData |> ArraySystem.push(elapsed) |> ignore;
+                                       customData |> ArrayService.push(elapsed) |> ignore;
                                        state
                                      }
                                    );
@@ -238,7 +238,7 @@ let _ =
                              "customJob",
                              "tick",
                              (elapsed, state) => {
-                               customData |> ArraySystem.push(elapsed) |> ignore;
+                               customData |> ArrayService.push(elapsed) |> ignore;
                                state
                              }
                            )

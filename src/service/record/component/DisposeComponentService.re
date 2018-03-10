@@ -1,3 +1,6 @@
+let isAlive = (component, disposedIndexArray: array(int)) =>
+  ! Js.Array.includes(component, disposedIndexArray);
+
 let checkComponentShouldAlive = (component, isAliveFunc, record) =>
   WonderLog.(
     Contract.(
@@ -13,3 +16,6 @@ let checkComponentShouldAliveWithBatchDispose = (componentArr, isAliveFunc, reco
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs] ((component) => checkComponentShouldAlive(component, isAliveFunc, record))
      );
+
+let disposeSparseMapData = (component: int, map) =>
+  map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(component) |> Obj.magic;

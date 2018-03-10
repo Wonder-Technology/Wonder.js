@@ -48,12 +48,12 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataType.st
     StateData.stateData.isDebug
   );
   VMatrixService.getWorldToCameraMatrix(
-    TransformSystem.getLocalToWorldMatrixTypeArray(
-      GameObjectAdmin.unsafeGetTransformComponent(
+    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+      GetComponentGameObjectService.unsafeGetTransformComponent(
         unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
-        state
+        state.gameObjectRecord
       ),
-      state
+      state.transformRecord
     )
   )
 };

@@ -4,7 +4,7 @@ open LightMaterialType;
 
 let getMaterialData = (state: StateDataType.state) => state.lightMaterialData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {
     index,
     diffuseColorMap,

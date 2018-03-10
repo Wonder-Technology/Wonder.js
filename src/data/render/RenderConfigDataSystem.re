@@ -60,7 +60,7 @@ let _getMaterialShaderLibDataArrByGroup =
 let _getMaterialShaderLibDataArrByStaticBranchInstance =
     ((gameObject, state), (shaderLibs, value), resultDataArr) =>
   resultDataArr
-  |> ArraySystem.push(
+  |> ArrayService.push(
        _findFirstShaderData(
          if (InstanceUtils.isSourceInstance(gameObject, state)) {
            if (InstanceUtils.isSupportInstance(state)) {
@@ -153,7 +153,7 @@ let getMaterialShaderLibDataArr =
        (
          (resultDataArr, {type_, name}: shaderLibItem) =>
            switch type_ {
-           | None => resultDataArr |> ArraySystem.push(_findFirstShaderData(name, shaderLibs))
+           | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
            | Some(type_) =>
              _getMaterialShaderLibDataArrByType(
                (type_, groups, name, gameObject, state),

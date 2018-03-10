@@ -30,7 +30,7 @@ let addUniformSendDataByType =
   shaderSendNoCachableDataArr,
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr
-  |> ArraySystem.push(
+  |> ArrayService.push(
        {program, shaderCacheMap, locationMap, sendCachableFunctionDataFunc: sendDataFunc}: uniformShaderSendCachableFunctionData
      ),
   instanceSendNoCachableDataArr

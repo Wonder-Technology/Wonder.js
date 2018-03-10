@@ -268,16 +268,16 @@ let _ =
                       let (state, gameObject, sourceInstance, objectInstanceGameObject) =
                         _prepare(sandbox, state^);
                       let sourceTransform =
-                        state |> GameObject.getGameObjectTransformComponent(gameObject);
+                        state |> GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject);
                       let objectTransform =
                         state
-                        |> GameObject.getGameObjectTransformComponent(objectInstanceGameObject);
+                        |> GameObjectAPI.unsafeGetGameObjectTransformComponent(objectInstanceGameObject);
                       let pos1 = (1., 2., 3.);
                       let pos2 = (2., 4., 5.);
                       let state =
                         state
-                        |> Transform.setTransformLocalPosition(sourceTransform, pos1)
-                        |> Transform.setTransformLocalPosition(objectInstanceGameObject, pos2);
+                        |> TransformAPI.setTransformLocalPosition(sourceTransform, pos1)
+                        |> TransformAPI.setTransformLocalPosition(objectInstanceGameObject, pos2);
                       let array_buffer = 1;
                       let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -297,12 +297,12 @@ let _ =
                            (
                              (offset, index) => {
                                let transform = transformArr[index];
-                               TypeArrayUtils.fillFloat32ArrayWithOffset(
+                               TypeArrayService.fillFloat32ArrayWithOffset(
                                  data,
                                  TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
                                  offset
                                );
-                               TypeArrayUtils.fillFloat32ArrayWithOffset(
+                               TypeArrayService.fillFloat32ArrayWithOffset(
                                  data,
                                  TransformTool.getNormalMatrixTypeArray(transform, state),
                                  offset + 16
@@ -318,7 +318,7 @@ let _ =
                            [@bs]
                            (
                              (offset, index) => {
-                               TypeArrayUtils.fillFloat32ArrayWithOffset(
+                               TypeArrayService.fillFloat32ArrayWithOffset(
                                  data,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
@@ -340,7 +340,7 @@ let _ =
                                  |]),
                                  offset
                                );
-                               TypeArrayUtils.fillFloat32ArrayWithOffset(
+                               TypeArrayService.fillFloat32ArrayWithOffset(
                                  data,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,

@@ -1,31 +1,34 @@
+open StateDataType;
+
 open GameObjectType;
 
-let _createGameObjectArr = (countRangeArr, state) =>
+let _createGameObjectArr = (countRangeArr, gameObjectRecord) =>
   countRangeArr
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (
-         ((state, clonedGameObjectArr), _) => {
-           let (state, gameObject) = GameObjectCreateCommon.create(state);
-           (state, clonedGameObjectArr |> ArraySystem.push(gameObject))
+         ((gameObjectRecord, clonedGameObjectArr), _) => {
+           let (gameObjectRecord, gameObject) =
+             CreateGameObjectGameObjectService.create(gameObjectRecord);
+           (gameObjectRecord, clonedGameObjectArr |> ArrayService.push(gameObject))
          }
        ),
-       (state, [||])
+       (gameObjectRecord, [||])
      );
 
-let _setParent = (clonedParentTransformArr, clonedTransformArr, state) =>
+let _setParent = (clonedParentTransformArr, clonedTransformArr, transformRecord) =>
   clonedParentTransformArr
   |> WonderCommonlib.ArraySystem.reduceOneParami(
        [@bs]
        (
-         (transformData, clonedParentTransform, i) =>
-           transformData
-           |> TransformSystem.setParentNotMarkDirty(
+         (transformRecord, clonedParentTransform, i) =>
+           transformRecord
+           |> HierachyTransformService.setParentNotMarkDirty(
                 Some(clonedParentTransform),
                 clonedTransformArr[i]
               )
        ),
-       TransformSystem.getTransformData(state)
+       transformRecord
      );
 
 let rec _clone =
@@ -34,17 +37,20 @@ let rec _clone =
           isShareMaterial,
           state: StateDataType.state
         ) => {
-  let (state, clonedGameObjectArr) = _createGameObjectArr(countRangeArr, state);
-  let totalClonedGameObjectArr = totalClonedGameObjectArr |> ArraySystem.push(clonedGameObjectArr);
+  /* TODO add gameObjectRecord to state */
+  let (gameObjectRecord, clonedGameObjectArr) =
+    _createGameObjectArr(countRangeArr, state.gameObjectRecord);
+  let totalClonedGameObjectArr =
+    totalClonedGameObjectArr |> ArrayService.push(clonedGameObjectArr);
   let (state, clonedTransformArr) =
     GameObjectCloneComponentCommon.cloneComponent(
       (uid, transform, countRangeArr, clonedGameObjectArr),
       isShareMaterial,
       state
     );
-  state
+  state.transformRecord
   |> _setParent(clonedParentTransformArr, clonedTransformArr)
-  |> TransformSystem.unsafeGetChildren(transform)
+  |> HierachyTransformService.unsafeGetChildren(transform)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -52,7 +58,8 @@ let rec _clone =
            state
            |> _clone(
                 (
-                  state |> TransformSystem.getGameObject(childTransform) |> Js.Option.getExn,
+                  state.transformRecord
+                  |> GameObjectTransformService.unsafeGetGameObject(childTransform),
                   childTransform,
                   countRangeArr,
                   clonedTransformArr,
@@ -99,7 +106,8 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.s
     _clone(
       (
         uid,
-        [@bs] GameObjectGetComponentCommon.getTransformComponent(uid, state) |> Js.Option.getExn,
+        [@bs] GetComponentGameObjectService.getTransformComponent(uid, state.gameObjectRecord)
+        |> Js.Option.getExn,
         ArraySystem.range(0, count - 1),
         [||],
         totalClonedGameObjectArr

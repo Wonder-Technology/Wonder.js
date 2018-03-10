@@ -44,7 +44,7 @@ open TimeControllerType;
 
 open Js.Typed_array;
 
-open MemoryConfigType;
+open MemoryType;
 
 open CanvasConfigType;
 
@@ -193,7 +193,7 @@ and state = {
   initConfig,
   deviceManagerData,
   gameObjectRecord,
-  transformData,
+  transformRecord,
   sceneRecord,
   basicCameraViewRecord,
   perspectiveCameraProjectionRecord,
@@ -212,8 +212,8 @@ and state = {
   renderData,
   timeControllerData,
   vboBufferData,
-  globalTempData,
-  typeArrayPoolData,
+  globalTempRecord,
+  typeArrayPoolRecord,
   workerInstanceData,
   workerDetectData
 };

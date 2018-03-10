@@ -1,6 +1,6 @@
 let createGameObject = (state) => {
   open LightMaterial;
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   let (state, material) = createLightMaterial(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectLightMaterialComponent(gameObject, material);

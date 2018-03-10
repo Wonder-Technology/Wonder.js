@@ -16,6 +16,6 @@ let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) =
 let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) =>
   VboBufferPoolCommon.addInstanceBufferToPool(sourceInstanceIndex, state);
 
-let deepCopyStateForRestore = VboBufferStateUtils.deepCopyStateForRestore;
+let deepCopyForRestore = VboBufferStateUtils.deepCopyForRestore;
 
 let restore = VboBufferStateUtils.restore;

@@ -1,8 +1,10 @@
+open StateDataType;
+
 open TransformType;
 
 open Js.Typed_array;
 
-let getTransformData = (state: StateDataType.state) => state.transformData;
+let getTransformData = (state: StateDataType.state) => state.transformRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
 
@@ -34,16 +36,21 @@ let isTransform = (transform: transform) => {
 };
 
 let getLocalToWorldMatrixTypeArray = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
+  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, state.transformRecord);
 
 let getNormalMatrixTypeArray = (transform, state: StateDataType.state) => {
-  let (normalMatrix, _) = TransformSystem.getNormalMatrixTypeArray(transform, state);
+  let (normalMatrix, _) =
+    UpdateTransformService.updateAndGetNormalMatrixTypeArray(
+      transform,
+      state.globalTempRecord,
+      state.transformRecord
+    );
   normalMatrix
 };
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();
-  let state = GameObject.disposeGameObjectTransformComponent(0, transform, state);
+  let state = GameObjectAPI.disposeGameObjectTransformComponent(0, transform, state);
   TestTool.openContractCheck();
   state
 };
@@ -53,10 +60,19 @@ let isDisposed = (transform, state) => {
   ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform))
 };
 
-let getTransformLocalPositionTypeArray = TransformSystem.getLocalPositionTypeArray;
+let getTransformLocalPositionTypeArray = (transform, state) =>
+  ModelMatrixTransformService.getLocalPositionTypeArray(
+    transform,
+    state.transformRecord.localPositionMap
+  );
 
 /* let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray; */
-let getTransformPositionTypeArray = TransformSystem.getPositionTypeArray;
+let getTransformPositionTypeArray = (transform, state) =>
+  UpdateTransformService.updateAndGetPositionTypeArray(
+    transform,
+    state.globalTempRecord,
+    state.transformRecord
+  );
 
 /* let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray; */
 let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);

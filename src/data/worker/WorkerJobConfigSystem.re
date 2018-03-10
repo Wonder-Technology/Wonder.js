@@ -49,7 +49,7 @@ let _buildStreamArr =
        (
          (streamArr, {name: subJobName}: mainInitPipelineSubJob) =>
            streamArr
-           |> ArraySystem.push(
+           |> ArrayService.push(
                 switch (
                   JobConfigSystem.findFirst(
                     pipelineJobs,
@@ -131,7 +131,7 @@ let getMainInitJobStream = (jobHandleMap, stateData, state: StateDataType.state,
           (streamArr, {name: jobName}) => {
             let {flags} = _getExecutableJob(jobs, subJobName);
             let handleFunc = WorkerJobHandleSystem.getJobHandle(jobName, jobHandleMap);
-            streamArr |> ArraySystem.push(handleFunc(flags, stateData))
+            streamArr |> ArrayService.push(handleFunc(flags, stateData))
           }
         ),
         [||]
@@ -170,7 +170,7 @@ let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), 
            (streamArr, {name: jobName}) => {
              let {flags} = _getExecutableWorkerJob(jobs, jobName);
              let handleFunc = getJobHandleFunc(jobName, jobHandleMap);
-             streamArr |> ArraySystem.push(handleFunc(flags))
+             streamArr |> ArrayService.push(handleFunc(flags))
            }
          ),
          [||]
@@ -193,7 +193,7 @@ jobHandleMap, stateData, getJobHandleFunc) => {
        (
          (streamArr, jobs) =>
            streamArr
-           |> ArraySystem.push(
+           |> ArrayService.push(
                 _buildWorkerStreamFuncArr(
                   (jobHandleMap, jobs, stateData, workerJobs),
                   getJobHandleFunc

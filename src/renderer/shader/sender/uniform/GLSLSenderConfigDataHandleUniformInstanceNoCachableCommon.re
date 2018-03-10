@@ -31,7 +31,7 @@ let addUniformSendDataByType =
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
   instanceSendNoCachableDataArr
-  |> ArraySystem.push({pos, sendDataFunc, getDataFunc}: uniformInstanceSendNoCachableData)
+  |> ArrayService.push({pos, sendDataFunc, getDataFunc}: uniformInstanceSendNoCachableData)
 );
 
 let setToUniformSendMap =

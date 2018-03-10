@@ -4,7 +4,7 @@ open AmbientLightType;
 
 let getLightData = (state: StateDataType.state) => state.ambientLightData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {index, buffer, colors, gameObjectMap} = state |> getLightData;
   let copiedBuffer = CopyStateUtils.copyArrayBuffer(buffer);
   {

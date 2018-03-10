@@ -10,7 +10,7 @@ let updateCameraProjection = (index: int, {pMatrixMap} as record) =>
     getFar(index, record)
   ) {
   | (Some(fovy), Some(aspect), Some(near), Some(far)) =>
-    Matrix4System.buildPerspective(
+    Matrix4Service.buildPerspective(
       (fovy, aspect, near, far),
       PMatrixService.unsafeGetPMatrix(index, pMatrixMap)
     )

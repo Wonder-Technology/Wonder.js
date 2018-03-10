@@ -4,8 +4,6 @@ open GameObjectAdmin;
 
 open ComponentType;
 
-let createGameObject = (state: StateDataType.state) => create(state);
-
 let _checkGameObjectShouldAlive = (gameObject: gameObject, state: StateDataType.state) =>
   WonderLog.(
     Contract.(
@@ -15,40 +13,6 @@ let _checkGameObjectShouldAlive = (gameObject: gameObject, state: StateDataType.
       )
     )
   );
-
-let addGameObjectTransformComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  addTransformComponent(gameObject, component, state)
-};
-
-let disposeGameObjectTransformComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  disposeTransformComponent(gameObject, component, state)
-};
-
-let getGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  Js.Option.getExn(getTransformComponent(gameObject, state))
-};
-
-let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  hasTransformComponent(gameObject, state)
-};
 
 let addGameObjectBasicMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {

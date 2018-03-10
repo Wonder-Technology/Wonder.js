@@ -439,7 +439,7 @@ let _ =
                 sandbox,
                 "u_vMatrix",
                 (gameObjectTransform, cameraTransform, _, state) =>
-                  state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
+                  state |> TransformAPI.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
                 Js.Typed_array.Float32Array.make([|
                   1.,
                   0.,
@@ -479,7 +479,7 @@ let _ =
                 sandbox,
                 "u_cameraPos",
                 (_, _, (cameraTransform, _), state) =>
-                  state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
+                  state |> TransformAPI.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
                 [10., 2., 3.],
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
@@ -506,7 +506,7 @@ let _ =
                            _prepare(sandbox, state^);
                          let state =
                            state
-                           |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.));
+                           |> TransformAPI.setTransformLocalPosition(cameraTransform, (10., 2., 3.));
                          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                          let pos = 0;
                          let getUniformLocation =
@@ -697,8 +697,8 @@ let _ =
                                   let position = (1., 2., 3.);
                                   let state =
                                     state
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject,
                                            state
                                          ),
@@ -737,29 +737,29 @@ let _ =
                                     _prepareFour(sandbox, state^);
                                   let state =
                                     state
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject1,
                                            state
                                          ),
                                          (1., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject2,
                                            state
                                          ),
                                          (2., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject3,
                                            state
                                          ),
                                          (3., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject4,
                                            state
                                          ),
@@ -847,7 +847,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(intensity)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(intensity)
                                      )
                                 }
                               )
@@ -937,29 +937,29 @@ let _ =
                                     _prepareFour(sandbox, state^);
                                   let state =
                                     state
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject1,
                                            state
                                          ),
                                          (1., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject2,
                                            state
                                          ),
                                          (2., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject3,
                                            state
                                          ),
                                          (3., 2., 3.)
                                        )
-                                    |> Transform.setTransformPosition(
-                                         GameObject.getGameObjectTransformComponent(
+                                    |> TransformAPI.setTransformPosition(
+                                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
                                            lightGameObject4,
                                            state
                                          ),
@@ -1040,7 +1040,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(intensity)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(intensity)
                                      )
                                 }
                               )
@@ -1065,7 +1065,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(constant)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(constant)
                                      )
                                 }
                               )
@@ -1090,7 +1090,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(linear)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(linear)
                                      )
                                 }
                               )
@@ -1115,7 +1115,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(quadratic)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(quadratic)
                                      )
                                 }
                               )
@@ -1139,7 +1139,7 @@ let _ =
                                   uniform1f
                                   |> expect
                                   |> toCalledWith(
-                                       [|posArr[0] |> Obj.magic|] |> ArraySystem.push(range)
+                                       [|posArr[0] |> Obj.magic|] |> ArrayService.push(range)
                                      )
                                 }
                               )
@@ -1205,7 +1205,7 @@ let _ =
             sandbox,
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
-              state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
+              state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
             Js.Typed_array.Float32Array.make([|
               1.,
               0.,
@@ -1231,7 +1231,7 @@ let _ =
             sandbox,
             "u_normalMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
-              state |> Transform.setTransformLocalPosition(gameObjectTransform, (10., 2., 3.)),
+              state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (10., 2., 3.)),
             Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ~testFunc=
@@ -1249,7 +1249,7 @@ let _ =
                       FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                     let state =
                       state
-                      |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                      |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
                     let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
                     let pos = 0;
                     let getUniformLocation =
@@ -1286,7 +1286,7 @@ let _ =
                           );
                         let state =
                           state
-                          |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                          |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
                         let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =

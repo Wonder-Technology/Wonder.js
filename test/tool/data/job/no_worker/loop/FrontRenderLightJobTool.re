@@ -1,5 +1,5 @@
 let prepareGameObject = (sandbox, state) => {
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   open LightMaterial;
   open BoxGeometry;
   open MeshRenderer;
@@ -17,7 +17,7 @@ let prepareGameObject = (sandbox, state) => {
 };
 
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   open LightMaterial;
   open BoxGeometry;
   open MeshRenderer;

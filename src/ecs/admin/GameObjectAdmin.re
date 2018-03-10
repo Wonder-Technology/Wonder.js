@@ -33,18 +33,6 @@ let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceC
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
 
-let hasTransformComponent = GameObjectHasComponentCommon.hasTransformComponent;
-
-let getTransformComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getTransformComponent(uid, state);
-
-let unsafeGetTransformComponent = GameObjectGetComponentCommon.unsafeGetTransformComponent;
-
-let addTransformComponent = GameObjectAddComponentCommon.addTransformComponent;
-
-let disposeTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeTransformComponent(uid, component, state);
-
 let hasGeometryComponent = GameObjectHasComponentCommon.hasGeometryComponent;
 
 let getGeometryComponent = (uid: int, state: StateDataType.state) =>
@@ -127,12 +115,6 @@ let addPointLightComponent = GameObjectAddComponentCommon.addPointLightComponent
 let disposePointLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposePointLightComponent(uid, component, state);
 
-let create = (state: StateDataType.state) => {
-  let (state, uid) = GameObjectCreateCommon.create(state);
-  let (state, transform) = TransformSystem.create(state);
-  (addTransformComponent(uid, transform, state), uid)
-};
-
 let rec batchDispose = GameObjectDisposeCommon.batchDispose;
 
 let dispose = GameObjectDisposeCommon.dispose;
@@ -174,5 +156,4 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     };
   state
 };
-
-/* let deepCopyStateForRestore = GameObjectStateCommon.deepCopyStateForRestore; */
+/* let deepCopyForRestore = GameObjectStateCommon.deepCopyForRestore; */

@@ -1,5 +1,5 @@
 let createSourceInstanceGameObject = (state: StateDataType.state) => {
-  let (state, gameObject) = GameObject.createGameObject(state);
+  let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   /* let (state, _) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state); */
   let (state, _) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);

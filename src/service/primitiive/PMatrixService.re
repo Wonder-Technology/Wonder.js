@@ -18,6 +18,6 @@ let unsafeGetPMatrix = (index, pMatrixMap) =>
 let setDefaultPMatrix = (index, pMatrixMap) =>
   WonderCommonlib.SparseMapSystem.set(
     index,
-    Matrix4System.createIdentityMatrix4(),
+    Matrix4Service.createIdentityMatrix4(),
     pMatrixMap
   );

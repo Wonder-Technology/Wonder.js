@@ -20,7 +20,7 @@ let unsafeGetGameObject = DirectionLightGameObjectCommon.unsafeGetGameObject;
 
 let getLightData = DirectionLightStateCommon.getLightData;
 
-let deepCopyStateForRestore = DirectionLightStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = DirectionLightStateCommon.deepCopyForRestore;
 
 let restore = DirectionLightStateCommon.restore;
 

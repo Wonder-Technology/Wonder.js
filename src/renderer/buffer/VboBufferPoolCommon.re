@@ -46,7 +46,7 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
 
 let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   switch (_getBufferFromBufferMap(geometryIndex, bufferMap)) {
-  | Some(buffer) => pool |> ArraySystem.push(buffer)
+  | Some(buffer) => pool |> ArrayService.push(buffer)
   | None => pool
   };
 

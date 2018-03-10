@@ -156,7 +156,7 @@ let setViewportOfGl = (gl, newViewportData, state: StateDataType.state) =>
     state
   );
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   open DeviceManagerType;
   let {colorWrite, clearColor, side, viewport} = state |> _getDeviceManagerData;
   {...state, deviceManagerData: {gl: None, colorWrite, clearColor, side, viewport}}

@@ -48,7 +48,7 @@ let setUniformLocationMap = (shaderIndex: int, uniformLocationMap, state: StateD
 
 let createLocationMap = () => WonderCommonlib.HashMapSystem.createEmpty();
 
-let deepCopyStateForRestore = (state: StateDataType.state) =>
+let deepCopyForRestore = (state: StateDataType.state) =>
   /* let {attributeLocationMap, uniformLocationMap} = state |> _getGLSLLocationData;
      {
        ...state,

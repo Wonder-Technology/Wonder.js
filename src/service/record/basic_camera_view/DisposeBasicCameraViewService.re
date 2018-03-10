@@ -5,7 +5,7 @@ let isAlive = (cameraView, {disposedIndexArray}) =>
 
 let _disposeRecord = (cameraView, {gameObjectMap} as record) => {
   ...record,
-  gameObjectMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraView, gameObjectMap)
+  gameObjectMap: DisposeComponentService.disposeSparseMapData(cameraView, gameObjectMap)
 };
 
 let handleDisposeComponent = (cameraView, {disposedIndexArray} as record) => {

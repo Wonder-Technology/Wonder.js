@@ -1,11 +1,21 @@
+open StateDataType;
+
 let _fillMatrixTypeArr =
   [@bs]
   (
     (uid, matricesArrayForInstance, (state, offset)) => {
-      let transform = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
-      TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
+      let transform =
+        GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord);
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (matricesArrayForInstance, offset),
-        (TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state), 0),
+        (
+          UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
+            transform,
+            state.globalTempRecord,
+            state.transformRecord
+          ),
+          0
+        ),
         16
       )
       |> ignore;

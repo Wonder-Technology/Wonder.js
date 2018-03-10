@@ -4,7 +4,7 @@ open DirectionLightType;
 
 let getLightData = (state: StateDataType.state) => state.directionLightData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   open DirectionLightHelper;
   let {index, buffer, colors, intensities, gameObjectMap} = state |> getLightData;
   let copiedBuffer = CopyStateUtils.copyArrayBuffer(buffer);

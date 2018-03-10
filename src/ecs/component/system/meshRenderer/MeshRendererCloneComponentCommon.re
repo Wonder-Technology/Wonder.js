@@ -7,7 +7,7 @@ let handleCloneComponent = (countRangeArr: array(int), state: StateDataType.stat
        (
          ((state, componentArr), _) => {
            let (state, index) = MeshRendererCreateCommon.create(state);
-           (state, componentArr |> ArraySystem.push(index))
+           (state, componentArr |> ArrayService.push(index))
          }
        ),
        (state, [||])

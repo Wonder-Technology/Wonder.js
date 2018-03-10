@@ -5,7 +5,7 @@ open Most;
 open SettingType;
 
 let _collectAllRecords = (stream) =>
-  stream |> reduce((arr, record) => arr |> ArraySystem.push(record), [||]);
+  stream |> reduce((arr, record) => arr |> ArrayService.push(record), [||]);
 
 let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(

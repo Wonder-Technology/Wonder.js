@@ -17,14 +17,15 @@ let getObjectInstanceArray = (sourceInstance, state: StateDataType.state) =>
 let _addObjectInstnace = (sourceInstance, uid: int, objectInstanceArrayMap) => {
   objectInstanceArrayMap
   |> SourceInstanceObjectInstanceArrayCommon.unsafeGetObjectInstanceArray(sourceInstance)
-  |> ArraySystem.push(uid)
+  |> ArrayService.push(uid)
   |> ignore;
   objectInstanceArrayMap
 };
 
 /* TODO init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, state: StateDataType.state) => {
-  let (state, uid) = GameObjectCreateCommon.create(state);
+  /* TODO add gameObjectRecord to state */
+  let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(state.gameObjectRecord);
   let {objectInstanceArrayMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
   let state = {
     ...state,
@@ -33,12 +34,18 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
       objectInstanceArrayMap: objectInstanceArrayMap |> _addObjectInstnace(sourceInstance, uid)
     }
   };
-  let (state, transform) = TransformSystem.create(state);
+  /* TODO add record to state */
+  /* let (typeArrayPoolRecord, transformRecord, transform) =
+     CreateTransformService.create(state.typeArrayPoolRecord, state.transformRecord); */
+  let (state, transform) = CreateTransformService.create(state);
   let (state, objectInstance) = ObjectInstanceSystem.create(sourceInstance, uid, state);
+  /* let (transformRecord, gameObjectRecord) =
+     (transformRecord, state.gameObjectRecord)
+     |> AddGameObjectComponentService.addTransformComponent(uid, transform); */
+  let state = state |> AddGameObjectComponentService.addTransformComponent(uid, transform);
+  /* let state = {...state, transformRecord, gameObjectRecord}; */
   let state =
-    state
-    |> GameObjectAddComponentCommon.addTransformComponent(uid, transform)
-    |> GameObjectAddComponentCommon.addObjectInstanceComponent(uid, objectInstance);
+    state |> GameObjectAddComponentCommon.addObjectInstanceComponent(uid, objectInstance);
   (state, uid)
 };
 
@@ -52,6 +59,6 @@ let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic
 
 let isTransformStatic = SourceInstanceStaticCommon.isTransformStatic;
 
-let deepCopyStateForRestore = SourceInstanceStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = SourceInstanceStateCommon.deepCopyForRestore;
 
 let restore = SourceInstanceStateCommon.restore;

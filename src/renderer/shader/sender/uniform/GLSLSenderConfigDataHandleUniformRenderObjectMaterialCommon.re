@@ -27,7 +27,7 @@ let addUniformSendDataByType =
     ) => (
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr
-  |> ArraySystem.push(
+  |> ArrayService.push(
        {
          shaderCacheMap,
          name,

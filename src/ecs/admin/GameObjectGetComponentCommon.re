@@ -42,21 +42,7 @@ let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _unsafeGetComponent(uid);
 
 let getBasicCameraViewComponent =
-  [@bs]
-  (
-    (uid: int, gameObjectRecord) =>
-      gameObjectRecord.basicCameraViewMap |> getComponent(uid)
-  );
-
-let getTransformComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).transformMap |> getComponent(uid)
-  );
-
-let unsafeGetTransformComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).transformMap |> _unsafeGetComponent(uid);
+  [@bs] ((uid: int, gameObjectRecord) => gameObjectRecord.basicCameraViewMap |> getComponent(uid));
 
 let getGeometryComponent =
   [@bs]
@@ -140,9 +126,6 @@ let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataTy
        ),
        [||]
      );
-
-let batchGetTransformComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).transformMap, state);
 
 let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(

@@ -7,23 +7,23 @@ let addTypeArrayToPool =
       transform: transform,
       maxSize,
       (localToWorldMatrixMap: array(Float32Array.t), localPositionMap: array(Float32Array.t)),
-      state: StateDataType.state
+      typeArrayPoolRecord
     ) => {
   [@bs]
-  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+  TypeArrayPoolService.addFloat32TypeArrayToPool(
     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
     maxSize,
-    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
-  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+  TypeArrayPoolService.addFloat32TypeArrayToPool(
     localPositionMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
     maxSize,
-    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
-  state
+  typeArrayPoolRecord
 };
 
 let addAllTypeArrayToPool =
@@ -34,5 +34,5 @@ let addAllTypeArrayToPool =
       float32ArrayPoolMap
     ) =>
   float32ArrayPoolMap
-  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(localToWorldMatrixMap, maxSize)
-  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(localPositionMap, maxSize);
+  |> TypeArrayPoolService.addAllFloat32TypeArrayToPool(localToWorldMatrixMap, maxSize)
+  |> TypeArrayPoolService.addAllFloat32TypeArrayToPool(localPositionMap, maxSize);

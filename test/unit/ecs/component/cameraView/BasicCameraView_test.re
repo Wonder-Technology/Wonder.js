@@ -53,7 +53,7 @@ let _ =
             () => {
               open GameObjectAPI;
               let (state, cameraView) = createBasicCameraView(state^);
-              let (state, gameObject) = state |> GameObject.createGameObject;
+              let (state, gameObject) = state |> GameObjectAPI.createGameObject;
               let state = state |> addGameObjectBasicCameraViewComponent(gameObject, cameraView);
               state |> unsafeGetGameObjectBasicCameraView(cameraView) |> expect == gameObject
             }

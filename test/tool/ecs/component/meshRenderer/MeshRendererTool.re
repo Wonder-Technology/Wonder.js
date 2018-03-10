@@ -9,7 +9,7 @@ let isMeshRenderer = (meshRenderer) => {
 
 let createGameObject = (state) => {
   open MeshRenderer;
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   let (state, meshRenderer) = createMeshRenderer(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);

@@ -65,12 +65,12 @@ let _ =
             let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
             let (state, gameObject2, transform2, (basicCameraView2, perspectiveCameraProjection2)) =
               CameraTool.createCameraGameObject(state);
-            let state = state |> Transform.setTransformLocalPosition(transform2, (1., 2., 3.));
+            let state = state |> TransformAPI.setTransformLocalPosition(transform2, (1., 2., 3.));
             let (state, gameObject3, transform3, (basicCameraView3, perspectiveCameraProjection3)) =
               CameraTool.createCameraGameObject(state);
             let state =
               state
-              |> Transform.setTransformLocalPosition(transform3, (10., 11., 12.))
+              |> TransformAPI.setTransformLocalPosition(transform3, (10., 11., 12.))
               |> PerspectiveCameraProjectionAPI.setPerspectiveCameraNear(
                    perspectiveCameraProjection3,
                    11.

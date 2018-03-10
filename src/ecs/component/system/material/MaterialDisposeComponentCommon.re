@@ -6,7 +6,7 @@ let isAlive = (material, disposedIndexArray) =>
   ComponentDisposeComponentCommon.isAlive(material, disposedIndexArray);
 
 let addDisposeIndex = (material, disposedIndexArray) =>
-  disposedIndexArray |> ArraySystem.push(material);
+  disposedIndexArray |> ArrayService.push(material);
 
 let disposeData = (material, (shaderIndexMap, groupCountMap, gameObjectMap)) => (
   disposeSparseMapData(material, shaderIndexMap),

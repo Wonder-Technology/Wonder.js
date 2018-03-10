@@ -1,10 +1,10 @@
-open Transform;
+open TransformAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "Transform",
+    "TransformAPI",
     () => {
       open Expect;
       open! Expect.Operators;
@@ -68,7 +68,7 @@ let _ =
                  let _buildState = (index) =>
                    StateDataType.{
                      ...state^,
-                     transformData: Some({...Js.Option.getExn(state^.transformData), index})
+                     transformRecord: Some({...Js.Option.getExn(state^.transformRecord), index})
                    };
                  beforeEach(
                    () =>
@@ -118,13 +118,13 @@ let _ =
              )
          ); */
       describe(
-        "getTransformParent",
+        "unsafeGetTransformParent",
         () =>
           test(
-            "default value should be Js.Nullable.undefined",
+            "default value should be Js.Undefined.empty",
             () => {
               let (state, transform) = createTransform(state^);
-              getTransformParent(transform, state) |> expect == Js.Nullable.undefined
+              unsafeGetTransformParent(transform, state) |> expect == Js.Undefined.empty
             }
           )
       );
@@ -202,7 +202,7 @@ let _ =
                     "test remove its current parent",
                     () => {
                       let (state, _, child, _) = exec();
-                      state |> getTransformParent(child) |> expect == Js.Nullable.undefined
+                      state |> unsafeGetTransformParent(child) |> expect == Js.Undefined.empty
                     }
                   );
                   test(
@@ -260,7 +260,7 @@ let _ =
                     setTransformLocalPosition(parent, pos, state)
                     |> setTransformParent(Js.Nullable.return(parent), child);
                   let state = state |> setTransformParent(Js.Nullable.return(parent), child);
-                  state |> getTransformParent(child) |> expect == Js.Nullable.return(parent)
+                  state |> unsafeGetTransformParent(child) |> expect == Js.Undefined.return(parent)
                 }
               );
               test(
@@ -277,7 +277,7 @@ let _ =
                   let state =
                     setTransformLocalPosition(parent2, pos2, state)
                     |> setTransformParent(Js.Nullable.return(parent2), child);
-                  state |> getTransformParent(child) |> expect == Js.Nullable.return(parent2)
+                  state |> unsafeGetTransformParent(child) |> expect == Js.Undefined.return(parent2)
                 }
               );
               test(
@@ -293,7 +293,7 @@ let _ =
                     |> setTransformParent(Js.Nullable.return(parent), child2)
                     |> setTransformParent(Js.Nullable.return(parent), child3);
                   let state = state |> setTransformParent(Js.Nullable.return(child3), child1);
-                  state |> getTransformChildren(parent) |> expect == [|3, 2|]
+                  state |> unsafeGetTransformChildren(parent) |> expect == [|3, 2|]
                 }
               )
             }
@@ -310,8 +310,8 @@ let _ =
                   let (state, gameObject4, transform4) = GameObjectTool.createGameObject(state);
                   let state =
                     state
-                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform3)
-                    |> Transform.setTransformParent(Js.Nullable.return(transform2), transform4);
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform3)
+                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform2), transform4);
                   let pos1 = (1., 2., 3.);
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
@@ -319,15 +319,15 @@ let _ =
                   let data = TransformTool.getTransformData(state);
                   let state =
                     state
-                    |> Transform.setTransformLocalPosition(transform1, pos1)
-                    |> Transform.setTransformLocalPosition(transform2, pos2)
-                    |> Transform.setTransformLocalPosition(transform3, pos3)
-                    |> Transform.setTransformLocalPosition(transform4, pos4);
+                    |> TransformAPI.setTransformLocalPosition(transform1, pos1)
+                    |> TransformAPI.setTransformLocalPosition(transform2, pos2)
+                    |> TransformAPI.setTransformLocalPosition(transform3, pos3)
+                    |> TransformAPI.setTransformLocalPosition(transform4, pos4);
                   (
-                    state |> Transform.getTransformPosition(transform1),
-                    state |> Transform.getTransformPosition(transform2),
-                    state |> Transform.getTransformPosition(transform3),
-                    state |> Transform.getTransformPosition(transform4)
+                    state |> TransformAPI.getTransformPosition(transform1),
+                    state |> TransformAPI.getTransformPosition(transform2),
+                    state |> TransformAPI.getTransformPosition(transform3),
+                    state |> TransformAPI.getTransformPosition(transform4)
                   )
                   |>
                   expect == (
@@ -357,12 +357,12 @@ let _ =
                 |> setTransformParent(Js.Nullable.return(parent), child2)
                 |> setTransformParent(Js.Nullable.return(parent), child3);
               let state = state |> setTransformParentKeepOrder(Js.Nullable.return(child3), child1);
-              state |> getTransformChildren(parent) |> expect == [|2, 3|]
+              state |> unsafeGetTransformChildren(parent) |> expect == [|2, 3|]
             }
           )
       );
       describe(
-        "getTransformChildren",
+        "unsafeGetTransformChildren",
         () =>
           test(
             "get parent's all children",
@@ -372,7 +372,7 @@ let _ =
               let (state, child2) = createTransform(state);
               let state = setTransformParent(Js.Nullable.return(parent), child1, state);
               let state = setTransformParent(Js.Nullable.return(parent), child2, state);
-              state |> getTransformChildren(parent) |> expect == [|child1, child2|]
+              state |> unsafeGetTransformChildren(parent) |> expect == [|child1, child2|]
             }
           )
       );
@@ -619,27 +619,28 @@ let _ =
                  let len1 =
                    state
                    |> TransformTool.getTransformData
-                   |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                   |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  let state = state |> TransformTool.update;
                  let len2 =
                    state
                    |> TransformTool.getTransformData
-                   |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                   |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  (len1, len2) |> expect == (1, 0)
                }
              )
            }
          ); */
       describe(
-        "getTransformGameObject",
+        "unsafeGetTransformGameObject",
         () =>
           test(
             "get transform's gameObject",
             () => {
               open GameObject;
+              open GameObjectAPI;
               let (state, gameObject) = createGameObject(state^);
-              let transform = state |> getGameObjectTransformComponent(gameObject);
-              state |> getTransformGameObject(transform) |> expect == gameObject
+              let transform = state |> unsafeGetGameObjectTransformComponent(gameObject);
+              state |> unsafeGetTransformGameObject(transform) |> expect == gameObject
             }
           )
       );
@@ -652,7 +653,7 @@ let _ =
                  test(
                    "cache data after first get",
                    () => {
-                     open GameObject;
+                     open GameObject; open GameObjectAPI;
                      let (state, transform1) = createTransform(state^);
                      let pos1 = (1., 2., 3.);
                      let state = state |> setTransformLocalPosition(transform1, pos1);
@@ -665,7 +666,7 @@ let _ =
                    "test cache invalid",
                    () => {
                      let _prepare = (state) => {
-                       open GameObject;
+                       open GameObject; open GameObjectAPI;
                        let (state, transform1) = createTransform(state^);
                        let pos1 = (1., 2., 3.);
                        let state = state |> setTransformLocalPosition(transform1, pos1);
@@ -769,7 +770,7 @@ let _ =
                   let state =
                     state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                   let state = state |> dispose(transform2);
-                  state |> getTransformChildren(transform1) |> expect == [||]
+                  state |> unsafeGetTransformChildren(transform1) |> expect == [||]
                 }
               );
               describe(
@@ -826,7 +827,7 @@ let _ =
                 () => {
                   let (state, transform1, transform2) = _prepare();
                   let state = state |> dispose(transform1);
-                  state |> getTransformParent(transform2) |> expect == Js.Nullable.undefined
+                  state |> unsafeGetTransformParent(transform2) |> expect == Js.Undefined.empty
                 }
               );
               test(
@@ -866,7 +867,7 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                    |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject1, transform1);
                   let {
                     localToWorldMatrixMap,
                     localPositionMap,
@@ -919,7 +920,7 @@ let _ =
                 }
               );
               test(
-                "else, increase transformData.index",
+                "else, increase transformRecord.index",
                 () => {
                   let (state, transform1, transform2) = _prepare();
                   let (state, transform3) = createTransform(state);
@@ -963,12 +964,15 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                    |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject1, transform1);
                   expect(
                     () => {
                       let state =
                         state
-                        |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                        |> GameObjectAPI.disposeGameObjectTransformComponent(
+                             gameObject1,
+                             transform1
+                           );
                       ()
                     }
                   )
@@ -1001,11 +1005,17 @@ let _ =
                 "getTransformLocalPosition should error",
                 () => _testGetFunc(getTransformLocalPosition)
               );
-              test("getTransformParent should error", () => _testGetFunc(getTransformParent));
-              test("getTransformChildren should error", () => _testGetFunc(getTransformChildren));
               test(
-                "getTransformGameObject should error",
-                () => _testGetFunc(getTransformGameObject)
+                "unsafeGetTransformParent should error",
+                () => _testGetFunc(unsafeGetTransformParent)
+              );
+              test(
+                "unsafeGetTransformChildren should error",
+                () => _testGetFunc(unsafeGetTransformChildren)
+              );
+              test(
+                "unsafeGetTransformGameObject should error",
+                () => _testGetFunc(unsafeGetTransformGameObject)
               );
               test("setTransformPosition should error", () => _testSetFunc(setTransformPosition));
               test(
@@ -1023,6 +1033,7 @@ let _ =
             "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
             () => {
               open GameObject;
+              open GameObjectAPI;
               let (state, transform1) = createTransform(state^);
               let (state, transform2) = createTransform(state);
               TransformTool.getLocalToWorldMatrixTypeArray(transform2, state)

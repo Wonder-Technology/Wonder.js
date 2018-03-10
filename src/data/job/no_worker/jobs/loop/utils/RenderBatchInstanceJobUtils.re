@@ -33,7 +33,7 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
                         gl,
                         pos,
                         [@bs]
-                        getDataFunc(GameObjectAdmin.unsafeGetTransformComponent(uid, state), state)
+                        getDataFunc(GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord), state)
                       );
                       state
                     }

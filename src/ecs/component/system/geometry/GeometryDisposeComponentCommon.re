@@ -25,7 +25,7 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     VboBufferDisposeSystem.disposeGeometryBufferData(geometry, state)
     |> GeometryTypeArrayPoolCommon.addTypeArrayToPool(
          geometry,
-         MemoryConfigSystem.getMaxTypeArrayPoolSize(state),
+         ConfigMemoryService.getMaxTypeArrayPoolSize(state.memoryConfig),
          (verticesMap, normalsMap, indicesMap)
        );
   {
@@ -62,7 +62,10 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
     let state = VboBufferSystem.addGeometryBufferToPool(geometry, state) |> _disposeData(geometry);
     {
       ...state,
-      geometryData: {...data, disposedIndexArray: disposedIndexArray |> ArraySystem.push(geometry)}
+      geometryData: {
+        ...data,
+        disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry)
+      }
     }
   | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
   }
@@ -71,7 +74,11 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (geometryArray: array(geometry), isGameObjectDisposedMap: array(bool), state: StateDataType.state) => {
+    (
+      geometryArray: array(geometry),
+      isGameObjectDisposedMap: array(bool),
+      state: StateDataType.state
+    ) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(
@@ -102,7 +109,7 @@ let handleBatchDisposeComponent =
                    ...state,
                    geometryData: {
                      ...getGeometryData(state),
-                     disposedIndexArray: disposedIndexArray |> ArraySystem.push(geometry)
+                     disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry)
                    }
                  }
                | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)

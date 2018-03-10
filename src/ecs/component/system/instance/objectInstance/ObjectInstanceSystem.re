@@ -26,4 +26,4 @@ let create = (sourceInstance, uid, state: StateDataType.state) => {
   )
 };
 
-let deepCopyStateForRestore = ObjectInstanceStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = ObjectInstanceStateCommon.deepCopyForRestore;

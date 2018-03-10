@@ -4,6 +4,14 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
+
+let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTransformComponent;
+
+let disposeGameObjectTransformComponent = GameObjectAPI.disposeGameObjectTransformComponent;
+
+let addGameObjectTransformComponent = GameObjectAPI.addGameObjectTransformComponent;
+
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent;
@@ -19,6 +27,8 @@ let unsafeGetGameObjectBasicCameraViewComponent = GameObjectAPI.unsafeGetGameObj
 let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectBasicCameraViewComponent;
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
+
+let createGameObject = GameObjectAPI.createGameObject;
 
 let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
 
@@ -46,6 +56,26 @@ let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
+let setTransformPosition = TransformAPI.setTransformPosition;
+
+let getTransformPosition = TransformAPI.getTransformPosition;
+
+let setTransformLocalPosition = TransformAPI.setTransformLocalPosition;
+
+let getTransformLocalPosition = TransformAPI.getTransformLocalPosition;
+
+let unsafeGetTransformChildren = TransformAPI.unsafeGetTransformChildren;
+
+let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
+
+let setTransformParent = TransformAPI.setTransformParent;
+
+let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
+
+let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
+
+let createTransform = TransformAPI.createTransform;
+
 let load = LoaderManager.load;
 
 let loopBody = Director.loopBody;
@@ -62,7 +92,7 @@ let getStateData = State.getStateData;
 
 let restoreState = State.restoreState;
 
-let deepCopyStateForRestore = State.deepCopyStateForRestore;
+let deepCopyForRestore = State.deepCopyForRestore;
 
 let getFps = TimeController.getFps;
 
@@ -155,16 +185,6 @@ let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialC
 let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
 
 let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
-
-let hasGameObjectTransformComponent = GameObject.hasGameObjectTransformComponent;
-
-let getGameObjectTransformComponent = GameObject.getGameObjectTransformComponent;
-
-let disposeGameObjectTransformComponent = GameObject.disposeGameObjectTransformComponent;
-
-let addGameObjectTransformComponent = GameObject.addGameObjectTransformComponent;
-
-let createGameObject = GameObject.createGameObject;
 
 let setBoxGeometryConfigData = BoxGeometry.setBoxGeometryConfigData;
 
@@ -274,31 +294,19 @@ let getMeshRendererGameObject = MeshRenderer.getMeshRendererGameObject;
 
 let createMeshRenderer = MeshRenderer.createMeshRenderer;
 
-let setTransformPosition = Transform.setTransformPosition;
-
-let getTransformPosition = Transform.getTransformPosition;
-
-let setTransformLocalPosition = Transform.setTransformLocalPosition;
-
-let getTransformLocalPosition = Transform.getTransformLocalPosition;
-
-let getTransformChildren = Transform.getTransformChildren;
-
-let setTransformParentKeepOrder = Transform.setTransformParentKeepOrder;
-
-let setTransformParent = Transform.setTransformParent;
-
-let getTransformParent = Transform.getTransformParent;
-
-let getTransformGameObject = Transform.getTransformGameObject;
-
-let createTransform = Transform.createTransform;
-
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+
+let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
+
+let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTransformComponent;
+
+let disposeGameObjectTransformComponent = GameObjectAPI.disposeGameObjectTransformComponent;
+
+let addGameObjectTransformComponent = GameObjectAPI.addGameObjectTransformComponent;
 
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 
@@ -315,6 +323,8 @@ let unsafeGetGameObjectBasicCameraViewComponent = GameObjectAPI.unsafeGetGameObj
 let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectBasicCameraViewComponent;
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
+
+let createGameObject = GameObjectAPI.createGameObject;
 
 let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
 
@@ -342,6 +352,26 @@ let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
+let setTransformPosition = TransformAPI.setTransformPosition;
+
+let getTransformPosition = TransformAPI.getTransformPosition;
+
+let setTransformLocalPosition = TransformAPI.setTransformLocalPosition;
+
+let getTransformLocalPosition = TransformAPI.getTransformLocalPosition;
+
+let unsafeGetTransformChildren = TransformAPI.unsafeGetTransformChildren;
+
+let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
+
+let setTransformParent = TransformAPI.setTransformParent;
+
+let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
+
+let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
+
+let createTransform = TransformAPI.createTransform;
+
 let load = LoaderManager.load;
 
 let loopBody = Director.loopBody;
@@ -358,7 +388,7 @@ let getStateData = State.getStateData;
 
 let restoreState = State.restoreState;
 
-let deepCopyStateForRestore = State.deepCopyStateForRestore;
+let deepCopyForRestore = State.deepCopyForRestore;
 
 let getFps = TimeController.getFps;
 
@@ -451,13 +481,3 @@ let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialC
 let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
 
 let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
-
-let hasGameObjectTransformComponent = GameObject.hasGameObjectTransformComponent;
-
-let getGameObjectTransformComponent = GameObject.getGameObjectTransformComponent;
-
-let disposeGameObjectTransformComponent = GameObject.disposeGameObjectTransformComponent;
-
-let addGameObjectTransformComponent = GameObject.addGameObjectTransformComponent;
-
-let createGameObject = GameObject.createGameObject;

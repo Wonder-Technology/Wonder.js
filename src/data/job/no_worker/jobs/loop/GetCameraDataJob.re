@@ -4,13 +4,23 @@ open RenderDataType;
 
 let _getCameraData =
     (
-      {basicCameraViewRecord, perspectiveCameraProjectionRecord, sceneRecord, gameObjectRecord} as state
+      {
+        basicCameraViewRecord,
+        perspectiveCameraProjectionRecord,
+        sceneRecord,
+        transformRecord,
+        globalTempRecord,
+        gameObjectRecord
+      } as state
     ) =>
   switch (CameraSceneService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
   | None => None
   | Some(currentCameraGameObject) =>
     let transform =
-      GetComponentUtils.getTransformFromBasicCameraView(currentCameraGameObject, state);
+      GetComponentGameObjectService.unsafeGetTransformComponent(
+        currentCameraGameObject,
+        gameObjectRecord
+      );
     /* RenderDataSystem.isFirstRender(state) ?
        Some({
          vMatrix:
@@ -32,7 +42,7 @@ let _getCameraData =
     Some({
       vMatrix:
         VMatrixService.getWorldToCameraMatrix(
-          TransformSystem.getLocalToWorldMatrixTypeArray(transform, state)
+          ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, transformRecord)
         ),
       pMatrix:
         PMatrixService.unsafeGetPMatrix(
@@ -42,7 +52,12 @@ let _getCameraData =
           ),
           perspectiveCameraProjectionRecord.pMatrixMap
         ),
-      position: TransformSystem.getPositionTuple(transform, state)
+      position:
+        UpdateTransformService.updateAndGetPositionTuple(
+          transform,
+          globalTempRecord,
+          transformRecord
+        )
     })
   };
 

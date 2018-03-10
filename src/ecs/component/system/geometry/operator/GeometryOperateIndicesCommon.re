@@ -2,7 +2,7 @@ open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
 
-open TypeArrayUtils;
+open TypeArrayService;
 
 open GeometryType;
 
@@ -29,9 +29,9 @@ let setIndicesWithArray = (index: int, data: array(int), state: StateDataType.st
         setPointsWithArray(
           (index, getIndices(index, state), data, indicesMap),
           (
-            TypeArrayPoolSystem.getUint16TypeArrayFromPool,
-            TypeArrayUtils.fillUint16Array,
-            TypeArrayUtils.makeUint16Array
+            TypeArrayPoolService.getUint16TypeArrayFromPool,
+            TypeArrayService.fillUint16Array,
+            TypeArrayService.makeUint16Array
           ),
           state
         )

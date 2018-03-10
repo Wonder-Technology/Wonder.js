@@ -25,7 +25,7 @@ var LightTool = (function () {
 
 
 
-            // var transform = wd.getGameObjectTransformComponent(obj, state);
+            // var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
             // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
@@ -91,7 +91,7 @@ var LightTool = (function () {
 
 
 
-            var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
             state = wd.setTransformLocalPosition(transform, directionLightPos, state);
 
@@ -104,7 +104,7 @@ var LightTool = (function () {
 
 
 
-            var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
             state = wd.setTransformLocalPosition(transform, pointLightPos, state);
 

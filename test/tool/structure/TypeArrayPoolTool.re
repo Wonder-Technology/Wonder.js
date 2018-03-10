@@ -1,11 +1,9 @@
-let getTypeArrayPoolData = TypeArrayPoolSystem.getTypeArrayPoolData;
+let addFloat32TypeArrayToPool = TypeArrayPoolService.addFloat32TypeArrayToPool;
 
-let addFloat32TypeArrayToPool = TypeArrayPoolSystem.addFloat32TypeArrayToPool;
+let addUint16TypeArrayToPool = TypeArrayPoolService.addUint16TypeArrayToPool;
 
-let addUint16TypeArrayToPool = TypeArrayPoolSystem.addUint16TypeArrayToPool;
+let getFloat32TypeArrayFromPool = TypeArrayPoolService.getFloat32TypeArrayFromPool;
 
-let getFloat32TypeArrayFromPool = TypeArrayPoolSystem.getFloat32TypeArrayFromPool;
+let getUint16TypeArrayFromPool = TypeArrayPoolService.getUint16TypeArrayFromPool;
 
-let getUint16TypeArrayFromPool = TypeArrayPoolSystem.getUint16TypeArrayFromPool;
-
-let getTypeArrayFromPool = TypeArrayPoolSystem._getTypeArrayFromPool;
+let getTypeArrayFromPool = TypeArrayPoolService._getTypeArrayFromPool;

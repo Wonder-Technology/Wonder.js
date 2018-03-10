@@ -55,7 +55,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
   state
 };
 
-let deepCopyStateForRestore = GLSLSenderStateUtils.deepCopyStateForRestore;
+let deepCopyForRestore = GLSLSenderStateUtils.deepCopyForRestore;
 
 let restore = GLSLSenderStateUtils.restore;
 

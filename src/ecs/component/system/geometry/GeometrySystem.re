@@ -2,7 +2,7 @@ open ComponentSystem;
 
 open Js.Typed_array;
 
-open TypeArrayUtils;
+open TypeArrayService;
 
 open GeometryGetStateDataCommon;
 
@@ -111,6 +111,6 @@ let getGameObject = (geometry: geometry, state: StateDataType.state) =>
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.isAlive(geometry, state);
 
-let deepCopyStateForRestore = GeometryStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = GeometryStateCommon.deepCopyForRestore;
 
 let restore = GeometryStateCommon.restore;

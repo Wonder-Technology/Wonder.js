@@ -34,7 +34,7 @@ let _ =
             test(
               {j|if $type_ already exist, fill new data in it|j},
               () => {
-                open GameObject;
+                open GameObject; open GameObjectAPI;
                 let (state, geometry) = createBoxGeometry(state^);
                 let state = state |> setFunc(geometry, [|1., 2., 3.|]);
                 let newData = [|3., 3., 5.|];
@@ -46,7 +46,7 @@ let _ =
             test(
               {j|directly set it|j},
               () => {
-                open GameObject;
+                open GameObject; open GameObjectAPI;
                 let (state, geometry) = createBoxGeometry(state^);
                 let state = state |> setFunc(geometry, Float32Array.make([|1., 2., 3.|]));
                 let newData = Float32Array.make([|3., 5., 5.|]);
@@ -88,7 +88,7 @@ let _ =
               test(
                 "if indices already exist, fill new data in it",
                 () => {
-                  open GameObject;
+                  open GameObject; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
                   let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
                   let newData = [|3, 3, 5|];
@@ -103,7 +103,7 @@ let _ =
               test(
                 "directly set it",
                 () => {
-                  open GameObject;
+                  open GameObject; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
                   let newData = Uint16Array.make([|3, 5, 5|]);
                   let state = state |> setGeometryIndices(geometry, newData);
@@ -131,7 +131,7 @@ let _ =
           test(
             "get geometry's gameObject",
             () => {
-              open GameObject;
+              open GameObject; open GameObjectAPI;
               let (state, geometry) = createBoxGeometry(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
@@ -185,10 +185,10 @@ let _ =
                 "reset group count",
                 () => {
                   let (state, geometry1) = createBoxGeometry(state^);
-                  let (state, gameObject1) = GameObject.createGameObject(state);
+                  let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
                     state |> GameObject.addGameObjectGeometryComponent(gameObject1, geometry1);
-                  let (state, gameObject2) = GameObject.createGameObject(state);
+                  let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
                     state |> GameObject.addGameObjectGeometryComponent(gameObject2, geometry1);
                   let state =
@@ -217,7 +217,7 @@ let _ =
                   open TypeArrayPoolType;
                   let (state, gameObject1, geometry1) = _prepare(state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                    StateTool.getState() |> TypeArrayPoolTool.getTypeArrayPoolData;
+                    StateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(
@@ -452,7 +452,7 @@ let _ =
                 "if geometry is disposed",
                 () => {
                   let _testGetFunc = (getFunc) => {
-                    open GameObject;
+                    open GameObject; open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> GeometryTool.initGeometrys;
                     let state =
@@ -463,7 +463,7 @@ let _ =
                     |> toThrowMessage("expect component alive, but actual not")
                   };
                   let _testSetFunc = (setFunc) => {
-                    open GameObject;
+                    open GameObject; open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> GeometryTool.initGeometrys;
                     let state =

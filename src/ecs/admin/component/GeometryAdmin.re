@@ -12,6 +12,6 @@ let getIndexTypeSize = GeometrySystem.getIndexTypeSize;
 
 let getIndicesCount = GeometrySystem.getIndicesCount;
 
-let deepCopyStateForRestore = GeometrySystem.deepCopyStateForRestore;
+let deepCopyForRestore = GeometrySystem.deepCopyForRestore;
 
 let restore = GeometrySystem.restore;

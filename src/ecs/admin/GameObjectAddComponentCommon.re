@@ -57,13 +57,6 @@ let addObjectInstanceComponent = (uid: int, component: component, state: StateDa
     state
   );
 
-let addTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
-  _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).transformMap),
-    TransformAddComponentCommon.handleAddComponent,
-    state
-  );
-
 let addMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
     (uid, component, GameObjectStateCommon.getGameObjectData(state).meshRendererMap),
@@ -221,14 +214,6 @@ let _batchAddSharableComponent =
        state
      )
 };
-
-let batchAddTransformComponentForClone =
-    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).transformMap),
-    TransformAddComponentCommon.handleAddComponent,
-    state
-  );
 
 let batchAddMeshRendererComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>

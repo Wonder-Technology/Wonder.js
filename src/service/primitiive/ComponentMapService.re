@@ -60,3 +60,6 @@ let batchGetComponent = (uidArray: array(int), componentMap) =>
        ),
        [||]
      );
+
+let batchDisposeComponent = (uidMap, componentRecord, handleFunc, componentArray) =>
+  [@bs] handleFunc(componentArray, uidMap, componentRecord);

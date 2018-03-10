@@ -1,6 +1,6 @@
 let createGameObject = (state: StateDataType.state) => {
-  let (state, gameObject) = GameObject.createGameObject(state);
-  (state, gameObject, GameObject.getGameObjectTransformComponent(gameObject, state))
+  let (state, gameObject) = GameObjectAPI.createGameObject(state);
+  (state, gameObject, GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state))
 };
 
 let getGameObjectData = (state: StateDataType.state) => state.gameObjectRecord;

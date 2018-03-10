@@ -1,5 +1,5 @@
 let createGameObject = (state) => {
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   open PointLight;
   let (state, light) = createPointLight(state);
   let (state, gameObject) = state |> createGameObject;

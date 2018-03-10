@@ -28,7 +28,7 @@ let addUniformSendDataByType =
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr,
   shaderSendNoCachableDataArr
-  |> ArraySystem.push(
+  |> ArrayService.push(
        {
          pos,
          sendDataFunc: GLSLSenderUniformUtils.getSendNoCachableDataByType(type_),

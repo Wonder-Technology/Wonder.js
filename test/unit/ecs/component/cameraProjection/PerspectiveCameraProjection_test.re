@@ -63,7 +63,7 @@ let _ =
             () => {
               open GameObjectAPI;
               let (state, cameraProjection) = createPerspectiveCameraProjection(state^);
-              let (state, gameObject) = state |> GameObject.createGameObject;
+              let (state, gameObject) = state |> GameObjectAPI.createGameObject;
               let state =
                 state
                 |> addGameObjectPerspectiveCameraProjectionComponent(gameObject, cameraProjection);

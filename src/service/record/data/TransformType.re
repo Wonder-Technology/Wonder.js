@@ -10,7 +10,7 @@ type transformChildMap = array(array(transform));
 
 type transformDirtyMap = array(bool);
 
-type transformData = {
+type transformRecord = {
   mutable index: int,
   parentMap: transformParentMap,
   childMap: transformChildMap,
@@ -21,3 +21,5 @@ type transformData = {
   mutable normalMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
   disposedIndexArray: array(transform)
 };
+
+external transformToJsUndefine : transform => Js.undefined(transform) = "%identity";

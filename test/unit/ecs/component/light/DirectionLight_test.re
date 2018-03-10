@@ -79,7 +79,7 @@ let _ =
           test(
             "get light's gameObject",
             () => {
-              open GameObject;
+              open GameObject; open GameObjectAPI;
               let (state, light) = createDirectionLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectDirectionLightComponent(gameObject, light);
@@ -266,7 +266,7 @@ let _ =
             "if light is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject;
+                open GameObject; open GameObjectAPI;
                 let (state, light) = createDirectionLight(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectDirectionLightComponent(gameObject, light);

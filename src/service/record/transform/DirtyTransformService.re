@@ -1,22 +1,13 @@
 open TransformType;
 
-let mark = (transform: transform, isDirty, {dirtyMap} as data) => {
+let mark = (transform: transform, isDirty, {dirtyMap} as record) => {
   dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) |> ignore;
-  data
-  /* ...data,
+  record
+  /* ...record,
      dirtyMap: dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) */
 };
 
-let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) =>
-  data
-  |> mark(transform, true)
-  |> TransformHierachyCommon.unsafeGetChildren(transform)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
-       [@bs] ((data, child) => markHierachyDirty(child, data)),
-       data
-     );
-
-let isDirty = (transform: transform, {dirtyMap} as data) =>
+let isDirty = (transform: transform, {dirtyMap} as record) =>
   dirtyMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
   |> WonderLog.Contract.ensureCheck(

@@ -48,7 +48,7 @@ let renderTestData = {
                         var camera = data[1];
 
 
-                        var transform = wd.getGameObjectTransformComponent(camera, state);
+                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
                         var state = wd.setTransformLocalPosition(transform, [0, 10, 30], state);
 
@@ -133,7 +133,7 @@ let renderTestData = {
                            var camera = data[1];
 
 
-                           var transform = wd.getGameObjectTransformComponent(camera, state);
+                           var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
                            var state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);
 

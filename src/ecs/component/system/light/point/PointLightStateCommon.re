@@ -4,7 +4,7 @@ open PointLightType;
 
 let getLightData = (state: StateDataType.state) => state.pointLightData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   open PointLightHelper;
   let {index, buffer, colors, intensities, constants, linears, quadratics, ranges, gameObjectMap} =
     state |> getLightData;

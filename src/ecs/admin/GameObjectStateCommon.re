@@ -3,7 +3,7 @@ open GameObjectType;
 
 let getGameObjectData = (state: StateDataType.state) => state.gameObjectRecord;
 /* 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   let {
     uid,
     disposeCount,

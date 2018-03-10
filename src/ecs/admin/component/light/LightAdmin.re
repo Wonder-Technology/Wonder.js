@@ -1,5 +1,8 @@
-let getPosition = (gameObject, state) =>
-  state
-  |> TransformSystem.getPositionTuple(
-       GameObjectGetComponentCommon.unsafeGetTransformComponent(gameObject, state)
-     );
+open StateDataType;
+
+let getPosition = (gameObject, {gameObjectRecord, globalTempRecord, transformRecord}) =>
+  UpdateTransformService.updateAndGetPositionTuple(
+    GetComponentGameObjectService.unsafeGetTransformComponent(gameObject, gameObjectRecord),
+    globalTempRecord,
+    transformRecord
+  );

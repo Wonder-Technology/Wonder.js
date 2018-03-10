@@ -140,7 +140,7 @@ let _ =
                 "test init shader",
                 () => {
                   let _prepareBasicMaterialGameObject = (sandbox, state) => {
-                    open GameObject;
+                    open GameObject; open GameObjectAPI;
                     open BasicMaterial;
                     open BoxGeometry;
                     open Sinon;
@@ -154,7 +154,7 @@ let _ =
                     (state, gameObject)
                   };
                   let _prepareInstanceGameObject = (sandbox, state) => {
-                    open GameObject;
+                    open GameObject; open GameObjectAPI;
                     open BasicMaterial;
                     open BoxGeometry;
                     open Sinon;
@@ -192,7 +192,7 @@ let _ =
                       let state =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let state = state |> InitRenderJobTool.exec;
-                      let copiedState = StateTool.deepCopyStateForRestore(state);
+                      let copiedState = StateTool.deepCopyForRestore(state);
                       let currentState =
                         StateTool.createNewCompleteStateWithRenderConfigData(sandbox);
                       let (currentState, gameObject) =
@@ -214,7 +214,7 @@ let _ =
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> InitRenderJobTool.exec;
-                          let copiedState = StateTool.deepCopyStateForRestore(state);
+                          let copiedState = StateTool.deepCopyForRestore(state);
                           let currentState =
                             StateTool.createNewCompleteStateWithRenderConfigData(sandbox);
                           let (currentState, gameObject) =
@@ -237,7 +237,7 @@ let _ =
                               let state =
                                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                               let state = state |> InitRenderJobTool.exec;
-                              let copiedState = StateTool.deepCopyStateForRestore(state);
+                              let copiedState = StateTool.deepCopyForRestore(state);
                               let currentState = state;
                               let (currentState, gameObject) =
                                 _prepareBasicMaterialGameObject(sandbox, currentState);

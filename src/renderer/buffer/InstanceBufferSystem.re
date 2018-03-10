@@ -69,7 +69,9 @@ let getOrCreateMatrixFloat32Array =
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) => typeArr
   | None =>
-    switch ([@bs] TypeArrayPoolSystem.getFloat32TypeArrayFromPool(capacity, state)) {
+    switch (
+      [@bs] TypeArrayPoolService.getFloat32TypeArrayFromPool(capacity, state.typeArrayPoolRecord)
+    ) {
     | Some(typeArr) => typeArr
     | None =>
       let typeArr = _createMatrixFloat32Array(capacity);

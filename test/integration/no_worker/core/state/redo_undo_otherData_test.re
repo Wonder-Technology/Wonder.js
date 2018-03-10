@@ -4,7 +4,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "test redo,undo other data",
+    "test redo,undo other record",
     () => {
       open Expect;
       open Expect.Operators;
@@ -13,7 +13,7 @@ let _ =
       let state = ref(StateTool.createState());
       let _prepareDeviceManagerData = (state) => {
         open DeviceManagerType;
-        let data = DeviceManagerTool.getDeviceManagerData(state);
+        let record = DeviceManagerTool.getDeviceManagerData(state);
         let gl = Obj.magic(RandomTool.getRandomFloat(10.));
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
@@ -30,7 +30,7 @@ let _ =
         let float32ArrayPoolMap = [|[|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|]|];
         let uint16ArrayPoolMap = [|[|Uint16Array.make([|RandomTool.getRandomInt(3)|])|]|];
         (
-          {...state, typeArrayPoolData: {float32ArrayPoolMap, uint16ArrayPoolMap}},
+          {...state, typeArrayPoolRecord: {float32ArrayPoolMap, uint16ArrayPoolMap}},
           (float32ArrayPoolMap, uint16ArrayPoolMap)
         )
       };
@@ -62,8 +62,7 @@ let _ =
         vertexBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap1);
         normalBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap2);
         elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
-        matrixInstanceBufferMap
-        |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap4);
+        matrixInstanceBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap4);
         (
           state,
           geometry1,
@@ -79,29 +78,29 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "deepCopyStateForRestore",
+        "deepCopyForRestore",
         () => {
           describe(
-            "deep copy deviceManager data",
+            "deep copy deviceManager record",
             () => {
               test(
                 "clear gl",
                 () => {
                   open DeviceManagerType;
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let {gl}: deviceManagerData =
                     DeviceManagerTool.getDeviceManagerData(copiedState);
                   gl |> expect == None
                 }
               );
               test(
-                "directly use readonly data",
+                "directly use readonly record",
                 () => {
                   open StateDataType;
                   let (state, gl, (colorWrite, clearColor, side, viewport)) =
                     _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerData(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
                   (
@@ -122,14 +121,14 @@ let _ =
             }
           );
           describe(
-            "deep copy vbo buffer data",
+            "deep copy vbo buffer record",
             () =>
               test(
-                "clear all buffer map and all buffer pool data",
+                "clear all buffer map and all buffer pool record",
                 () => {
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
+                  let copiedState = StateTool.deepCopyForRestore(state);
                   let {
                     vertexBufferMap,
                     normalBufferMap,
@@ -154,7 +153,7 @@ let _ =
               )
           );
           describe(
-            "deep copy typeArrayPool data",
+            "deep copy typeArrayPool record",
             () =>
               test(
                 "clear pool map",
@@ -162,9 +161,9 @@ let _ =
                   open StateDataType;
                   open TypeArrayPoolType;
                   let (state, _) = _prepareTypeArrayPoolData(state^);
-                  let copiedState = StateTool.deepCopyStateForRestore(state);
-                  let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolData =
-                    TypeArrayPoolTool.getTypeArrayPoolData(copiedState);
+                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolRecord =
+                    copiedState.typeArrayPoolRecord;
                   (float32ArrayPoolMap, uint16ArrayPoolMap)
                   |>
                   expect == (
@@ -180,17 +179,17 @@ let _ =
         "restore",
         () => {
           describe(
-            "restore render data to target state",
+            "restore render record to target state",
             () =>
-              /* TODO test more render data */
+              /* TODO test more render record */
               test(
                 "clear renderArray, cameraData",
                 () => {
                   open RenderDataType;
                   let state = state^;
-                  /* let data = RenderDataTool.getRenderData(state);
-                     data.renderArray = Some([|0|]);
-                     data.cameraData = Some(Obj.magic(1)); */
+                  /* let record = RenderDataTool.getRenderData(state);
+                     record.renderArray = Some([|0|]);
+                     record.cameraData = Some(Obj.magic(1)); */
                   let state = {
                     ...state,
                     renderData: {
@@ -207,27 +206,27 @@ let _ =
               )
           );
           describe(
-            "restore global temp data to target state",
+            "restore global temp record to target state",
             () =>
               test(
-                "use current data->float32Array1",
+                "use current record->float32Array1",
                 () => {
                   open GlobalTempType;
                   let state = state^;
                   let currentState = StateTool.createNewCompleteState(sandbox);
-                  let data = GlobalTempStateCommon.getGlobalTempData(currentState);
-                  data.float32Array1 = Float32Array.make([|2.|]);
+                  let record = currentState.globalTempRecord;
+                  record.float32Array1 = Float32Array.make([|2.|]);
                   let _ = StateTool.restore(currentState, state);
-                  let {float32Array1} = GlobalTempTool.getGlobalTempData(StateTool.getState());
-                  float32Array1 |> expect == data.float32Array1
+                  let {float32Array1} = StateTool.getState().globalTempRecord;
+                  float32Array1 |> expect == record.float32Array1
                 }
               )
           );
           describe(
-            "restore vbo buffer data to target state",
+            "restore vbo buffer record to target state",
             () => {
               test(
-                "clear buffer map data",
+                "clear buffer map record",
                 () => {
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);
@@ -269,11 +268,7 @@ let _ =
                   ) =
                     _prepareVboBufferData(StateTool.createNewCompleteState(sandbox));
                   let _ = StateTool.restore(currentState, state);
-                  let {
-                    vertexArrayBufferPool,
-                    elementArrayBufferPool,
-                    matrixInstanceBufferPool
-                  } =
+                  let {vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool} =
                     StateTool.getState() |> VboBufferTool.getVboBufferData;
                   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>

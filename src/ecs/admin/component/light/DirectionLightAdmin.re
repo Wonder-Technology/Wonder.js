@@ -7,7 +7,7 @@ let getIntensity = (index, state) => DirectionLightSystem.getIntensity(index, st
 let getPosition = (index, state) =>
   state |> LightAdmin.getPosition(DirectionLightSystem.unsafeGetGameObject(index, state));
 
-let deepCopyStateForRestore = DirectionLightSystem.deepCopyStateForRestore;
+let deepCopyForRestore = DirectionLightSystem.deepCopyForRestore;
 
 let restore = DirectionLightSystem.restore;
 

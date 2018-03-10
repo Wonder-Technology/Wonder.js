@@ -1,4 +1,4 @@
-let deepCopyStateForRestore = State.deepCopyStateForRestore;
+let deepCopyForRestore = State.deepCopyForRestore;
 
 let restore = State.restoreState;
 
@@ -35,7 +35,7 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
          |> ignore
      )
   |> ignore;
-  let copiedState = deepCopyStateForRestore(state);
+  let copiedState = deepCopyForRestore(state);
   getMapFunc(copiedState)
   |> Js.Array.forEach(
        (map) => map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(index) |> ignore

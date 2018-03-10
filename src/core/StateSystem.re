@@ -5,7 +5,7 @@ let createState = () => {
   gpuConfig: None,
   canvasConfig: None,
   workerConfig: None,
-  memoryConfig: MemoryConfigSystem.create(),
+  memoryConfig: ConfigMemoryService.create(),
   jobData: JobHelper.create(),
   noWorkerJobConfig: None,
   workerJobConfig: None,
@@ -17,7 +17,7 @@ let createState = () => {
   objectInstanceData: ObjectInstanceHelper.create(),
   deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
   gameObjectRecord: RecordGameObjectService.create(),
-  transformData: TransformHelper.create(),
+  transformRecord: RecordTransformServicie.create(),
   sceneRecord: RecordSceneService.create(),
   basicCameraViewRecord: RecordBasicCameraViewService.create(),
   perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
@@ -36,8 +36,8 @@ let createState = () => {
   renderData: RenderDataHelper.create(),
   timeControllerData: TimeControllerHelper.create(),
   vboBufferData: VboBufferHelper.create(),
-  globalTempData: GlobalTempHelper.create(),
-  typeArrayPoolData: TypeArrayPoolHelper.create(),
+  globalTempRecord: RecordGlobalTempService.create(),
+  typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceData: WorkerInstanceHelper.create(),
   workerDetectData: WorkerDetectHelper.create()
 };
@@ -53,25 +53,23 @@ let setState = (stateData: stateData, state: state) => {
   state
 };
 
-let deepCopyStateForRestore = (state: StateDataType.state) =>
+let deepCopyForRestore = (state: StateDataType.state) =>
   state
-  |> MeshRendererAdmin.deepCopyStateForRestore
-  |> TransformAdmin.deepCopyStateForRestore
-  |> GeometryAdmin.deepCopyStateForRestore
-  |> VboBufferSystem.deepCopyStateForRestore
-  |> GLSLSenderSystem.deepCopyStateForRestore
-  |> BasicMaterialAdmin.deepCopyStateForRestore
-  |> LightMaterialAdmin.deepCopyStateForRestore
-  |> AmbientLightAdmin.deepCopyStateForRestore
-  |> DirectionLightAdmin.deepCopyStateForRestore
-  |> PointLightAdmin.deepCopyStateForRestore
-  |> ShaderSystem.deepCopyStateForRestore
-  |> ProgramSystem.deepCopyStateForRestore
-  |> GLSLLocationSystem.deepCopyStateForRestore
-  |> DeviceManagerSystem.deepCopyStateForRestore
-  |> TypeArrayPoolSystem.deepCopyStateForRestore
-  |> SourceInstanceAdmin.deepCopyStateForRestore
-  |> ObjectInstanceAdmin.deepCopyStateForRestore
+  |> MeshRendererAdmin.deepCopyForRestore
+  |> GeometryAdmin.deepCopyForRestore
+  |> VboBufferSystem.deepCopyForRestore
+  |> GLSLSenderSystem.deepCopyForRestore
+  |> BasicMaterialAdmin.deepCopyForRestore
+  |> LightMaterialAdmin.deepCopyForRestore
+  |> AmbientLightAdmin.deepCopyForRestore
+  |> DirectionLightAdmin.deepCopyForRestore
+  |> PointLightAdmin.deepCopyForRestore
+  |> ShaderSystem.deepCopyForRestore
+  |> ProgramSystem.deepCopyForRestore
+  |> GLSLLocationSystem.deepCopyForRestore
+  |> DeviceManagerSystem.deepCopyForRestore
+  |> SourceInstanceAdmin.deepCopyForRestore
+  |> ObjectInstanceAdmin.deepCopyForRestore
   |> (
     (state) => {
       ...state,
@@ -81,14 +79,16 @@ let deepCopyStateForRestore = (state: StateDataType.state) =>
       perspectiveCameraProjectionRecord:
         RecordPerspectiveCameraProjectionService.deepCopyForRestore(
           state.perspectiveCameraProjectionRecord
-        )
+        ),
+      transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
+      typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord)
     }
   );
 
-let _getSharedData = (currentState: StateDataType.state) => {
+let _getSharedData = ({typeArrayPoolRecord} as currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerSystem.unsafeGetGl(currentState),
-  float32ArrayPoolMap: TypeArrayPoolSystem.getFloat32ArrayPoolMap(currentState),
-  uint16ArrayPoolMap: TypeArrayPoolSystem.getUint16ArrayPoolMap(currentState)
+  float32ArrayPoolMap: TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord),
+  uint16ArrayPoolMap: TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
 };
 
 let restore =
@@ -97,13 +97,21 @@ let restore =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) = targetState |> GeometryAdmin.restore(currentState, sharedData);
-  let (targetState, sharedData) = targetState |> TransformAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> RestoreTransformService.restore(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
   let gl = [@bs] DeviceManagerSystem.unsafeGetGl(targetState);
+  /* let targetState = {
+       ...targetState,
+       typeArrayPoolRecord: RestoreTypeArrayPoolService.restore(currentState, targetState),
+       globalTempRecord: RestoreGlobalTempService.restore(currentState, targetState)
+     }; */
   targetState
-  |> TypeArrayPoolSystem.restore(currentState, sharedData)
+  /* |> TypeArrayPoolService.restore(currentState, sharedData) */
+  |> RestoreTypeArrayPoolService.restore(currentState, sharedData)
+  |> RestoreGlobalTempService.restore(currentState)
   |> VboBufferSystem.restore(currentState)
   |> ShaderSystem.restore(currentState)
   |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
@@ -115,7 +123,7 @@ let restore =
   |> DirectionLightAdmin.restore(currentState)
   |> PointLightAdmin.restore(currentState)
   |> RenderDataSystem.restore(currentState)
-  |> GlobalTempSystem.restore(currentState)
+  /* |> RecordGlobalTempService.restore(currentState) */
   |> setState(stateData)
   /* |> WonderLog.Contract.ensureCheck ((state) => {
       open WonderLog;

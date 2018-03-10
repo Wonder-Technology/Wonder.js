@@ -26,7 +26,7 @@ let addUniformSendDataByType =
       getDataFunc
     ) => (
   renderObjectSendModelDataArr
-  |> ArraySystem.push(
+  |> ArrayService.push(
        {
          pos,
          sendDataFunc: GLSLSenderUniformUtils.getSendNoCachableDataByType(type_),

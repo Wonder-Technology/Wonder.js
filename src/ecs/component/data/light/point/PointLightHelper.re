@@ -30,10 +30,10 @@ let _getQuadraticIndex = (index) => index * getQuadraticDataSize();
 
 let _getRangeIndex = (index) => index * getRangeDataSize();
 
-let getColor = (index, typeArr) => TypeArrayUtils.getFloat3(_getColorIndex(index), typeArr);
+let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
-  TypeArrayUtils.setFloat3(_getColorIndex(index), color, typeArr);
+  TypeArrayService.setFloat3(_getColorIndex(index), color, typeArr);
 
 let getIntensity = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 

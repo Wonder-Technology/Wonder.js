@@ -108,12 +108,12 @@ let _ =
                           let objectInstanceGameObject1 = objectInstanceGameObjectArr[0];
                           let objectInstanceGameObject2 = objectInstanceGameObjectArr[1];
                           let transform1 =
-                            GameObject.getGameObjectTransformComponent(
+                            GameObjectAPI.unsafeGetGameObjectTransformComponent(
                               objectInstanceGameObject1,
                               state
                             );
                           let transform2 =
-                            GameObject.getGameObjectTransformComponent(
+                            GameObjectAPI.unsafeGetGameObjectTransformComponent(
                               objectInstanceGameObject2,
                               state
                             );

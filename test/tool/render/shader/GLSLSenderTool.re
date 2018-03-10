@@ -16,7 +16,7 @@ module JudgeSendUniformData = {
     (
       state,
       gameObject,
-      (GameObject.getGameObjectTransformComponent(gameObject, state), material),
+      (GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state), material),
       cameraTransform,
       basicCameraView
     )

@@ -4,7 +4,7 @@ open StateDataType;
 
 open VboBufferGetStateDataUtils;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: StateDataType.state) => {
   ...state,
   vboBufferData: {
     vertexBufferMap: [||],

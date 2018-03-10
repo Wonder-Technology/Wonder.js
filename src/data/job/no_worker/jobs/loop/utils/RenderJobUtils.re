@@ -95,7 +95,8 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
      );
 
 let render = (gl, (materialIndex, shaderIndex, uid), state: StateDataType.state) => {
-  let transformIndex: int = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
+  let transformIndex: int =
+    GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   let state =

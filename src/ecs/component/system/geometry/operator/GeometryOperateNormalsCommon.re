@@ -2,7 +2,7 @@ open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
 
-open TypeArrayUtils;
+open TypeArrayService;
 
 open GeometryType;
 
@@ -26,9 +26,9 @@ let setNormalsWithArray = (index: int, data: array(float), state: StateDataType.
         setPointsWithArray(
           (index, getNormals(index, state), data, normalsMap),
           (
-            TypeArrayPoolSystem.getFloat32TypeArrayFromPool,
-            TypeArrayUtils.fillFloat32Array,
-            TypeArrayUtils.makeFloat32Array
+            TypeArrayPoolService.getFloat32TypeArrayFromPool,
+            TypeArrayService.fillFloat32Array,
+            TypeArrayService.makeFloat32Array
           ),
           state
         )

@@ -62,7 +62,7 @@ let _ =
           test(
             "get material's gameObject",
             () => {
-              open GameObject;
+              open GameObject; open GameObjectAPI;
               let (state, material) = createBasicMaterial(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
@@ -122,10 +122,10 @@ let _ =
                 "reset group count",
                 () => {
                   let (state, material1) = createBasicMaterial(state^);
-                  let (state, gameObject1) = GameObject.createGameObject(state);
+                  let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
                     state |> GameObject.addGameObjectBasicMaterialComponent(gameObject1, material1);
-                  let (state, gameObject2) = GameObject.createGameObject(state);
+                  let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
                     state |> GameObject.addGameObjectBasicMaterialComponent(gameObject2, material1);
                   let state =
@@ -175,7 +175,7 @@ let _ =
             "if material is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject;
+                open GameObject; open GameObjectAPI;
                 let (state, material) = createBasicMaterial(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);

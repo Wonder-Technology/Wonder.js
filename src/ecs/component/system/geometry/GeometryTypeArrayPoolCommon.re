@@ -8,24 +8,24 @@ let addTypeArrayToPool =
       state: StateDataType.state
     ) => {
   [@bs]
-  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+  TypeArrayPoolService.addFloat32TypeArrayToPool(
     verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
-  TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+  TypeArrayPoolService.addFloat32TypeArrayToPool(
     normalsMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
-  TypeArrayPoolSystem.addUint16TypeArrayToPool(
+  TypeArrayPoolService.addUint16TypeArrayToPool(
     indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolSystem.getUint16ArrayPoolMap(state)
+    TypeArrayPoolService.getUint16ArrayPoolMap(state.typeArrayPoolRecord)
   )
   |> ignore;
   state
@@ -34,7 +34,7 @@ let addTypeArrayToPool =
 let addAllTypeArrayToPool =
     (maxSize, (verticesMap, normalsMap, indicesMap), (float32ArrayPoolMap, uint16ArrayPoolMap)) => (
   float32ArrayPoolMap
-  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(verticesMap, maxSize)
-  |> TypeArrayPoolSystem.addAllFloat32TypeArrayToPool(normalsMap, maxSize),
-  TypeArrayPoolSystem.addAllUint16TypeArrayToPool(indicesMap, maxSize, uint16ArrayPoolMap)
+  |> TypeArrayPoolService.addAllFloat32TypeArrayToPool(verticesMap, maxSize)
+  |> TypeArrayPoolService.addAllFloat32TypeArrayToPool(normalsMap, maxSize),
+  TypeArrayPoolService.addAllUint16TypeArrayToPool(indicesMap, maxSize, uint16ArrayPoolMap)
 );

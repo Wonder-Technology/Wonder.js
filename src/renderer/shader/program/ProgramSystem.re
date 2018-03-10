@@ -146,7 +146,7 @@ let use = (gl, program: program, state: StateDataType.state) => {
   }
 };
 
-let deepCopyStateForRestore = (state: StateDataType.state) =>
+let deepCopyForRestore = (state: StateDataType.state) =>
   /* {
        ...state,
        programData: {programMap: WonderCommonlib.SparseMapSystem.createEmpty(), lastUsedProgram: None}

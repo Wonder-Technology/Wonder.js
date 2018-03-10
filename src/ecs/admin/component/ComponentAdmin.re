@@ -1,1 +1,1 @@
-let disposeSparseMapData = ComponentDisposeComponentCommon.disposeSparseMapData;
+let disposeSparseMapData = DisposeComponentService.disposeSparseMapData;

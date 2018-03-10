@@ -2,7 +2,7 @@ open GeometryGetStateDataCommon;
 
 open Js.Typed_array;
 
-open TypeArrayUtils;
+open TypeArrayService;
 
 open GeometryType;
 
@@ -37,7 +37,7 @@ let setPointsWithArray =
   switch points {
   | None =>
     let typeArr =
-      switch ([@bs] getTypeArrFromPoolFunc(data |> Js.Array.length, state)) {
+      switch ([@bs] getTypeArrFromPoolFunc(data |> Js.Array.length, state.typeArrayPoolRecord)) {
       | None => [@bs] makeTypeArrayFunc(data)
       | Some(typeArr) => [@bs] fillTypeArrayFunc(typeArr, data, 0)
       };

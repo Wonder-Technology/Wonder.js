@@ -12,7 +12,7 @@ let getGameObject = AmbientLightGameObjectCommon.getGameObject;
 
 let getLightData = AmbientLightStateCommon.getLightData;
 
-let deepCopyStateForRestore = AmbientLightStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = AmbientLightStateCommon.deepCopyForRestore;
 
 let restore = AmbientLightStateCommon.restore;
 

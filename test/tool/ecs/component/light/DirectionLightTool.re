@@ -1,5 +1,6 @@
 let createGameObject = (state) => {
-  open GameObject;
+  open GameObject; open GameObjectAPI;
+  open GameObjectAPI;
   open DirectionLight;
   let (state, light) = createDirectionLight(state);
   let (state, gameObject) = state |> createGameObject;

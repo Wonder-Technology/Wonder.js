@@ -28,7 +28,7 @@ let getGameObject = BasicMaterialGameObjectCommon.getGameObject;
 
 let getMaterialData = BasicMaterialStateCommon.getMaterialData;
 
-let deepCopyStateForRestore = BasicMaterialStateCommon.deepCopyStateForRestore;
+let deepCopyForRestore = BasicMaterialStateCommon.deepCopyForRestore;
 
 let restore = BasicMaterialStateCommon.restore;
 

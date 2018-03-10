@@ -2,7 +2,7 @@ open StateDataType;
 
 let getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
 
-let deepCopyStateForRestore = (state: StateDataType.state) => state;
+let deepCopyForRestore = (state: StateDataType.state) => state;
 
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {

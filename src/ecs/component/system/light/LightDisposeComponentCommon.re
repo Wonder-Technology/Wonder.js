@@ -38,7 +38,7 @@ let deleteSingleValueBySwapAndResetUint8TypeArr = (sourceIndex, lastIndex, typeA
 };
 
 let disposeData = (light, gameObjectMap) =>
-  ComponentDisposeComponentCommon.disposeSparseMapData(light, gameObjectMap);
+  DisposeComponentService.disposeSparseMapData(light, gameObjectMap);
 
 let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
   mappedSourceIndex >= lastComponentIndex ?

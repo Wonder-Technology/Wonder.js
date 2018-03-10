@@ -1,6 +1,6 @@
 let createGameObject = (state) => {
   open BasicMaterial;
-  open GameObject;
+  open GameObject; open GameObjectAPI;
   let (state, material) = createBasicMaterial(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);

@@ -27,7 +27,7 @@ var CameraTool = (function () {
 
             state = wd.addGameObjectPerspectiveCameraProjectionComponent(obj, perspectiveCameraProjection, state);
 
-            var transform = wd.getGameObjectTransformComponent(obj, state);
+            var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
             state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 

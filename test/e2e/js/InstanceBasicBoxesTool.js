@@ -21,7 +21,7 @@ var InstanceBasicBoxesTool = (function () {
             for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
                 let objectInstance = objectInstanceArray[i];
 
-                var transform = wd.getGameObjectTransformComponent(objectInstance, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
 
 
                 var pos = wd.getTransformPosition(transform, state);
@@ -166,8 +166,8 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-            var box1Transform = wd.getGameObjectTransformComponent(box1, state);
-            var box2Transform = wd.getGameObjectTransformComponent(box2, state);
+            var box1Transform = wd.unsafeGetGameObjectTransformComponent(box1, state);
+            var box2Transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
 
 
 
@@ -179,8 +179,8 @@ var InstanceBasicBoxesTool = (function () {
                 let instance2 = objectInstanceArr2[i];
 
 
-                var t1 = wd.getGameObjectTransformComponent(instance1, state);
-                var t2 = wd.getGameObjectTransformComponent(instance2, state);
+                var t1 = wd.unsafeGetGameObjectTransformComponent(instance1, state);
+                var t2 = wd.unsafeGetGameObjectTransformComponent(instance2, state);
 
 
                 state = wd.setTransformParent(t1, t2, state);
@@ -213,7 +213,7 @@ var InstanceBasicBoxesTool = (function () {
                 for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
                     let objectInstance = objectInstanceArray[i];
 
-                    var transform = wd.getGameObjectTransformComponent(objectInstance, state);
+                    var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
 
 
                     var localPos = wd.getTransformLocalPosition(transform, state);

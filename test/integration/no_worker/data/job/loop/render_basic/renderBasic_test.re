@@ -570,7 +570,7 @@ let _ =
             sandbox,
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
-              state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
+              state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
             Js.Typed_array.Float32Array.make([|
               1.,
               0.,
@@ -644,7 +644,7 @@ let _ =
                           RenderBasicJobTool.prepareGameObject(sandbox, state);
                         let state =
                           state
-                          |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                          |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
                         let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
@@ -682,7 +682,7 @@ let _ =
             sandbox,
             "u_vMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
-              state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
+              state |> TransformAPI.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
             Js.Typed_array.Float32Array.make([|
               1.,
               0.,

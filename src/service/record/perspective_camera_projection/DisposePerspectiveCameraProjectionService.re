@@ -9,14 +9,14 @@ let _disposeRecord =
       {gameObjectMap, dirtyArray, pMatrixMap, nearMap, farMap, fovyMap, aspectMap} as record
     ) => {
   ...record,
-  dirtyArray: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, dirtyArray),
-  pMatrixMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, pMatrixMap),
-  nearMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, nearMap),
-  farMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, farMap),
-  fovyMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, fovyMap),
-  aspectMap: ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, aspectMap),
+  dirtyArray: DisposeComponentService.disposeSparseMapData(cameraProjection, dirtyArray),
+  pMatrixMap: DisposeComponentService.disposeSparseMapData(cameraProjection, pMatrixMap),
+  nearMap: DisposeComponentService.disposeSparseMapData(cameraProjection, nearMap),
+  farMap: DisposeComponentService.disposeSparseMapData(cameraProjection, farMap),
+  fovyMap: DisposeComponentService.disposeSparseMapData(cameraProjection, fovyMap),
+  aspectMap: DisposeComponentService.disposeSparseMapData(cameraProjection, aspectMap),
   gameObjectMap:
-    ComponentDisposeComponentCommon.disposeSparseMapData(cameraProjection, gameObjectMap)
+    DisposeComponentService.disposeSparseMapData(cameraProjection, gameObjectMap)
 };
 
 let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) => {
@@ -37,7 +37,7 @@ let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) 
   );
   _disposeRecord(
     cameraProjection,
-    {...record, disposedIndexArray: disposedIndexArray |> ArraySystem.push(cameraProjection)}
+    {...record, disposedIndexArray: disposedIndexArray |> ArrayService.push(cameraProjection)}
   )
 };
 

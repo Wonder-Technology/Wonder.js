@@ -219,7 +219,7 @@ let createBoxGeometry = (state: StateDataType.state) => {
 let createGameObject = (state: StateDataType.state) => {
   let (state, geometry) = createBoxGeometry(state);
   let state = state |> setDefaultConfigData(geometry);
-  let (state, gameObject) = GameObject.createGameObject(state);
+  let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let state = state |> GameObject.addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry)
 };

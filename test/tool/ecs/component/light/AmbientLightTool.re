@@ -1,5 +1,6 @@
 let createGameObject = (state) => {
   open GameObject;
+  open GameObjectAPI;
   open AmbientLight;
   let (state, light) = createAmbientLight(state);
   let (state, gameObject) = state |> createGameObject;
@@ -16,4 +17,4 @@ let getColor = AmbientLightSystem.getColor;
 let getDefaultColor = AmbientLightHelper.getDefaultColor;
 
 let getMappedIndex = (index, state) =>
-  state |> AmbientLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index)
+  state |> AmbientLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);

@@ -20,7 +20,7 @@ let _addModelMatrixInstanceArrayBufferSendData =
     ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
   sendDataArr,
   instanceSendNoCachableDataArr
-  |> ArraySystem.push({
+  |> ArrayService.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 4,
        getOffsetFunc: [@bs] ((index) => index * 16)
@@ -31,7 +31,7 @@ let _addNormalMatrixInstanceArrayBufferSendData =
     ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
   sendDataArr,
   instanceSendNoCachableDataArr
-  |> ArraySystem.push({
+  |> ArrayService.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 3,
        getOffsetFunc: [@bs] ((index) => (index - 4) * 12 + 64)
@@ -44,7 +44,7 @@ let _addOtherArrayBufferSendData =
       (sendDataArr, instanceSendNoCachableDataArr)
     ) => (
   sendDataArr
-  |> ArraySystem.push({
+  |> ArrayService.push({
        pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
        size: getBufferSizeByType(type_),
        buffer,
@@ -54,7 +54,7 @@ let _addOtherArrayBufferSendData =
 );
 
 let _addElementBufferSendData = (buffer, (sendDataArr, instanceSendNoCachableDataArr)) => (
-  sendDataArr |> ArraySystem.push({pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}),
+  sendDataArr |> ArrayService.push({pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}),
   instanceSendNoCachableDataArr
 );
 

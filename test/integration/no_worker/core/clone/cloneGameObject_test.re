@@ -22,7 +22,7 @@ let _ =
           clonedGameObjectArr
           |> CloneTool.getFlattenClonedGameObjectArr
           |> Js.Array.map(
-               (clonedGameObject) => getGameObjectTransformComponent(clonedGameObject, state)
+               (clonedGameObject) => unsafeGetGameObjectTransformComponent(clonedGameObject, state)
              )
         )
       };
@@ -602,7 +602,7 @@ let _ =
                   test(
                     "test",
                     () => {
-                      open Transform;
+                      open TransformAPI;
                       let (state, gameObject1, transform1) =
                         GameObjectTool.createGameObject(state^);
                       let pos1 = (1., 2., 3.);
@@ -620,7 +620,7 @@ let _ =
                       test(
                         "source transform,cloned transforms shouldn't affect each other",
                         () => {
-                          open Transform;
+                          open TransformAPI;
                           let (state, gameObject1, transform1) =
                             GameObjectTool.createGameObject(state^);
                           let pos1 = (1., 2., 3.);
@@ -648,8 +648,8 @@ let _ =
                 () => {
                   let (state, _, _, clonedGameObjectArr, clonedTransformArr) = _prepare();
                   (
-                    Transform.getTransformGameObject(clonedTransformArr[0], state),
-                    Transform.getTransformGameObject(clonedTransformArr[1], state)
+                    TransformAPI.unsafeGetTransformGameObject(clonedTransformArr[0], state),
+                    TransformAPI.unsafeGetTransformGameObject(clonedTransformArr[1], state)
                   )
                   |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1])
                 }
@@ -835,7 +835,7 @@ let _ =
       describe(
         "clone children",
         () => {
-          open Transform;
+          open TransformAPI;
           describe(
             "test clone gameObject",
             () =>
@@ -865,7 +865,7 @@ let _ =
                       state,
                       gameObject1,
                       meshRenderer1,
-                      getGameObjectTransformComponent(gameObject1, state)
+                      unsafeGetGameObjectTransformComponent(gameObject1, state)
                     )
                   };
                   open GameObjectType;
@@ -895,10 +895,10 @@ let _ =
                       open GameObjectType;
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);
-                      let transform1 = getGameObjectTransformComponent(gameObject1, state);
+                      let transform1 = unsafeGetGameObjectTransformComponent(gameObject1, state);
                       let (state, gameObject2, geometry2) =
                         BoxGeometryTool.createGameObject(state);
-                      let transform2 = getGameObjectTransformComponent(gameObject2, state);
+                      let transform2 = unsafeGetGameObjectTransformComponent(gameObject2, state);
                       let state =
                         state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                       let state = state |> GeometryTool.initGeometrys;
@@ -924,11 +924,11 @@ let _ =
                          let (state, gameObject1, material1) =
                            BasicMaterialTool.createGameObject(state^);
                          let state = state |> BasicMaterialTool.setShaderIndex(material1, 0);
-                         let transform1 = getGameObjectTransformComponent(gameObject1, state);
+                         let transform1 = unsafeGetGameObjectTransformComponent(gameObject1, state);
                          let (state, gameObject2, material2) =
                            BasicMaterialTool.createGameObject(state);
                          let state = state |> BasicMaterialTool.setShaderIndex(material2, 0);
-                         let transform2 = getGameObjectTransformComponent(gameObject2, state);
+                         let transform2 = unsafeGetGameObjectTransformComponent(gameObject2, state);
                          let state =
                            state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                          let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
@@ -986,32 +986,32 @@ let _ =
                       let (_, clonedTransformArr) =
                         _getClonedTransformMatrixDataArr(gameObject1, 2, state);
                       (
-                        state |> getTransformParent(clonedTransformArr[0]),
-                        state |> getTransformParent(clonedTransformArr[1]),
-                        state |> getTransformParent(clonedTransformArr[2]),
-                        state |> getTransformParent(clonedTransformArr[3]),
-                        state |> getTransformParent(clonedTransformArr[4]),
-                        state |> getTransformParent(clonedTransformArr[5]),
-                        state |> getTransformParent(clonedTransformArr[6]),
-                        state |> getTransformParent(clonedTransformArr[7])
+                        state |> unsafeGetTransformParent(clonedTransformArr[0]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[1]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[2]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[3]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[4]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[5]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[6]),
+                        state |> unsafeGetTransformParent(clonedTransformArr[7])
                       )
                       |>
                       expect == (
-                                  Js.Nullable.undefined,
-                                  Js.Nullable.undefined,
-                                  Js.Nullable.return(clonedTransformArr[0]),
-                                  Js.Nullable.return(clonedTransformArr[1]),
-                                  Js.Nullable.return(clonedTransformArr[0]),
-                                  Js.Nullable.return(clonedTransformArr[1]),
-                                  Js.Nullable.return(clonedTransformArr[4]),
-                                  Js.Nullable.return(clonedTransformArr[5])
+                                  Js.Undefined.empty,
+                                  Js.Undefined.empty,
+                                  Js.Undefined.return(clonedTransformArr[0]),
+                                  Js.Undefined.return(clonedTransformArr[1]),
+                                  Js.Undefined.return(clonedTransformArr[0]),
+                                  Js.Undefined.return(clonedTransformArr[1]),
+                                  Js.Undefined.return(clonedTransformArr[4]),
+                                  Js.Undefined.return(clonedTransformArr[5])
                                 )
                     }
                   );
                   test(
                     "test set cloned transform's localPosition by corresponding source transform's localPosition",
                     () => {
-                      open Transform;
+                      open TransformAPI;
                       open Vector3System;
                       open Vector3Type;
                       let (

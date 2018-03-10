@@ -39,10 +39,10 @@ let _disposeData =
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) =>
     [@bs]
-    TypeArrayPoolSystem.addFloat32TypeArrayToPool(
+    TypeArrayPoolService.addFloat32TypeArrayToPool(
       typeArr,
-      MemoryConfigSystem.getMaxBigTypeArrayPoolSize(state),
-      TypeArrayPoolSystem.getFloat32ArrayPoolMap(state)
+      ConfigMemoryService.getMaxBigTypeArrayPoolSize(state.memoryConfig),
+      TypeArrayPoolService.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
     )
     |> ignore
   | None => ()
@@ -52,12 +52,12 @@ let _disposeData =
     sourceInstanceData: {
       ...data,
       objectInstanceArrayMap: objectInstanceArrayMap |> disposeSparseMapData(sourceInstance),
-      matrixFloat32ArrayMap:
-        matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
+      matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
       matrixInstanceBufferCapacityMap:
         matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
       isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
-      isSendTransformMatrixDataMap: isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
+      isSendTransformMatrixDataMap:
+        isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
     }
   }
@@ -88,7 +88,7 @@ let handleDisposeComponent =
     ...state,
     sourceInstanceData: {
       ...data,
-      disposedIndexArray: disposedIndexArray |> ArraySystem.push(sourceInstance)
+      disposedIndexArray: disposedIndexArray |> ArrayService.push(sourceInstance)
     }
   }
 };

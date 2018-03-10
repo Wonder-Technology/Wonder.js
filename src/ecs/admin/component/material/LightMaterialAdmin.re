@@ -10,7 +10,7 @@ let initMaterials = (materialIndexArr, gl, state: StateDataType.state) =>
 
 let init = (gl, state: StateDataType.state) => LightMaterialSystem.init(gl, state);
 
-let deepCopyStateForRestore = LightMaterialSystem.deepCopyStateForRestore;
+let deepCopyForRestore = LightMaterialSystem.deepCopyForRestore;
 
 let restore = (gl, currentState, targetState) => {
   let newState = LightMaterialSystem.restore(currentState, targetState);

@@ -16,12 +16,16 @@ open DisposeGameObjectComponentService;
 
 open CloneGameObjectComponentService;
 
+open CreateGameObjectService;
+
+let createGameObject = (state: StateDataType.state) => create(state);
+
 let _checkGameObjectShouldAlive = (gameObject: gameObject, state: StateDataType.state) =>
   WonderLog.(
     Contract.(
       test(
         Log.buildAssertMessage(~expect={j|gameObject alive|j}, ~actual={j|not|j}),
-        () => isAlive(gameObject, state.gameObjectRecord) |> assertTrue
+        () => isAlive(gameObject, state) |> assertTrue
       )
     )
   );
@@ -32,13 +36,7 @@ let addGameObjectBasicCameraViewComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     StateData.stateData.isDebug
   );
-  let (basicCameraViewRecord, gameObjectRecord) =
-    addBasicCameraViewComponent(
-      gameObject,
-      component,
-      (state.basicCameraViewRecord, state.gameObjectRecord)
-    );
-  {...state, basicCameraViewRecord, gameObjectRecord}
+  addBasicCameraViewComponent(gameObject, component, state)
 };
 
 let disposeGameObjectBasicCameraViewComponent =
@@ -47,9 +45,7 @@ let disposeGameObjectBasicCameraViewComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     StateData.stateData.isDebug
   );
-  let basicCameraViewRecord =
-    [@bs] disposeBasicCameraViewComponent(gameObject, component, state.basicCameraViewRecord);
-  {...state, basicCameraViewRecord}
+  [@bs] disposeBasicCameraViewComponent(gameObject, component, state)
 };
 
 let unsafeGetGameObjectBasicCameraViewComponent =
@@ -75,13 +71,7 @@ let addGameObjectPerspectiveCameraProjectionComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     StateData.stateData.isDebug
   );
-  let (perspectiveCameraProjectionRecord, gameObjectRecord) =
-    addPerspectiveCameraProjectionComponent(
-      gameObject,
-      component,
-      (state.perspectiveCameraProjectionRecord, state.gameObjectRecord)
-    );
-  {...state, perspectiveCameraProjectionRecord, gameObjectRecord}
+  addPerspectiveCameraProjectionComponent(gameObject, component, state)
 };
 
 let disposeGameObjectPerspectiveCameraProjectionComponent =
@@ -90,14 +80,7 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     StateData.stateData.isDebug
   );
-  let perspectiveCameraProjectionRecord =
-    [@bs]
-    disposePerspectiveCameraProjectionComponent(
-      gameObject,
-      component,
-      state.perspectiveCameraProjectionRecord
-    );
-  {...state, perspectiveCameraProjectionRecord}
+  [@bs] disposePerspectiveCameraProjectionComponent(gameObject, component, state)
 };
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent =
@@ -116,4 +99,38 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
     StateData.stateData.isDebug
   );
   hasPerspectiveCameraProjectionComponent(gameObject, state.gameObjectRecord)
+};
+
+let addGameObjectTransformComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addTransformComponent(gameObject, component, state)
+};
+
+let disposeGameObjectTransformComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeTransformComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetTransformComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasTransformComponent(gameObject, state.gameObjectRecord)
 };

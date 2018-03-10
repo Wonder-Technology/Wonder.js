@@ -8,10 +8,10 @@ let getColorDataSize = () => 3;
 
 let _getColorIndex = (index) => index * getColorDataSize();
 
-let getColor = (index, typeArr) => TypeArrayUtils.getFloat3(_getColorIndex(index), typeArr);
+let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
-  TypeArrayUtils.setFloat3(_getColorIndex(index), color, typeArr);
+  TypeArrayService.setFloat3(_getColorIndex(index), color, typeArr);
 
 let getDefaultColor = () => [|1., 1., 1.|];
 

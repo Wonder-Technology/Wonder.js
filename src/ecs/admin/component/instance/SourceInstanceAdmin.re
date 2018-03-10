@@ -8,6 +8,6 @@ let isSendTransformMatrixData = SourceInstanceSystem.isSendTransformMatrixData;
 
 let markIsSendTransformMatrixData = SourceInstanceSystem.markIsSendTransformMatrixData;
 
-let deepCopyStateForRestore = SourceInstanceSystem.deepCopyStateForRestore;
+let deepCopyForRestore = SourceInstanceSystem.deepCopyForRestore;
 
 let restore = SourceInstanceSystem.restore;

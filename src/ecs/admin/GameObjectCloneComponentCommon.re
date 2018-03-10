@@ -4,10 +4,9 @@ open GameObjectType;
 
 open ComponentType;
 
-let cloneTransformComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  TransformCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
-
+/* let cloneTransformComponent =
+     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+   CloneTransformService.handleCloneComponent(sourceComponent, countRangeArr, state); */
 let cloneMeshRendererComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   MeshRendererCloneComponentCommon.handleCloneComponent(countRangeArr, state);
@@ -78,18 +77,24 @@ let cloneComponent =
   open GameObjectGetComponentCommon;
   open StateDataType;
   /* TODO refactor */
-  let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =
-    CloneGameObjectComponentService.clone(
-      (uid, transform, countRangeArr, clonedGameObjectArr),
-      isShareMaterial,
-      (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
-    );
-  let state = {
-    ...state,
-    basicCameraViewRecord,
-    perspectiveCameraProjectionRecord,
-    gameObjectRecord
-  };
+  /* let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =
+       CloneGameObjectComponentService.clone(
+         (uid, transform, countRangeArr, clonedGameObjectArr),
+         isShareMaterial,
+         (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord)
+       );
+     let state = {
+       ...state,
+       basicCameraViewRecord,
+       perspectiveCameraProjectionRecord,
+       gameObjectRecord
+     }; */
+  let state =
+    state
+    |> CloneGameObjectComponentService.clone(
+         (uid, transform, countRangeArr, clonedGameObjectArr),
+         isShareMaterial
+       );
   let (state, clonedTransformArr) =
     state
     |> _cloneComponent(
@@ -145,10 +150,10 @@ let cloneComponent =
            GameObjectAddComponentCommon.batchAddPointLightComponentForClone
          )
        )
-    |> cloneTransformComponent(transform, countRangeArr);
+    |> CloneComponentGameObjectService.cloneTransformComponent(transform, countRangeArr);
   (
     state
-    |> GameObjectAddComponentCommon.batchAddTransformComponentForClone(
+    |> AddGameObjectComponentService.batchAddTransformComponentForClone(
          clonedGameObjectArr,
          clonedTransformArr
        ),

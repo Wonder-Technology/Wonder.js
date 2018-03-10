@@ -8,7 +8,7 @@ var BasicBoxesTool = (function () {
 
     var _setData = (boxes, state) => {
         boxes.forEach(function (box) {
-            var transform = wd.getGameObjectTransformComponent(box, state);
+            var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
 
             var pos = wd.getTransformPosition(transform, state);
@@ -107,7 +107,7 @@ var BasicBoxesTool = (function () {
                 var box = boxes[i];
 
 
-                var transform = wd.getGameObjectTransformComponent(box, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
 
                 var localPos = wd.getTransformLocalPosition(transform, state);

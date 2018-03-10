@@ -43,7 +43,7 @@ let handleDisposeComponent =
     ...state,
     meshRendererData: {
       ...data,
-      disposedIndexArray: disposedIndexArray |> ArraySystem.push(meshRenderer),
+      disposedIndexArray: disposedIndexArray |> ArrayService.push(meshRenderer),
       renderGameObjectArray: renderGameObjectArray |> _removeFromRenderArray(gameObjectUid)
     }
   }
