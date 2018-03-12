@@ -19,7 +19,7 @@ let getRenderArray = (state: StateDataType.state) =>
 
 let getGameObject = (meshRenderer: meshRenderer, state: StateDataType.state) => {
   let {gameObjectMap} = getMeshRendererData(state);
-  getComponentGameObject(meshRenderer, gameObjectMap)
+  GameObjectMapService.getGameObject(meshRenderer, gameObjectMap)
 };
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>

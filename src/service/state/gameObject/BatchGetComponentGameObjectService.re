@@ -18,3 +18,9 @@ let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
 
 let batchGetBoxGeometryComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.boxGeometryMap);
+
+let batchGetBasicMaterialComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.basicMaterialMap);
+
+let batchGetLightMaterialComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.lightMaterialMap);

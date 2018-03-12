@@ -3,7 +3,7 @@ open TransformType;
 open ComponentSystem;
 
 let getGameObject = (transform, {gameObjectMap}) =>
-  ComponentSystem.getComponentGameObject(transform, gameObjectMap);
+  GameObjectMapService.getGameObject(transform, gameObjectMap);
 
 let unsafeGetGameObject = (transform, {gameObjectMap}) =>
-  ComponentSystem.unsafeGetComponentGameObject(transform, gameObjectMap);
+  GameObjectMapService.unsafeGetGameObject(transform, gameObjectMap);

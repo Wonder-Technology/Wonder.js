@@ -49,7 +49,7 @@ let _ =
             sandbox,
             "u_color",
             (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
-              state |> BasicMaterial.setBasicMaterialColor(material, [|0., 1., 0.2|]),
+              state |> BasicMaterialAPI.setBasicMaterialColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
             ()
           )

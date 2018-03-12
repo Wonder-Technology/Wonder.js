@@ -3,13 +3,13 @@ open ObjectInstanceType;
 open ObjectInstanceStateCommon;
 
 let getGameObject = (objectInstance: objectInstance, state: StateDataType.state) =>
-  ComponentSystem.getComponentGameObject(
+  GameObjectMapService.getGameObject(
     objectInstance,
     getObjectInstanceData(state).gameObjectMap
   );
 
 let unsafeGetGameObject = (objectInstance: objectInstance, state: StateDataType.state) =>
-  ComponentSystem.unsafeGetComponentGameObject(
+  GameObjectMapService.unsafeGetGameObject(
     objectInstance,
     getObjectInstanceData(state).gameObjectMap
   );

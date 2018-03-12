@@ -31,20 +31,6 @@ let disposeMeshRendererComponent =
       MeshRendererDisposeComponentCommon.handleDisposeComponent(component, uid, state)
   );
 
-let disposeBasicMaterialComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      BasicMaterialDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
-let disposeLightMaterialComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      LightMaterialDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
 let disposeAmbientLightComponent =
   [@bs]
   (
@@ -77,24 +63,6 @@ let batchDisposeMeshRendererComponent =
     uidMap,
     state,
     MeshRendererDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposeBasicMaterialComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    BasicMaterialDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposeLightMaterialComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    LightMaterialDisposeComponentCommon.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -189,8 +157,8 @@ let disposeComponent =
   |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
   |> _disposeCommonComponent(uid, (getDirectionLightComponent, disposeDirectionLightComponent))
   |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent))
-  |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
-  |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent))
+  /* |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
+     |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent)) */
   /* |> _disposeCommonComponent(uid, (getBoxGeometryComponent, disposeBoxGeometryComponent)) */
   /* |> _disposeCommonComponent(
        uid,
@@ -237,16 +205,6 @@ let batchDisposeCommonComponent =
     |> batchDisposePointLightComponent(disposedUidMap, state);
   /* |> batchGetTransformComponent(uidArray)
      |> batchDisposeTransformComponent(disposedUidMap, state); */
-  let state =
-    state
-    |> batchGetBasicMaterialComponent(uidArray)
-    |> batchDisposeBasicMaterialComponent(disposedUidMap, state)
-    |> batchGetLightMaterialComponent(uidArray)
-    |> batchDisposeLightMaterialComponent(disposedUidMap, state);
-    /* |> batchGetBoxGeometryComponent(uidArray)
-    |> batchDisposeBoxGeometryComponent(disposedUidMap, state); */
-  /* |> batchGetBasicCameraViewComponent(uidArray)
-     |> batchDisposeBasicCameraViewComponent(disposedUidMap, state); */
   state
   |> batchGetObjectInstanceComponent(uidArray)
   |> batchDisposeObjectInstanceComponent(disposedUidMap, state)

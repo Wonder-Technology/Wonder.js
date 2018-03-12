@@ -1,28 +1,5 @@
 open ComponentType;
 
-let getComponentGameObject = (component: component, gameObjectMap) =>
-  WonderCommonlib.SparseMapSystem.get(component, gameObjectMap);
-
-let unsafeGetComponentGameObject = (component: component, gameObjectMap) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(component, gameObjectMap)
-  |> WonderLog.Contract.ensureCheck(
-       (gameObject) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|component's gameObject exist|j},
-                   ~actual={j|not|j}
-                 ),
-                 () => gameObject |> assertNullableExist
-               )
-             )
-           )
-         ),
-       StateData.stateData.isDebug
-     );
-
 let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>
   WonderLog.(
     Contract.(

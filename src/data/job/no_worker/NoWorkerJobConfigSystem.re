@@ -32,20 +32,20 @@ let getSetting = (state: StateDataType.state) => _unsafeGetNoWorkerJobConfig(sta
 
 let _getExecutableJob = (jobs: array(job), {name: pipelineJobName}: pipelineJob) => {
   let {flags}: job =
-    JobConfigSystem.unsafeFindFirst(
+    JobConfigService.unsafeFindFirst(
       jobs,
       pipelineJobName,
-      ({name: jobName}: job) => JobConfigSystem.filterTargetName(jobName, pipelineJobName)
+      ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, pipelineJobName)
     );
   {name: pipelineJobName, flags}
 };
 
 let _getPipelineExecutableJobs = (pipeline, pipelines, jobs: array(job)) => {
   let pipelineItem: pipeline =
-    JobConfigSystem.unsafeFindFirst(
+    JobConfigService.unsafeFindFirst(
       pipelines,
       pipeline,
-      ({name}: pipeline) => JobConfigSystem.filterTargetName(name, pipeline)
+      ({name}: pipeline) => JobConfigService.filterTargetName(name, pipeline)
     );
   pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };

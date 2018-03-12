@@ -55,6 +55,39 @@ let disposeBoxGeometryComponent =
       )
   );
 
+let disposePerspectiveCameraProjectionComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {perspectiveCameraProjectionRecord} as state) => {
+      ...state,
+      perspectiveCameraProjectionRecord:
+        DisposePerspectiveCameraProjectionService.handleDisposeComponent(
+          component,
+          perspectiveCameraProjectionRecord
+        )
+    }
+  );
+
+let disposeBasicMaterialComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {basicMaterialRecord} as state) => {
+      ...state,
+      basicMaterialRecord:
+        DisposeBasicMaterialService.handleDisposeComponent(component, basicMaterialRecord)
+    }
+  );
+
+let disposeLightMaterialComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {lightMaterialRecord} as state) => {
+      ...state,
+      lightMaterialRecord:
+        DisposeLightMaterialService.handleDisposeComponent(component, lightMaterialRecord)
+    }
+  );
+
 let batchDisposeBasicCameraViewComponent =
     (uidMap, {basicCameraViewRecord} as state, componentArray: array(component)) => {
   ...state,
@@ -98,3 +131,27 @@ let batchDisposeBoxGeometryComponent =
     ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
     state
   );
+
+let batchDisposeBasicMaterialComponent =
+    (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {
+  ...state,
+  basicMaterialRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      basicMaterialRecord,
+      DisposeBasicMaterialService.handleBatchDisposeComponent,
+      componentArray
+    )
+};
+
+let batchDisposeLightMaterialComponent =
+    (uidMap, {lightMaterialRecord} as state, componentArray: array(component)) => {
+  ...state,
+  lightMaterialRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      lightMaterialRecord,
+      DisposeLightMaterialService.handleBatchDisposeComponent,
+      componentArray
+    )
+};

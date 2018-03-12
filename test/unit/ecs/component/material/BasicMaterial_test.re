@@ -1,10 +1,10 @@
-open BasicMaterial;
+open BasicMaterialAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "BasicMaterial",
+    "BasicMaterialAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -57,27 +57,28 @@ let _ =
           )
       );
       describe(
-        "getBasicMaterialGameObject",
+        "unsafeGetBasicMaterialGameObject",
         () =>
           test(
             "get material's gameObject",
             () => {
-              open GameObject; open GameObjectAPI;
+              open GameObject;
+              open GameObjectAPI;
               let (state, material) = createBasicMaterial(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
-              state |> getBasicMaterialGameObject(material) |> expect == gameObject
+              state |> unsafeGetBasicMaterialGameObject(material) |> expect == gameObject
             }
           )
       );
       describe(
-        "getBasicMaterialColor",
+        "unsafeGetBasicMaterialColor",
         () =>
           test(
             "test default color",
             () => {
               let (state, material) = createBasicMaterial(state^);
-              getBasicMaterialColor(material, state) |> expect == [|1., 1., 1.|]
+              unsafeGetBasicMaterialColor(material, state) |> expect == [|1., 1., 1.|]
             }
           )
       );
@@ -90,7 +91,7 @@ let _ =
               let (state, material) = createBasicMaterial(state^);
               let color = [|0.2, 0.3, 0.5|];
               let state = state |> setBasicMaterialColor(material, color);
-              getBasicMaterialColor(material, state) |> expect == color
+              unsafeGetBasicMaterialColor(material, state) |> expect == color
             }
           )
       );
@@ -107,9 +108,11 @@ let _ =
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectBasicMaterialComponent(gameObject1, material1);
-                  let {colorMap, shaderIndexMap, gameObjectMap} =
-                    BasicMaterialTool.getMaterialData(state);
+                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
+                  let {colorMap, shaderIndexMap, gameObjectMap} = state.basicMaterialRecord;
                   (
                     colorMap |> WonderCommonlib.SparseMapSystem.has(material1),
                     shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
@@ -124,13 +127,18 @@ let _ =
                   let (state, material1) = createBasicMaterial(state^);
                   let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectBasicMaterialComponent(gameObject1, material1);
+                    state
+                    |> GameObjectAPI.addGameObjectBasicMaterialComponent(gameObject1, material1);
                   let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectBasicMaterialComponent(gameObject2, material1);
+                    state
+                    |> GameObjectAPI.addGameObjectBasicMaterialComponent(gameObject2, material1);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectBasicMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
                   BasicMaterialTool.getGroupCount(material1, state) |> expect == 0
                 }
               )
@@ -146,7 +154,10 @@ let _ =
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectBasicMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
                   let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
                   material3 |> expect == material1
                 }
@@ -158,7 +169,10 @@ let _ =
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectBasicMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
                   let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
                   let (state, gameObject4, material4) = BasicMaterialTool.createGameObject(state);
                   (material3, material4) |> expect == (material1, material2 + 1)
@@ -175,18 +189,20 @@ let _ =
             "if material is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject; open GameObjectAPI;
+                open GameObject;
+                open GameObjectAPI;
                 let (state, material) = createBasicMaterial(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
                 let state =
-                  state |> GameObject.disposeGameObjectBasicMaterialComponent(gameObject, material);
+                  state
+                  |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(gameObject, material);
                 expect(() => getFunc(material, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
               test(
-                "getBasicMaterialGameObject should error",
-                () => _testGetFunc(getBasicMaterialGameObject)
+                "unsafeGetBasicMaterialGameObject should error",
+                () => _testGetFunc(unsafeGetBasicMaterialGameObject)
               )
             }
           )

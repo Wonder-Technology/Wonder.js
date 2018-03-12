@@ -2,7 +2,7 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open RenderConfigDataType;
+open RenderConfigType;
 
 let _ =
   describe(

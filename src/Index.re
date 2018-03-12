@@ -26,6 +26,22 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
+
+let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
+
+let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
+
+let addGameObjectLightMaterialComponent = GameObjectAPI.addGameObjectLightMaterialComponent;
+
+let hasGameObjectBasicMaterialComponent = GameObjectAPI.hasGameObjectBasicMaterialComponent;
+
+let unsafeGetGameObjectBasicMaterialComponent = GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent;
+
+let disposeGameObjectBasicMaterialComponent = GameObjectAPI.disposeGameObjectBasicMaterialComponent;
+
+let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMaterialComponent;
+
 let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
 
 let unsafeGetGameObjectBoxGeometryComponent = GameObjectAPI.unsafeGetGameObjectBoxGeometryComponent;
@@ -59,6 +75,30 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
+
+let unsafeGetBasicMaterialColor = BasicMaterialAPI.unsafeGetBasicMaterialColor;
+
+let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGameObject;
+
+let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let setLightMaterialShininess = LightMaterialAPI.setLightMaterialShininess;
+
+let unsafeGetLightMaterialShininess = LightMaterialAPI.unsafeGetLightMaterialShininess;
+
+let setLightMaterialSpecularColor = LightMaterialAPI.setLightMaterialSpecularColor;
+
+let unsafeGetLightMaterialSpecularColor = LightMaterialAPI.unsafeGetLightMaterialSpecularColor;
+
+let setLightMaterialDiffuseColor = LightMaterialAPI.setLightMaterialDiffuseColor;
+
+let unsafeGetLightMaterialDiffuseColor = LightMaterialAPI.unsafeGetLightMaterialDiffuseColor;
+
+let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGameObject;
+
+let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
 let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
 
@@ -191,22 +231,6 @@ let getGameObjectMeshRendererComponent = GameObject.getGameObjectMeshRendererCom
 let disposeGameObjectMeshRendererComponent = GameObject.disposeGameObjectMeshRendererComponent;
 
 let addGameObjectMeshRendererComponent = GameObject.addGameObjectMeshRendererComponent;
-
-let hasGameObjectLightMaterialComponent = GameObject.hasGameObjectLightMaterialComponent;
-
-let getGameObjectLightMaterialComponent = GameObject.getGameObjectLightMaterialComponent;
-
-let disposeGameObjectLightMaterialComponent = GameObject.disposeGameObjectLightMaterialComponent;
-
-let addGameObjectLightMaterialComponent = GameObject.addGameObjectLightMaterialComponent;
-
-let hasGameObjectBasicMaterialComponent = GameObject.hasGameObjectBasicMaterialComponent;
-
-let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialComponent;
-
-let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
-
-let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstance.markSourceInstanceModelMatrixIsStatic;
 
@@ -266,30 +290,6 @@ let getPointLightGameObject = PointLight.getPointLightGameObject;
 
 let createPointLight = PointLight.createPointLight;
 
-let setBasicMaterialColor = BasicMaterial.setBasicMaterialColor;
-
-let getBasicMaterialColor = BasicMaterial.getBasicMaterialColor;
-
-let getBasicMaterialGameObject = BasicMaterial.getBasicMaterialGameObject;
-
-let createBasicMaterial = BasicMaterial.createBasicMaterial;
-
-let setLightMaterialShininess = LightMaterial.setLightMaterialShininess;
-
-let getLightMaterialShininess = LightMaterial.getLightMaterialShininess;
-
-let setLightMaterialSpecularColor = LightMaterial.setLightMaterialSpecularColor;
-
-let getLightMaterialSpecularColor = LightMaterial.getLightMaterialSpecularColor;
-
-let setLightMaterialDiffuseColor = LightMaterial.setLightMaterialDiffuseColor;
-
-let getLightMaterialDiffuseColor = LightMaterial.getLightMaterialDiffuseColor;
-
-let getLightMaterialGameObject = LightMaterial.getLightMaterialGameObject;
-
-let createLightMaterial = LightMaterial.createLightMaterial;
-
 let getMeshRendererGameObject = MeshRenderer.getMeshRendererGameObject;
 
 let createMeshRenderer = MeshRenderer.createMeshRenderer;
@@ -321,6 +321,22 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
+
+let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
+
+let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
+
+let addGameObjectLightMaterialComponent = GameObjectAPI.addGameObjectLightMaterialComponent;
+
+let hasGameObjectBasicMaterialComponent = GameObjectAPI.hasGameObjectBasicMaterialComponent;
+
+let unsafeGetGameObjectBasicMaterialComponent = GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent;
+
+let disposeGameObjectBasicMaterialComponent = GameObjectAPI.disposeGameObjectBasicMaterialComponent;
+
+let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMaterialComponent;
 
 let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
 
@@ -487,19 +503,3 @@ let getGameObjectMeshRendererComponent = GameObject.getGameObjectMeshRendererCom
 let disposeGameObjectMeshRendererComponent = GameObject.disposeGameObjectMeshRendererComponent;
 
 let addGameObjectMeshRendererComponent = GameObject.addGameObjectMeshRendererComponent;
-
-let hasGameObjectLightMaterialComponent = GameObject.hasGameObjectLightMaterialComponent;
-
-let getGameObjectLightMaterialComponent = GameObject.getGameObjectLightMaterialComponent;
-
-let disposeGameObjectLightMaterialComponent = GameObject.disposeGameObjectLightMaterialComponent;
-
-let addGameObjectLightMaterialComponent = GameObject.addGameObjectLightMaterialComponent;
-
-let hasGameObjectBasicMaterialComponent = GameObject.hasGameObjectBasicMaterialComponent;
-
-let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialComponent;
-
-let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
-
-let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;

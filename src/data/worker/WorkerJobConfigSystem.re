@@ -19,16 +19,16 @@ let _unsafeGetWorkerJobConfig = (state: StateDataType.state) => {
 };
 
 /* let _getPipeline = (pipeline: string, pipelines) =>
-   JobConfigSystem.unsafeFindFirst(
+   JobConfigService.unsafeFindFirst(
      pipelines,
      pipeline,
-     ({name}) => JobConfigSystem.filterTargetName(name, pipeline)
+     ({name}) => JobConfigService.filterTargetName(name, pipeline)
    ); */
 let _getExecutableJob = (jobs, jobItemName) =>
-  JobConfigSystem.unsafeFindFirst(
+  JobConfigService.unsafeFindFirst(
     jobs,
     jobItemName,
-    ({name: jobName}: job) => JobConfigSystem.filterTargetName(jobName, jobItemName)
+    ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
 let _buildStreamArr =
@@ -51,10 +51,10 @@ let _buildStreamArr =
            streamArr
            |> ArrayService.push(
                 switch (
-                  JobConfigSystem.findFirst(
+                  JobConfigService.findFirst(
                     pipelineJobs,
                     subJobName,
-                    ({name}) => JobConfigSystem.filterTargetName(name, subJobName)
+                    ({name}) => JobConfigService.filterTargetName(name, subJobName)
                   )
                 ) {
                 | None =>
@@ -99,19 +99,19 @@ let getMainInitJobStream = (jobHandleMap, stateData, state: StateDataType.state,
   let {setting, mainInitPipelines, mainInitJobs} = _unsafeGetWorkerJobConfig(state);
   /* TODO refactor */
   let {jobs}: mainInitPipeline =
-    JobConfigSystem.unsafeFindFirst(
+    JobConfigService.unsafeFindFirst(
       mainInitPipelines,
       setting.mainInitPipeline,
-      ({name}) => JobConfigSystem.filterTargetName(name, setting.mainInitPipeline)
+      ({name}) => JobConfigService.filterTargetName(name, setting.mainInitPipeline)
     );
   /* TODO check: frame job should only has one */
   let jobName = "frame";
   _find(
     (
-      JobConfigSystem.unsafeFindFirst(
+      JobConfigService.unsafeFindFirst(
         jobs,
         jobName,
-        ({name}: mainInitPipelineJob) => JobConfigSystem.filterTargetName(name, jobName)
+        ({name}: mainInitPipelineJob) => JobConfigService.filterTargetName(name, jobName)
       ),
       jobs,
       jobHandleMap,
@@ -141,10 +141,10 @@ let getSetting = (state) => _unsafeGetWorkerJobConfig(state).setting;
 let _getWorkerPipelineJobs = (state) => {
   let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(state);
   /* _getPipeline(setting.workerPipeline, workerPipelines).jobs */
-  JobConfigSystem.unsafeFindFirst(
+  JobConfigService.unsafeFindFirst(
     workerPipelines,
     setting.workerPipeline,
-    ({name}) => JobConfigSystem.filterTargetName(name, setting.workerPipeline)
+    ({name}) => JobConfigService.filterTargetName(name, setting.workerPipeline)
   ).
     jobs
 };
@@ -154,11 +154,11 @@ let getRenderWorkerPipelineJobs = (state) => _getWorkerPipelineJobs(state).rende
 let getWorkerJobs = (state) => _unsafeGetWorkerJobConfig(state).workerJobs;
 
 let _getExecutableWorkerJob = (jobs, jobItemName) =>
-  JobConfigSystem.unsafeFindFirst(
+  JobConfigService.unsafeFindFirst(
     jobs,
     jobItemName,
     ({name: jobName}: RenderWorkerStateDataType.job) =>
-      JobConfigSystem.filterTargetName(jobName, jobItemName)
+      JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
 let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), getJobHandleFunc) =>

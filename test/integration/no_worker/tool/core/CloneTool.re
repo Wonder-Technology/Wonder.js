@@ -31,7 +31,7 @@ let cloneWithBasicMaterial = (state, gameObject1, material1, count, isShareMater
     clonedGameObjectArr
     |> getFlattenClonedGameObjectArr
     |> Js.Array.map(
-         (clonedGameObject) => getGameObjectBasicMaterialComponent(clonedGameObject, state)
+         (clonedGameObject) => unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
        )
   )
 };

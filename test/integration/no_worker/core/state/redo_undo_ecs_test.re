@@ -107,7 +107,7 @@ let _ =
         (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3)
       };
       let _prepareBasicMaterialData = (state) => {
-        open BasicMaterial;
+        open BasicMaterialAPI;
         open Js.Typed_array;
         let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
         let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
@@ -119,7 +119,7 @@ let _ =
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
       let _prepareLightMaterialData = (state) => {
-        open LightMaterial;
+        open LightMaterialAPI;
         open Js.Typed_array;
         let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
         let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
@@ -362,11 +362,11 @@ let _ =
                       ) =
                         _prepareBasicMaterialData(state);
                       let copiedState = StateTool.deepCopyForRestore(state);
-                      let data = BasicMaterialTool.getMaterialData(copiedState);
+                      let data = copiedState.basicMaterialRecord;
                       data.colorMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
-                      let {colorMap} = BasicMaterialTool.getMaterialData(state);
+                      let {colorMap} = state.basicMaterialRecord;
                       colorMap
                       |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
                       |> JudgeTool.isUndefined
@@ -392,7 +392,7 @@ let _ =
                       ) =
                         _prepareLightMaterialData(state);
                       let copiedState = StateTool.deepCopyForRestore(state);
-                      let data = LightMaterialTool.getMaterialData(copiedState);
+                      let data = copiedState.lightMaterialRecord;
                       data.diffuseColorMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
@@ -400,7 +400,7 @@ let _ =
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
                       let {diffuseColorMap, specularColorMap} =
-                        LightMaterialTool.getMaterialData(state);
+                        state.lightMaterialRecord;
                       (
                         diffuseColorMap
                         |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
@@ -1021,7 +1021,7 @@ let _ =
             "restore light data to target state",
             () => {
               let _prepareLightData = (createGameObjectFunc, state) => {
-                open LightMaterial;
+                open LightMaterialAPI;
                 open Js.Typed_array;
                 let (state, gameObject1, light1) = createGameObjectFunc(state^);
                 let (state, gameObject2, light2) = createGameObjectFunc(state);
@@ -1031,7 +1031,7 @@ let _ =
                 (state, gameObject1, gameObject2, gameObject3, light1, light2, light3)
               };
               let _prepareAmbientLightData = (state) => {
-                open LightMaterial;
+                open LightMaterialAPI;
                 open Js.Typed_array;
                 let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                 let (state, gameObject2, light2) = AmbientLightTool.createGameObject(state);

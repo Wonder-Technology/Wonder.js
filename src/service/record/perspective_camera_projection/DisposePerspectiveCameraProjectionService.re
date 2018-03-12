@@ -1,7 +1,7 @@
 open PerspectiveCameraProjectionType;
 
 let isAlive = (cameraView, {disposedIndexArray}) =>
-  ComponentDisposeComponentCommon.isAlive(cameraView, disposedIndexArray);
+  DisposeComponentService.isAlive(cameraView, disposedIndexArray);
 
 let _disposeRecord =
     (

@@ -51,26 +51,6 @@ let getMeshRendererComponent =
       state.gameObjectRecord.meshRendererMap |> getComponent(uid)
   );
 
-let getBasicMaterialComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.basicMaterialMap |> getComponent(uid)
-  );
-
-let getLightMaterialComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.lightMaterialMap |> getComponent(uid)
-  );
-
-let unsafeGetBasicMaterialComponent = (uid: int, state: StateDataType.state) =>
-  state.gameObjectRecord.basicMaterialMap |> _unsafeGetComponent(uid);
-
-let unsafeGetLightMaterialComponent = (uid: int, state: StateDataType.state) =>
-  state.gameObjectRecord.lightMaterialMap |> _unsafeGetComponent(uid);
-
 let getAmbientLightComponent =
   [@bs]
   (
@@ -121,20 +101,6 @@ let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.
   _batchGetComponent(
     uidArray,
     state.gameObjectRecord.meshRendererMap,
-    state
-  );
-
-let batchGetBasicMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.basicMaterialMap,
-    state
-  );
-
-let batchGetLightMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.lightMaterialMap,
     state
   );
 

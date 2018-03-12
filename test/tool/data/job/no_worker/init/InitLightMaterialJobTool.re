@@ -9,7 +9,7 @@ let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
-  open LightMaterial;
+  open LightMaterialAPI;
   open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createLightMaterial(state);

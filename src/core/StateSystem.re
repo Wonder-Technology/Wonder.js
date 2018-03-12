@@ -21,8 +21,8 @@ let createState = () => {
   sceneRecord: RecordSceneService.create(),
   basicCameraViewRecord: RecordBasicCameraViewService.create(),
   perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
-  basicMaterialData: BasicMaterialHelper.create(),
-  lightMaterialData: LightMaterialHelper.create(),
+  basicMaterialRecord: RecordBasicMaterialService.create(),
+  lightMaterialRecord: RecordLightMaterialService.create(),
   ambientLightData: AmbientLightHelper.create(),
   directionLightData: DirectionLightHelper.create(),
   pointLightData: PointLightHelper.create(),
@@ -58,8 +58,6 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   |> MeshRendererAdmin.deepCopyForRestore
   |> VboBufferSystem.deepCopyForRestore
   |> GLSLSenderSystem.deepCopyForRestore
-  |> BasicMaterialAdmin.deepCopyForRestore
-  |> LightMaterialAdmin.deepCopyForRestore
   |> AmbientLightAdmin.deepCopyForRestore
   |> DirectionLightAdmin.deepCopyForRestore
   |> PointLightAdmin.deepCopyForRestore
@@ -81,7 +79,9 @@ let deepCopyForRestore = (state: StateDataType.state) =>
         ),
       transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
       typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
-      boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord)
+      boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord),
+      basicMaterialRecord: RecordBasicMaterialService.deepCopyForRestore(state.basicMaterialRecord),
+      lightMaterialRecord: RecordLightMaterialService.deepCopyForRestore(state.lightMaterialRecord)
     }
   );
 
@@ -118,8 +118,8 @@ let restore =
   |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
-  |> BasicMaterialAdmin.restore(gl, currentState)
-  |> LightMaterialAdmin.restore(gl, currentState)
+  |> RestoreBasicMaterialService.restore(gl, currentState)
+  |> RestoreLightMaterialService.restore(gl, currentState)
   |> AmbientLightAdmin.restore(currentState)
   |> DirectionLightAdmin.restore(currentState)
   |> PointLightAdmin.restore(currentState)

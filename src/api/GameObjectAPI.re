@@ -168,3 +168,73 @@ let hasGameObjectBoxGeometryComponent = (gameObject: gameObject, state: StateDat
   );
   hasBoxGeometryComponent(gameObject, state.gameObjectRecord)
 };
+
+let addGameObjectBasicMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addBasicMaterialComponent(gameObject, component, state)
+};
+
+let disposeGameObjectBasicMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeBasicMaterialComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectBasicMaterialComponent =
+    (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetBasicMaterialComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectBasicMaterialComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasBasicMaterialComponent(gameObject, state.gameObjectRecord)
+};
+
+let addGameObjectLightMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addLightMaterialComponent(gameObject, component, state)
+};
+
+let disposeGameObjectLightMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeLightMaterialComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectLightMaterialComponent =
+    (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetLightMaterialComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectLightMaterialComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasLightMaterialComponent(gameObject, state.gameObjectRecord)
+};

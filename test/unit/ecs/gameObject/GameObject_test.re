@@ -121,13 +121,13 @@ let _ =
             "test material component",
             () => {
               describe(
-                "getGameObjectBasicMaterialComponent",
+                "unsafeGetGameObjectBasicMaterialComponent",
                 () =>
                   test(
                     "get material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, material) = BasicMaterial.createBasicMaterial(state);
+                      let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
                       let state =
                         state |> addGameObjectBasicMaterialComponent(gameObject, material);
                       hasGameObjectBasicMaterialComponent(gameObject, state) |> expect == true
@@ -141,7 +141,7 @@ let _ =
                     "has material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, material) = BasicMaterial.createBasicMaterial(state);
+                      let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
                       let state =
                         state |> addGameObjectBasicMaterialComponent(gameObject, material);
                       hasGameObjectBasicMaterialComponent(gameObject, state) |> expect == true
@@ -149,13 +149,13 @@ let _ =
                   )
               );
               describe(
-                "getGameObjectLightMaterialComponent",
+                "unsafeGetGameObjectLightMaterialComponent",
                 () =>
                   test(
                     "get material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, material) = LightMaterial.createLightMaterial(state);
+                      let (state, material) = LightMaterialAPI.createLightMaterial(state);
                       let state =
                         state |> addGameObjectLightMaterialComponent(gameObject, material);
                       hasGameObjectLightMaterialComponent(gameObject, state) |> expect == true
@@ -169,7 +169,7 @@ let _ =
                     "has material component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, material) = LightMaterial.createLightMaterial(state);
+                      let (state, material) = LightMaterialAPI.createLightMaterial(state);
                       let state =
                         state |> addGameObjectLightMaterialComponent(gameObject, material);
                       hasGameObjectLightMaterialComponent(gameObject, state) |> expect == true
@@ -1476,12 +1476,12 @@ let _ =
                 () => _testTwoParamFunc(unsafeGetGameObjectTransformComponent)
               );
               test(
-                "getGameObjectBasicMaterialComponent should error",
-                () => _testTwoParamFunc(getGameObjectBasicMaterialComponent)
+                "unsafeGetGameObjectBasicMaterialComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectBasicMaterialComponent)
               );
               test(
-                "getGameObjectLightMaterialComponent should error",
-                () => _testTwoParamFunc(getGameObjectLightMaterialComponent)
+                "unsafeGetGameObjectLightMaterialComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectLightMaterialComponent)
               );
               test(
                 "getGameObjectAmbientLightComponent should error",

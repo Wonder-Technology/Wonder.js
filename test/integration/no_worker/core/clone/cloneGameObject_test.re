@@ -399,7 +399,7 @@ let _ =
                       |> CloneTool.getFlattenClonedGameObjectArr
                       |> Js.Array.map(
                            (clonedGameObject) =>
-                             getGameObjectBasicMaterialComponent(clonedGameObject, state)
+                             unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
                          )
                     )
                   };
@@ -437,8 +437,8 @@ let _ =
                     () => {
                       let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare();
                       (
-                        BasicMaterial.getBasicMaterialGameObject(clonedMaterialArr[0], state),
-                        BasicMaterial.getBasicMaterialGameObject(clonedMaterialArr[1], state)
+                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(clonedMaterialArr[0], state),
+                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(clonedMaterialArr[1], state)
                       )
                       |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1])
                     }
@@ -461,7 +461,7 @@ let _ =
                           |> CloneTool.getFlattenClonedGameObjectArr
                           |> Js.Array.map(
                                (clonedGameObject) =>
-                                 getGameObjectBasicMaterialComponent(clonedGameObject, state)
+                                 unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
                              )
                         )
                       };
@@ -471,14 +471,14 @@ let _ =
                           let (state, gameObject, material) = _prepare();
                           let color = [|1., 0.2, 0.3|];
                           let state =
-                            state |> BasicMaterial.setBasicMaterialColor(material, color);
+                            state |> BasicMaterialAPI.setBasicMaterialColor(material, color);
                           let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = AllMaterialTool.prepareForInit(state);
                           (
-                            BasicMaterial.getBasicMaterialColor(clonedMaterialArr[0], state),
-                            BasicMaterial.getBasicMaterialColor(clonedMaterialArr[1], state)
+                            BasicMaterialAPI.unsafeGetBasicMaterialColor(clonedMaterialArr[0], state),
+                            BasicMaterialAPI.unsafeGetBasicMaterialColor(clonedMaterialArr[1], state)
                           )
                           |> expect == (color, color)
                         }
@@ -500,7 +500,7 @@ let _ =
                             |> CloneTool.getFlattenClonedGameObjectArr
                             |> Js.Array.map(
                                  (clonedGameObject) =>
-                                   getGameObjectBasicMaterialComponent(clonedGameObject, state)
+                                   unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
                                );
                           BasicMaterialTool.hasShaderIndex(clonedMaterialArr[0], state)
                           |> expect == false
@@ -529,7 +529,7 @@ let _ =
                           |> CloneTool.getFlattenClonedGameObjectArr
                           |> Js.Array.map(
                                (clonedGameObject) =>
-                                 getGameObjectLightMaterialComponent(clonedGameObject, state)
+                                 unsafeGetGameObjectLightMaterialComponent(clonedGameObject, state)
                              )
                         )
                       };
@@ -539,14 +539,14 @@ let _ =
                           let (state, gameObject, material) = _prepare();
                           let color = [|1., 0.2, 0.3|];
                           let state =
-                            state |> LightMaterial.setLightMaterialDiffuseColor(material, color);
+                            state |> LightMaterialAPI.setLightMaterialDiffuseColor(material, color);
                           let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = AllMaterialTool.prepareForInit(state);
                           (
-                            LightMaterial.getLightMaterialDiffuseColor(clonedMaterialArr[0], state),
-                            LightMaterial.getLightMaterialDiffuseColor(clonedMaterialArr[1], state)
+                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(clonedMaterialArr[0], state),
+                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(clonedMaterialArr[1], state)
                           )
                           |> expect == (color, color)
                         }
@@ -557,17 +557,17 @@ let _ =
                           let (state, gameObject, material) = _prepare();
                           let color = [|1., 0.2, 0.3|];
                           let state =
-                            state |> LightMaterial.setLightMaterialSpecularColor(material, color);
+                            state |> LightMaterialAPI.setLightMaterialSpecularColor(material, color);
                           let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = AllMaterialTool.prepareForInit(state);
                           (
-                            LightMaterial.getLightMaterialSpecularColor(
+                            LightMaterialAPI.unsafeGetLightMaterialSpecularColor(
                               clonedMaterialArr[0],
                               state
                             ),
-                            LightMaterial.getLightMaterialSpecularColor(
+                            LightMaterialAPI.unsafeGetLightMaterialSpecularColor(
                               clonedMaterialArr[1],
                               state
                             )
@@ -936,7 +936,7 @@ let _ =
                          |> CloneTool.getFlattenClonedGameObjectArr
                          |> Js.Array.map(
                               (clonedGameObject) =>
-                                getGameObjectBasicMaterialComponent(clonedGameObject, state)
+                                unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
                             )
                          |> Js.Array.length
                          |> expect == 4

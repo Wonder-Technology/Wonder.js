@@ -75,6 +75,38 @@ let addBoxGeometryComponent =
        )
 };
 
+let addBasicMaterialComponent =
+    (uid: int, component: component, {basicMaterialRecord, gameObjectRecord} as state) => {
+  ...state,
+  basicMaterialRecord:
+    basicMaterialRecord
+    |> _addSharableComponent(
+         (
+           uid,
+           component,
+           gameObjectRecord.basicMaterialMap,
+           GameObjectBasicMaterialService.getGameObject(component, basicMaterialRecord)
+         ),
+         (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent)
+       )
+};
+
+let addLightMaterialComponent =
+    (uid: int, component: component, {lightMaterialRecord, gameObjectRecord} as state) => {
+  ...state,
+  lightMaterialRecord:
+    lightMaterialRecord
+    |> _addSharableComponent(
+         (
+           uid,
+           component,
+           gameObjectRecord.lightMaterialMap,
+           GameObjectLightMaterialService.getGameObject(component, lightMaterialRecord)
+         ),
+         (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent)
+       )
+};
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {
@@ -193,5 +225,54 @@ let batchAddBoxGeometryComponentForClone =
       (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
       GroupGeometryService.increaseGroupCount,
       boxGeometryRecord
+    )
+};
+
+let _batchAddMaterialComponentForClone =
+    (
+      isShareBasicMaterial,
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      (increaseGroupCountFunc, handleAddComponentFunc),
+      record
+    ) =>
+  isShareBasicMaterial ?
+    _batchAddSharableComponent(
+      (uidArr, componentArr, componentMap),
+      increaseGroupCountFunc,
+      record
+    ) :
+    _batchAddComponent((uidArr, componentArr, componentMap), handleAddComponentFunc, record);
+
+let batchAddBasicMaterialComponentForClone =
+    (
+      isShareMaterial,
+      uidArr: array(int),
+      componentArr: array(component),
+      {basicMaterialRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  basicMaterialRecord:
+    _batchAddMaterialComponentForClone(
+      isShareMaterial,
+      (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
+      (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent),
+      basicMaterialRecord
+    )
+};
+
+let batchAddLightMaterialComponentForClone =
+    (
+      isShareMaterial,
+      uidArr: array(int),
+      componentArr: array(component),
+      {lightMaterialRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  lightMaterialRecord:
+    _batchAddMaterialComponentForClone(
+      isShareMaterial,
+      (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
+      (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent),
+      lightMaterialRecord
     )
 };

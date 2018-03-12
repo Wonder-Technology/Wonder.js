@@ -72,7 +72,7 @@ open NoWorkerJobConfigType;
 
 open WorkerJobConfigType;
 
-open RenderConfigDataType;
+open RenderConfigType;
 
 open WorkerInstanceType;
 
@@ -189,8 +189,8 @@ and state = {
   sceneRecord,
   basicCameraViewRecord,
   perspectiveCameraProjectionRecord,
-  basicMaterialData,
-  lightMaterialData,
+  basicMaterialRecord,
+  lightMaterialRecord,
   ambientLightData,
   directionLightData,
   pointLightData,

@@ -64,4 +64,28 @@ let clone =
          CloneComponentGameObjectService.cloneBoxGeometryComponent,
          AddGameObjectComponentService.batchAddBoxGeometryComponentForClone
        )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneBasicMaterialComponent(isShareMaterial),
+         AddGameObjectComponentService.batchAddBasicMaterialComponentForClone(isShareMaterial)
+       )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getLightMaterialComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneLightMaterialComponent(isShareMaterial),
+         AddGameObjectComponentService.batchAddLightMaterialComponentForClone(isShareMaterial)
+       )
      );

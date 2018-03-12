@@ -29,5 +29,5 @@ let _getBit = (gl, flags) =>
 
 let execJob = (flags, _, state) => {
   let gl = [@bs] DeviceManagerSystem.unsafeGetGl(state);
-  DeviceManagerSystem.clearBuffer(gl, _getBit(gl, JobConfigSystem.unsafeGetFlags(flags)), state)
+  DeviceManagerSystem.clearBuffer(gl, _getBit(gl, JobConfigService.unsafeGetFlags(flags)), state)
 };

@@ -51,7 +51,7 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
 };
 
 let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state) =>
-  ComponentSystem.getComponentGameObject(
+  GameObjectMapService.getGameObject(
     sourceInstance,
     SourceInstanceStateCommon.getSourceInstanceData(state).gameObjectMap
   );

@@ -141,7 +141,7 @@ let _ =
                 () => {
                   let _prepareBasicMaterialGameObject = (sandbox, state) => {
                     open GameObject; open GameObjectAPI;
-                    open BasicMaterial;
+                    open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;
                     let (state, material) = createBasicMaterial(state);
@@ -155,7 +155,7 @@ let _ =
                   };
                   let _prepareInstanceGameObject = (sandbox, state) => {
                     open GameObject; open GameObjectAPI;
-                    open BasicMaterial;
+                    open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;
                     let (state, material) = createBasicMaterial(state);

@@ -1,7 +1,7 @@
 open BasicCameraViewType;
 
 let isAlive = (cameraView, {disposedIndexArray}) =>
-  ComponentDisposeComponentCommon.isAlive(cameraView, disposedIndexArray);
+  DisposeComponentService.isAlive(cameraView, disposedIndexArray);
 
 let _disposeRecord = (cameraView, {gameObjectMap} as record) => {
   ...record,

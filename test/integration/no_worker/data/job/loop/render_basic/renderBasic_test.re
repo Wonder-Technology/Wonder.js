@@ -722,7 +722,7 @@ let _ =
             sandbox,
             "u_color",
             (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
-              state |> BasicMaterial.setBasicMaterialColor(material, [|0., 1., 0.2|]),
+              state |> BasicMaterialAPI.setBasicMaterialColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
@@ -743,7 +743,7 @@ let _ =
                         let (state, gameObject2, _, material2, _) =
                           RenderBasicJobTool.prepareGameObject(sandbox, state);
                         let state =
-                          state |> BasicMaterial.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
+                          state |> BasicMaterialAPI.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =

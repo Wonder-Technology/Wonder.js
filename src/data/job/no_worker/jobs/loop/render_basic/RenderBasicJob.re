@@ -1,7 +1,11 @@
 open StateDataType;
 
 let _getBasicMaterialRenderArray = (renderArray, state: StateDataType.state) =>
-  renderArray |> Js.Array.filter((uid) => GameObjectAdmin.hasBasicMaterialComponent(uid, state));
+  renderArray
+  |> Js.Array.filter(
+       (uid) =>
+         HasComponentGameObjectService.hasBasicMaterialComponent(uid, state.gameObjectRecord)
+     );
 
 let _render = (gl, state: StateDataType.state) =>
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
@@ -22,7 +26,10 @@ let _render = (gl, state: StateDataType.state) =>
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),
                    RenderGeometryService.getIndexTypeSize(gl),
-                   IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap)
+                   IndicesService.getIndicesCount(
+                     geometryIndex,
+                     state.boxGeometryRecord.indicesMap
+                   )
                  ),
                  gl
                );

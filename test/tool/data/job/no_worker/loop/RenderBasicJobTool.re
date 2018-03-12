@@ -3,7 +3,7 @@ let execJob = (configData, state) =>
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
-  open BasicMaterial;
+  open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
@@ -20,7 +20,7 @@ let prepareGameObject = (sandbox, state) => {
 };
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObject; open GameObjectAPI;
-  open BasicMaterial;
+  open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;

@@ -43,30 +43,6 @@ let addMeshRendererComponent = GameObjectAddComponentCommon.addMeshRendererCompo
 let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeMeshRendererComponent(uid, component, state);
 
-let hasBasicMaterialComponent = GameObjectHasComponentCommon.hasBasicMaterialComponent;
-
-let getBasicMaterialComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getBasicMaterialComponent(uid, state);
-
-let unsafeGetBasicMaterialComponent = GameObjectGetComponentCommon.unsafeGetBasicMaterialComponent;
-
-let addBasicMaterialComponent = GameObjectAddComponentCommon.addBasicMaterialComponent;
-
-let disposeBasicMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeBasicMaterialComponent(uid, component, state);
-
-let hasLightMaterialComponent = GameObjectHasComponentCommon.hasLightMaterialComponent;
-
-let getLightMaterialComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getLightMaterialComponent(uid, state);
-
-let unsafeGetLightMaterialComponent = GameObjectGetComponentCommon.unsafeGetLightMaterialComponent;
-
-let addLightMaterialComponent = GameObjectAddComponentCommon.addLightMaterialComponent;
-
-let disposeLightMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeLightMaterialComponent(uid, component, state);
-
 let hasAmbientLightComponent = GameObjectHasComponentCommon.hasAmbientLightComponent;
 
 let getAmbientLightComponent = (uid: int, state: StateDataType.state) =>
@@ -125,9 +101,11 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     | None => state
     };
   let state =
-    switch (getBasicMaterialComponent(uid, state)) {
+    switch (
+      [@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, state.gameObjectRecord)
+    ) {
     | Some(material) =>
-      BasicMaterialSystem.handleInitComponent(
+      InitBasicMaterialService.handleInitComponent(
         [@bs] DeviceManagerSystem.unsafeGetGl(state),
         material,
         state
@@ -135,9 +113,11 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     | None => state
     };
   let state =
-    switch (getLightMaterialComponent(uid, state)) {
+    switch (
+      [@bs] GetComponentGameObjectService.getLightMaterialComponent(uid, state.gameObjectRecord)
+    ) {
     | Some(material) =>
-      LightMaterialSystem.handleInitComponent(
+      InitLightMaterialService.handleInitComponent(
         [@bs] DeviceManagerSystem.unsafeGetGl(state),
         material,
         state

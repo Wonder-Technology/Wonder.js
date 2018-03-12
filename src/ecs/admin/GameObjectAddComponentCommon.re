@@ -64,36 +64,6 @@ let addMeshRendererComponent = (uid: int, component: component, state: StateData
     state
   );
 
-let addBasicMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  state
-  |> _addSharableComponent(
-       (
-         uid,
-         component,
-         state.gameObjectRecord.basicMaterialMap,
-         BasicMaterialGameObjectCommon.getGameObject(component, state)
-       ),
-       (
-         BasicMaterialGroupCommon.increaseGroupCount,
-         BasicMaterialAddComponentCommon.handleAddComponent
-       )
-     );
-
-let addLightMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  state
-  |> _addSharableComponent(
-       (
-         uid,
-         component,
-         state.gameObjectRecord.lightMaterialMap,
-         LightMaterialGameObjectCommon.getGameObject(component, state)
-       ),
-       (
-         LightMaterialGroupCommon.increaseGroupCount,
-         LightMaterialAddComponentCommon.handleAddComponent
-       )
-     );
-
 let addAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
     (uid, component, state.gameObjectRecord.ambientLightMap),
@@ -208,57 +178,6 @@ let batchAddMeshRendererComponentForClone =
   _batchAddComponent(
     (uidArr, componentArr, state.gameObjectRecord.meshRendererMap),
     MeshRendererAddComponentCommon.handleAddComponent,
-    state
-  );
-
-let _batchAddMaterialComponentForClone =
-    (
-      isShareBasicMaterial,
-      (uidArr: array(int), componentArr: array(component), componentMap),
-      (increaseGroupCountFunc, handleAddComponentFunc),
-      state: StateDataType.state
-    ) =>
-  isShareBasicMaterial ?
-    _batchAddSharableComponent(
-      (uidArr, componentArr, componentMap),
-      increaseGroupCountFunc,
-      state
-    ) :
-    _batchAddComponent((uidArr, componentArr, componentMap), handleAddComponentFunc, state);
-
-let batchAddBasicMaterialComponentForClone =
-    (
-      isShareMaterial,
-      uidArr: array(int),
-      componentArr: array(component),
-      state: StateDataType.state
-    ) => {
-  let componentMap = state.gameObjectRecord.basicMaterialMap;
-  _batchAddMaterialComponentForClone(
-    isShareMaterial,
-    (uidArr, componentArr, state.gameObjectRecord.basicMaterialMap),
-    (
-      BasicMaterialGroupCommon.increaseGroupCount,
-      BasicMaterialAddComponentCommon.handleAddComponent
-    ),
-    state
-  )
-};
-
-let batchAddLightMaterialComponentForClone =
-    (
-      isShareMaterial,
-      uidArr: array(int),
-      componentArr: array(component),
-      state: StateDataType.state
-    ) =>
-  _batchAddMaterialComponentForClone(
-    isShareMaterial,
-    (uidArr, componentArr, state.gameObjectRecord.lightMaterialMap),
-    (
-      LightMaterialGroupCommon.increaseGroupCount,
-      LightMaterialAddComponentCommon.handleAddComponent
-    ),
     state
   );
 

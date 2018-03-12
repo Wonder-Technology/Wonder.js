@@ -34,7 +34,7 @@ let _ =
                 () => {
                   let (state, gameObject1, material1) = _prepare(state^);
                   let colorArr1 = [|1.0, 0.1, 0.2|];
-                  let state = state |> BasicMaterial.setBasicMaterialColor(material1, colorArr1);
+                  let state = state |> BasicMaterialAPI.setBasicMaterialColor(material1, colorArr1);
                   let pos = 0;
                   let getUniformLocation =
                     GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
@@ -51,7 +51,7 @@ let _ =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
                   let state = state |> GameObject.initGameObject(gameObject2);
                   let colorArr2 = [|0.0, 0.1, 0.2|];
-                  let state = state |> BasicMaterial.setBasicMaterialColor(material2, colorArr2);
+                  let state = state |> BasicMaterialAPI.setBasicMaterialColor(material2, colorArr2);
                   let state = state |> DirectorTool.runWithDefaultTime;
                   uniform3f
                   |> expect

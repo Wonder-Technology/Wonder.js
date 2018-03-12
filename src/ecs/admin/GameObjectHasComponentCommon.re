@@ -11,12 +11,6 @@ let hasObjectInstanceComponent = (uid: int, state: StateDataType.state) : bool =
 let hasMeshRendererComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, state.gameObjectRecord.meshRendererMap);
 
-let hasBasicMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
-  _hasComponent(uid, state.gameObjectRecord.basicMaterialMap);
-
-let hasLightMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
-  _hasComponent(uid, state.gameObjectRecord.lightMaterialMap);
-
 let hasAmbientLightComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, state.gameObjectRecord.ambientLightMap);
 

@@ -1,11 +1,18 @@
+open StateDataType;
+
 let render =
   [@bs]
   (
     (gl, uid, state: StateDataType.state) => {
-      let materialIndex = GameObjectAdmin.unsafeGetBasicMaterialComponent(uid, state);
+      let materialIndex =
+        GetComponentGameObjectService.unsafeGetBasicMaterialComponent(uid, state.gameObjectRecord);
       RenderJobUtils.render(
         gl,
-        (materialIndex, BasicMaterialAdmin.unsafeGetShaderIndex(materialIndex, state), uid),
+        (
+          materialIndex,
+          ShaderIndexBasicMaterialService.unsafeGetShaderIndex(materialIndex, state),
+          uid
+        ),
         state
       )
     }

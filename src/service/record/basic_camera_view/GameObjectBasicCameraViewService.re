@@ -3,10 +3,10 @@ open BasicCameraViewType;
 open ComponentSystem;
 
 let getGameObject = (cameraView, {gameObjectMap}) =>
-  ComponentSystem.getComponentGameObject(cameraView, gameObjectMap);
+  GameObjectMapService.getGameObject(cameraView, gameObjectMap);
 
 let unsafeGetGameObject = (cameraView, {gameObjectMap}) =>
-  ComponentSystem.unsafeGetComponentGameObject(cameraView, gameObjectMap);
+  GameObjectMapService.unsafeGetGameObject(cameraView, gameObjectMap);
 
 let _isValidComponent = (cameraView, maxIndex) => cameraView >= 0 && cameraView < maxIndex;
 

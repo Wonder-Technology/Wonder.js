@@ -1,4 +1,4 @@
-open BasicMaterial;
+open BasicMaterialAPI;
 
 open Wonder_jest;
 

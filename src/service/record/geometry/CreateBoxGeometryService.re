@@ -170,21 +170,8 @@ let _computeData = (index: int, record) =>
   };
 
 let create = ({computeDataFuncMap, index, disposedIndexArray} as record) => {
-  /* let {computeDataFuncMap} as record = state.boxGeometryRecord; */
-  /* let (index, newIndex, disposedIndexArray) = GeometryCreateCommon.create(state);
-   */
   let (index, newIndex, disposedIndexArray) =
     ComponentSystem.generateIndex(index, disposedIndexArray);
-  /* {
-       ...state,
-       boxGeometryRecord: {
-         ...record,
-         index: newIndex,
-         disposedIndexArray,
-         computeDataFuncMap:
-           computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
-       }
-     }, */
   (
     {
       ...record,

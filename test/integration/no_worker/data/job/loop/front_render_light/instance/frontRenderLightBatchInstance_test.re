@@ -66,7 +66,7 @@ let _ =
             sandbox,
             "u_diffuse",
             (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
-              state |> LightMaterial.setLightMaterialDiffuseColor(material, [|0., 1., 0.2|]),
+              state |> LightMaterialAPI.setLightMaterialDiffuseColor(material, [|0., 1., 0.2|]),
             [0., 1., 0.2],
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ()

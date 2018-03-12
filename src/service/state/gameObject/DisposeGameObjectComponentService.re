@@ -43,6 +43,20 @@ let dispose = (uid, state) =>
          GetComponentGameObjectService.getBoxGeometryComponent,
          DisposeComponentGameObjectService.disposeBoxGeometryComponent
        )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getBasicMaterialComponent,
+         DisposeComponentGameObjectService.disposeBasicMaterialComponent
+       )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getLightMaterialComponent,
+         DisposeComponentGameObjectService.disposeLightMaterialComponent
+       )
      );
 
 let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
@@ -68,5 +82,13 @@ let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
     state
     |> BatchGetComponentGameObjectService.batchGetBoxGeometryComponent(uidArray)
     |> DisposeComponentGameObjectService.batchDisposeBoxGeometryComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetBasicMaterialComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeBasicMaterialComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetLightMaterialComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeLightMaterialComponent(disposedUidMap, state);
   state
 };

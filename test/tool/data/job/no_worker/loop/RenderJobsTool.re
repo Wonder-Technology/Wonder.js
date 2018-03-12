@@ -18,8 +18,9 @@ let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
   |> DirectorTool.prepare;
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObject; open GameObjectAPI;
-  open BasicMaterial;
+  open GameObject;
+  open GameObjectAPI;
+  open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;

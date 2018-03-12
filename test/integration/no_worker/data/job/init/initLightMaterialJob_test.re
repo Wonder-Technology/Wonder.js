@@ -1,5 +1,5 @@
 /* TODO duplicate with InitBasicMaterialJob_test */
-open LightMaterial;
+open LightMaterialAPI;
 
 open Wonder_jest;
 

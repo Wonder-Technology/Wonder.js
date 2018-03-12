@@ -1159,7 +1159,7 @@ let _ =
                 sandbox,
                 "u_shininess",
                 (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
-                  state |> LightMaterial.setLightMaterialShininess(material, 30.),
+                  state |> LightMaterialAPI.setLightMaterialShininess(material, 30.),
                 30.,
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ()
@@ -1177,7 +1177,7 @@ let _ =
                       state
                     ) =>
                       state
-                      |> LightMaterial.setLightMaterialDiffuseColor(material, [|1., 0., 0.5|]),
+                      |> LightMaterialAPI.setLightMaterialDiffuseColor(material, [|1., 0., 0.5|]),
                     [1., 0., 0.5],
                     ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                     ()
@@ -1192,7 +1192,7 @@ let _ =
                       state
                     ) =>
                       state
-                      |> LightMaterial.setLightMaterialSpecularColor(material, [|1., 0., 0.5|]),
+                      |> LightMaterialAPI.setLightMaterialSpecularColor(material, [|1., 0., 0.5|]),
                     [1., 0., 0.5],
                     ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                     ()

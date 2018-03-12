@@ -1,5 +1,0 @@
-let unsafeGetDiffuseColor = LightMaterialOperateCommon.unsafeGetDiffuseColor;
-
-let unsafeGetSpecularColor = LightMaterialOperateCommon.unsafeGetSpecularColor;
-
-let unsafeGetShininess = LightMaterialOperateCommon.unsafeGetShininess;

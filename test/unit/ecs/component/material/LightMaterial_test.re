@@ -1,10 +1,10 @@
-open LightMaterial;
+open LightMaterialAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "LightMaterial",
+    "LightMaterialAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -54,7 +54,7 @@ let _ =
              )
          ); */
       describe(
-        "getLightMaterialGameObject",
+        "unsafeGetLightMaterialGameObject",
         () =>
           test(
             "get material's gameObject",
@@ -63,18 +63,18 @@ let _ =
               let (state, material) = createLightMaterial(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
-              state |> getLightMaterialGameObject(material) |> expect == gameObject
+              state |> unsafeGetLightMaterialGameObject(material) |> expect == gameObject
             }
           )
       );
       describe(
-        "getLightMaterialDiffuseColor",
+        "unsafeGetLightMaterialDiffuseColor",
         () =>
           test(
             "test default color",
             () => {
               let (state, material) = createLightMaterial(state^);
-              getLightMaterialDiffuseColor(material, state) |> expect == [|1., 1., 1.|]
+              unsafeGetLightMaterialDiffuseColor(material, state) |> expect == [|1., 1., 1.|]
             }
           )
       );
@@ -87,18 +87,18 @@ let _ =
               let (state, material) = createLightMaterial(state^);
               let color = [|0.2, 0.3, 0.5|];
               let state = state |> setLightMaterialDiffuseColor(material, color);
-              getLightMaterialDiffuseColor(material, state) |> expect == color
+              unsafeGetLightMaterialDiffuseColor(material, state) |> expect == color
             }
           )
       );
       describe(
-        "getLightMaterialSpecularColor",
+        "unsafeGetLightMaterialSpecularColor",
         () =>
           test(
             "test default color",
             () => {
               let (state, material) = createLightMaterial(state^);
-              getLightMaterialSpecularColor(material, state) |> expect == [|1., 1., 1.|]
+              unsafeGetLightMaterialSpecularColor(material, state) |> expect == [|1., 1., 1.|]
             }
           )
       );
@@ -111,18 +111,18 @@ let _ =
               let (state, material) = createLightMaterial(state^);
               let color = [|0.2, 0.3, 0.5|];
               let state = state |> setLightMaterialSpecularColor(material, color);
-              getLightMaterialSpecularColor(material, state) |> expect == color
+              unsafeGetLightMaterialSpecularColor(material, state) |> expect == color
             }
           )
       );
       describe(
-        "getLightMaterialShininess",
+        "unsafeGetLightMaterialShininess",
         () =>
           test(
             "test default shininess",
             () => {
               let (state, material) = createLightMaterial(state^);
-              getLightMaterialShininess(material, state) |> expect == 32.
+              unsafeGetLightMaterialShininess(material, state) |> expect == 32.
             }
           )
       );
@@ -135,7 +135,7 @@ let _ =
               let (state, material) = createLightMaterial(state^);
               let shininess = 30.;
               let state = state |> setLightMaterialShininess(material, shininess);
-              getLightMaterialShininess(material, state) |> expect == shininess
+              unsafeGetLightMaterialShininess(material, state) |> expect == shininess
             }
           )
       );
@@ -152,7 +152,7 @@ let _ =
                   let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
                   let {
                     diffuseColorMap,
                     specularColorMap,
@@ -160,7 +160,7 @@ let _ =
                     shaderIndexMap,
                     gameObjectMap
                   } =
-                    LightMaterialTool.getMaterialData(state);
+                    state.lightMaterialRecord;
                   (
                     diffuseColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
                     specularColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
@@ -177,13 +177,13 @@ let _ =
                   let (state, material1) = createLightMaterial(state^);
                   let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectLightMaterialComponent(gameObject1, material1);
+                    state |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject1, material1);
                   let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectLightMaterialComponent(gameObject2, material1);
+                    state |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject2, material1);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
                   LightMaterialTool.getGroupCount(material1, state) |> expect == 0
                 }
               )
@@ -200,7 +200,7 @@ let _ =
                  let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
                  let state =
                    state
-                   |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                   |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
                  let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
                  material3 |> expect == material1
                }
@@ -212,7 +212,7 @@ let _ =
                  let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
                  let state =
                    state
-                   |> GameObject.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                   |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
                  let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
                  let (state, gameObject4, material4) = LightMaterialTool.createGameObject(state);
                  (material3, material4) |> expect == (material1, material2 + 1)
@@ -232,21 +232,21 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
                 let state =
-                  state |> GameObject.disposeGameObjectLightMaterialComponent(gameObject, material);
+                  state |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject, material);
                 expect(() => getFunc(material, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
               test(
-                "getLightMaterialGameObject should error",
-                () => _testGetFunc(getLightMaterialGameObject)
+                "unsafeGetLightMaterialGameObject should error",
+                () => _testGetFunc(unsafeGetLightMaterialGameObject)
               );
               test(
-                "getLightMaterialDiffuseColor should error",
-                () => _testGetFunc(getLightMaterialDiffuseColor)
+                "unsafeGetLightMaterialDiffuseColor should error",
+                () => _testGetFunc(unsafeGetLightMaterialDiffuseColor)
               );
               test(
-                "getLightMaterialSpecularColor should error",
-                () => _testGetFunc(getLightMaterialSpecularColor)
+                "unsafeGetLightMaterialSpecularColor should error",
+                () => _testGetFunc(unsafeGetLightMaterialSpecularColor)
               )
             }
           )
