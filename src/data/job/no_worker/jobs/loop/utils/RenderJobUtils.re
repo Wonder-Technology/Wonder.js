@@ -53,11 +53,11 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
 };
 
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  let {lastSendGeometry} as data = GLSLSenderSystem.getGLSLSenderData(state);
+  let {lastSendGeometry} as record = GLSLSenderSystem.getGLSLSenderData(state);
   switch lastSendGeometry {
   | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
   | _ =>
-    data.lastSendGeometry = Some(geometryIndex);
+    record.lastSendGeometry = Some(geometryIndex);
     _directlySendAttributeData(gl, shaderIndex, geometryIndex, state)
   }
 };
@@ -105,12 +105,12 @@ let render = (gl, (materialIndex, shaderIndex, uid), state: StateDataType.state)
     |> ProgramSystem.use(gl, program)
     |> _sendAttributeData(gl, shaderIndex, geometryIndex)
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
-  let {lastSendMaterial} as data = GLSLSenderSystem.getGLSLSenderData(state);
+  let {lastSendMaterial} as record = GLSLSenderSystem.getGLSLSenderData(state);
   let state =
     switch lastSendMaterial {
     | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
     | _ =>
-      data.lastSendMaterial = Some(materialIndex);
+      record.lastSendMaterial = Some(materialIndex);
       state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
     };
   (state, shaderIndex, geometryIndex)

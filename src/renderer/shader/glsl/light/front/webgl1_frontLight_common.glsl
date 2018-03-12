@@ -2,7 +2,7 @@
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLight {
+struct PointLightAPI {
     vec3 position;
     vec3 color;
     float intensity;
@@ -12,20 +12,20 @@ struct PointLight {
     float linear;
     float quadratic;
 };
-uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLight {
+struct DirectionLightAPI {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 @end
 

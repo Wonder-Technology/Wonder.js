@@ -35,7 +35,7 @@ let sendBuffer =
   [@bs]
   (
     (gl, (size: int, pos: attributeLocation), buffer: buffer, state: StateDataType.state) => {
-      let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
+      let {vertexAttribHistoryArray} as record = getGLSLSenderData(state);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
       enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
@@ -45,22 +45,22 @@ let sendBuffer =
 let sendMatrix3 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
-      uniformMatrix3fv(pos, Js.false_, data, gl)
+    (gl, pos: uniformLocation, record: Js.Typed_array.Float32Array.t) =>
+      uniformMatrix3fv(pos, Js.false_, record, gl)
   );
 
 let sendMatrix4 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
-      uniformMatrix4fv(pos, Js.false_, data, gl)
+    (gl, pos: uniformLocation, record: Js.Typed_array.Float32Array.t) =>
+      uniformMatrix4fv(pos, Js.false_, record, gl)
   );
 
 let _getCache = (shaderCacheMap, name: string) =>
   shaderCacheMap |> WonderCommonlib.HashMapSystem.get(name);
 
-let _setCache = (shaderCacheMap, name: string, data) =>
-  shaderCacheMap |> WonderCommonlib.HashMapSystem.set(name, data);
+let _setCache = (shaderCacheMap, name: string, record) =>
+  shaderCacheMap |> WonderCommonlib.HashMapSystem.set(name, record);
 
 let getCacheMap = (shaderIndex: int, {uniformCacheMap}) =>
   uniformCacheMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);

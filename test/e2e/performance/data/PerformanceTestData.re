@@ -54,17 +54,17 @@ let performanceTestData = {
                 function initSample(state) {
 var n1 = performance.now();
 
-                    var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                    var record = BasicBoxesTool.createBoxesByClone(5000, state);
 
-                    var state = data[0];
-                    var boxes = data[1];
+                    var state = record[0];
+                    var boxes = record[1];
 
-                    var data = BasicBoxesTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                    var record = BasicBoxesTool.setPosition(boxes, state);
+                    var state = record[0];
+                    var boxes = record[1];
 
-                    var data = BasicBoxesTool.createCamera(state);
-                    var state = data[0];
+                    var record = BasicBoxesTool.createCamera(state);
+                    var state = record[0];
 
 var n2 = performance.now();
 
@@ -110,20 +110,20 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                               function initSample(state) {
               var n1 = performance.now();
 
-                                  var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                                  var record = BasicBoxesTool.createBoxesByClone(5000, state);
 
-                                  var state = data[0];
-                                  var boxes = data[1];
+                                  var state = record[0];
+                                  var boxes = record[1];
 
-                                  var data = BasicBoxesTool.setPosition(boxes, state);
-                                  var state = data[0];
-                                  var boxes = data[1];
+                                  var record = BasicBoxesTool.setPosition(boxes, state);
+                                  var state = record[0];
+                                  var boxes = record[1];
 
-                                  var data = BasicBoxesTool.createCamera(state);
+                                  var record = BasicBoxesTool.createCamera(state);
 
 
 
-                                  var state = data[0];
+                                  var state = record[0];
 
 
                                   var state = BasicBoxesTool.setData(boxes, state);
@@ -178,20 +178,20 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                               function initSample(state) {
               var n1 = performance.now();
 
-                                  var data = BasicBoxesTool.createBoxesByClone(5000, state);
+                                  var record = BasicBoxesTool.createBoxesByClone(5000, state);
 
-                                  var state = data[0];
-                                  var boxes = data[1];
+                                  var state = record[0];
+                                  var boxes = record[1];
 
-                                  var data = BasicBoxesTool.setPosition(boxes, state);
-                                  var state = data[0];
-                                  var boxes = data[1];
+                                  var record = BasicBoxesTool.setPosition(boxes, state);
+                                  var state = record[0];
+                                  var boxes = record[1];
 
-                                  var data = BasicBoxesTool.createCamera(state);
+                                  var record = BasicBoxesTool.createCamera(state);
 
 
 
-                                  var state = data[0];
+                                  var state = record[0];
 
 
                                   var state = BasicBoxesTool.setData(boxes, state);
@@ -246,20 +246,20 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                        function initSample(state) {
                        var n1 = performance.now();
 
-                                           var data = BasicBoxesTool.createBoxesByClone(1, state);
+                                           var record = BasicBoxesTool.createBoxesByClone(1, state);
 
-                                           var state = data[0];
-                                           var boxes = data[1];
+                                           var state = record[0];
+                                           var boxes = record[1];
 
-                                           var data = BasicBoxesTool.setPosition(boxes, state);
-                                           var state = data[0];
-                                           var boxes = data[1];
+                                           var record = BasicBoxesTool.setPosition(boxes, state);
+                                           var state = record[0];
+                                           var boxes = record[1];
 
-                                           var data = BasicBoxesTool.createCamera(state);
+                                           var record = BasicBoxesTool.createCamera(state);
 
 
 
-                                           var state = data[0];
+                                           var state = record[0];
 
 
                                            var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
@@ -320,16 +320,16 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxes(1, 100000, true, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceBasicBoxesTool.createBoxes(1, 100000, true, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
                   var n2 = performance.now();
 
@@ -374,16 +374,16 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxes(1, 5000, true, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceBasicBoxesTool.createBoxes(1, 5000, true, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
                   var n2 = performance.now();
 
@@ -422,16 +422,16 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxes(1, 10000, false, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceBasicBoxesTool.createBoxes(1, 10000, false, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -479,17 +479,17 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxesWithHierachy(5000, 5000, false, state);
+                                  var record = InstanceBasicBoxesTool.createBoxesWithHierachy(5000, 5000, false, state);
 
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -539,17 +539,17 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                                  var record = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
 
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -602,17 +602,17 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                                  var record = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
 
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceBasicBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceBasicBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -670,14 +670,14 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                        function initSample(state) {
        var n1 = performance.now();
 
-                           var data = LightBoxesTool.createBoxesByClone(3000, state);
+                           var record = LightBoxesTool.createBoxesByClone(3000, state);
 
-                           var state = data[0];
-                           var boxes = data[1];
+                           var state = record[0];
+                           var boxes = record[1];
 
-                           var data = LightBoxesTool.setPosition(boxes, state);
-                           var state = data[0];
-                           var boxes = data[1];
+                           var record = LightBoxesTool.setPosition(boxes, state);
+                           var state = record[0];
+                           var boxes = record[1];
 
 
 
@@ -687,8 +687,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                           var data = LightBoxesTool.createCamera(state);
-                           var state = data[0];
+                           var record = LightBoxesTool.createCamera(state);
+                           var state = record[0];
 
        var n2 = performance.now();
 
@@ -734,14 +734,14 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                            function initSample(state) {
                            var n1 = performance.now();
 
-                                               var data = LightBoxesTool.createBoxesByClone(1, state);
+                                               var record = LightBoxesTool.createBoxesByClone(1, state);
 
-                                               var state = data[0];
-                                               var boxes = data[1];
+                                               var state = record[0];
+                                               var boxes = record[1];
 
-                                               var data = LightBoxesTool.setPosition(boxes, state);
-                                               var state = data[0];
-                                               var boxes = data[1];
+                                               var record = LightBoxesTool.setPosition(boxes, state);
+                                               var state = record[0];
+                                               var boxes = record[1];
 
 
 
@@ -749,11 +749,11 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                    var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
 
 
-                                               var data = LightBoxesTool.createCamera(state);
+                                               var record = LightBoxesTool.createCamera(state);
 
 
 
-                                               var state = data[0];
+                                               var state = record[0];
 
 
                                                var state = LightBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
@@ -814,13 +814,13 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceLightBoxesTool.createBoxes(1, 50000, true, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceLightBoxesTool.createBoxes(1, 50000, true, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
 
 
@@ -830,8 +830,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                                      var data = InstanceLightBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceLightBoxesTool.createCamera(state);
+                                      var state = record[0];
 
                   var n2 = performance.now();
 
@@ -875,13 +875,13 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceLightBoxesTool.createBoxes(1, 3000, true, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceLightBoxesTool.createBoxes(1, 3000, true, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
 
 
@@ -890,8 +890,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                    var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
-                                      var data = InstanceLightBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceLightBoxesTool.createCamera(state);
+                                      var state = record[0];
 
                   var n2 = performance.now();
 
@@ -930,13 +930,13 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceLightBoxesTool.createBoxes(1, 5000, false, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                  var record = InstanceLightBoxesTool.createBoxes(1, 5000, false, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
 
 
@@ -945,8 +945,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
 
 
-                                      var data = InstanceLightBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceLightBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -994,14 +994,14 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+                                  var record = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
 
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
 
 
@@ -1009,8 +1009,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                    var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
 
-                                      var data = InstanceLightBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceLightBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -1063,14 +1063,14 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                                   function initSample(state) {
                   var n1 = performance.now();
 
-                                  var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+                                  var record = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
 
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
 
 
@@ -1078,8 +1078,8 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
 
                                    var state = LightTool.createLights([-100, 0, 100], [150,0,250], state);
 
-                                      var data = InstanceLightBoxesTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = InstanceLightBoxesTool.createCamera(state);
+                                      var state = record[0];
 
 
 
@@ -1138,16 +1138,16 @@ return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, 
                   var n1 = performance.now();
 
 
-                                  var data = RedoUndoTool.createBoxesByInstance(1000, state);
-                                      var state = data[0];
-                                      var box = data[1];
+                                  var record = RedoUndoTool.createBoxesByInstance(1000, state);
+                                      var state = record[0];
+                                      var box = record[1];
 
-                                      var data = RedoUndoTool.setPosition([box], state);
-                                      var state = data[0];
-                                      var boxes = data[1];
+                                      var record = RedoUndoTool.setPosition([box], state);
+                                      var state = record[0];
+                                      var boxes = record[1];
 
-                                      var data = RedoUndoTool.createCamera(state);
-                                      var state = data[0];
+                                      var record = RedoUndoTool.createCamera(state);
+                                      var state = record[0];
 
 
 

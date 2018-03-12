@@ -27,7 +27,7 @@ let deepCopyForRestore =
       }
     ) => {
   index,
-  pMatrixMap: pMatrixMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+  pMatrixMap: pMatrixMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
   dirtyArray: dirtyArray |> Js.Array.copy,
   nearMap: nearMap |> Js.Array.copy,
   farMap: farMap |> Js.Array.copy,

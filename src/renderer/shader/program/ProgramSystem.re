@@ -135,11 +135,11 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
 };
 
 let use = (gl, program: program, state: StateDataType.state) => {
-  let data = _getProgramData(state);
-  switch data.lastUsedProgram {
+  let record = _getProgramData(state);
+  switch record.lastUsedProgram {
   | Some(lastUsedProgram) when program === lastUsedProgram => state
   | _ =>
-    data.lastUsedProgram = Some(program);
+    record.lastUsedProgram = Some(program);
     useProgram(program, gl);
     /* let state = state |> GLSLSenderSystem.disableVertexAttribArray(gl); */
     state

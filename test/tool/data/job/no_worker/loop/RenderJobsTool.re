@@ -63,7 +63,7 @@ let testSendShaderUniformDataOnlyOnce =
       Expect.Operators.(
         Sinon.(
           test(
-            "send shader uniform data only once",
+            "send shader uniform record only once",
             () => {
               let (state, _, gameObjectTransform, cameraTransform, basicCameraView) =
                 prepareSendUinformDataFunc(sandbox, prepareGameObject, state^);

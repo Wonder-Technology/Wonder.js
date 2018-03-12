@@ -1,10 +1,10 @@
-open AmbientLight;
+open AmbientLightAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "AmbientLight",
+    "AmbientLightAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -72,7 +72,7 @@ let _ =
         }
       );
       describe(
-        "getAmbientLightGameObject",
+        "unsafeGetAmbientLightGameObject",
         () =>
           test(
             "get light's gameObject",
@@ -81,7 +81,7 @@ let _ =
               let (state, light) = createAmbientLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
-              state |> getAmbientLightGameObject(light) |> expect == gameObject
+              state |> unsafeGetAmbientLightGameObject(light) |> expect == gameObject
             }
           )
       );
@@ -113,7 +113,7 @@ let _ =
         "disposeComponent",
         () =>
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "mark disposed",
@@ -121,7 +121,7 @@ let _ =
                   open AmbientLightType;
                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObject.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                    state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                   AmbientLightTool.isAlive(light1, state) |> expect == false
                 }
               );
@@ -131,7 +131,7 @@ let _ =
                   open AmbientLightType;
                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObject.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                    state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                   let {gameObjectMap} = AmbientLightTool.getLightData(state);
                   gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
                 }
@@ -149,11 +149,11 @@ let _ =
                           AmbientLightTool.createGameObject(state);
                         let color1 = [|1., 1., 0.|];
                         let color2 = [|0., 1., 0.|];
-                        let state = state |> AmbientLight.setAmbientLightColor(light1, color1);
-                        let state = state |> AmbientLight.setAmbientLightColor(light2, color2);
+                        let state = state |> AmbientLightAPI.setAmbientLightColor(light1, color1);
+                        let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (color1, color2), (light1, light2))
                       };
                       test(
@@ -166,7 +166,7 @@ let _ =
                             (light1, light2)
                           ) =
                             _prepare(state);
-                          AmbientLight.getAmbientLightColor(light2, state) |> expect == color2
+                          AmbientLightAPI.getAmbientLightColor(light2, state) |> expect == color2
                         }
                       );
                       test(
@@ -218,22 +218,22 @@ let _ =
                           let color1 = [|1., 1., 0.|];
                           let color2 = [|0., 1., 0.|];
                           let color3 = [|0., 1., 1.|];
-                          let state = state |> AmbientLight.setAmbientLightColor(light1, color1);
-                          let state = state |> AmbientLight.setAmbientLightColor(light2, color2);
-                          let state = state |> AmbientLight.setAmbientLightColor(light3, color3);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light1, color1);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
                           let state =
                             state
-                            |> GameObject.disposeGameObjectAmbientLightComponent(
+                            |> GameObjectAPI.disposeGameObjectAmbientLightComponent(
                                  gameObject1,
                                  light1
                                );
                           let state =
                             state
-                            |> GameObject.disposeGameObjectAmbientLightComponent(
+                            |> GameObjectAPI.disposeGameObjectAmbientLightComponent(
                                  gameObject3,
                                  light3
                                );
-                          AmbientLight.getAmbientLightColor(light2, state) |> expect == color2
+                          AmbientLightAPI.getAmbientLightColor(light2, state) |> expect == color2
                         }
                       )
                     }
@@ -254,13 +254,13 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
                 let state =
-                  state |> GameObject.disposeGameObjectAmbientLightComponent(gameObject, light);
+                  state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject, light);
                 expect(() => getFunc(light, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
               test(
-                "getAmbientLightGameObject should error",
-                () => _testGetFunc(getAmbientLightGameObject)
+                "unsafeGetAmbientLightGameObject should error",
+                () => _testGetFunc(unsafeGetAmbientLightGameObject)
               );
               test("getAmbientLightColor should error", () => _testGetFunc(getAmbientLightColor))
             }

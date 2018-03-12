@@ -73,7 +73,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
       Expect.Operators.(
         Sinon.(
           test(
-            "send shader uniform data only once per shader",
+            "send shader uniform record only once per shader",
             () => {
               let name = "u_vMatrix";
               let (state, _, _) = prepareFunc(sandbox, state^);

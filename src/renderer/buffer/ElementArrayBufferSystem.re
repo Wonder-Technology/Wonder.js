@@ -9,10 +9,10 @@ open VboBufferType;
 let createBuffer =
   [@bs]
   (
-    (gl, data: Uint16Array.t, state: StateDataType.state) => {
+    (gl, record: Uint16Array.t, state: StateDataType.state) => {
       let buffer = VboBufferPoolCommon.getElementArrayBuffer(gl, state);
       bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-      bufferUint16Data(getElementArrayBuffer(gl), data, getStaticDraw(gl), gl);
+      bufferUint16Data(getElementArrayBuffer(gl), record, getStaticDraw(gl), gl);
       resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
       buffer
     }

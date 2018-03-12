@@ -6,7 +6,7 @@ let handleGetNoneJob = (name, jobHandleMap) =>
       ~title="get no job",
       ~description={j|can't find job handle function whose job name is $name|j},
       ~reason="",
-      ~solution={j|make sure that the job name defined in config data be correctly|j},
+      ~solution={j|make sure that the job name defined in config record be correctly|j},
       ~params="jobHandleMap:" ++ WonderLog.Log.getJsonStr(jobHandleMap) ++ {j|
 name: $name|j}
     )

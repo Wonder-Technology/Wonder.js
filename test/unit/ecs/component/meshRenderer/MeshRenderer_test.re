@@ -39,7 +39,7 @@ let _ =
         "disposeComponent",
         () => {
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "remove from gameObjectMap",
@@ -95,7 +95,7 @@ let _ =
             }
           );
           test(
-            "the disposed meshRenderer shouldn't affect other alive ones' data",
+            "the disposed meshRenderer shouldn't affect other alive ones' record",
             () => {
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               let state =

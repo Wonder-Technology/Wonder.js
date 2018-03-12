@@ -5,7 +5,7 @@ open SourceInstanceStateCommon;
 open ComponentDisposeComponentCommon;
 
 let disposeObjectInstance = (sourceInstance, objectInstanceUid: int, state: StateDataType.state) => {
-  let {objectInstanceArrayMap} as data = getSourceInstanceData(state);
+  let {objectInstanceArrayMap} as record = getSourceInstanceData(state);
   objectInstanceArrayMap
   |> SourceInstanceObjectInstanceArrayCommon.unsafeGetObjectInstanceArray(sourceInstance)
   |> removeFromArray(objectInstanceUid)

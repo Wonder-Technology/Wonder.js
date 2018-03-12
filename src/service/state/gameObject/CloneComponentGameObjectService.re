@@ -77,3 +77,32 @@ let cloneLightMaterialComponent =
     isShareMaterial,
     state
   );
+
+let cloneAmbientLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), {ambientLightRecord} as state) => {
+  let (ambientLightRecord, componentArr) =
+    CloneAmbientLightService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      ambientLightRecord
+    );
+  ({...state, ambientLightRecord}, componentArr)
+};
+
+let cloneDirectionLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), {directionLightRecord} as state) => {
+  let (directionLightRecord, componentArr) =
+    CloneDirectionLightService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      directionLightRecord
+    );
+  ({...state, directionLightRecord}, componentArr)
+};
+
+let clonePointLightComponent =
+    (sourceComponent: component, countRangeArr: array(int), {pointLightRecord} as state) => {
+  let (pointLightRecord, componentArr) =
+    ClonePointLightService.handleCloneComponent(sourceComponent, countRangeArr, pointLightRecord);
+  ({...state, pointLightRecord}, componentArr)
+};

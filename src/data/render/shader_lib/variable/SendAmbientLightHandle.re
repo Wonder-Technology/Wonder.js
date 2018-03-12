@@ -1,10 +1,12 @@
+open StateDataType;
+
 open AmbientLightType;
 
 let send =
   [@bs]
   (
     (gl, (program, uniformCacheMap, uniformLocationMap), state: StateDataType.state) => {
-      let {index} = AmbientLightAdmin.getLightData(state);
+      let {index} = state.ambientLightRecord;
       WonderCommonlib.ArraySystem.range(0, index - 1)
       |> ArraySystem.reduceState(
            [@bs]
@@ -19,7 +21,7 @@ let send =
                    name,
                    GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl)
                  ),
-                 AmbientLightAdmin.getColor(index, state)
+                 OperateAmbientLightService.getColor(index, state.ambientLightRecord)
                );
                state
              }

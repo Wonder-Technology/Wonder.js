@@ -211,7 +211,7 @@ let addUniformSendData =
     )
     : StateDataType.state => {
   _checkShouldNotAddBefore(shaderIndex, state);
-  let data = getGLSLSenderData(state);
+  let record = getGLSLSenderData(state);
   let uniformLocationMap =
     getOrCreateHashMap(state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex));
   _readUniformSendData(
@@ -220,10 +220,10 @@ let addUniformSendData =
     program,
     (
       uniformLocationMap,
-      getOrCreateHashMap(data |> GLSLSenderSendDataUtils.getCacheMap(shaderIndex))
+      getOrCreateHashMap(record |> GLSLSenderSendDataUtils.getCacheMap(shaderIndex))
     )
   )
-  |> _setToUniformSendMap(shaderIndex, data, state)
+  |> _setToUniformSendMap(shaderIndex, record, state)
   |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 

@@ -50,7 +50,7 @@ let _ =
         }
       );
       describe(
-        "send attribute data",
+        "send attribute record",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -389,7 +389,7 @@ let _ =
         }
       );
       describe(
-        "send uniform data",
+        "send uniform record",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, gameObject, _, material, _) =
@@ -400,7 +400,7 @@ let _ =
             (state, gameObject, material, light, cameraTransform)
           };
           describe(
-            "test sended data per shader",
+            "test sended record per shader",
             () => {
               let _testSendShaderUniformDataOnlyOnce =
                   (name, prepareSendUinformDataFunc, setFakeGlFunc) =>
@@ -530,10 +530,10 @@ let _ =
                      )
                  ); */
               describe(
-                "test send light data",
+                "test send light record",
                 () => {
                   describe(
-                    "test send ambient light data",
+                    "test send ambient light record",
                     () => {
                       let _setFakeGl = (sandbox, state) => {
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
@@ -558,7 +558,7 @@ let _ =
                           let (state, gameObject, material, light, cameraTransform) =
                             _prepare(sandbox, state^);
                           let state =
-                            state |> AmbientLight.setAmbientLightColor(light, [|1., 0., 0.5|]);
+                            state |> AmbientLightAPI.setAmbientLightColor(light, [|1., 0., 0.5|]);
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
@@ -573,14 +573,14 @@ let _ =
                         }
                       );
                       test(
-                        "send shader data only once",
+                        "send shader record only once",
                         () => {
                           let (state, gameObject, material, light, cameraTransform) =
                             _prepare(sandbox, state^);
                           let (state, gameObject2, _, _, _) =
                             FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                           let state =
-                            state |> AmbientLight.setAmbientLightColor(light, [|1., 0., 0.5|]);
+                            state |> AmbientLightAPI.setAmbientLightColor(light, [|1., 0., 0.5|]);
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
@@ -595,7 +595,7 @@ let _ =
                           let (state, gameObject, material, light, cameraTransform) =
                             _prepare(sandbox, state^);
                           let lightGameObject1 =
-                            AmbientLight.getAmbientLightGameObject(light, state);
+                            AmbientLightAPI.unsafeGetAmbientLightGameObject(light, state);
                           let (state, lightGameObject2, light2) =
                             AmbientLightTool.createGameObject(state);
                           let (state, lightGameObject3, light3) =
@@ -603,9 +603,9 @@ let _ =
                           let color1 = [|1., 0., 0.5|];
                           let color2 = [|0., 1., 0.5|];
                           let color3 = [|0., 0., 1.|];
-                          let state = state |> AmbientLight.setAmbientLightColor(light, color1);
-                          let state = state |> AmbientLight.setAmbientLightColor(light2, color2);
-                          let state = state |> AmbientLight.setAmbientLightColor(light3, color3);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light, color1);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
+                          let state = state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
                           let state = state |> GameObject.disposeGameObject(lightGameObject1);
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
@@ -627,7 +627,7 @@ let _ =
                     }
                   );
                   describe(
-                    "test send direction light data",
+                    "test send direction light record",
                     () => {
                       let _prepareOne = (sandbox, state) => {
                         let (state, gameObject, _, material, _) =
@@ -684,7 +684,7 @@ let _ =
                         (state, posArr, (uniform1f, uniform3f))
                       };
                       describe(
-                        "send structure data",
+                        "send structure record",
                         () => {
                           describe(
                             "send position",
@@ -807,7 +807,7 @@ let _ =
                                     _prepareOne(sandbox, state^);
                                   let color = [|1., 0., 0.|];
                                   let state =
-                                    state |> DirectionLight.setDirectionLightColor(light, color);
+                                    state |> DirectionLightAPI.setDirectionLightColor(light, color);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_directionLights[0].color"|], state);
                                   let state =
@@ -833,7 +833,7 @@ let _ =
                                   let intensity = 2.;
                                   let state =
                                     state
-                                    |> DirectionLight.setDirectionLightIntensity(light, intensity);
+                                    |> DirectionLightAPI.setDirectionLightIntensity(light, intensity);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(
                                       sandbox,
@@ -857,7 +857,7 @@ let _ =
                     }
                   );
                   describe(
-                    "test send point light data",
+                    "test send point light record",
                     () => {
                       let _prepareOne = (sandbox, state) => {
                         let (state, gameObject, _, material, _) =
@@ -914,7 +914,7 @@ let _ =
                         (state, posArr, (uniform1f, uniform3f))
                       };
                       describe(
-                        "send structure data",
+                        "send structure record",
                         () => {
                           describe(
                             "send position",
@@ -1005,7 +1005,7 @@ let _ =
                                   let (state, lightGameObject, material, light, cameraTransform) =
                                     _prepareOne(sandbox, state^);
                                   let color = [|1., 0., 0.|];
-                                  let state = state |> PointLight.setPointLightColor(light, color);
+                                  let state = state |> PointLightAPI.setPointLightColor(light, color);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].color"|], state);
                                   let state =
@@ -1030,7 +1030,7 @@ let _ =
                                     _prepareOne(sandbox, state^);
                                   let intensity = 2.;
                                   let state =
-                                    state |> PointLight.setPointLightIntensity(light, intensity);
+                                    state |> PointLightAPI.setPointLightIntensity(light, intensity);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].intensity"|], state);
                                   let state =
@@ -1055,7 +1055,7 @@ let _ =
                                     _prepareOne(sandbox, state^);
                                   let constant = 2.;
                                   let state =
-                                    state |> PointLight.setPointLightConstant(light, constant);
+                                    state |> PointLightAPI.setPointLightConstant(light, constant);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].constant"|], state);
                                   let state =
@@ -1080,7 +1080,7 @@ let _ =
                                     _prepareOne(sandbox, state^);
                                   let linear = 2.;
                                   let state =
-                                    state |> PointLight.setPointLightLinear(light, linear);
+                                    state |> PointLightAPI.setPointLightLinear(light, linear);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].linear"|], state);
                                   let state =
@@ -1105,7 +1105,7 @@ let _ =
                                     _prepareOne(sandbox, state^);
                                   let quadratic = 2.5;
                                   let state =
-                                    state |> PointLight.setPointLightQuadratic(light, quadratic);
+                                    state |> PointLightAPI.setPointLightQuadratic(light, quadratic);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].quadratic"|], state);
                                   let state =
@@ -1129,7 +1129,7 @@ let _ =
                                   let (state, lightGameObject, material, light, cameraTransform) =
                                     _prepareOne(sandbox, state^);
                                   let range = 2.;
-                                  let state = state |> PointLight.setPointLightRange(light, range);
+                                  let state = state |> PointLightAPI.setPointLightRange(light, range);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].range"|], state);
                                   let state =
@@ -1153,7 +1153,7 @@ let _ =
             }
           );
           describe(
-            "test send light material data",
+            "test send light material record",
             () => {
               GLSLSenderTool.JudgeSendUniformData.testSendFloat(
                 sandbox,
@@ -1165,7 +1165,7 @@ let _ =
                 ()
               );
               describe(
-                "test send map data",
+                "test send map record",
                 () => {
                   GLSLSenderTool.JudgeSendUniformData.testSendVector3(
                     sandbox,

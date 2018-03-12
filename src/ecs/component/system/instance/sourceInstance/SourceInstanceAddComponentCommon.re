@@ -6,11 +6,11 @@ let handleAddComponent =
   [@bs]
   (
     (sourceInstance: sourceInstance, gameObjectUid: int, state: StateDataType.state) => {
-      let {gameObjectMap} as data = getSourceInstanceData(state);
+      let {gameObjectMap} as record = getSourceInstanceData(state);
       {
         ...state,
         sourceInstanceData: {
-          ...data,
+          ...record,
           gameObjectMap:
             gameObjectMap
             |> AddComponentService.addComponentToGameObjectMap(sourceInstance, gameObjectUid)

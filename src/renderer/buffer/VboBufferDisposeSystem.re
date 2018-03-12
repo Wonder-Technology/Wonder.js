@@ -5,11 +5,11 @@ open SourceInstanceType;
 open ComponentAdmin;
 
 let disposeInstanceBufferData = (sourceInstance: sourceInstance, state: StateDataType.state) => {
-  let {matrixInstanceBufferMap} as data = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {matrixInstanceBufferMap} as record = VboBufferGetStateDataUtils.getVboBufferData(state);
   {
     ...state,
     vboBufferRecord: {
-      ...data,
+      ...record,
       matrixInstanceBufferMap:
         disposeSparseMapData(sourceInstance, matrixInstanceBufferMap)
     }

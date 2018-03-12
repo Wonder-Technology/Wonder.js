@@ -64,6 +64,27 @@ let dispose = (uid, state) =>
          GetComponentGameObjectService.getLightMaterialComponent,
          DisposeComponentGameObjectService.disposeLightMaterialComponent
        )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getAmbientLightComponent,
+         DisposeComponentGameObjectService.disposeAmbientLightComponent
+       )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getDirectionLightComponent,
+         DisposeComponentGameObjectService.disposeDirectionLightComponent
+       )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getPointLightComponent,
+         DisposeComponentGameObjectService.disposePointLightComponent
+       )
      );
 
 let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
@@ -101,5 +122,17 @@ let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
     state
     |> BatchGetComponentGameObjectService.batchGetLightMaterialComponent(uidArray)
     |> DisposeComponentGameObjectService.batchDisposeLightMaterialComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetAmbientLightComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeAmbientLightComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetDirectionLightComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeDirectionLightComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetPointLightComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposePointLightComponent(disposedUidMap, state);
   state
 };

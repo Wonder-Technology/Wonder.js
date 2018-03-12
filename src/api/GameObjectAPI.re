@@ -272,3 +272,106 @@ let hasGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDa
   );
   hasMeshRendererComponent(gameObject, state.gameObjectRecord)
 };
+
+let addGameObjectAmbientLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addAmbientLightComponent(gameObject, component, state)
+};
+
+let disposeGameObjectAmbientLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeAmbientLightComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectAmbientLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetAmbientLightComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectAmbientLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasAmbientLightComponent(gameObject, state.gameObjectRecord)
+};
+
+let addGameObjectDirectionLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addDirectionLightComponent(gameObject, component, state)
+};
+
+let disposeGameObjectDirectionLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeDirectionLightComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectDirectionLightComponent =
+    (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetDirectionLightComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectDirectionLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasDirectionLightComponent(gameObject, state.gameObjectRecord)
+};
+
+let addGameObjectPointLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addPointLightComponent(gameObject, component, state)
+};
+
+let disposeGameObjectPointLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposePointLightComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectPointLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetPointLightComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectPointLightComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasPointLightComponent(gameObject, state.gameObjectRecord)
+};

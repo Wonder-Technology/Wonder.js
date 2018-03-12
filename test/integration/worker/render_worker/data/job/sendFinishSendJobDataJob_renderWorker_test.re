@@ -3,7 +3,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test send finish render job data job",
+    "test send finish render job record job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -91,26 +91,26 @@ let _ =
        )
        |> Most.mergeArray
   |> Most.forEach(
-       (data) =>
-         /* switch data {
+       (record) =>
+         /* switch record {
          | Some("SEND_JOB_DATA") =>
            EventToolWorker.triggerWorkerEvent(
              renderWorker,
              "message",
-             {"data": {"operateType": "FINISH_SEND_JOB_DATA"}}
+             {"record": {"operateType": "FINISH_SEND_JOB_DATA"}}
            )
            |> ignore
          | Some("INIT_RENDER") =>
            EventToolWorker.triggerWorkerEvent(
              renderWorker,
              "message",
-             {"data": {"operateType": "FINISH_INIT_RENDER"}}
+             {"record": {"operateType": "FINISH_INIT_RENDER"}}
            )
            |> ignore
          | _ => ()
          } */
          {
-           WonderLog.Log.logJson(data) |> ignore;
+           WonderLog.Log.logJson(record) |> ignore;
          }
      )
   |> then_(() => 

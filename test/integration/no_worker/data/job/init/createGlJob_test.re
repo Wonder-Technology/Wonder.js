@@ -58,7 +58,7 @@ let _ =
         "if pass contextConfig",
         () =>
           test(
-            "set webgl context option by passed data",
+            "set webgl context option by passed record",
             () => {
               let (canvasDom, _, _, _) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
               TestTool.initWithJobConfigWithoutBuildFakeDom(

@@ -118,6 +118,39 @@ let addMeshRendererComponent =
     )
 };
 
+let addAmbientLightComponent =
+    (uid: int, component: component, {ambientLightRecord, gameObjectRecord} as state) => {
+  ...state,
+  ambientLightRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.ambientLightMap),
+      AddAmbientLightService.handleAddComponent,
+      ambientLightRecord
+    )
+};
+
+let addDirectionLightComponent =
+    (uid: int, component: component, {directionLightRecord, gameObjectRecord} as state) => {
+  ...state,
+  directionLightRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.directionLightMap),
+      AddDirectionLightService.handleAddComponent,
+      directionLightRecord
+    )
+};
+
+let addPointLightComponent =
+    (uid: int, component: component, {pointLightRecord, gameObjectRecord} as state) => {
+  ...state,
+  pointLightRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.pointLightMap),
+      AddPointLightService.handleAddComponent,
+      pointLightRecord
+    )
+};
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {
@@ -300,5 +333,50 @@ let batchAddLightMaterialComponentForClone =
       (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
       (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent),
       lightMaterialRecord
+    )
+};
+
+let batchAddAmbientLightComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {ambientLightRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  ambientLightRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.ambientLightMap),
+      AddAmbientLightService.handleAddComponent,
+      ambientLightRecord
+    )
+};
+
+let batchAddDirectionLightComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {directionLightRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  directionLightRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.directionLightMap),
+      AddDirectionLightService.handleAddComponent,
+      directionLightRecord
+    )
+};
+
+let batchAddPointLightComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {pointLightRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  pointLightRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.pointLightMap),
+      AddPointLightService.handleAddComponent,
+      pointLightRecord
     )
 };

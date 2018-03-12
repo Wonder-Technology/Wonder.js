@@ -6,7 +6,7 @@ open RenderConfigType;
 
 let _ =
   describe(
-    "test load data",
+    "test load record",
     () => {
       open Expect;
       open Expect.Operators;
@@ -91,7 +91,7 @@ let _ =
                 }
               );
               describe(
-                "parse job data and set to state",
+                "parse job record and set to state",
                 () =>
                   testPromise(
                     "test parse noWorker setting, init pipeline, noWorker pipeleint, init job, noWorker job",
@@ -267,7 +267,7 @@ let _ =
                 "fix bug",
                 () =>
                   testPromise(
-                    "if the order of the fetch of noWorker json data change, shouldn't affect the setted data in state",
+                    "if the order of the fetch of noWorker json record change, shouldn't affect the setted record in state",
                     () => {
                       let fetchFunc = _buildFakeFetch(sandbox);
                       let (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs) =

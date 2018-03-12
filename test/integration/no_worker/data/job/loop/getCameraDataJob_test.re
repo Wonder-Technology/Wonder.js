@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test get camera data job",
+    "test get camera record job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -59,7 +59,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "set current camera data to state.renderData.cameraData",
+        "set current camera record to state.renderData.cameraData",
         () => {
           let _prepare = (state) => {
             let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);

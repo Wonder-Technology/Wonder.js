@@ -19,16 +19,16 @@ let _computeFps = (deltaTime: float, lastTime: option(float)) =>
   };
 
 let tick = (elapsed: float, state: StateDataType.state) => {
-  let {lastTime} as data = _getTimeControllerData(state);
+  let {lastTime} as record = _getTimeControllerData(state);
   let deltaTime =
     switch lastTime {
     | None => elapsed
     | Some(lastTime) => elapsed -. lastTime
     };
-  data.deltaTime = deltaTime;
-  data.fps = _computeFps(deltaTime, lastTime);
-  data.gameTime = elapsed /. gametime_scale;
-  data.lastTime = Some(elapsed);
+  record.deltaTime = deltaTime;
+  record.fps = _computeFps(deltaTime, lastTime);
+  record.gameTime = elapsed /. gametime_scale;
+  record.lastTime = Some(elapsed);
   state
 };
 
@@ -38,17 +38,17 @@ let _getNow = () => {
 };
 
 let start = (state: StateDataType.state) => {
-  let data = _getTimeControllerData(state);
-  data.startTime = _getNow();
-  data.elapsed = 0.;
+  let record = _getTimeControllerData(state);
+  record.startTime = _getNow();
+  record.elapsed = 0.;
   state
 };
 
 /* TODO support pause */
 let computeElapseTime = (time: float, state: StateDataType.state) => {
-  let {startTime} as data = _getTimeControllerData(state);
-  data.elapsed = NumberUtils.leastFloat(0., time -. startTime);
-  data.elapsed
+  let {startTime} as record = _getTimeControllerData(state);
+  record.elapsed = NumberUtils.leastFloat(0., time -. startTime);
+  record.elapsed
   |> WonderLog.Contract.ensureCheck(
        (elapsed) =>
          WonderLog.(

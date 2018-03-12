@@ -39,7 +39,7 @@ let _ =
         "setConfigData",
         () => {
           test(
-            "test set config data",
+            "test set config record",
             () => {
               let (state, geometry) = createBoxGeometry(state^);
               let state =
@@ -70,7 +70,7 @@ let _ =
             }
           );
           test(
-            "if not pass full data, use default data",
+            "if not pass full record, use default record",
             () => {
               let (state, geometry) = createBoxGeometry(state^);
               let state =
@@ -98,7 +98,7 @@ let _ =
         }
       );
       describe(
-        "test compute data",
+        "test compute record",
         () =>
           test(
             "test with 2 segments",

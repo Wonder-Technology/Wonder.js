@@ -23,9 +23,9 @@ let createState = () => {
   perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
   basicMaterialRecord: RecordBasicMaterialService.create(),
   lightMaterialRecord: RecordLightMaterialService.create(),
-  ambientLightData: AmbientLightHelper.create(),
-  directionLightData: DirectionLightHelper.create(),
-  pointLightData: PointLightHelper.create(),
+  ambientLightRecord: RecordAmbientLightService.create(),
+  directionLightRecord: RecordDirectionLightService.create(),
+  pointLightRecord: RecordPointLightService.create(),
   boxGeometryRecord: RecordBoxGeometryService.create(),
   meshRendererRecord: RecordMeshRendererService.create(),
   shaderData: ShaderHelper.create(),
@@ -57,9 +57,9 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   state
   |> VboBufferSystem.deepCopyForRestore
   |> GLSLSenderSystem.deepCopyForRestore
-  |> AmbientLightAdmin.deepCopyForRestore
-  |> DirectionLightAdmin.deepCopyForRestore
-  |> PointLightAdmin.deepCopyForRestore
+  /* |> AmbientLightAdmin.deepCopyForRestore
+     |> DirectionLightAdmin.deepCopyForRestore
+     |> PointLightAdmin.deepCopyForRestore */
   |> ShaderSystem.deepCopyForRestore
   |> ProgramSystem.deepCopyForRestore
   |> GLSLLocationSystem.deepCopyForRestore
@@ -81,7 +81,11 @@ let deepCopyForRestore = (state: StateDataType.state) =>
       typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
       boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord),
       basicMaterialRecord: RecordBasicMaterialService.deepCopyForRestore(state.basicMaterialRecord),
-      lightMaterialRecord: RecordLightMaterialService.deepCopyForRestore(state.lightMaterialRecord)
+      lightMaterialRecord: RecordLightMaterialService.deepCopyForRestore(state.lightMaterialRecord),
+      ambientLightRecord: RecordAmbientLightService.deepCopyForRestore(state.ambientLightRecord),
+      directionLightRecord:
+        RecordDirectionLightService.deepCopyForRestore(state.directionLightRecord),
+      pointLightRecord: RecordPointLightService.deepCopyForRestore(state.pointLightRecord)
     }
   );
 
@@ -120,9 +124,6 @@ let restore =
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
   |> RestoreBasicMaterialService.restore(gl, currentState)
   |> RestoreLightMaterialService.restore(gl, currentState)
-  |> AmbientLightAdmin.restore(currentState)
-  |> DirectionLightAdmin.restore(currentState)
-  |> PointLightAdmin.restore(currentState)
   |> RenderDataSystem.restore(currentState)
   /* |> RecordGlobalTempService.restore(currentState) */
   |> setState(stateData)

@@ -14,7 +14,7 @@ open InitConfigSystem;
 
 let _ =
   describe(
-    "test setting data",
+    "test setting record",
     () => {
       open Expect;
       open Expect.Operators;
@@ -70,7 +70,7 @@ let _ =
             "else",
             () =>
               test(
-                "set default data",
+                "set default record",
                 () => {
                   let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                   let state = TestTool.initWithJobConfigWithoutBuildFakeDom(~sandbox, ());

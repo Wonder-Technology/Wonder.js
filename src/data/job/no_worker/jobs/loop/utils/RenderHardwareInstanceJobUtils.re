@@ -204,7 +204,7 @@ let render =
       (renderFunc, fillMatrixTypeArrFunc),
       state: StateDataType.state
     ) => {
-  /* TODO optimize for static data:
+  /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, geometryIndex) =

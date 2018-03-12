@@ -34,7 +34,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
       ),
     StateData.stateData.isDebug
   );
-  let {vertexAttribHistoryArray} as data = getGLSLSenderData(state);
+  let {vertexAttribHistoryArray} as record = getGLSLSenderData(state);
   vertexAttribHistoryArray
   |> Js.Array.forEachi(
        (isEnable: bool, pos: int) =>
@@ -51,7 +51,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
              )
            )
      );
-  data.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
+  record.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state
 };
 

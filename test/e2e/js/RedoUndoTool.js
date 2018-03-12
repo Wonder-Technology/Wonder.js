@@ -28,14 +28,14 @@ var RedoUndoTool = (function () {
 
 
 
-                    var data = BasicBoxesTool.createBoxesByClone(count, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                    var record = BasicBoxesTool.createBoxesByClone(count, state);
+                    var state = record[0];
+                    var boxes = record[1];
 
 
-                    var data = RedoUndoTool.setPosition(boxes, state);
-                    var state = data[0];
-                    var boxes = data[1];
+                    var record = RedoUndoTool.setPosition(boxes, state);
+                    var state = record[0];
+                    var boxes = record[1];
 
 
                     for (let i = 0, len = boxes.length; i < len; i++) {

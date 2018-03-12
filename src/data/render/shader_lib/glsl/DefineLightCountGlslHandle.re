@@ -1,8 +1,10 @@
+open StateDataType;
+
 open ShaderChunkType;
 
-let execHandle = (state: StateDataType.state) => {
-  let directionLightCount = DirectionLightAdmin.getLightCount(state);
-  let pointLightCount = PointLightAdmin.getLightCount(state);
+let execHandle = ({directionLightRecord, pointLightRecord}) => {
+  let directionLightCount = CountDirectionLightService.getLightCount(directionLightRecord);
+  let pointLightCount = CountPointLightService.getLightCount(pointLightRecord);
   {
     top: "",
     define: {j|#define DIRECTION_LIGHTS_COUNT $directionLightCount

@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test send init render data job",
+    "test send init render record job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -20,7 +20,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       testPromise(
-        "send data",
+        "send record",
         () =>
           MainInitJobToolMainWorkerTool.prepare()
           |> MainInitJobToolMainWorkerTool.test(
@@ -32,7 +32,7 @@ let _ =
              )
       );
       testPromise(
-        "send after send job data",
+        "send after send job record",
         () =>
           MainInitJobToolMainWorkerTool.prepare()
           |> MainInitJobToolMainWorkerTool.test(

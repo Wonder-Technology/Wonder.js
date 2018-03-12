@@ -1,3 +1,5 @@
+open StateDataType;
+
 open PointLightType;
 
 let getLightGLSLDataStructureMemberNameArr = () => [|
@@ -51,28 +53,28 @@ let _sendAttenuation =
     gl,
     uniformCacheMap,
     (constant, GLSLLocationSystem.getUniformLocation(program, constant, uniformLocationMap, gl)),
-    PointLightAdmin.getConstant(index, state)
+    OperatePointLightService.getConstant(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
     (linear, GLSLLocationSystem.getUniformLocation(program, linear, uniformLocationMap, gl)),
-    PointLightAdmin.getLinear(index, state)
+    OperatePointLightService.getLinear(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
     (quadratic, GLSLLocationSystem.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
-    PointLightAdmin.getQuadratic(index, state)
+    OperatePointLightService.getQuadratic(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
     (range, GLSLLocationSystem.getUniformLocation(program, range, uniformLocationMap, gl)),
-    PointLightAdmin.getRange(index, state)
+    OperatePointLightService.getRange(index, state.pointLightRecord)
   );
   state
 };
@@ -86,7 +88,7 @@ let send =
           open WonderLog;
           open Contract;
           open Operators;
-          let maxCount = PointLightHelper.getBufferMaxCount();
+          let maxCount = RecordPointLightService.getBufferMaxCount();
           test(
             Log.buildAssertMessage(
               ~expect={j|max buffer count === 4|j},
@@ -98,7 +100,7 @@ let send =
         StateData.stateData.isDebug
       );
       let lightGLSLDataStructureMemberNameArr = getLightGLSLDataStructureMemberNameArr();
-      let {index} = PointLightAdmin.getLightData(state);
+      let {index} = state.pointLightRecord;
       WonderCommonlib.ArraySystem.range(0, index - 1)
       |> ArraySystem.reduceState(
            [@bs]
@@ -113,7 +115,7 @@ let send =
                    position,
                    GLSLLocationSystem.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
-                 PointLightAdmin.getPosition(index, state)
+                 PositionPointLightService.getPosition(index, state)
                );
                [@bs]
                GLSLSenderSystem.sendFloat3(
@@ -123,7 +125,7 @@ let send =
                    color,
                    GLSLLocationSystem.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
-                 PointLightAdmin.getColor(index, state)
+                 OperatePointLightService.getColor(index, state.pointLightRecord)
                );
                [@bs]
                GLSLSenderSystem.sendFloat(
@@ -138,7 +140,7 @@ let send =
                      gl
                    )
                  ),
-                 PointLightAdmin.getIntensity(index, state)
+                 OperatePointLightService.getIntensity(index, state.pointLightRecord)
                );
                _sendAttenuation(
                  index,

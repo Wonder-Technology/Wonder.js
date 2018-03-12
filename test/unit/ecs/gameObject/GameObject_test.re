@@ -4,8 +4,6 @@ open GameObject;
 
 open GameObjectAPI;
 
-open GameObjectAPI;
-
 let _ =
   describe(
     "GameObject",
@@ -46,7 +44,7 @@ let _ =
                 "state->uid + 1",
                 () => {
                   let (state, _) = createGameObject(state^);
-                  GameObjectTool.getGameObjectData(state) |> ((data) => expect(data.uid) == 1)
+                  GameObjectTool.getGameObjectData(state) |> ((record) => expect(record.uid) == 1)
                 }
               )
           )
@@ -247,15 +245,15 @@ let _ =
             "test light component",
             () => {
               describe(
-                "getGameObjectAmbientLightComponent",
+                "unsafeGetGameObjectAmbientLightComponent",
                 () =>
                   test(
                     "get light component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, light) = AmbientLight.createAmbientLight(state);
+                      let (state, light) = AmbientLightAPI.createAmbientLight(state);
                       let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
-                      getGameObjectAmbientLightComponent(gameObject, state) |> expect == light
+                      unsafeGetGameObjectAmbientLightComponent(gameObject, state) |> expect == light
                     }
                   )
               );
@@ -266,7 +264,7 @@ let _ =
                     "has light component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, light) = AmbientLight.createAmbientLight(state);
+                      let (state, light) = AmbientLightAPI.createAmbientLight(state);
                       let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
                       hasGameObjectAmbientLightComponent(gameObject, state) |> expect == true
                     }
@@ -745,7 +743,7 @@ let _ =
                     "reallocate component maps",
                     () => {
                       test(
-                        "new transformMap should only has alive data",
+                        "new transformMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
@@ -764,7 +762,7 @@ let _ =
                         }
                       );
                       test(
-                        "new meshRendererMap should only has alive data",
+                        "new meshRendererMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
@@ -791,7 +789,7 @@ let _ =
                         }
                       );
                       test(
-                        "new boxGeometryMap should only has alive data",
+                        "new boxGeometryMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state =
@@ -825,7 +823,7 @@ let _ =
                         "test light material map",
                         () => {
                           test(
-                            "new basicMaterialMap should only has alive data",
+                            "new basicMaterialMap should only has alive record",
                             () => {
                               open GameObjectType;
                               let state =
@@ -850,7 +848,7 @@ let _ =
                             }
                           );
                           test(
-                            "new lightMaterialMap should only has alive data",
+                            "new lightMaterialMap should only has alive record",
                             () => {
                               open GameObjectType;
                               let state =
@@ -896,7 +894,7 @@ let _ =
                             |> expect == (false, false, true)
                           };
                           test(
-                            "new ambientLightMap should only has alive data",
+                            "new ambientLightMap should only has alive record",
                             () =>
                               GameObjectType.(
                                 _test(
@@ -907,7 +905,7 @@ let _ =
                               )
                           );
                           test(
-                            "new directionLightMap should only has alive data",
+                            "new directionLightMap should only has alive record",
                             () =>
                               GameObjectType.(
                                 _test(
@@ -918,7 +916,7 @@ let _ =
                               )
                           );
                           test(
-                            "new pointLightMap should only has alive data",
+                            "new pointLightMap should only has alive record",
                             () =>
                               GameObjectType.(
                                 _test(
@@ -931,7 +929,7 @@ let _ =
                         }
                       );
                       test(
-                        "new basicCameraViewMap should only has alive data",
+                        "new basicCameraViewMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
@@ -953,7 +951,7 @@ let _ =
                         }
                       );
                       test(
-                        "new sourceInstanceMap should only has alive data",
+                        "new sourceInstanceMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
@@ -971,7 +969,7 @@ let _ =
                         }
                       );
                       test(
-                        "new objectInstanceMap should only has alive data",
+                        "new objectInstanceMap should only has alive record",
                         () => {
                           open GameObjectType;
                           let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
@@ -1222,7 +1220,7 @@ let _ =
                 "batch dispose objectInstance componets",
                 () => {
                   describe(
-                    "dispose data",
+                    "dispose record",
                     () => {
                       test(
                         "remove from sourceInstanceMap, gameObjectMap",
@@ -1308,7 +1306,7 @@ let _ =
                 "batch dispose sourceInstance componets",
                 () =>
                   describe(
-                    "dispose data",
+                    "dispose record",
                     () => {
                       test(
                         "remove from map",
@@ -1484,8 +1482,8 @@ let _ =
                 () => _testTwoParamFunc(unsafeGetGameObjectLightMaterialComponent)
               );
               test(
-                "getGameObjectAmbientLightComponent should error",
-                () => _testTwoParamFunc(getGameObjectAmbientLightComponent)
+                "unsafeGetGameObjectAmbientLightComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectAmbientLightComponent)
               );
               test(
                 "unsafeGetGameObjectMeshRendererComponent should error",

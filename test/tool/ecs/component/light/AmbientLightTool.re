@@ -1,20 +1,23 @@
+open StateDataType;
+
 let createGameObject = (state) => {
-  open GameObject;
   open GameObjectAPI;
-  open AmbientLight;
+  open AmbientLightAPI;
   let (state, light) = createAmbientLight(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
   (state, gameObject, light)
 };
 
-let getLightData = AmbientLightSystem.getLightData;
+let getLightData = (state) => state.ambientLightRecord;
 
-let isAlive = AmbientLightSystem.isAlive;
+let isAlive = (light, state) =>
+  DisposeAmbientLightService.isAlive(light, state.ambientLightRecord);
 
-let getColor = AmbientLightSystem.getColor;
+let getColor = (light, state) =>
+  OperateAmbientLightService.getColor(light, state.ambientLightRecord);
 
-let getDefaultColor = AmbientLightHelper.getDefaultColor;
+let getDefaultColor = RecordAmbientLightService.getDefaultColor;
 
 let getMappedIndex = (index, state) =>
-  state |> AmbientLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);
+  state |> IndexAmbientLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);

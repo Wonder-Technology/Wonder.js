@@ -33,42 +33,6 @@ let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceC
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
 
-let hasAmbientLightComponent = GameObjectHasComponentCommon.hasAmbientLightComponent;
-
-let getAmbientLightComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getAmbientLightComponent(uid, state);
-
-let unsafeGetAmbientLightComponent = GameObjectGetComponentCommon.unsafeGetAmbientLightComponent;
-
-let addAmbientLightComponent = GameObjectAddComponentCommon.addAmbientLightComponent;
-
-let disposeAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeAmbientLightComponent(uid, component, state);
-
-let hasDirectionLightComponent = GameObjectHasComponentCommon.hasDirectionLightComponent;
-
-let getDirectionLightComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getDirectionLightComponent(uid, state);
-
-let unsafeGetDirectionLightComponent = GameObjectGetComponentCommon.unsafeGetDirectionLightComponent;
-
-let addDirectionLightComponent = GameObjectAddComponentCommon.addDirectionLightComponent;
-
-let disposeDirectionLightComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeDirectionLightComponent(uid, component, state);
-
-let hasPointLightComponent = GameObjectHasComponentCommon.hasPointLightComponent;
-
-let getPointLightComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getPointLightComponent(uid, state);
-
-let unsafeGetPointLightComponent = GameObjectGetComponentCommon.unsafeGetPointLightComponent;
-
-let addPointLightComponent = GameObjectAddComponentCommon.addPointLightComponent;
-
-let disposePointLightComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposePointLightComponent(uid, component, state);
-
 let rec batchDispose = GameObjectDisposeCommon.batchDispose;
 
 let dispose = GameObjectDisposeCommon.dispose;

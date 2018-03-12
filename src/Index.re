@@ -26,6 +26,30 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let hasGameObjectPointLightComponent = GameObjectAPI.hasGameObjectPointLightComponent;
+
+let unsafeGetGameObjectPointLightComponent = GameObjectAPI.unsafeGetGameObjectPointLightComponent;
+
+let disposeGameObjectPointLightComponent = GameObjectAPI.disposeGameObjectPointLightComponent;
+
+let addGameObjectPointLightComponent = GameObjectAPI.addGameObjectPointLightComponent;
+
+let hasGameObjectDirectionLightComponent = GameObjectAPI.hasGameObjectDirectionLightComponent;
+
+let unsafeGetGameObjectDirectionLightComponent = GameObjectAPI.unsafeGetGameObjectDirectionLightComponent;
+
+let disposeGameObjectDirectionLightComponent = GameObjectAPI.disposeGameObjectDirectionLightComponent;
+
+let addGameObjectDirectionLightComponent = GameObjectAPI.addGameObjectDirectionLightComponent;
+
+let hasGameObjectAmbientLightComponent = GameObjectAPI.hasGameObjectAmbientLightComponent;
+
+let unsafeGetGameObjectAmbientLightComponent = GameObjectAPI.unsafeGetGameObjectAmbientLightComponent;
+
+let disposeGameObjectAmbientLightComponent = GameObjectAPI.disposeGameObjectAmbientLightComponent;
+
+let addGameObjectAmbientLightComponent = GameObjectAPI.addGameObjectAmbientLightComponent;
+
 let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
 
 let unsafeGetGameObjectMeshRendererComponent = GameObjectAPI.unsafeGetGameObjectMeshRendererComponent;
@@ -83,6 +107,56 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let setAmbientLightColor = AmbientLightAPI.setAmbientLightColor;
+
+let getAmbientLightColor = AmbientLightAPI.getAmbientLightColor;
+
+let unsafeGetAmbientLightGameObject = AmbientLightAPI.unsafeGetAmbientLightGameObject;
+
+let createAmbientLight = AmbientLightAPI.createAmbientLight;
+
+let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
+
+let getDirectionLightIntensity = DirectionLightAPI.getDirectionLightIntensity;
+
+let setDirectionLightColor = DirectionLightAPI.setDirectionLightColor;
+
+let getDirectionLightColor = DirectionLightAPI.getDirectionLightColor;
+
+let unsafeGetDirectionLightGameObject = DirectionLightAPI.unsafeGetDirectionLightGameObject;
+
+let createDirectionLight = DirectionLightAPI.createDirectionLight;
+
+let setPointLightRangeLevel = PointLightAPI.setPointLightRangeLevel;
+
+let setPointLightRange = PointLightAPI.setPointLightRange;
+
+let getPointLightRange = PointLightAPI.getPointLightRange;
+
+let setPointLightQuadratic = PointLightAPI.setPointLightQuadratic;
+
+let getPointLightQuadratic = PointLightAPI.getPointLightQuadratic;
+
+let setPointLightLinear = PointLightAPI.setPointLightLinear;
+
+let getPointLightLinear = PointLightAPI.getPointLightLinear;
+
+let setPointLightConstant = PointLightAPI.setPointLightConstant;
+
+let getPointLightConstant = PointLightAPI.getPointLightConstant;
+
+let setPointLightIntensity = PointLightAPI.setPointLightIntensity;
+
+let getPointLightIntensity = PointLightAPI.getPointLightIntensity;
+
+let setPointLightColor = PointLightAPI.setPointLightColor;
+
+let getPointLightColor = PointLightAPI.getPointLightColor;
+
+let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
+
+let createPointLight = PointLightAPI.createPointLight;
 
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
@@ -198,30 +272,6 @@ let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
 
-let hasGameObjectPointLightComponent = GameObject.hasGameObjectPointLightComponent;
-
-let getGameObjectPointLightComponent = GameObject.getGameObjectPointLightComponent;
-
-let disposeGameObjectPointLightComponent = GameObject.disposeGameObjectPointLightComponent;
-
-let addGameObjectPointLightComponent = GameObject.addGameObjectPointLightComponent;
-
-let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
-
-let getGameObjectDirectionLightComponent = GameObject.getGameObjectDirectionLightComponent;
-
-let disposeGameObjectDirectionLightComponent = GameObject.disposeGameObjectDirectionLightComponent;
-
-let addGameObjectDirectionLightComponent = GameObject.addGameObjectDirectionLightComponent;
-
-let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
-
-let getGameObjectAmbientLightComponent = GameObject.getGameObjectAmbientLightComponent;
-
-let disposeGameObjectAmbientLightComponent = GameObject.disposeGameObjectAmbientLightComponent;
-
-let addGameObjectAmbientLightComponent = GameObject.addGameObjectAmbientLightComponent;
-
 let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
 
 let getGameObjectObjectInstanceComponent = GameObject.getGameObjectObjectInstanceComponent;
@@ -243,56 +293,6 @@ let getSourceInstanceObjectInstanceArray = SourceInstance.getSourceInstanceObjec
 let createSourceInstanceObjectInstance = SourceInstance.createSourceInstanceObjectInstance;
 
 let createSourceInstance = SourceInstance.createSourceInstance;
-
-let setAmbientLightColor = AmbientLight.setAmbientLightColor;
-
-let getAmbientLightColor = AmbientLight.getAmbientLightColor;
-
-let getAmbientLightGameObject = AmbientLight.getAmbientLightGameObject;
-
-let createAmbientLight = AmbientLight.createAmbientLight;
-
-let setDirectionLightIntensity = DirectionLight.setDirectionLightIntensity;
-
-let getDirectionLightIntensity = DirectionLight.getDirectionLightIntensity;
-
-let setDirectionLightColor = DirectionLight.setDirectionLightColor;
-
-let getDirectionLightColor = DirectionLight.getDirectionLightColor;
-
-let getDirectionLightGameObject = DirectionLight.getDirectionLightGameObject;
-
-let createDirectionLight = DirectionLight.createDirectionLight;
-
-let setPointLightRangeLevel = PointLight.setPointLightRangeLevel;
-
-let setPointLightRange = PointLight.setPointLightRange;
-
-let getPointLightRange = PointLight.getPointLightRange;
-
-let setPointLightQuadratic = PointLight.setPointLightQuadratic;
-
-let getPointLightQuadratic = PointLight.getPointLightQuadratic;
-
-let setPointLightLinear = PointLight.setPointLightLinear;
-
-let getPointLightLinear = PointLight.getPointLightLinear;
-
-let setPointLightConstant = PointLight.setPointLightConstant;
-
-let getPointLightConstant = PointLight.getPointLightConstant;
-
-let setPointLightIntensity = PointLight.setPointLightIntensity;
-
-let getPointLightIntensity = PointLight.getPointLightIntensity;
-
-let setPointLightColor = PointLight.setPointLightColor;
-
-let getPointLightColor = PointLight.getPointLightColor;
-
-let getPointLightGameObject = PointLight.getPointLightGameObject;
-
-let createPointLight = PointLight.createPointLight;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
@@ -321,6 +321,30 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let hasGameObjectPointLightComponent = GameObjectAPI.hasGameObjectPointLightComponent;
+
+let unsafeGetGameObjectPointLightComponent = GameObjectAPI.unsafeGetGameObjectPointLightComponent;
+
+let disposeGameObjectPointLightComponent = GameObjectAPI.disposeGameObjectPointLightComponent;
+
+let addGameObjectPointLightComponent = GameObjectAPI.addGameObjectPointLightComponent;
+
+let hasGameObjectDirectionLightComponent = GameObjectAPI.hasGameObjectDirectionLightComponent;
+
+let unsafeGetGameObjectDirectionLightComponent = GameObjectAPI.unsafeGetGameObjectDirectionLightComponent;
+
+let disposeGameObjectDirectionLightComponent = GameObjectAPI.disposeGameObjectDirectionLightComponent;
+
+let addGameObjectDirectionLightComponent = GameObjectAPI.addGameObjectDirectionLightComponent;
+
+let hasGameObjectAmbientLightComponent = GameObjectAPI.hasGameObjectAmbientLightComponent;
+
+let unsafeGetGameObjectAmbientLightComponent = GameObjectAPI.unsafeGetGameObjectAmbientLightComponent;
+
+let disposeGameObjectAmbientLightComponent = GameObjectAPI.disposeGameObjectAmbientLightComponent;
+
+let addGameObjectAmbientLightComponent = GameObjectAPI.addGameObjectAmbientLightComponent;
 
 let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
 
@@ -469,30 +493,6 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
-
-let hasGameObjectPointLightComponent = GameObject.hasGameObjectPointLightComponent;
-
-let getGameObjectPointLightComponent = GameObject.getGameObjectPointLightComponent;
-
-let disposeGameObjectPointLightComponent = GameObject.disposeGameObjectPointLightComponent;
-
-let addGameObjectPointLightComponent = GameObject.addGameObjectPointLightComponent;
-
-let hasGameObjectDirectionLightComponent = GameObject.hasGameObjectDirectionLightComponent;
-
-let getGameObjectDirectionLightComponent = GameObject.getGameObjectDirectionLightComponent;
-
-let disposeGameObjectDirectionLightComponent = GameObject.disposeGameObjectDirectionLightComponent;
-
-let addGameObjectDirectionLightComponent = GameObject.addGameObjectDirectionLightComponent;
-
-let hasGameObjectAmbientLightComponent = GameObject.hasGameObjectAmbientLightComponent;
-
-let getGameObjectAmbientLightComponent = GameObject.getGameObjectAmbientLightComponent;
-
-let disposeGameObjectAmbientLightComponent = GameObject.disposeGameObjectAmbientLightComponent;
-
-let addGameObjectAmbientLightComponent = GameObject.addGameObjectAmbientLightComponent;
 
 let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
 

@@ -27,27 +27,27 @@ var BasicBoxesTool = (function () {
     };
     return {
         createBox: function (state) {
-            var data = wd.createBasicMaterial(state);
-            var state = data[0];
-            var material = data[1];
+            var record = wd.createBasicMaterial(state);
+            var state = record[0];
+            var material = record[1];
 
             state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
 
-            var data = wd.createMeshRenderer(state);
-            var state = data[0];
-            var meshRenderer = data[1];
+            var record = wd.createMeshRenderer(state);
+            var state = record[0];
+            var meshRenderer = record[1];
 
-            var data = wd.createGameObject(state);
-            var state = data[0];
-            var obj = data[1];
+            var record = wd.createGameObject(state);
+            var state = record[0];
+            var obj = record[1];
 
             state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
             state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
-            var data = wd.createBoxGeometry(state);
-            var state = data[0];
-            var geometry = data[1];
+            var record = wd.createBoxGeometry(state);
+            var state = record[0];
+            var geometry = record[1];
 
             state = wd.setBoxGeometryConfigData(geometry, {
                 width: 5,
@@ -66,14 +66,14 @@ var BasicBoxesTool = (function () {
         createBoxesByClone: function (count, state) {
             var boxes = [];
 
-            var data = BasicBoxesTool.createBox(state);
-            var state = data[0];
-            var box = data[1];
+            var record = BasicBoxesTool.createBox(state);
+            var state = record[0];
+            var box = record[1];
 
 
-            var data = wd.cloneGameObject(box, count, true, state);
-            var state = data[0];
-            var newBoxes = data[1];
+            var record = wd.cloneGameObject(box, count, true, state);
+            var state = record[0];
+            var newBoxes = record[1];
 
 
             var flatten = (arr) => {
@@ -155,9 +155,9 @@ var BasicBoxesTool = (function () {
 
                 // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
 
-                var data = wd.cloneGameObject(window.sourceBox, count, true, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = wd.cloneGameObject(window.sourceBox, count, true, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
                 var flatten = (arr) => {
@@ -169,9 +169,9 @@ var BasicBoxesTool = (function () {
                 newBoxes = flatten(newBoxes);
 
 
-                var data = BasicBoxesTool.setPosition(newBoxes, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = BasicBoxesTool.setPosition(newBoxes, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
                 window.boxes = newBoxes;
 

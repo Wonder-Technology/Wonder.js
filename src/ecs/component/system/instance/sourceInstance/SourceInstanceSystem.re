@@ -26,11 +26,11 @@ let _addObjectInstnace = (sourceInstance, uid: int, objectInstanceArrayMap) => {
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   /* TODO add gameObjectRecord to state */
   let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(state.gameObjectRecord);
-  let {objectInstanceArrayMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let {objectInstanceArrayMap} as record = SourceInstanceStateCommon.getSourceInstanceData(state);
   let state = {
     ...state,
     sourceInstanceData: {
-      ...data,
+      ...record,
       objectInstanceArrayMap: objectInstanceArrayMap |> _addObjectInstnace(sourceInstance, uid)
     }
   };

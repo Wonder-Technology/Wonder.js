@@ -24,7 +24,7 @@ let _ =
           RenderBatchInstanceTool.testProgram(sandbox, RenderBasicBatchInstanceTool.prepare, state)
       );
       describe(
-        "send attribute data",
+        "send attribute record",
         () =>
           describe(
             "send sourceInstance gameObject's a_position",
@@ -38,7 +38,7 @@ let _ =
           )
       );
       describe(
-        "send uniform data",
+        "send uniform record",
         () => {
           RenderBatchInstanceTool.testSendShaderUniformData(
             sandbox,
@@ -54,10 +54,10 @@ let _ =
             ()
           );
           describe(
-            "send object instance gameObject's data",
+            "send object instance gameObject's record",
             () =>
               test(
-                "send u_mMatrix data",
+                "send u_mMatrix record",
                 () => {
                   let name = "u_mMatrix";
                   let (state, _, _, _) = RenderBasicBatchInstanceTool.prepare(sandbox, 2, state^);

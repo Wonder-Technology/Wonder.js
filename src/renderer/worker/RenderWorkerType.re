@@ -3,6 +3,6 @@ type renderWorkerOperation =
 
 /* type renderWorkerMessageEvent = {
   .
-  "data": {.. "operateType": renderWorkerOperation}
-  /* "data": Js.t({..}) */
+  "record": {.. "operateType": renderWorkerOperation}
+  /* "record": Js.t({..}) */
 }; */

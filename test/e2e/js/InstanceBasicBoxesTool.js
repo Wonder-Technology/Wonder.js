@@ -43,27 +43,27 @@ var InstanceBasicBoxesTool = (function () {
     };
     return {
         createBox: function (count, isStatic, state) {
-            var data = wd.createBasicMaterial(state);
-            var state = data[0];
-            var material = data[1];
+            var record = wd.createBasicMaterial(state);
+            var state = record[0];
+            var material = record[1];
 
             state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
 
-            var data = wd.createMeshRenderer(state);
-            var state = data[0];
-            var meshRenderer = data[1];
+            var record = wd.createMeshRenderer(state);
+            var state = record[0];
+            var meshRenderer = record[1];
 
-            var data = wd.createGameObject(state);
-            var state = data[0];
-            var obj = data[1];
+            var record = wd.createGameObject(state);
+            var state = record[0];
+            var obj = record[1];
 
             state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
             state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
-            var data = wd.createBoxGeometry(state);
-            var state = data[0];
-            var geometry = data[1];
+            var record = wd.createBoxGeometry(state);
+            var state = record[0];
+            var geometry = record[1];
 
             state = wd.setBoxGeometryConfigData(geometry, {
                 width: 5,
@@ -81,9 +81,9 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-            var data = wd.createSourceInstance(state);
-            var state = data[0];
-            var sourceInstance = data[1];
+            var record = wd.createSourceInstance(state);
+            var state = record[0];
+            var sourceInstance = record[1];
 
 
             var state = wd.markSourceInstanceModelMatrixIsStatic(sourceInstance, isStatic, state);
@@ -117,10 +117,10 @@ var InstanceBasicBoxesTool = (function () {
             var objectInstanceGameObjectArr = [];
 
             for (let i = 0; i < count; i++) {
-                var data =
+                var record =
                     wd.createSourceInstanceObjectInstance(sourceInstance, state);
-                var state = data[0];
-                var objectInstanceGameObject = data[1];
+                var state = record[0];
+                var objectInstanceGameObject = record[1];
 
                 objectInstanceGameObjectArr.push(objectInstanceGameObject);
             }
@@ -137,10 +137,10 @@ var InstanceBasicBoxesTool = (function () {
             var boxes = [];
 
             for (let i = 0; i < sourceInstanceGameObjectCount; i++) {
-                var data = InstanceBasicBoxesTool.createBox(objectInstanceGameObjectCount, isStatic, state);
-                var state = data[0];
-                var box = data[1];
-                var objectInstanceArr = data[2];
+                var record = InstanceBasicBoxesTool.createBox(objectInstanceGameObjectCount, isStatic, state);
+                var state = record[0];
+                var box = record[1];
+                var objectInstanceArr = record[2];
 
                 boxes.push(box);
             }
@@ -152,16 +152,16 @@ var InstanceBasicBoxesTool = (function () {
             var boxes = [];
 
 
-            var data = InstanceBasicBoxesTool.createBox(parentCount, isStatic, state);
-            var state = data[0];
-            var box1 = data[1];
-            var objectInstanceArr1 = data[2];
+            var record = InstanceBasicBoxesTool.createBox(parentCount, isStatic, state);
+            var state = record[0];
+            var box1 = record[1];
+            var objectInstanceArr1 = record[2];
 
 
-            var data = InstanceBasicBoxesTool.createBox(childrenCount, isStatic, state);
-            var state = data[0];
-            var box2 = data[1];
-            var objectInstanceArr2 = data[2];
+            var record = InstanceBasicBoxesTool.createBox(childrenCount, isStatic, state);
+            var state = record[0];
+            var box2 = record[1];
+            var objectInstanceArr2 = record[2];
 
 
 
@@ -246,14 +246,14 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-                var data = InstanceBasicBoxesTool.createBoxes(sourceInstanceCount, objectInstanceCount, false, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = InstanceBasicBoxesTool.createBoxes(sourceInstanceCount, objectInstanceCount, false, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
-                var data = InstanceBasicBoxesTool.setPosition(newBoxes, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = InstanceBasicBoxesTool.setPosition(newBoxes, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
 
@@ -283,15 +283,15 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-                var data = InstanceBasicBoxesTool.createBoxes(1, 3000, false, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = InstanceBasicBoxesTool.createBoxes(1, 3000, false, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
 
-                var data = InstanceBasicBoxesTool.setPosition(newBoxes, state);
-                var state = data[0];
-                var newBoxes = data[1];
+                var record = InstanceBasicBoxesTool.setPosition(newBoxes, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
 

@@ -1,3 +1,5 @@
+open StateDataType;
+
 open DirectionLightType;
 
 let send =
@@ -9,7 +11,7 @@ let send =
           open WonderLog;
           open Contract;
           open Operators;
-          let maxCount = DirectionLightHelper.getBufferMaxCount();
+          let maxCount = RecordDirectionLightService.getBufferMaxCount();
           test(
             Log.buildAssertMessage(
               ~expect={j|max buffer count === 4|j},
@@ -20,7 +22,7 @@ let send =
         },
         StateData.stateData.isDebug
       );
-      let {index} = DirectionLightAdmin.getLightData(state);
+      let {index} = state.directionLightRecord;
       let lightGLSLDataStructureMemberNameArr = [|
         {
           position: "u_directionLights[0].position",
@@ -57,7 +59,7 @@ let send =
                    position,
                    GLSLLocationSystem.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
-                 DirectionLightAdmin.getPosition(index, state)
+                 PositionDirectionLightService.getPosition(index, state)
                );
                [@bs]
                GLSLSenderSystem.sendFloat3(
@@ -67,7 +69,7 @@ let send =
                    color,
                    GLSLLocationSystem.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
-                 DirectionLightAdmin.getColor(index, state)
+                 OperateDirectionLightService.getColor(index, state.directionLightRecord)
                );
                [@bs]
                GLSLSenderSystem.sendFloat(
@@ -82,7 +84,7 @@ let send =
                      gl
                    )
                  ),
-                 DirectionLightAdmin.getIntensity(index, state)
+                 OperateDirectionLightService.getIntensity(index, state.directionLightRecord)
                );
                state
              }

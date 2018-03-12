@@ -98,6 +98,36 @@ let disposeLightMaterialComponent =
     }
   );
 
+let disposeAmbientLightComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {ambientLightRecord} as state) => {
+      ...state,
+      ambientLightRecord:
+        DisposeAmbientLightService.handleDisposeComponent(component, ambientLightRecord)
+    }
+  );
+
+let disposeDirectionLightComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {directionLightRecord} as state) => {
+      ...state,
+      directionLightRecord:
+        DisposeDirectionLightService.handleDisposeComponent(component, directionLightRecord)
+    }
+  );
+
+let disposePointLightComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {pointLightRecord} as state) => {
+      ...state,
+      pointLightRecord:
+        DisposePointLightService.handleDisposeComponent(component, pointLightRecord)
+    }
+  );
+
 let batchDisposeBasicCameraViewComponent =
     (uidMap, {basicCameraViewRecord} as state, componentArray: array(component)) => {
   ...state,
@@ -174,6 +204,42 @@ let batchDisposeLightMaterialComponent =
       uidMap,
       lightMaterialRecord,
       DisposeLightMaterialService.handleBatchDisposeComponent,
+      componentArray
+    )
+};
+
+let batchDisposeAmbientLightComponent =
+    (uidMap, {ambientLightRecord} as state, componentArray: array(component)) => {
+  ...state,
+  ambientLightRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      ambientLightRecord,
+      DisposeAmbientLightService.handleBatchDisposeComponent,
+      componentArray
+    )
+};
+
+let batchDisposeDirectionLightComponent =
+    (uidMap, {directionLightRecord} as state, componentArray: array(component)) => {
+  ...state,
+  directionLightRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      directionLightRecord,
+      DisposeDirectionLightService.handleBatchDisposeComponent,
+      componentArray
+    )
+};
+
+let batchDisposePointLightComponent =
+    (uidMap, {pointLightRecord} as state, componentArray: array(component)) => {
+  ...state,
+  pointLightRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      pointLightRecord,
+      DisposePointLightService.handleBatchDisposeComponent,
       componentArray
     )
 };

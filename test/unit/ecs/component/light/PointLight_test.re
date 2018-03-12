@@ -1,10 +1,10 @@
-open PointLight;
+open PointLightAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "PointLight",
+    "PointLightAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -74,7 +74,7 @@ let _ =
         }
       );
       describe(
-        "getPointLightGameObject",
+        "unsafeGetPointLightGameObject",
         () =>
           test(
             "get light's gameObject",
@@ -83,7 +83,7 @@ let _ =
               let (state, light) = createPointLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectPointLightComponent(gameObject, light);
-              state |> getPointLightGameObject(light) |> expect == gameObject
+              state |> unsafeGetPointLightGameObject(light) |> expect == gameObject
             }
           )
       );
@@ -241,7 +241,7 @@ let _ =
         "disposeComponent",
         () =>
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "mark disposed",
@@ -249,7 +249,7 @@ let _ =
                   open PointLightType;
                   let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                    state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                   PointLightTool.isAlive(light1, state) |> expect == false
                 }
               );
@@ -259,7 +259,7 @@ let _ =
                   open PointLightType;
                   let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                    state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                   let {gameObjectMap} = PointLightTool.getLightData(state);
                   gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
                 }
@@ -275,11 +275,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let color1 = [|1., 1., 0.|];
                         let color2 = [|0., 1., 0.|];
-                        let state = state |> PointLight.setPointLightColor(light1, color1);
-                        let state = state |> PointLight.setPointLightColor(light2, color2);
+                        let state = state |> PointLightAPI.setPointLightColor(light1, color1);
+                        let state = state |> PointLightAPI.setPointLightColor(light2, color2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (color1, color2), (light1, light2))
                       };
                       test(
@@ -306,11 +306,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let intensity1 = 2.;
                         let intensity2 = 3.;
-                        let state = state |> PointLight.setPointLightIntensity(light1, intensity1);
-                        let state = state |> PointLight.setPointLightIntensity(light2, intensity2);
+                        let state = state |> PointLightAPI.setPointLightIntensity(light1, intensity1);
+                        let state = state |> PointLightAPI.setPointLightIntensity(light2, intensity2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -345,11 +345,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let constant1 = 2.;
                         let constant2 = 3.;
-                        let state = state |> PointLight.setPointLightConstant(light1, constant1);
-                        let state = state |> PointLight.setPointLightConstant(light2, constant2);
+                        let state = state |> PointLightAPI.setPointLightConstant(light1, constant1);
+                        let state = state |> PointLightAPI.setPointLightConstant(light2, constant2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -384,11 +384,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let linear1 = 2.;
                         let linear2 = 3.;
-                        let state = state |> PointLight.setPointLightLinear(light1, linear1);
-                        let state = state |> PointLight.setPointLightLinear(light2, linear2);
+                        let state = state |> PointLightAPI.setPointLightLinear(light1, linear1);
+                        let state = state |> PointLightAPI.setPointLightLinear(light2, linear2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (linear1, linear2), (light1, light2))
                       };
                       test(
@@ -419,11 +419,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let quadratic1 = 2.;
                         let quadratic2 = 3.;
-                        let state = state |> PointLight.setPointLightQuadratic(light1, quadratic1);
-                        let state = state |> PointLight.setPointLightQuadratic(light2, quadratic2);
+                        let state = state |> PointLightAPI.setPointLightQuadratic(light1, quadratic1);
+                        let state = state |> PointLightAPI.setPointLightQuadratic(light2, quadratic2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -459,11 +459,11 @@ let _ =
                         let (state, gameObject2, light2) = PointLightTool.createGameObject(state);
                         let range1 = 2.;
                         let range2 = 3.;
-                        let state = state |> PointLight.setPointLightRange(light1, range1);
-                        let state = state |> PointLight.setPointLightRange(light2, range2);
+                        let state = state |> PointLightAPI.setPointLightRange(light1, range1);
+                        let state = state |> PointLightAPI.setPointLightRange(light2, range2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (range1, range2), (light1, light2))
                       };
                       test(
@@ -499,13 +499,13 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectPointLightComponent(gameObject, light);
                 let state =
-                  state |> GameObject.disposeGameObjectPointLightComponent(gameObject, light);
+                  state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject, light);
                 expect(() => getFunc(light, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
               test(
-                "getPointLightGameObject should error",
-                () => _testGetFunc(getPointLightGameObject)
+                "unsafeGetPointLightGameObject should error",
+                () => _testGetFunc(unsafeGetPointLightGameObject)
               );
               test("getPointLightColor should error", () => _testGetFunc(getPointLightColor));
               test(
@@ -537,7 +537,7 @@ let _ =
                   expect(
                     () => {
                       let state =
-                        {...state^, pointLightData: {...state^.pointLightData, index: 5}}
+                        {...state^, pointLightRecord: {...state^.pointLightRecord, index: 5}}
                         |> PointLightTool.getLightCount;
                       ()
                     }
@@ -551,11 +551,11 @@ let _ =
         () => {
           let _test = (level, (range, linear, quadratic), state) => {
             let (state, light) = createPointLight(state^);
-            let state = state |> PointLight.setPointLightRangeLevel(light, level);
+            let state = state |> PointLightAPI.setPointLightRangeLevel(light, level);
             (
-              PointLight.getPointLightRange(light, state) |> TypeArrayTool.truncateFloatValue(7),
-              PointLight.getPointLightLinear(light, state) |> TypeArrayTool.truncateFloatValue(7),
-              PointLight.getPointLightQuadratic(light, state)
+              PointLightAPI.getPointLightRange(light, state) |> TypeArrayTool.truncateFloatValue(7),
+              PointLightAPI.getPointLightLinear(light, state) |> TypeArrayTool.truncateFloatValue(7),
+              PointLightAPI.getPointLightQuadratic(light, state)
               |> TypeArrayTool.truncateFloatValue(7)
             )
             |> expect == (range, linear, quadratic)
@@ -578,7 +578,7 @@ let _ =
               let (state, light) = createPointLight(state^);
               expect(
                 () => {
-                  let state = state |> PointLight.setPointLightRangeLevel(light, 12);
+                  let state = state |> PointLightAPI.setPointLightRangeLevel(light, 12);
                   ()
                 }
               )

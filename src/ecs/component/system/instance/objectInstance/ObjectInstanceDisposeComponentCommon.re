@@ -33,11 +33,11 @@ let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceM
      );
 
 let _disposeData = (objectInstance: objectInstance, state: StateDataType.state) => {
-  let {sourceInstanceMap, gameObjectMap} as data = getObjectInstanceData(state);
+  let {sourceInstanceMap, gameObjectMap} as record = getObjectInstanceData(state);
   {
     ...state,
     objectInstanceData: {
-      ...data,
+      ...record,
       sourceInstanceMap: sourceInstanceMap |> disposeSparseMapData(objectInstance),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(objectInstance)
     }
@@ -60,18 +60,18 @@ let handleDisposeComponent = (objectInstance: objectInstance, state: StateDataTy
       ),
     StateData.stateData.isDebug
   );
-  let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
+  let ({disposedIndexArray} as record): objectInstanceData = getObjectInstanceData(state);
   let state =
     state
     |> InstanceDisposeComponentUtils.disposeObjectInstance(
-         _unsafeGetSourceInstance(objectInstance, data),
+         _unsafeGetSourceInstance(objectInstance, record),
          ObjectInstanceGameObjectCommon.unsafeGetGameObject(objectInstance, state)
        )
     |> _disposeData(objectInstance);
   {
     ...state,
     objectInstanceData: {
-      ...data,
+      ...record,
       disposedIndexArray: disposedIndexArray |> ArrayService.push(objectInstance)
     }
   }
@@ -104,14 +104,14 @@ let handleBatchDisposeComponent =
               ~actual={j|not|j}
             ),
             () => {
-              let data = getObjectInstanceData(state);
-              let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], data);
+              let record = getObjectInstanceData(state);
+              let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], record);
               objectInstanceArray
               |> WonderCommonlib.ArraySystem.forEach(
                    [@bs]
                    (
                      (objectInstance) =>
-                       _unsafeGetSourceInstance(objectInstance, data) == sourceInstance
+                       _unsafeGetSourceInstance(objectInstance, record) == sourceInstance
                    )
                  )
             }
@@ -119,9 +119,9 @@ let handleBatchDisposeComponent =
         },
         StateData.stateData.isDebug
       );
-      let ({disposedIndexArray} as data): objectInstanceData = getObjectInstanceData(state);
-      let data = {
-        ...data,
+      let ({disposedIndexArray} as record): objectInstanceData = getObjectInstanceData(state);
+      let record = {
+        ...record,
         disposedIndexArray: disposedIndexArray |> Js.Array.concat(objectInstanceArray)
       };
       let disposedUidArr =
@@ -135,7 +135,7 @@ let handleBatchDisposeComponent =
           disposedUidArr,
           WonderCommonlib.SparseMapSystem.createEmpty()
         );
-      let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], data);
+      let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], record);
       let state =
         InstanceDisposeComponentUtils.batchDisposeObjectInstance(
           sourceInstance,

@@ -24,7 +24,7 @@ let _ =
         () => RenderHardwareInstanceTool.testProgram(sandbox, _prepare, state)
       );
       describe(
-        "send attribute data",
+        "send attribute record",
         () => {
           describe(
             "send sourceInstance gameObject's a_position",
@@ -49,7 +49,7 @@ let _ =
         }
       );
       describe(
-        "send uniform data",
+        "send uniform record",
         () => {
           RenderHardwareInstanceTool.testSendShaderUniformData(
             sandbox,
@@ -68,7 +68,7 @@ let _ =
         }
       );
       describe(
-        "send instance data",
+        "send instance record",
         () => {
           describe(
             "create instance buffer when first send",
@@ -248,7 +248,7 @@ let _ =
             }
           );
           describe(
-            "send modelMatrix and normalMatrix data",
+            "send modelMatrix and normalMatrix record",
             () => {
               describe(
                 "send sourceInstance gameObject's and objectInstanceGameObject gameObjects' model matrices and normal matrices",
@@ -263,7 +263,7 @@ let _ =
                     (state, gameObject, sourceInstance, objectInstanceGameObject)
                   };
                   test(
-                    "buffer sub data",
+                    "buffer sub record",
                     () => {
                       let (state, gameObject, sourceInstance, objectInstanceGameObject) =
                         _prepare(sandbox, state^);
@@ -289,7 +289,7 @@ let _ =
                         state
                         |> RenderJobsTool.initSystemAndRender
                         |> DirectorTool.runWithDefaultTime;
-                      let data = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
+                      let record = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
                       let transformArr = [|sourceTransform, objectTransform|];
                       ArraySystem.range(0, 1)
                       |> WonderCommonlib.ArraySystem.reduceOneParam(
@@ -298,12 +298,12 @@ let _ =
                              (offset, index) => {
                                let transform = transformArr[index];
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
+                                 record,
                                  TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
                                  offset
                                );
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
+                                 record,
                                  TransformTool.getNormalMatrixTypeArray(transform, state),
                                  offset + 16
                                );
@@ -319,7 +319,7 @@ let _ =
                            (
                              (offset, index) => {
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
+                                 record,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
                                    0.,
@@ -341,7 +341,7 @@ let _ =
                                  offset
                                );
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
+                                 record,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
                                    0.,
@@ -362,7 +362,7 @@ let _ =
                          )
                       |> ignore;
                       bufferSubData
-                      |> withThreeArgs(array_buffer, 0, data)
+                      |> withThreeArgs(array_buffer, 0, record)
                       |> expect
                       |> toCalledOnce
                     }
@@ -370,7 +370,7 @@ let _ =
                 }
               );
               describe(
-                "handle instance data position",
+                "handle instance record position",
                 () => {
                   let _prepare = (sandbox, state) => {
                     let (
@@ -405,7 +405,7 @@ let _ =
                     (state, (pos1, pos2, pos3, pos4, pos5, pos6, pos7), getAttribLocation)
                   };
                   test(
-                    "enableVertexAttribArray instance data",
+                    "enableVertexAttribArray instance record",
                     () => {
                       let (state, (pos1, pos2, pos3, pos4, pos5, pos6, pos7), getAttribLocation) =
                         _prepare(sandbox, state);
@@ -435,7 +435,7 @@ let _ =
                     }
                   );
                   describe(
-                    "vertexAttribPointer instance data",
+                    "vertexAttribPointer instance record",
                     () => {
                       let _prepare = (sandbox, state) => {
                         let (state, positionTuple, getAttribLocation) = _prepare(sandbox, state);
@@ -457,10 +457,10 @@ let _ =
                         (float, positionTuple, vertexAttribPointer)
                       };
                       describe(
-                        "test model matrix data ",
+                        "test model matrix record ",
                         () => {
                           test(
-                            "test first data",
+                            "test first record",
                             () => {
                               let (
                                 float,
@@ -474,7 +474,7 @@ let _ =
                             }
                           );
                           test(
-                            "test second data",
+                            "test second record",
                             () => {
                               let (
                                 float,
@@ -488,7 +488,7 @@ let _ =
                             }
                           );
                           test(
-                            "test third data",
+                            "test third record",
                             () => {
                               let (
                                 float,
@@ -502,7 +502,7 @@ let _ =
                             }
                           );
                           test(
-                            "test fourth data",
+                            "test fourth record",
                             () => {
                               let (
                                 float,
@@ -518,10 +518,10 @@ let _ =
                         }
                       );
                       describe(
-                        "test normal matrix data ",
+                        "test normal matrix record ",
                         () => {
                           test(
-                            "test 5th data",
+                            "test 5th record",
                             () => {
                               let (
                                 float,
@@ -535,7 +535,7 @@ let _ =
                             }
                           );
                           test(
-                            "test 6th data",
+                            "test 6th record",
                             () => {
                               let (
                                 float,
@@ -549,7 +549,7 @@ let _ =
                             }
                           );
                           test(
-                            "test 7th data",
+                            "test 7th record",
                             () => {
                               let (
                                 float,
@@ -634,7 +634,7 @@ let _ =
                         "if isTransformStatic is true",
                         () => {
                           test(
-                            "if not send data before, send data",
+                            "if not send record before, send record",
                             () => {
                               let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
                               let state = state |> DirectorTool.runWithDefaultTime;
@@ -642,7 +642,7 @@ let _ =
                             }
                           );
                           test(
-                            "else, not send data",
+                            "else, not send record",
                             () => {
                               let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
                               let state = state |> DirectorTool.runWithDefaultTime;
@@ -656,7 +656,7 @@ let _ =
                         "else",
                         () =>
                           test(
-                            "send data",
+                            "send record",
                             () => {
                               let (state, _, bufferSubData) = _prepare(sandbox, Js.false_, state);
                               let state = state |> DirectorTool.runWithDefaultTime;

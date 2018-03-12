@@ -341,7 +341,7 @@ let _ =
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLight {
+struct PointLightAPI {
     vec3 position;
     vec3 color;
     float intensity;
@@ -351,20 +351,20 @@ struct PointLight {
     float linear;
     float quadratic;
 };
-uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLight {
+struct DirectionLightAPI {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 |},
                           {|
@@ -401,7 +401,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLight {
+struct PointLightAPI {
     vec3 position;
     vec3 color;
     float intensity;
@@ -411,20 +411,20 @@ struct PointLight {
     float linear;
     float quadratic;
 };
-uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLight {
+struct DirectionLightAPI {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 |},
                           {|
@@ -763,7 +763,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
                               |},
                               {|
 #if POINT_LIGHTS_COUNT > 0
-        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
+        vec3 calcPointLight(vec3 lightDir, PointLightAPI light, vec3 normal, vec3 viewDir)
 {
         //lightDir is not normalize computing distance
         float distance = length(lightDir);
@@ -784,7 +784,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
+        vec3 calcDirectionLight(vec3 lightDir, DirectionLightAPI light, vec3 normal, vec3 viewDir)
 {
         float attenuation = 1.0;
 

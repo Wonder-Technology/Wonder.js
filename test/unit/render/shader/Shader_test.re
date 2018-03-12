@@ -40,7 +40,7 @@ let _ =
             }
           );
           test(
-            "generate shaderIndex, set to material data",
+            "generate shaderIndex, set to material record",
             () => {
               let (state, _, _, material1) =
                 InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);

@@ -32,7 +32,7 @@ let _ =
         () => {
           let _testSetVertexDataWithArray = (type_, getFunc, setFunc) =>
             test(
-              {j|if $type_ already exist, fill new data in it|j},
+              {j|if $type_ already exist, fill new record in it|j},
               () => {
                 open GameObject; open GameObjectAPI;
                 let (state, geometry) = createBoxGeometry(state^);
@@ -86,7 +86,7 @@ let _ =
             "set indices with array",
             () =>
               test(
-                "if indices already exist, fill new data in it",
+                "if indices already exist, fill new record in it",
                 () => {
                   open GameObject; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
@@ -143,7 +143,7 @@ let _ =
         "dispose component",
         () => {
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               let _prepare = (state) => {
                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
@@ -269,7 +269,7 @@ let _ =
                 "fix bug",
                 () =>
                   test(
-                    "new one after init should has its own geometry point data",
+                    "new one after init should has its own geometry point record",
                     () => {
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);

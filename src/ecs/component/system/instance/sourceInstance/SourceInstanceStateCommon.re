@@ -20,9 +20,9 @@ let deepCopyForRestore = (state: StateDataType.state) => {
     ...state,
     sourceInstanceData: {
       index,
-      objectInstanceArrayMap: objectInstanceArrayMap |> CopyStateUtils.deepCopyArrayArray,
+      objectInstanceArrayMap: objectInstanceArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
       matrixFloat32ArrayMap:
-        matrixFloat32ArrayMap |> CopyStateUtils.deepCopyFloat32ArrayArray,
+        matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
       matrixInstanceBufferCapacityMap:
         matrixInstanceBufferCapacityMap |> SparseMapSystem.copy,
       isTransformStaticMap: isTransformStaticMap |> SparseMapSystem.copy,

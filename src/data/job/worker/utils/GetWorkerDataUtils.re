@@ -2,7 +2,7 @@ let _createGetWorkerDataStream = (flags, target) =>
   MostUtils.fromWorkerEvent("message", target)
   |> Most.filter(
        (e) =>
-         e##data##operateType === JobConfigService.unsafeGetFlags(flags)[0]
+         e##record##operateType === JobConfigService.unsafeGetFlags(flags)[0]
          |> Js.Boolean.to_js_boolean
      );
 

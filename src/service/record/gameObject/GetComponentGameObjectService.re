@@ -47,3 +47,21 @@ let getMeshRendererComponent =
 
 let unsafeGetMeshRendererComponent = (uid: int, {meshRendererMap}) =>
   meshRendererMap |> unsafeGetComponent(uid);
+
+let getAmbientLightComponent =
+  [@bs] ((uid: int, {ambientLightMap}) => ambientLightMap |> getComponent(uid));
+
+let unsafeGetAmbientLightComponent = (uid: int, {ambientLightMap}) =>
+  ambientLightMap |> unsafeGetComponent(uid);
+
+let getDirectionLightComponent =
+  [@bs] ((uid: int, {directionLightMap}) => directionLightMap |> getComponent(uid));
+
+let unsafeGetDirectionLightComponent = (uid: int, {directionLightMap}) =>
+  directionLightMap |> unsafeGetComponent(uid);
+
+let getPointLightComponent =
+  [@bs] ((uid: int, {pointLightMap}) => pointLightMap |> getComponent(uid));
+
+let unsafeGetPointLightComponent = (uid: int, {pointLightMap}) =>
+  pointLightMap |> unsafeGetComponent(uid);

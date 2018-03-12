@@ -44,36 +44,6 @@ let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
 let getBasicCameraViewComponent =
   [@bs] ((uid: int, gameObjectRecord) => gameObjectRecord.basicCameraViewMap |> getComponent(uid));
 
-let getAmbientLightComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.ambientLightMap |> getComponent(uid)
-  );
-
-let unsafeGetAmbientLightComponent = (uid: int, state: StateDataType.state) =>
-  state.gameObjectRecord.ambientLightMap |> _unsafeGetComponent(uid);
-
-let getDirectionLightComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.directionLightMap |> getComponent(uid)
-  );
-
-let unsafeGetDirectionLightComponent = (uid: int, state: StateDataType.state) =>
-  state.gameObjectRecord.directionLightMap |> _unsafeGetComponent(uid);
-
-let getPointLightComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.pointLightMap |> getComponent(uid)
-  );
-
-let unsafeGetPointLightComponent = (uid: int, state: StateDataType.state) =>
-  state.gameObjectRecord.pointLightMap |> _unsafeGetComponent(uid);
-
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(
@@ -101,26 +71,5 @@ let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataTyp
   _batchGetComponent(
     uidArray,
     state.gameObjectRecord.objectInstanceMap,
-    state
-  );
-
-let batchGetAmbientLightComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.ambientLightMap,
-    state
-  );
-
-let batchGetDirectionLightComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.directionLightMap,
-    state
-  );
-
-let batchGetPointLightComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.pointLightMap,
     state
   );

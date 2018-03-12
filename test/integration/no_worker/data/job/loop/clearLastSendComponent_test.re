@@ -30,7 +30,7 @@ let _ =
             "test create gameObject after dispose one",
             () =>
               test(
-                "should send new one's material uniform data",
+                "should send new one's material uniform record",
                 () => {
                   let (state, gameObject1, material1) = _prepare(state^);
                   let colorArr1 = [|1.0, 0.1, 0.2|];

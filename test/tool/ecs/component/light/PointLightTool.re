@@ -1,41 +1,47 @@
+open StateDataType;
+
 let createGameObject = (state) => {
-  open GameObject; open GameObjectAPI;
-  open PointLight;
+  open GameObjectAPI;
+  open PointLightAPI;
   let (state, light) = createPointLight(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectPointLightComponent(gameObject, light);
   (state, gameObject, light)
 };
 
-let getLightData = PointLightSystem.getLightData;
+let getLightData = (state) => state.pointLightRecord;
 
-let isAlive = PointLightSystem.isAlive;
+let isAlive = (light, state) => DisposePointLightService.isAlive(light, state.pointLightRecord);
 
-let getColor = PointLightSystem.getColor;
+let getColor = (light, state) => OperatePointLightService.getColor(light, state.pointLightRecord);
 
-let getIntensity = PointLightSystem.getIntensity;
+let getIntensity = (light, state) =>
+  OperatePointLightService.getIntensity(light, state.pointLightRecord);
 
-let getConstant = PointLightSystem.getConstant;
+let getConstant = (light, state) =>
+  OperatePointLightService.getConstant(light, state.pointLightRecord);
 
-let getLinear = PointLightSystem.getLinear;
+let getLinear = (light, state) =>
+  OperatePointLightService.getLinear(light, state.pointLightRecord);
 
-let getQuadratic = PointLightSystem.getQuadratic;
+let getQuadratic = (light, state) =>
+  OperatePointLightService.getQuadratic(light, state.pointLightRecord);
 
-let getRange = PointLightSystem.getRange;
+let getRange = (light, state) => OperatePointLightService.getRange(light, state.pointLightRecord);
 
-let getDefaultColor = PointLightHelper.getDefaultColor;
+let getDefaultColor = RecordPointLightService.getDefaultColor;
 
-let getDefaultIntensity = PointLightHelper.getDefaultIntensity;
+let getDefaultIntensity = RecordPointLightService.getDefaultIntensity;
 
-let getDefaultConstant = PointLightHelper.getDefaultConstant;
+let getDefaultConstant = RecordPointLightService.getDefaultConstant;
 
-let getDefaultLinear = PointLightHelper.getDefaultLinear;
+let getDefaultLinear = RecordPointLightService.getDefaultLinear;
 
-let getDefaultQuadratic = PointLightHelper.getDefaultQuadratic;
+let getDefaultQuadratic = RecordPointLightService.getDefaultQuadratic;
 
-let getDefaultRange = PointLightHelper.getDefaultRange;
+let getDefaultRange = RecordPointLightService.getDefaultRange;
 
 let getMappedIndex = (index, state) =>
-  state |> PointLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);
+  state |> IndexPointLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);
 
-let getLightCount = PointLightAdmin.getLightCount;
+let getLightCount = (state) => CountPointLightService.getLightCount(state.pointLightRecord);

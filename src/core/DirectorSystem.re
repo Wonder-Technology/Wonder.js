@@ -28,7 +28,7 @@ let rec _createWorkerLoopStream = () =>
              |> WorkerInstanceSystem.unsafeGetRenderWorker
            )
            |> Most.filter(
-                (e) => e##data##operateType === "finish_loop" |> Js.Boolean.to_js_boolean
+                (e) => e##record##operateType === "finish_loop" |> Js.Boolean.to_js_boolean
               )
            |> Most.take(1)
            |> Most.map((e) => ())

@@ -13,22 +13,22 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
   );
 
 /* case EWorkerOperateType.INIT_CONFIG:
-       setIsTest(data.isTest, InitConfigWorkerData).run();
+       setIsTest(record.isTest, InitConfigWorkerData).run();
        break;
    case EWorkerOperateType.INIT_DATA:
-       setVersion(data.webglVersion, WebGLDetectWorkerData);
+       setVersion(record.webglVersion, WebGLDetectWorkerData);
        break;
    case EWorkerOperateType.INIT_GL:
 
        if (isWebgl1(WebGLDetectWorkerData)) {
            _initWebGL1Data();
 
-           state = _initWebGL1GL(data, WebGLDetectWorkerData, GPUDetectWorkerData);
+           state = _initWebGL1GL(record, WebGLDetectWorkerData, GPUDetectWorkerData);
        }
        else {
            _initWebGL2Data();
 
-           state = _initWebGL2GL(data, WebGLDetectWorkerData, GPUDetectWorkerData);
+           state = _initWebGL2GL(record, WebGLDetectWorkerData, GPUDetectWorkerData);
        }
 
        setState(state, StateWorkerData);
@@ -37,18 +37,18 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        break;
    case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
        if (isWebgl1(WebGLDetectWorkerData)) {
-           _handleWebGL1InitRenderData(data, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData);
+           _handleWebGL1InitRenderData(record, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData);
        }
        else {
-           _handleWebGL2InitRenderData(data, render_config, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, GPUDetectWorkerData, WebGL2GLSLSenderWorkerData);
+           _handleWebGL2InitRenderData(record, render_config, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, GPUDetectWorkerData, WebGL2GLSLSenderWorkerData);
        }
        break;
    case EWorkerOperateType.DRAW:
        if (isWebgl1(WebGLDetectWorkerData)) {
-           _handleWebGL1Draw(data, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
+           _handleWebGL1Draw(record, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
        }
        else {
-           _handleWebGL2Draw(data, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
+           _handleWebGL2Draw(record, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
        }
        break;
    default:
@@ -56,12 +56,12 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        break; */
 /* let onmessage = (e: renderWorkerMessageEvent) => { */
 /* let onmessage = (e) => {
-     let data = e##data;
-     switch data##operateType {
+     let record = e##record;
+     switch record##operateType {
      | INIT_GL =>
-       WonderLog.Log.print(("data:", data)) |> ignore;
+       WonderLog.Log.print(("record:", record)) |> ignore;
        RenderWorkerStateSystem.createState()
-       |> InitGlSystem.initGl(data)
+       |> InitGlSystem.initGl(record)
        |> RenderWorkerStateSystem.setState(RenderWorkerStateData.renderWorkerStateData)
        |> ignore
      | operateType =>
@@ -78,17 +78,17 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
    }; */
 /* TODO refactor: extract function */
 MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
-|> Most.filter((e) => e##data##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
+|> Most.filter((e) => e##record##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
 |> Most.concatMap(
      (e) =>
        WorkerJobSystem.getRenderWorkerJobStreamArr(
-         e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
-         e##data##jobs |> Js.Json.parseExn |> Obj.magic,
+         e##record##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
+         e##record##jobs |> Js.Json.parseExn |> Obj.magic,
          RenderWorkerStateData.renderWorkerStateData
        )
        |> ArrayService.push(
             MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
-            |> Most.filter((e) => e##data##operateType === "loop" |> Js.Boolean.to_js_boolean)
+            |> Most.filter((e) => e##record##operateType === "loop" |> Js.Boolean.to_js_boolean)
             |> Most.map((e) => Some(e))
             |> Most.tap(
                  (e) =>

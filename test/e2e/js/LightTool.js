@@ -80,14 +80,14 @@ var LightTool = (function () {
             return [state, obj];
         },
         createLights: function (directionLightPos, pointLightPos, state) {
-            var data = LightTool.createAmbientLight(state);
-            var state = data[0];
+            var record = LightTool.createAmbientLight(state);
+            var state = record[0];
 
 
 
-            var data = LightTool.createDirectionLight(state);
-            var state = data[0];
-            var directionLightObj = data[1];
+            var record = LightTool.createDirectionLight(state);
+            var state = record[0];
+            var directionLightObj = record[1];
 
 
 
@@ -98,9 +98,9 @@ var LightTool = (function () {
 
 
 
-            var data = LightTool.createPointLight(state);
-            var state = data[0];
-            var directionLightObj = data[1];
+            var record = LightTool.createPointLight(state);
+            var state = record[0];
+            var directionLightObj = record[1];
 
 
 

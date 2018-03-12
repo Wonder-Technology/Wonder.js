@@ -6,7 +6,7 @@ open BoxGeometryType;
 
 let _ =
   describe(
-    "test redo,undo component data",
+    "test redo,undo component record",
     () => {
       open Expect;
       open Expect.Operators;
@@ -141,10 +141,10 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "deep copy meshRenderer data",
+        "deep copy meshRenderer record",
         () => {
           test(
-            "copied data should equal to source data",
+            "copied record should equal to source record",
             () => {
               open MeshRendererType;
               let (
@@ -187,9 +187,9 @@ let _ =
               ) =
                 _prepareMeshRendererData(state);
               let copiedState = StateTool.deepCopyForRestore(state);
-              let {renderGameObjectArray, gameObjectMap, disposedIndexArray} as data =
+              let {renderGameObjectArray, gameObjectMap, disposedIndexArray} as record =
                 MeshRendererTool.getMeshRendererData(copiedState);
-              let data = {...data, index: 0};
+              let record = {...record, index: 0};
               renderGameObjectArray |> Js.Array.pop |> ignore;
               disposedIndexArray |> Js.Array.pop |> ignore;
               gameObjectMap
@@ -215,7 +215,7 @@ let _ =
         "deepCopyForRestore",
         () => {
           describe(
-            "deep copy transform data",
+            "deep copy transform record",
             () => {
               test(
                 "deep copy localToWorldMatrixMap, localPositionMap",
@@ -233,11 +233,11 @@ let _ =
                     _prepareTransformMatrixData(state);
                   let _ = TransformAPI.getTransformPosition(transform2, state);
                   let copiedState = StateTool.deepCopyForRestore(state);
-                  let data = TransformTool.getTransformData(copiedState);
-                  data.localToWorldMatrixMap
+                  let record = TransformTool.getTransformData(copiedState);
+                  record.localToWorldMatrixMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
-                  data.localPositionMap
+                  record.localPositionMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
                   (
@@ -298,7 +298,7 @@ let _ =
             }
           );
           describe(
-            "deep copy geometry data",
+            "deep copy geometry record",
             () =>
               test(
                 "change copied state shouldn't affect source state",
@@ -315,14 +315,14 @@ let _ =
                   ) =
                     _prepareGeometryData(state);
                   let copiedState = StateTool.deepCopyForRestore(state);
-                  let data = copiedState.boxGeometryRecord;
-                  data.verticesMap
+                  let record = copiedState.boxGeometryRecord;
+                  record.verticesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                  data.normalsMap
+                  record.normalsMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                  data.indicesMap
+                  record.indicesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
                   let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
@@ -342,7 +342,7 @@ let _ =
               )
           );
           describe(
-            "deep copy material data",
+            "deep copy material record",
             () => {
               describe(
                 "test basic material",
@@ -362,8 +362,8 @@ let _ =
                       ) =
                         _prepareBasicMaterialData(state);
                       let copiedState = StateTool.deepCopyForRestore(state);
-                      let data = copiedState.basicMaterialRecord;
-                      data.colorMap
+                      let record = copiedState.basicMaterialRecord;
+                      record.colorMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
                       let {colorMap} = state.basicMaterialRecord;
@@ -392,11 +392,11 @@ let _ =
                       ) =
                         _prepareLightMaterialData(state);
                       let copiedState = StateTool.deepCopyForRestore(state);
-                      let data = copiedState.lightMaterialRecord;
-                      data.diffuseColorMap
+                      let record = copiedState.lightMaterialRecord;
+                      record.diffuseColorMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
-                      data.specularColorMap
+                      record.specularColorMap
                       |> Obj.magic
                       |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
                       let {diffuseColorMap, specularColorMap} =
@@ -416,7 +416,7 @@ let _ =
             }
           );
           describe(
-            "deep copy light data",
+            "deep copy light record",
             () => {
               let _testCopyTypeArraySingleValue =
                   ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
@@ -433,7 +433,7 @@ let _ =
                 "test ambient light",
                 () => {
                   describe(
-                    "copy type array data",
+                    "copy type array record",
                     () =>
                       test(
                         "copy colors",
@@ -441,8 +441,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               AmbientLightTool.createGameObject,
-                              AmbientLight.getAmbientLightColor,
-                              AmbientLight.setAmbientLightColor,
+                              AmbientLightAPI.getAmbientLightColor,
+                              AmbientLightAPI.setAmbientLightColor,
                               () => ([|1., 1., 0.|], [|0., 1., 0.|])
                             ),
                             state
@@ -471,7 +471,7 @@ let _ =
                 "test direction light",
                 () => {
                   describe(
-                    "copy type array data",
+                    "copy type array record",
                     () => {
                       test(
                         "copy colors",
@@ -479,8 +479,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               DirectionLightTool.createGameObject,
-                              DirectionLight.getDirectionLightColor,
-                              DirectionLight.setDirectionLightColor,
+                              DirectionLightAPI.getDirectionLightColor,
+                              DirectionLightAPI.setDirectionLightColor,
                               () => ([|1., 1., 0.|], [|0., 1., 0.|])
                             ),
                             state
@@ -492,8 +492,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               DirectionLightTool.createGameObject,
-                              DirectionLight.getDirectionLightIntensity,
-                              DirectionLight.setDirectionLightIntensity,
+                              DirectionLightAPI.getDirectionLightIntensity,
+                              DirectionLightAPI.setDirectionLightIntensity,
                               () => (2., 3.)
                             ),
                             state
@@ -523,7 +523,7 @@ let _ =
                 "test point light",
                 () => {
                   describe(
-                    "copy type array data",
+                    "copy type array record",
                     () => {
                       test(
                         "copy colors",
@@ -531,8 +531,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightColor,
-                              PointLight.setPointLightColor,
+                              PointLightAPI.getPointLightColor,
+                              PointLightAPI.setPointLightColor,
                               () => ([|1., 1., 0.|], [|0., 1., 0.|])
                             ),
                             state
@@ -544,8 +544,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightIntensity,
-                              PointLight.setPointLightIntensity,
+                              PointLightAPI.getPointLightIntensity,
+                              PointLightAPI.setPointLightIntensity,
                               () => (2., 3.)
                             ),
                             state
@@ -557,8 +557,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightConstant,
-                              PointLight.setPointLightConstant,
+                              PointLightAPI.getPointLightConstant,
+                              PointLightAPI.setPointLightConstant,
                               () => (2., 3.)
                             ),
                             state
@@ -570,8 +570,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightLinear,
-                              PointLight.setPointLightLinear,
+                              PointLightAPI.getPointLightLinear,
+                              PointLightAPI.setPointLightLinear,
                               () => (2., 3.)
                             ),
                             state
@@ -583,8 +583,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightQuadratic,
-                              PointLight.setPointLightQuadratic,
+                              PointLightAPI.getPointLightQuadratic,
+                              PointLightAPI.setPointLightQuadratic,
                               () => (2., 3.)
                             ),
                             state
@@ -596,8 +596,8 @@ let _ =
                           _testCopyTypeArraySingleValue(
                             (
                               PointLightTool.createGameObject,
-                              PointLight.getPointLightRange,
-                              PointLight.setPointLightRange,
+                              PointLightAPI.getPointLightRange,
+                              PointLightAPI.setPointLightRange,
                               () => (2., 3.)
                             ),
                             state
@@ -626,7 +626,7 @@ let _ =
             }
           );
           describe(
-            "deep copy sourceInstance data",
+            "deep copy sourceInstance record",
             () => {
               test(
                 "deep copy objectInstanceArrayMap, matrixFloat32ArrayMap",
@@ -702,7 +702,7 @@ let _ =
             }
           );
           describe(
-            "deep copy gameObject data",
+            "deep copy gameObject record",
             () =>
               test(
                 "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, boxGeometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
@@ -748,7 +748,7 @@ let _ =
               )
           );
           describe(
-            "deep copy objectInstance data",
+            "deep copy objectInstance record",
             () =>
               test(
                 "shadow copy sourceInstanceMap, gameObjectMap, disposedIndexArray",
@@ -772,7 +772,7 @@ let _ =
               )
           );
           describe(
-            "deep copy basicCameraView data",
+            "deep copy basicCameraView record",
             () =>
               test(
                 "shadow copy gameObjectMap, disposedIndexArray",
@@ -789,7 +789,7 @@ let _ =
               )
           );
           describe(
-            "deep copy basicCameraView data",
+            "deep copy basicCameraView record",
             () => {
               test(
                 "shadow copy dirtyArray, nearMap, farMap, fovyMap, aspectMap, gameObjectMap, disposedIndexArray",
@@ -864,7 +864,7 @@ let _ =
             StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
           };
           describe(
-            "restore meshRenderer data to target state",
+            "restore meshRenderer record to target state",
             () => {
               let _prepare = (state) => {
                 let (
@@ -927,7 +927,7 @@ let _ =
             }
           );
           describe(
-            "restore transform data to target state",
+            "restore transform record to target state",
             () =>
               test(
                 "add current state->transformRecord->localToWorldMatrixMap, localPositionMap typeArr to pool",
@@ -955,7 +955,7 @@ let _ =
               )
           );
           describe(
-            "restore geometry data to target state",
+            "restore geometry record to target state",
             () =>
               test(
                 "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
@@ -995,7 +995,7 @@ let _ =
               )
           );
           describe(
-            "restore material data to target state",
+            "restore material record to target state",
             () => {
               test(
                 "test basic material",
@@ -1018,7 +1018,7 @@ let _ =
             }
           );
           describe(
-            "restore light data to target state",
+            "restore light record to target state",
             () => {
               let _prepareLightData = (createGameObjectFunc, state) => {
                 open LightMaterialAPI;
@@ -1070,7 +1070,7 @@ let _ =
             }
           );
           describe(
-            "restore sourceInstance data to target state",
+            "restore sourceInstance record to target state",
             () => {
               test(
                 "add current state->sourceInstanceData->matrixFloat32ArrayMap typeArr to pool",
@@ -1115,7 +1115,7 @@ let _ =
             }
           );
           test(
-            "restore basicCameraView data to target state",
+            "restore basicCameraView record to target state",
             () =>
               _testRestoreStateEqualTargetState(
                 state,
@@ -1124,7 +1124,7 @@ let _ =
               )
           );
           test(
-            "restore perspectiveCameraProjection data to target state",
+            "restore perspectiveCameraProjection record to target state",
             () =>
               _testRestoreStateEqualTargetState(
                 state,

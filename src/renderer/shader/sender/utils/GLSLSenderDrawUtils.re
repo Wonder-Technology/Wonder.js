@@ -12,11 +12,11 @@ let bindElementArrayBuffer =
   [@bs]
   (
     (gl, (size: int, pos: attributeLocation), buffer, state: StateDataType.state) => {
-      /* let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state); */
+      /* let {lastSendElementArrayBuffer} as record = getGLSLSenderData(state); */
       /* switch lastSendElementArrayBuffer {
          | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
          | _ =>
-           data.lastSendElementArrayBuffer = Some(buffer); */
+           record.lastSendElementArrayBuffer = Some(buffer); */
       bindBuffer(getElementArrayBuffer(gl), buffer, gl);
       state
       /* } */

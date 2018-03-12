@@ -4,7 +4,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "test redo,undo shader data",
+    "test redo,undo shader record",
     () => {
       open Expect;
       open Expect.Operators;
@@ -26,20 +26,20 @@ let _ =
         (state, shaderIndex1, data1, func1, history1)
       };
       let _prepareShaderData = (state) => {
-        let data = ShaderTool.getShaderData(state);
+        let record = ShaderTool.getShaderData(state);
         let shaderIndex1 = 0;
         let shaderIndex2 = 1;
-        data.index = 2;
-        data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1) |> ignore;
-        data.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2) |> ignore;
+        record.index = 2;
+        record.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1) |> ignore;
+        record.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2) |> ignore;
         (state, shaderIndex1, shaderIndex2)
       };
       let _prepareProgramData = (state) => {
-        let data = ProgramTool.getProgramData(state);
+        let record = ProgramTool.getProgramData(state);
         let shaderIndex1 = 0;
         let program1 = Obj.magic(11);
-        data.programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1) |> ignore;
-        data.lastUsedProgram = program1;
+        record.programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1) |> ignore;
+        record.lastUsedProgram = program1;
         (state, shaderIndex1, program1)
       };
       beforeEach(
@@ -58,10 +58,10 @@ let _ =
         "restore",
         () => {
           describe(
-            "restore glsl sender data to target state",
+            "restore glsl sender record to target state",
             () => {
               test(
-                "clear last send data",
+                "clear last send record",
                 () => {
                   open StateDataType;
                   let (state, shaderIndex1, data1, func1, history1) =
@@ -90,7 +90,7 @@ let _ =
             }
           );
           describe(
-            "restore shader data to target state",
+            "restore shader record to target state",
             () =>
               describe(
                 "contract check",
@@ -102,8 +102,8 @@ let _ =
                       let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
                       let currentState = StateTool.createNewCompleteState(sandbox);
                       TestTool.openContractCheck();
-                      let data = ShaderTool.getShaderData(currentState);
-                      data.glslData.precision = Some("aaa");
+                      let record = ShaderTool.getShaderData(currentState);
+                      record.glslData.precision = Some("aaa");
                       expect(
                         () => {
                           let _ = StateTool.restore(currentState, state);
@@ -118,7 +118,7 @@ let _ =
               )
           );
           describe(
-            "restore program data to target state",
+            "restore program record to target state",
             () =>
               test(
                 "clear lastUsedProgram",
@@ -134,7 +134,7 @@ let _ =
               )
           );
           describe(
-            "restore gpu shader related data to target state",
+            "restore gpu shader related record to target state",
             () => {
               describe(
                 "test init shader",
@@ -252,7 +252,7 @@ let _ =
                 }
               );
               describe(
-                "test restore data",
+                "test restore record",
                 () => {
                   let _prepareState1 = (state) => {
                     open ShaderType;
@@ -263,21 +263,21 @@ let _ =
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
                     let shaderIndex3 = 2;
-                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
-                    data.index = 3;
+                    let {shaderIndexMap} as record = ShaderTool.getShaderData(state);
+                    record.index = 3;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
                     |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2)
                     |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3)
                     |> ignore;
-                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let {programMap} as record = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
                     programMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
                     |> ignore;
-                    data.lastUsedProgram = program2;
+                    record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GLSLLocationTool.getGLSLLocationData(state);
                     let attributeLocationData1 = Obj.magic(21);
@@ -327,20 +327,20 @@ let _ =
                     open GLSLSenderType;
                     let shaderIndex1 = 3;
                     let shaderIndex2 = 4;
-                    let {shaderIndexMap} as data = ShaderTool.getShaderData(state);
-                    data.index = 2;
+                    let {shaderIndexMap} as record = ShaderTool.getShaderData(state);
+                    record.index = 2;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
                     |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2)
                     |> ignore;
-                    let {programMap} as data = ProgramTool.getProgramData(state);
+                    let {programMap} as record = ProgramTool.getProgramData(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
                     programMap
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
                     |> ignore;
-                    data.lastUsedProgram = program2;
+                    record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
                       GLSLLocationTool.getGLSLLocationData(state);
                     let attributeLocationData1 = Obj.magic(201);
@@ -419,7 +419,7 @@ let _ =
                     )
                   };
                   describe(
-                    "test restore shader data",
+                    "test restore shader record",
                     () => {
                       describe(
                         "test index",
@@ -470,7 +470,7 @@ let _ =
                     }
                   );
                   describe(
-                    "test restore program data",
+                    "test restore program record",
                     () =>
                       describe(
                         "test programMap",
@@ -509,7 +509,7 @@ let _ =
                       )
                   );
                   describe(
-                    "test restore glsl location data",
+                    "test restore glsl location record",
                     () =>
                       describe(
                         "test attributeLocationMap, uniformLocationMap",
@@ -559,7 +559,7 @@ let _ =
                       )
                   );
                   describe(
-                    "test restore glsl sender data",
+                    "test restore glsl sender record",
                     () =>
                       describe(
                         "test uniformShaderSendNoCachableDataMap",

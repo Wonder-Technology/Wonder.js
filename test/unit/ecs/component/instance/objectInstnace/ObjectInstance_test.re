@@ -20,7 +20,7 @@ let _ =
         "dispose component",
         () => {
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "remove from sourceInstanceMap, gameObjectMap",

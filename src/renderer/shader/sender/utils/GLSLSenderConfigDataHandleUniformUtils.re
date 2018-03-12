@@ -7,7 +7,7 @@ let unsafeGetUniformSendData = (shaderIndex: int, map) =>
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|uniform send data exist|j}, ~actual={j|not|j}),
+                 Log.buildAssertMessage(~expect={j|uniform send record exist|j}, ~actual={j|not|j}),
                  () => sendData |> assertNullableExist
                )
              )

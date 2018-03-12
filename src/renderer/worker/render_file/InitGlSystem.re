@@ -1,13 +1,13 @@
 external convertViewportArrayToTuple : array(float) => (float, float, float, float) = "%identity";
 
-let initGl = (data, renderWorkerState) => {
+let initGl = (record, renderWorkerState) => {
   /* TODO init gl */
-  /* let gl = DeviceManagerReWoSystem.createGl(data##contextConfig, data##canvas);
+  /* let gl = DeviceManagerReWoSystem.createGl(record##contextConfig, record##canvas);
      WonderLog.Log.print(("gl: ", gl)) |> ignore;
      renderWorkerState
-     |> DeviceManagerReWoSystem.setViewportOfGl(gl, convertViewportArrayToTuple(data##viewportData))
+     |> DeviceManagerReWoSystem.setViewportOfGl(gl, convertViewportArrayToTuple(record##viewportData))
      |> GPUDetectReWoSystem.detect(gl) */
-  WonderLog.Log.print(("init gl data: ", data)) |> ignore;
+  WonderLog.Log.print(("init gl record: ", record)) |> ignore;
   renderWorkerState
 };
 /*

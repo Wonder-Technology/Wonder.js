@@ -1,10 +1,10 @@
-open DirectionLight;
+open DirectionLightAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "DirectionLight",
+    "DirectionLightAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -74,7 +74,7 @@ let _ =
         }
       );
       describe(
-        "getDirectionLightGameObject",
+        "unsafeGetDirectionLightGameObject",
         () =>
           test(
             "get light's gameObject",
@@ -83,7 +83,7 @@ let _ =
               let (state, light) = createDirectionLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectDirectionLightComponent(gameObject, light);
-              state |> getDirectionLightGameObject(light) |> expect == gameObject
+              state |> unsafeGetDirectionLightGameObject(light) |> expect == gameObject
             }
           )
       );
@@ -141,7 +141,7 @@ let _ =
         "disposeComponent",
         () =>
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "mark disposed",
@@ -150,7 +150,7 @@ let _ =
                   let (state, gameObject1, light1) = DirectionLightTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectDirectionLightComponent(gameObject1, light1);
+                    |> GameObjectAPI.disposeGameObjectDirectionLightComponent(gameObject1, light1);
                   DirectionLightTool.isAlive(light1, state) |> expect == false
                 }
               );
@@ -161,7 +161,7 @@ let _ =
                   let (state, gameObject1, light1) = DirectionLightTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectDirectionLightComponent(gameObject1, light1);
+                    |> GameObjectAPI.disposeGameObjectDirectionLightComponent(gameObject1, light1);
                   let {gameObjectMap} = DirectionLightTool.getLightData(state);
                   gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
                 }
@@ -179,11 +179,11 @@ let _ =
                           DirectionLightTool.createGameObject(state);
                         let color1 = [|1., 1., 0.|];
                         let color2 = [|0., 1., 0.|];
-                        let state = state |> DirectionLight.setDirectionLightColor(light1, color1);
-                        let state = state |> DirectionLight.setDirectionLightColor(light2, color2);
+                        let state = state |> DirectionLightAPI.setDirectionLightColor(light1, color1);
+                        let state = state |> DirectionLightAPI.setDirectionLightColor(light2, color2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectDirectionLightComponent(
+                          |> GameObjectAPI.disposeGameObjectDirectionLightComponent(
                                gameObject1,
                                light1
                              );
@@ -219,12 +219,12 @@ let _ =
                         let intensity1 = 2.;
                         let intensity2 = 3.;
                         let state =
-                          state |> DirectionLight.setDirectionLightIntensity(light1, intensity1);
+                          state |> DirectionLightAPI.setDirectionLightIntensity(light1, intensity1);
                         let state =
-                          state |> DirectionLight.setDirectionLightIntensity(light2, intensity2);
+                          state |> DirectionLightAPI.setDirectionLightIntensity(light2, intensity2);
                         let state =
                           state
-                          |> GameObject.disposeGameObjectDirectionLightComponent(
+                          |> GameObjectAPI.disposeGameObjectDirectionLightComponent(
                                gameObject1,
                                light1
                              );
@@ -271,13 +271,13 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectDirectionLightComponent(gameObject, light);
                 let state =
-                  state |> GameObject.disposeGameObjectDirectionLightComponent(gameObject, light);
+                  state |> GameObjectAPI.disposeGameObjectDirectionLightComponent(gameObject, light);
                 expect(() => getFunc(light, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
               test(
-                "getDirectionLightGameObject should error",
-                () => _testGetFunc(getDirectionLightGameObject)
+                "unsafeGetDirectionLightGameObject should error",
+                () => _testGetFunc(unsafeGetDirectionLightGameObject)
               );
               test(
                 "getDirectionLightColor should error",
@@ -302,7 +302,7 @@ let _ =
                   expect(
                     () => {
                       let state =
-                        {...state^, directionLightData: {...state^.directionLightData, index: 5}}
+                        {...state^, directionLightRecord: {...state^.directionLightRecord, index: 5}}
                         |> DirectionLightTool.getLightCount;
                       ()
                     }

@@ -1,26 +1,31 @@
+open StateDataType;
+
 let createGameObject = (state) => {
-  open GameObject; open GameObjectAPI;
   open GameObjectAPI;
-  open DirectionLight;
+  open DirectionLightAPI;
   let (state, light) = createDirectionLight(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectDirectionLightComponent(gameObject, light);
   (state, gameObject, light)
 };
 
-let getLightData = DirectionLightSystem.getLightData;
+let getLightData = (state) => state.directionLightRecord;
 
-let isAlive = DirectionLightSystem.isAlive;
+let isAlive = (light, state) =>
+  DisposeDirectionLightService.isAlive(light, state.directionLightRecord);
 
-let getColor = DirectionLightSystem.getColor;
+let getColor = (light, state) =>
+  OperateDirectionLightService.getColor(light, state.directionLightRecord);
 
-let getIntensity = DirectionLightSystem.getIntensity;
+let getIntensity = (light, state) =>
+  OperateDirectionLightService.getIntensity(light, state.directionLightRecord);
 
-let getDefaultColor = DirectionLightHelper.getDefaultColor;
+let getDefaultColor = RecordDirectionLightService.getDefaultColor;
 
-let getDefaultIntensity = DirectionLightHelper.getDefaultIntensity;
+let getDefaultIntensity = RecordDirectionLightService.getDefaultIntensity;
 
 let getMappedIndex = (index, state) =>
-  state |> DirectionLightIndexCommon.getMappedIndexMap |> LightIndexCommon.getMappedIndex(index);
+  state |> IndexDirectionLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);
 
-let getLightCount = DirectionLightAdmin.getLightCount;
+let getLightCount = (state) =>
+  CountDirectionLightService.getLightCount(state.directionLightRecord);

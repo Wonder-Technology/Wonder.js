@@ -159,7 +159,7 @@ let unsafeGetAttributeSendData = (shaderIndex: int, state: StateDataType.state) 
              Operators.(
                test(
                  Log.buildAssertMessage(
-                   ~expect={j|attribute send data exist|j},
+                   ~expect={j|attribute send record exist|j},
                    ~actual={j|not|j}
                  ),
                  () => sendData |> assertNullableExist
@@ -182,7 +182,7 @@ let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: StateDataType
              Operators.(
                test(
                  Log.buildAssertMessage(
-                   ~expect={j|instance attribute send data exist|j},
+                   ~expect={j|instance attribute send record exist|j},
                    ~actual={j|not|j}
                  ),
                  () => sendData |> assertNullableExist

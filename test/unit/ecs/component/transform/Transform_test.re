@@ -93,7 +93,7 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  TransformTool.getTransformData(state) |> ((data) => expect(data.index) == 1)
+                  TransformTool.getTransformData(state) |> ((record) => expect(record.index) == 1)
                 }
               )
           )
@@ -316,7 +316,7 @@ let _ =
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
                   let pos4 = (7., 3., 4.);
-                  let data = TransformTool.getTransformData(state);
+                  let record = TransformTool.getTransformData(state);
                   let state =
                     state
                     |> TransformAPI.setTransformLocalPosition(transform1, pos1)
@@ -565,7 +565,7 @@ let _ =
            "test before TransformTool.update",
            () => {
              describe(
-               "should get the last TransformTool.updated transform data",
+               "should get the last TransformTool.updated transform record",
                () =>
                  test(
                    "test get position",
@@ -578,7 +578,7 @@ let _ =
                  )
              );
              describe(
-               "should get the newest local transform data",
+               "should get the newest local transform record",
                () =>
                  test(
                    "test get local position",
@@ -613,7 +613,7 @@ let _ =
                }
              );
              test(
-               "clear dirty array after compute transform data",
+               "clear dirty array after compute transform record",
                () => {
                  let (state, _, _, _) = _prepareOne();
                  let len1 =
@@ -651,7 +651,7 @@ let _ =
                "test cache",
                () => {
                  test(
-                   "cache data after first get",
+                   "cache record after first get",
                    () => {
                      open GameObject; open GameObjectAPI;
                      let (state, transform1) = createTransform(state^);
@@ -725,7 +725,7 @@ let _ =
             "test if dirty",
             () =>
               test(
-                "the disposed transform shouldn't affect other alive ones' data",
+                "the disposed transform shouldn't affect other alive ones' record",
                 () => {
                   let (state, transform1) = createTransform(state^);
                   let (state, transform2) = createTransform(state);
@@ -744,7 +744,7 @@ let _ =
             "test if not dirty",
             () =>
               test(
-                "the disposed transform shouldn't affect other alive ones' data",
+                "the disposed transform shouldn't affect other alive ones' record",
                 () => {
                   let (state, transform1) = createTransform(state^);
                   let (state, transform2) = createTransform(state);
@@ -858,7 +858,7 @@ let _ =
             }
           );
           describe(
-            "dispose map data",
+            "dispose map record",
             () =>
               test(
                 "remove from localToWorldMatrixMap, localPositionMap,parentMap, childMap,  dirtyMap, gameObjectMap",
@@ -931,7 +931,7 @@ let _ =
                 "fix bug",
                 () =>
                   test(
-                    "new one should has default transform data",
+                    "new one should has default transform record",
                     () => {
                       let (state, transform1, transform2) = _prepare();
                       let state = state |> setTransformLocalPosition(transform1, (0., 1., 2.));
@@ -1041,7 +1041,7 @@ let _ =
             }
           );
           test(
-            "get the data from Float32Array may not equal to the value which is setted",
+            "get the record from Float32Array may not equal to the value which is setted",
             () => {
               let (state, transform0) = createTransform(state^);
               let pos0 = (0.1, 0., 0.);

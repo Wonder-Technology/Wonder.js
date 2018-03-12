@@ -100,4 +100,41 @@ let clone =
          CloneComponentGameObjectService.cloneLightMaterialComponent(isShareMaterial),
          AddGameObjectComponentService.batchAddLightMaterialComponentForClone(isShareMaterial)
        )
-     );
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getAmbientLightComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneAmbientLightComponent,
+         AddGameObjectComponentService.batchAddAmbientLightComponentForClone
+       )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getDirectionLightComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneDirectionLightComponent,
+         AddGameObjectComponentService.batchAddDirectionLightComponentForClone
+       )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getPointLightComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.clonePointLightComponent,
+         AddGameObjectComponentService.batchAddPointLightComponentForClone
+       )
+     )
+    |> CloneComponentGameObjectService.cloneTransformComponent(transform, countRangeArr);

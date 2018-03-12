@@ -11,20 +11,20 @@ let test = (sandbox, judgeFunc, state) => {
   StateTool.getState()
   |> WorkerJobToolWorker.getMainInitJobStream(StateTool.getStateData())
   |> Most.forEach(
-       (data) =>
-         switch data {
+       (record) =>
+         switch record {
          | Some("SEND_JOB_DATA") =>
            EventToolWorker.triggerWorkerEvent(
              renderWorker,
              "message",
-             {"data": {"operateType": "FINISH_SEND_JOB_DATA"}}
+             {"record": {"operateType": "FINISH_SEND_JOB_DATA"}}
            )
            |> ignore
          | Some("INIT_RENDER") =>
            EventToolWorker.triggerWorkerEvent(
              renderWorker,
              "message",
-             {"data": {"operateType": "FINISH_INIT_RENDER"}}
+             {"record": {"operateType": "FINISH_INIT_RENDER"}}
            )
            |> ignore
          | _ => ()

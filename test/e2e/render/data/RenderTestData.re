@@ -37,15 +37,15 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var data = BasicBoxesTool.createBox(state);
+                        var record = BasicBoxesTool.createBox(state);
 
-                        var state = data[0];
-                        var box = data[1];
+                        var state = record[0];
+                        var box = record[1];
 
 
-                        var data = BasicBoxesTool.createCamera(state);
-                        var state = data[0];
-                        var camera = data[1];
+                        var record = BasicBoxesTool.createCamera(state);
+                        var state = record[0];
+                        var camera = record[1];
 
 
                         var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
@@ -77,16 +77,16 @@ let renderTestData = {
                           function initSample(state) {
                           RandomTool.stubMathRandom(10000);
 
-                          var data = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
-                          var state = data[0];
-                          var boxes = data[1];
+                          var record = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
+                          var state = record[0];
+                          var boxes = record[1];
 
-                          var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                          var state = data[0];
-                          var boxes = data[1];
+                          var record = InstanceBasicBoxesTool.setPosition(boxes, state);
+                          var state = record[0];
+                          var boxes = record[1];
 
-                          var data = InstanceBasicBoxesTool.createCamera(state);
-                          var state = data[0];
+                          var record = InstanceBasicBoxesTool.createCamera(state);
+                          var state = record[0];
 
 
                           return wd.startDirector(state);
@@ -116,10 +116,10 @@ let renderTestData = {
 
 
                        function initSample(state) {
-                           var data = LightBoxesTool.createBox(state);
+                           var record = LightBoxesTool.createBox(state);
 
-                           var state = data[0];
-                           var box = data[1];
+                           var state = record[0];
+                           var box = record[1];
 
 
 
@@ -128,9 +128,9 @@ let renderTestData = {
 
 
 
-                           var data = LightBoxesTool.createCamera(state);
-                           var state = data[0];
-                           var camera = data[1];
+                           var record = LightBoxesTool.createCamera(state);
+                           var state = record[0];
+                           var camera = record[1];
 
 
                            var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
@@ -163,13 +163,13 @@ let renderTestData = {
                           function initSample(state) {
                           RandomTool.stubMathRandom(10000);
 
-                          var data = InstanceLightBoxesTool.createBoxes(1, 100, true, state);
-                          var state = data[0];
-                          var boxes = data[1];
+                          var record = InstanceLightBoxesTool.createBoxes(1, 100, true, state);
+                          var state = record[0];
+                          var boxes = record[1];
 
-                          var data = InstanceLightBoxesTool.setPosition(boxes, state);
-                          var state = data[0];
-                          var boxes = data[1];
+                          var record = InstanceLightBoxesTool.setPosition(boxes, state);
+                          var state = record[0];
+                          var boxes = record[1];
 
 
 
@@ -179,8 +179,8 @@ let renderTestData = {
 
 
 
-                          var data = InstanceLightBoxesTool.createCamera(state);
-                          var state = data[0];
+                          var record = InstanceLightBoxesTool.createCamera(state);
+                          var state = record[0];
 
 
                           return wd.startDirector(state);
@@ -208,16 +208,16 @@ let renderTestData = {
                           RandomTool.stubMathRandom(10000);
 
 
-                          var data = RedoUndoTool.createBoxesByInstance(10, state);
-                          var state = data[0];
-                          var box = data[1];
+                          var record = RedoUndoTool.createBoxesByInstance(10, state);
+                          var state = record[0];
+                          var box = record[1];
 
-                          var data = RedoUndoTool.setPosition([box], state);
-                          var state = data[0];
-                          var boxes = data[1];
+                          var record = RedoUndoTool.setPosition([box], state);
+                          var state = record[0];
+                          var boxes = record[1];
 
-                          var data = RedoUndoTool.createCamera(state);
-                          var state = data[0];
+                          var record = RedoUndoTool.createCamera(state);
+                          var state = record[0];
 
 
 

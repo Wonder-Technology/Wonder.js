@@ -2,24 +2,24 @@ open StateDataType;
 
 open GameObjectType;
 
-let _handleByDisposeCount = (data, state) =>
-  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
-    data.disposeCount = 0;
+let _handleByDisposeCount = (record, state) =>
+  if (MemoryUtils.isDisposeTooMany(record.disposeCount, state)) {
+    record.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)
   } else {
     state
   };
 
 let rec batchDispose = (uidArray: array(int), state) => {
-  let {disposeCount, disposedUidMap} as data = state.gameObjectRecord;
-  data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
+  let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
+  record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   state
   |> GameObjectDisposeComponentCommon.batchDisposeCommonComponent(
        uidArray,
        ECSDisposeUtils.buildMapFromArray(uidArray, disposedUidMap),
        batchDispose
      )
-  |> _handleByDisposeCount(data)
+  |> _handleByDisposeCount(record)
 };
 
 let dispose =
@@ -32,10 +32,10 @@ let dispose =
          ) as dataTuple */
       state
     ) => {
-  let {disposeCount, disposedUidMap} as data = state.gameObjectRecord;
-  data.disposeCount = succ(disposeCount);
+  let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
+  record.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
   state
   |> GameObjectDisposeComponentCommon.disposeComponent(uid, batchDispose)
-  |> _handleByDisposeCount(data)
+  |> _handleByDisposeCount(record)
 };

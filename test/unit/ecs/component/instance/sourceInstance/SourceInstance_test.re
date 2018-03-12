@@ -33,7 +33,7 @@ let _ =
         "dispose component",
         () => {
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "remove from sourceInstanceListMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransformStaticMap, isSendTransformMatrixDataMap, gameObjectMap",

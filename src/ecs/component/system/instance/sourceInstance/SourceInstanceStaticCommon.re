@@ -2,11 +2,11 @@ open SourceInstanceType;
 
 let markModelMatrixIsStatic =
     (sourceInstance: sourceInstance, isStatic: bool, state: StateDataType.state) => {
-  let {isTransformStaticMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let {isTransformStaticMap} as record = SourceInstanceStateCommon.getSourceInstanceData(state);
   {
     ...state,
     sourceInstanceData: {
-      ...data,
+      ...record,
       isTransformStaticMap:
         isTransformStaticMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isStatic)
     }
@@ -32,11 +32,11 @@ let isTransformStatic = (sourceInstance: sourceInstance, state: StateDataType.st
      );
 
 let markIsSendTransformMatrixData = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
-  let {isSendTransformMatrixDataMap} as data = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let {isSendTransformMatrixDataMap} as record = SourceInstanceStateCommon.getSourceInstanceData(state);
   {
     ...state,
     sourceInstanceData: {
-      ...data,
+      ...record,
       isSendTransformMatrixDataMap:
         isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isSend)
     }

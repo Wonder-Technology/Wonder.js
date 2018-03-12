@@ -1,14 +1,14 @@
 var CameraTool = (function () {
     return {
         createCamera: function (state) {
-            var data = wd.createBasicCameraView(state);
-            var state = data[0];
-            var basicCameraView = data[1];
+            var record = wd.createBasicCameraView(state);
+            var state = record[0];
+            var basicCameraView = record[1];
 
 
-            var data = wd.createPerspectiveCameraProjection(state);
-            var state = data[0];
-            var perspectiveCameraProjection = data[1];
+            var record = wd.createPerspectiveCameraProjection(state);
+            var state = record[0];
+            var perspectiveCameraProjection = record[1];
 
 
             state = wd.setPerspectiveCameraNear(perspectiveCameraProjection, 0.1, state);
@@ -19,9 +19,9 @@ var CameraTool = (function () {
 
 
 
-            var data = wd.createGameObject(state);
-            var state = data[0];
-            var obj = data[1];
+            var record = wd.createGameObject(state);
+            var state = record[0];
+            var obj = record[1];
 
             state = wd.addGameObjectBasicCameraViewComponent(obj, basicCameraView, state);
 

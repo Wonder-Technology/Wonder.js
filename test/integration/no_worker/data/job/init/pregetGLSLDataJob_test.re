@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "test preget glsl data job",
+    "test preget glsl record job",
     () => {
       open Expect;
       open Expect.Operators;

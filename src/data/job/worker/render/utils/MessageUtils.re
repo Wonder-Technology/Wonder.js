@@ -1,1 +1,1 @@
-let getData = (e) => Js.Option.getExn(e)##data;
+let getData = (e) => Js.Option.getExn(e)##record;

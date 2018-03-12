@@ -22,3 +22,12 @@ let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>
 
 let hasLightMaterialComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.lightMaterialMap);
+
+let hasAmbientLightComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.ambientLightMap);
+
+let hasDirectionLightComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.directionLightMap);
+
+let hasPointLightComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.pointLightMap);

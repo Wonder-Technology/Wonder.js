@@ -34,7 +34,7 @@ let _disposeData =
         isTransformStaticMap,
         isSendTransformMatrixDataMap,
         gameObjectMap
-      } as data =
+      } as record =
     getSourceInstanceData(state);
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
   | Some(typeArr) =>
@@ -50,7 +50,7 @@ let _disposeData =
   {
     ...state,
     sourceInstanceData: {
-      ...data,
+      ...record,
       objectInstanceArrayMap: objectInstanceArrayMap |> disposeSparseMapData(sourceInstance),
       matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
       matrixInstanceBufferCapacityMap:
@@ -80,14 +80,14 @@ let handleDisposeComponent =
       ),
     StateData.stateData.isDebug
   );
-  let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
+  let ({disposedIndexArray} as record): sourceInstanceData = getSourceInstanceData(state);
   let state =
     VboBufferSystem.addInstanceBufferToPool(sourceInstance, state)
     |> _disposeData(sourceInstance, batchDisposeGameObjectFunc);
   {
     ...state,
     sourceInstanceData: {
-      ...data,
+      ...record,
       disposedIndexArray: disposedIndexArray |> ArrayService.push(sourceInstance)
     }
   }
@@ -117,11 +117,11 @@ let handleBatchDisposeComponent =
           ),
         StateData.stateData.isDebug
       );
-      let ({disposedIndexArray} as data): sourceInstanceData = getSourceInstanceData(state);
+      let ({disposedIndexArray} as record): sourceInstanceData = getSourceInstanceData(state);
       let state = {
         ...state,
         sourceInstanceData: {
-          ...data,
+          ...record,
           disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
         }
       };

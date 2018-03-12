@@ -99,7 +99,7 @@ let _ =
         "disposeComponent",
         () => {
           describe(
-            "dispose data",
+            "dispose record",
             () => {
               test(
                 "remove from colorMap, shaderIndexMap, gameObjectMap",

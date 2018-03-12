@@ -114,7 +114,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
 };
 
 let reAllocateGameObject = (state: StateDataType.state) => {
-  let {aliveUidArray, disposedUidMap} as data = GameObjectAdminAci.getData(state);
+  let {aliveUidArray, disposedUidMap} as record = GameObjectAdminAci.getData(state);
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));

@@ -24,27 +24,6 @@ let disposeObjectInstanceComponent =
       ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
-let disposeAmbientLightComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      AmbientLightDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
-let disposeDirectionLightComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      DirectionLightDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
-let disposePointLightComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      PointLightDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
 /* TODO refactor */
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
@@ -73,33 +52,6 @@ let batchDisposeObjectInstanceComponent =
     )
   };
 
-let batchDisposeAmbientLightComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    AmbientLightDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposeDirectionLightComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    DirectionLightDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposePointLightComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    PointLightDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
 /* TODO refactor */
 let _disposeCommonComponent = (uid, (getComponentFunc, disposeComponentFunc), state) =>
   switch ([@bs] getComponentFunc(uid, state)) {
@@ -114,7 +66,7 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   | None => state
   };
 
-/* TODO refactor: inject all component data instead of state */
+/* TODO refactor: inject all component record instead of state */
 let disposeComponent =
     (
       uid,
@@ -138,9 +90,9 @@ let disposeComponent =
   state
   /* |> _disposeCommonComponent(uid, (getTransformComponent, disposeTransformComponent)) */
   /* |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent)) */
-  |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
+  /* |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
   |> _disposeCommonComponent(uid, (getDirectionLightComponent, disposeDirectionLightComponent))
-  |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent))
+  |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent)) */
   /* |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
      |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent)) */
   /* |> _disposeCommonComponent(uid, (getBoxGeometryComponent, disposeBoxGeometryComponent)) */
@@ -179,14 +131,14 @@ let batchDisposeCommonComponent =
     state
     |> batchGetMeshRendererComponent(uidArray)
     |> batchDisposeMeshRendererComponent(disposedUidMap, state); */
-  let state =
+  /* let state =
     state
     |> batchGetAmbientLightComponent(uidArray)
     |> batchDisposeAmbientLightComponent(disposedUidMap, state)
     |> batchGetDirectionLightComponent(uidArray)
     |> batchDisposeDirectionLightComponent(disposedUidMap, state)
     |> batchGetPointLightComponent(uidArray)
-    |> batchDisposePointLightComponent(disposedUidMap, state);
+    |> batchDisposePointLightComponent(disposedUidMap, state); */
   /* |> batchGetTransformComponent(uidArray)
      |> batchDisposeTransformComponent(disposedUidMap, state); */
   state

@@ -60,7 +60,7 @@ let unsafeGetBoxGeometryVertices = (geometry: int, state: StateDataType.state) =
 };
 
 let setBoxGeometryVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
+    (geometry: int, record: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -80,7 +80,7 @@ let setBoxGeometryVertices =
     ...state,
     boxGeometryRecord: {
       ...state.boxGeometryRecord,
-      verticesMap: VerticesService.setVertices(geometry, data, state.boxGeometryRecord.verticesMap)
+      verticesMap: VerticesService.setVertices(geometry, record, state.boxGeometryRecord.verticesMap)
     }
   }
 };
@@ -105,7 +105,7 @@ let unsafeGetBoxGeometryNormals = (geometry: int, state: StateDataType.state) =>
 };
 
 let setBoxGeometryNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
+    (geometry: int, record: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -125,7 +125,7 @@ let setBoxGeometryNormals =
     ...state,
     boxGeometryRecord: {
       ...state.boxGeometryRecord,
-      normalsMap: NormalsService.setNormals(geometry, data, state.boxGeometryRecord)
+      normalsMap: NormalsService.setNormals(geometry, record, state.boxGeometryRecord)
     }
   }
 };
@@ -150,7 +150,7 @@ let unsafeGetBoxGeometryIndices = (geometry: int, state: StateDataType.state) =>
 };
 
 let setBoxGeometryIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataType.state) => {
+    (geometry: int, record: Js.Typed_array.Uint16Array.t, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -170,7 +170,7 @@ let setBoxGeometryIndices =
     ...state,
     boxGeometryRecord: {
       ...state.boxGeometryRecord,
-      indicesMap: IndicesService.setIndices(geometry, data, state.boxGeometryRecord)
+      indicesMap: IndicesService.setIndices(geometry, record, state.boxGeometryRecord)
     }
   }
 };

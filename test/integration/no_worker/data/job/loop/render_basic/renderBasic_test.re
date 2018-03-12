@@ -101,7 +101,7 @@ let _ =
         }
       );
       describe(
-        "send attribute data",
+        "send attribute record",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
@@ -448,7 +448,7 @@ let _ =
                         }
                       )
                       /* test
-                         ("differenc shader's vertexAttribHistory of the same attribute data pos are independent",
+                         ("differenc shader's vertexAttribHistory of the same attribute record pos are independent",
                          (
                          () => {
                            TODO test switch program
@@ -557,7 +557,7 @@ let _ =
         }
       );
       describe(
-        "send uniform data",
+        "send uniform record",
         () => {
           let testSendShaderUniformMatrix4DataOnlyOnce = (name, prepareSendUinformDataFunc) =>
             RenderJobsTool.testSendShaderUniformMatrix4DataOnlyOnce(
@@ -632,7 +632,7 @@ let _ =
                   "test two gameObjects",
                   () =>
                     test(
-                      "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
+                      "if only set first one's transform, second one's sended u_mMatrix record shouldn't be affect",
                       () => {
                         let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
                           _prepareSendUinformData(
@@ -731,7 +731,7 @@ let _ =
                   "test two gameObjects",
                   () =>
                     test(
-                      "if only set first one's color, second one's sended u_color data shouldn't be affect",
+                      "if only set first one's color, second one's sended u_color record shouldn't be affect",
                       () => {
                         let name = "u_color";
                         let (state, _, (_, material1), _, _) =
@@ -893,7 +893,7 @@ let _ =
                      };
                      TODO use diferent geometry which have different indices count!
                      test(
-                       "different gameObject(with the same material, different geometry) should drawElements with different geometry data",
+                       "different gameObject(with the same material, different geometry) should drawElements with different geometry record",
                        () => {
                          let (state, geometry1, geometry2) = _prepareTwoForDrawElements(sandbox, state^);
                          let triangles = 1;
