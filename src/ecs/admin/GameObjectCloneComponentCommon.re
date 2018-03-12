@@ -7,10 +7,6 @@ open ComponentType;
 /* let cloneTransformComponent =
      (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
    CloneTransformService.handleCloneComponent(sourceComponent, countRangeArr, state); */
-let cloneMeshRendererComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  MeshRendererCloneComponentCommon.handleCloneComponent(countRangeArr, state);
-
 let cloneAmbientLightComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   AmbientLightCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
@@ -65,13 +61,13 @@ let cloneComponent =
        );
   let (state, clonedTransformArr) =
     state
-    |> _cloneComponent(
+    /* |> _cloneComponent(
          (uid, [@bs] getMeshRendererComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (
            cloneMeshRendererComponent,
            GameObjectAddComponentCommon.batchAddMeshRendererComponentForClone
          )
-       )
+       ) */
     /* |> _cloneComponent(
          (uid, [@bs] getBoxGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (cloneBoxGeometryComponent, GameObjectAddComponentCommon.batchAddBoxGeometryComponentForClone)

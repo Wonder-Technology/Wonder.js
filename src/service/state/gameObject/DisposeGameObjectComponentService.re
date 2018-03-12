@@ -40,6 +40,13 @@ let dispose = (uid, state) =>
   |> _dispose(
        uid,
        (
+         GetComponentGameObjectService.getMeshRendererComponent,
+         DisposeComponentGameObjectService.disposeMeshRendererComponent
+       )
+     )
+  |> _dispose(
+       uid,
+       (
          GetComponentGameObjectService.getBoxGeometryComponent,
          DisposeComponentGameObjectService.disposeBoxGeometryComponent
        )
@@ -78,6 +85,10 @@ let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
          disposedUidMap,
          state
        );
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetMeshRendererComponent(uidArray)
+    |> batchDisposeMeshRendererComponent(disposedUidMap, state);
   let state =
     state
     |> BatchGetComponentGameObjectService.batchGetBoxGeometryComponent(uidArray)

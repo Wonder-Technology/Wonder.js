@@ -107,6 +107,17 @@ let addLightMaterialComponent =
        )
 };
 
+let addMeshRendererComponent =
+    (uid: int, component: component, {meshRendererRecord, gameObjectRecord} as state) => {
+  ...state,
+  meshRendererRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.meshRendererMap),
+      AddMeshRendererService.handleAddComponent,
+      meshRendererRecord
+    )
+};
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {
@@ -189,6 +200,21 @@ let batchAddTransformComponentForClone =
       (uidArr, componentArr, gameObjectRecord.transformMap),
       AddTransformService.handleAddComponent,
       transformRecord
+    )
+};
+
+let batchAddMeshRendererComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {meshRendererRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  meshRendererRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.meshRendererMap),
+      AddMeshRendererService.handleAddComponent,
+      meshRendererRecord
     )
 };
 

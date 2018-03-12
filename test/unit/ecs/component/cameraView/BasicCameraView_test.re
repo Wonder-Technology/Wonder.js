@@ -111,7 +111,7 @@ let _ =
                 }
               );
               test(
-                "if has no disposed index, get index from meshRendererData.index",
+                "if has no disposed index, get index from meshRendererRecord.index",
                 () => {
                   let (state, gameObject1, basicCameraView1, gameObject2, basicCameraView2) =
                     _prepareTwo(state^);

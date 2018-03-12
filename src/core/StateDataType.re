@@ -195,7 +195,7 @@ and state = {
   directionLightData,
   pointLightData,
   boxGeometryRecord,
-  meshRendererData,
+  meshRendererRecord,
   shaderData,
   programData,
   glslLocationData,

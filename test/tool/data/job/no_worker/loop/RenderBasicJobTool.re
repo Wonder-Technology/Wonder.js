@@ -5,7 +5,7 @@ let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
-  open MeshRenderer;
+  open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -22,7 +22,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
-  open MeshRenderer;
+  open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   /* let (state, geometry) = BoxGeometryTool.createBoxGeometry(state); */

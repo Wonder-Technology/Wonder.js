@@ -24,3 +24,6 @@ let batchGetBasicMaterialComponent = (uidArray: array(int), {gameObjectRecord}) 
 
 let batchGetLightMaterialComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.lightMaterialMap);
+
+let batchGetMeshRendererComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.meshRendererMap);

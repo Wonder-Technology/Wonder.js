@@ -8,9 +8,6 @@ let hasSourceInstanceComponent = (uid: int, state: StateDataType.state) : bool =
 let hasObjectInstanceComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, state.gameObjectRecord.objectInstanceMap);
 
-let hasMeshRendererComponent = (uid: int, state: StateDataType.state) : bool =>
-  _hasComponent(uid, state.gameObjectRecord.meshRendererMap);
-
 let hasAmbientLightComponent = (uid: int, state: StateDataType.state) : bool =>
   _hasComponent(uid, state.gameObjectRecord.ambientLightMap);
 

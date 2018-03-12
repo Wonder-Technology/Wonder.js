@@ -22,7 +22,7 @@ let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
-  open MeshRenderer;
+  open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);

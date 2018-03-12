@@ -33,6 +33,16 @@ let disposePerspectiveCameraProjectionComponent =
     }
   );
 
+let disposeMeshRendererComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {meshRendererRecord} as state) => {
+      ...state,
+      meshRendererRecord:
+        DisposeMeshRendererService.handleDisposeComponent(component, uid, meshRendererRecord)
+    }
+  );
+
 let disposeTransformComponent =
   [@bs]
   (
@@ -108,6 +118,18 @@ let batchDisposePerspectiveCameraProjectionComponent =
       uidMap,
       perspectiveCameraProjectionRecord,
       DisposePerspectiveCameraProjectionService.handleBatchDisposeComponent,
+      componentArray
+    )
+};
+
+let batchDisposeMeshRendererComponent =
+    (uidMap, {meshRendererRecord} as state, componentArray: array(component)) => {
+  ...state,
+  meshRendererRecord:
+    ComponentMapService.batchDisposeComponent(
+      uidMap,
+      meshRendererRecord,
+      DisposeMeshRendererService.handleBatchDisposeComponent,
       componentArray
     )
 };

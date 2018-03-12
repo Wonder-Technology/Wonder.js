@@ -27,7 +27,7 @@ let createState = () => {
   directionLightData: DirectionLightHelper.create(),
   pointLightData: PointLightHelper.create(),
   boxGeometryRecord: RecordBoxGeometryService.create(),
-  meshRendererData: MeshRendererHelper.create(),
+  meshRendererRecord: RecordMeshRendererService.create(),
   shaderData: ShaderHelper.create(),
   programData: ProgramHelper.create(),
   glslLocationData: GLSLLocationHelper.create(),
@@ -55,7 +55,6 @@ let setState = (stateData: stateData, state: state) => {
 
 let deepCopyForRestore = (state: StateDataType.state) =>
   state
-  |> MeshRendererAdmin.deepCopyForRestore
   |> VboBufferSystem.deepCopyForRestore
   |> GLSLSenderSystem.deepCopyForRestore
   |> AmbientLightAdmin.deepCopyForRestore
@@ -77,6 +76,7 @@ let deepCopyForRestore = (state: StateDataType.state) =>
         RecordPerspectiveCameraProjectionService.deepCopyForRestore(
           state.perspectiveCameraProjectionRecord
         ),
+      meshRendererRecord: RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
       transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
       typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
       boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord),

@@ -24,13 +24,6 @@ let disposeObjectInstanceComponent =
       ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
-let disposeMeshRendererComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      MeshRendererDisposeComponentCommon.handleDisposeComponent(component, uid, state)
-  );
-
 let disposeAmbientLightComponent =
   [@bs]
   (
@@ -56,15 +49,6 @@ let disposePointLightComponent =
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
   [@bs] handleFunc(componentArray, uidMap, state);
-
-let batchDisposeMeshRendererComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    MeshRendererDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
 
 let batchDisposeSourceInstanceComponent =
     (uidMap, state: StateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
@@ -153,7 +137,7 @@ let disposeComponent =
   let state = state |> DisposeGameObjectComponentService.dispose(uid);
   state
   /* |> _disposeCommonComponent(uid, (getTransformComponent, disposeTransformComponent)) */
-  |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent))
+  /* |> _disposeCommonComponent(uid, (getMeshRendererComponent, disposeMeshRendererComponent)) */
   |> _disposeCommonComponent(uid, (getAmbientLightComponent, disposeAmbientLightComponent))
   |> _disposeCommonComponent(uid, (getDirectionLightComponent, disposeDirectionLightComponent))
   |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent))
@@ -191,10 +175,10 @@ let batchDisposeCommonComponent =
      }; */
   let state = state |> DisposeGameObjectComponentService.batchDispose(uidArray, disposedUidMap);
   /* TODO not split? */
-  let state =
+  /* let state =
     state
     |> batchGetMeshRendererComponent(uidArray)
-    |> batchDisposeMeshRendererComponent(disposedUidMap, state);
+    |> batchDisposeMeshRendererComponent(disposedUidMap, state); */
   let state =
     state
     |> batchGetAmbientLightComponent(uidArray)

@@ -33,16 +33,6 @@ let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceC
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
 
-let hasMeshRendererComponent = GameObjectHasComponentCommon.hasMeshRendererComponent;
-
-let getMeshRendererComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getMeshRendererComponent(uid, state);
-
-let addMeshRendererComponent = GameObjectAddComponentCommon.addMeshRendererComponent;
-
-let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeMeshRendererComponent(uid, component, state);
-
 let hasAmbientLightComponent = GameObjectHasComponentCommon.hasAmbientLightComponent;
 
 let getAmbientLightComponent = (uid: int, state: StateDataType.state) =>

@@ -57,13 +57,6 @@ let addObjectInstanceComponent = (uid: int, component: component, state: StateDa
     state
   );
 
-let addMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
-  _addCommonComponent(
-    (uid, component, state.gameObjectRecord.meshRendererMap),
-    MeshRendererAddComponentCommon.handleAddComponent,
-    state
-  );
-
 let addAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
     (uid, component, state.gameObjectRecord.ambientLightMap),
@@ -172,14 +165,6 @@ let _batchAddSharableComponent =
        state
      )
 };
-
-let batchAddMeshRendererComponentForClone =
-    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddComponent(
-    (uidArr, componentArr, state.gameObjectRecord.meshRendererMap),
-    MeshRendererAddComponentCommon.handleAddComponent,
-    state
-  );
 
 let batchAddAmbientLightComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>

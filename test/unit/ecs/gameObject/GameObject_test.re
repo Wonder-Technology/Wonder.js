@@ -213,16 +213,16 @@ let _ =
             "test meshRenderer component",
             () => {
               describe(
-                "getGameObjectMeshRendererComponent",
+                "unsafeGetGameObjectMeshRendererComponent",
                 () =>
                   test(
                     "get meshRenderer component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, meshRenderer) = MeshRenderer.createMeshRenderer(state);
+                      let (state, meshRenderer) = MeshRendererAPI.createMeshRenderer(state);
                       let state =
                         state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-                      getGameObjectMeshRendererComponent(gameObject, state)
+                      unsafeGetGameObjectMeshRendererComponent(gameObject, state)
                       |> MeshRendererTool.isMeshRenderer
                     }
                   )
@@ -234,7 +234,7 @@ let _ =
                     "has meshRenderer component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, meshRenderer) = MeshRenderer.createMeshRenderer(state);
+                      let (state, meshRenderer) = MeshRendererAPI.createMeshRenderer(state);
                       let state =
                         state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
                       hasGameObjectMeshRendererComponent(gameObject, state) |> expect == true
@@ -771,9 +771,9 @@ let _ =
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
-                          let (state, meshRenderer1) = MeshRenderer.createMeshRenderer(state);
-                          let (state, meshRenderer2) = MeshRenderer.createMeshRenderer(state);
-                          let (state, meshRenderer3) = MeshRenderer.createMeshRenderer(state);
+                          let (state, meshRenderer1) = MeshRendererAPI.createMeshRenderer(state);
+                          let (state, meshRenderer2) = MeshRendererAPI.createMeshRenderer(state);
+                          let (state, meshRenderer3) = MeshRendererAPI.createMeshRenderer(state);
                           let state =
                             state
                             |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
@@ -1488,8 +1488,8 @@ let _ =
                 () => _testTwoParamFunc(getGameObjectAmbientLightComponent)
               );
               test(
-                "getGameObjectMeshRendererComponent should error",
-                () => _testTwoParamFunc(getGameObjectMeshRendererComponent)
+                "unsafeGetGameObjectMeshRendererComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectMeshRendererComponent)
               );
               test(
                 "unsafeGetGameObjectBoxGeometryComponent should error",

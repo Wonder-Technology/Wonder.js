@@ -26,6 +26,14 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
+
+let unsafeGetGameObjectMeshRendererComponent = GameObjectAPI.unsafeGetGameObjectMeshRendererComponent;
+
+let disposeGameObjectMeshRendererComponent = GameObjectAPI.disposeGameObjectMeshRendererComponent;
+
+let addGameObjectMeshRendererComponent = GameObjectAPI.addGameObjectMeshRendererComponent;
+
 let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
 
 let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
@@ -100,6 +108,10 @@ let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGa
 
 let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
+let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
+
+let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
+
 let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
 
 let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
@@ -223,14 +235,6 @@ let hasGameObjectSourceInstanceComponent = GameObject.hasGameObjectSourceInstanc
 let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanceComponent;
 
 let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;
-
-let hasGameObjectMeshRendererComponent = GameObject.hasGameObjectMeshRendererComponent;
-
-let getGameObjectMeshRendererComponent = GameObject.getGameObjectMeshRendererComponent;
-
-let disposeGameObjectMeshRendererComponent = GameObject.disposeGameObjectMeshRendererComponent;
-
-let addGameObjectMeshRendererComponent = GameObject.addGameObjectMeshRendererComponent;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstance.markSourceInstanceModelMatrixIsStatic;
 
@@ -290,10 +294,6 @@ let getPointLightGameObject = PointLight.getPointLightGameObject;
 
 let createPointLight = PointLight.createPointLight;
 
-let getMeshRendererGameObject = MeshRenderer.getMeshRendererGameObject;
-
-let createMeshRenderer = MeshRenderer.createMeshRenderer;
-
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
@@ -321,6 +321,14 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
+
+let unsafeGetGameObjectMeshRendererComponent = GameObjectAPI.unsafeGetGameObjectMeshRendererComponent;
+
+let disposeGameObjectMeshRendererComponent = GameObjectAPI.disposeGameObjectMeshRendererComponent;
+
+let addGameObjectMeshRendererComponent = GameObjectAPI.addGameObjectMeshRendererComponent;
 
 let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
 
@@ -371,6 +379,10 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
+
+let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 
 let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
 
@@ -495,11 +507,3 @@ let hasGameObjectSourceInstanceComponent = GameObject.hasGameObjectSourceInstanc
 let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanceComponent;
 
 let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;
-
-let hasGameObjectMeshRendererComponent = GameObject.hasGameObjectMeshRendererComponent;
-
-let getGameObjectMeshRendererComponent = GameObject.getGameObjectMeshRendererComponent;
-
-let disposeGameObjectMeshRendererComponent = GameObject.disposeGameObjectMeshRendererComponent;
-
-let addGameObjectMeshRendererComponent = GameObject.addGameObjectMeshRendererComponent;

@@ -238,3 +238,37 @@ let hasGameObjectLightMaterialComponent = (gameObject: gameObject, state: StateD
   );
   hasLightMaterialComponent(gameObject, state.gameObjectRecord)
 };
+
+let addGameObjectMeshRendererComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addMeshRendererComponent(gameObject, component, state)
+};
+
+let disposeGameObjectMeshRendererComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeMeshRendererComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetMeshRendererComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasMeshRendererComponent(gameObject, state.gameObjectRecord)
+};

@@ -44,13 +44,6 @@ let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
 let getBasicCameraViewComponent =
   [@bs] ((uid: int, gameObjectRecord) => gameObjectRecord.basicCameraViewMap |> getComponent(uid));
 
-let getMeshRendererComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      state.gameObjectRecord.meshRendererMap |> getComponent(uid)
-  );
-
 let getAmbientLightComponent =
   [@bs]
   (
@@ -96,13 +89,6 @@ let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataTy
        ),
        [||]
      );
-
-let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    state.gameObjectRecord.meshRendererMap,
-    state
-  );
 
 let batchGetSourceInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(

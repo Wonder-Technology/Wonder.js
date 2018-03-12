@@ -18,7 +18,7 @@ let _ =
         let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
         let (state, gameObject3, meshRenderer3) = MeshRendererTool.createGameObject(state);
         let state =
-          state |> GameObject.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
+          state |> GameObjectAPI.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
         (state, gameObject1, gameObject2, gameObject3, meshRenderer1, meshRenderer2, meshRenderer3)
       };
       let _prepareTransformMatrixData = (state) => {
@@ -908,7 +908,7 @@ let _ =
                   let (currentState, gameObject5, meshRenderer5) =
                     MeshRendererTool.createGameObject(StateTool.createNewCompleteState(sandbox));
                   state
-                  |> MeshRenderer.getMeshRendererGameObject(meshRenderer5)
+                  |> MeshRendererAPI.unsafeGetMeshRendererGameObject(meshRenderer5)
                   |> expect == gameObject5
                 }
               );

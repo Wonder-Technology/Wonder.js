@@ -33,6 +33,17 @@ let clonePerspectiveCameraProjectionComponent =
 let cloneTransformComponent = (sourceComponent: component, countRangeArr: array(int), state) =>
   CloneTransformService.handleCloneComponent(sourceComponent, countRangeArr, state);
 
+let cloneMeshRendererComponent =
+    (sourceComponent: component, countRangeArr: array(int), {meshRendererRecord} as state) => {
+  let (meshRendererRecord, componentArr) =
+    CloneMeshRendererService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      meshRendererRecord
+    );
+  ({...state, meshRendererRecord}, componentArr)
+};
+
 let cloneBoxGeometryComponent =
     (sourceComponent: component, countRangeArr: array(int), {boxGeometryRecord} as state) => {
   let (boxGeometryRecord, componentArr) =

@@ -3,7 +3,7 @@ open BasicCameraViewType;
 let isAlive = (cameraView, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(cameraView, disposedIndexArray);
 
-let _disposeRecord = (cameraView, {gameObjectMap} as record) => {
+let _disposeData = (cameraView, {gameObjectMap} as record) => {
   ...record,
   gameObjectMap: DisposeComponentService.disposeSparseMapData(cameraView, gameObjectMap)
 };
@@ -20,7 +20,7 @@ let handleDisposeComponent = (cameraView, {disposedIndexArray} as record) => {
       ),
     StateData.stateData.isDebug
   );
-  _disposeRecord(
+  _disposeData(
     cameraView,
     {...record, disposedIndexArray: disposedIndexArray |> ArrayService.push(cameraView)}
   )
@@ -51,7 +51,7 @@ let handleBatchDisposeComponent =
       );
       cameraViewArray
       |> WonderCommonlib.ArraySystem.reduceOneParam(
-           [@bs] ((record, cameraView) => record |> _disposeRecord(cameraView)),
+           [@bs] ((record, cameraView) => record |> _disposeData(cameraView)),
            {...record, disposedIndexArray: disposedIndexArray |> Js.Array.concat(cameraViewArray)}
          )
     }

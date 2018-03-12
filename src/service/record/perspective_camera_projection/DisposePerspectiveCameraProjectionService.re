@@ -3,7 +3,7 @@ open PerspectiveCameraProjectionType;
 let isAlive = (cameraView, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(cameraView, disposedIndexArray);
 
-let _disposeRecord =
+let _disposeData =
     (
       cameraProjection,
       {gameObjectMap, dirtyArray, pMatrixMap, nearMap, farMap, fovyMap, aspectMap} as record
@@ -35,7 +35,7 @@ let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) 
       ),
     StateData.stateData.isDebug
   );
-  _disposeRecord(
+  _disposeData(
     cameraProjection,
     {...record, disposedIndexArray: disposedIndexArray |> ArrayService.push(cameraProjection)}
   )
@@ -66,7 +66,7 @@ let handleBatchDisposeComponent =
       );
       cameraProjectionArray
       |> WonderCommonlib.ArraySystem.reduceOneParam(
-           [@bs] ((record, cameraProjection) => record |> _disposeRecord(cameraProjection)),
+           [@bs] ((record, cameraProjection) => record |> _disposeData(cameraProjection)),
            {
              ...record,
              disposedIndexArray: disposedIndexArray |> Js.Array.concat(cameraProjectionArray)

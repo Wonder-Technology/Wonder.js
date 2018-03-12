@@ -1,10 +1,10 @@
-open MeshRenderer;
+open MeshRendererAPI;
 
 open Wonder_jest;
 
 let _ =
   describe(
-    "MeshRenderer",
+    "MeshRendererAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -28,7 +28,7 @@ let _ =
         "getRenderArray",
         () =>
           test(
-            "get array of gameObject which has MeshRenderer component",
+            "get array of gameObject which has MeshRendererAPI component",
             () => {
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               state |> MeshRendererTool.getRenderArray |> expect == [|gameObject1, gameObject2|]
@@ -49,7 +49,7 @@ let _ =
                     MeshRendererTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -69,7 +69,7 @@ let _ =
                         _prepareTwo(state^);
                       let state =
                         state
-                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -82,7 +82,7 @@ let _ =
                       let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
                       let state =
                         state
-                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -100,9 +100,9 @@ let _ =
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               let state =
                 state
-                |> GameObject.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
+                |> GameObjectAPI.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
               state
-              |> MeshRenderer.getMeshRendererGameObject(meshRenderer2)
+              |> MeshRendererAPI.unsafeGetMeshRendererGameObject(meshRenderer2)
               |> expect == gameObject2
             }
           );
@@ -116,7 +116,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -125,13 +125,13 @@ let _ =
                 }
               );
               test(
-                "if has no disposed index, get index from meshRendererData.index",
+                "if has no disposed index, get index from meshRendererRecord.index",
                 () => {
                   let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                          gameObject2,
                          meshRenderer2
                        );
@@ -152,7 +152,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -160,7 +160,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -180,16 +180,16 @@ let _ =
             "if meshRenderer is disposed",
             () =>
               test(
-                "getMeshRendererGameObject should error",
+                "unsafeGetMeshRendererGameObject should error",
                 () => {
                   let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
-                  expect(() => getMeshRendererGameObject(meshRenderer1, state))
+                  expect(() => unsafeGetMeshRendererGameObject(meshRenderer1, state))
                   |> toThrowMessage("expect component alive, but actual not")
                 }
               )

@@ -2,7 +2,7 @@ open ComponentType;
 
 type meshRenderer = int;
 
-type meshRendererData = {
+type meshRendererRecord = {
   index: int,
   renderGameObjectArray: array(int),
   gameObjectMap,

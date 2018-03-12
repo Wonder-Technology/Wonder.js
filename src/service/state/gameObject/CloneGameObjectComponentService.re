@@ -56,6 +56,18 @@ let clone =
   |> _clone(
        (
          uid,
+         [@bs] GetComponentGameObjectService.getMeshRendererComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneMeshRendererComponent,
+         AddGameObjectComponentService.batchAddMeshRendererComponentForClone
+       )
+     )
+  |> _clone(
+       (
+         uid,
          [@bs] GetComponentGameObjectService.getBoxGeometryComponent(uid, gameObjectRecord),
          countRangeArr,
          clonedGameObjectArr

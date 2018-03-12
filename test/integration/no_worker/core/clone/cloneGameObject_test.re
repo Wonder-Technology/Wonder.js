@@ -82,7 +82,7 @@ let _ =
                   |> CloneTool.getFlattenClonedGameObjectArr
                   |> Js.Array.map(
                        (clonedGameObject) =>
-                         getGameObjectMeshRendererComponent(clonedGameObject, state)
+                         unsafeGetGameObjectMeshRendererComponent(clonedGameObject, state)
                      )
                   |> Js.Array.length
                   |> expect == 2
@@ -880,7 +880,7 @@ let _ =
                   |> CloneTool.getFlattenClonedGameObjectArr
                   |> Js.Array.map(
                        (clonedGameObject) =>
-                         getGameObjectMeshRendererComponent(clonedGameObject, state)
+                         unsafeGetGameObjectMeshRendererComponent(clonedGameObject, state)
                      )
                   |> Js.Array.length
                   |> expect == 4

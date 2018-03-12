@@ -1,4 +1,7 @@
-let getRenderArray = (state: StateDataType.state) => MeshRendererSystem.getRenderArray(state);
+open StateDataType;
+
+let getRenderArray = (state: StateDataType.state) =>
+  RenderArrayMeshRendererService.getRenderArray(state.meshRendererRecord);
 
 let isMeshRenderer = (meshRenderer) => {
   open Wonder_jest;
@@ -8,12 +11,13 @@ let isMeshRenderer = (meshRenderer) => {
 };
 
 let createGameObject = (state) => {
-  open MeshRenderer;
-  open GameObject; open GameObjectAPI;
+  open MeshRendererAPI;
+  open GameObjectAPI;
   let (state, meshRenderer) = createMeshRenderer(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, meshRenderer)
 };
 
-let getMeshRendererData = MeshRendererStateCommon.getMeshRendererData;
+let getMeshRendererData = (state) => state.meshRendererRecord;
+let getMeshRendererData = (state) => state.meshRendererRecord;

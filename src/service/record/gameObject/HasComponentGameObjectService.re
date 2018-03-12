@@ -8,6 +8,9 @@ let hasBasicCameraViewComponent = (uid: int, gameObjectRecord) : bool =>
 let hasPerspectiveCameraProjectionComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.perspectiveCameraProjectionMap);
 
+let hasMeshRendererComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.meshRendererMap);
+
 let hasTransformComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.transformMap);
 
