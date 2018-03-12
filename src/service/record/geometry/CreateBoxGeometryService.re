@@ -1,8 +1,6 @@
-open GeometryGetStateDataCommon;
+open GeometryType;
 
 open BoxGeometryType;
-
-open GeometryType;
 
 let _getConfig = (configDataMap) => (
   WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap),
@@ -154,8 +152,8 @@ let _generateAllFaces = (configDataMap) => {
      )
 };
 
-let _computeData = (index: int, state: StateDataType.state) =>
-  switch (GeometryConfigDataCommon.getConfigData(index, state)) {
+let _computeData = (index: int, record) =>
+  switch (ConfigDataGeometryService.getConfigData(index, record)) {
   | None =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -171,20 +169,29 @@ let _computeData = (index: int, state: StateDataType.state) =>
     {vertices, normals, indices}
   };
 
-let create = (state: StateDataType.state) => {
-  open StateDataType;
-  let {computeDataFuncMap} as data = getGeometryData(state);
-  let (index, newIndex, disposedIndexArray) = GeometryCreateCommon.create(state);
+let create = ({computeDataFuncMap, index, disposedIndexArray} as record) => {
+  /* let {computeDataFuncMap} as record = state.boxGeometryRecord; */
+  /* let (index, newIndex, disposedIndexArray) = GeometryCreateCommon.create(state);
+   */
+  let (index, newIndex, disposedIndexArray) =
+    ComponentSystem.generateIndex(index, disposedIndexArray);
+  /* {
+       ...state,
+       boxGeometryRecord: {
+         ...record,
+         index: newIndex,
+         disposedIndexArray,
+         computeDataFuncMap:
+           computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
+       }
+     }, */
   (
     {
-      ...state,
-      geometryData: {
-        ...data,
-        index: newIndex,
-        disposedIndexArray,
-        computeDataFuncMap:
-          computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
-      }
+      ...record,
+      index: newIndex,
+      disposedIndexArray,
+      computeDataFuncMap:
+        computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
     },
     index
   )

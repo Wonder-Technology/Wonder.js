@@ -13,7 +13,7 @@ let handleAddComponent =
           ...data,
           gameObjectMap:
             gameObjectMap
-            |> ComponentSystem.addComponentToGameObjectMap(sourceInstance, gameObjectUid)
+            |> AddComponentService.addComponentToGameObjectMap(sourceInstance, gameObjectUid)
         }
       }
     }

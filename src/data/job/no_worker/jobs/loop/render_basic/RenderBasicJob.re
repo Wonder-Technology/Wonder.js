@@ -19,10 +19,10 @@ let _render = (gl, state: StateDataType.state) =>
                let (state, _, geometryIndex) = [@bs] RenderBasicJobCommon.render(gl, uid, state);
                GLSLSenderDrawUtils.drawElement(
                  (
-                   GeometryAdmin.getDrawMode(gl),
-                   GeometryAdmin.getIndexType(gl),
-                   GeometryAdmin.getIndexTypeSize(gl),
-                   GeometryAdmin.getIndicesCount(geometryIndex, state)
+                   RenderGeometryService.getDrawMode(gl),
+                   RenderGeometryService.getIndexType(gl),
+                   RenderGeometryService.getIndexTypeSize(gl),
+                   IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap)
                  ),
                  gl
                );

@@ -907,7 +907,7 @@ let _ =
                       |> CloneTool.getFlattenClonedGameObjectArr
                       |> Js.Array.map(
                            (clonedGameObject) =>
-                             getGameObjectGeometryComponent(clonedGameObject, state)
+                             unsafeGetGameObjectBoxGeometryComponent(clonedGameObject, state)
                          )
                       |> Js.Array.length
                       |> expect == 4

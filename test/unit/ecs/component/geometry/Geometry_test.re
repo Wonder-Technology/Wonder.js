@@ -1,14 +1,14 @@
-open Geometry;
-
-open BoxGeometry;
+open BoxGeometryAPI;
 
 open Wonder_jest;
 
 open Js.Typed_array;
 
+open BoxGeometryType;
+
 let _ =
   describe(
-    "Geometry",
+    "BoxGeometryAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -59,28 +59,28 @@ let _ =
             () =>
               _testSetVertexDataWithArray(
                 "vertices",
-                getGeometryVertices,
+                unsafeGetBoxGeometryVertices,
                 GeometryTool.setVerticesWithArray
               )
           );
           describe(
             "set vertices with type array",
             () =>
-              _testSetVertexDataWithTypeArray("vertices", getGeometryVertices, setGeometryVertices)
+              _testSetVertexDataWithTypeArray("vertices", unsafeGetBoxGeometryVertices, setBoxGeometryVertices)
           );
           describe(
             "set normals with array",
             () =>
               _testSetVertexDataWithArray(
                 "normals",
-                getGeometryNormals,
+                unsafeGetBoxGeometryNormals,
                 GeometryTool.setNormalsWithArray
               )
           );
           describe(
             "set normals with type array",
             () =>
-              _testSetVertexDataWithTypeArray("normals", getGeometryNormals, setGeometryNormals)
+              _testSetVertexDataWithTypeArray("normals", unsafeGetBoxGeometryNormals, setBoxGeometryNormals)
           );
           describe(
             "set indices with array",
@@ -93,7 +93,7 @@ let _ =
                   let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
                   let newData = [|3, 3, 5|];
                   let state = state |> GeometryTool.setIndicesWithArray(geometry, newData);
-                  getGeometryIndices(geometry, state) |> expect == Uint16Array.make(newData)
+                  unsafeGetBoxGeometryIndices(geometry, state) |> expect == Uint16Array.make(newData)
                 }
               )
           );
@@ -106,8 +106,8 @@ let _ =
                   open GameObject; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
                   let newData = Uint16Array.make([|3, 5, 5|]);
-                  let state = state |> setGeometryIndices(geometry, newData);
-                  getGeometryIndices(geometry, state) |> expect == newData
+                  let state = state |> setBoxGeometryIndices(geometry, newData);
+                  unsafeGetBoxGeometryIndices(geometry, state) |> expect == newData
                 }
               )
           )
@@ -121,12 +121,12 @@ let _ =
             () => {
               let triangles = 1;
               let state = state^ |> FakeGlTool.setFakeGl({"TRIANGLES": triangles});
-              state |> getGeometryDrawMode |> expect == triangles
+              state |> getBoxGeometryDrawMode |> expect == triangles
             }
           )
       );
       describe(
-        "getGeometryGameObject",
+        "unsafeGetBoxGeometryGameObject",
         () =>
           test(
             "get geometry's gameObject",
@@ -134,8 +134,8 @@ let _ =
               open GameObject; open GameObjectAPI;
               let (state, geometry) = createBoxGeometry(state^);
               let (state, gameObject) = state |> createGameObject;
-              let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
-              state |> getGeometryGameObject(geometry) |> expect == gameObject
+              let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+              state |> unsafeGetBoxGeometryGameObject(geometry) |> expect == gameObject
             }
           )
       );
@@ -151,7 +151,7 @@ let _ =
                   VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                 let state = state |> GeometryTool.initGeometrys;
                 let state =
-                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                 (state, gameObject1, geometry1)
               };
               test(
@@ -168,7 +168,7 @@ let _ =
                     computeDataFuncMap,
                     gameObjectMap
                   } =
-                    GeometryTool.getGeometryData(state);
+                    state.boxGeometryRecord;
                   (
                     verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     normalsMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
@@ -187,12 +187,12 @@ let _ =
                   let (state, geometry1) = createBoxGeometry(state^);
                   let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObject.addGameObjectGeometryComponent(gameObject2, geometry1);
+                    state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject2, geometry1);
                   let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   GeometryTool.getGroupCount(geometry1, state) |> expect == 0
                 }
               );
@@ -246,20 +246,20 @@ let _ =
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   geometry2 |> expect == geometry1
                 }
               );
               test(
-                "if has no disposed index, get index from geometryData.index",
+                "if has no disposed index, get index from boxGeometryRecord.index",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObject.initGameObject(gameObject1);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   let (state, geometry3) = createBoxGeometry(state);
                   (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
@@ -281,7 +281,7 @@ let _ =
                         );
                       let state =
                         state
-                        |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                       let (state, geometry2) = createBoxGeometry(state);
                       let state =
                         state
@@ -295,7 +295,7 @@ let _ =
                              )
                            );
                       let state = state |> GeometryTool.initGeometry(geometry2);
-                      (getGeometryVertices(geometry2, state), getGeometryIndices(geometry2, state))
+                      (unsafeGetBoxGeometryVertices(geometry2, state), unsafeGetBoxGeometryIndices(geometry2, state))
                       |>
                       expect == (
                                   Float32Array.make([|
@@ -427,12 +427,12 @@ let _ =
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
-                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   expect(
                     () => {
                       let state =
                         state
-                        |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                       ()
                     }
                   )
@@ -458,7 +458,7 @@ let _ =
                     let state =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                     let state =
-                      state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                      state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                     expect(() => getFunc(geometry, state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };
@@ -469,30 +469,30 @@ let _ =
                     let state =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                     let state =
-                      state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                      state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                     expect(() => setFunc(geometry, Obj.magic(0), state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };
                   test(
-                    "getGeometryVertices should error",
-                    () => _testGetFunc(getGeometryVertices)
+                    "unsafeGetBoxGeometryVertices should error",
+                    () => _testGetFunc(unsafeGetBoxGeometryVertices)
                   );
-                  test("getGeometryNormals should error", () => _testGetFunc(getGeometryNormals));
-                  test("getGeometryIndices should error", () => _testGetFunc(getGeometryIndices));
+                  test("unsafeGetBoxGeometryNormals should error", () => _testGetFunc(unsafeGetBoxGeometryNormals));
+                  test("unsafeGetBoxGeometryIndices should error", () => _testGetFunc(unsafeGetBoxGeometryIndices));
                   test(
-                    "getGeometryConfigData should error",
-                    () => _testGetFunc(getGeometryConfigData)
-                  );
-                  test(
-                    "getGeometryGameObject should error",
-                    () => _testGetFunc(getGeometryGameObject)
+                    "unsafeGetBoxGeometryConfigData should error",
+                    () => _testGetFunc(unsafeGetBoxGeometryConfigData)
                   );
                   test(
-                    "setGeometryVertices should error",
-                    () => _testSetFunc(setGeometryVertices)
+                    "unsafeGetBoxGeometryGameObject should error",
+                    () => _testGetFunc(unsafeGetBoxGeometryGameObject)
                   );
-                  test("setGeometryNormals should error", () => _testSetFunc(setGeometryNormals));
-                  test("setGeometryIndices should error", () => _testSetFunc(setGeometryIndices))
+                  test(
+                    "setBoxGeometryVertices should error",
+                    () => _testSetFunc(setBoxGeometryVertices)
+                  );
+                  test("setBoxGeometryNormals should error", () => _testSetFunc(setBoxGeometryNormals));
+                  test("setBoxGeometryIndices should error", () => _testSetFunc(setBoxGeometryIndices))
                 }
               )
           )

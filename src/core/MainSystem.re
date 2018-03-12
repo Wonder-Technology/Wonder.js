@@ -8,7 +8,7 @@ open InitDeviceSystem;
 
 open DeviceManagerSystem;
 
-open JsObjUtils;
+open JsObjService;
 
 /* TODO not set default twice! */
 let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : SettingType.context => {

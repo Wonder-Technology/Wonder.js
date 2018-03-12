@@ -1,9 +1,11 @@
 open GeometryType;
 
-open BoxGeometry;
+open BoxGeometryType;
+
+open BoxGeometryAPI;
 
 let computeData = (geometry, state: StateDataType.state) =>
-  BoxGeometryCreateCommon._computeData(geometry, state);
+  CreateBoxGeometryService._computeData(geometry, state.boxGeometryRecord);
 
 let getDefaultIndicesArray = () => [|
   0,
@@ -220,6 +222,6 @@ let createGameObject = (state: StateDataType.state) => {
   let (state, geometry) = createBoxGeometry(state);
   let state = state |> setDefaultConfigData(geometry);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
-  let state = state |> GameObject.addGameObjectGeometryComponent(gameObject, geometry);
+  let state = state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry)
 };

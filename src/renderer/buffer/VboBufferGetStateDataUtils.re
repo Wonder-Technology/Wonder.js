@@ -1,1 +1,1 @@
-let getVboBufferData = (state: StateDataType.state) => state.vboBufferData;
+let getVboBufferData = (state: StateDataType.state) => state.vboBufferRecord;

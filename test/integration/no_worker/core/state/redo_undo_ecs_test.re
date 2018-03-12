@@ -2,6 +2,8 @@ open Wonder_jest;
 
 open Js.Typed_array;
 
+open BoxGeometryType;
+
 let _ =
   describe(
     "test redo,undo component data",
@@ -94,14 +96,14 @@ let _ =
         )
       };
       let _prepareGeometryData = (state) => {
-        open Geometry;
+        open BoxGeometryAPI;
         open Js.Typed_array;
         let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
         let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
         let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
         let state = GeometryTool.initGeometrys(state);
-        let state = state |> setGeometryVertices(geometry2, Float32Array.make([|3., 5., 5.|]));
-        let state = state |> setGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
+        let state = state |> setBoxGeometryVertices(geometry2, Float32Array.make([|3., 5., 5.|]));
+        let state = state |> setBoxGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
         (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3)
       };
       let _prepareBasicMaterialData = (state) => {
@@ -313,7 +315,7 @@ let _ =
                   ) =
                     _prepareGeometryData(state);
                   let copiedState = StateTool.deepCopyForRestore(state);
-                  let data = GeometryTool.getGeometryData(copiedState);
+                  let data = copiedState.boxGeometryRecord;
                   data.verticesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
@@ -323,7 +325,7 @@ let _ =
                   data.indicesMap
                   |> Obj.magic
                   |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
-                  let {verticesMap, normalsMap, indicesMap} = GeometryTool.getGeometryData(state);
+                  let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
                   (
                     verticesMap
                     |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
@@ -703,7 +705,7 @@ let _ =
             "deep copy gameObject data",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, boxGeometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   GameObjectType.(
                     StateTool.testShadowCopyArrayLikeMapData(
@@ -713,7 +715,7 @@ let _ =
                           aliveUidArray,
                           transformMap,
                           basicCameraViewMap,
-                          geometryMap,
+                          boxGeometryMap,
                           meshRendererMap,
                           basicMaterialMap,
                           lightMaterialMap,
@@ -729,7 +731,7 @@ let _ =
                           aliveUidArray |> Obj.magic,
                           transformMap |> Obj.magic,
                           basicCameraViewMap |> Obj.magic,
-                          geometryMap |> Obj.magic,
+                          boxGeometryMap |> Obj.magic,
                           meshRendererMap |> Obj.magic,
                           basicMaterialMap |> Obj.magic,
                           lightMaterialMap |> Obj.magic,
@@ -956,7 +958,7 @@ let _ =
             "restore geometry data to target state",
             () =>
               test(
-                "add current state->geometryData->verticesMap, normalsMap, indicesMap typeArr to pool",
+                "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
                 () => {
                   open StateDataType;
                   open TypeArrayPoolType;

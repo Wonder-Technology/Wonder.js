@@ -24,13 +24,6 @@ let disposeObjectInstanceComponent =
       ObjectInstanceDisposeComponentCommon.handleDisposeComponent(component, state)
   );
 
-let disposeGeometryComponent =
-  [@bs]
-  (
-    (uid: int, component: component, state: StateDataType.state) =>
-      GeometryDisposeComponentCommon.handleDisposeComponent(component, state)
-  );
-
 let disposeMeshRendererComponent =
   [@bs]
   (
@@ -102,15 +95,6 @@ let batchDisposeLightMaterialComponent =
     uidMap,
     state,
     LightMaterialDisposeComponentCommon.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchDisposeGeometryComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    GeometryDisposeComponentCommon.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -207,7 +191,7 @@ let disposeComponent =
   |> _disposeCommonComponent(uid, (getPointLightComponent, disposePointLightComponent))
   |> _disposeCommonComponent(uid, (getBasicMaterialComponent, disposeBasicMaterialComponent))
   |> _disposeCommonComponent(uid, (getLightMaterialComponent, disposeLightMaterialComponent))
-  |> _disposeCommonComponent(uid, (getGeometryComponent, disposeGeometryComponent))
+  /* |> _disposeCommonComponent(uid, (getBoxGeometryComponent, disposeBoxGeometryComponent)) */
   /* |> _disposeCommonComponent(
        uid,
        (getBasicCameraViewComponent, disposeBasicCameraViewComponent)
@@ -258,9 +242,9 @@ let batchDisposeCommonComponent =
     |> batchGetBasicMaterialComponent(uidArray)
     |> batchDisposeBasicMaterialComponent(disposedUidMap, state)
     |> batchGetLightMaterialComponent(uidArray)
-    |> batchDisposeLightMaterialComponent(disposedUidMap, state)
-    |> batchGetGeometryComponent(uidArray)
-    |> batchDisposeGeometryComponent(disposedUidMap, state);
+    |> batchDisposeLightMaterialComponent(disposedUidMap, state);
+    /* |> batchGetBoxGeometryComponent(uidArray)
+    |> batchDisposeBoxGeometryComponent(disposedUidMap, state); */
   /* |> batchGetBasicCameraViewComponent(uidArray)
      |> batchDisposeBasicCameraViewComponent(disposedUidMap, state); */
   state

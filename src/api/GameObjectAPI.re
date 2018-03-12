@@ -134,3 +134,37 @@ let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataT
   );
   hasTransformComponent(gameObject, state.gameObjectRecord)
 };
+
+let addGameObjectBoxGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addBoxGeometryComponent(gameObject, component, state)
+};
+
+let disposeGameObjectBoxGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeBoxGeometryComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectBoxGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetBoxGeometryComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectBoxGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasBoxGeometryComponent(gameObject, state.gameObjectRecord)
+};

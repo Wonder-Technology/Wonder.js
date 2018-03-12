@@ -1,4 +1,6 @@
-open GameObject; open GameObjectAPI;
+open GameObject;
+
+open GameObjectAPI;
 
 let getFlattenClonedGameObjectArr = (clonedGameObjectArr) =>
   clonedGameObjectArr |> WonderCommonlib.ArraySystem.flatten;
@@ -15,7 +17,7 @@ let cloneWithGeometry = (state, gameObject1, geometry1, count) => {
     clonedGameObjectArr |> getFlattenClonedGameObjectArr,
     clonedGameObjectArr
     |> getFlattenClonedGameObjectArr
-    |> Js.Array.map((clonedGameObject) => getGameObjectGeometryComponent(clonedGameObject, state))
+    |> Js.Array.map((clonedGameObject) => unsafeGetGameObjectBoxGeometryComponent(clonedGameObject, state))
   )
 };
 

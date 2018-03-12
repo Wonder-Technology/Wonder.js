@@ -19,7 +19,7 @@ let create = (sourceInstance, uid, state: StateDataType.state) => {
         ...data,
         index: newIndex,
         sourceInstanceMap: sourceInstanceMap |> _setSourceInstance(index, sourceInstance),
-        gameObjectMap: gameObjectMap |> ComponentSystem.addComponentToGameObjectMap(index, uid)
+        gameObjectMap: gameObjectMap |> AddComponentService.addComponentToGameObjectMap(index, uid)
       }
     },
     index

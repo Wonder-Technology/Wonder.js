@@ -1,13 +1,13 @@
 open MaterialType;
 
 let getGroupCount = (material, groupCountMap) =>
-  GroupUtils.getGroupCount(material, groupCountMap);
+  GroupService.getGroupCount(material, groupCountMap);
 
 let isGroupMaterial = (material, groupCountMap) =>
-  GroupUtils.isGroupComponent(material, groupCountMap);
+  GroupService.isGroupComponent(material, groupCountMap);
 
 let increaseGroupCount = (material, groupCountMap) =>
-  GroupUtils.increaseGroupCount(material, groupCountMap);
+  GroupService.increaseGroupCount(material, groupCountMap);
 
 let decreaseGroupCount = (material, groupCountMap) =>
-  GroupUtils.decreaseGroupCount(material, groupCountMap);
+  GroupService.decreaseGroupCount(material, groupCountMap);

@@ -11,7 +11,7 @@ let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -19,7 +19,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry);
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 

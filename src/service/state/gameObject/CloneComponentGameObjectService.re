@@ -32,3 +32,14 @@ let clonePerspectiveCameraProjectionComponent =
 
 let cloneTransformComponent = (sourceComponent: component, countRangeArr: array(int), state) =>
   CloneTransformService.handleCloneComponent(sourceComponent, countRangeArr, state);
+
+let cloneBoxGeometryComponent =
+    (sourceComponent: component, countRangeArr: array(int), {boxGeometryRecord} as state) => {
+  let (boxGeometryRecord, componentArr) =
+    CloneBoxGeometryService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      boxGeometryRecord
+    );
+  ({...state, boxGeometryRecord}, componentArr)
+};

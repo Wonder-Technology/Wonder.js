@@ -25,91 +25,81 @@ let getSourceInstanceComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap |> getComponent(uid)
+      state.gameObjectRecord.sourceInstanceMap |> getComponent(uid)
   );
 
 let unsafeGetSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.sourceInstanceMap |> _unsafeGetComponent(uid);
 
 let getObjectInstanceComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> getComponent(uid)
+      state.gameObjectRecord.objectInstanceMap |> getComponent(uid)
   );
 
 let unsafeGetObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).objectInstanceMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.objectInstanceMap |> _unsafeGetComponent(uid);
 
 let getBasicCameraViewComponent =
   [@bs] ((uid: int, gameObjectRecord) => gameObjectRecord.basicCameraViewMap |> getComponent(uid));
-
-let getGeometryComponent =
-  [@bs]
-  (
-    (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).geometryMap |> getComponent(uid)
-  );
-
-let unsafeGetGeometryComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).geometryMap |> _unsafeGetComponent(uid);
 
 let getMeshRendererComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> getComponent(uid)
+      state.gameObjectRecord.meshRendererMap |> getComponent(uid)
   );
 
 let getBasicMaterialComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).basicMaterialMap |> getComponent(uid)
+      state.gameObjectRecord.basicMaterialMap |> getComponent(uid)
   );
 
 let getLightMaterialComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).lightMaterialMap |> getComponent(uid)
+      state.gameObjectRecord.lightMaterialMap |> getComponent(uid)
   );
 
 let unsafeGetBasicMaterialComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).basicMaterialMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.basicMaterialMap |> _unsafeGetComponent(uid);
 
 let unsafeGetLightMaterialComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).lightMaterialMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.lightMaterialMap |> _unsafeGetComponent(uid);
 
 let getAmbientLightComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).ambientLightMap |> getComponent(uid)
+      state.gameObjectRecord.ambientLightMap |> getComponent(uid)
   );
 
 let unsafeGetAmbientLightComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).ambientLightMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.ambientLightMap |> _unsafeGetComponent(uid);
 
 let getDirectionLightComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).directionLightMap |> getComponent(uid)
+      state.gameObjectRecord.directionLightMap |> getComponent(uid)
   );
 
 let unsafeGetDirectionLightComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).directionLightMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.directionLightMap |> _unsafeGetComponent(uid);
 
 let getPointLightComponent =
   [@bs]
   (
     (uid: int, state: StateDataType.state) =>
-      GameObjectStateCommon.getGameObjectData(state).pointLightMap |> getComponent(uid)
+      state.gameObjectRecord.pointLightMap |> getComponent(uid)
   );
 
 let unsafeGetPointLightComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateCommon.getGameObjectData(state).pointLightMap |> _unsafeGetComponent(uid);
+  state.gameObjectRecord.pointLightMap |> _unsafeGetComponent(uid);
 
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
@@ -130,58 +120,55 @@ let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataTy
 let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).meshRendererMap,
+    state.gameObjectRecord.meshRendererMap,
     state
   );
 
 let batchGetBasicMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).basicMaterialMap,
+    state.gameObjectRecord.basicMaterialMap,
     state
   );
 
 let batchGetLightMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).lightMaterialMap,
+    state.gameObjectRecord.lightMaterialMap,
     state
   );
-
-let batchGetGeometryComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).geometryMap, state);
 
 let batchGetSourceInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap,
+    state.gameObjectRecord.sourceInstanceMap,
     state
   );
 
 let batchGetObjectInstanceComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).objectInstanceMap,
+    state.gameObjectRecord.objectInstanceMap,
     state
   );
 
 let batchGetAmbientLightComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).ambientLightMap,
+    state.gameObjectRecord.ambientLightMap,
     state
   );
 
 let batchGetDirectionLightComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).directionLightMap,
+    state.gameObjectRecord.directionLightMap,
     state
   );
 
 let batchGetPointLightComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
-    GameObjectStateCommon.getGameObjectData(state).pointLightMap,
+    state.gameObjectRecord.pointLightMap,
     state
   );

@@ -27,7 +27,7 @@ let _setNewDataToState =
     aliveUidArray: newAliveUidArray,
     transformMap: newTransformMap,
     meshRendererMap: newMeshRendererMap,
-    geometryMap: newGeometryMap,
+    boxGeometryMap: newGeometryMap,
     basicCameraViewMap: newBasicCameraViewMap,
     basicMaterialMap: newBasicMaterialMap,
     lightMaterialMap: newLightMaterialMap,
@@ -49,7 +49,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
   let {
     transformMap,
     meshRendererMap,
-    geometryMap,
+    boxGeometryMap,
     basicMaterialMap,
     lightMaterialMap,
     ambientLightMap,
@@ -86,7 +86,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
                 transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid)
               ),
            _setNewMap(uid, meshRendererMap, newMeshRendererMap),
-           _setNewMap(uid, geometryMap, newGeometryMap),
+           _setNewMap(uid, boxGeometryMap, newGeometryMap),
            _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
            _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
            _setNewMap(uid, lightMaterialMap, newLightMaterialMap),

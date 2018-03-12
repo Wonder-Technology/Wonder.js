@@ -250,7 +250,7 @@ let _ =
                 }
               );
               test(
-                "add current state->vboBufferData->vertexBufferMap, normalBufferMap, elementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
+                "add current state->vboBufferRecord->vertexBufferMap, normalBufferMap, elementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
                 () => {
                   open VboBufferType;
                   let (

@@ -4,6 +4,8 @@ open ComponentType;
 
 open TransformType;
 
+open BoxGeometryType;
+
 open BasicCameraViewType;
 
 open PerspectiveCameraProjectionType;
@@ -13,6 +15,8 @@ open SceneType;
 open GameObjectType;
 
 open GeometryType;
+
+open BoxGeometryType;
 
 open MeshRendererType;
 
@@ -164,18 +168,6 @@ and jobData = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, (float, state) => state))
 }
-and geometryData = {
-  index: int,
-  verticesMap: geometryVerticesMap,
-  normalsMap: geometryNormalsMap,
-  indicesMap: geometryIndicesMap,
-  computeDataFuncMap: array(((int, state) => geometryComputeData)),
-  configDataMap: geometryConfigDataMap,
-  gameObjectMap,
-  disposedIndexArray: geometryDisposedIndexArray,
-  isInitMap: geometryIsInitMap,
-  groupCountMap: geometryGroupCountMap
-}
 and state = {
   bufferConfig: option(bufferConfig),
   gpuConfig: option(gpuConfig),
@@ -202,7 +194,7 @@ and state = {
   ambientLightData,
   directionLightData,
   pointLightData,
-  geometryData,
+  boxGeometryRecord,
   meshRendererData,
   shaderData,
   programData,
@@ -211,7 +203,7 @@ and state = {
   glslChunkData,
   renderData,
   timeControllerData,
-  vboBufferData,
+  vboBufferRecord,
   globalTempRecord,
   typeArrayPoolRecord,
   workerInstanceData,

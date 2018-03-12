@@ -17,21 +17,21 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
                ArrayBufferSystem.getOrCreateBuffer(
                  gl,
                  (geometryIndex, vertexBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetVertices,
+                 [@bs] VerticesGeometryService.unsafeGetVertices,
                  state
                )
              | "normal" =>
                ArrayBufferSystem.getOrCreateBuffer(
                  gl,
                  (geometryIndex, normalBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetNormals,
+                 [@bs] NormalsGeometryService.unsafeGetNormals,
                  state
                )
              | "index" =>
                ElementArrayBufferSystem.getOrCreateBuffer(
                  gl,
                  (geometryIndex, elementArrayBufferMap),
-                 [@bs] GeometryAdmin.unsafeGetIndices,
+                 [@bs] IndicesGeometryService.unsafeGetIndices,
                  state
                )
              | _ =>
@@ -97,7 +97,8 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
 let render = (gl, (materialIndex, shaderIndex, uid), state: StateDataType.state) => {
   let transformIndex: int =
     GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord);
-  let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
+  let geometryIndex: int =
+    GetComponentGameObjectService.unsafeGetBoxGeometryComponent(uid, state.gameObjectRecord);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   let state =
     state

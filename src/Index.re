@@ -4,6 +4,36 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
+
+let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
+
+let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
+
+let unsafeGetBoxGeometryIndices = BoxGeometryAPI.unsafeGetBoxGeometryIndices;
+
+let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
+
+let unsafeGetBoxGeometryNormals = BoxGeometryAPI.unsafeGetBoxGeometryNormals;
+
+let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
+
+let unsafeGetBoxGeometryVertices = BoxGeometryAPI.unsafeGetBoxGeometryVertices;
+
+let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
+
+let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
+
+let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
+
+let unsafeGetGameObjectBoxGeometryComponent = GameObjectAPI.unsafeGetGameObjectBoxGeometryComponent;
+
+let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
+
+let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
+
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
 let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTransformComponent;
@@ -154,14 +184,6 @@ let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanc
 
 let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;
 
-let hasGameObjectGeometryComponent = GameObject.hasGameObjectGeometryComponent;
-
-let getGameObjectGeometryComponent = GameObject.getGameObjectGeometryComponent;
-
-let disposeGameObjectGeometryComponent = GameObject.disposeGameObjectGeometryComponent;
-
-let addGameObjectGeometryComponent = GameObject.addGameObjectGeometryComponent;
-
 let hasGameObjectMeshRendererComponent = GameObject.hasGameObjectMeshRendererComponent;
 
 let getGameObjectMeshRendererComponent = GameObject.getGameObjectMeshRendererComponent;
@@ -185,28 +207,6 @@ let getGameObjectBasicMaterialComponent = GameObject.getGameObjectBasicMaterialC
 let disposeGameObjectBasicMaterialComponent = GameObject.disposeGameObjectBasicMaterialComponent;
 
 let addGameObjectBasicMaterialComponent = GameObject.addGameObjectBasicMaterialComponent;
-
-let setBoxGeometryConfigData = BoxGeometry.setBoxGeometryConfigData;
-
-let createBoxGeometry = BoxGeometry.createBoxGeometry;
-
-let getGeometryGameObject = Geometry.getGeometryGameObject;
-
-let getGeometryConfigData = Geometry.getGeometryConfigData;
-
-let setGeometryIndices = Geometry.setGeometryIndices;
-
-let getGeometryIndices = Geometry.getGeometryIndices;
-
-let setGeometryNormals = Geometry.setGeometryNormals;
-
-let getGeometryNormals = Geometry.getGeometryNormals;
-
-let setGeometryVertices = Geometry.setGeometryVertices;
-
-let getGeometryVertices = Geometry.getGeometryVertices;
-
-let getGeometryDrawMode = Geometry.getGeometryDrawMode;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstance.markSourceInstanceModelMatrixIsStatic;
 
@@ -300,6 +300,36 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
+
+let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
+
+let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
+
+let unsafeGetBoxGeometryIndices = BoxGeometryAPI.unsafeGetBoxGeometryIndices;
+
+let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
+
+let unsafeGetBoxGeometryNormals = BoxGeometryAPI.unsafeGetBoxGeometryNormals;
+
+let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
+
+let unsafeGetBoxGeometryVertices = BoxGeometryAPI.unsafeGetBoxGeometryVertices;
+
+let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
+
+let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
+
+let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
+
+let unsafeGetGameObjectBoxGeometryComponent = GameObjectAPI.unsafeGetGameObjectBoxGeometryComponent;
+
+let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
+
+let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
+
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
 let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTransformComponent;
@@ -449,14 +479,6 @@ let hasGameObjectSourceInstanceComponent = GameObject.hasGameObjectSourceInstanc
 let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanceComponent;
 
 let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;
-
-let hasGameObjectGeometryComponent = GameObject.hasGameObjectGeometryComponent;
-
-let getGameObjectGeometryComponent = GameObject.getGameObjectGeometryComponent;
-
-let disposeGameObjectGeometryComponent = GameObject.disposeGameObjectGeometryComponent;
-
-let addGameObjectGeometryComponent = GameObject.addGameObjectGeometryComponent;
 
 let hasGameObjectMeshRendererComponent = GameObject.hasGameObjectMeshRendererComponent;
 

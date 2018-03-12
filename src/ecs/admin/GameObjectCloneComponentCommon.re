@@ -11,10 +11,6 @@ let cloneMeshRendererComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   MeshRendererCloneComponentCommon.handleCloneComponent(countRangeArr, state);
 
-let cloneGeometryComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  GeometryCloneComponentCommon.handleCloneComponent(sourceComponent, countRangeArr, state);
-
 let cloneBasicMaterialComponent =
     (
       isShareMaterial: bool,
@@ -104,10 +100,10 @@ let cloneComponent =
            GameObjectAddComponentCommon.batchAddMeshRendererComponentForClone
          )
        )
-    |> _cloneComponent(
-         (uid, [@bs] getGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
-         (cloneGeometryComponent, GameObjectAddComponentCommon.batchAddGeometryComponentForClone)
-       )
+    /* |> _cloneComponent(
+         (uid, [@bs] getBoxGeometryComponent(uid, state), countRangeArr, clonedGameObjectArr),
+         (cloneBoxGeometryComponent, GameObjectAddComponentCommon.batchAddBoxGeometryComponentForClone)
+       ) */
     |> _cloneComponent(
          (uid, [@bs] getBasicMaterialComponent(uid, state), countRangeArr, clonedGameObjectArr),
          (

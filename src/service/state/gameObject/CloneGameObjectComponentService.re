@@ -52,4 +52,16 @@ let clone =
          CloneComponentGameObjectService.clonePerspectiveCameraProjectionComponent,
          AddGameObjectComponentService.batchAddPerspectiveCameraProjectionComponentForClone
        )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getBoxGeometryComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectService.cloneBoxGeometryComponent,
+         AddGameObjectComponentService.batchAddBoxGeometryComponentForClone
+       )
      );

@@ -23,13 +23,9 @@ let getTransformComponent =
 
 let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
-/* 
-let batchGetBasicCameraViewComponent = (uidArray: array(int), {basicCameraViewMap}) =>
-  batchGetComponent(uidArray, basicCameraViewMap);
 
-let batchGetPerspectiveCameraProjectionComponent =
-    (uidArray: array(int), {perspectiveCameraProjectionMap}) =>
-  batchGetComponent(uidArray, perspectiveCameraProjectionMap);
+let getBoxGeometryComponent =
+  [@bs] ((uid: int, {boxGeometryMap}) => boxGeometryMap |> getComponent(uid));
 
-let batchGetTransformComponent = (uidArray: array(int), {transformMap}) =>
-  batchGetComponent(uidArray, transformMap); */
+let unsafeGetBoxGeometryComponent = (uid: int, {boxGeometryMap}) =>
+  boxGeometryMap |> unsafeGetComponent(uid);

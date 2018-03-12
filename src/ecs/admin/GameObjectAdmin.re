@@ -33,18 +33,6 @@ let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceC
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
 
-let hasGeometryComponent = GameObjectHasComponentCommon.hasGeometryComponent;
-
-let getGeometryComponent = (uid: int, state: StateDataType.state) =>
-  [@bs] GameObjectGetComponentCommon.getGeometryComponent(uid, state);
-
-let unsafeGetGeometryComponent = GameObjectGetComponentCommon.unsafeGetGeometryComponent;
-
-let addGeometryComponent = GameObjectAddComponentCommon.addGeometryComponent;
-
-let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeGeometryComponent(uid, component, state);
-
 let hasMeshRendererComponent = GameObjectHasComponentCommon.hasMeshRendererComponent;
 
 let getMeshRendererComponent = (uid: int, state: StateDataType.state) =>
@@ -123,15 +111,17 @@ let clone = GameObjectCloneCommon.clone;
 
 /* TODO remove */
 let isAlive = (uid: int, state: StateDataType.state) => {
-  let {transformMap, disposedUidMap} = GameObjectStateCommon.getGameObjectData(state);
+  let {transformMap, disposedUidMap} = state.gameObjectRecord;
   disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
     false : transformMap |> WonderCommonlib.SparseMapSystem.has(uid) ? true : false
 };
 
 let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
-    switch (getGeometryComponent(uid, state)) {
-    | Some(geometry) => GeometrySystem.handleInitComponent(geometry, state)
+    switch (
+      [@bs] GetComponentGameObjectService.getBoxGeometryComponent(uid, state.gameObjectRecord)
+    ) {
+    | Some(geometry) => InitGeometryService.handleInitComponent(geometry, state)
     | None => state
     };
   let state =

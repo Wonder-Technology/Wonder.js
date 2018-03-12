@@ -50,29 +50,6 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   | None => pool
   };
 
-let addGeometryBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
-  let {
-        vertexBufferMap,
-        normalBufferMap,
-        elementArrayBufferMap,
-        vertexArrayBufferPool,
-        elementArrayBufferPool
-      } as data =
-    VboBufferGetStateDataUtils.getVboBufferData(state);
-  {
-    ...state,
-    vboBufferData: {
-      ...data,
-      vertexArrayBufferPool:
-        vertexArrayBufferPool
-        |> _addBufferToPool(geometryIndex, vertexBufferMap)
-        |> _addBufferToPool(geometryIndex, normalBufferMap),
-      elementArrayBufferPool:
-        elementArrayBufferPool |> _addBufferToPool(geometryIndex, elementArrayBufferMap)
-    }
-  }
-};
-
 let addAllBufferToPool = (state: StateDataType.state) => {
   let {
     vertexBufferMap,

@@ -2,7 +2,7 @@ let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: StateDataType.sta
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.unsafeGetGl(state),
     (geometryIndex, VboBufferGetStateDataUtils.getVboBufferData(state).vertexBufferMap),
-    ([@bs] ArrayBufferSystem.createBuffer, [@bs] GeometryAdmin.unsafeGetVertices),
+    ([@bs] ArrayBufferSystem.createBuffer, [@bs] VerticesGeometryService.unsafeGetVertices),
     state
   );
 
@@ -10,7 +10,7 @@ let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: StateDataType.sta
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.unsafeGetGl(state),
     (geometryIndex, VboBufferGetStateDataUtils.getVboBufferData(state).normalBufferMap),
-    ([@bs] ArrayBufferSystem.createBuffer, [@bs] GeometryAdmin.unsafeGetNormals),
+    ([@bs] ArrayBufferSystem.createBuffer, [@bs] NormalsGeometryService.unsafeGetNormals),
     state
   );
 
@@ -18,7 +18,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.unsafeGetGl(state),
     (geometryIndex, VboBufferGetStateDataUtils.getVboBufferData(state).elementArrayBufferMap),
-    ([@bs] ElementArrayBufferSystem.createBuffer, [@bs] GeometryAdmin.unsafeGetIndices),
+    ([@bs] ElementArrayBufferSystem.createBuffer, [@bs] IndicesGeometryService.unsafeGetIndices),
     state
   );
 

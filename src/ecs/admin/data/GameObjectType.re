@@ -4,6 +4,8 @@ open TransformType;
 
 open GeometryType;
 
+open BoxGeometryType;
+
 open MeshRendererType;
 
 open MaterialType;
@@ -46,7 +48,7 @@ type gameObjectRecord = {
   mutable transformMap: gameObjectTransformMap,
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
-  mutable geometryMap: gameObjectGeometryMap,
+  mutable boxGeometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,

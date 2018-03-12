@@ -1,3 +1,5 @@
+open StateDataType;
+
 open GameObjectType;
 
 let _handleByDisposeCount = (data, state) =>
@@ -9,7 +11,7 @@ let _handleByDisposeCount = (data, state) =>
   };
 
 let rec batchDispose = (uidArray: array(int), state) => {
-  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
+  let {disposeCount, disposedUidMap} as data = state.gameObjectRecord;
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   state
   |> GameObjectDisposeComponentCommon.batchDisposeCommonComponent(
@@ -30,7 +32,7 @@ let dispose =
          ) as dataTuple */
       state
     ) => {
-  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
+  let {disposeCount, disposedUidMap} as data = state.gameObjectRecord;
   data.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
   state

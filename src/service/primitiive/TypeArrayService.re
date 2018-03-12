@@ -6,23 +6,23 @@ let getFloat3 = (index: int, typeArray: Float32Array.t) => [|
   Float32Array.unsafe_get(typeArray, index + 2)
 |];
 
-let setFloat3 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t) => {
+let setFloat3 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
       open Contract;
       open Operators;
-      let len = data |> Js.Array.length;
+      let len = record |> Js.Array.length;
       test(
-        Log.buildAssertMessage(~expect={j|data.length === 3|j}, ~actual={j|is $len|j}),
+        Log.buildAssertMessage(~expect={j|record.length === 3|j}, ~actual={j|is $len|j}),
         () => len == 3
       )
     },
     StateData.stateData.isDebug
   );
-  /* Float32Array.setArrayOffset(data, index, typeArray); */
+  /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 2) {
-    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(data, i - index))
+    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(record, i - index))
   };
   typeArray
 };
@@ -46,23 +46,23 @@ let getFloat16 = (index: int, typeArr: Float32Array.t) => [|
   Float32Array.unsafe_get(typeArr, index + 15)
 |];
 
-let setFloat16 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t) => {
+let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
       open Contract;
       open Operators;
-      let len = data |> Js.Array.length;
+      let len = record |> Js.Array.length;
       test(
-        Log.buildAssertMessage(~expect={j|data.length === 16|j}, ~actual={j|is $len|j}),
+        Log.buildAssertMessage(~expect={j|record.length === 16|j}, ~actual={j|is $len|j}),
         () => len == 16
       )
     },
     StateData.stateData.isDebug
   );
-  /* Float32Array.setArrayOffset(data, index, typeArray); */
+  /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 15) {
-    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(data, i - index))
+    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(record, i - index))
   };
   typeArray
 };
@@ -70,8 +70,8 @@ let setFloat16 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t
 let getUint16ArraySingleVale = (index: int, typeArray: Uint16Array.t) =>
   Uint16Array.unsafe_get(typeArray, index);
 
-let setUint16ArraySingleVale = (index: int, data: int, typeArray: Uint16Array.t) =>
-  Uint16Array.unsafe_set(typeArray, index, data);
+let setUint16ArraySingleVale = (index: int, record: int, typeArray: Uint16Array.t) =>
+  Uint16Array.unsafe_set(typeArray, index, record);
 
 let fillFloat32Array =
   [@bs]
@@ -241,6 +241,6 @@ let fillUint16ArrayWithUint16Array = (targetData, sourceData, endIndex) =>
 let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
   _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setFloat32ArrayWithFloat32Array);
 
-let makeFloat32Array = [@bs] ((data) => Float32Array.make(data));
+let makeFloat32Array = [@bs] ((record) => Float32Array.make(record));
 
-let makeUint16Array = [@bs] ((data) => Uint16Array.make(data));
+let makeUint16Array = [@bs] ((record) => Uint16Array.make(record));

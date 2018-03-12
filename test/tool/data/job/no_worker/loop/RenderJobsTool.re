@@ -20,7 +20,7 @@ let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -30,7 +30,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };

@@ -1,34 +1,31 @@
-open GeometryType;
+open BoxGeometryType;
+
+open Js.Typed_array;
 
 let addTypeArrayToPool =
-    (
-      geometry: geometry,
-      maxSize,
-      (verticesMap, normalsMap, indicesMap),
-      state: StateDataType.state
-    ) => {
+    (geometry, maxSize, (verticesMap, normalsMap, indicesMap), typeArrayPoolRecord) => {
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
     verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolService.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
     normalsMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolService.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
+    TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
   TypeArrayPoolService.addUint16TypeArrayToPool(
     indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
     maxSize,
-    TypeArrayPoolService.getUint16ArrayPoolMap(state.typeArrayPoolRecord)
+    TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
-  state
+  typeArrayPoolRecord
 };
 
 let addAllTypeArrayToPool =

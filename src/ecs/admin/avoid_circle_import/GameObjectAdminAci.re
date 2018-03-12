@@ -1,1 +1,3 @@
-let getData = GameObjectStateCommon.getGameObjectData;
+open StateDataType;
+
+let getData = (state) => state.gameObjectRecord;

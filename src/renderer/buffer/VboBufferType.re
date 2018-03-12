@@ -1,6 +1,6 @@
 open GlType;
 
-type vboBufferData = {
+type vboBufferRecord = {
   vertexBufferMap: array(buffer),
   normalBufferMap: array(buffer),
   elementArrayBufferMap: array(buffer),

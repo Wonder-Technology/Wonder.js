@@ -4,7 +4,7 @@ let execJob = (configData, state) =>
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -14,14 +14,14 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObject; open GameObjectAPI;
   open BasicMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -31,7 +31,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };

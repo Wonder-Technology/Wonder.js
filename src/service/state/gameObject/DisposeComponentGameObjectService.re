@@ -44,6 +44,17 @@ let disposeTransformComponent =
       )
   );
 
+let disposeBoxGeometryComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {memoryConfig} as state) =>
+      DisposeGeometryService.handleDisposeComponent(
+        component,
+        ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+        state
+      )
+  );
+
 let batchDisposeBasicCameraViewComponent =
     (uidMap, {basicCameraViewRecord} as state, componentArray: array(component)) => {
   ...state,
@@ -72,6 +83,16 @@ let batchDisposeTransformComponent =
     (uidMap, {memoryConfig} as state, componentArray: array(component)) =>
   [@bs]
   DisposeTransformService.handleBatchDisposeComponent(
+    componentArray,
+    uidMap,
+    ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+    state
+  );
+
+let batchDisposeBoxGeometryComponent =
+    (uidMap, {memoryConfig} as state, componentArray: array(component)) =>
+  [@bs]
+  DisposeGeometryService.handleBatchDisposeComponent(
     componentArray,
     uidMap,
     ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),

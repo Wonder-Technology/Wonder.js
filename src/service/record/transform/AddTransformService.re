@@ -6,6 +6,6 @@ let handleAddComponent =
     (transform: transform, gameObjectUid: int, {gameObjectMap} as record) => {
       ...record,
       gameObjectMap:
-        ComponentSystem.addComponentToGameObjectMap(transform, gameObjectUid, gameObjectMap)
+        AddComponentService.addComponentToGameObjectMap(transform, gameObjectUid, gameObjectMap)
     }
   );

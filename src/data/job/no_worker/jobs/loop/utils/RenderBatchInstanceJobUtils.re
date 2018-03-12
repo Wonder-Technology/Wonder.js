@@ -11,10 +11,10 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
   let uniformInstanceSendNoCachableData =
     state
     |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformInstanceSendNoCachableData(shaderIndex);
-  let drawMode = GeometryAdmin.getDrawMode(gl);
-  let indexType = GeometryAdmin.getIndexType(gl);
-  let indexTypeSize = GeometryAdmin.getIndexTypeSize(gl);
-  let indicesCount = GeometryAdmin.getIndicesCount(geometryIndex, state);
+  let drawMode = RenderGeometryService.getDrawMode(gl);
+  let indexType = RenderGeometryService.getIndexType(gl);
+  let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
+  let indicesCount = IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap);
   let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
   objectInstanceArray

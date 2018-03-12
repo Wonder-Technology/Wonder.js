@@ -6,7 +6,7 @@ open VboBufferGetStateDataUtils;
 
 let deepCopyForRestore = (state: StateDataType.state) => {
   ...state,
-  vboBufferData: {
+  vboBufferRecord: {
     vertexBufferMap: [||],
     normalBufferMap: [||],
     elementArrayBufferMap: [||],
@@ -26,7 +26,7 @@ let restore = (currentState, targetState) => {
     VboBufferPoolCommon.addAllBufferToPool(currentState);
   {
     ...targetState,
-    vboBufferData: {
+    vboBufferRecord: {
       vertexBufferMap: [||],
       normalBufferMap: [||],
       elementArrayBufferMap: [||],

@@ -9,7 +9,7 @@ let create = () => {
   transformMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   basicCameraViewMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   perspectivePameraProjectionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  geometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  boxGeometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   basicMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   lightMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),

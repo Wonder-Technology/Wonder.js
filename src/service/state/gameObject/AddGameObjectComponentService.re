@@ -9,6 +9,19 @@ let _addComponent = ((uid, component, componentMap), handleAddComponentFunc, com
   [@bs] handleAddComponentFunc(component, uid, componentRecord)
 };
 
+let _addSharableComponent =
+    (
+      (uid, component, componentMap, gameObject),
+      (increaseGroupCountFunc, handleAddComponentFunc),
+      componentRecord
+    ) => {
+  componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
+  switch gameObject {
+  | Some(_) => [@bs] increaseGroupCountFunc(component, componentRecord)
+  | _ => [@bs] handleAddComponentFunc(component, uid, componentRecord)
+  }
+};
+
 let addBasicCameraViewComponent =
     (uid: int, component: component, {basicCameraViewRecord, gameObjectRecord} as state) => {
   ...state,
@@ -44,6 +57,22 @@ let addTransformComponent =
       AddTransformService.handleAddComponent,
       transformRecord
     )
+};
+
+let addBoxGeometryComponent =
+    (uid: int, component: component, {boxGeometryRecord, gameObjectRecord} as state) => {
+  ...state,
+  boxGeometryRecord:
+    boxGeometryRecord
+    |> _addSharableComponent(
+         (
+           uid,
+           component,
+           gameObjectRecord.boxGeometryMap,
+           GameObjectGeometryService.getGameObject(component, boxGeometryRecord)
+         ),
+         (GroupGeometryService.increaseGroupCount, AddGeometryService.handleAddComponent)
+       )
 };
 
 let _checkBatchAdd = (uidArr, componentArr) =>
@@ -128,5 +157,41 @@ let batchAddTransformComponentForClone =
       (uidArr, componentArr, gameObjectRecord.transformMap),
       AddTransformService.handleAddComponent,
       transformRecord
+    )
+};
+
+let _batchAddSharableComponent =
+    (
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      increaseGroupCountFunc,
+      record
+    ) => {
+  _checkBatchAdd(uidArr, componentArr);
+  uidArr
+  |> WonderCommonlib.ArraySystem.reduceOneParami(
+       [@bs]
+       (
+         (record, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
+           [@bs] increaseGroupCountFunc(component, record)
+         }
+       ),
+       record
+     )
+};
+
+let batchAddBoxGeometryComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {boxGeometryRecord, gameObjectRecord} as state
+    ) => {
+  ...state,
+  boxGeometryRecord:
+    _batchAddSharableComponent(
+      (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
+      GroupGeometryService.increaseGroupCount,
+      boxGeometryRecord
     )
 };

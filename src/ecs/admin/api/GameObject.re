@@ -116,40 +116,6 @@ let hasGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDa
   hasMeshRendererComponent(gameObject, state)
 };
 
-let addGameObjectGeometryComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  addGeometryComponent(gameObject, component, state)
-};
-
-let disposeGameObjectGeometryComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  disposeGeometryComponent(gameObject, component, state)
-};
-
-let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  Js.Option.getExn(getGeometryComponent(gameObject, state))
-};
-
-let hasGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  hasGeometryComponent(gameObject, state)
-};
-
 let addGameObjectSourceInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(

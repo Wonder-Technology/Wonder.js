@@ -1,7 +1,7 @@
 let prepareGameObject = (sandbox, state) => {
   open GameObject; open GameObjectAPI;
   open LightMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
   let (state, material) = createLightMaterial(state);
@@ -11,7 +11,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
@@ -19,7 +19,7 @@ let prepareGameObject = (sandbox, state) => {
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObject; open GameObjectAPI;
   open LightMaterial;
-  open BoxGeometry;
+  open BoxGeometryAPI;
   open MeshRenderer;
   open Sinon;
   let (state, material) = createLightMaterial(state);
@@ -28,7 +28,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };

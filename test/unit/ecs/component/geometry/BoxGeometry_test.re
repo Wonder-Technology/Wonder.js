@@ -1,10 +1,8 @@
-open BoxGeometry;
-
-open Geometry;
-
-open BoxGeometryType;
+open BoxGeometryAPI;
 
 open GeometryType;
+
+open BoxGeometryType;
 
 open Wonder_jest;
 
@@ -12,7 +10,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "BoxGeometry",
+    "BoxGeometryAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -33,7 +31,7 @@ let _ =
             "create a new geometry which is just index(int)",
             () => {
               let (state, geometry) = createBoxGeometry(state^);
-              (GeometryTool.getGeometryData(state).index, geometry) |> expect == (1, 0)
+              (state.boxGeometryRecord.index, geometry) |> expect == (1, 0)
             }
           )
       );
@@ -59,7 +57,7 @@ let _ =
                      )
                    );
               state
-              |> getGeometryConfigData(geometry)
+              |> unsafeGetBoxGeometryConfigData(geometry)
               |>
               expect == Js.Dict.fromList([
                           ("width", 10.),
@@ -85,7 +83,7 @@ let _ =
                      )
                    );
               state
-              |> getGeometryConfigData(geometry)
+              |> unsafeGetBoxGeometryConfigData(geometry)
               |>
               expect == Js.Dict.fromList([
                           ("width", 10.),
@@ -615,7 +613,7 @@ let _ =
                 let state = state |> GeometryTool.initGeometrys;
                 TestTool.closeContractCheck();
                 let state =
-                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                  state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                 TestTool.openContractCheck();
                 expect(() => setFunc(geometry, Obj.magic(0), state))
                 |> toThrowMessage("expect component alive, but actual not")

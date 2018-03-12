@@ -14,7 +14,7 @@ let handleAddComponent =
         directionLightData: {
           ...data,
           gameObjectMap:
-            ComponentSystem.addComponentToGameObjectMap(light, gameObjectUid, gameObjectMap)
+            AddComponentService.addComponentToGameObjectMap(light, gameObjectUid, gameObjectMap)
         }
       }
     }

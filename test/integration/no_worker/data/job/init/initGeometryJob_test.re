@@ -1,8 +1,8 @@
 open Wonder_jest;
 
-open Geometry;
+open BoxGeometryAPI;
 
-open BoxGeometry;
+open BoxGeometryAPI;
 
 let _ =
   describe(
@@ -64,7 +64,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (getGeometryVertices(geometry1, state), getGeometryVertices(geometry2, state))
+              (unsafeGetBoxGeometryVertices(geometry1, state), unsafeGetBoxGeometryVertices(geometry2, state))
               |>
               expect == (
                           BoxGeometryTool.getDefaultVertices(),
@@ -77,7 +77,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (getGeometryNormals(geometry1, state), getGeometryNormals(geometry2, state))
+              (unsafeGetBoxGeometryNormals(geometry1, state), unsafeGetBoxGeometryNormals(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultNormals(), BoxGeometryTool.getDefaultNormals())
             }
@@ -87,7 +87,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (getGeometryIndices(geometry1, state), getGeometryIndices(geometry2, state))
+              (unsafeGetBoxGeometryIndices(geometry1, state), unsafeGetBoxGeometryIndices(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultIndices(), BoxGeometryTool.getDefaultIndices())
             }

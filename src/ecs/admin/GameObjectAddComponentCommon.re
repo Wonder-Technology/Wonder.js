@@ -45,36 +45,24 @@ let _addSharableComponent =
 
 let addSourceInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap),
+    (uid, component, state.gameObjectRecord.sourceInstanceMap),
     SourceInstanceAddComponentCommon.handleAddComponent,
     state
   );
 
 let addObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).objectInstanceMap),
+    (uid, component, state.gameObjectRecord.objectInstanceMap),
     ObjectInstanceAddComponentCommon.handleAddComponent,
     state
   );
 
 let addMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).meshRendererMap),
+    (uid, component, state.gameObjectRecord.meshRendererMap),
     MeshRendererAddComponentCommon.handleAddComponent,
     state
   );
-
-let addGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
-  state
-  |> _addSharableComponent(
-       (
-         uid,
-         component,
-         GameObjectStateCommon.getGameObjectData(state).geometryMap,
-         GeometryGameObjectCommon.getGameObject(component, state)
-       ),
-       (GeometryGroupCommon.increaseGroupCount, GeometryAddComponentCommon.handleAddComponent)
-     );
 
 let addBasicMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
   state
@@ -82,7 +70,7 @@ let addBasicMaterialComponent = (uid: int, component: component, state: StateDat
        (
          uid,
          component,
-         GameObjectStateCommon.getGameObjectData(state).basicMaterialMap,
+         state.gameObjectRecord.basicMaterialMap,
          BasicMaterialGameObjectCommon.getGameObject(component, state)
        ),
        (
@@ -97,7 +85,7 @@ let addLightMaterialComponent = (uid: int, component: component, state: StateDat
        (
          uid,
          component,
-         GameObjectStateCommon.getGameObjectData(state).lightMaterialMap,
+         state.gameObjectRecord.lightMaterialMap,
          LightMaterialGameObjectCommon.getGameObject(component, state)
        ),
        (
@@ -108,21 +96,21 @@ let addLightMaterialComponent = (uid: int, component: component, state: StateDat
 
 let addAmbientLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).ambientLightMap),
+    (uid, component, state.gameObjectRecord.ambientLightMap),
     AmbientLightAddComponentCommon.handleAddComponent,
     state
   );
 
 let addDirectionLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).directionLightMap),
+    (uid, component, state.gameObjectRecord.directionLightMap),
     DirectionLightAddComponentCommon.handleAddComponent,
     state
   );
 
 let addPointLightComponent = (uid: int, component: component, state: StateDataType.state) =>
   _addCommonComponent(
-    (uid, component, GameObjectStateCommon.getGameObjectData(state).pointLightMap),
+    (uid, component, state.gameObjectRecord.pointLightMap),
     PointLightAddComponentCommon.handleAddComponent,
     state
   );
@@ -218,16 +206,8 @@ let _batchAddSharableComponent =
 let batchAddMeshRendererComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).meshRendererMap),
+    (uidArr, componentArr, state.gameObjectRecord.meshRendererMap),
     MeshRendererAddComponentCommon.handleAddComponent,
-    state
-  );
-
-let batchAddGeometryComponentForClone =
-    (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddSharableComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).geometryMap),
-    GeometryGroupCommon.increaseGroupCount,
     state
   );
 
@@ -253,10 +233,10 @@ let batchAddBasicMaterialComponentForClone =
       componentArr: array(component),
       state: StateDataType.state
     ) => {
-  let componentMap = GameObjectStateCommon.getGameObjectData(state).basicMaterialMap;
+  let componentMap = state.gameObjectRecord.basicMaterialMap;
   _batchAddMaterialComponentForClone(
     isShareMaterial,
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).basicMaterialMap),
+    (uidArr, componentArr, state.gameObjectRecord.basicMaterialMap),
     (
       BasicMaterialGroupCommon.increaseGroupCount,
       BasicMaterialAddComponentCommon.handleAddComponent
@@ -274,7 +254,7 @@ let batchAddLightMaterialComponentForClone =
     ) =>
   _batchAddMaterialComponentForClone(
     isShareMaterial,
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).lightMaterialMap),
+    (uidArr, componentArr, state.gameObjectRecord.lightMaterialMap),
     (
       LightMaterialGroupCommon.increaseGroupCount,
       LightMaterialAddComponentCommon.handleAddComponent
@@ -285,7 +265,7 @@ let batchAddLightMaterialComponentForClone =
 let batchAddAmbientLightComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).ambientLightMap),
+    (uidArr, componentArr, state.gameObjectRecord.ambientLightMap),
     AmbientLightAddComponentCommon.handleAddComponent,
     state
   );
@@ -293,7 +273,7 @@ let batchAddAmbientLightComponentForClone =
 let batchAddDirectionLightComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).directionLightMap),
+    (uidArr, componentArr, state.gameObjectRecord.directionLightMap),
     DirectionLightAddComponentCommon.handleAddComponent,
     state
   );
@@ -301,7 +281,7 @@ let batchAddDirectionLightComponentForClone =
 let batchAddPointLightComponentForClone =
     (uidArr: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
-    (uidArr, componentArr, GameObjectStateCommon.getGameObjectData(state).pointLightMap),
+    (uidArr, componentArr, state.gameObjectRecord.pointLightMap),
     PointLightAddComponentCommon.handleAddComponent,
     state
   );

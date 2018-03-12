@@ -188,22 +188,22 @@ let _ =
                     "get geometry component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = BoxGeometry.createBoxGeometry(state);
-                      let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
-                      getGameObjectGeometryComponent(gameObject, state) |> GeometryTool.isGeometry
+                      let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
+                      let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+                      unsafeGetGameObjectBoxGeometryComponent(gameObject, state) |> GeometryTool.isGeometry
                     }
                   )
               );
               describe(
-                "hasGameObjectGeometryComponent",
+                "hasGameObjectBoxGeometryComponent",
                 () =>
                   test(
                     "has geometry component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = BoxGeometry.createBoxGeometry(state);
-                      let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
-                      hasGameObjectGeometryComponent(gameObject, state) |> expect == true
+                      let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
+                      let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+                      hasGameObjectBoxGeometryComponent(gameObject, state) |> expect == true
                     }
                   )
               )
@@ -791,7 +791,7 @@ let _ =
                         }
                       );
                       test(
-                        "new geometryMap should only has alive data",
+                        "new boxGeometryMap should only has alive data",
                         () => {
                           open GameObjectType;
                           let state =
@@ -812,11 +812,11 @@ let _ =
                           let state = state |> GeometryTool.initGeometrys;
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
-                          let {geometryMap} = GameObjectTool.getGameObjectData(state);
+                          let {boxGeometryMap} = GameObjectTool.getGameObjectData(state);
                           (
-                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -1442,11 +1442,11 @@ let _ =
                 "init geometry component",
                 () => {
                   let (state, gameObject) = createGameObject(state^);
-                  let (state, geometry) = BoxGeometry.createBoxGeometry(state);
+                  let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
                   let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
-                  let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
+                  let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
                   let state = state |> initGameObject(gameObject);
-                  Geometry.getGeometryVertices(geometry, state)
+                  BoxGeometryAPI.unsafeGetBoxGeometryVertices(geometry, state)
                   |> expect == BoxGeometryTool.getDefaultVertices()
                 }
               )
@@ -1492,8 +1492,8 @@ let _ =
                 () => _testTwoParamFunc(getGameObjectMeshRendererComponent)
               );
               test(
-                "getGameObjectGeometryComponent should error",
-                () => _testTwoParamFunc(getGameObjectGeometryComponent)
+                "unsafeGetGameObjectBoxGeometryComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectBoxGeometryComponent)
               );
               test(
                 "unsafeGetGameObjectBasicCameraViewComponent should error",
@@ -1511,8 +1511,8 @@ let _ =
               );
               test("initGameObject should error", () => _testTwoParamFunc(initGameObject));
               test(
-                "hasGameObjectGeometryComponent should error",
-                () => _testTwoParamFunc(hasGameObjectGeometryComponent)
+                "hasGameObjectBoxGeometryComponent should error",
+                () => _testTwoParamFunc(hasGameObjectBoxGeometryComponent)
               );
               test(
                 "addGameObjectTransformComponent should error",
@@ -1563,12 +1563,12 @@ let _ =
                 () => _testThreeParmFunc(disposeGameObjectMeshRendererComponent)
               );
               test(
-                "addGameObjectGeometryComponent should error",
-                () => _testThreeParmFunc(addGameObjectGeometryComponent)
+                "addGameObjectBoxGeometryComponent should error",
+                () => _testThreeParmFunc(addGameObjectBoxGeometryComponent)
               );
               test(
-                "disposeGameObjectGeometryComponent should error",
-                () => _testThreeParmFunc(disposeGameObjectGeometryComponent)
+                "disposeGameObjectBoxGeometryComponent should error",
+                () => _testThreeParmFunc(disposeGameObjectBoxGeometryComponent)
               )
             }
           )

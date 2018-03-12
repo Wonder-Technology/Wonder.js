@@ -36,6 +36,13 @@ let dispose = (uid, state) =>
          GetComponentGameObjectService.getPerspectiveCameraProjectionComponent,
          DisposeComponentGameObjectService.disposePerspectiveCameraProjectionComponent
        )
+     )
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getBoxGeometryComponent,
+         DisposeComponentGameObjectService.disposeBoxGeometryComponent
+       )
      );
 
 let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
@@ -57,5 +64,9 @@ let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
          disposedUidMap,
          state
        );
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetBoxGeometryComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeBoxGeometryComponent(disposedUidMap, state);
   state
 };

@@ -26,7 +26,7 @@ let createState = () => {
   ambientLightData: AmbientLightHelper.create(),
   directionLightData: DirectionLightHelper.create(),
   pointLightData: PointLightHelper.create(),
-  geometryData: GeometryHelper.create(),
+  boxGeometryRecord: RecordBoxGeometryService.create(),
   meshRendererData: MeshRendererHelper.create(),
   shaderData: ShaderHelper.create(),
   programData: ProgramHelper.create(),
@@ -35,7 +35,7 @@ let createState = () => {
   glslChunkData: ShaderChunkSystem.create(),
   renderData: RenderDataHelper.create(),
   timeControllerData: TimeControllerHelper.create(),
-  vboBufferData: VboBufferHelper.create(),
+  vboBufferRecord: VboBufferHelper.create(),
   globalTempRecord: RecordGlobalTempService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceData: WorkerInstanceHelper.create(),
@@ -56,7 +56,6 @@ let setState = (stateData: stateData, state: state) => {
 let deepCopyForRestore = (state: StateDataType.state) =>
   state
   |> MeshRendererAdmin.deepCopyForRestore
-  |> GeometryAdmin.deepCopyForRestore
   |> VboBufferSystem.deepCopyForRestore
   |> GLSLSenderSystem.deepCopyForRestore
   |> BasicMaterialAdmin.deepCopyForRestore
@@ -81,7 +80,8 @@ let deepCopyForRestore = (state: StateDataType.state) =>
           state.perspectiveCameraProjectionRecord
         ),
       transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
-      typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord)
+      typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
+      boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord)
     }
   );
 
@@ -96,7 +96,8 @@ let restore =
   let intersectShaderIndexDataArray =
     ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
-  let (targetState, sharedData) = targetState |> GeometryAdmin.restore(currentState, sharedData);
+  let (targetState, sharedData) =
+    targetState |> RestoreBoxGeometryService.restore(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> RestoreTransformService.restore(currentState, sharedData);
   let (targetState, sharedData) =

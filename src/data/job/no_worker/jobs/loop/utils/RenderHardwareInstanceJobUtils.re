@@ -221,10 +221,10 @@ let render =
       _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
   GLSLSenderDrawUtils.drawElementsInstancedANGLE(
     (
-      GeometryAdmin.getDrawMode(gl),
-      GeometryAdmin.getIndexType(gl),
-      GeometryAdmin.getIndexTypeSize(gl),
-      GeometryAdmin.getIndicesCount(geometryIndex, state),
+      RenderGeometryService.getDrawMode(gl),
+      RenderGeometryService.getIndexType(gl),
+      RenderGeometryService.getIndexTypeSize(gl),
+      IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap),
       instanceRenderListCount
     ),
     Obj.magic(extension)

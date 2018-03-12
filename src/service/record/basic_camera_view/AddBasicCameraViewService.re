@@ -6,6 +6,6 @@ let handleAddComponent =
     (cameraView, gameObjectUid: int, {gameObjectMap} as record) => {
       ...record,
       gameObjectMap:
-        ComponentSystem.addComponentToGameObjectMap(cameraView, gameObjectUid, gameObjectMap)
+        AddComponentService.addComponentToGameObjectMap(cameraView, gameObjectUid, gameObjectMap)
     }
   );

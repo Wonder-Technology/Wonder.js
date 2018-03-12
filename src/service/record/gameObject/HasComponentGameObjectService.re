@@ -10,3 +10,6 @@ let hasPerspectiveCameraProjectionComponent = (uid: int, gameObjectRecord) : boo
 
 let hasTransformComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.transformMap);
+
+let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.boxGeometryMap);

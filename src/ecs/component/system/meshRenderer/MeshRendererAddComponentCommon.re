@@ -25,7 +25,7 @@ let handleAddComponent =
             renderGameObjectArray |> _setRenderGameObjectArray(meshRenderer, gameObjectUid),
           gameObjectMap:
             gameObjectMap
-            |> ComponentSystem.addComponentToGameObjectMap(meshRenderer, gameObjectUid)
+            |> AddComponentService.addComponentToGameObjectMap(meshRenderer, gameObjectUid)
         }
       }
     }

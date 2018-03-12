@@ -1,9 +1,11 @@
-let getGeometryData = (state: StateDataType.state) => GeometrySystem.getGeometryData(state);
+open StateDataType;
 
-let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
+open BoxGeometryType;
+
+let initGeometrys = (state: StateDataType.state) => InitGeometryService.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
-  GeometryInitComponentCommon.initGeometry(geometry, state);
+  InitGeometryService.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
     (
@@ -24,19 +26,19 @@ let buildBoxGeometryConfigDataJsObj =
 };
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getVerticesCount(index, state);
+  VerticesService.getVerticesCount(index, state.boxGeometryRecord.verticesMap);
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getIndicesCount(index, state);
+  IndicesService.getIndicesCount(index, state.boxGeometryRecord.indicesMap);
 
 let getIndexType = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> GeometrySystem.getIndexType;
+  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> RenderGeometryService.getIndexType;
 
 let getIndexTypeSize = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> GeometrySystem.getIndexTypeSize;
+  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> RenderGeometryService.getIndexTypeSize;
 
 let hasIndices = (index: int, state: StateDataType.state) =>
-  GeometrySystem.hasIndices(index, state);
+  IndicesService.hasIndices(index, state.boxGeometryRecord.indicesMap);
 
 let isGeometry = (geometry) => {
   open Wonder_jest;
@@ -48,7 +50,11 @@ let isGeometry = (geometry) => {
 let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let dispose = (geometry, state: StateDataType.state) =>
-  GeometryDisposeComponentCommon.handleDisposeComponent(geometry, state);
+  DisposeGeometryService.handleDisposeComponent(
+    geometry,
+    ConfigMemoryService.getMaxTypeArrayPoolSize(state.memoryConfig),
+    state
+  );
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();
@@ -59,7 +65,7 @@ let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
 
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
-  let state = state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+  let state = state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
   TestTool.openContractCheck();
   state
 };
@@ -67,7 +73,7 @@ let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
 let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) => {
   open StateDataType;
   open Sinon;
-  let {computeDataFuncMap} = getGeometryData(state);
+  let {computeDataFuncMap} = state.boxGeometryRecord;
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
   computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(geometry, computeDataFunc);
   (state, computeDataFunc)
@@ -75,14 +81,15 @@ let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) 
 
 let isGeometryDisposed = (geometry, state) => {
   open StateDataType;
-  let {disposedIndexArray} = GeometrySystem.getGeometryData(state);
+  let {disposedIndexArray} = state.boxGeometryRecord;
   disposedIndexArray |> Js.Array.includes(geometry)
 };
 
-let getGroupCount = (geometry, state) => GeometryGroupCommon.getGroupCount(geometry, state);
+let getGroupCount = (geometry, state) =>
+  GroupGeometryService.getGroupCount(geometry, state.boxGeometryRecord);
 
-let setVerticesWithArray = GeometryOperateVerticesCommon.setVerticesWithArray;
+let setVerticesWithArray = VerticesGeometryService.setVerticesWithArray;
 
-let setNormalsWithArray = GeometryOperateNormalsCommon.setNormalsWithArray;
+let setNormalsWithArray = NormalsGeometryService.setNormalsWithArray;
 
-let setIndicesWithArray = GeometryOperateIndicesCommon.setIndicesWithArray;
+let setIndicesWithArray = IndicesGeometryService.setIndicesWithArray;
