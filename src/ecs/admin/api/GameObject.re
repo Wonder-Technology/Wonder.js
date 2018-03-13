@@ -14,66 +14,6 @@ let _checkGameObjectShouldAlive = (gameObject: gameObject, state: StateDataType.
     )
   );
 
-let addGameObjectSourceInstanceComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  addSourceInstanceComponent(gameObject, component, state)
-};
-
-let getGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  getSourceInstanceComponent(gameObject, state)
-};
-
-let hasGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  hasSourceInstanceComponent(gameObject, state)
-};
-
-let disposeGameObjectSourceInstanceComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  disposeSourceInstanceComponent(gameObject, component, batchDispose, state)
-};
-
-let addGameObjectObjectInstanceComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  addObjectInstanceComponent(gameObject, component, state)
-};
-
-let getGameObjectObjectInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  getObjectInstanceComponent(gameObject, state)
-};
-
-let disposeGameObjectObjectInstanceComponent =
-    (gameObject: gameObject, component: component, state: StateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    StateData.stateData.isDebug
-  );
-  disposeObjectInstanceComponent(gameObject, component, state)
-};
-
 let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
   isAlive(gameObject, state);
 

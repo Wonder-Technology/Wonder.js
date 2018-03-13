@@ -161,7 +161,7 @@ let _ =
                     let (state, material) = createBasicMaterial(state);
                     let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
                     let (state, gameObject) = state |> createGameObject;
-                    let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
+                    let (state, sourceInstance) = SourceInstanceAPI.createSourceInstance(state);
                     let state =
                       state
                       |> addGameObjectSourceInstanceComponent(gameObject, sourceInstance)

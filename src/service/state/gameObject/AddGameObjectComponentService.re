@@ -151,6 +151,28 @@ let addPointLightComponent =
     )
 };
 
+let addSourceInstanceComponent =
+    (uid: int, component: component, {sourceInstanceRecord, gameObjectRecord} as state) => {
+  ...state,
+  sourceInstanceRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.sourceInstanceMap),
+      AddSourceInstanceService.handleAddComponent,
+      sourceInstanceRecord
+    )
+};
+
+let addObjectInstanceComponent =
+    (uid: int, component: component, {objectInstanceRecord, gameObjectRecord} as state) => {
+  ...state,
+  objectInstanceRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.objectInstanceMap),
+      AddObjectInstanceService.handleAddComponent,
+      objectInstanceRecord
+    )
+};
+
 let _checkBatchAdd = (uidArr, componentArr) =>
   WonderLog.Contract.requireCheck(
     () => {

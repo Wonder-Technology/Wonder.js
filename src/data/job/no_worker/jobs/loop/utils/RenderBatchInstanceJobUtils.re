@@ -14,9 +14,15 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let indicesCount = IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap);
-  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
+  let indicesCount =
+    IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap);
+  let sourceInstance =
+    GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
+  let objectInstanceArray =
+    ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
+      sourceInstance,
+      state.sourceInstanceRecord
+    );
   objectInstanceArray
   |> ArraySystem.reduceState(
        [@bs]
@@ -33,7 +39,13 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
                         gl,
                         pos,
                         [@bs]
-                        getDataFunc(GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord), state)
+                        getDataFunc(
+                          GetComponentGameObjectService.unsafeGetTransformComponent(
+                            uid,
+                            state.gameObjectRecord
+                          ),
+                          state
+                        )
                       );
                       state
                     }

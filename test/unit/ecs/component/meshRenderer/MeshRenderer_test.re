@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "MeshRendererAPI",
+    "MeshRenderer",
     () => {
       open Expect;
       open Expect.Operators;

@@ -65,3 +65,15 @@ let getPointLightComponent =
 
 let unsafeGetPointLightComponent = (uid: int, {pointLightMap}) =>
   pointLightMap |> unsafeGetComponent(uid);
+
+let getSourceInstanceComponent =
+  [@bs] ((uid: int, {sourceInstanceMap}) => sourceInstanceMap |> getComponent(uid));
+
+let unsafeGetSourceInstanceComponent = (uid: int, {sourceInstanceMap}) =>
+  sourceInstanceMap |> unsafeGetComponent(uid);
+
+let getObjectInstanceComponent =
+  [@bs] ((uid: int, {objectInstanceMap}) => objectInstanceMap |> getComponent(uid));
+
+let unsafeGetObjectInstanceComponent = (uid: int, {objectInstanceMap}) =>
+  objectInstanceMap |> unsafeGetComponent(uid);

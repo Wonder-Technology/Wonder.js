@@ -129,7 +129,7 @@ let _ =
                       _prepare(sandbox, state);
                     for (_ in 0 to 62) {
                       let (state, objectInstanceGameObject) =
-                        SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+                        SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
                       ()
                     };
                     (state, gameObject, sourceInstance, objectInstanceGameObject)
@@ -616,7 +616,7 @@ let _ =
                         ) =
                           _prepare(sandbox, state^);
                         let state =
-                          SourceInstance.markSourceInstanceModelMatrixIsStatic(
+                          SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                             sourceInstance,
                             isStatic,
                             state

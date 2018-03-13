@@ -1,7 +1,5 @@
 open StateDataType;
 
-open CreateMeshRendererService;
-
 open GameObjectMeshRendererService;
 
 open DisposeMeshRendererService;

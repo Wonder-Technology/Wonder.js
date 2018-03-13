@@ -26,6 +26,20 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let disposeGameObjectObjectInstanceComponent = GameObjectAPI.disposeGameObjectObjectInstanceComponent;
+
+let unsafeGetGameObjectObjectInstanceComponent = GameObjectAPI.unsafeGetGameObjectObjectInstanceComponent;
+
+let addGameObjectObjectInstanceComponent = GameObjectAPI.addGameObjectObjectInstanceComponent;
+
+let disposeGameObjectSourceInstanceComponent = GameObjectAPI.disposeGameObjectSourceInstanceComponent;
+
+let hasGameObjectSourceInstanceComponent = GameObjectAPI.hasGameObjectSourceInstanceComponent;
+
+let unsafeGetGameObjectSourceInstanceComponent = GameObjectAPI.unsafeGetGameObjectSourceInstanceComponent;
+
+let addGameObjectSourceInstanceComponent = GameObjectAPI.addGameObjectSourceInstanceComponent;
+
 let hasGameObjectPointLightComponent = GameObjectAPI.hasGameObjectPointLightComponent;
 
 let unsafeGetGameObjectPointLightComponent = GameObjectAPI.unsafeGetGameObjectPointLightComponent;
@@ -212,6 +226,14 @@ let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
+let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
+
+let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceObjectInstanceArray;
+
+let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
+
+let createSourceInstance = SourceInstanceAPI.createSourceInstance;
+
 let setTransformPosition = TransformAPI.setTransformPosition;
 
 let getTransformPosition = TransformAPI.getTransformPosition;
@@ -272,28 +294,6 @@ let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
 
-let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
-
-let getGameObjectObjectInstanceComponent = GameObject.getGameObjectObjectInstanceComponent;
-
-let addGameObjectObjectInstanceComponent = GameObject.addGameObjectObjectInstanceComponent;
-
-let disposeGameObjectSourceInstanceComponent = GameObject.disposeGameObjectSourceInstanceComponent;
-
-let hasGameObjectSourceInstanceComponent = GameObject.hasGameObjectSourceInstanceComponent;
-
-let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanceComponent;
-
-let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;
-
-let markSourceInstanceModelMatrixIsStatic = SourceInstance.markSourceInstanceModelMatrixIsStatic;
-
-let getSourceInstanceObjectInstanceArray = SourceInstance.getSourceInstanceObjectInstanceArray;
-
-let createSourceInstanceObjectInstance = SourceInstance.createSourceInstanceObjectInstance;
-
-let createSourceInstance = SourceInstance.createSourceInstance;
-
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
@@ -321,6 +321,20 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let disposeGameObjectObjectInstanceComponent = GameObjectAPI.disposeGameObjectObjectInstanceComponent;
+
+let unsafeGetGameObjectObjectInstanceComponent = GameObjectAPI.unsafeGetGameObjectObjectInstanceComponent;
+
+let addGameObjectObjectInstanceComponent = GameObjectAPI.addGameObjectObjectInstanceComponent;
+
+let disposeGameObjectSourceInstanceComponent = GameObjectAPI.disposeGameObjectSourceInstanceComponent;
+
+let hasGameObjectSourceInstanceComponent = GameObjectAPI.hasGameObjectSourceInstanceComponent;
+
+let unsafeGetGameObjectSourceInstanceComponent = GameObjectAPI.unsafeGetGameObjectSourceInstanceComponent;
+
+let addGameObjectSourceInstanceComponent = GameObjectAPI.addGameObjectSourceInstanceComponent;
 
 let hasGameObjectPointLightComponent = GameObjectAPI.hasGameObjectPointLightComponent;
 
@@ -434,6 +448,14 @@ let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
+let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
+
+let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceObjectInstanceArray;
+
+let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
+
+let createSourceInstance = SourceInstanceAPI.createSourceInstance;
+
 let setTransformPosition = TransformAPI.setTransformPosition;
 
 let getTransformPosition = TransformAPI.getTransformPosition;
@@ -493,17 +515,3 @@ let initGameObject = GameObject.initGameObject;
 let disposeGameObject = GameObject.disposeGameObject;
 
 let isGameObjectAlive = GameObject.isGameObjectAlive;
-
-let disposeGameObjectObjectInstanceComponent = GameObject.disposeGameObjectObjectInstanceComponent;
-
-let getGameObjectObjectInstanceComponent = GameObject.getGameObjectObjectInstanceComponent;
-
-let addGameObjectObjectInstanceComponent = GameObject.addGameObjectObjectInstanceComponent;
-
-let disposeGameObjectSourceInstanceComponent = GameObject.disposeGameObjectSourceInstanceComponent;
-
-let hasGameObjectSourceInstanceComponent = GameObject.hasGameObjectSourceInstanceComponent;
-
-let getGameObjectSourceInstanceComponent = GameObject.getGameObjectSourceInstanceComponent;
-
-let addGameObjectSourceInstanceComponent = GameObject.addGameObjectSourceInstanceComponent;

@@ -12,7 +12,7 @@ var InstanceBasicBoxesTool = (function () {
         for (let i = 0, len = boxes.length; i < len; i++) {
             let box = boxes[i];
 
-            let sourceInstance = wd.getGameObjectSourceInstanceComponent(box, state);
+            let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
             let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
 
@@ -118,7 +118,7 @@ var InstanceBasicBoxesTool = (function () {
 
             for (let i = 0; i < count; i++) {
                 var record =
-                    wd.createSourceInstanceObjectInstance(sourceInstance, state);
+                    wd.createObjectInstanceGameObject(sourceInstance, state);
                 var state = record[0];
                 var objectInstanceGameObject = record[1];
 
@@ -204,7 +204,7 @@ var InstanceBasicBoxesTool = (function () {
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
 
-                let sourceInstance = wd.getGameObjectSourceInstanceComponent(box, state);
+                let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
                 let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
 

@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "DirectionLightAPI",
+    "DirectionLight",
     () => {
       open Expect;
       open Expect.Operators;

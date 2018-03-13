@@ -26,7 +26,6 @@ let cloneComponent =
       isShareMaterial,
       {basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord} as state
     ) => {
-  open GameObjectGetComponentCommon;
   open StateDataType;
   /* TODO refactor */
   /* let (basicCameraViewRecord, perspectiveCameraProjectionRecord, gameObjectRecord) =

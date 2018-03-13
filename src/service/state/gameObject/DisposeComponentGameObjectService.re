@@ -128,6 +128,31 @@ let disposePointLightComponent =
     }
   );
 
+let disposeSourceInstanceComponent =
+    (uid: int, component: component, batchDisposeGameObjectFunc, state) =>
+  [@bs]
+  DisposeSourceInstanceService.handleDisposeComponent(
+    component,
+    batchDisposeGameObjectFunc,
+    state
+  );
+
+/* let disposeObjectInstanceComponent =
+   [@bs]
+   (
+     (uid: int, component: component, {objectInstanceRecord} as state) => {
+       ...state,
+       objectInstanceRecord:
+         DisposeObjectInstanceService.handleDisposeComponent(component, objectInstanceRecord)
+     }
+   ); */
+let disposeObjectInstanceComponent =
+  [@bs]
+  (
+    (uid: int, component: component, state) =>
+      DisposeObjectInstanceService.handleDisposeComponent(component, state)
+  );
+
 let batchDisposeBasicCameraViewComponent =
     (uidMap, {basicCameraViewRecord} as state, componentArray: array(component)) => {
   ...state,
@@ -243,3 +268,36 @@ let batchDisposePointLightComponent =
       componentArray
     )
 };
+
+let batchDisposeSourceInstanceComponent =
+    (uidMap, state: StateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
+  [@bs]
+  DisposeSourceInstanceService.handleBatchDisposeComponent(
+    componentArray,
+    uidMap,
+    disposeGameObjectFunc,
+    state
+  );
+
+/* let batchDisposeObjectInstanceComponent =
+     (uidMap, {objectInstanceRecord} as state, componentArray: array(component)) =>
+   switch (componentArray |> Js.Array.length) {
+   | 0 => state
+   | _ => {
+       ...state,
+       objectInstanceRecord:
+         ComponentMapService.batchDisposeComponent(
+           uidMap,
+           objectInstanceRecord,
+           DisposeObjectInstanceService.handleBatchDisposeComponent,
+           componentArray
+         )
+     }
+   }; */
+let batchDisposeObjectInstanceComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  switch (componentArray |> Js.Array.length) {
+  | 0 => state
+  | _ =>
+    [@bs] DisposeObjectInstanceService.handleBatchDisposeComponent(componentArray, uidMap, state)
+  };

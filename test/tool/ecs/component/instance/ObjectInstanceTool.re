@@ -1,16 +1,18 @@
+open StateDataType;
+
 let createObjectInstanceGameObject = (state: StateDataType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =
     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
-  let (state, objectInstanceGameObject) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+  let (state, objectInstanceGameObject) =
+    SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
   (
     state,
     gameObject,
     sourceInstance,
     objectInstanceGameObject,
-    GameObject.getGameObjectObjectInstanceComponent(objectInstanceGameObject, state)
-    |> Js.Option.getExn
+    GameObjectAPI.unsafeGetGameObjectObjectInstanceComponent(objectInstanceGameObject, state)
   )
 };
 
@@ -21,7 +23,8 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
   let objectInstanceGameObjectArr = [||];
   for (i in 0 to count - 1) {
-    let (state, objectInstanceGameObject) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+    let (state, objectInstanceGameObject) =
+      SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
     objectInstanceGameObjectArr |> Js.Array.push(objectInstanceGameObject) |> ignore
   };
   (
@@ -32,13 +35,15 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
     objectInstanceGameObjectArr
     |> Js.Array.map(
          (objectInstanceGameObject) =>
-           GameObject.getGameObjectObjectInstanceComponent(objectInstanceGameObject, state)
-           |> Js.Option.getExn
+           GameObjectAPI.unsafeGetGameObjectObjectInstanceComponent(
+             objectInstanceGameObject,
+             state
+           )
        )
   )
 };
 
-let getObjectInstanceData = ObjectInstanceStateCommon.getObjectInstanceData;
+let getObjectInstanceData = (state) => state.objectInstanceRecord;
 
 let isDisposed = (objectInstance, state) => {
   open ObjectInstanceType;

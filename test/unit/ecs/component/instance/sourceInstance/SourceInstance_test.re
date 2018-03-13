@@ -24,7 +24,7 @@ let _ =
             () => {
               let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
                 ObjectInstanceTool.createObjectInstanceGameObject(state^);
-              SourceInstance.getSourceInstanceObjectInstanceArray(sourceInstance, state)
+              SourceInstanceAPI.getSourceInstanceObjectInstanceArray(sourceInstance, state)
               |> expect == [|objectInstanceGameObject|]
             }
           )
@@ -43,7 +43,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject,
                          sourceInstance
                        );
@@ -77,7 +77,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject,
                          sourceInstance
                        );
@@ -119,7 +119,7 @@ let _ =
                             );
                           let state =
                             state
-                            |> GameObject.disposeGameObjectSourceInstanceComponent(
+                            |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                                  gameObject,
                                  sourceInstance
                                );
@@ -147,7 +147,7 @@ let _ =
                           let objectInstance1 = objectInstanceArr[0];
                           let objectInstance2 = objectInstanceArr[1];
                           state
-                          |> GameObject.disposeGameObjectSourceInstanceComponent(
+                          |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                                gameObject,
                                sourceInstance
                              );
@@ -174,7 +174,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -184,14 +184,14 @@ let _ =
                 }
               );
               test(
-                "if has no disposed index, get index from sourceInstanceData.index",
+                "if has no disposed index, get index from sourceInstanceRecord.index",
                 () => {
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -216,7 +216,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -224,7 +224,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObject.disposeGameObjectSourceInstanceComponent(
+                        |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                              gameObject1,
                              sourceInstance1
                            );

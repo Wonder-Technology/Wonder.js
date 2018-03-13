@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "AmbientLightAPI",
+    "AmbientLight",
     () => {
       open Expect;
       open Expect.Operators;

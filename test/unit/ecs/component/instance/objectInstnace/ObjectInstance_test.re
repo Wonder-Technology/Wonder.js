@@ -30,7 +30,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                          gameObject,
                          objectInstance
                        );
@@ -52,7 +52,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                          gameObject,
                          objectInstance
                        );
@@ -82,7 +82,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -98,14 +98,14 @@ let _ =
                 }
               );
               test(
-                "if has no disposed index, get index from objectInstanceData.index",
+                "if has no disposed index, get index from objectInstanceRecord.index",
                 () => {
                   open ObjectInstanceType;
                   let (state, gameObject1, _, _, objectInstance1) =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -130,7 +130,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObject.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -138,7 +138,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObject.disposeGameObjectObjectInstanceComponent(
+                        |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
                              gameObject1,
                              objectInstance1
                            );

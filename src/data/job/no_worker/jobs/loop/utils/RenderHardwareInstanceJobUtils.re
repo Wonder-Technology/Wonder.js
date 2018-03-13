@@ -134,7 +134,7 @@ let _sendStaticTransformMatrixData =
       fillMatrixTypeArrFunc,
       state
     ) =>
-  SourceInstanceAdmin.isSendTransformMatrixData(sourceInstance, state) ?
+  StaticSourceInstanceService.isSendTransformMatrixData(sourceInstance, state.sourceInstanceRecord) ?
     {
       InstanceBufferSystem.bind(
         gl,
@@ -147,24 +147,33 @@ let _sendStaticTransformMatrixData =
       |> ignore;
       _sendTransformMatrixDataBufferData((gl, extension), shaderIndex, strideForSend, state)
     } :
-    state
-    |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc)
-    |> SourceInstanceAdmin.markIsSendTransformMatrixData(sourceInstance, true);
+    {
+      let state = state |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc);
+      {
+        ...state,
+        sourceInstanceRecord:
+          state.sourceInstanceRecord
+          |> StaticSourceInstanceService.markIsSendTransformMatrixData(sourceInstance, true)
+      }
+    };
 
 let _sendDynamicTransformMatrixData =
     (
       (glDataTuple, (_, sourceInstance, _, _, _, _, _), matrixMapTuple) as dataTuple,
       fillMatrixTypeArrFunc,
-      state
+      {sourceInstanceRecord} as state
     ) =>
-  state
-  |> SourceInstanceAdmin.markIsSendTransformMatrixData(sourceInstance, false)
+  {
+    ...state,
+    sourceInstanceRecord:
+      sourceInstanceRecord
+      |> StaticSourceInstanceService.markIsSendTransformMatrixData(sourceInstance, false)
+  }
   |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc);
 
 let _geMatrixMapTuple = (state) => {
   let {matrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
-  let {matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap} =
-    SourceInstanceAdmin.getSourceInstanceData(state);
+  let {matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap} = state.sourceInstanceRecord;
   (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
 };
 
@@ -179,8 +188,13 @@ let _prepareData =
       state: StateDataType.state
     ) => {
   let extension = GPUDetectSystem.unsafeGetInstanceExtension(state);
-  let sourceInstance = GameObjectGetComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceArray = SourceInstanceAdmin.getObjectInstanceArray(sourceInstance, state);
+  let sourceInstance =
+    GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
+  let objectInstanceArray =
+    ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
+      sourceInstance,
+      state.sourceInstanceRecord
+    );
   let instanceRenderListCount = Js.Array.length(objectInstanceArray) + 1;
   (
     (gl, extension, shaderIndex),
@@ -216,7 +230,7 @@ let render =
       ) as dataTuple =
     _prepareData(gl, shaderIndex, (uid, defaultCapacity, strideForCapacity, strideForSend), state);
   let state =
-    SourceInstanceAdmin.isTransformStatic(sourceInstance, state) ?
+    StaticSourceInstanceService.isTransformStatic(sourceInstance, state.sourceInstanceRecord) ?
       _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
       _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
   GLSLSenderDrawUtils.drawElementsInstancedANGLE(

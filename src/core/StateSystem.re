@@ -13,8 +13,8 @@ let createState = () => {
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
   viewData: {canvas: None, contextConfig: None},
   initConfig: {isDebug: false},
-  sourceInstanceData: SourceInstanceHelper.create(),
-  objectInstanceData: ObjectInstanceHelper.create(),
+  sourceInstanceRecord: RecordSourceInstanceService.create(),
+  objectInstanceRecord: RecordObjectInstanceService.create(),
   deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
   gameObjectRecord: RecordGameObjectService.create(),
   transformRecord: RecordTransformServicie.create(),
@@ -64,8 +64,6 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   |> ProgramSystem.deepCopyForRestore
   |> GLSLLocationSystem.deepCopyForRestore
   |> DeviceManagerSystem.deepCopyForRestore
-  |> SourceInstanceAdmin.deepCopyForRestore
-  |> ObjectInstanceAdmin.deepCopyForRestore
   |> (
     (state) => {
       ...state,
@@ -85,7 +83,11 @@ let deepCopyForRestore = (state: StateDataType.state) =>
       ambientLightRecord: RecordAmbientLightService.deepCopyForRestore(state.ambientLightRecord),
       directionLightRecord:
         RecordDirectionLightService.deepCopyForRestore(state.directionLightRecord),
-      pointLightRecord: RecordPointLightService.deepCopyForRestore(state.pointLightRecord)
+      pointLightRecord: RecordPointLightService.deepCopyForRestore(state.pointLightRecord),
+      sourceInstanceRecord:
+        RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
+      objectInstanceRecord:
+        RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord)
     }
   );
 
@@ -105,7 +107,7 @@ let restore =
   let (targetState, sharedData) =
     targetState |> RestoreTransformService.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> SourceInstanceAdmin.restore(currentState, sharedData);
+    targetState |> RestoreSourceInstanceService.restore(currentState, sharedData);
   let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
   let gl = [@bs] DeviceManagerSystem.unsafeGetGl(targetState);
   /* let targetState = {

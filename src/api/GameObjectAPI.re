@@ -375,3 +375,70 @@ let hasGameObjectPointLightComponent = (gameObject: gameObject, state: StateData
   );
   hasPointLightComponent(gameObject, state.gameObjectRecord)
 };
+
+let addGameObjectSourceInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addSourceInstanceComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectSourceInstanceComponent =
+    (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetSourceInstanceComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  hasSourceInstanceComponent(gameObject, state.gameObjectRecord)
+};
+
+let disposeGameObjectSourceInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  disposeSourceInstanceComponent(
+    gameObject,
+    component,
+    GameObjectDisposeCommon.batchDispose,
+    state
+  )
+};
+
+let addGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  addObjectInstanceComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  unsafeGetObjectInstanceComponent(gameObject, state.gameObjectRecord)
+};
+
+let disposeGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  [@bs] disposeObjectInstanceComponent(gameObject, component, state)
+};

@@ -1,10 +1,10 @@
 let createSourceInstanceGameObject = (sandbox, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
     FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-  let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
+  let (state, sourceInstance) = SourceInstanceAPI.createSourceInstance(state);
   let (state, objectInstanceGameObject) =
-    SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
-  let state = state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
+    SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
+  let state = state |> GameObjectAPI.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
   (state, gameObject, (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject))
 };
 

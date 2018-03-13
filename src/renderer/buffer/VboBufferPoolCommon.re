@@ -24,26 +24,6 @@ let getInstanceBuffer = (gl, state: StateDataType.state) => {
 let _getBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapSystem.get(index, bufferMap);
 
-let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(index, bufferMap)
-  |> WonderLog.Contract.ensureCheck(
-       (r) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|buffer exist in bufferMap|j},
-                   ~actual={j|not|j}
-                 ),
-                 () => WonderCommonlib.SparseMapSystem.has(index, bufferMap) |> assertTrue
-               )
-             )
-           )
-         ),
-       StateData.stateData.isDebug
-     );
-
 let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   switch (_getBufferFromBufferMap(geometryIndex, bufferMap)) {
   | Some(buffer) => pool |> ArrayService.push(buffer)
@@ -78,15 +58,4 @@ let addAllBufferToPool = (state: StateDataType.state) => {
        [@bs] ((buffer) => matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
-};
-
-let addInstanceBufferToPool = (sourceInstanceIndex: int, state: StateDataType.state) => {
-  let {matrixInstanceBufferMap, matrixInstanceBufferPool} =
-    VboBufferGetStateDataUtils.getVboBufferData(state);
-  matrixInstanceBufferPool
-  |> Js.Array.push(
-       _unsafeGetBufferFromBufferMap(sourceInstanceIndex, matrixInstanceBufferMap)
-     )
-  |> ignore;
-  state
 };

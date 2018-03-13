@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "PointLightAPI",
+    "PointLight",
     () => {
       open Expect;
       open Expect.Operators;

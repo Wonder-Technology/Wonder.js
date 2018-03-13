@@ -14,7 +14,17 @@ let _dispose = (uid, (getComponentFunc, disposeComponentFunc), {gameObjectRecord
   | None => state
   };
 
-let dispose = (uid, state) =>
+let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
+  switch (
+    [@bs] GetComponentGameObjectService.getSourceInstanceComponent(uid, state.gameObjectRecord)
+  ) {
+  | Some(component) =>
+    [@bs]
+    DisposeSourceInstanceService.handleDisposeComponent(component, batchDisposeFunc, state)
+  | None => state
+  };
+
+let dispose = (uid, batchDisposeFunc, state) =>
   state
   |> _dispose(
        uid,
@@ -85,9 +95,24 @@ let dispose = (uid, state) =>
          GetComponentGameObjectService.getPointLightComponent,
          DisposeComponentGameObjectService.disposePointLightComponent
        )
+     )
+  /* |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getSourceInstanceComponent,
+         DisposeComponentGameObjectService.disposeSourceInstanceComponent
+       )
+     ) */
+  |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
+  |> _dispose(
+       uid,
+       (
+         GetComponentGameObjectService.getObjectInstanceComponent,
+         DisposeComponentGameObjectService.disposeObjectInstanceComponent
+       )
      );
 
-let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
+let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, state) => {
   let state =
     state
     |> BatchGetComponentGameObjectService.batchGetTransformComponent(uidArray)
@@ -134,5 +159,13 @@ let batchDispose = (uidArray: array(int), disposedUidMap, state) => {
     state
     |> BatchGetComponentGameObjectService.batchGetPointLightComponent(uidArray)
     |> DisposeComponentGameObjectService.batchDisposePointLightComponent(disposedUidMap, state);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetSourceInstanceComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
+  let state =
+    state
+    |> BatchGetComponentGameObjectService.batchGetObjectInstanceComponent(uidArray)
+    |> DisposeComponentGameObjectService.batchDisposeObjectInstanceComponent(disposedUidMap, state);
   state
 };

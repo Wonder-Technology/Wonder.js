@@ -36,3 +36,9 @@ let batchGetDirectionLightComponent = (uidArray: array(int), {gameObjectRecord})
 
 let batchGetPointLightComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.pointLightMap);
+
+let batchGetSourceInstanceComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.sourceInstanceMap);
+
+let batchGetObjectInstanceComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.objectInstanceMap);

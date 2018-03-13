@@ -27,7 +27,7 @@ let getOrCreateInstanceBuffer =
   InstanceBufferSystem.getOrCreateBuffer(
     ([@bs] DeviceManagerSystem.unsafeGetGl(state), sourceInstanceIndex, defaultCapacity),
     (
-      SourceInstanceAdmin.getSourceInstanceData(state).matrixInstanceBufferCapacityMap,
+      state.sourceInstanceRecord.matrixInstanceBufferCapacityMap,
       VboBufferGetStateDataUtils.getVboBufferData(state).matrixInstanceBufferMap
     ),
     state

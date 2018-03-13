@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "TransformAPI",
+    "Transform",
     () => {
       open Expect;
       open! Expect.Operators;

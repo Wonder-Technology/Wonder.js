@@ -10,7 +10,7 @@ type isTransformStaticMap = array(bool);
 
 type isSendTransformMatrixDataMap = array(bool);
 
-type sourceInstanceData = {
+type sourceInstanceRecord = {
   index: int,
   objectInstanceArrayMap,
   matrixInstanceBufferCapacityMap,

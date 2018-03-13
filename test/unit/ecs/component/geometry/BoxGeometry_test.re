@@ -10,7 +10,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "BoxGeometryAPI",
+    "BoxGeometry",
     () => {
       open Expect;
       open Expect.Operators;

@@ -31,3 +31,9 @@ let hasDirectionLightComponent = (uid: int, gameObjectRecord) : bool =>
 
 let hasPointLightComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.pointLightMap);
+
+let hasSourceInstanceComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.sourceInstanceMap);
+
+let hasObjectInstanceComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.objectInstanceMap);

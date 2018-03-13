@@ -1073,7 +1073,7 @@ let _ =
             "restore sourceInstance record to target state",
             () => {
               test(
-                "add current state->sourceInstanceData->matrixFloat32ArrayMap typeArr to pool",
+                "add current state->sourceInstanceRecord->matrixFloat32ArrayMap typeArr to pool",
                 () => {
                   open StateDataType;
                   open SourceInstanceType;

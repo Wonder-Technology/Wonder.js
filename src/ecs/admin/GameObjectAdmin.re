@@ -6,14 +6,14 @@ open ComponentType;
    state |> BasicCameraViewSystem.init |> GeometrySystem.init; */
 /* let update = (elapsed: float, state: StateDataType.state) =>
    state |> BasicCameraViewSystem.update; */
-let hasSourceInstanceComponent = GameObjectHasComponentCommon.hasSourceInstanceComponent;
+/* let hasSourceInstanceComponent = GameObjectHasComponentCommon.hasSourceInstanceComponent;
 
 let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
   [@bs] GameObjectGetComponentCommon.getSourceInstanceComponent(uid, state);
 
-let addSourceInstanceComponent = GameObjectAddComponentCommon.addSourceInstanceComponent;
+let addSourceInstanceComponent = GameObjectAddComponentCommon.addSourceInstanceComponent; */
 
-let disposeSourceInstanceComponent =
+/* let disposeSourceInstanceComponent =
     (uid: int, component: component, batchDisposeGameObjectFunc, state: StateDataType.state) =>
   [@bs]
   GameObjectDisposeComponentCommon.disposeSourceInstanceComponent(
@@ -21,9 +21,9 @@ let disposeSourceInstanceComponent =
     component,
     batchDisposeGameObjectFunc,
     state
-  );
+  ); */
 
-let hasObjectInstanceComponent = GameObjectHasComponentCommon.hasObjectInstanceComponent;
+/* let hasObjectInstanceComponent = GameObjectHasComponentCommon.hasObjectInstanceComponent;
 
 let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
   [@bs] GameObjectGetComponentCommon.getObjectInstanceComponent(uid, state);
@@ -31,7 +31,7 @@ let getObjectInstanceComponent = (uid: int, state: StateDataType.state) =>
 let addObjectInstanceComponent = GameObjectAddComponentCommon.addObjectInstanceComponent;
 
 let disposeObjectInstanceComponent = (uid: int, component: component, state: StateDataType.state) =>
-  [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state);
+  [@bs] GameObjectDisposeComponentCommon.disposeObjectInstanceComponent(uid, component, state); */
 
 let rec batchDispose = GameObjectDisposeCommon.batchDispose;
 

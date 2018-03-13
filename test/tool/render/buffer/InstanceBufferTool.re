@@ -4,7 +4,7 @@ let getOrCreateBuffer = (sourceInstance, defaultCapacity, state) => {
   open VboBufferType;
   open SourceInstanceType;
   let {matrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
-  let {matrixInstanceBufferCapacityMap} = SourceInstanceStateCommon.getSourceInstanceData(state);
+  let {matrixInstanceBufferCapacityMap} = state.sourceInstanceRecord;
   InstanceBufferSystem.getOrCreateBuffer(
     ([@bs] GlTool.unsafeGetGl(state), sourceInstance, defaultCapacity),
     (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),

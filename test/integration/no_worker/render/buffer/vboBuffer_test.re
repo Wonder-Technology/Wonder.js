@@ -122,7 +122,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObject.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );

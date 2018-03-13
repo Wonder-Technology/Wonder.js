@@ -2,7 +2,7 @@ open SourceInstanceType;
 
 type objectInstance = int;
 
-type objectInstanceData = {
+type objectInstanceRecord = {
   index: int,
   sourceInstanceMap: array(sourceInstance),
   disposedIndexArray: array(objectInstance),

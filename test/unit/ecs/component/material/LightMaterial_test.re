@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "LightMaterialAPI",
+    "LightMaterial",
     () => {
       open Expect;
       open Expect.Operators;

@@ -8,7 +8,7 @@ open BoxGeometryType;
 
 let _ =
   describe(
-    "BoxGeometryAPI",
+    "BoxGeometry",
     () => {
       open Expect;
       open Expect.Operators;

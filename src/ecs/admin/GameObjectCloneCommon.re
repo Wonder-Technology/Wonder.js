@@ -89,14 +89,18 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.s
           ~expect={j|not clone sourceInstance gameObject|j},
           ~actual={j|do|j}
         ),
-        () => GameObjectHasComponentCommon.hasSourceInstanceComponent(uid, state) |> assertFalse
+        () =>
+          HasComponentGameObjectService.hasSourceInstanceComponent(uid, state.gameObjectRecord)
+          |> assertFalse
       );
       test(
         Log.buildAssertMessage(
           ~expect={j|not clone objectInstance gameObject|j},
           ~actual={j|do|j}
         ),
-        () => GameObjectHasComponentCommon.hasObjectInstanceComponent(uid, state) |> assertFalse
+        () =>
+          HasComponentGameObjectService.hasObjectInstanceComponent(uid, state.gameObjectRecord)
+          |> assertFalse
       )
     },
     StateData.stateData.isDebug

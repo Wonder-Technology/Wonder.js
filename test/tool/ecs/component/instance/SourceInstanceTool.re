@@ -1,8 +1,10 @@
+open StateDataType;
+
 let createSourceInstanceGameObject = (state: StateDataType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
-  /* let (state, _) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state); */
-  let (state, _) = SourceInstance.createSourceInstanceObjectInstance(sourceInstance, state);
+  /* let (state, _) = SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state); */
+  let (state, _) = SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
   let state =
     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
   (state, gameObject, sourceInstance)
@@ -23,6 +25,8 @@ let createSourceInstanceGameObjectArr = (count, state: StateDataType.state) =>
        (state, [||], [||])
      );
 
-let getSourceInstanceData = SourceInstanceStateCommon.getSourceInstanceData;
+let getSourceInstanceData = (state) => state.sourceInstanceRecord;
 
-let getSourceInstanceObjectInstanceArray = SourceInstanceSystem.getObjectInstanceArray;
+let getSourceInstanceObjectInstanceArray = (sourceInstance, state) =>
+  ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(sourceInstance, state.sourceInstanceRecord);
+  
