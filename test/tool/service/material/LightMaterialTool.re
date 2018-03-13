@@ -31,7 +31,7 @@ let dispose = (material, state: StateDataType.state) => {
 let initMaterial = (materialIndex, state) =>
   [@bs]
   InitLightMaterialService.initMaterial(
-    [@bs] DeviceManagerSystem.unsafeGetGl(state),
+    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     materialIndex,
     state
   );

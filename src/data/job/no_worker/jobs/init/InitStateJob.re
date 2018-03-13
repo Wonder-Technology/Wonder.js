@@ -2,4 +2,12 @@ open StateDataType;
 
 open DeviceManagerType;
 
-let execJob = (flags, state) => DeviceManagerSystem.setSide([@bs] DeviceManagerSystem.unsafeGetGl(state), FRONT, state);
+let execJob = (flags, state) => {
+  ...state,
+  deviceManagerRecord:
+    DeviceManagerService.setSide(
+      [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+      FRONT,
+      state.deviceManagerRecord
+    )
+};

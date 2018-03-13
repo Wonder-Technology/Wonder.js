@@ -12,7 +12,7 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     switch ([@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, gameObjectRecord)) {
     | Some(material) =>
       InitBasicMaterialService.handleInitComponent(
-        [@bs] DeviceManagerSystem.unsafeGetGl(state),
+        [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
         material,
         state
       )
@@ -22,7 +22,7 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     switch ([@bs] GetComponentGameObjectService.getLightMaterialComponent(uid, gameObjectRecord)) {
     | Some(material) =>
       InitLightMaterialService.handleInitComponent(
-        [@bs] DeviceManagerSystem.unsafeGetGl(state),
+        [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
         material,
         state
       )

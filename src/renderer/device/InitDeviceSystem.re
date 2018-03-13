@@ -73,14 +73,14 @@ let initDevice = (config, state: StateDataType.state) =>
       let canvas = createCanvas(config);
       let gl =
         canvas
-        |> DeviceManagerSystem.createGl(_convertContextConfigDataToJsObj(config.contextConfig));
+        |> GlService.createGl(_convertContextConfigDataToJsObj(config.contextConfig));
       let (x, y, width, height, _, _) as screenData = ViewSystem.getFullScreenData();
       let canvas = canvas |> ViewSystem.setToFullScreen(screenData);
       let viewportData = (x, y, width, height);
       state
-      |> DeviceManagerSystem.setGl(gl)
-      |> DeviceManagerSystem.setViewportData(viewportData)
-      |> DeviceManagerSystem.setViewportOfGl(gl, viewportData)
+      |> DeviceManagerService.setGl(gl)
+      |> DeviceManagerService.setViewportData(viewportData)
+      |> DeviceManagerService.setViewportOfGl(gl, viewportData)
       |> ViewSystem.setCanvas(canvas)
       |> ViewSystem.setContextConfig(config.contextConfig)
       |> GPUDetectSystem.detect(gl)

@@ -15,7 +15,7 @@ let createState = () => {
   initConfig: {isDebug: false},
   sourceInstanceRecord: RecordSourceInstanceService.create(),
   objectInstanceRecord: RecordObjectInstanceService.create(),
-  deviceManagerData: {gl: None, side: None, colorWrite: None, clearColor: None, viewport: None},
+  deviceManagerRecord: RecordDeviceManagerService.create(),
   gameObjectRecord: RecordGameObjectService.create(),
   transformRecord: RecordTransformServicie.create(),
   sceneRecord: RecordSceneService.create(),
@@ -62,7 +62,6 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   |> ShaderSystem.deepCopyForRestore
   |> ProgramSystem.deepCopyForRestore
   |> GLSLLocationSystem.deepCopyForRestore
-  |> DeviceManagerSystem.deepCopyForRestore
   |> (
     (state) => {
       ...state,
@@ -87,12 +86,13 @@ let deepCopyForRestore = (state: StateDataType.state) =>
         RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
       objectInstanceRecord:
         RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
-      vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord)
+      vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
+      deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord)
     }
   );
 
-let _getSharedData = ({typeArrayPoolRecord} as currentState: StateDataType.state) => {
-  gl: [@bs] DeviceManagerSystem.unsafeGetGl(currentState),
+let _getSharedData = ({typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataType.state) => {
+  gl: [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
   float32ArrayPoolMap: TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord),
   uint16ArrayPoolMap: TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
 };
@@ -108,8 +108,8 @@ let restore =
     targetState |> RestoreTransformService.restore(currentState, sharedData);
   let (targetState, sharedData) =
     targetState |> RestoreSourceInstanceService.restore(currentState, sharedData);
-  let targetState = targetState |> DeviceManagerSystem.restore(currentState, sharedData);
-  let gl = [@bs] DeviceManagerSystem.unsafeGetGl(targetState);
+  let targetState = targetState |> RestoreDeviceManagerService.restore(currentState, sharedData);
+  let gl = [@bs] DeviceManagerService.unsafeGetGl(targetState.deviceManagerRecord);
   /* let targetState = {
        ...targetState,
        typeArrayPoolRecord: RestoreTypeArrayPoolService.restore(currentState, targetState),
@@ -137,7 +137,7 @@ let restore =
       (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}),
       (
       () => {
-     [@bs]DeviceManagerSystem.unsafeGetGl(state)
+     [@bs]DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
       })
       );
       }, StateData.stateData.isDebug); */

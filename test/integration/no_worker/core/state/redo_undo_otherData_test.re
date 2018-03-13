@@ -20,7 +20,7 @@ let _ =
         let side = Some(BOTH);
         let viewport = Some((1., 0.1, 10., 20.));
         (
-          {...state, deviceManagerData: {gl: Some(gl), colorWrite, clearColor, side, viewport}},
+          {...state, deviceManagerRecord: {gl: Some(gl), colorWrite, clearColor, side, viewport}},
           Some(gl),
           (colorWrite, clearColor, side, viewport)
         )
@@ -89,7 +89,7 @@ let _ =
                   open DeviceManagerType;
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyForRestore(state);
-                  let {gl}: deviceManagerData =
+                  let {gl}: deviceManagerRecord =
                     DeviceManagerTool.getDeviceManagerData(copiedState);
                   gl |> expect == None
                 }

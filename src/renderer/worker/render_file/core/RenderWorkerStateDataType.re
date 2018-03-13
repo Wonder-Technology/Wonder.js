@@ -19,7 +19,7 @@ type jobData = {
 type renderWorkerState = {
   jobData: option(jobData),
   gpuDetectData,
-  deviceManagerData: DeviceManagerReWoType.deviceManagerData
+  deviceManagerRecord: DeviceManagerType.deviceManagerRecord
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

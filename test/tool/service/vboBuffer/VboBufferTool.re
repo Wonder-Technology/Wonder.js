@@ -2,7 +2,7 @@ open StateDataType;
 
 let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
   GetVboBufferService.getOrCreateBuffer(
-    [@bs] DeviceManagerSystem.unsafeGetGl(state),
+    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.vertexBufferMap),
     ([@bs] ArrayBufferService.createBuffer, [@bs] VerticesGeometryService.unsafeGetVertices),
     state
@@ -10,7 +10,7 @@ let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: StateDataType.sta
 
 let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
   GetVboBufferService.getOrCreateBuffer(
-    [@bs] DeviceManagerSystem.unsafeGetGl(state),
+    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.normalBufferMap),
     ([@bs] ArrayBufferService.createBuffer, [@bs] NormalsGeometryService.unsafeGetNormals),
     state
@@ -18,7 +18,7 @@ let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: StateDataType.sta
 
 let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
   GetVboBufferService.getOrCreateBuffer(
-    [@bs] DeviceManagerSystem.unsafeGetGl(state),
+    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.elementArrayBufferMap),
     ([@bs] ElementArrayBufferService.createBuffer, [@bs] IndicesGeometryService.unsafeGetIndices),
     state
@@ -27,7 +27,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
 let getOrCreateInstanceBuffer =
     (sourceInstanceIndex: int, defaultCapacity, state: StateDataType.state) =>
   InstanceBufferService.getOrCreateBuffer(
-    ([@bs] DeviceManagerSystem.unsafeGetGl(state), sourceInstanceIndex, defaultCapacity),
+    ([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), sourceInstanceIndex, defaultCapacity),
     (
       state.sourceInstanceRecord.matrixInstanceBufferCapacityMap,
       state.vboBufferRecord.matrixInstanceBufferMap

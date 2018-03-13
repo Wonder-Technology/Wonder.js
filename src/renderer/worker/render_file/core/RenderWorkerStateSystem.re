@@ -8,7 +8,8 @@ let setState = (stateData, state) => {
 let createState = () => {
   jobData: None,
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
-  deviceManagerData: {gl: None, viewport: None}
+  /* deviceManagerRecord: {gl: None, viewport: None} */
+  deviceManagerRecord: RecordDeviceManagerService.create()
 };
 
 /* let getState = (stateData) => Js.Option.getExn(stateData.state); */

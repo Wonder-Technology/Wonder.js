@@ -26,7 +26,7 @@ let prepareGameObject = (sandbox, state) => {
    state
    |> GeometryTool.initGeometrys
    |> AllMaterialTool.pregetGLSLData
-   |> LightMaterialSystem.init([@bs] DeviceManagerSystem.unsafeGetGl(state)); */
+   |> LightMaterialSystem.init([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)); */
 let exec = (state: StateDataType.state) => InitRenderJobTool.exec(state);
 
 let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc, sandbox, state) => {

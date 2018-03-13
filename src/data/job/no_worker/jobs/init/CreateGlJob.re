@@ -10,11 +10,14 @@ let _convertContextConfigDataToJsObj =
   "preserveDrawingBuffer": Js.Boolean.to_js_boolean(preserveDrawingBuffer)
 };
 
-let execJob = (_, state) =>
-  state
-  |> DeviceManagerSystem.setGl(
-       ViewSystem.getCanvas(state)
-       |> DeviceManagerSystem.createGl(
-            _convertContextConfigDataToJsObj(ViewSystem.getContextConfig(state))
-          )
-     );
+let execJob = (_, state) => {
+  ...state,
+  deviceManagerRecord:
+    state.deviceManagerRecord
+    |> DeviceManagerService.setGl(
+         ViewSystem.getCanvas(state)
+         |> GlService.createGl(
+              _convertContextConfigDataToJsObj(ViewSystem.getContextConfig(state))
+            )
+       )
+};

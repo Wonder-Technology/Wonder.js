@@ -38,7 +38,7 @@ let setBoxGeometryConfigData =
 };
 
 let getBoxGeometryDrawMode = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> getDrawMode;
+  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
 
 let unsafeGetBoxGeometryVertices = (geometry: int, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(

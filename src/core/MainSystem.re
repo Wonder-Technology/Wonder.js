@@ -6,7 +6,7 @@ open InitConfigSystem;
 
 open InitDeviceSystem;
 
-open DeviceManagerSystem;
+open DeviceManagerService;
 
 open JsObjService;
 

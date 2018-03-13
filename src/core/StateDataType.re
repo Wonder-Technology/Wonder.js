@@ -183,7 +183,7 @@ and state = {
   objectInstanceRecord,
   viewData,
   initConfig,
-  deviceManagerData,
+  deviceManagerRecord,
   gameObjectRecord,
   transformRecord,
   sceneRecord,

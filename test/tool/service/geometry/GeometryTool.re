@@ -32,10 +32,10 @@ let getIndicesCount = (index: int, state: StateDataType.state) =>
   IndicesService.getIndicesCount(index, state.boxGeometryRecord.indicesMap);
 
 let getIndexType = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> RenderGeometryService.getIndexType;
+  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> RenderGeometryService.getIndexType;
 
 let getIndexTypeSize = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.unsafeGetGl(state) |> RenderGeometryService.getIndexTypeSize;
+  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> RenderGeometryService.getIndexTypeSize;
 
 let hasIndices = (index: int, state: StateDataType.state) =>
   IndicesService.hasIndices(index, state.boxGeometryRecord.indicesMap);

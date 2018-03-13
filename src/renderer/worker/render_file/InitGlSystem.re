@@ -2,7 +2,7 @@ external convertViewportArrayToTuple : array(float) => (float, float, float, flo
 
 let initGl = (record, renderWorkerState) => {
   /* TODO init gl */
-  /* let gl = DeviceManagerReWoSystem.createGl(record##contextConfig, record##canvas);
+  /* let gl = GlService.createGl(record##contextConfig, record##canvas);
      WonderLog.Log.print(("gl: ", gl)) |> ignore;
      renderWorkerState
      |> DeviceManagerReWoSystem.setViewportOfGl(gl, convertViewportArrayToTuple(record##viewportData))

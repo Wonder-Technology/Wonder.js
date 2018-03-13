@@ -3,7 +3,7 @@ external settingTypeContextConfigDataToStateDataTypeContextConfigData :
   "%identity";
 
 /* TODO support webgl2 */
-let getContext = (canvas, options) => Gl.getWebgl1Context(canvas, options);
+/* let getContext = (canvas, options) => Gl.getWebgl1Context(canvas, options); */
 
 let getFullScreenData = () => {
   let root = Root.root;

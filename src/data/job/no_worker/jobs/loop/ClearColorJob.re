@@ -1,8 +1,13 @@
+open StateDataType;
+
 open RenderConfigType;
 
-let execJob = (flags, _, state) =>
-  DeviceManagerSystem.clearColor(
-    [@bs] DeviceManagerSystem.unsafeGetGl(state),
-    ColorSystem.convert16HexToRGBA(JobConfigService.unsafeGetFlags(flags)[0]),
-    state
-  );
+let execJob = (flags, _, state) => {
+  ...state,
+  deviceManagerRecord:
+    DeviceManagerService.clearColor(
+      [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+      ColorSystem.convert16HexToRGBA(JobConfigService.unsafeGetFlags(flags)[0]),
+      state.deviceManagerRecord
+    )
+};
