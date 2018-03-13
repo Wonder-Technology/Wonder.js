@@ -8,8 +8,8 @@ let addSourceInstance = (gameObject, state) => {
 
 let setGpuDetectDataAllowHardwareInstance = (sandbox, state) => {
   ...state,
-  gpuDetectData: {
-    ...state.gpuDetectData,
+  gpuDetectRecord: {
+    ...state.gpuDetectRecord,
     extensionInstancedArrays:
       Some({
         "drawElementsInstancedANGLE": Sinon.createEmptyStubWithJsObjSandbox(sandbox),
@@ -20,7 +20,7 @@ let setGpuDetectDataAllowHardwareInstance = (sandbox, state) => {
 
 let setGpuDetectDataAllowBatchInstance = (state) => {
   ...state,
-  gpuDetectData: {...state.gpuDetectData, extensionInstancedArrays: None}
+  gpuDetectRecord: {...state.gpuDetectRecord, extensionInstancedArrays: None}
 };
 
-let getExtensionInstancedArrays = (state) => GpuDetectTool.getData(state).extensionInstancedArrays |> Js.Option.getExn;
+let getExtensionInstancedArrays = (state) => GPUDetectTool.getData(state).extensionInstancedArrays |> Js.Option.getExn;

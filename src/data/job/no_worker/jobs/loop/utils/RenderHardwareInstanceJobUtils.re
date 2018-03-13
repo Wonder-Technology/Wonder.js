@@ -187,7 +187,7 @@ let _prepareData =
       (uid, defaultCapacity, strideForCapacity, strideForSend),
       state: StateDataType.state
     ) => {
-  let extension = GPUDetectSystem.unsafeGetInstanceExtension(state);
+  let extension = GPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
   let sourceInstance =
     GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
   let objectInstanceArray =

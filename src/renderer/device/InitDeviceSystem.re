@@ -83,5 +83,5 @@ let initDevice = (config, state: StateDataType.state) =>
       |> DeviceManagerService.setViewportOfGl(gl, viewportData)
       |> ViewService.setCanvas(canvas)
       |> ViewService.setContextConfig(config.contextConfig)
-      |> GPUDetectSystem.detect(gl)
+      |> GPUDetectService.detect(gl)
     }; */

@@ -166,7 +166,7 @@ and state = {
   noWorkerJobConfig: option(noWorkerJobConfig),
   workerJobConfig: option(workerJobConfig),
   renderConfigData: option(renderConfigData),
-  gpuDetectData,
+  gpuDetectRecord,
   sourceInstanceRecord,
   objectInstanceRecord,
   viewRecord,

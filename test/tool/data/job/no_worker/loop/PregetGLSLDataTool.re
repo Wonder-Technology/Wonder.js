@@ -1,3 +1,3 @@
 open StateDataType;
 
-let preparePrecision = (state) => GpuDetectTool.setPrecision(GPUDetectType.HIGHP, state);
+let preparePrecision = (state) => GPUDetectTool.setPrecision(GPUDetectType.HIGHP, state);

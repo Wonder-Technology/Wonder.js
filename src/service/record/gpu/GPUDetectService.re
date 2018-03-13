@@ -14,16 +14,16 @@ let _getExtension = (name: string, gl) =>
   |> Obj.magic
   |> Js.toOption;
 
-let _detectExtension = (gl, gpuDetectData) => {
-  ...gpuDetectData,
+let _detectExtension = (gl, record) => {
+  ...record,
   extensionInstancedArrays: _getExtension("instanced_arrays", gl)
 };
 
-let _detectPrecision = (gl, gpuDetectData) => {
+let _detectPrecision = (gl, record) => {
   /* TODO handle Some experimental-webgl implementations do not have getShaderPrecisionFormat:
 
      if (!gl.getShaderPrecisionFormat) {
-         gpuDetectData.precision = EGPUPrecision.HIGHP;
+         record.precision = EGPUPrecision.HIGHP;
 
          return;
      } */
@@ -48,27 +48,25 @@ let _detectPrecision = (gl, gpuDetectData) => {
   if (! highpAvailable) {
     if (mediumpAvailable) {
       WonderLog.Log.warn({j|not support highp, using mediump instead|j});
-      {...gpuDetectData, precision: Some(MEDIUMP)}
+      {...record, precision: Some(MEDIUMP)}
     } else {
       WonderLog.Log.warn({j|not support highp and mediump, using lowp instead|j});
-      {...gpuDetectData, precision: Some(LOWP)}
+      {...record, precision: Some(LOWP)}
     }
   } else {
-    {...gpuDetectData, precision: Some(HIGHP)}
+    {...record, precision: Some(HIGHP)}
   }
 };
 
-let _detectCapabilty = (gl, gpuDetectData) => _detectPrecision(gl, gpuDetectData);
+let _detectCapabilty = (gl, record) => _detectPrecision(gl, record);
 
-let detect = (gl, state: StateDataType.state) => {
-  ...state,
-  gpuDetectData:
-    GPUStateUtils.getGpuDetectData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
+let detect = (gl, record) => {
+    record |> _detectExtension(gl) |> _detectCapabilty(gl)
 };
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 
-let unsafeGetInstanceExtension = (state: StateDataType.state) => {
+let unsafeGetInstanceExtension = (record) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -79,12 +77,12 @@ let unsafeGetInstanceExtension = (state: StateDataType.state) => {
                 ~expect={j|extensionInstancedArrays exist|j},
                 ~actual={j|not|j}
               ),
-              () => GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> assertExist
+              () => record.extensionInstancedArrays |> assertExist
             )
           )
         )
       ),
     StateData.stateData.isDebug
   );
-  GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn
+  record.extensionInstancedArrays |> OptionService.unsafeGet; 
 };

@@ -6,10 +6,10 @@ type gpuPrecision =
 type extensionInstancedArrays = {
   .
   "vertexAttribDivisorANGLE": [@bs] ((GlType.attributeLocation, int) => unit),
-  "drawElementsInstancedANGLE": [@bs] (int, int, int, int, int) => unit
+  "drawElementsInstancedANGLE": [@bs] ((int, int, int, int, int) => unit)
 };
 
-type gpuDetectData = {
+type gpuDetectRecord = {
   extensionInstancedArrays: option(extensionInstancedArrays),
   precision: option(gpuPrecision)
 };

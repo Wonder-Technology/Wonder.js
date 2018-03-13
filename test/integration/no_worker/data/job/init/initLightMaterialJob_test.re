@@ -273,7 +273,7 @@ let _ =
                           };
                           let _setGpuDetectDataAllowBatchInstance = (state) => {
                             ...state,
-                            gpuDetectData: {...state.gpuDetectData, extensionInstancedArrays: None}
+                            gpuDetectRecord: {...state.gpuDetectRecord, extensionInstancedArrays: None}
                           };
                           test(
                             "if state->gpuConfig->useHardwareInstance == false, use batch",

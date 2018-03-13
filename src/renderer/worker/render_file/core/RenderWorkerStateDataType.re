@@ -1,4 +1,4 @@
-open GPUDetectReWoType;
+open GPUDetectType;
 
 type jobFlags = option(array(string));
 
@@ -18,7 +18,7 @@ type jobData = {
 
 type renderWorkerState = {
   jobData: option(jobData),
-  gpuDetectData,
+  gpuDetectRecord,
   deviceManagerRecord: DeviceManagerType.deviceManagerRecord
 };
 

@@ -1,4 +1,8 @@
 open StateDataType;
 
-let execJob = (_, state) =>
-  state |> GPUDetectSystem.detect([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord));
+let execJob = (_, state) => {
+  ...state,
+  gpuDetectRecord:
+    state.gpuDetectRecord
+    |> GPUDetectService.detect([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord))
+};

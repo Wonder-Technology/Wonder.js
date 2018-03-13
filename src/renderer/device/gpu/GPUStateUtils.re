@@ -1,1 +1,0 @@
-let getGpuDetectData = (state: StateDataType.state) => state.gpuDetectData;

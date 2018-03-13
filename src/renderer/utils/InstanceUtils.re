@@ -1,6 +1,6 @@
 let isSupportInstance = (state: StateDataType.state) =>
   GpuConfigSystem.getConfig(state).useHardwareInstance
-  && GPUDetectSystem.hasExtension(GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays);
+  && GPUDetectService.hasExtension(state.gpuDetectRecord.extensionInstancedArrays);
 
 let isSourceInstance = (uid, state: StateDataType.state) =>
   HasComponentGameObjectService.hasSourceInstanceComponent(uid, state.gameObjectRecord);
