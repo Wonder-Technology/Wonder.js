@@ -26,5 +26,3 @@ let prepare = (sandbox, count, state) => {
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, gameObject, componentTuple, objectInstanceGameObjectList)
 };
-
-let render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
