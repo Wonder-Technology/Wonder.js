@@ -57,7 +57,7 @@ let send =
                  uniformCacheMap,
                  (
                    position,
-                   GLSLLocationSystem.getUniformLocation(program, position, uniformLocationMap, gl)
+                   GLSLLocationService.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
                  PositionDirectionLightService.getPosition(index, state)
                );
@@ -67,7 +67,7 @@ let send =
                  uniformCacheMap,
                  (
                    color,
-                   GLSLLocationSystem.getUniformLocation(program, color, uniformLocationMap, gl)
+                   GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
                  OperateDirectionLightService.getColor(index, state.directionLightRecord)
                );
@@ -77,7 +77,7 @@ let send =
                  uniformCacheMap,
                  (
                    intensity,
-                   GLSLLocationSystem.getUniformLocation(
+                   GLSLLocationService.getUniformLocation(
                      program,
                      intensity,
                      uniformLocationMap,

@@ -31,7 +31,7 @@ let createState = () => {
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),
   programRecord: RecordProgramService.create(),
-  glslLocationData: GLSLLocationHelper.create(),
+  glslLocationRecord: RecordGLSLLocationService.create(),
   glslSenderData: GLSLSenderHelper.create(),
   glslChunkData: ShaderChunkSystem.create(),
   renderData: RenderDataHelper.create(),
@@ -60,7 +60,7 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   /* |> AmbientLightAdmin.deepCopyForRestore
      |> DirectionLightAdmin.deepCopyForRestore
      |> PointLightAdmin.deepCopyForRestore */
-  |> GLSLLocationSystem.deepCopyForRestore
+  /* |> GLSLLocationService.deepCopyForRestore */
   |> (
     (state) => {
       ...state,
@@ -124,7 +124,7 @@ let restore =
   |> RestoreVboBufferService.restore(currentState)
   |> RestoreShaderService.restore(currentState)
   |> RestoreProgramService.restore(intersectShaderIndexDataArray, currentState)
-  |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreGLSLLocationService.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
   |> RestoreBasicMaterialService.restore(gl, currentState)
   |> RestoreLightMaterialService.restore(gl, currentState)

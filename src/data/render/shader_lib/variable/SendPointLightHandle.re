@@ -52,28 +52,28 @@ let _sendAttenuation =
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
-    (constant, GLSLLocationSystem.getUniformLocation(program, constant, uniformLocationMap, gl)),
+    (constant, GLSLLocationService.getUniformLocation(program, constant, uniformLocationMap, gl)),
     OperatePointLightService.getConstant(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
-    (linear, GLSLLocationSystem.getUniformLocation(program, linear, uniformLocationMap, gl)),
+    (linear, GLSLLocationService.getUniformLocation(program, linear, uniformLocationMap, gl)),
     OperatePointLightService.getLinear(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
-    (quadratic, GLSLLocationSystem.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
+    (quadratic, GLSLLocationService.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
     OperatePointLightService.getQuadratic(index, state.pointLightRecord)
   );
   [@bs]
   GLSLSenderSystem.sendFloat(
     gl,
     uniformCacheMap,
-    (range, GLSLLocationSystem.getUniformLocation(program, range, uniformLocationMap, gl)),
+    (range, GLSLLocationService.getUniformLocation(program, range, uniformLocationMap, gl)),
     OperatePointLightService.getRange(index, state.pointLightRecord)
   );
   state
@@ -113,7 +113,7 @@ let send =
                  uniformCacheMap,
                  (
                    position,
-                   GLSLLocationSystem.getUniformLocation(program, position, uniformLocationMap, gl)
+                   GLSLLocationService.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
                  PositionPointLightService.getPosition(index, state)
                );
@@ -123,7 +123,7 @@ let send =
                  uniformCacheMap,
                  (
                    color,
-                   GLSLLocationSystem.getUniformLocation(program, color, uniformLocationMap, gl)
+                   GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
                  OperatePointLightService.getColor(index, state.pointLightRecord)
                );
@@ -133,7 +133,7 @@ let send =
                  uniformCacheMap,
                  (
                    intensity,
-                   GLSLLocationSystem.getUniformLocation(
+                   GLSLLocationService.getUniformLocation(
                      program,
                      intensity,
                      uniformLocationMap,

@@ -21,7 +21,7 @@ let _addModelMatrixInstanceArrayBufferSendData =
   sendDataArr,
   instanceSendNoCachableDataArr
   |> ArrayService.push({
-       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 4,
        getOffsetFunc: [@bs] ((index) => index * 16)
      })
@@ -32,7 +32,7 @@ let _addNormalMatrixInstanceArrayBufferSendData =
   sendDataArr,
   instanceSendNoCachableDataArr
   |> ArrayService.push({
-       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
        size: 3,
        getOffsetFunc: [@bs] ((index) => (index - 4) * 12 + 64)
      })
@@ -45,7 +45,7 @@ let _addOtherArrayBufferSendData =
     ) => (
   sendDataArr
   |> ArrayService.push({
-       pos: GLSLLocationSystem.getAttribLocation(program, name, attributeLocationMap, gl),
+       pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
        size: getBufferSizeByType(type_),
        buffer,
        sendFunc: sendBuffer
@@ -142,10 +142,10 @@ let addAttributeSendData =
     StateData.stateData.isDebug
   );
   let attributeLocationMap =
-    getOrCreateHashMap(state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex));
+    getOrCreateHashMap(state |> GLSLLocationService.getAttributeLocationMap(shaderIndex));
   _readAttributeSendData(shaderLibDataArr, gl, program, attributeLocationMap)
   |> _setToAttributeSendMap(shaderIndex, attributeLocationMap, state)
-  |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
+  |> GLSLLocationService.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
 
 let unsafeGetAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {

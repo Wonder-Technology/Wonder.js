@@ -4,7 +4,7 @@ type uniformLocationMapOfShader = Js.Dict.t(GlType.uniformLocation);
 
 type uniformLocationMap = array(uniformLocationMapOfShader);
 
-type glslLocationData = {
+type glslLocationRecord = {
   attributeLocationMap,
   uniformLocationMap
 };

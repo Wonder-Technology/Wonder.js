@@ -94,7 +94,7 @@ let _readUniforms =
                GLSLSenderConfigDataHandleCameraUniformCommon.addCameraSendData(
                  (
                    field,
-                   GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
+                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl),
                    name,
                    type_,
                    uniformCacheMap
@@ -105,7 +105,7 @@ let _readUniforms =
                GLSLSenderConfigDataHandleMaterialUniformCommon.addBasicMaterialSendData(
                  (
                    field,
-                   GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
+                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl),
                    name,
                    type_,
                    uniformCacheMap
@@ -116,7 +116,7 @@ let _readUniforms =
                GLSLSenderConfigDataHandleMaterialUniformCommon.addLightMaterialSendData(
                  (
                    field,
-                   GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
+                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl),
                    name,
                    type_,
                    uniformCacheMap
@@ -142,7 +142,7 @@ let _readUniforms =
                GLSLSenderConfigDataHandleMoodelUniformCommon.addModelSendData(
                  (
                    field,
-                   GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl),
+                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl),
                    name,
                    type_,
                    uniformCacheMap
@@ -213,7 +213,7 @@ let addUniformSendData =
   _checkShouldNotAddBefore(shaderIndex, state);
   let record = getGLSLSenderData(state);
   let uniformLocationMap =
-    getOrCreateHashMap(state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex));
+    getOrCreateHashMap(state |> GLSLLocationService.getUniformLocationMap(shaderIndex));
   _readUniformSendData(
     shaderLibDataArr,
     gl,
@@ -224,7 +224,7 @@ let addUniformSendData =
     )
   )
   |> _setToUniformSendMap(shaderIndex, record, state)
-  |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
+  |> GLSLLocationService.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
 let unsafeGetUniformRenderObjectSendMaterialData = GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.unsafeGetUniformSendData;

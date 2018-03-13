@@ -189,7 +189,7 @@ and state = {
   shaderRecord,
   glslRecord,
   programRecord,
-  glslLocationData,
+  glslLocationRecord,
   glslSenderData,
   glslChunkData,
   renderData,

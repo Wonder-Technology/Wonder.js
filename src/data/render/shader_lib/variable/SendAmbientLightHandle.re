@@ -19,7 +19,7 @@ let send =
                  uniformCacheMap,
                  (
                    name,
-                   GLSLLocationSystem.getUniformLocation(program, name, uniformLocationMap, gl)
+                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl)
                  ),
                  OperateAmbientLightService.getColor(index, state.ambientLightRecord)
                );
