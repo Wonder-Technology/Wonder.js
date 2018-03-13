@@ -1,16 +1,7 @@
 open StateDataType;
 
-open GlType;
-
 open Gl;
 
-open GLSLSenderStateUtils;
-
-open Js.Typed_array;
-
-let getGLSLSenderData = getGLSLSenderData;
-
-/* TODO optimize? */
 let disableVertexAttribArray = (gl, state: StateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -23,7 +14,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
                 ~actual={j|not|j}
               ),
               () => {
-                let {vertexAttribHistoryArray} = getGLSLSenderData(state);
+                let {vertexAttribHistoryArray} = state.glslSenderRecord;
                 vertexAttribHistoryArray
                 |> Js.Array.filter(WonderCommonlib.JudgeUtils.isBool)
                 |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
@@ -34,7 +25,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
       ),
     StateData.stateData.isDebug
   );
-  let {vertexAttribHistoryArray} as record = getGLSLSenderData(state);
+  let {vertexAttribHistoryArray} as record = state.glslSenderRecord;
   vertexAttribHistoryArray
   |> Js.Array.forEachi(
        (isEnable: bool, pos: int) =>
@@ -54,13 +45,3 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
   record.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state
 };
-
-let deepCopyForRestore = GLSLSenderStateUtils.deepCopyForRestore;
-
-let restore = GLSLSenderStateUtils.restore;
-
-let sendFloat = GLSLSenderSendDataUtils.sendFloat;
-
-let sendFloat3 = GLSLSenderSendDataUtils.sendFloat3;
-
-let sendVec3 = GLSLSenderSendDataUtils.sendVec3;

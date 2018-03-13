@@ -32,7 +32,7 @@ let createState = () => {
   glslRecord: RecordGLSLService.create(),
   programRecord: RecordProgramService.create(),
   glslLocationRecord: RecordGLSLLocationService.create(),
-  glslSenderData: GLSLSenderHelper.create(),
+  glslSenderRecord: RecordGLSLSenderService.create(),
   glslChunkData: ShaderChunkSystem.create(),
   renderData: RenderDataHelper.create(),
   timeControllerData: TimeControllerHelper.create(),
@@ -54,43 +54,31 @@ let setState = (stateData: stateData, state: state) => {
   state
 };
 
-let deepCopyForRestore = (state: StateDataType.state) =>
-  state
-  |> GLSLSenderSystem.deepCopyForRestore
-  /* |> AmbientLightAdmin.deepCopyForRestore
-     |> DirectionLightAdmin.deepCopyForRestore
-     |> PointLightAdmin.deepCopyForRestore */
-  /* |> GLSLLocationService.deepCopyForRestore */
-  |> (
-    (state) => {
-      ...state,
-      gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
-      basicCameraViewRecord:
-        RecordBasicCameraViewService.deepCopyForRestore(state.basicCameraViewRecord),
-      perspectiveCameraProjectionRecord:
-        RecordPerspectiveCameraProjectionService.deepCopyForRestore(
-          state.perspectiveCameraProjectionRecord
-        ),
-      meshRendererRecord: RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
-      transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
-      typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
-      boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord),
-      basicMaterialRecord: RecordBasicMaterialService.deepCopyForRestore(state.basicMaterialRecord),
-      lightMaterialRecord: RecordLightMaterialService.deepCopyForRestore(state.lightMaterialRecord),
-      ambientLightRecord: RecordAmbientLightService.deepCopyForRestore(state.ambientLightRecord),
-      directionLightRecord:
-        RecordDirectionLightService.deepCopyForRestore(state.directionLightRecord),
-      pointLightRecord: RecordPointLightService.deepCopyForRestore(state.pointLightRecord),
-      sourceInstanceRecord:
-        RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
-      objectInstanceRecord:
-        RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
-      vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
-      deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord),
-      shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
-      glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord)
-    }
-  );
+let deepCopyForRestore = (state: StateDataType.state) => {
+  ...state,
+  gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
+  basicCameraViewRecord:
+    RecordBasicCameraViewService.deepCopyForRestore(state.basicCameraViewRecord),
+  perspectiveCameraProjectionRecord:
+    RecordPerspectiveCameraProjectionService.deepCopyForRestore(
+      state.perspectiveCameraProjectionRecord
+    ),
+  meshRendererRecord: RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
+  transformRecord: RecordTransformServicie.deepCopyForRestore(state.transformRecord),
+  typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
+  boxGeometryRecord: RecordBoxGeometryService.deepCopyForRestore(state.boxGeometryRecord),
+  basicMaterialRecord: RecordBasicMaterialService.deepCopyForRestore(state.basicMaterialRecord),
+  lightMaterialRecord: RecordLightMaterialService.deepCopyForRestore(state.lightMaterialRecord),
+  ambientLightRecord: RecordAmbientLightService.deepCopyForRestore(state.ambientLightRecord),
+  directionLightRecord: RecordDirectionLightService.deepCopyForRestore(state.directionLightRecord),
+  pointLightRecord: RecordPointLightService.deepCopyForRestore(state.pointLightRecord),
+  sourceInstanceRecord: RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
+  objectInstanceRecord: RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
+  vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
+  deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord),
+  shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
+  glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord)
+};
 
 let _getSharedData =
     ({typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataType.state) => {
@@ -125,7 +113,7 @@ let restore =
   |> RestoreShaderService.restore(currentState)
   |> RestoreProgramService.restore(intersectShaderIndexDataArray, currentState)
   |> RestoreGLSLLocationService.restore(intersectShaderIndexDataArray, currentState)
-  |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreGLSLSenderService.restore(intersectShaderIndexDataArray, currentState)
   |> RestoreBasicMaterialService.restore(gl, currentState)
   |> RestoreLightMaterialService.restore(gl, currentState)
   |> RenderDataSystem.restore(currentState)

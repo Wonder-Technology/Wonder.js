@@ -14,7 +14,7 @@ let _ =
       let _prepareGLSLSenderData = (state) => {
         open StateDataType;
         let {attributeSendDataMap, vertexAttribHistoryArray} =
-          GLSLSenderTool.getGLSLSenderData(state);
+          state.glslSenderRecord;
         let shaderIndex1 = 0;
         let data1 = Obj.magic(0);
         let func1 = Obj.magic(1);
@@ -294,7 +294,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
                     let {uniformShaderSendNoCachableDataMap} =
-                      GLSLSenderTool.getGLSLSenderData(state);
+                      state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(121);
                     let uniformShaderSendNoCachableData2 = Obj.magic(122);
                     uniformShaderSendNoCachableDataMap
@@ -357,7 +357,7 @@ let _ =
                     |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
                     let {uniformShaderSendNoCachableDataMap} =
-                      GLSLSenderTool.getGLSLSenderData(state);
+                      state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(10221);
                     let uniformShaderSendNoCachableData2 = Obj.magic(10222);
                     uniformShaderSendNoCachableDataMap

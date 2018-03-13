@@ -38,17 +38,17 @@ let _sendTransformMatrixDataBuffer =
     gl
   );
   [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1) |> ignore;
-  GLSLSenderSendDataUtils.enableVertexAttribArray(
+  SendGLSLDataService.enableVertexAttribArray(
     gl,
     pos,
-    GLSLSenderStateUtils.getGLSLSenderData(state).vertexAttribHistoryArray,
+    state.glslSenderRecord.vertexAttribHistoryArray,
     state
   )
 };
 
 let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetInstanceAttributeSendData(shaderIndex)
+  |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> ArraySystem.reduceStatei(
        [@bs]
        (
@@ -233,7 +233,7 @@ let render =
     StaticSourceInstanceService.isTransformStatic(sourceInstance, state.sourceInstanceRecord) ?
       _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
       _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
-  GLSLSenderDrawUtils.drawElementsInstancedANGLE(
+  DrawGLSLService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),
       RenderGeometryService.getIndexType(gl),

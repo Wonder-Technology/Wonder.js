@@ -4,8 +4,6 @@ open GlType;
 
 open Gl;
 
-open GLSLSenderStateUtils;
-
 let getBufferSizeByType = (type_: string) =>
   switch type_ {
   /* | "vec2" => 2 */
@@ -35,7 +33,7 @@ let sendBuffer =
   [@bs]
   (
     (gl, (size: int, pos: attributeLocation), buffer: buffer, state: StateDataType.state) => {
-      let {vertexAttribHistoryArray} as record = getGLSLSenderData(state);
+      let {vertexAttribHistoryArray} as record = state.glslSenderRecord;
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
       enableVertexAttribArray(gl, pos, vertexAttribHistoryArray, state)
@@ -140,3 +138,5 @@ let sendVec3 =
         ()
       }
   );
+
+

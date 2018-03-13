@@ -22,7 +22,7 @@ let _render = (gl, state: StateDataType.state) =>
              } else {
                let (state, _, geometryIndex) =
                  [@bs] FrontRenderLightJobCommon.render(gl, uid, state);
-               GLSLSenderDrawUtils.drawElement(
+               DrawGLSLService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),

@@ -1,9 +1,5 @@
 open StateDataType;
 
-let getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
-
-let deepCopyForRestore = (state: StateDataType.state) => state;
-
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {
     attributeSendDataMap,
@@ -17,11 +13,10 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     uniformInstanceSendNoCachableDataMap
     /* drawPointsFuncMap */
   } =
-    getGLSLSenderData(currentState);
+    currentState.glslSenderRecord;
   {
     ...targetState,
-    /* glslSenderData: GLSLSenderHelper.create() */
-    glslSenderData: {
+    glslSenderRecord: {
       attributeSendDataMap:
         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,

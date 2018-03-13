@@ -1,7 +1,7 @@
 let addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "color" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       OperateBasicMaterialService.unsafeGetColor
@@ -21,19 +21,19 @@ let addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), send
 let addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "diffuseColor" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       OperateLightMaterialService.unsafeGetDiffuseColor
     )
   | "specularColor" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       OperateLightMaterialService.unsafeGetSpecularColor
     )
   | "shininess" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectMaterialCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       OperateLightMaterialService.unsafeGetShininess

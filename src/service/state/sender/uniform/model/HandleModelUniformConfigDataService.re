@@ -17,28 +17,28 @@ let _getNormalMatrixNoCachableData =
 let addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "mMatrix" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectModelService.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
       _getModelMatrixNoCachableData
     )
   | "normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformRenderObjectModelCommon.addUniformSendDataByType(
+    HandleUniformRenderObjectModelService.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
       _getNormalMatrixNoCachableData
     )
   | "instance_mMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
+    HandleUniformInstanceNoCachableService.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      (_getModelMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix4)
+      (_getModelMatrixNoCachableData, SendGLSLDataService.sendMatrix4)
     )
   | "instance_normalMatrix" =>
-    GLSLSenderConfigDataHandleUniformInstanceNoCachableCommon.addUniformSendDataByType(
+    HandleUniformInstanceNoCachableService.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      (_getNormalMatrixNoCachableData, GLSLSenderSendDataUtils.sendMatrix3)
+      (_getNormalMatrixNoCachableData, SendGLSLDataService.sendMatrix3)
     )
   | _ =>
     WonderLog.Log.fatal(

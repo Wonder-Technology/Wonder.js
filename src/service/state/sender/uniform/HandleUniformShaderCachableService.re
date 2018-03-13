@@ -6,11 +6,11 @@ open GameObjectType;
 
 open StateDataType;
 
-open GLSLSenderStateUtils;
 
-open GLSLSenderSendDataUtils;
 
-open GLSLSenderConfigDataHandleShaderDataCommon;
+open SendGLSLDataService;
+
+
 
 let addUniformSendDataByType =
     (
@@ -35,7 +35,7 @@ let addUniformSendDataByType =
          name,
          pos,
          getDataFunc: getDataFunc |> Obj.magic,
-         sendDataFunc: GLSLSenderUniformUtils.getSendCachableDataByType(type_)
+         sendDataFunc: SendUniformService.getSendCachableDataByType(type_)
        }: uniformShaderSendCachableData
      ),
   shaderSendCachableFunctionDataArr,
@@ -48,7 +48,7 @@ let setToUniformSendMap =
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendCachableDataArr);
 
 let unsafeGetUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
-  GLSLSenderConfigDataHandleUniformUtils.unsafeGetUniformSendData(
+  HandleUniformConfigDataMapService.unsafeGetUniformSendData(
     shaderIndex,
-    getGLSLSenderData(state).uniformShaderSendCachableDataMap
+    state.glslSenderRecord.uniformShaderSendCachableDataMap
   );

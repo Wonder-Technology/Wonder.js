@@ -9,8 +9,7 @@ open InstanceBufferService;
 let render = (gl, uid, renderFunc, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
   let uniformInstanceSendNoCachableData =
-    state
-    |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformInstanceSendNoCachableData(shaderIndex);
+    state |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
@@ -52,7 +51,7 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
                   ),
                   state
                 );
-           GLSLSenderDrawUtils.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
+           DrawGLSLService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
            |> ignore;
            state
          }

@@ -139,7 +139,7 @@ and uniformInstanceSendNoCachableData = {
   getDataFunc: [@bs] ((transform, state) => Float32Array.t),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
-and glslSenderData = {
+and glslSenderRecord = {
   attributeSendDataMap: array(array(attributeSendData)),
   instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
   uniformCacheMap,
@@ -190,7 +190,7 @@ and state = {
   glslRecord,
   programRecord,
   glslLocationRecord,
-  glslSenderData,
+  glslSenderRecord,
   glslChunkData,
   renderData,
   timeControllerData,

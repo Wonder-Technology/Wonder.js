@@ -4,15 +4,11 @@ open Gl;
 
 open GlType;
 
-open GLSLSenderSendDataUtils;
-
-open GLSLSenderStateUtils;
-
 let bindElementArrayBuffer =
   [@bs]
   (
     (gl, (size: int, pos: attributeLocation), buffer, state: StateDataType.state) => {
-      /* let {lastSendElementArrayBuffer} as record = getGLSLSenderData(state); */
+      /* let {lastSendElementArrayBuffer} as record = state.glslSenderRecord; */
       /* switch lastSendElementArrayBuffer {
          | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
          | _ =>

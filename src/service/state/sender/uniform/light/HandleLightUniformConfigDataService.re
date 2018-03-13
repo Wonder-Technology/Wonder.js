@@ -3,7 +3,7 @@ let addAmbientLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
+    HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendAmbientLightHandle.send
@@ -24,7 +24,7 @@ let addDirectionLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
+    HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendDirectionLightHandle.send
@@ -45,7 +45,7 @@ let addPointLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
   | "send" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableFunctionCommon.addUniformSendDataByType(
+    HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
       SendPointLightHandle.send

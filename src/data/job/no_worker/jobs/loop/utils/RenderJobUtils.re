@@ -5,7 +5,7 @@ open VboBufferType;
 let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
   state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
+  |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -52,7 +52,7 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
 };
 
 let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  let {lastSendGeometry} as record = GLSLSenderSystem.getGLSLSenderData(state);
+  let {lastSendGeometry} as record = state.glslSenderRecord;
   switch lastSendGeometry {
   | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
   | _ =>
@@ -63,7 +63,7 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
 
 let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state) =>
   state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformRenderObjectSendModelData(shaderIndex)
+  |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -77,7 +77,7 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state)
 
 let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, state) =>
   state
-  |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformRenderObjectSendMaterialData(shaderIndex)
+  |> HandleUniformRenderObjectMaterialService.unsafeGetUniformSendData(shaderIndex)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -104,7 +104,7 @@ let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectR
     |> UseProgramService.use(gl, program)
     |> _sendAttributeData(gl, shaderIndex, geometryIndex)
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
-  let {lastSendMaterial} as record = GLSLSenderSystem.getGLSLSenderData(state);
+  let {lastSendMaterial} as record = state.glslSenderRecord;
   let state =
     switch lastSendMaterial {
     | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state

@@ -12,6 +12,6 @@ let use = (gl, program: program, {programRecord} as state) =>
   | _ =>
     programRecord.lastUsedProgram = Some(program);
     useProgram(program, gl);
-    /* let state = state |> GLSLSenderSystem.disableVertexAttribArray(gl); */
+    /* let state = state |> SendGLSLDataService.disableVertexAttribArray(gl); */
     state
   };

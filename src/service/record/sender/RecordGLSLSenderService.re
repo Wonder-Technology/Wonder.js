@@ -1,5 +1,5 @@
-open StateDataType;
 
+open StateDataType;
 let create = () => {
   attributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   instanceAttributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),

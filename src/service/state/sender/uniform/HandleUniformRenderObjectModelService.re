@@ -6,15 +6,15 @@ open GameObjectType;
 
 open StateDataType;
 
-open GLSLSenderStateUtils;
 
-open GLSLSenderSendDataUtils;
 
-open GLSLSenderConfigDataHandleShaderDataCommon;
+open SendGLSLDataService;
+
+
 
 let addUniformSendDataByType =
     (
-      (shaderCacheMap, name, pos, type_),
+      (pos, type_),
       (
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
@@ -25,17 +25,15 @@ let addUniformSendDataByType =
       ),
       getDataFunc
     ) => (
-  renderObjectSendModelDataArr,
-  renderObjectSendMaterialDataArr
+  renderObjectSendModelDataArr
   |> ArrayService.push(
        {
-         shaderCacheMap,
-         name,
          pos,
-         sendDataFunc: GLSLSenderUniformUtils.getSendCachableDataByType(type_),
+         sendDataFunc: SendUniformService.getSendNoCachableDataByType(type_),
          getDataFunc: getDataFunc |> Obj.magic
-       }: uniformRenderObjectSendMaterialData
+       }: uniformRenderObjectSendModelData
      ),
+  renderObjectSendMaterialDataArr,
   shaderSendNoCachableDataArr,
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
@@ -43,13 +41,13 @@ let addUniformSendDataByType =
 );
 
 let setToUniformSendMap =
-    (shaderIndex, uniformRenderObjectSendMaterialDataMap, renderObjectSendMaterialDataArr) =>
-  uniformRenderObjectSendMaterialDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, renderObjectSendMaterialDataArr)
+    (shaderIndex, uniformRenderObjectSendModelDataMap, renderObjectSendModelDataArr) =>
+  uniformRenderObjectSendModelDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, renderObjectSendModelDataArr)
   |> ignore;
 
 let unsafeGetUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
-  GLSLSenderConfigDataHandleUniformUtils.unsafeGetUniformSendData(
+  HandleUniformConfigDataMapService.unsafeGetUniformSendData(
     shaderIndex,
-    getGLSLSenderData(state).uniformRenderObjectSendMaterialDataMap
+    state.glslSenderRecord.uniformRenderObjectSendModelDataMap
   );

@@ -40,11 +40,11 @@ let initMaterialShader =
       |> ProgramService.registerProgram(shaderIndex, state.programRecord)
       |> ProgramService.initShader(vsSource, fsSource, gl);
     state
-    |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
+    |> HandleAttributeConfigDataService.addAttributeSendData(
          (gl, shaderIndex, program),
          shaderLibDataArr
        )
-    |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
+    |> HandleUniformConfigDataService.addUniformSendData(
          gl,
          (program, shaderIndex, shaderLibDataArr)
        )

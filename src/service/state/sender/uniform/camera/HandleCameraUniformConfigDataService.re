@@ -1,20 +1,21 @@
 
+
 let addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "vMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
+    HandleUniformShaderNoCachableService.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraVMatrixDataFromState
     )
   | "pMatrix" =>
-    GLSLSenderConfigDataHandleUniformShaderNoCachableCommon.addUniformSendDataByType(
+    HandleUniformShaderNoCachableService.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
       RenderDataSystem.getCameraPMatrixDataFromState
     )
   | "position" =>
-    GLSLSenderConfigDataHandleUniformShaderCachableCommon.addUniformSendDataByType(
+    HandleUniformShaderCachableService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       RenderDataSystem.getCameraPositionDataFromState

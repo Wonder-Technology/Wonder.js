@@ -1,18 +1,22 @@
-let getGLSLSenderData = GLSLSenderSystem.getGLSLSenderData;
+open StateDataType;
+
+let getGLSLSenderData = (state) => state.glslSenderRecord;
 
 let disableVertexAttribArray = (state: StateDataType.state) =>
-  GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
+  VertexAttribArrayService.disableVertexAttribArray(
+    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+    state
+  );
 
 let clearLastSendGeometry = (state: StateDataType.state) => {
-  GLSLSenderStateUtils.getGLSLSenderData(state).lastSendGeometry = None;
+  state.glslSenderRecord.lastSendGeometry = None;
   state
 };
 
 module JudgeSendUniformData = {
   let _prepareSendUinformData = (sandbox, prepareGameObjectFunc, state) => {
     let (state, gameObject, _, material, _) = prepareGameObjectFunc(sandbox, state);
-    let (state, _, cameraTransform, basicCameraView) =
-      CameraTool.createCameraGameObject(state);
+    let (state, _, cameraTransform, basicCameraView) = CameraTool.createCameraGameObject(state);
     (
       state,
       gameObject,

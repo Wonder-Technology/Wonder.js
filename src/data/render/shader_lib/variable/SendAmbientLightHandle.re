@@ -14,7 +14,7 @@ let send =
              (state, index) => {
                let name = "u_ambient";
                [@bs]
-               GLSLSenderSystem.sendFloat3(
+               SendGLSLDataService.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (

@@ -49,28 +49,28 @@ let _sendAttenuation =
       state
     ) => {
   [@bs]
-  GLSLSenderSystem.sendFloat(
+  SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (constant, GLSLLocationService.getUniformLocation(program, constant, uniformLocationMap, gl)),
     OperatePointLightService.getConstant(index, state.pointLightRecord)
   );
   [@bs]
-  GLSLSenderSystem.sendFloat(
+  SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (linear, GLSLLocationService.getUniformLocation(program, linear, uniformLocationMap, gl)),
     OperatePointLightService.getLinear(index, state.pointLightRecord)
   );
   [@bs]
-  GLSLSenderSystem.sendFloat(
+  SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (quadratic, GLSLLocationService.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
     OperatePointLightService.getQuadratic(index, state.pointLightRecord)
   );
   [@bs]
-  GLSLSenderSystem.sendFloat(
+  SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (range, GLSLLocationService.getUniformLocation(program, range, uniformLocationMap, gl)),
@@ -108,7 +108,7 @@ let send =
              (state, index) => {
                let {position, color, intensity, constant, linear, quadratic, range} as structureMemberNameData = lightGLSLDataStructureMemberNameArr[index];
                [@bs]
-               GLSLSenderSystem.sendVec3(
+               SendGLSLDataService.sendVec3(
                  gl,
                  uniformCacheMap,
                  (
@@ -118,7 +118,7 @@ let send =
                  PositionPointLightService.getPosition(index, state)
                );
                [@bs]
-               GLSLSenderSystem.sendFloat3(
+               SendGLSLDataService.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (
@@ -128,7 +128,7 @@ let send =
                  OperatePointLightService.getColor(index, state.pointLightRecord)
                );
                [@bs]
-               GLSLSenderSystem.sendFloat(
+               SendGLSLDataService.sendFloat(
                  gl,
                  uniformCacheMap,
                  (
