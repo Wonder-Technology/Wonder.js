@@ -2,7 +2,7 @@ let execJob = (configData, state) =>
   RenderBasicJob.execJob(configData, [@bs] DeviceManagerSystem.unsafeGetGl(state), state);
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObject; open GameObjectAPI;
+  open GameObjectAPI; open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRendererAPI;
@@ -19,7 +19,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer)
 };
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
-  open GameObject; open GameObjectAPI;
+  open GameObjectAPI; open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRendererAPI;

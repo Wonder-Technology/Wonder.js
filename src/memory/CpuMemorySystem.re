@@ -45,7 +45,7 @@ let _setNewMap = (uid, oldMap, newMap) =>
   | Some(component) => newMap |> WonderCommonlib.SparseMapSystem.set(uid, component)
   };
 
-let _allocateNewMaps = (newAliveUidArray, state) => {
+let _allocateNewMaps = (newAliveUidArray, {gameObjectRecord} as state) => {
   let {
     transformMap,
     meshRendererMap,
@@ -58,8 +58,7 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
     basicCameraViewMap,
     sourceInstanceMap,
     objectInstanceMap
-  } =
-    GameObjectAdminAci.getData(state);
+  } = gameObjectRecord;
   newAliveUidArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
@@ -113,8 +112,8 @@ let _allocateNewMaps = (newAliveUidArray, state) => {
      )
 };
 
-let reAllocateGameObject = (state: StateDataType.state) => {
-  let {aliveUidArray, disposedUidMap} as record = GameObjectAdminAci.getData(state);
+let reAllocateGameObject = ({gameObjectRecord} as state) => {
+  let {aliveUidArray, disposedUidMap} = gameObjectRecord;
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));

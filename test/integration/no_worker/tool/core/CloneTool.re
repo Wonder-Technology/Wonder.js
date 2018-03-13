@@ -1,4 +1,4 @@
-open GameObject;
+open GameObjectAPI;
 
 open GameObjectAPI;
 
@@ -6,7 +6,7 @@ let getFlattenClonedGameObjectArr = (clonedGameObjectArr) =>
   clonedGameObjectArr |> WonderCommonlib.ArraySystem.flatten;
 
 let cloneGameObject = (gameObject, count, isShareMaterial, state) =>
-  GameObject.cloneGameObject(gameObject, count, Js.Boolean.to_js_boolean(isShareMaterial), state);
+  GameObjectAPI.cloneGameObject(gameObject, count, Js.Boolean.to_js_boolean(isShareMaterial), state);
 
 let cloneWithGeometry = (state, gameObject1, geometry1, count) => {
   let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, count, false, state);

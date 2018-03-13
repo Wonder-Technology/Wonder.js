@@ -58,7 +58,7 @@ let dispose = (geometry, state: StateDataType.state) =>
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();
-  let state = state |> GameObject.batchDisposeGameObject(gameObjectArr);
+  let state = state |> GameObjectAPI.batchDisposeGameObject(gameObjectArr);
   TestTool.openContractCheck();
   state
 };

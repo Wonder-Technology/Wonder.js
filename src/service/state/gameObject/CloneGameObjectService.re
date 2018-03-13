@@ -43,7 +43,7 @@ let rec _clone =
   let totalClonedGameObjectArr =
     totalClonedGameObjectArr |> ArrayService.push(clonedGameObjectArr);
   let (state, clonedTransformArr) =
-    GameObjectCloneComponentCommon.cloneComponent(
+    CloneGameObjectComponentService.clone(
       (uid, transform, countRangeArr, clonedGameObjectArr),
       isShareMaterial,
       state

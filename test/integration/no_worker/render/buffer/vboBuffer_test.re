@@ -72,7 +72,7 @@ let _ =
                   let state =
                     state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                  let state = state |> GameObject.initGameObject(gameObject2);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject2);
                   let (
                     resultVertexArrayBuffer2,
                     resultNormalArrayBuffer2,

@@ -9,7 +9,7 @@ let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
   TestTool.initWithJobConfig(~sandbox, ~noWorkerJobConfig, ());
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObject; open GameObjectAPI;
+  open GameObjectAPI; open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
   open Sinon;

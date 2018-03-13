@@ -6,4 +6,4 @@ let createGameObject = (state: StateDataType.state) => {
 let getGameObjectData = (state: StateDataType.state) => state.gameObjectRecord;
 
 let initGameObject = (gameObject, state: StateDataType.state) =>
-  state |> AllMaterialTool.prepareForInit |> GameObject.initGameObject(gameObject);
+  state |> AllMaterialTool.prepareForInit |> GameObjectAPI.initGameObject(gameObject);

@@ -26,6 +26,16 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let cloneGameObject = GameObjectAPI.cloneGameObject;
+
+let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
+
+let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObject = GameObjectAPI.disposeGameObject;
+
+let isGameObjectAlive = GameObjectAPI.isGameObjectAlive;
+
 let disposeGameObjectObjectInstanceComponent = GameObjectAPI.disposeGameObjectObjectInstanceComponent;
 
 let unsafeGetGameObjectObjectInstanceComponent = GameObjectAPI.unsafeGetGameObjectObjectInstanceComponent;
@@ -284,16 +294,6 @@ let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = Job.addNoWorkerInitJob;
 
-let cloneGameObject = GameObject.cloneGameObject;
-
-let batchDisposeGameObject = GameObject.batchDisposeGameObject;
-
-let initGameObject = GameObject.initGameObject;
-
-let disposeGameObject = GameObject.disposeGameObject;
-
-let isGameObjectAlive = GameObject.isGameObjectAlive;
-
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
@@ -321,6 +321,16 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let cloneGameObject = GameObjectAPI.cloneGameObject;
+
+let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
+
+let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObject = GameObjectAPI.disposeGameObject;
+
+let isGameObjectAlive = GameObjectAPI.isGameObjectAlive;
 
 let disposeGameObjectObjectInstanceComponent = GameObjectAPI.disposeGameObjectObjectInstanceComponent;
 
@@ -505,13 +515,3 @@ let removeNoWorkerInitJob = Job.removeNoWorkerInitJob;
 let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = Job.addNoWorkerInitJob;
-
-let cloneGameObject = GameObject.cloneGameObject;
-
-let batchDisposeGameObject = GameObject.batchDisposeGameObject;
-
-let initGameObject = GameObject.initGameObject;
-
-let disposeGameObject = GameObject.disposeGameObject;
-
-let isGameObjectAlive = GameObject.isGameObjectAlive;

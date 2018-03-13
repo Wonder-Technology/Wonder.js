@@ -1,6 +1,6 @@
 open Wonder_jest;
 
-open GameObject;
+open GameObjectAPI;
 
 open GameObjectAPI;
 
@@ -422,8 +422,8 @@ let _ =
                           let state = AllMaterialTool.prepareForInit(state);
                           let state =
                             state
-                            |> GameObject.initGameObject(clonedGameObjectArr[0])
-                            |> GameObject.initGameObject(clonedGameObjectArr[1]);
+                            |> GameObjectAPI.initGameObject(clonedGameObjectArr[0])
+                            |> GameObjectAPI.initGameObject(clonedGameObjectArr[1]);
                           (
                             BasicMaterialTool.unsafeGetShaderIndex(clonedMaterialArr[0], state),
                             BasicMaterialTool.unsafeGetShaderIndex(clonedMaterialArr[1], state)

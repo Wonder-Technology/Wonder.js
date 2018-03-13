@@ -1,12 +1,12 @@
 open Wonder_jest;
 
-open GameObject;
+open GameObjectAPI;
 
 open GameObjectAPI;
 
 let _ =
   describe(
-    "GameObject",
+    "GameObjectAPI",
     () => {
       open Expect;
       open! Expect.Operators;

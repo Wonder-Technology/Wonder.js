@@ -62,7 +62,7 @@ let _ =
           test(
             "get material's gameObject",
             () => {
-              open GameObject;
+              open GameObjectAPI;
               open GameObjectAPI;
               let (state, material) = createBasicMaterial(state^);
               let (state, gameObject) = state |> createGameObject;
@@ -189,7 +189,7 @@ let _ =
             "if material is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject;
+                open GameObjectAPI;
                 open GameObjectAPI;
                 let (state, material) = createBasicMaterial(state^);
                 let (state, gameObject) = state |> createGameObject;

@@ -608,7 +608,7 @@ let _ =
             "if geometry is disposed",
             () => {
               let _testSetFunc = (setFunc) => {
-                open GameObject; open GameObjectAPI;
+                open GameObjectAPI; open GameObjectAPI;
                 let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                 let state = state |> GeometryTool.initGeometrys;
                 TestTool.closeContractCheck();

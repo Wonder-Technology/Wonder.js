@@ -606,7 +606,7 @@ let _ =
                           let state = state |> AmbientLightAPI.setAmbientLightColor(light, color1);
                           let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
                           let state = state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
-                          let state = state |> GameObject.disposeGameObject(lightGameObject1);
+                          let state = state |> GameObjectAPI.disposeGameObject(lightGameObject1);
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state

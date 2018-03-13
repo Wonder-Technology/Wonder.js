@@ -46,10 +46,10 @@ let _ =
                        );
                   let state = state |> RenderJobsTool.initSystemAndRender;
                   let state = state |> DirectorTool.runWithDefaultTime;
-                  let state = state |> GameObject.disposeGameObject(gameObject1);
+                  let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                   let (state, gameObject2, _, material2, _) =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
-                  let state = state |> GameObject.initGameObject(gameObject2);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject2);
                   let colorArr2 = [|0.0, 0.1, 0.2|];
                   let state = state |> BasicMaterialAPI.setBasicMaterialColor(material2, colorArr2);
                   let state = state |> DirectorTool.runWithDefaultTime;
@@ -91,10 +91,10 @@ let _ =
                   let (state, bindBuffer, element_array_buffer) =
                     _prepareForElementArrayBuffer(state);
                   let state = state |> DirectorTool.runWithDefaultTime;
-                  let state = state |> GameObject.disposeGameObject(gameObject1);
+                  let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                   let (state, gameObject2, geometry2, _, _) =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
-                  let state = state |> GameObject.initGameObject(gameObject2);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject2);
                   let bindElementArrayBufferCallCountAfterFirstRender =
                     bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
                   let state = state |> DirectorTool.runWithDefaultTime;

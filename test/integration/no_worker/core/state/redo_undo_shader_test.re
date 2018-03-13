@@ -140,7 +140,7 @@ let _ =
                 "test init shader",
                 () => {
                   let _prepareBasicMaterialGameObject = (sandbox, state) => {
-                    open GameObject; open GameObjectAPI;
+                    open GameObjectAPI; open GameObjectAPI;
                     open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;
@@ -154,7 +154,7 @@ let _ =
                     (state, gameObject)
                   };
                   let _prepareInstanceGameObject = (sandbox, state) => {
-                    open GameObject; open GameObjectAPI;
+                    open GameObjectAPI; open GameObjectAPI;
                     open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;

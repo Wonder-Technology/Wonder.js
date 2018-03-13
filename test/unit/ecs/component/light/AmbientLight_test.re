@@ -55,7 +55,7 @@ let _ =
                       let (state, gameObject1, _) = AmbientLightTool.createGameObject(state^);
                       let (state, gameObject2, _) = AmbientLightTool.createGameObject(state);
                       let (state, gameObject3, _) = AmbientLightTool.createGameObject(state);
-                      let state = state |> GameObject.disposeGameObject(gameObject1);
+                      let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                       expect(
                         () => {
                           let (state, light) = createAmbientLight(state);
@@ -77,7 +77,7 @@ let _ =
           test(
             "get light's gameObject",
             () => {
-              open GameObject; open GameObjectAPI;
+              open GameObjectAPI; open GameObjectAPI;
               let (state, light) = createAmbientLight(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
@@ -249,7 +249,7 @@ let _ =
             "if light is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObject; open GameObjectAPI;
+                open GameObjectAPI; open GameObjectAPI;
                 let (state, light) = createAmbientLight(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectAmbientLightComponent(gameObject, light);

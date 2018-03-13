@@ -636,7 +636,7 @@ let _ =
           test(
             "get transform's gameObject",
             () => {
-              open GameObject;
+              open GameObjectAPI;
               open GameObjectAPI;
               let (state, gameObject) = createGameObject(state^);
               let transform = state |> unsafeGetGameObjectTransformComponent(gameObject);
@@ -653,7 +653,7 @@ let _ =
                  test(
                    "cache record after first get",
                    () => {
-                     open GameObject; open GameObjectAPI;
+                     open GameObjectAPI; open GameObjectAPI;
                      let (state, transform1) = createTransform(state^);
                      let pos1 = (1., 2., 3.);
                      let state = state |> setTransformLocalPosition(transform1, pos1);
@@ -666,7 +666,7 @@ let _ =
                    "test cache invalid",
                    () => {
                      let _prepare = (state) => {
-                       open GameObject; open GameObjectAPI;
+                       open GameObjectAPI; open GameObjectAPI;
                        let (state, transform1) = createTransform(state^);
                        let pos1 = (1., 2., 3.);
                        let state = state |> setTransformLocalPosition(transform1, pos1);
@@ -1032,7 +1032,7 @@ let _ =
           test(
             "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
             () => {
-              open GameObject;
+              open GameObjectAPI;
               open GameObjectAPI;
               let (state, transform1) = createTransform(state^);
               let (state, transform2) = createTransform(state);

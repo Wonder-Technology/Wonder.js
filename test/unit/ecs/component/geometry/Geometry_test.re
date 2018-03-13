@@ -34,7 +34,7 @@ let _ =
             test(
               {j|if $type_ already exist, fill new record in it|j},
               () => {
-                open GameObject; open GameObjectAPI;
+                open GameObjectAPI; open GameObjectAPI;
                 let (state, geometry) = createBoxGeometry(state^);
                 let state = state |> setFunc(geometry, [|1., 2., 3.|]);
                 let newData = [|3., 3., 5.|];
@@ -46,7 +46,7 @@ let _ =
             test(
               {j|directly set it|j},
               () => {
-                open GameObject; open GameObjectAPI;
+                open GameObjectAPI; open GameObjectAPI;
                 let (state, geometry) = createBoxGeometry(state^);
                 let state = state |> setFunc(geometry, Float32Array.make([|1., 2., 3.|]));
                 let newData = Float32Array.make([|3., 5., 5.|]);
@@ -88,7 +88,7 @@ let _ =
               test(
                 "if indices already exist, fill new record in it",
                 () => {
-                  open GameObject; open GameObjectAPI;
+                  open GameObjectAPI; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
                   let state = state |> GeometryTool.setIndicesWithArray(geometry, [|1, 2, 3|]);
                   let newData = [|3, 3, 5|];
@@ -103,7 +103,7 @@ let _ =
               test(
                 "directly set it",
                 () => {
-                  open GameObject; open GameObjectAPI;
+                  open GameObjectAPI; open GameObjectAPI;
                   let (state, geometry) = createBoxGeometry(state^);
                   let newData = Uint16Array.make([|3, 5, 5|]);
                   let state = state |> setBoxGeometryIndices(geometry, newData);
@@ -131,7 +131,7 @@ let _ =
           test(
             "get geometry's gameObject",
             () => {
-              open GameObject; open GameObjectAPI;
+              open GameObjectAPI; open GameObjectAPI;
               let (state, geometry) = createBoxGeometry(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
@@ -242,7 +242,7 @@ let _ =
                 "use disposed index as new index firstly",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
@@ -255,7 +255,7 @@ let _ =
                 "if has no disposed index, get index from boxGeometryRecord.index",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
@@ -273,7 +273,7 @@ let _ =
                     () => {
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);
-                      let state = state |> GameObject.initGameObject(gameObject1);
+                      let state = state |> GameObjectAPI.initGameObject(gameObject1);
                       let state =
                         VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
                           geometry1,
@@ -423,7 +423,7 @@ let _ =
                 "shouldn't dispose the alive component",
                 () => {
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state =
@@ -452,7 +452,7 @@ let _ =
                 "if geometry is disposed",
                 () => {
                   let _testGetFunc = (getFunc) => {
-                    open GameObject; open GameObjectAPI;
+                    open GameObjectAPI; open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> GeometryTool.initGeometrys;
                     let state =
@@ -463,7 +463,7 @@ let _ =
                     |> toThrowMessage("expect component alive, but actual not")
                   };
                   let _testSetFunc = (setFunc) => {
-                    open GameObject; open GameObjectAPI;
+                    open GameObjectAPI; open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> GeometryTool.initGeometrys;
                     let state =

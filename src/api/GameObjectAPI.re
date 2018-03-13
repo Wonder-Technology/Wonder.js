@@ -12,11 +12,13 @@ open CloneComponentGameObjectService;
 
 open AddGameObjectComponentService;
 
-open DisposeGameObjectComponentService;
+open DisposeGameObjectService;
 
-open CloneGameObjectComponentService;
+open CloneGameObjectService;
 
 open CreateGameObjectService;
+
+open AliveGameObjectService;
 
 let createGameObject = (state: StateDataType.state) => create(state);
 
@@ -411,7 +413,7 @@ let disposeGameObjectSourceInstanceComponent =
   disposeSourceInstanceComponent(
     gameObject,
     component,
-    GameObjectDisposeCommon.batchDispose,
+    DisposeGameObjectService.batchDispose,
     state
   )
 };
@@ -442,3 +444,44 @@ let disposeGameObjectObjectInstanceComponent =
   );
   [@bs] disposeObjectInstanceComponent(gameObject, component, state)
 };
+
+let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
+  isAlive(gameObject, state);
+
+let disposeGameObject = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  dispose(gameObject, state)
+};
+
+let initGameObject = (gameObject: gameObject, state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    StateData.stateData.isDebug
+  );
+  InitGameObjectService.initGameObject(gameObject, state)
+};
+
+let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            gameObjectArray
+            |> WonderCommonlib.ArraySystem.forEach(
+                 [@bs] ((gameObject) => _checkGameObjectShouldAlive(gameObject, state))
+               )
+          )
+        )
+      ),
+    StateData.stateData.isDebug
+  );
+  batchDispose(gameObjectArray, state)
+};
+
+let cloneGameObject =
+    (gameObject: gameObject, count: int, isShareMaterial: Js.boolean, state: StateDataType.state) =>
+  clone(gameObject, count, Js.to_bool(isShareMaterial), state);
