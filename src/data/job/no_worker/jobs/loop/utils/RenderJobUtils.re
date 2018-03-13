@@ -4,7 +4,7 @@ open VboBufferType;
 
 let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
-    VboBufferGetStateDataUtils.getVboBufferData(state);
+    state.vboBufferRecord;
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
   |> ArraySystem.reduceState(
@@ -14,21 +14,21 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
            let arrayBuffer =
              switch buffer {
              | "vertex" =>
-               ArrayBufferSystem.getOrCreateBuffer(
+               ArrayBufferService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, vertexBufferMap),
                  [@bs] VerticesGeometryService.unsafeGetVertices,
                  state
                )
              | "normal" =>
-               ArrayBufferSystem.getOrCreateBuffer(
+               ArrayBufferService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, normalBufferMap),
                  [@bs] NormalsGeometryService.unsafeGetNormals,
                  state
                )
              | "index" =>
-               ElementArrayBufferSystem.getOrCreateBuffer(
+               ElementArrayBufferService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, elementArrayBufferMap),
                  [@bs] IndicesGeometryService.unsafeGetIndices,

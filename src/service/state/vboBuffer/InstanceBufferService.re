@@ -6,7 +6,7 @@ open Js.Typed_array;
 /* let _getDefaultCapacity = () => 64 * ( 16 + 9 ) * 4; */
 /* let _getDefaultCapacity = () => 64 * (16 + 0); */
 let createBuffer = (gl, capacity: int, state: StateDataType.state) => {
-  let buffer = VboBufferPoolCommon.getInstanceBuffer(gl, state);
+  let buffer = PoolVboBufferService.getInstanceBuffer(gl, state.vboBufferRecord);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   bufferFloat32DataWithCapacity(getArrayBuffer(gl), capacity, getDynamicDraw(gl), gl);
   buffer

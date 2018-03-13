@@ -4,7 +4,7 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferSystem;
+open InstanceBufferService;
 
 let render = (gl, uid, renderFunc, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);

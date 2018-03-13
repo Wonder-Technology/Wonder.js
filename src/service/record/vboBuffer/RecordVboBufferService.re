@@ -9,3 +9,13 @@ let create = () => {
   elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
   matrixInstanceBufferPool: WonderCommonlib.ArraySystem.createEmpty()
 };
+
+let deepCopyForRestore = (record) => {
+  vertexBufferMap: [||],
+  normalBufferMap: [||],
+  elementArrayBufferMap: [||],
+  matrixInstanceBufferMap: [||],
+  vertexArrayBufferPool: [||],
+  elementArrayBufferPool: [||],
+  matrixInstanceBufferPool: [||]
+};

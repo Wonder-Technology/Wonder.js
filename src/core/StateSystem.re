@@ -35,7 +35,7 @@ let createState = () => {
   glslChunkData: ShaderChunkSystem.create(),
   renderData: RenderDataHelper.create(),
   timeControllerData: TimeControllerHelper.create(),
-  vboBufferRecord: VboBufferHelper.create(),
+  vboBufferRecord: RecordVboBufferService.create(),
   globalTempRecord: RecordGlobalTempService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceData: WorkerInstanceHelper.create(),
@@ -55,7 +55,6 @@ let setState = (stateData: stateData, state: state) => {
 
 let deepCopyForRestore = (state: StateDataType.state) =>
   state
-  |> VboBufferSystem.deepCopyForRestore
   |> GLSLSenderSystem.deepCopyForRestore
   /* |> AmbientLightAdmin.deepCopyForRestore
      |> DirectionLightAdmin.deepCopyForRestore
@@ -87,7 +86,8 @@ let deepCopyForRestore = (state: StateDataType.state) =>
       sourceInstanceRecord:
         RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
       objectInstanceRecord:
-        RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord)
+        RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
+      vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord)
     }
   );
 
@@ -119,7 +119,7 @@ let restore =
   /* |> TypeArrayPoolService.restore(currentState, sharedData) */
   |> RestoreTypeArrayPoolService.restore(currentState, sharedData)
   |> RestoreGlobalTempService.restore(currentState)
-  |> VboBufferSystem.restore(currentState)
+  |> RestoreVboBufferService.restore(currentState)
   |> ShaderSystem.restore(currentState)
   |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)

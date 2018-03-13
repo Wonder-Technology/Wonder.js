@@ -4,7 +4,7 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferSystem;
+open InstanceBufferService;
 
 let _fillObjectInstanceData =
     (objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc, stateOffsetTuple) => {
@@ -88,13 +88,13 @@ let _sendTransformMatrixData =
       state
     ) => {
   let matrixInstanceBuffer =
-    InstanceBufferSystem.getOrCreateBuffer(
+    InstanceBufferService.getOrCreateBuffer(
       (gl, sourceInstance, defaultCapacity),
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
   let matricesArrayForInstance =
-    InstanceBufferSystem.getOrCreateMatrixFloat32Array(
+    InstanceBufferService.getOrCreateMatrixFloat32Array(
       sourceInstance,
       defaultCapacity,
       (matrixInstanceBufferCapacityMap, matrixFloat32ArrayMap),
@@ -136,9 +136,9 @@ let _sendStaticTransformMatrixData =
     ) =>
   StaticSourceInstanceService.isSendTransformMatrixData(sourceInstance, state.sourceInstanceRecord) ?
     {
-      InstanceBufferSystem.bind(
+      InstanceBufferService.bind(
         gl,
-        InstanceBufferSystem.getOrCreateBuffer(
+        InstanceBufferService.getOrCreateBuffer(
           (gl, sourceInstance, defaultCapacity),
           (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
           state
@@ -172,7 +172,7 @@ let _sendDynamicTransformMatrixData =
   |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc);
 
 let _geMatrixMapTuple = (state) => {
-  let {matrixInstanceBufferMap} = VboBufferGetStateDataUtils.getVboBufferData(state);
+  let {matrixInstanceBufferMap} = state.vboBufferRecord;
   let {matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap} = state.sourceInstanceRecord;
   (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
 };
