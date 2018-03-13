@@ -1,5 +1,7 @@
 open StateDataType;
 
+open ViewType;
+
 let _convertContextConfigDataToJsObj =
     ({alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer}) => {
   "alpha": Js.Boolean.to_js_boolean(alpha),
@@ -15,9 +17,11 @@ let execJob = (_, state) => {
   deviceManagerRecord:
     state.deviceManagerRecord
     |> DeviceManagerService.setGl(
-         ViewSystem.getCanvas(state)
+         ViewService.getCanvas(state.viewRecord)
          |> GlService.createGl(
-              _convertContextConfigDataToJsObj(ViewSystem.getContextConfig(state))
+              _convertContextConfigDataToJsObj(
+                ViewService.unsafeGetContextConfig(state.viewRecord)
+              )
             )
        )
 };

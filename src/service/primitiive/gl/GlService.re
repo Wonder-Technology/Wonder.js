@@ -1,4 +1,4 @@
 let getContext = (canvas, options) => Gl.getWebgl1Context(canvas, options);
 
-let createGl = (contextConfig: ContextShareType.contextConfigJsObj, canvas) =>
+let createGl = (contextConfig: ContextType.contextConfigJsObj, canvas) =>
   getContext(canvas, contextConfig);

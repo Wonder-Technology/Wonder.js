@@ -4,7 +4,7 @@ let sendCreateGLData =
     (
       canvas,
       renderWorker,
-      contextConfig: ContextShareType.contextConfigJsObj,
+      contextConfig: ContextType.contextConfigJsObj,
       viewportData: array(float)
     ) => {
   let offscreen = canvas##transferControlToOffscreen();

@@ -78,23 +78,11 @@ open WorkerInstanceType;
 
 open WorkerDetectType;
 
-type contextConfig = {
-  alpha: bool,
-  depth: bool,
-  stencil: bool,
-  antialias: bool,
-  premultipliedAlpha: bool,
-  preserveDrawingBuffer: bool
-};
+open ViewType;
 
 type bufferConfig = {mutable geometryPointDataBufferCount: int};
 
 type gpuConfig = {mutable useHardwareInstance: bool};
-
-type viewData = {
-  canvas: option(DomType.htmlElement),
-  contextConfig: option(contextConfig)
-};
 
 type initConfig = {isDebug: bool};
 
@@ -181,7 +169,7 @@ and state = {
   gpuDetectData,
   sourceInstanceRecord,
   objectInstanceRecord,
-  viewData,
+  viewRecord,
   initConfig,
   deviceManagerRecord,
   gameObjectRecord,

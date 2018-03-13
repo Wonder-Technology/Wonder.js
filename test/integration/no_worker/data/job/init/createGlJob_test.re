@@ -136,7 +136,7 @@ let _ =
             )
             |> DirectorTool.init;
           state
-          |> ViewSystem.getContextConfig
+          |> ViewTool.unsafeGetContextConfig
           |>
           expect == {
                       alpha: true,

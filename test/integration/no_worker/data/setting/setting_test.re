@@ -4,7 +4,7 @@ open Js.Promise;
 
 open RenderConfigType;
 
-open ViewSystem;
+open ViewService;
 
 open DomTool;
 

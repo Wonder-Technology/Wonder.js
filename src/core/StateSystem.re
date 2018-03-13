@@ -11,7 +11,7 @@ let createState = () => {
   workerJobConfig: None,
   renderConfigData: None,
   gpuDetectData: {extensionInstancedArrays: None, precision: None},
-  viewData: {canvas: None, contextConfig: None},
+  viewRecord: {canvas: None, contextConfig: None},
   initConfig: {isDebug: false},
   sourceInstanceRecord: RecordSourceInstanceService.create(),
   objectInstanceRecord: RecordObjectInstanceService.create(),

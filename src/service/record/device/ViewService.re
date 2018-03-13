@@ -1,9 +1,16 @@
+open ViewType;
+
+open DomType;
+
+open Gl;
+
 external settingTypeContextConfigDataToStateDataTypeContextConfigData :
-  SettingType.context => StateDataType.contextConfig =
+  SettingType.context => contextConfig =
   "%identity";
 
-/* TODO support webgl2 */
-/* let getContext = (canvas, options) => Gl.getWebgl1Context(canvas, options); */
+let getCanvas = ({canvas}) => canvas |> OptionService.unsafeGet;
+
+let setCanvas = (canvas: htmlElement, record) => {...record, canvas: Some(canvas)};
 
 let getFullScreenData = () => {
   let root = Root.root;
@@ -69,4 +76,11 @@ let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) =
   |> setStyleWidth(styleWidth)
   |> setStyleHeight(styleHeight)
   |> Obj.magic
+};
+
+let unsafeGetContextConfig = ({contextConfig}) => contextConfig |> OptionService.unsafeGet;
+
+let setContextConfig = (contextConfig: SettingType.context, record) => {
+  ...record,
+  contextConfig: Some(settingTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig))
 };

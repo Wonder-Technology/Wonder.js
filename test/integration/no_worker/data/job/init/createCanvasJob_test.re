@@ -81,7 +81,7 @@ let _ =
                       ()
                     )
                     |> DirectorTool.init
-                    |> ViewSystem.getCanvas
+                    |> ViewTool.getCanvas
                     |> DomTool.getId
                     |> expect == "a"
                 );
@@ -95,7 +95,7 @@ let _ =
                     ()
                   )
                   |> DirectorTool.init
-                  |> ViewSystem.getCanvas
+                  |> ViewTool.getCanvas
                   |> DomTool.getId
                   |> expect == "a"
               )

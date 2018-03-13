@@ -1,3 +1,5 @@
+open StateDataType;
+
 open Dom;
 
 open DomUtils;
@@ -41,5 +43,8 @@ let _createCanvas = ({canvasId}) =>
   )
   |> Obj.magic;
 
-let execJob = (_, state) =>
-  state |> ViewSystem.setCanvas(_createCanvas(CanvasConfigSystem.getConfig(state)));
+let execJob = (_, state) => {
+  ...state,
+  viewRecord:
+    state.viewRecord |> ViewService.setCanvas(_createCanvas(CanvasConfigSystem.getConfig(state)))
+};
