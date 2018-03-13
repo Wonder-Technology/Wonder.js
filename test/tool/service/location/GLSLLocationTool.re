@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getGLSLLocationData = (state) => state.glslLocationRecord;
+let getGLSLLocationRecord = (state) => state.glslLocationRecord;
 
 let _getLocation = (~pos=10, sandbox, name: string) => {
   let stub = Sinon.createEmptyStubWithJsObjSandbox(sandbox);

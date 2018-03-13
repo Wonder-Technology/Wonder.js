@@ -8,7 +8,7 @@ let _getLightMaterialRenderArray = (renderArray, state: StateDataType.state) =>
      );
 
 let _render = (gl, state: StateDataType.state) =>
-  switch (state |> RenderDataSystem.getRenderArrayFromState) {
+  switch (state |> OperateRenderService.getRenderArray) {
   | None => state
   | Some(renderArray) =>
     state
@@ -17,7 +17,7 @@ let _render = (gl, state: StateDataType.state) =>
          [@bs]
          (
            (state, uid: int) =>
-             if (InstanceUtils.isSourceInstance(uid, state)) {
+             if (JudgeInstanceService.isSourceInstance(uid, state)) {
                FrontRenderLightInstanceJobCommon.render(gl, uid, state)
              } else {
                let (state, _, geometryIndex) =

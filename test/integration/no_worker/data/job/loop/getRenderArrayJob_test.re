@@ -47,7 +47,7 @@ let _ =
           let (state, gameObject2, _) = MeshRendererTool.createGameObject(state);
           let state = DirectorTool.run(state, ());
           state
-          |> RenderDataTool.unsafeGetRenderArrayFromState
+          |> RenderTool.unsafeGetRenderArrayFromState
           |> expect == [|gameObject1, gameObject2|]
         }
       )

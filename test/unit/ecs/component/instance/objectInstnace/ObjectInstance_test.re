@@ -35,7 +35,7 @@ let _ =
                          objectInstance
                        );
                   let {sourceInstanceMap, gameObjectMap} =
-                    ObjectInstanceTool.getObjectInstanceData(state);
+                    ObjectInstanceTool.getObjectInstanceRecord(state);
                   (
                     sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(objectInstance),
                     gameObjectMap |> WonderCommonlib.SparseMapSystem.has(objectInstance)
@@ -56,7 +56,7 @@ let _ =
                          gameObject,
                          objectInstance
                        );
-                  let {objectInstanceArrayMap} = SourceInstanceTool.getSourceInstanceData(state);
+                  let {objectInstanceArrayMap} = SourceInstanceTool.getSourceInstanceRecord(state);
                   objectInstanceArrayMap
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
                   |> WonderCommonlib.SparseMapSystem.has(objectInstance)

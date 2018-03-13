@@ -9,7 +9,7 @@ let createGameObject = (state) => {
   (state, gameObject, light)
 };
 
-let getLightData = (state) => state.ambientLightRecord;
+let getLightRecord = (state) => state.ambientLightRecord;
 
 let isAlive = (light, state) =>
   DisposeAmbientLightService.isAlive(light, state.ambientLightRecord);

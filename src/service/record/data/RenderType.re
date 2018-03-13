@@ -1,3 +1,4 @@
+
 open Js.Typed_array;
 
 type renderCameraData = {
@@ -6,7 +7,7 @@ type renderCameraData = {
   position: (float, float, float)
 };
 
-type renderData = {
+type renderRecord = {
   renderArray: option(array(int)),
   cameraData: option(renderCameraData)
 };

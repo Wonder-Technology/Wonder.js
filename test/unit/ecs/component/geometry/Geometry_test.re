@@ -202,7 +202,7 @@ let _ =
                   open VboBufferType;
                   let (state, gameObject1, geometry1) = _prepare(state);
                   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
-                    VboBufferTool.getVboBufferData(state);
+                    VboBufferTool.getVboBufferRecord(state);
                   (
                     vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     normalBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),

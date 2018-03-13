@@ -1,5 +1,7 @@
 open GlType;
 
+open InitConfigType;
+
 open ComponentType;
 
 open TransformType;
@@ -44,7 +46,7 @@ open GLSLSenderType;
 
 open ShaderChunkType;
 
-open RenderDataType;
+open RenderType;
 
 open TimeControllerType;
 
@@ -85,8 +87,6 @@ open ViewType;
 type bufferConfig = {mutable geometryPointDataBufferCount: int};
 
 type gpuConfig = {mutable useHardwareInstance: bool};
-
-type initConfig = {isDebug: bool};
 
 type colorRgba = (float, float, float, float);
 
@@ -192,7 +192,7 @@ and state = {
   glslLocationRecord,
   glslSenderRecord,
   glslChunkData,
-  renderData,
+  renderRecord,
   timeControllerData,
   vboBufferRecord,
   globalTempRecord,

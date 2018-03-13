@@ -59,7 +59,7 @@ let _ =
             "create a new transform which is just index(int)",
             () => {
               let (state, transform) = createTransform(state^);
-              (TransformTool.getTransformData(state).index, transform) |> expect == (1, 0)
+              (TransformTool.getTransformRecord(state).index, transform) |> expect == (1, 0)
             }
           );
           /* describe(
@@ -93,7 +93,7 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  TransformTool.getTransformData(state) |> ((record) => expect(record.index) == 1)
+                  TransformTool.getTransformRecord(state) |> ((record) => expect(record.index) == 1)
                 }
               )
           )
@@ -316,7 +316,7 @@ let _ =
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
                   let pos4 = (7., 3., 4.);
-                  let record = TransformTool.getTransformData(state);
+                  let record = TransformTool.getTransformRecord(state);
                   let state =
                     state
                     |> TransformAPI.setTransformLocalPosition(transform1, pos1)
@@ -618,12 +618,12 @@ let _ =
                  let (state, _, _, _) = _prepareOne();
                  let len1 =
                    state
-                   |> TransformTool.getTransformData
+                   |> TransformTool.getTransformRecord
                    |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  let state = state |> TransformTool.update;
                  let len2 =
                    state
-                   |> TransformTool.getTransformData
+                   |> TransformTool.getTransformRecord
                    |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  (len1, len2) |> expect == (1, 0)
                }
@@ -876,7 +876,7 @@ let _ =
                     dirtyMap,
                     gameObjectMap
                   } =
-                    TransformTool.getTransformData(state);
+                    TransformTool.getTransformRecord(state);
                   (
                     localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform1),
                     localPositionMap |> WonderCommonlib.SparseMapSystem.has(transform1),

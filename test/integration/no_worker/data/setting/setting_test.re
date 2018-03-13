@@ -10,7 +10,7 @@ open DomTool;
 
 open SettingTool;
 
-open InitConfigSystem;
+open InitConfigService;
 
 let _ =
   describe(

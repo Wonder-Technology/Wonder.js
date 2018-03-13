@@ -34,7 +34,7 @@ let createState = () => {
   glslLocationRecord: RecordGLSLLocationService.create(),
   glslSenderRecord: RecordGLSLSenderService.create(),
   glslChunkData: ShaderChunkSystem.create(),
-  renderData: RenderDataHelper.create(),
+  renderRecord: RecordRenderService.create(),
   timeControllerData: TimeControllerHelper.create(),
   vboBufferRecord: RecordVboBufferService.create(),
   globalTempRecord: RecordGlobalTempService.create(),
@@ -116,7 +116,7 @@ let restore =
   |> RestoreGLSLSenderService.restore(intersectShaderIndexDataArray, currentState)
   |> RestoreBasicMaterialService.restore(gl, currentState)
   |> RestoreLightMaterialService.restore(gl, currentState)
-  |> RenderDataSystem.restore(currentState)
+  |> RestoreRenderService.restore(currentState)
   /* |> RecordGlobalTempService.restore(currentState) */
   |> setState(stateData)
   /* |> WonderLog.Contract.ensureCheck ((state) => {

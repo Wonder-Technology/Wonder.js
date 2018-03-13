@@ -1,6 +1,6 @@
 open StateDataType;
 
-open RenderDataType;
+open RenderType;
 
 let _getCameraData =
     (
@@ -21,7 +21,7 @@ let _getCameraData =
         currentCameraGameObject,
         gameObjectRecord
       );
-    /* RenderDataSystem.isFirstRender(state) ?
+    /* OperateRenderService.isFirstRender(state) ?
        Some({
          vMatrix:
            CacheType.New(BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)),
@@ -65,4 +65,4 @@ let _getCameraData =
     })
   };
 
-let execJob = (_, _, state) => RenderDataSystem.setCameraData(_getCameraData(state), state);
+let execJob = (_, _, state) => OperateRenderService.setCameraData(_getCameraData(state), state);

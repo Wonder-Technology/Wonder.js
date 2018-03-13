@@ -43,10 +43,10 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
   )
 };
 
-let getObjectInstanceData = (state) => state.objectInstanceRecord;
+let getObjectInstanceRecord = (state) => state.objectInstanceRecord;
 
 let isDisposed = (objectInstance, state) => {
   open ObjectInstanceType;
-  let {sourceInstanceMap} = getObjectInstanceData(state);
+  let {sourceInstanceMap} = getObjectInstanceRecord(state);
   ! (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(objectInstance))
 };

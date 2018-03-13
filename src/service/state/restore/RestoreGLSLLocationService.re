@@ -8,12 +8,12 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     ...targetState,
     glslLocationRecord: {
       attributeLocationMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           attributeLocationMap
         ),
       uniformLocationMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformLocationMap
         )

@@ -4,7 +4,7 @@ open TransformType;
 
 open Js.Typed_array;
 
-let getTransformData = (state: StateDataType.state) => state.transformRecord;
+let getTransformRecord = (state: StateDataType.state) => state.transformRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
 
@@ -56,7 +56,7 @@ let dispose = (transform, state) => {
 };
 
 let isDisposed = (transform, state) => {
-  let {localToWorldMatrixMap} = getTransformData(state);
+  let {localToWorldMatrixMap} = getTransformRecord(state);
   ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform))
 };
 

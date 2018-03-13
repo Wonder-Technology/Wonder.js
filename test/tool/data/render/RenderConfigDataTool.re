@@ -575,4 +575,4 @@ let getShaders = RenderConfigService.getShaders;
 
 let getShaderLibs = RenderConfigService.getShaderLibs;
 
-let getMaterialShaderLibDataArr = RenderConfigService.getMaterialShaderLibDataArr;
+let getMaterialShaderLibRecordArr = RenderConfigService.getMaterialShaderLibDataArr;

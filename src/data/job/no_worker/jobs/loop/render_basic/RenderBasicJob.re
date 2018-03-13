@@ -8,7 +8,7 @@ let _getBasicMaterialRenderArray = (renderArray, state: StateDataType.state) =>
      );
 
 let _render = (gl, state: StateDataType.state) =>
-  switch (state |> RenderDataSystem.getRenderArrayFromState) {
+  switch (state |> OperateRenderService.getRenderArray) {
   | None => state
   | Some(renderArray) =>
     state
@@ -17,7 +17,7 @@ let _render = (gl, state: StateDataType.state) =>
          [@bs]
          (
            (state, uid: int) =>
-             if (InstanceUtils.isSourceInstance(uid, state)) {
+             if (JudgeInstanceService.isSourceInstance(uid, state)) {
                RenderBasicInstanceJobCommon.render(gl, uid, state)
              } else {
                let (state, _, geometryIndex) = [@bs] RenderBasicJobCommon.render(gl, uid, state);
@@ -40,4 +40,5 @@ let _render = (gl, state: StateDataType.state) =>
        )
   };
 
-let execJob = (flags, _, state) => _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
+let execJob = (flags, _, state) =>
+  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);

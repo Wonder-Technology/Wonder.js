@@ -260,7 +260,7 @@ let _ =
                   let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                   let state =
                     state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
-                  let {gameObjectMap} = PointLightTool.getLightData(state);
+                  let {gameObjectMap} = PointLightTool.getLightRecord(state);
                   gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
                 }
               );

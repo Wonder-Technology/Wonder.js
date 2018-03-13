@@ -9,7 +9,7 @@ let createGameObject = (state) => {
   (state, gameObject, light)
 };
 
-let getLightData = (state) => state.directionLightRecord;
+let getLightRecord = (state) => state.directionLightRecord;
 
 let isAlive = (light, state) =>
   DisposeDirectionLightService.isAlive(light, state.directionLightRecord);

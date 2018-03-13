@@ -62,8 +62,8 @@ let _getMaterialShaderLibDataArrByStaticBranchInstance =
   resultDataArr
   |> ArrayService.push(
        _findFirstShaderData(
-         if (InstanceUtils.isSourceInstance(gameObject, state)) {
-           if (InstanceUtils.isSupportInstance(state)) {
+         if (JudgeInstanceService.isSourceInstance(gameObject, state)) {
+           if (JudgeInstanceService.isSupportInstance(state)) {
              value[1]
            } else {
              value[2]

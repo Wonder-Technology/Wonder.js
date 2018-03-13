@@ -52,14 +52,14 @@ let _ =
           let startTime = 1.5;
           TimeControllerTool.setStartTime(startTime);
           let state = state^ |> DirectorTool.init;
-          TimeControllerTool.getTimeControllerData(state).startTime |> expect == startTime
+          TimeControllerTool.getTimeControllerRecord(state).startTime |> expect == startTime
         }
       );
       test(
         "set elapsed to 0",
         () => {
           let state = state^ |> DirectorTool.init;
-          TimeControllerTool.getTimeControllerData(state).elapsed |> expect == 0.
+          TimeControllerTool.getTimeControllerRecord(state).elapsed |> expect == 0.
         }
       )
     }

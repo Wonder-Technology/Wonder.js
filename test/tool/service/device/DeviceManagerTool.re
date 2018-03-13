@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getDeviceManagerData = (state:StateDataType.state) => state.deviceManagerRecord;
+let getDeviceManagerRecord = (state:StateDataType.state) => state.deviceManagerRecord;

@@ -19,5 +19,5 @@ let createGameObject = (state) => {
   (state, gameObject, meshRenderer)
 };
 
-let getMeshRendererData = (state) => state.meshRendererRecord;
-let getMeshRendererData = (state) => state.meshRendererRecord;
+let getMeshRendererRecord = (state) => state.meshRendererRecord;
+let getMeshRendererRecord = (state) => state.meshRendererRecord;

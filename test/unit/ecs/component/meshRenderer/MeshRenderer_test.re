@@ -53,7 +53,7 @@ let _ =
                          gameObject1,
                          meshRenderer1
                        );
-                  let {gameObjectMap} = MeshRendererTool.getMeshRendererData(state);
+                  let {gameObjectMap} = MeshRendererTool.getMeshRendererRecord(state);
                   gameObjectMap
                   |> WonderCommonlib.SparseMapSystem.has(meshRenderer1)
                   |> expect == false

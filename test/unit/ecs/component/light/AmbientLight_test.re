@@ -132,7 +132,7 @@ let _ =
                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                   let state =
                     state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
-                  let {gameObjectMap} = AmbientLightTool.getLightData(state);
+                  let {gameObjectMap} = AmbientLightTool.getLightRecord(state);
                   gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
                 }
               );

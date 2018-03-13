@@ -18,52 +18,52 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     ...targetState,
     glslSenderRecord: {
       attributeSendDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           attributeSendDataMap
         ),
       instanceAttributeSendDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           instanceAttributeSendDataMap
         ),
       uniformCacheMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformCacheMap
         ),
       uniformRenderObjectSendModelDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformRenderObjectSendModelDataMap
         ),
       uniformRenderObjectSendMaterialDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformRenderObjectSendMaterialDataMap
         ),
       uniformShaderSendNoCachableDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformShaderSendNoCachableDataMap
         ),
       uniformShaderSendCachableDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformShaderSendCachableDataMap
         ),
       uniformShaderSendCachableFunctionDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformShaderSendCachableFunctionDataMap
         ),
       uniformInstanceSendNoCachableDataMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           uniformInstanceSendNoCachableDataMap
         ),
       /* drawPointsFuncMap:
-         ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+         RestoreShaderFromStateService.getIntersectShaderRelatedMap(
            intersectShaderIndexDataArray,
            drawPointsFuncMap
          ), */

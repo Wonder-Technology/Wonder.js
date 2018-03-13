@@ -26,7 +26,7 @@ let _ =
         (state, shaderIndex1, data1, func1, history1)
       };
       let _prepareShaderData = (state) => {
-        let record = ShaderTool.getShaderData(state);
+        let record = ShaderTool.getShaderRecord(state);
         let shaderIndex1 = 0;
         let shaderIndex2 = 1;
         record.index = 2;
@@ -35,7 +35,7 @@ let _ =
         (state, shaderIndex1, shaderIndex2)
       };
       let _prepareProgramData = (state) => {
-        let record = ProgramTool.getProgramData(state);
+        let record = ProgramTool.getProgramRecord(state);
         let shaderIndex1 = 0;
         let program1 = Obj.magic(11);
         record.programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1) |> ignore;
@@ -70,7 +70,7 @@ let _ =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState(sandbox));
                   let newState = StateTool.restore(currentState, state);
                   let {lastSendMaterial, lastSendGeometry} =
-                    newState |> GLSLSenderTool.getGLSLSenderData;
+                    newState |> GLSLSenderTool.getGLSLSenderRecord;
                   (lastSendMaterial, lastSendGeometry) |> expect == (None, None)
                 }
               );
@@ -83,7 +83,7 @@ let _ =
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState(sandbox));
                   let newState = StateTool.restore(currentState, state);
-                  let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderData;
+                  let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderRecord;
                   vertexAttribHistoryArray |> expect == WonderCommonlib.ArraySystem.createEmpty()
                 }
               )
@@ -127,7 +127,7 @@ let _ =
                   let (currentState, _, _) =
                     _prepareProgramData(StateTool.createNewCompleteState(sandbox));
                   let newState = StateTool.restore(currentState, state);
-                  let {lastUsedProgram} = newState |> ProgramTool.getProgramData;
+                  let {lastUsedProgram} = newState |> ProgramTool.getProgramRecord;
                   lastUsedProgram |> expect == None
                 }
               )
@@ -264,14 +264,14 @@ let _ =
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
                     let shaderIndex3 = 2;
-                    let {shaderIndexMap} as record = ShaderTool.getShaderData(state);
+                    let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);
                     record.index = 3;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
                     |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2)
                     |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3)
                     |> ignore;
-                    let {programMap} as record = ProgramTool.getProgramData(state);
+                    let {programMap} as record = ProgramTool.getProgramRecord(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
                     programMap
@@ -280,7 +280,7 @@ let _ =
                     |> ignore;
                     record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
-                      GLSLLocationTool.getGLSLLocationData(state);
+                      GLSLLocationTool.getGLSLLocationRecord(state);
                     let attributeLocationData1 = Obj.magic(21);
                     let attributeLocationData2 = Obj.magic(22);
                     let uniformLocationData1 = Obj.magic(31);
@@ -328,13 +328,13 @@ let _ =
                     open GLSLSenderType;
                     let shaderIndex1 = 3;
                     let shaderIndex2 = 4;
-                    let {shaderIndexMap} as record = ShaderTool.getShaderData(state);
+                    let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);
                     record.index = 2;
                     shaderIndexMap
                     |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
                     |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2)
                     |> ignore;
-                    let {programMap} as record = ProgramTool.getProgramData(state);
+                    let {programMap} as record = ProgramTool.getProgramRecord(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
                     programMap
@@ -343,7 +343,7 @@ let _ =
                     |> ignore;
                     record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
-                      GLSLLocationTool.getGLSLLocationData(state);
+                      GLSLLocationTool.getGLSLLocationRecord(state);
                     let attributeLocationData1 = Obj.magic(201);
                     let attributeLocationData2 = Obj.magic(202);
                     let uniformLocationData1 = Obj.magic(301);
@@ -431,7 +431,7 @@ let _ =
                               open ShaderType;
                               let (newState, (currentState, _, _, _, _), (targetState, _, _, _, _)) =
                                 _prepare(state^);
-                              let {index} = newState |> ShaderTool.getShaderData;
+                              let {index} = newState |> ShaderTool.getShaderRecord;
                               index |> expect == 1
                             }
                           )
@@ -461,7 +461,7 @@ let _ =
                                 )
                               ) =
                                 _prepare(state^);
-                              let {shaderIndexMap} = newState |> ShaderTool.getShaderData;
+                              let {shaderIndexMap} = newState |> ShaderTool.getShaderRecord;
                               shaderIndexMap
                               |> HashMapSystem.entries
                               |> expect == [|("key1", targetShaderIndex1)|]
@@ -498,7 +498,7 @@ let _ =
                                 )
                               ) =
                                 _prepare(state^);
-                              let {programMap} = newState |> ProgramTool.getProgramData;
+                              let {programMap} = newState |> ProgramTool.getProgramRecord;
                               (
                                 programMap |> SparseMapSystem.length,
                                 programMap
@@ -548,7 +548,7 @@ let _ =
                               ) =
                                 _prepare(state^);
                               let {attributeLocationMap, uniformLocationMap} =
-                                newState |> GLSLLocationTool.getGLSLLocationData;
+                                newState |> GLSLLocationTool.getGLSLLocationRecord;
                               (
                                 attributeLocationMap |> SparseMapSystem.length,
                                 attributeLocationMap
@@ -594,7 +594,7 @@ let _ =
                               ) =
                                 _prepare(state^);
                               let {uniformShaderSendNoCachableDataMap} =
-                                newState |> GLSLSenderTool.getGLSLSenderData;
+                                newState |> GLSLSenderTool.getGLSLSenderRecord;
                               (
                                 uniformShaderSendNoCachableDataMap |> SparseMapSystem.length,
                                 uniformShaderSendNoCachableDataMap

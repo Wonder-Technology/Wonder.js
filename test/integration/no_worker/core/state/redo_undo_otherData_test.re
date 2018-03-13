@@ -13,7 +13,7 @@ let _ =
       let state = ref(StateTool.createState());
       let _prepareDeviceManagerData = (state) => {
         open DeviceManagerType;
-        let record = DeviceManagerTool.getDeviceManagerData(state);
+        let record = DeviceManagerTool.getDeviceManagerRecord(state);
         let gl = Obj.magic(RandomTool.getRandomFloat(10.));
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
@@ -45,7 +45,7 @@ let _ =
           elementArrayBufferPool,
           matrixInstanceBufferPool
         } =
-          VboBufferTool.getVboBufferData(state);
+          VboBufferTool.getVboBufferRecord(state);
         let buffer1 = Obj.magic(0);
         let buffer2 = Obj.magic(1);
         let buffer3 = Obj.magic(2);
@@ -90,7 +90,7 @@ let _ =
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyForRestore(state);
                   let {gl}: deviceManagerRecord =
-                    DeviceManagerTool.getDeviceManagerData(copiedState);
+                    DeviceManagerTool.getDeviceManagerRecord(copiedState);
                   gl |> expect == None
                 }
               );
@@ -101,8 +101,8 @@ let _ =
                   let (state, gl, (colorWrite, clearColor, side, viewport)) =
                     _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyForRestore(state);
-                  let targetData = DeviceManagerTool.getDeviceManagerData(state);
-                  let copiedData = DeviceManagerTool.getDeviceManagerData(copiedState);
+                  let targetData = DeviceManagerTool.getDeviceManagerRecord(state);
+                  let copiedData = DeviceManagerTool.getDeviceManagerRecord(copiedState);
                   (
                     copiedData.colorWrite,
                     copiedData.clearColor,
@@ -138,7 +138,7 @@ let _ =
                     elementArrayBufferPool,
                     matrixInstanceBufferPool
                   } =
-                    VboBufferTool.getVboBufferData(copiedState);
+                    VboBufferTool.getVboBufferRecord(copiedState);
                   (
                     vertexBufferMap,
                     normalBufferMap,
@@ -185,22 +185,22 @@ let _ =
               test(
                 "clear renderArray, cameraData",
                 () => {
-                  open RenderDataType;
+                  open RenderType;
                   let state = state^;
-                  /* let record = RenderDataTool.getRenderData(state);
+                  /* let record = RenderTool.getRenderRecord(state);
                      record.renderArray = Some([|0|]);
                      record.cameraData = Some(Obj.magic(1)); */
                   let state = {
                     ...state,
-                    renderData: {
-                      ...RenderDataTool.getRenderData(state),
+                    renderRecord: {
+                      ...RenderTool.getRenderRecord(state),
                       renderArray: Some([|0|]),
                       cameraData: Some(Obj.magic(1))
                     }
                   };
                   let _ = StateTool.restore(StateTool.createNewCompleteState(sandbox), state);
                   let {renderArray, cameraData} =
-                    RenderDataTool.getRenderData(StateTool.getState());
+                    RenderTool.getRenderRecord(StateTool.getState());
                   (renderArray, cameraData) |> expect == (None, None)
                 }
               )
@@ -239,7 +239,7 @@ let _ =
                     elementArrayBufferMap,
                     matrixInstanceBufferMap
                   } =
-                    newState |> VboBufferTool.getVboBufferData;
+                    newState |> VboBufferTool.getVboBufferRecord;
                   (
                     vertexBufferMap,
                     normalBufferMap,
@@ -269,7 +269,7 @@ let _ =
                     _prepareVboBufferData(StateTool.createNewCompleteState(sandbox));
                   let _ = StateTool.restore(currentState, state);
                   let {vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool} =
-                    StateTool.getState() |> VboBufferTool.getVboBufferData;
+                    StateTool.getState() |> VboBufferTool.getVboBufferRecord;
                   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>
                   expect == (

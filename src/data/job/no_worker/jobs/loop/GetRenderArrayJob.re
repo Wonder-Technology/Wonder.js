@@ -1,9 +1,9 @@
 open StateDataType;
 
-open RenderDataType;
+open RenderType;
 
 let execJob = (_, _, state) =>
-  RenderDataSystem.setRenderArray(
+  OperateRenderService.setRenderArray(
     RenderArrayMeshRendererService.getRenderArray(state.meshRendererRecord),
     state
   );

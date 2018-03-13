@@ -1,24 +1,22 @@
-
-
 let addCameraSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "vMatrix" =>
     HandleUniformShaderNoCachableService.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
-      RenderDataSystem.getCameraVMatrixDataFromState
+      OperateRenderService.getCameraVMatrixData
     )
   | "pMatrix" =>
     HandleUniformShaderNoCachableService.addUniformSendDataByType(
       (type_, pos),
       sendDataArrTuple,
-      RenderDataSystem.getCameraPMatrixDataFromState
+      OperateRenderService.getCameraPMatrixData
     )
   | "position" =>
     HandleUniformShaderCachableService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      RenderDataSystem.getCameraPositionDataFromState
+      OperateRenderService.getCameraPositionData
     )
   | _ =>
     WonderLog.Log.fatal(

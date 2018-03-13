@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getGLSLSenderData = (state) => state.glslSenderRecord;
+let getGLSLSenderRecord = (state) => state.glslSenderRecord;
 
 let disableVertexAttribArray = (state: StateDataType.state) =>
   VertexAttribArrayService.disableVertexAttribArray(

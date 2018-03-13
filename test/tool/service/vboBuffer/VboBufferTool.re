@@ -53,7 +53,7 @@ let passBufferShouldExistCheckWhenDisposeSourceInstance =
   state
 };
 
-let getVboBufferData = (state) => state.vboBufferRecord;
+let getVboBufferRecord = (state) => state.vboBufferRecord;
 
 let prepareCreatedBuffer = (sandbox, state) => {
   open Sinon;

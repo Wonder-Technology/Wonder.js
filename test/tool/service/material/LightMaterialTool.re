@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getMaterialData = (state) => state.lightMaterialRecord;
+let getMaterialRecord = (state) => state.lightMaterialRecord;
 
 let createGameObject = (state) => {
   open LightMaterialAPI;

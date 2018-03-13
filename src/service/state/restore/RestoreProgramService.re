@@ -8,7 +8,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     ...targetState,
     programRecord: {
       programMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
+        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
           intersectShaderIndexDataArray,
           programMap
         ),

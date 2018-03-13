@@ -30,7 +30,7 @@ let _ =
                   expect(
                     () =>
                       state^
-                      |> RenderConfigDataTool.getMaterialShaderLibDataArr(
+                      |> RenderConfigDataTool.getMaterialShaderLibRecordArr(
                            0,
                            (1 |> Obj.magic, [|{type_: Some("type1"), name: ""}|], 1 |> Obj.magic)
                          )
@@ -45,7 +45,7 @@ let _ =
                   expect(
                     () =>
                       state^
-                      |> RenderConfigDataTool.getMaterialShaderLibDataArr(
+                      |> RenderConfigDataTool.getMaterialShaderLibRecordArr(
                            0,
                            (
                              1 |> Obj.magic,

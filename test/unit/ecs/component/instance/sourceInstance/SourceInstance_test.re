@@ -55,7 +55,7 @@ let _ =
                     isSendTransformMatrixDataMap,
                     gameObjectMap
                   } =
-                    SourceInstanceTool.getSourceInstanceData(state);
+                    SourceInstanceTool.getSourceInstanceRecord(state);
                   (
                     objectInstanceArrayMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
                     matrixFloat32ArrayMap
@@ -81,7 +81,7 @@ let _ =
                          gameObject,
                          sourceInstance
                        );
-                  let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferData(state);
+                  let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
                   matrixInstanceBufferMap
                   |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
                   |> expect == false

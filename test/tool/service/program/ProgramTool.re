@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getProgramData = (state) => state.programRecord;
+let getProgramRecord = (state) => state.programRecord;
 
 let getProgram = (shaderIndex: int, state: StateDataType.state) =>
   ProgramService.getProgram(shaderIndex, state.programRecord);

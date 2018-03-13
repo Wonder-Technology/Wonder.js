@@ -1,1 +1,1 @@
-let getConfigData = () => 1 |> Obj.magic;
+let getConfigRecord = () => 1 |> Obj.magic;

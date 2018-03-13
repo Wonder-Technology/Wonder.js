@@ -1,6 +1,6 @@
-open StateSystem;
-
 open StateDataType;
+
+open InitConfigType;
 
 let getIsDebug = ({isDebug}: stateData) : bool => isDebug;
 
