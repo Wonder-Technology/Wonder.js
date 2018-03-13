@@ -21,7 +21,7 @@ let create =
     ({lightMaterialRecord} as state) => {
       let {index, disposedIndexArray} = lightMaterialRecord;
       let (index, newIndex, disposedIndexArray) =
-        ComponentSystem.generateIndex(index, disposedIndexArray);
+        IndexComponentService.generateIndex(index, disposedIndexArray);
       (
         {
           ...state,

@@ -1,6 +1,6 @@
 open PerspectiveCameraProjectionType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let create = ({index, disposedIndexArray, dirtyArray, pMatrixMap} as record) => {
   let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);

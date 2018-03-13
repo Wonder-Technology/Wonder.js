@@ -1,6 +1,6 @@
 open BoxGeometryType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let getGameObject = (geometry, {gameObjectMap}) =>
   GameObjectMapService.getGameObject(geometry, gameObjectMap);

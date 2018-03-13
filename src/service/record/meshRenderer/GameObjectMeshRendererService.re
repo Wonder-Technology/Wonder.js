@@ -1,6 +1,6 @@
 open MeshRendererType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let getGameObject = (meshRenderer, {gameObjectMap}) =>
   GameObjectMapService.getGameObject(meshRenderer, gameObjectMap);

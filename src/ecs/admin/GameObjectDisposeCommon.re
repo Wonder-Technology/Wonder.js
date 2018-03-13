@@ -16,7 +16,7 @@ let rec batchDispose = (uidArray: array(int), state) => {
   state
   |> GameObjectDisposeComponentCommon.batchDisposeCommonComponent(
        uidArray,
-       ECSDisposeUtils.buildMapFromArray(uidArray, disposedUidMap),
+       DisposeECSService.buildMapFromArray(uidArray, disposedUidMap),
        batchDispose
      )
   |> _handleByDisposeCount(record)

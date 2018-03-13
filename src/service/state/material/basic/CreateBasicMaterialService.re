@@ -11,7 +11,7 @@ let create =
     ({basicMaterialRecord} as state) => {
       let {index, disposedIndexArray} = basicMaterialRecord;
       let (index, newIndex, disposedIndexArray) =
-        ComponentSystem.generateIndex(index, disposedIndexArray);
+        IndexComponentService.generateIndex(index, disposedIndexArray);
       (
         {...state, basicMaterialRecord: {..._initDataWhenCreate(index, basicMaterialRecord), index: newIndex}},
         index

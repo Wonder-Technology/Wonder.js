@@ -1,4 +1,4 @@
-open ComponentSystem;
+open IndexComponentService;
 
 open SourceInstanceType;
 

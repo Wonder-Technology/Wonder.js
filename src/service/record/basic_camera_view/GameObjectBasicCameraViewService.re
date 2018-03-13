@@ -1,6 +1,6 @@
 open BasicCameraViewType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let getGameObject = (cameraView, {gameObjectMap}) =>
   GameObjectMapService.getGameObject(cameraView, gameObjectMap);

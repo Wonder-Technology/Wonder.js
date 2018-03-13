@@ -1,6 +1,6 @@
 open BasicCameraViewType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let create = ({index, disposedIndexArray} as record) => {
   let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);

@@ -2,7 +2,7 @@ open StateDataType;
 
 open TransformType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let _setDefaultChildren = (index: int, childMap) =>
   WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap);

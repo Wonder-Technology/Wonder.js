@@ -1,17 +1,3 @@
-open ComponentType;
-
-let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>
-  WonderLog.(
-    Contract.(
-      Operators.(
-        test(
-          Log.buildAssertMessage(~expect={j|component alive|j}, ~actual={j|not|j}),
-          () => isAliveFunc(component, state) |> assertTrue
-        )
-      )
-    )
-  );
-
 let _getDisposedIndex = (disposedIndexArray) => (
   disposedIndexArray,
   disposedIndexArray |> Js.Array.pop

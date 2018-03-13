@@ -171,7 +171,7 @@ let _computeData = (index: int, record) =>
 
 let create = ({computeDataFuncMap, index, disposedIndexArray} as record) => {
   let (index, newIndex, disposedIndexArray) =
-    ComponentSystem.generateIndex(index, disposedIndexArray);
+    IndexComponentService.generateIndex(index, disposedIndexArray);
   (
     {
       ...record,

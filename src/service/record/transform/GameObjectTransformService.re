@@ -1,6 +1,6 @@
 open TransformType;
 
-open ComponentSystem;
+open IndexComponentService;
 
 let getGameObject = (transform, {gameObjectMap}) =>
   GameObjectMapService.getGameObject(transform, gameObjectMap);

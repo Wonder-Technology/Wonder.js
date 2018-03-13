@@ -163,7 +163,7 @@ let handleBatchDisposeComponent =
                )
            );
       let isGameObjectDisposedMap =
-        ECSDisposeUtils.buildMapFromArray(
+        DisposeECSService.buildMapFromArray(
           disposedUidArr,
           WonderCommonlib.SparseMapSystem.createEmpty()
         );
