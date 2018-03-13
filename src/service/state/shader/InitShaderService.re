@@ -36,9 +36,9 @@ let initMaterialShader =
     let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
     let program =
       gl
-      |> ProgramSystem.createProgram
-      |> ProgramSystem.registerProgram(shaderIndex, state)
-      |> ProgramSystem.initShader(vsSource, fsSource, gl);
+      |> Gl.createProgram
+      |> ProgramService.registerProgram(shaderIndex, state.programRecord)
+      |> ProgramService.initShader(vsSource, fsSource, gl);
     state
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          (gl, shaderIndex, program),

@@ -3,8 +3,7 @@ open StateDataType;
 open VboBufferType;
 
 let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
-  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
-    state.vboBufferRecord;
+  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
   state
   |> GLSLSenderConfigDataHandleSystem.unsafeGetAttributeSendData(shaderIndex)
   |> ArraySystem.reduceState(
@@ -94,15 +93,15 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
        state
      );
 
-let render = (gl, (materialIndex, shaderIndex, uid), state: StateDataType.state) => {
+let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectRecord} as state) => {
   let transformIndex: int =
-    GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord);
+    GetComponentGameObjectService.unsafeGetTransformComponent(uid, gameObjectRecord);
   let geometryIndex: int =
-    GetComponentGameObjectService.unsafeGetBoxGeometryComponent(uid, state.gameObjectRecord);
-  let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
+    GetComponentGameObjectService.unsafeGetBoxGeometryComponent(uid, gameObjectRecord);
+  let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
   let state =
     state
-    |> ProgramSystem.use(gl, program)
+    |> UseProgramService.use(gl, program)
     |> _sendAttributeData(gl, shaderIndex, geometryIndex)
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
   let {lastSendMaterial} as record = GLSLSenderSystem.getGLSLSenderData(state);

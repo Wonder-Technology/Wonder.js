@@ -7,9 +7,12 @@ let execJob = (_, _, state) => {
        [@bs]
        (
          (state, shaderIndex) => {
-           let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
+           let program = ProgramService.unsafeGetProgram(shaderIndex, state.programRecord);
            state
-           |> ProgramSystem.use(gl, program)
+           |> UseProgramService.use(gl, program)
+
+
+
            |> GLSLSenderConfigDataHandleSystem.unsafeGetUniformShaderSendNoCachableData(
                 shaderIndex
               )

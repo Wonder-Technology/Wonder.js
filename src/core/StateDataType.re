@@ -188,7 +188,7 @@ and state = {
   meshRendererRecord,
   shaderRecord,
   glslRecord,
-  programData,
+  programRecord,
   glslLocationData,
   glslSenderData,
   glslChunkData,

@@ -1,14 +1,8 @@
-open Gl;
-
-open StateDataType;
-
-open GlType;
-
 open ProgramType;
 
-let _getProgramData = (state: StateDataType.state) => state.programData;
+open Gl;
 
-let createProgram = (gl) => createProgram(gl);
+open GlType;
 
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
@@ -106,11 +100,11 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
   program
 };
 
-let getProgram = (shaderIndex: int, state: StateDataType.state) =>
-  _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
+let getProgram = (shaderIndex: int, {programMap}) =>
+  programMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
 
-let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
-  _getProgramData(state).programMap
+let unsafeGetProgram = (shaderIndex: int, {programMap}) =>
+  programMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
        (program) =>
@@ -127,45 +121,7 @@ let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
        StateData.stateData.isDebug
      );
 
-let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
-  _getProgramData(state).programMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, program)
-  |> ignore;
+let registerProgram = (shaderIndex: int, {programMap}, program: program) => {
+  programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, program) |> ignore;
   program
-};
-
-let use = (gl, program: program, state: StateDataType.state) => {
-  let record = _getProgramData(state);
-  switch record.lastUsedProgram {
-  | Some(lastUsedProgram) when program === lastUsedProgram => state
-  | _ =>
-    record.lastUsedProgram = Some(program);
-    useProgram(program, gl);
-    /* let state = state |> GLSLSenderSystem.disableVertexAttribArray(gl); */
-    state
-  }
-};
-
-let deepCopyForRestore = (state: StateDataType.state) =>
-  /* {
-       ...state,
-       programData: {programMap: WonderCommonlib.SparseMapSystem.createEmpty(), lastUsedProgram: None}
-     } */
-  /* let {programMap} = state |> _getProgramData; */
-  state;
-
-let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
-  let {programMap} = _getProgramData(currentState);
-  {
-    ...targetState,
-    programData: {
-      programMap:
-        ShaderRestoreFromStateUtils.getIntersectShaderRelatedMap(
-          intersectShaderIndexDataArray,
-          programMap
-        ),
-      /* programMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
-      lastUsedProgram: None
-    }
-  }
 };
