@@ -17,8 +17,8 @@ let _getShaderLibs = ({material_shaders}) => {
 };
 
 let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
-  let shaderData = RenderConfigService.getShaders(state);
-  (materialIndex, _getShaderLibs(shaderData), shaderData)
+  let shaderRecord = RenderConfigService.getShaders(state);
+  (materialIndex, _getShaderLibs(shaderRecord), shaderRecord)
 };
 
 let _getStateTuple = ({basicMaterialRecord} as state) => {

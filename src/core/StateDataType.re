@@ -34,6 +34,8 @@ open PointLightType;
 
 open ShaderType;
 
+open GLSLType;
+
 open ProgramType;
 
 open GLSLLocationType;
@@ -184,7 +186,8 @@ and state = {
   pointLightRecord,
   boxGeometryRecord,
   meshRendererRecord,
-  shaderData,
+  shaderRecord,
+  glslRecord,
   programData,
   glslLocationData,
   glslSenderData,

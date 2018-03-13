@@ -2,7 +2,7 @@ open StateDataType;
 
 let execJob = (_, _, state) => {
   let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-  ShaderSystem.getAllShaderIndexArray(state)
+  ShaderIndexShaderService.getAllShaderIndexArray(state.shaderRecord)
   |> ArraySystem.reduceState(
        [@bs]
        (

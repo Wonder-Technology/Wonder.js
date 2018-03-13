@@ -1,17 +1,12 @@
-open ShaderType;
-
 open StateDataType;
+
+open ShaderType;
 
 open RenderConfigType;
 
-let getAllShaderIndexArray = (state: StateDataType.state) =>
-  ArraySystem.range(0, ShaderStateCommon.getShaderData(state).index - 1);
-
-let _genereateShaderIndex = (state: StateDataType.state) => {
-  let shaderData = ShaderStateCommon.getShaderData(state);
-  let index = shaderData.index;
-  shaderData.index = succ(index);
-  (state, index)
+let _genereateShaderIndex = ({index} as record) => {
+  record.index = succ(index);
+  index
 };
 
 let _getShaderIndex = (key: string, {shaderIndexMap}) =>
@@ -30,17 +25,14 @@ let _join = (array: array(shaderLib)) => {
 
 let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
 
-let getPrecisionSource = (state: StateDataType.state) =>
-  ShaderSourceBuildCommon.getPrecisionSource(state);
-
 let initMaterialShader =
     (materialIndex: int, (gl, shaderLibDataArr), buildGLSLSource, state: StateDataType.state) => {
-  let shaderData = ShaderStateCommon.getShaderData(state);
+  let shaderRecord = state.shaderRecord;
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
-  switch (_getShaderIndex(key, shaderData)) {
+  switch (_getShaderIndex(key, shaderRecord)) {
   | None =>
-    let (state, shaderIndex) = _genereateShaderIndex(state);
-    _setShaderIndex(key, shaderIndex, shaderData) |> ignore;
+    let shaderIndex = _genereateShaderIndex(shaderRecord);
+    _setShaderIndex(key, shaderIndex, shaderRecord) |> ignore;
     let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
     let program =
       gl
@@ -61,9 +53,3 @@ let initMaterialShader =
   | Some(shaderIndex) => shaderIndex
   }
 };
-
-let getIntersectShaderIndexDataArray = ShaderStateCommon.getIntersectShaderIndexDataArray;
-
-let deepCopyForRestore = ShaderStateCommon.deepCopyForRestore;
-
-let restore = ShaderStateCommon.restore;

@@ -96,14 +96,13 @@ let _ =
                 "contract check",
                 () =>
                   test(
-                    "currentState and targetState ->shaderData->glslData->precision should be the same",
+                    "currentState and targetState ->shaderRecord->glslRecord->precision should be the same",
                     () => {
                       open ShaderType;
                       let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
                       let currentState = StateTool.createNewCompleteState(sandbox);
                       TestTool.openContractCheck();
-                      let record = ShaderTool.getShaderData(currentState);
-                      record.glslData.precision = Some("aaa");
+                      currentState.glslRecord.precision = Some("aaa");
                       expect(
                         () => {
                           let _ = StateTool.restore(currentState, state);
@@ -111,7 +110,7 @@ let _ =
                         }
                       )
                       |> toThrowMessage(
-                           "expect currentState->shaderData->glslData->precision and targetState ->shaderData->glslData->precision be the same, but actual not"
+                           "expect currentState->shaderRecord->glslRecord->precision and targetState ->shaderRecord->glslRecord->precision be the same, but actual not"
                          )
                     }
                   )
@@ -140,7 +139,8 @@ let _ =
                 "test init shader",
                 () => {
                   let _prepareBasicMaterialGameObject = (sandbox, state) => {
-                    open GameObjectAPI; open GameObjectAPI;
+                    open GameObjectAPI;
+                    open GameObjectAPI;
                     open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;
@@ -154,7 +154,8 @@ let _ =
                     (state, gameObject)
                   };
                   let _prepareInstanceGameObject = (sandbox, state) => {
-                    open GameObjectAPI; open GameObjectAPI;
+                    open GameObjectAPI;
+                    open GameObjectAPI;
                     open BasicMaterialAPI;
                     open BoxGeometryAPI;
                     open Sinon;

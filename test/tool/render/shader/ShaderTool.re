@@ -1,1 +1,3 @@
-let getShaderData = ShaderStateCommon.getShaderData;
+open StateDataType;
+
+let getShaderData = (state) => state.shaderRecord;

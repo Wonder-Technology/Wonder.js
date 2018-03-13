@@ -2,6 +2,8 @@ open StateDataType;
 
 open ShaderType;
 
+open GLSLType;
+
 open ShaderChunkType;
 
 open ShaderChunkSystem;
@@ -86,17 +88,6 @@ let _generateUniformSource =
          },
        ""
      );
-
-let getPrecisionSource = (state: StateDataType.state) => {
-  open GPUDetectType;
-  let {precision} = state.gpuDetectRecord;
-  switch (precision |> Js.Option.getExn) {
-  | HIGHP => getChunk("highp_fragment", state).top
-  | MEDIUMP => getChunk("mediump_fragment", state).top
-  | LOWP => getChunk("lowp_fragment", state).top
-  | _ => getChunk("highp_fragment", state).top
-  }
-};
 
 let _setSource =
     (
@@ -183,7 +174,7 @@ let buildGLSLSource =
   [@bs]
   (
     (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
-      let {precision} = ShaderStateCommon.getGLSLData(state);
+      let {precision} = state.glslRecord;
       let vs: glslChunk = _createEmptyChunk();
       let fs: glslChunk = _createEmptyChunk();
       vs.body = vs.body ++ webgl1_main_begin;

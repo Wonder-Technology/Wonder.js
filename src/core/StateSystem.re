@@ -28,7 +28,8 @@ let createState = () => {
   pointLightRecord: RecordPointLightService.create(),
   boxGeometryRecord: RecordBoxGeometryService.create(),
   meshRendererRecord: RecordMeshRendererService.create(),
-  shaderData: ShaderHelper.create(),
+  shaderRecord: RecordShaderService.create(),
+  glslRecord: RecordGLSLService.create(),
   programData: ProgramHelper.create(),
   glslLocationData: GLSLLocationHelper.create(),
   glslSenderData: GLSLSenderHelper.create(),
@@ -59,7 +60,6 @@ let deepCopyForRestore = (state: StateDataType.state) =>
   /* |> AmbientLightAdmin.deepCopyForRestore
      |> DirectionLightAdmin.deepCopyForRestore
      |> PointLightAdmin.deepCopyForRestore */
-  |> ShaderSystem.deepCopyForRestore
   |> ProgramSystem.deepCopyForRestore
   |> GLSLLocationSystem.deepCopyForRestore
   |> (
@@ -87,11 +87,14 @@ let deepCopyForRestore = (state: StateDataType.state) =>
       objectInstanceRecord:
         RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
       vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
-      deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord)
+      deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord),
+      shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
+      glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord)
     }
   );
 
-let _getSharedData = ({typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataType.state) => {
+let _getSharedData =
+    ({typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataType.state) => {
   gl: [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
   float32ArrayPoolMap: TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord),
   uint16ArrayPoolMap: TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
@@ -100,7 +103,7 @@ let _getSharedData = ({typeArrayPoolRecord, deviceManagerRecord} as currentState
 let restore =
     (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
   let intersectShaderIndexDataArray =
-    ShaderSystem.getIntersectShaderIndexDataArray(currentState, targetState);
+    IntersectShaderIndexService.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
     targetState |> RestoreBoxGeometryService.restore(currentState, sharedData);
@@ -120,7 +123,7 @@ let restore =
   |> RestoreTypeArrayPoolService.restore(currentState, sharedData)
   |> RestoreGlobalTempService.restore(currentState)
   |> RestoreVboBufferService.restore(currentState)
-  |> ShaderSystem.restore(currentState)
+  |> RestoreShaderService.restore(currentState)
   |> ProgramSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLLocationSystem.restore(intersectShaderIndexDataArray, currentState)
   |> GLSLSenderSystem.restore(intersectShaderIndexDataArray, currentState)
