@@ -1,9 +1,9 @@
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      RenderWorkerStateSystem.getState(stateData)
-      |> InitGlSystem.initGl(MessageUtils.getData(e))
-      |> RenderWorkerStateSystem.setState(stateData)
+      StateRenderService.getState(stateData)
+      |> InitGlService.initGl(MessageUtils.getData(e))
+      |> StateRenderService.setState(stateData)
       |> ignore;
       e
     }

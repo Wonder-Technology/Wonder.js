@@ -184,9 +184,9 @@ let getRenderWorkerJobStreamArr = (
 jobHandleMap, stateData, getJobHandleFunc) => {
   /* let {setting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
      let {jobs} = _getPipeline(setting.worker_pipeline, workerPipelines); */
-  let state = RenderWorkerStateSystem.getState(stateData);
-  /* let workerJobs = RenderWorkerStateSystem.getJobs(state); */
-  /* RenderWorkerStateSystem.getPipelineJobs(state) */
+  let state = StateRenderService.getState(stateData);
+  /* let workerJobs = StateRenderService.getJobs(state); */
+  /* StateRenderService.getPipelineJobs(state) */
   pipelineJobs
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
