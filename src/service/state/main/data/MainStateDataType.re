@@ -176,7 +176,7 @@ and state = {
   programRecord,
   glslLocationRecord,
   glslSenderRecord,
-  glslChunkData,
+  glslChunkRecord,
   renderRecord,
   timeControllerData,
   vboBufferRecord,

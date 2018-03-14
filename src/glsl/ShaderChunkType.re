@@ -7,4 +7,4 @@ type glslChunk = {
   mutable body: string
 };
 
-type glslChunkData = {chunkMap: Js.Dict.t(glslChunk)};
+type glslChunkRecord = {chunkMap: Js.Dict.t(glslChunk)};

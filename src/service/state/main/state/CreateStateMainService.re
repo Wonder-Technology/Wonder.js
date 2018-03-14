@@ -28,7 +28,7 @@ let createState = () => {
   programRecord: RecordProgramService.create(),
   glslLocationRecord: RecordGLSLLocationService.create(),
   glslSenderRecord: RecordGLSLSenderService.create(),
-  glslChunkData: ShaderChunkSystem.create(),
+  glslChunkRecord: ShaderChunkSystem.create(),
   renderRecord: RecordRenderService.create(),
   timeControllerData: TimeControllerHelper.create(),
   vboBufferRecord: RecordVboBufferService.create(),
