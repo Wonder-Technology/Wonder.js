@@ -1,3 +1,3 @@
 open ViewType;
 
-let create = () => {canvas: None, contextConfig: None};
+let create = () => {canvas: None};

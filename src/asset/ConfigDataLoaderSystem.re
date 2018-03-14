@@ -54,13 +54,10 @@ let _createFetchRenderConfigDataStreamArr = (dataDir, fetchFunc) => [|
   |> Obj.magic
 |];
 
-/* TODO set all setting to one state->xxx(set together) */
-let _setSetting =
-    (stateData, state: MainStateDataType.state, {canvasId, isDebug, context, gpu, worker}) => {
-  InitConfigMainService.setIsDebug(isDebug, stateData) |> ignore;
-  let state = state |> CanvasConfigSystem.setConfig(canvasId) |> GpuConfigSystem.setConfig(gpu);
-  {...state, viewRecord: state.viewRecord |> ViewService.setContextConfig(context)}
-  |> WorkerConfigSystem.setConfig(worker)
+let _setSetting = (stateData, state: MainStateDataType.state, setting) => {
+  IsDebugMainService.setIsDebug(stateData, OperateSettingService.unsafeGetIsDebug(setting))
+  |> ignore;
+  {...state, settingRecord: OperateSettingService.setSetting(setting)}
 };
 
 let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -138,7 +135,7 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   FetchCommon.createFetchJsonStream(settingFilePath, fetchFunc)
   |> flatMap(
        (json) =>
-         SettingParseSystem.convertToRecord(json)
+         ParseSettingService.convertToRecord(json)
          |> _setSetting(stateData, StateDataMainService.getState(stateData))
          |> WorkerDetectSystem.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)

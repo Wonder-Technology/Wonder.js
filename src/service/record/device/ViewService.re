@@ -4,9 +4,9 @@ open DomType;
 
 open Gl;
 
-external settingTypeContextConfigDataToStateDataTypeContextConfigData :
+/* external settingTypeContextConfigDataToStateDataTypeContextConfigData :
   SettingType.context => contextConfig =
-  "%identity";
+  "%identity"; */
 
 let getCanvas = ({canvas}) => canvas |> OptionService.unsafeGet;
 
@@ -77,10 +77,10 @@ let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) =
   |> setStyleHeight(styleHeight)
   |> Obj.magic
 };
-
-let unsafeGetContextConfig = ({contextConfig}) => contextConfig |> OptionService.unsafeGet;
+/* 
+let unsafeGetContext = ({contextConfig}) => contextConfig |> OptionService.unsafeGet;
 
 let setContextConfig = (contextConfig: SettingType.context, record) => {
   ...record,
   contextConfig: Some(settingTypeContextConfigDataToStateDataTypeContextConfigData(contextConfig))
-};
+}; */

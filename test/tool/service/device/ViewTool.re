@@ -2,4 +2,4 @@ open MainStateDataType;
 
 let getCanvas = (state) => state.viewRecord |> ViewService.getCanvas;
 
-let unsafeGetContextConfig = (state) => state.viewRecord |> ViewService.unsafeGetContextConfig;
+let unsafeGetContext = (state) => state.settingRecord |> OperateSettingService.unsafeGetContext;

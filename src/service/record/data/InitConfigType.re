@@ -1,1 +1,0 @@
-type initConfig = {isDebug: bool};

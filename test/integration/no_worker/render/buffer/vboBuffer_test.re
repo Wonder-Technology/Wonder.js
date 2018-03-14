@@ -32,7 +32,7 @@ let _ =
             "test create geometry after dispose one",
             () => {
               let _prepare = (state) => {
-                let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=1, ());
+                let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ());
                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
                 let state = state |> GeometryTool.initGeometrys;
                 (state, gameObject1, geometry1)

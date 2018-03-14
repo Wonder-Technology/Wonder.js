@@ -1,3 +1,5 @@
+open MainStateDataType;
+
 let _isSupportSharedArrayBuffer = [%bs.raw
   {|
     function(){
@@ -39,4 +41,5 @@ let isSupportRenderWorkerAndSharedArrayBuffer = (state: MainStateDataType.state)
   state.workerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 
 let isUseWorker = (state: MainStateDataType.state) =>
-  WorkerConfigSystem.getConfig(state).useWorker && isSupportRenderWorkerAndSharedArrayBuffer(state);
+  OperateSettingService.unsafeGetWorker(state.settingRecord).useWorker
+  && isSupportRenderWorkerAndSharedArrayBuffer(state);

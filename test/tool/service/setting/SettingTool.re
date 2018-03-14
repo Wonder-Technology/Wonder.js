@@ -1,3 +1,9 @@
+open MainStateDataType;
+
+open OperateSettingService;
+
+open MemorySettingService;
+
 open Sinon;
 
 open DomTool;
@@ -89,9 +95,38 @@ let createStateAndSetToStateData =
       ()
     ) => {
   let stateData = StateTool.getStateData();
-  SettingParseSystem.convertToRecord(
+  ParseSettingService.convertToRecord(
     buildSetting(isDebug, canvasId, context, useHardwareInstance, useWorker) |> Js.Json.parseExn
   )
   |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
   |> StateTool.setState
 };
+
+let setMemory = (state: MainStateDataType.state, ~maxDisposeCount=1000, ()) => {
+  ...state,
+  settingRecord: {
+    ...state.settingRecord,
+    memory: Some({...OperateSettingService.unsafeGetMemory(state.settingRecord), maxDisposeCount})
+  }
+};
+
+let setBufferSize = (state: MainStateDataType.state, ~geometryPointDataBufferCount=100, ()) => {
+  ...state,
+  settingRecord: {
+    ...state.settingRecord,
+    buffer:
+      Some({
+        ...OperateSettingService.unsafeGetBuffer(state.settingRecord),
+        geometryPointDataBufferCount
+      })
+  }
+};
+
+let unsafeGetGPU = (state) => state.settingRecord |> OperateSettingService.unsafeGetGPU;
+
+let setGPU = (config, state) => {
+  ...state,
+  settingRecord: {...state.settingRecord, gpu: Some(config)}
+};
+
+let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};

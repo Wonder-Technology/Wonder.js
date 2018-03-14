@@ -447,7 +447,7 @@ let _ =
               test(
                 "disposed one shouldn't alive after reallocate",
                 () => {
-                  let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                  let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                   let (state, gameObject1) = createGameObject(state);
                   let (state, gameObject2) = createGameObject(state);
                   let (state, gameObject3) = createGameObject(state);
@@ -746,7 +746,7 @@ let _ =
                         "new transformMap should only has alive record",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
@@ -765,7 +765,7 @@ let _ =
                         "new meshRendererMap should only has alive record",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
@@ -800,7 +800,7 @@ let _ =
                               ()
                             );
                           TestTool.closeContractCheck();
-                          let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=2, ());
+                          let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
                           let (state, gameObject1, geometry1) =
                             BoxGeometryTool.createGameObject(state);
                           let (state, gameObject2, geometry2) =
@@ -827,7 +827,7 @@ let _ =
                             () => {
                               open GameObjectType;
                               let state =
-                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 BasicMaterialTool.createGameObject(state);
                               let (state, gameObject2, material2) =
@@ -852,7 +852,7 @@ let _ =
                             () => {
                               open GameObjectType;
                               let state =
-                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 LightMaterialTool.createGameObject(state);
                               let (state, gameObject2, material2) =
@@ -879,7 +879,7 @@ let _ =
                         () => {
                           let _test = (createGameObjectFunc, getDataMapFunc, state) => {
                             open GameObjectType;
-                            let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                            let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                             let (state, gameObject1, light1) = createGameObjectFunc(state);
                             let (state, gameObject2, light2) = createGameObjectFunc(state);
                             let (state, gameObject3, light3) = createGameObjectFunc(state);
@@ -932,7 +932,7 @@ let _ =
                         "new basicCameraViewMap should only has alive record",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1, _, basicCameraView1) =
                             CameraTool.createCameraGameObject(state);
                           let (state, gameObject2, _, basicCameraView2) =
@@ -954,7 +954,7 @@ let _ =
                         "new sourceInstanceMap should only has alive record",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, gameObject1, _) =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
                           let (state, gameObject2, _) =
@@ -972,7 +972,7 @@ let _ =
                         "new objectInstanceMap should only has alive record",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, _, _, objectInstanceGameObject1, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
                           let (state, _, _, objectInstanceGameObject2, _) =
@@ -997,7 +997,7 @@ let _ =
                         "test reallocate component maps",
                         () => {
                           open GameObjectType;
-                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
@@ -1021,7 +1021,7 @@ let _ =
                     "empty disposedUidMap",
                     () => {
                       open GameObjectType;
-                      let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                      let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
                       let (state, gameObject3) = createGameObject(state);
@@ -1041,7 +1041,7 @@ let _ =
                     "update aliveUidArray",
                     () => {
                       open GameObjectType;
-                      let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                      let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
                       let (state, gameObject3) = createGameObject(state);
@@ -1381,7 +1381,7 @@ let _ =
                 "if have dispose too many gameObjects, reallocate gameObject",
                 () => {
                   open GameObjectType;
-                  let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                  let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                   let (state, gameObject1) = createGameObject(state);
                   let (state, gameObject2) = createGameObject(state);
                   let (state, gameObject3) = createGameObject(state);

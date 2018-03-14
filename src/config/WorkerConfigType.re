@@ -1,3 +1,0 @@
-type workerConfig = {
-  useWorker: bool
-};

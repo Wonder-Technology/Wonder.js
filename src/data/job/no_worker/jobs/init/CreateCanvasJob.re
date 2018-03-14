@@ -1,10 +1,10 @@
 open MainStateDataType;
 
+open SettingType;
+
 open Dom;
 
 open DomUtils;
-
-open CanvasConfigType;
 
 let _getCanvasId = (domId: string) =>
   String.contains(domId, '#') ?
@@ -28,7 +28,7 @@ let _getCanvasId = (domId: string) =>
          IsDebugMainService.getIsDebug(MainStateData.stateData)
        );
 
-let _createCanvas = ({canvasId}) =>
+let _createCanvas = (canvasId) =>
   (
     switch canvasId {
     | None =>
@@ -46,5 +46,8 @@ let _createCanvas = ({canvasId}) =>
 let execJob = (_, state) => {
   ...state,
   viewRecord:
-    state.viewRecord |> ViewService.setCanvas(_createCanvas(CanvasConfigSystem.getConfig(state)))
+    state.viewRecord
+    |> ViewService.setCanvas(
+         _createCanvas(OperateSettingService.getCanvasId(state.settingRecord))
+       )
 };

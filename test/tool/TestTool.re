@@ -59,6 +59,8 @@ let initWithJobConfig =
   initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~noWorkerJobConfig, ())
 };
 
-let openContractCheck = () => InitConfigMainService.setIsDebug(true, MainStateData.stateData) |> ignore;
+let openContractCheck = () =>
+  IsDebugMainService.setIsDebug(MainStateData.stateData, true) |> ignore;
 
-let closeContractCheck = () => InitConfigMainService.setIsDebug(false, MainStateData.stateData) |> ignore;
+let closeContractCheck = () =>
+  IsDebugMainService.setIsDebug(MainStateData.stateData, false) |> ignore;

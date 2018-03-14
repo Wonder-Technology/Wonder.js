@@ -1,4 +1,4 @@
-type configJsObj = {
+/* type configJsObj = {
   .
   "canvasId": Js.nullable(string),
   "isDebug": Js.nullable(Js.boolean),
@@ -43,4 +43,4 @@ type mainConfigData = {
   /* screenSize: any, */
   /* useDevicePixelRatio: bool, */
   /* workerConfig: WorkerConfigData, */
-};
+}; */

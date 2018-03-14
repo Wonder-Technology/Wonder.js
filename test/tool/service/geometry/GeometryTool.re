@@ -52,7 +52,7 @@ let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.
 let dispose = (geometry, state: MainStateDataType.state) =>
   DisposeGeometryMainService.handleDisposeComponent(
     geometry,
-    ConfigMemoryService.getMaxTypeArrayPoolSize(state.memoryConfig),
+    MemorySettingService.getMaxTypeArrayPoolSize(state.settingRecord),
     state
   );
 

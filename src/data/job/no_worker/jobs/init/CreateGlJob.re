@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open ViewType;
+open SettingType;
 
 let _convertContextConfigDataToJsObj =
     ({alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer}) => {
@@ -20,7 +20,7 @@ let execJob = (_, state) => {
          ViewService.getCanvas(state.viewRecord)
          |> GlService.createGl(
               _convertContextConfigDataToJsObj(
-                ViewService.unsafeGetContextConfig(state.viewRecord)
+                OperateSettingService.unsafeGetContext(state.settingRecord)
               )
             )
        )

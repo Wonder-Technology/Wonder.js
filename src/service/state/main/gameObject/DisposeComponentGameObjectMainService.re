@@ -46,10 +46,10 @@ let disposeMeshRendererComponent =
 let disposeTransformComponent =
   [@bs]
   (
-    (uid: int, component: component, {memoryConfig} as state) =>
+    (uid: int, component: component, {settingRecord} as state) =>
       DisposeTransformMainService.handleDisposeComponent(
         component,
-        ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+        MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
         state
       )
   );
@@ -57,10 +57,10 @@ let disposeTransformComponent =
 let disposeBoxGeometryComponent =
   [@bs]
   (
-    (uid: int, component: component, {memoryConfig} as state) =>
+    (uid: int, component: component, {settingRecord} as state) =>
       DisposeGeometryMainService.handleDisposeComponent(
         component,
-        ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+        MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
         state
       )
   );
@@ -190,22 +190,22 @@ let batchDisposeMeshRendererComponent =
 };
 
 let batchDisposeTransformComponent =
-    (uidMap, {memoryConfig} as state, componentArray: array(component)) =>
+    (uidMap, {settingRecord} as state, componentArray: array(component)) =>
   [@bs]
   DisposeTransformMainService.handleBatchDisposeComponent(
     componentArray,
     uidMap,
-    ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+    MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
     state
   );
 
 let batchDisposeBoxGeometryComponent =
-    (uidMap, {memoryConfig} as state, componentArray: array(component)) =>
+    (uidMap, {settingRecord} as state, componentArray: array(component)) =>
   [@bs]
   DisposeGeometryMainService.handleBatchDisposeComponent(
     componentArray,
     uidMap,
-    ConfigMemoryService.getMaxTypeArrayPoolSize(memoryConfig),
+    MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
     state
   );
 

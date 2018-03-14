@@ -15,7 +15,7 @@ let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) =
   let float32ArrayPoolMap =
     TypeArrayPoolService.addAllFloat32TypeArrayToPool(
       matrixFloat32ArrayMap,
-      ConfigMemoryService.getMaxBigTypeArrayPoolSize(targetState.memoryConfig),
+      MemorySettingService.getMaxBigTypeArrayPoolSize(targetState.settingRecord),
       float32ArrayPoolMap
     );
   (

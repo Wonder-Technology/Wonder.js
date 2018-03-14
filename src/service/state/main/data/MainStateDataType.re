@@ -1,7 +1,5 @@
 open GlType;
 
-open InitConfigType;
-
 open ComponentType;
 
 open TransformType;
@@ -13,6 +11,8 @@ open BasicCameraViewType;
 open PerspectiveCameraProjectionType;
 
 open SceneType;
+
+open SettingType;
 
 open GameObjectType;
 
@@ -52,12 +52,6 @@ open TimeControllerType;
 
 open Js.Typed_array;
 
-open MemoryType;
-
-open CanvasConfigType;
-
-open WorkerConfigType;
-
 open VboBufferType;
 
 open DeviceManagerType;
@@ -84,17 +78,13 @@ open WorkerDetectType;
 
 open ViewType;
 
-type bufferConfig = {mutable geometryPointDataBufferCount: int};
-
-type gpuConfig = {mutable useHardwareInstance: bool};
-
 type colorRgba = (float, float, float, float);
 
 type attributeSendData = {
   pos: attributeLocation,
   size: int,
   buffer: string,
-  sendFunc: [@bs] ((webgl1Context, (attributeLocation, int), buffer, state) => state)
+  sendFunc: [@bs] ((webgl1Context, (attributeLocation, int), GlType.buffer, state) => state)
 }
 and instanceAttributeSendData = {
   pos: attributeLocation,
@@ -159,11 +149,7 @@ and jobData = {
   noWorkerLoopJobList: list((string, (float, state) => state))
 }
 and state = {
-  bufferConfig: option(bufferConfig),
-  gpuConfig: option(gpuConfig),
-  canvasConfig: option(canvasConfig),
-  workerConfig: option(workerConfig),
-  memoryConfig,
+  settingRecord,
   jobData,
   noWorkerJobConfig: option(noWorkerJobConfig),
   workerJobConfig: option(workerJobConfig),
@@ -172,7 +158,6 @@ and state = {
   sourceInstanceRecord,
   objectInstanceRecord,
   viewRecord,
-  initConfig,
   deviceManagerRecord,
   gameObjectRecord,
   transformRecord,

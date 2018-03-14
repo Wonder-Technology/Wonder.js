@@ -10,8 +10,6 @@ open DomTool;
 
 open SettingTool;
 
-open InitConfigMainService;
-
 let _ =
   describe(
     "test setting record",
@@ -34,23 +32,23 @@ let _ =
                 () => {
                   buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
                   SettingTool.createStateAndSetToStateData(~isDebug="true", ()) |> ignore;
-                  getIsDebug(MainStateData.stateData) |> expect == true
+                  MainStateDataTool.getIsDebug(MainStateData.stateData) |> expect == true
                 }
               )
           )
       );
       describe(
-        "gpuConfig",
+        "gpu config",
         () => {
-          open MainStateDataType;
+          open SettingType;
           let _buildExpectedGpuConfig = (~useHardwareInstance=Js.true_, ()) => {
             useHardwareInstance: Js.to_bool(useHardwareInstance)
           };
           describe(
-            "if pass gpuConfig",
+            "if pass gpu config",
             () =>
               test(
-                "set to state (use default value if the field isn't passed)",
+                "set to setting",
                 () => {
                   let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                   let useHardwareInstance = Js.false_;
@@ -61,7 +59,7 @@ let _ =
                       ()
                     );
                   state
-                  |> GpuConfigSystem.getConfig
+                  |> SettingTool.unsafeGetGPU
                   |> expect == _buildExpectedGpuConfig(~useHardwareInstance, ())
                 }
               )
@@ -70,17 +68,17 @@ let _ =
             "else",
             () =>
               test(
-                "set default record",
+                "set default data",
                 () => {
                   let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                   let state = TestTool.initWithJobConfigWithoutBuildFakeDom(~sandbox, ());
                   state
-                  |> GpuConfigSystem.getConfig
+                  |> SettingTool.unsafeGetGPU
                   |> expect == _buildExpectedGpuConfig(~useHardwareInstance=Js.true_, ())
                 }
               )
           )
         }
-      )
+      );
     }
   );

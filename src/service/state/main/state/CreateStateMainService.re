@@ -1,18 +1,13 @@
 open MainStateDataType;
 
 let createState = () => {
-  bufferConfig: None,
-  gpuConfig: None,
-  canvasConfig: None,
-  workerConfig: None,
-  memoryConfig: ConfigMemoryService.create(),
+  settingRecord: RecordSettingService.create(),
   jobData: JobHelper.create(),
   noWorkerJobConfig: None,
   workerJobConfig: None,
   renderConfigData: None,
   gpuDetectRecord: RecordGPUDetectService.create(),
   viewRecord: RecordViewService.create(),
-  initConfig: RecordInitConfigService.create(),
   sourceInstanceRecord: RecordSourceInstanceService.create(),
   objectInstanceRecord: RecordObjectInstanceService.create(),
   deviceManagerRecord: RecordDeviceManagerService.create(),

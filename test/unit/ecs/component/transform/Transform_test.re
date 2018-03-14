@@ -72,7 +72,7 @@ let _ =
                    };
                  beforeEach(
                    () =>
-                     state := BufferConfigTool.setBufferSize(state^, ~transformDataBufferCount=2, ())
+                     state := SettingTool.setBufferSize(state^, ~transformDataBufferCount=2, ())
                  );
                  test(
                    "have create too many components(the count of transforms shouldn't exceed maxCount",

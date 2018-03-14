@@ -1,5 +1,7 @@
+open MainStateDataType;
+
 let isSupportInstance = (state: MainStateDataType.state) =>
-  GpuConfigSystem.getConfig(state).useHardwareInstance
+  OperateSettingService.unsafeGetGPU(state.settingRecord).useHardwareInstance
   && GPUDetectService.hasExtension(state.gpuDetectRecord.extensionInstancedArrays);
 
 let isSourceInstance = (uid, state: MainStateDataType.state) =>

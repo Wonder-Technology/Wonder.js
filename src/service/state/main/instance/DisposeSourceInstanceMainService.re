@@ -20,7 +20,7 @@ let _disposeObjectInstanceGameObject =
 
 let _disposeData =
     (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, {vboBufferRecord} as state) => {
-  let {sourceInstanceRecord, typeArrayPoolRecord, memoryConfig} as state =
+  let {sourceInstanceRecord, typeArrayPoolRecord, settingRecord} as state =
     {
       ...state,
       vboBufferRecord:
@@ -40,7 +40,7 @@ let _disposeData =
     [@bs]
     TypeArrayPoolService.addFloat32TypeArrayToPool(
       typeArr,
-      ConfigMemoryService.getMaxBigTypeArrayPoolSize(state.memoryConfig),
+      MemorySettingService.getMaxBigTypeArrayPoolSize(state.settingRecord),
       TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
     )
     |> ignore
