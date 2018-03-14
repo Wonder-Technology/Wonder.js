@@ -34,6 +34,6 @@ let createState = () => {
   vboBufferRecord: RecordVboBufferService.create(),
   globalTempRecord: RecordGlobalTempService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
-  workerInstanceData: WorkerInstanceHelper.create(),
+  workerInstanceRecord: RecordWorkerInstanceService.create(),
   workerDetectRecord: RecordWorkerDetectService.create()
 };

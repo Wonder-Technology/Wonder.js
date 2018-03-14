@@ -1,5 +1,14 @@
+open MainStateDataType;
+
 let setFakeWorkers = (state) =>
-  WorkerInstanceToolMainWorker.setRenderWorker(state, WorkerToolWorker.createWorker())
+  {
+    ...state,
+    workerInstanceRecord:
+      WorkerInstanceToolMainWorker.setRenderWorker(
+        state.workerInstanceRecord,
+        WorkerToolWorker.createWorker()
+      )
+  }
   |> StateTool.setState;
 
 let prepare = () => setFakeWorkers(StateTool.getState());

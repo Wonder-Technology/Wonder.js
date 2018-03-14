@@ -182,7 +182,7 @@ and state = {
   vboBufferRecord,
   globalTempRecord,
   typeArrayPoolRecord,
-  workerInstanceData,
+  workerInstanceRecord,
   workerDetectRecord
 };
 

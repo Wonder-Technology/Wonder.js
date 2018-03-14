@@ -1,6 +1,6 @@
-open MainStateDataType;
+open WorkerInstanceType;
 
-let unsafeGetRenderWorker = (state: MainStateDataType.state) => {
+let unsafeGetRenderWorker = ({renderWorker}) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -8,20 +8,17 @@ let unsafeGetRenderWorker = (state: MainStateDataType.state) => {
           Operators.(
             test(
               Log.buildAssertMessage(~expect={j|render worker exist|j}, ~actual={j|not|j}),
-              () => state.workerInstanceData.renderWorker |> assertExist
+              () => renderWorker |> assertExist
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  state.workerInstanceData.renderWorker |> Js.Option.getExn
+  renderWorker |> OptionService.unsafeGet
 };
 
-let _setRenderWorker = (state: MainStateDataType.state, worker: WorkerType.worker) => {
-  ...state,
-  workerInstanceData: {renderWorker: Some(worker)}
-};
+let _setRenderWorker = (record, worker: WorkerType.worker) => {renderWorker: Some(worker)};
 
 let _getValidFileDir = (dir: string) =>
   switch (dir |> Js.String.sliceToEnd(~from=(-1))) {
@@ -52,5 +49,5 @@ let _getRenderWorkerFilePath = (workerFileDir: string) => {
 
 let _createWorker = (workerFilePath: string) => Worker.newWorker(workerFilePath);
 
-let initWorkInstances = (workerFileDir, state: MainStateDataType.state) =>
-  workerFileDir |> _getRenderWorkerFilePath |> _createWorker |> _setRenderWorker(state);
+let initWorkInstances = (workerFileDir, record) =>
+  workerFileDir |> _getRenderWorkerFilePath |> _createWorker |> _setRenderWorker(record);

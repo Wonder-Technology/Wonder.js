@@ -1,2 +1,6 @@
-let setRenderWorker = WorkerInstanceSystem._setRenderWorker;
-let unsafeGetRenderWorker = WorkerInstanceSystem.unsafeGetRenderWorker;
+open MainStateDataType;
+
+let setRenderWorker = WorkerInstanceService._setRenderWorker;
+
+let unsafeGetRenderWorker = (state) =>
+  WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord);

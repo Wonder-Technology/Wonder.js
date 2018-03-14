@@ -16,14 +16,14 @@ let rec _createWorkerLoopStream = () =>
            MostUtils.callFunc(
              () => {
                let state = StateDataMainService.getState(MainStateData.stateData);
-               WorkerInstanceSystem.unsafeGetRenderWorker(state)
+               WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
                |> WorkerService.postMessage({"operateType": "loop"})
              }
            ),
            MostUtils.fromWorkerEvent(
              "message",
-             StateDataMainService.getState(MainStateData.stateData)
-             |> WorkerInstanceSystem.unsafeGetRenderWorker
+             StateDataMainService.getState(MainStateData.stateData).workerInstanceRecord
+             |> WorkerInstanceService.unsafeGetRenderWorker
            )
            |> Most.filter(
                 (e) => e##record##operateType === "finish_loop" |> Js.Boolean.to_js_boolean
