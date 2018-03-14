@@ -2,7 +2,7 @@ let _workerInit = (stateData, state: MainStateDataType.state) =>
   WorkerJobSystem.getMainInitJobStream(stateData, state);
 
 let _noWorkerInit = (state: MainStateDataType.state) =>
-  state |> NoWorkerJobSystem.execNoWorkerInitJobs;
+  state |> NoWorkerJobService.execNoWorkerInitJobs;
 
 let init = _noWorkerInit;
 
@@ -43,7 +43,7 @@ let rec _createWorkerLoopStream = () =>
 
 let _run = (time: float, state: MainStateDataType.state) =>
   state
-  |> NoWorkerJobSystem.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
+  |> NoWorkerJobService.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
 
 let loopBody = (time: float, state: MainStateDataType.state) => state |> _run(time);
 

@@ -2,7 +2,7 @@ open MainStateDataType;
 
 let createState = () => {
   settingRecord: RecordSettingService.create(),
-  jobData: JobHelper.create(),
+  jobRecord: RecordJobService.create(),
   noWorkerJobConfig: None,
   workerJobConfig: None,
   renderConfigRecord: None,

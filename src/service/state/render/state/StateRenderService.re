@@ -6,7 +6,7 @@ let setState = (stateData, state) => {
 };
 
 let createState = () => {
-  jobData: None,
+  jobRecord: None,
   gpuDetectRecord: {extensionInstancedArrays: None, precision: None},
   /* deviceManagerRecord: {gl: None, viewport: None} */
   deviceManagerRecord: RecordDeviceManagerService.create()

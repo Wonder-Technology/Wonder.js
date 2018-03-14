@@ -23,12 +23,12 @@ let createWorkerJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getWork
 
 let getMainInitJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
-  | None => JobSystem.handleGetNoneJob(name, jobHandleMap)
+  | None => JobService.handleGetNoneJob(name, jobHandleMap)
   | Some(handleFunc) => handleFunc
   };
 
 let getWorkerJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
-  | None => JobSystem.handleGetNoneJob(name, jobHandleMap)
+  | None => JobService.handleGetNoneJob(name, jobHandleMap)
   | Some(handleFunc) => handleFunc
   };

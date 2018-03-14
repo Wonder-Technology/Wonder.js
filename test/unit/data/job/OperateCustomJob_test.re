@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "Job",
+    "JobAPI",
     () => {
       open Expect;
       open Expect.Operators;
@@ -95,7 +95,7 @@ let _ =
                                   let customData = [||];
                                   let state =
                                     state
-                                    |> Job.addNoWorkerInitJob(
+                                    |> JobAPI.addNoWorkerInitJob(
                                          "customJob1",
                                          "start_time",
                                          (state) => {
@@ -103,7 +103,7 @@ let _ =
                                            state
                                          }
                                        )
-                                    |> Job.addNoWorkerInitJob(
+                                    |> JobAPI.addNoWorkerInitJob(
                                          "customJob2",
                                          "customJob1",
                                          (state) => {
@@ -123,7 +123,7 @@ let _ =
                               let customData = [||];
                               let state =
                                 state
-                                |> Job.addNoWorkerInitJob(
+                                |> JobAPI.addNoWorkerInitJob(
                                      "customJob1",
                                      "",
                                      (state) => {
@@ -131,7 +131,7 @@ let _ =
                                        state
                                      }
                                    )
-                                |> Job.addNoWorkerInitJob(
+                                |> JobAPI.addNoWorkerInitJob(
                                      "customJob2",
                                      "start_time",
                                      (state) => {
@@ -156,7 +156,7 @@ let _ =
                           let customData = [||];
                           let state =
                             state
-                            |> Job.addNoWorkerInitJob(
+                            |> JobAPI.addNoWorkerInitJob(
                                  "customJob",
                                  "start_time",
                                  (state) => {
@@ -164,7 +164,7 @@ let _ =
                                    state
                                  }
                                )
-                            |> Job.removeNoWorkerInitJob("customJob");
+                            |> JobAPI.removeNoWorkerInitJob("customJob");
                           let state = state |> NoWorkerJobTool.execInitJobs;
                           customData |> expect == [||]
                         }
@@ -173,7 +173,7 @@ let _ =
                         "test remove default job",
                         () => {
                           let state = _prepare(state);
-                          let state = state |> Job.removeNoWorkerInitJob("start_time");
+                          let state = state |> JobAPI.removeNoWorkerInitJob("start_time");
                           state
                           |> NoWorkerJobTool.getNoWorkerInitJobList
                           |> NoWorkerJobTool.isJobExistInJobList("start_time")
@@ -208,7 +208,7 @@ let _ =
                               let customData = [||];
                               let state =
                                 state
-                                |> Job.addNoWorkerLoopJob(
+                                |> JobAPI.addNoWorkerLoopJob(
                                      "customJob",
                                      "tick",
                                      (elapsed, state) => {
@@ -234,7 +234,7 @@ let _ =
                       let customData = [||];
                       let state =
                         state
-                        |> Job.addNoWorkerLoopJob(
+                        |> JobAPI.addNoWorkerLoopJob(
                              "customJob",
                              "tick",
                              (elapsed, state) => {
@@ -242,7 +242,7 @@ let _ =
                                state
                              }
                            )
-                        |> Job.removeNoWorkerLoopJob("customJob");
+                        |> JobAPI.removeNoWorkerLoopJob("customJob");
                       let elapsed = 100.1;
                       let state = state |> NoWorkerJobTool.execLoopJobs(elapsed);
                       customData |> expect == [||]

@@ -144,13 +144,13 @@ and glslSenderRecord = {
   mutable lastSendMaterial: option(material),
   mutable lastSendGeometry: option(geometry)
 }
-and jobData = {
+and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, (float, state) => state))
 }
 and state = {
   settingRecord,
-  jobData,
+  jobRecord,
   noWorkerJobConfig: option(noWorkerJobConfig),
   workerJobConfig: option(workerJobConfig),
   renderConfigRecord: option(renderConfigRecord),

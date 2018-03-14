@@ -8,7 +8,7 @@ let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: MainStateDataTyp
          (
            (list, {name, flags}: executableJob) =>
              switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
-             | None => JobSystem.handleGetNoneJob(name, jobHandleMap)
+             | None => JobService.handleGetNoneJob(name, jobHandleMap)
              | Some(handleFunc) => list @ [(name, handleFunc(flags))]
              }
          ),
@@ -16,9 +16,9 @@ let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: MainStateDataTyp
        )
   );
 
-let _getNoWorkerInitJobList = (state: MainStateDataType.state) => state.jobData.noWorkerInitJobList;
+let _getNoWorkerInitJobList = (state: MainStateDataType.state) => state.jobRecord.noWorkerInitJobList;
 
-let _getNoWorkerLoopJobList = (state: MainStateDataType.state) => state.jobData.noWorkerLoopJobList;
+let _getNoWorkerLoopJobList = (state: MainStateDataType.state) => state.jobRecord.noWorkerLoopJobList;
 
 let execNoWorkerInitJobs = (state: MainStateDataType.state) : state =>
   state
@@ -32,8 +32,8 @@ let execNoWorkerLoopJobs = (elapsed: float, state: MainStateDataType.state) : st
 
 let init = (state: MainStateDataType.state) => {
   ...state,
-  jobData: {
-    ...state.jobData,
+  jobRecord: {
+    ...state.jobRecord,
     noWorkerInitJobList:
       _getAllNoWorkerJobs(
         NoWorkerJobConfigSystem.getInitPipelineExecutableJobs(
@@ -60,10 +60,10 @@ let init = (state: MainStateDataType.state) => {
  let addNoWorkerInitJob =
      (targetJobName: string, afterJobName: string, targetHandleFunc, state: MainStateDataType.state) => {
    ...state,
-   jobData: {
-     ...state.jobData,
+   jobRecord: {
+     ...state.jobRecord,
      noWorkerInitJobList:
-       JobSystem.addJob(
+       JobService.addJob(
          (targetJobName, afterJobName, targetHandleFunc),
          _getNoWorkerInitJobList(state)
        )
@@ -73,10 +73,10 @@ let init = (state: MainStateDataType.state) => {
  let addNoWorkerLoopJob =
      (targetJobName: string, afterJobName: string, targetHandleFunc, state: MainStateDataType.state) => {
    ...state,
-   jobData: {
-     ...state.jobData,
+   jobRecord: {
+     ...state.jobRecord,
      noWorkerLoopJobList:
-       JobSystem.addJob(
+       JobService.addJob(
          (targetJobName, afterJobName, targetHandleFunc),
          _getNoWorkerLoopJobList(state)
        )
@@ -85,16 +85,16 @@ let init = (state: MainStateDataType.state) => {
 
  let removeNoWorkerInitJob = (targetJobName: string, state: MainStateDataType.state) => {
    ...state,
-   jobData: {
-     ...state.jobData,
-     noWorkerInitJobList: JobSystem.removeJob(targetJobName, _getNoWorkerInitJobList(state))
+   jobRecord: {
+     ...state.jobRecord,
+     noWorkerInitJobList: JobService.removeJob(targetJobName, _getNoWorkerInitJobList(state))
    }
  };
 
  let removeNoWorkerLoopJob = (targetJobName: string, state: MainStateDataType.state) => {
    ...state,
-   jobData: {
-     ...state.jobData,
-     noWorkerLoopJobList: JobSystem.removeJob(targetJobName, _getNoWorkerLoopJobList(state))
+   jobRecord: {
+     ...state.jobRecord,
+     noWorkerLoopJobList: JobService.removeJob(targetJobName, _getNoWorkerLoopJobList(state))
    }
  };

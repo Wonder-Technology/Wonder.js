@@ -68,7 +68,7 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> then_(
          (recordArr) =>
            NoWorkerJobConfigHelper.create(recordArr |> Obj.magic, state)
-           |> NoWorkerJobSystem.init
+           |> NoWorkerJobService.init
            |> resolve
        )
   );

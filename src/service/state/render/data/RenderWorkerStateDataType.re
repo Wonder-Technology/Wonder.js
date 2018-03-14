@@ -11,13 +11,13 @@ type pipelineJob = {name: string};
 
 type pipelineJobs = array(array(pipelineJob));
 
-type jobData = {
+type jobRecord = {
   pipelineJobs,
   jobs: array(job)
 };
 
 type renderWorkerState = {
-  jobData: option(jobData),
+  jobRecord: option(jobRecord),
   gpuDetectRecord,
   deviceManagerRecord: DeviceManagerType.deviceManagerRecord
 };

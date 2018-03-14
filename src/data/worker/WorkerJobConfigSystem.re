@@ -61,9 +61,9 @@ let _buildStreamArr =
                   let {flags} = _getExecutableJob(jobs, subJobName);
                   let handleFunc = getJobHandleFunc(subJobName, jobHandleMap);
                   handleFunc(flags, stateData)
-                | Some(jobData) =>
+                | Some(jobRecord) =>
                   findFunc(
-                    (jobData, pipelineJobs, jobHandleMap, jobs, stateData),
+                    (jobRecord, pipelineJobs, jobHandleMap, jobs, stateData),
                     getJobHandleFunc
                   )
                 }

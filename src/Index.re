@@ -286,13 +286,13 @@ let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
 
-let removeNoWorkerLoopJob = Job.removeNoWorkerLoopJob;
+let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
-let removeNoWorkerInitJob = Job.removeNoWorkerInitJob;
+let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
 
-let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
+let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
-let addNoWorkerInitJob = Job.addNoWorkerInitJob;
+let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
@@ -508,10 +508,10 @@ let getFps = TimeController.getFps;
 
 let getGameTime = TimeController.getGameTime;
 
-let removeNoWorkerLoopJob = Job.removeNoWorkerLoopJob;
+let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
-let removeNoWorkerInitJob = Job.removeNoWorkerInitJob;
+let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
 
-let addNoWorkerLoopJob = Job.addNoWorkerLoopJob;
+let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
-let addNoWorkerInitJob = Job.addNoWorkerInitJob;
+let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
