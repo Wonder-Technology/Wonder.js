@@ -1,10 +1,10 @@
 let execJob = (_, stateData) => {
-  let state = StateSystem.getState(stateData);
+  let state = StateDataMainService.getState(stateData);
   state
   |> WorkerInstanceSystem.initWorkInstances(
        WorkerJobConfigSystem.getSetting(state).workerFileDir
      )
-  |> StateSystem.setState(stateData)
+  |> StateDataMainService.setState(stateData)
   |> ignore;
   Most.just(None)
 };

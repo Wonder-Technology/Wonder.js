@@ -4,11 +4,11 @@ let restore = State.restoreState;
 
 let getStateData = () => State.getStateData();
 
-let getState = () => StateSystem.getState(getStateData());
+let getState = () => StateDataMainService.getState(getStateData());
 
-let setState = (state) => StateSystem.setState(getStateData(), state);
+let setState = (state) => StateDataMainService.setState(getStateData(), state);
 
-let createState = StateSystem.createState;
+let createState = CreateStateMainService.createState;
 
 let createNewCompleteState = (sandbox) =>
   createState() |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));

@@ -20,7 +20,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateSystem.createState());
+      let state = ref(CreateStateMainService.createState());
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(

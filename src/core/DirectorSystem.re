@@ -1,5 +1,3 @@
-open StateSystem;
-
 let _workerInit = (stateData, state: StateDataType.state) =>
   WorkerJobSystem.getMainInitJobStream(stateData, state);
 
@@ -17,14 +15,14 @@ let rec _createWorkerLoopStream = () =>
          Most.mergeArray([|
            MostUtils.callFunc(
              () => {
-               let state = StateSystem.getState(StateData.stateData);
+               let state = StateDataMainService.getState(StateData.stateData);
                WorkerInstanceSystem.unsafeGetRenderWorker(state)
                |> WorkerUtils.postMessage({"operateType": "loop"})
              }
            ),
            MostUtils.fromWorkerEvent(
              "message",
-             StateSystem.getState(StateData.stateData)
+             StateDataMainService.getState(StateData.stateData)
              |> WorkerInstanceSystem.unsafeGetRenderWorker
            )
            |> Most.filter(
@@ -52,7 +50,11 @@ let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
 let rec _noWorkerLoop = (time: float, state: StateDataType.state) : int =>
   Dom.requestAnimationFrame(
     (time: float) =>
-      state |> loopBody(time) |> setState(StateData.stateData) |> _noWorkerLoop(time) |> ignore
+      state
+      |> loopBody(time)
+      |> StateDataMainService.setState(StateData.stateData)
+      |> _noWorkerLoop(time)
+      |> ignore
   );
 
 /*
@@ -73,7 +75,7 @@ let start = (state: StateDataType.state) =>
   /* state |> init(StateData.stateData) |> ignore; */
   WorkerDetectSystem.isUseWorker(state) ?
     state
-    |> StateSystem.setState(StateData.stateData)
+    |> StateDataMainService.setState(StateData.stateData)
     |> _workerInit(StateData.stateData)
     |> Most.concat(_createWorkerLoopStream())
     |> Most.drain

@@ -1,9 +1,9 @@
 let execJob = (_, stateData) =>
   MostUtils.callFunc(
     () => {
-      StateSystem.getState(stateData)
+      StateDataMainService.getState(stateData)
       |> WorkerDetectSystem.detect
-      |> StateSystem.setState(stateData)
+      |> StateDataMainService.setState(stateData)
       |> ignore;
       None
     }

@@ -92,6 +92,6 @@ let createStateAndSetToStateData =
   SettingParseSystem.convertToRecord(
     buildSetting(isDebug, canvasId, context, useHardwareInstance, useWorker) |> Js.Json.parseExn
   )
-  |> ConfigDataLoaderSystem._setSetting(stateData, StateSystem.createState())
+  |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
   |> StateTool.setState
 };

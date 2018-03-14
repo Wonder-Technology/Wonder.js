@@ -139,12 +139,12 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   |> flatMap(
        (json) =>
          SettingParseSystem.convertToRecord(json)
-         |> _setSetting(stateData, StateSystem.getState(stateData))
+         |> _setSetting(stateData, StateDataMainService.getState(stateData))
          |> WorkerDetectSystem.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(
               (state) => state |> _createHandleRenderConfigDataStreamArr(dataDir, fetchFunc)
             )
-         |> Most.tap((state) => state |> StateSystem.setState(stateData) |> ignore)
+         |> Most.tap((state) => state |> StateDataMainService.setState(stateData) |> ignore)
      )
 };

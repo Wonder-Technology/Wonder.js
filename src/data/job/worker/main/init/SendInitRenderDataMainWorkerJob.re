@@ -1,7 +1,7 @@
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateSystem.getState(stateData);
+      let state = StateDataMainService.getState(stateData);
       let operateType = JobConfigService.unsafeGetFlags(flags)[0];
       /* TODO refactor: move to utils */
       WorkerInstanceSystem.unsafeGetRenderWorker(state)
