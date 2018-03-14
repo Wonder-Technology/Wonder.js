@@ -217,7 +217,10 @@ let _ =
                                      }
                                    );
                               let elapsed = 100.1;
-                              let state = state |> NoWorkerJobTool.execLoopJobs(elapsed);
+                              let state =
+                                state
+                                |> TimeControllerTool.setElapsed(elapsed)
+                                |> NoWorkerJobTool.execLoopJobs;
                               customData |> expect == [|elapsed|]
                             }
                           )
@@ -244,7 +247,10 @@ let _ =
                            )
                         |> JobAPI.removeNoWorkerLoopJob("customJob");
                       let elapsed = 100.1;
-                      let state = state |> NoWorkerJobTool.execLoopJobs(elapsed);
+                      let state =
+                        state
+                        |> TimeControllerTool.setElapsed(elapsed)
+                        |> NoWorkerJobTool.execLoopJobs;
                       customData |> expect == [||]
                     }
                   )

@@ -42,8 +42,12 @@ let rec _createWorkerLoopStream = () =>
   |> Most.continueWith(() => _createWorkerLoopStream());
 
 let _run = (time: float, state: MainStateDataType.state) =>
-  state
-  |> NoWorkerJobService.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
+  {
+    ...state,
+    timeControllerRecord:
+      state.timeControllerRecord |> TimeControllerService.computeElapseTime(time)
+  }
+  |> NoWorkerJobService.execNoWorkerLoopJobs;
 
 let loopBody = (time: float, state: MainStateDataType.state) => state |> _run(time);
 

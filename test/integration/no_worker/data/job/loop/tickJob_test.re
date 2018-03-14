@@ -1,6 +1,6 @@
 open Wonder_jest;
 
-open TimeController;
+open TimeControllerAPI;
 
 let _ =
   describe(

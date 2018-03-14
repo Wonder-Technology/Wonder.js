@@ -1,3 +1,6 @@
 open MainStateDataType;
 
-let execJob = (_, state) => TimeControllerSystem.start(state);
+let execJob = (_, state) => {
+  ...state,
+  timeControllerRecord: TimeControllerService.start(state.timeControllerRecord)
+};

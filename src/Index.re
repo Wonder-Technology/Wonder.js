@@ -282,9 +282,9 @@ let restoreState = State.restoreState;
 
 let deepCopyForRestore = State.deepCopyForRestore;
 
-let getFps = TimeController.getFps;
+let getFps = TimeControllerAPI.getFps;
 
-let getGameTime = TimeController.getGameTime;
+let getGameTime = TimeControllerAPI.getGameTime;
 
 let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
@@ -504,9 +504,9 @@ let restoreState = State.restoreState;
 
 let deepCopyForRestore = State.deepCopyForRestore;
 
-let getFps = TimeController.getFps;
+let getFps = TimeControllerAPI.getFps;
 
-let getGameTime = TimeController.getGameTime;
+let getGameTime = TimeControllerAPI.getGameTime;
 
 let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 

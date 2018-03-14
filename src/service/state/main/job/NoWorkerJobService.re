@@ -27,10 +27,14 @@ let execNoWorkerInitJobs = (state: MainStateDataType.state) : state =>
   |> _getNoWorkerInitJobList
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(state), state);
 
-let execNoWorkerLoopJobs = (elapsed: float, state: MainStateDataType.state) : state =>
+let execNoWorkerLoopJobs = (state: MainStateDataType.state) : state =>
   state
   |> _getNoWorkerLoopJobList
-  |> List.fold_left((state, (_, handleFunc)) => handleFunc(elapsed, state), state);
+  |> List.fold_left(
+       (state, (_, handleFunc)) =>
+         handleFunc(TimeControllerService.getElapsed(state.timeControllerRecord), state),
+       state
+     );
 
 let init = (state: MainStateDataType.state) => {
   ...state,
