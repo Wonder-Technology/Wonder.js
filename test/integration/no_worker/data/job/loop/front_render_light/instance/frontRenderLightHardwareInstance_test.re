@@ -291,7 +291,7 @@ let _ =
                         |> DirectorTool.runWithDefaultTime;
                       let record = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
                       let transformArr = [|sourceTransform, objectTransform|];
-                      ArraySystem.range(0, 1)
+                      ArrayService.range(0, 1)
                       |> WonderCommonlib.ArraySystem.reduceOneParam(
                            [@bs]
                            (
@@ -313,7 +313,7 @@ let _ =
                            0
                          )
                       |> ignore;
-                      ArraySystem.range(2, 63)
+                      ArrayService.range(2, 63)
                       |> WonderCommonlib.ArraySystem.reduceOneParam(
                            [@bs]
                            (

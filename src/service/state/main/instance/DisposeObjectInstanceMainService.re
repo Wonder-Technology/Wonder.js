@@ -177,7 +177,7 @@ let handleBatchDisposeComponent =
           state
         );
       objectInstanceArray
-      |> ArraySystem.reduceState(
+      |> ReduceStateMainService.reduceState(
            [@bs] ((state, objectInstance) => state |> _disposeData(objectInstance)),
            state
          )

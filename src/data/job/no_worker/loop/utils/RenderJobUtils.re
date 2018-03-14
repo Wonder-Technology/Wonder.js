@@ -6,7 +6,7 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
   state
   |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (state, {pos, size, buffer, sendFunc}) => {
@@ -64,7 +64,7 @@ let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
 let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state) =>
   state
   |> HandleUniformRenderObjectModelMainService.unsafeGetUniformSendData(shaderIndex)
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (state, {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData) => {
@@ -78,7 +78,7 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state)
 let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, state) =>
   state
   |> HandleUniformRenderObjectMaterialMainService.unsafeGetUniformSendData(shaderIndex)
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (

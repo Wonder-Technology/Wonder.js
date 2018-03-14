@@ -37,7 +37,7 @@ let disposeData = (material, (shaderIndexMap, groupCountMap, gameObjectMap)) => 
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   materialArray
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs] ((state, material) => [@bs] handleDisposeFunc(disposedIndexArray, material, state)),
        state
      )

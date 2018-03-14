@@ -37,7 +37,7 @@ let _setChildren = (record, parent, children) => {
 };
 
 let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
-  ArraySystem.deleteBySwap(
+  ArrayService.deleteBySwap(
     Js.Array.indexOf(child, children),
     Js.Array.length(children) - 1,
     children

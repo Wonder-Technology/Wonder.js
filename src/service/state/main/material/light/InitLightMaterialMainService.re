@@ -40,7 +40,7 @@ let initMaterial =
 
 let initMaterials = (materialIndexArr, gl, state: MainStateDataType.state) =>
   materialIndexArr
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs] ((state, materialIndex: int) => [@bs] initMaterial(gl, materialIndex, state)),
        state
      );

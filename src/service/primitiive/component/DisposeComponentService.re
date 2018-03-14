@@ -23,7 +23,7 @@ let disposeSparseMapData = (component: int, map) =>
 let removeFromArray = (target: int, arr) => {
   let index = arr |> Js.Array.indexOf(target);
   let lastIndex = arr |> Js.Array.length |> pred;
-  arr |> ArraySystem.deleteBySwap(index, lastIndex);
+  arr |> ArrayService.deleteBySwap(index, lastIndex);
   arr
 };
 

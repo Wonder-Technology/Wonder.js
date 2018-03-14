@@ -16,7 +16,7 @@ let _defer = [%bs.raw
 let deferReturns = (timeout, returnedData, stub) => stub |> returns(_defer(timeout, returnedData));
 
 let returnDifferentOnEachCall = (stub) =>
-  ArraySystem.range(0, 100)
+  ArrayService.range(0, 100)
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs] ((stub, i) => stub |> onCall(i) |> returns(i |> Obj.magic)),
        stub

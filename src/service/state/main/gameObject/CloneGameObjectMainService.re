@@ -51,7 +51,7 @@ let rec _clone =
   state.transformRecord
   |> _setParent(clonedParentTransformArr, clonedTransformArr)
   |> HierachyTransformService.unsafeGetChildren(transform)
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (state, childTransform) =>
@@ -112,7 +112,7 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: MainStateDataTy
         uid,
         [@bs] GetComponentGameObjectService.getTransformComponent(uid, state.gameObjectRecord)
         |> Js.Option.getExn,
-        ArraySystem.range(0, count - 1),
+        ArrayService.range(0, count - 1),
         [||],
         totalClonedGameObjectArr
       ),

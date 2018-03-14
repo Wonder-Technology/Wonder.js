@@ -1,6 +1,6 @@
 let unsafeFindFirst = (arr: array('a), targetValue, func) =>
   arr
-  |> ArraySystem.unsafeFind(func)
+  |> ArrayService.unsafeFind(func)
   |> WonderLog.Contract.ensureCheck(
        (first) => {
          open WonderLog;

@@ -52,8 +52,8 @@ let init = (state: MainStateDataType.state) => {
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let {index} = state.boxGeometryRecord;
-  ArraySystem.range(0, index - 1)
-  |> ArraySystem.reduceState(
+  ArrayService.range(0, index - 1)
+  |> ReduceStateMainService.reduceState(
        [@bs] ((state, geometryIndex: int) => initGeometry(geometryIndex, state)),
        state
      )

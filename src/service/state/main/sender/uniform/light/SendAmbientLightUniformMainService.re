@@ -8,7 +8,7 @@ let send =
     (gl, (program, uniformCacheMap, uniformLocationMap), state: MainStateDataType.state) => {
       let {index} = state.ambientLightRecord;
       WonderCommonlib.ArraySystem.range(0, index - 1)
-      |> ArraySystem.reduceState(
+      |> ReduceStateMainService.reduceState(
            [@bs]
            (
              (state, index) => {

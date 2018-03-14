@@ -13,7 +13,7 @@ let _render = (gl, state: MainStateDataType.state) =>
   | Some(renderArray) =>
     state
     |> _getLightMaterialRenderArray(renderArray)
-    |> ArraySystem.reduceState(
+    |> ReduceStateMainService.reduceState(
          [@bs]
          (
            (state, uid: int) =>

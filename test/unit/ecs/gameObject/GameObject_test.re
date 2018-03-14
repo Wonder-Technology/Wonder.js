@@ -1316,7 +1316,7 @@ let _ =
                             SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
                           let state =
                             sourceInstanceArr
-                            |> ArraySystem.reduceState(
+                            |> ReduceStateMainService.reduceState(
                                  [@bs]
                                  (
                                    (state, sourceInstance) =>
@@ -1347,7 +1347,7 @@ let _ =
                             SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
                           let state =
                             sourceInstanceArr
-                            |> ArraySystem.reduceState(
+                            |> ReduceStateMainService.reduceState(
                                  [@bs]
                                  (
                                    (state, sourceInstance) =>

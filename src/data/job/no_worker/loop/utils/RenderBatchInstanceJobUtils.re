@@ -23,13 +23,13 @@ let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
       state.sourceInstanceRecord
     );
   objectInstanceArray
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (state, uid) => {
            let state =
              uniformInstanceSendNoCachableData
-             |> ArraySystem.reduceState(
+             |> ReduceStateMainService.reduceState(
                   [@bs]
                   (
                     (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {

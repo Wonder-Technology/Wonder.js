@@ -3,7 +3,7 @@ open MainStateDataType;
 let execJob = (_, _, state) => {
   let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
   ShaderIndexShaderService.getAllShaderIndexArray(state.shaderRecord)
-  |> ArraySystem.reduceState(
+  |> ReduceStateMainService.reduceState(
        [@bs]
        (
          (state, shaderIndex) => {
@@ -11,7 +11,7 @@ let execJob = (_, _, state) => {
            state
            |> UseProgramMainService.use(gl, program)
            |> HandleUniformShaderNoCachableMainService.unsafeGetUniformSendData(shaderIndex)
-           |> ArraySystem.reduceState(
+           |> ReduceStateMainService.reduceState(
                 [@bs]
                 (
                   (state, {pos, getDataFunc, sendDataFunc}: uniformShaderSendNoCachableData) => {
@@ -22,7 +22,7 @@ let execJob = (_, _, state) => {
                 state
               )
            |> HandleUniformShaderCachableMainService.unsafeGetUniformSendData(shaderIndex)
-           |> ArraySystem.reduceState(
+           |> ReduceStateMainService.reduceState(
                 [@bs]
                 (
                   (
@@ -36,7 +36,7 @@ let execJob = (_, _, state) => {
                 state
               )
            |> HandleUniformShaderCachableFunctionMainService.unsafeGetUniformSendData(shaderIndex)
-           |> ArraySystem.reduceState(
+           |> ReduceStateMainService.reduceState(
                 [@bs]
                 (
                   (

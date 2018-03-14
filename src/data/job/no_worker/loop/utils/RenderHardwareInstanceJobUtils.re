@@ -49,7 +49,7 @@ let _sendTransformMatrixDataBuffer =
 let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
   |> HandleAttributeConfigDataMainService.unsafeGetInstanceAttributeSendData(shaderIndex)
-  |> ArraySystem.reduceStatei(
+  |> ReduceStateMainService.reduceStatei(
        [@bs]
        (
          (state, sendData, index) =>

@@ -1,4 +1,4 @@
-/* [@bs.send.pipe : array('a)] external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
+[@bs.send.pipe : array('a)] external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
 
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   WonderLog.Contract.requireCheck(
@@ -31,31 +31,15 @@ let range = (a: int, b: int) => {
     Js.Array.push(i, result) |> ignore
   };
   result
-}; */
-/* 
-let reduceState = (func, state, arr) : state => {
-  let mutableState = ref(state);
-  for (i in 0 to Js.Array.length(arr) - 1) {
-    mutableState := [@bs] func(mutableState^, Array.unsafe_get(arr, i))
-  };
-  mutableState^
 };
 
-let reduceStatei = (func, state, arr) : state => {
-  let mutableState = ref(state);
-  for (i in 0 to Js.Array.length(arr) - 1) {
-    mutableState := [@bs] func(mutableState^, Array.unsafe_get(arr, i), i)
-  };
-  mutableState^
-}; */
-
-/* let join = (arr) => {
+let join = (arr) => {
   let output = ref("");
   for (i in 0 to Js.Array.length(arr)) {
     output := output^ ++ arr[i]
   };
   output^
-}; */
+};
 
 let push = (item, arr) => {
   arr |> Js.Array.push(item) |> ignore;

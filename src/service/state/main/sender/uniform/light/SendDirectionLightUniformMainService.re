@@ -46,7 +46,7 @@ let send =
         }
       |];
       WonderCommonlib.ArraySystem.range(0, index - 1)
-      |> ArraySystem.reduceState(
+      |> ReduceStateMainService.reduceState(
            [@bs]
            (
              (state, index) => {

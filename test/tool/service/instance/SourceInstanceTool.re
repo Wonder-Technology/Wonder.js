@@ -11,7 +11,7 @@ let createSourceInstanceGameObject = (state: MainStateDataType.state) => {
 };
 
 let createSourceInstanceGameObjectArr = (count, state: MainStateDataType.state) =>
-  ArraySystem.range(0, count)
+  ArrayService.range(0, count)
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
        (

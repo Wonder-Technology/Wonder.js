@@ -1,3 +1,3 @@
 open ShaderType;
 
-let getAllShaderIndexArray = ({index}) => ArraySystem.range(0, index - 1);
+let getAllShaderIndexArray = ({index}) => ArrayService.range(0, index - 1);
