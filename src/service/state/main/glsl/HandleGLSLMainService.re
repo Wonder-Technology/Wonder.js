@@ -1,6 +1,3 @@
-/* let _getGlslHandles = () => [("defineLightCount", DefineLightCountGlslHandle.execHandle)];
-
-   let createGlslHandleMap = (handleList) => HandleMapUtils.createHandleMap(handleList); */
 let getHandle = (name, state) =>
   switch name {
   | "defineLightCount" => DefineLightCountMainService.execHandle
