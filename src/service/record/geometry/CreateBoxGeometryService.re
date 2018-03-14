@@ -54,7 +54,7 @@ let _buildFaceData = (width, height, depth) => (
 
 let _getLerpData =
     ((faceAxes, corners), (side, segment), (cornerIndex1, cornerIndex2, segmentIndex)) =>
-  Vector3System.lerp(
+  Vector3Service.lerp(
     corners[faceAxes[side][cornerIndex1]],
     corners[faceAxes[side][cornerIndex2]],
     float_of_int(segmentIndex) /. float_of_int(segment)
@@ -68,10 +68,10 @@ let _generateVertex =
       vertices
     ) => {
   let (vx, vy, vz) =
-    Vector3System.add(
+    Vector3Service.add(
       Vector3Type.Float,
       _getLerpData((faceAxes, corners), (side, uSegment), (0, 1, uSegmentIndex)),
-      Vector3System.sub(
+      Vector3Service.sub(
         Vector3Type.Float,
         _getLerpData((faceAxes, corners), (side, vSegment), (0, 2, vSegmentIndex)),
         corners[faceAxes[side][0]]

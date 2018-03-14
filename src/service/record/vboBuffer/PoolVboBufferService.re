@@ -37,19 +37,19 @@ let addAllBufferToPool = ({
     matrixInstanceBufferPool
   }) => {
   vertexBufferMap
-  |> SparseMapSystem.forEachValid(
+  |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   normalBufferMap
-  |> SparseMapSystem.forEachValid(
+  |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   elementArrayBufferMap
-  |> SparseMapSystem.forEachValid(
+  |> SparseMapService.forEachValid(
        [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   matrixInstanceBufferMap
-  |> SparseMapSystem.forEachValid(
+  |> SparseMapService.forEachValid(
        [@bs] ((buffer) => matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)

@@ -9,7 +9,7 @@ let create = () => {
 
 let deepCopyForRestore = ({index, sourceInstanceMap, disposedIndexArray, gameObjectMap}) => {
   index,
-  sourceInstanceMap: sourceInstanceMap |> SparseMapSystem.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  sourceInstanceMap: sourceInstanceMap |> SparseMapService.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

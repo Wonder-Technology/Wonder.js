@@ -463,7 +463,7 @@ let _ =
                                 _prepare(state^);
                               let {shaderIndexMap} = newState |> ShaderTool.getShaderRecord;
                               shaderIndexMap
-                              |> HashMapSystem.entries
+                              |> HashMapService.entries
                               |> expect == [|("key1", targetShaderIndex1)|]
                             }
                           )
@@ -500,7 +500,7 @@ let _ =
                                 _prepare(state^);
                               let {programMap} = newState |> ProgramTool.getProgramRecord;
                               (
-                                programMap |> SparseMapSystem.length,
+                                programMap |> SparseMapService.length,
                                 programMap
                                 |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
                               )
@@ -550,7 +550,7 @@ let _ =
                               let {attributeLocationMap, uniformLocationMap} =
                                 newState |> GLSLLocationTool.getGLSLLocationRecord;
                               (
-                                attributeLocationMap |> SparseMapSystem.length,
+                                attributeLocationMap |> SparseMapService.length,
                                 attributeLocationMap
                                 |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
                               )
@@ -596,7 +596,7 @@ let _ =
                               let {uniformShaderSendNoCachableDataMap} =
                                 newState |> GLSLSenderTool.getGLSLSenderRecord;
                               (
-                                uniformShaderSendNoCachableDataMap |> SparseMapSystem.length,
+                                uniformShaderSendNoCachableDataMap |> SparseMapService.length,
                                 uniformShaderSendNoCachableDataMap
                                 |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
                               )

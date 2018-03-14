@@ -1,6 +1,4 @@
-let isDeleted = (item) => {
-  item |> Obj.magic |> Js.Nullable.test;
-};
+let isDeleted = (item) => item |> Obj.magic |> Js.Nullable.test;
 
 let length = Js.Array.length;
 

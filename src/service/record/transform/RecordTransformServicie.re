@@ -32,9 +32,9 @@ let deepCopyForRestore =
   localToWorldMatrixMap: localToWorldMatrixMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
   localPositionMap: localPositionMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
   normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  parentMap: parentMap |> SparseMapSystem.copy,
+  parentMap: parentMap |> SparseMapService.copy,
   childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,
-  dirtyMap: dirtyMap |> SparseMapSystem.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  dirtyMap: dirtyMap |> SparseMapService.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

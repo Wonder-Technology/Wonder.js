@@ -38,7 +38,7 @@ let _ =
                     [@bs] TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr2, maxSize, map);
                   map
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(count)
-                  |> SparseMapSystem.length
+                  |> SparseMapService.length
                   |> expect == 1
                 }
               )
@@ -64,7 +64,7 @@ let _ =
                     [@bs] TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr2, maxSize, map);
                   map
                   |> WonderCommonlib.SparseMapSystem.unsafeGet(count)
-                  |> SparseMapSystem.length
+                  |> SparseMapService.length
                   |> expect == 1
                 }
               )

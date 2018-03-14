@@ -88,7 +88,7 @@ let updateAndSetPositionByTuple =
       )
     /* setLocalPositionByTuple(
          transform,
-         Vector3System.transformMat4Tuple(
+         Vector3Service.transformMat4Tuple(
            position,
            invert(
              getLocalToWorldMatrixTypeArray(parent, record.localToWorldMatrixMap),

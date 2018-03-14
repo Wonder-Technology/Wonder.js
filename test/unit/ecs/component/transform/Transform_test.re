@@ -155,7 +155,7 @@ let _ =
               test(
                 "test one(parent)-two(child)",
                 () => {
-                  open Vector3System;
+                  open Vector3Service;
                   open Vector3Type;
                   let (state, parent) = createTransform(state^);
                   let (state, child1) = createTransform(state);
@@ -333,8 +333,8 @@ let _ =
                   expect == (
                               pos1,
                               pos2,
-                              Vector3System.add(Vector3Type.Float, pos3, pos1),
-                              Vector3System.add(Vector3Type.Float, pos4, pos2)
+                              Vector3Service.add(Vector3Type.Float, pos3, pos1),
+                              Vector3Service.add(Vector3Type.Float, pos4, pos2)
                             )
                 }
               )
@@ -379,7 +379,7 @@ let _ =
       describe(
         "setTransformLocalPosition",
         () => {
-          open Vector3System;
+          open Vector3Service;
           open Vector3Type;
           let _prepare = () => {
             let (state, parent) = createTransform(state^);
@@ -416,7 +416,7 @@ let _ =
       /* describe(
            "setTransformLocalPositionByTypeArray",
            () => {
-             open Vector3System;
+             open Vector3Service;
              open Vector3Type;
              open Js.Typed_array;
              let _prepare = () => {
@@ -491,7 +491,7 @@ let _ =
               test(
                 "change parent's position should affect children",
                 () => {
-                  open Vector3System;
+                  open Vector3Service;
                   open Vector3Type;
                   let (state, parent) = createTransform(state^);
                   let (state, child) = createTransform(state);
@@ -533,7 +533,7 @@ let _ =
                    test(
                      "change parent's position should affect children",
                      () => {
-                       open Vector3System;
+                       open Vector3Service;
                        open Vector3Type;
                        let (state, parent) = createTransform(state^);
                        let (state, child) = createTransform(state);
@@ -609,7 +609,7 @@ let _ =
                  /* let state = state |> TransformTool.init; */
                  let state = state |> TransformTool.update;
                  (getTransformPosition(child, state), getTransformPosition(parent, state))
-                 |> expect == (Vector3System.add(Float, pos, pos), pos)
+                 |> expect == (Vector3Service.add(Float, pos, pos), pos)
                }
              );
              test(
@@ -793,7 +793,7 @@ let _ =
                   test(
                     "test disposed one has parent",
                     () => {
-                      open Vector3System;
+                      open Vector3Service;
                       open Vector3Type;
                       let (state, transform1, transform2) = _prepare();
                       let (state, transform0) = createTransform(state);
@@ -833,7 +833,7 @@ let _ =
               test(
                 "should affect children",
                 () => {
-                  open Vector3System;
+                  open Vector3Service;
                   open Vector3Type;
                   let (state, transform1, transform2) = _prepare();
                   let (state, transform0) = createTransform(state);

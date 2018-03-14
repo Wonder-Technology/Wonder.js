@@ -27,9 +27,9 @@ let deepCopyForRestore =
   index,
   objectInstanceArrayMap: objectInstanceArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
   matrixFloat32ArrayMap: matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
-  matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> SparseMapSystem.copy,
-  isTransformStaticMap: isTransformStaticMap |> SparseMapSystem.copy,
+  matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> SparseMapService.copy,
+  isTransformStaticMap: isTransformStaticMap |> SparseMapService.copy,
   isSendTransformMatrixDataMap,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

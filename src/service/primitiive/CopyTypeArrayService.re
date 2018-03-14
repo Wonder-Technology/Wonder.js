@@ -32,7 +32,7 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
   arr
   |> Js.Array.map(
        (itemArr) =>
-         SparseMapSystem.isDeleted(itemArr) ?
+         SparseMapService.isDeleted(itemArr) ?
            Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
      );
 

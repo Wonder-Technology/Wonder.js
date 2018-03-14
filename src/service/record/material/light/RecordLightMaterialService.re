@@ -27,10 +27,10 @@ let deepCopyForRestore =
     ) => {
   index,
   shaderIndexMap: [||],
-  diffuseColorMap: diffuseColorMap |> SparseMapSystem.copy,
-  specularColorMap: specularColorMap |> SparseMapSystem.copy,
-  shininessMap: shininessMap |> SparseMapSystem.copy,
-  groupCountMap: groupCountMap |> SparseMapSystem.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  diffuseColorMap: diffuseColorMap |> SparseMapService.copy,
+  specularColorMap: specularColorMap |> SparseMapService.copy,
+  shininessMap: shininessMap |> SparseMapService.copy,
+  groupCountMap: groupCountMap |> SparseMapService.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

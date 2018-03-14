@@ -50,7 +50,7 @@ let getUint16TypeArrayFromPool =
 
 let _addAllTypeArrayToPool = (typeArrayMap, maxSize, map, addTypeArrayToPoolFunc) => {
   typeArrayMap
-  |> SparseMapSystem.forEachValid(
+  |> SparseMapService.forEachValid(
        [@bs] ((typeArray) => [@bs] addTypeArrayToPoolFunc(typeArray, maxSize, map) |> ignore)
      );
   map

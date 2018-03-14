@@ -33,6 +33,6 @@ let deepCopyForRestore =
   farMap: farMap |> Js.Array.copy,
   fovyMap: fovyMap |> Js.Array.copy,
   aspectMap: aspectMap |> Js.Array.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

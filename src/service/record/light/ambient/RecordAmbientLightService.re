@@ -60,7 +60,7 @@ let deepCopyForRestore = ({index, buffer, colors, gameObjectMap}) => {
     index,
     buffer: copiedBuffer,
     colors: CopyTypeArrayService.copyFloat32TypeArrayFromBuffer(copiedBuffer),
-    mappedIndexMap: gameObjectMap |> SparseMapSystem.copy,
-    gameObjectMap: gameObjectMap |> SparseMapSystem.copy
+    mappedIndexMap: gameObjectMap |> SparseMapService.copy,
+    gameObjectMap: gameObjectMap |> SparseMapService.copy
   }
 };

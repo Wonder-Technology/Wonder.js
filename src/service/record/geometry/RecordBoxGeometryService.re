@@ -32,13 +32,13 @@ let deepCopyForRestore =
   /*!
     because vertices, indices are read-only record, so need to deep copy
     */
-  verticesMap: verticesMap |> SparseMapSystem.copy,
-  normalsMap: normalsMap |> SparseMapSystem.copy,
-  indicesMap: indicesMap |> SparseMapSystem.copy,
-  computeDataFuncMap: computeDataFuncMap |> SparseMapSystem.copy,
-  configDataMap: configDataMap |> SparseMapSystem.copy,
-  isInitMap: isInitMap |> SparseMapSystem.copy,
-  groupCountMap: groupCountMap |> SparseMapSystem.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  verticesMap: verticesMap |> SparseMapService.copy,
+  normalsMap: normalsMap |> SparseMapService.copy,
+  indicesMap: indicesMap |> SparseMapService.copy,
+  computeDataFuncMap: computeDataFuncMap |> SparseMapService.copy,
+  configDataMap: configDataMap |> SparseMapService.copy,
+  isInitMap: isInitMap |> SparseMapService.copy,
+  groupCountMap: groupCountMap |> SparseMapService.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

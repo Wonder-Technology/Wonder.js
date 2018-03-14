@@ -6,7 +6,7 @@ let getIntersectShaderIndexDataArray = (currentState, targetState) => {
   let {shaderIndexMap: currentShaderIndexMap} = currentState.shaderRecord;
   let {shaderIndexMap: targetShaderIndexMap} = targetState.shaderRecord;
   targetShaderIndexMap
-  |> HashMapSystem.entries
+  |> HashMapService.entries
   |> Js.Array.filter(
        ((key, _)) => currentShaderIndexMap |> WonderCommonlib.HashMapSystem.has(key)
      )

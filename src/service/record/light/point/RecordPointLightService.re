@@ -244,7 +244,7 @@ let deepCopyForRestore =
         getRangesOffset(),
         getRangesLength()
       ),
-    mappedIndexMap: gameObjectMap |> SparseMapSystem.copy,
-    gameObjectMap: gameObjectMap |> SparseMapSystem.copy
+    mappedIndexMap: gameObjectMap |> SparseMapService.copy,
+    gameObjectMap: gameObjectMap |> SparseMapService.copy
   }
 };

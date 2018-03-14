@@ -5,7 +5,7 @@ open ShaderType;
 let _getIntersectShaderIndexMap = (currentShaderIndexMap, targetShaderIndexMap) => {
   let intersectShaderIndexDataArr =
     targetShaderIndexMap
-    |> HashMapSystem.entries
+    |> HashMapService.entries
     |> Js.Array.filter(((key, _)) => WonderCommonlib.HashMapSystem.has(key, currentShaderIndexMap));
   (
     intersectShaderIndexDataArr |> Js.Array.length,

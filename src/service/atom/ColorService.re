@@ -1,4 +1,3 @@
-/* let regex_num = [%re "/^\\#([0-9a-f]{6})$/i"]; */
 let regex_num = [%re {|/^\#([0-9a-f]{6})$/i|}];
 
 let _handleInValidHexStr = (hexStr: string) =>

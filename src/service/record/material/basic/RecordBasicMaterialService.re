@@ -14,8 +14,8 @@ let create = () => {
 let deepCopyForRestore = ({index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray}) => {
   index,
   shaderIndexMap: [||],
-  colorMap: colorMap |> SparseMapSystem.copy,
-  groupCountMap: groupCountMap |> SparseMapSystem.copy,
-  gameObjectMap: gameObjectMap |> SparseMapSystem.copy,
+  colorMap: colorMap |> SparseMapService.copy,
+  groupCountMap: groupCountMap |> SparseMapService.copy,
+  gameObjectMap: gameObjectMap |> SparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy
 };

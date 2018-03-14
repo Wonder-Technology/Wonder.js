@@ -4,7 +4,7 @@ open SourceInstanceType;
 
 let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
   isSendTransformMatrixDataMap
-  |> SparseMapSystem.reduceiValid(
+  |> SparseMapService.reduceiValid(
        [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapSystem.set(index, false)),
        WonderCommonlib.SparseMapSystem.createEmpty()
      );

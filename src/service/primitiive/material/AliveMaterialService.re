@@ -1,1 +1,1 @@
-let getAllAliveMaterials = (gameObjectMap) => gameObjectMap |> SparseMapSystem.getValidKeys;
+let getAllAliveMaterials = (gameObjectMap) => gameObjectMap |> SparseMapService.getValidKeys;

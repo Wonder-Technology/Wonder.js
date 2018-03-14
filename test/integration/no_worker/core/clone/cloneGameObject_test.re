@@ -1012,7 +1012,7 @@ let _ =
                     "test set cloned transform's localPosition by corresponding source transform's localPosition",
                     () => {
                       open TransformAPI;
-                      open Vector3System;
+                      open Vector3Service;
                       open Vector3Type;
                       let (
                         state,

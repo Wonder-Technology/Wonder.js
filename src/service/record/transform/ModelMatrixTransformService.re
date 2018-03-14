@@ -34,9 +34,9 @@ let getNormalMatrixTypeArray = (transform: transform, {localToWorldMatrixMap, no
     let normalMatrix =
       Matrix4Service.invertTo3x3(
         getLocalToWorldMatrixTypeArray(transform, record),
-        Matrix3System.createIdentityMatrix3()
+        Matrix3Service.createIdentityMatrix3()
       )
-      |> Matrix3System.transposeSelf;
+      |> Matrix3Service.transposeSelf;
     (
       normalMatrix,
       WonderCommonlib.SparseMapSystem.set(transform, normalMatrix, normalMatrixCacheMap)
@@ -85,7 +85,7 @@ let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMa
      record
    | Some(parent) =>
      let record = update(parent, state) |> getTransformData;
-     Vector3System.transformMat4TypeArray(
+     Vector3Service.transformMat4TypeArray(
        position,
        invert(
          getLocalToWorldMatrixTypeArray(parent, record.localToWorldMatrixMap),
@@ -100,7 +100,7 @@ let setPositionByTuple =
     (transform: transform, parent, position: position, (globalTempRecord, record)) =>
   setLocalPositionByTuple(
     transform,
-    Vector3System.transformMat4Tuple(
+    Vector3Service.transformMat4Tuple(
       position,
       invert(
         getLocalToWorldMatrixTypeArray(parent, record),

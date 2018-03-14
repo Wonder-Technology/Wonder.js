@@ -108,7 +108,7 @@ let deepCopyForRestore = ({index, buffer, colors, intensities, gameObjectMap}) =
         getIntensitiesOffset(),
         getIntensitiesLength()
       ),
-    mappedIndexMap: gameObjectMap |> SparseMapSystem.copy,
-    gameObjectMap: gameObjectMap |> SparseMapSystem.copy
+    mappedIndexMap: gameObjectMap |> SparseMapService.copy,
+    gameObjectMap: gameObjectMap |> SparseMapService.copy
   }
 };
