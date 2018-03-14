@@ -3,9 +3,13 @@ open MainStateDataType;
 open GameObjectType;
 
 let _handleByDisposeCount = (record, state) =>
-  if (MemoryUtils.isDisposeTooMany(record.disposeCount, state)) {
+  if (QueryCPUMemoryService.isDisposeTooMany(record.disposeCount, state.settingRecord)) {
     record.disposeCount = 0;
-    CpuMemorySystem.reAllocateGameObject(state)
+    {
+      ...state,
+      gameObjectRecord:
+        ReallocateGameObjectCPUMemoryService.reAllocateGameObject(state.gameObjectRecord)
+    }
   } else {
     state
   };

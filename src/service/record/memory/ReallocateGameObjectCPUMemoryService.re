@@ -1,11 +1,11 @@
 open GameObjectType;
 
-open MainStateDataType;
+let _isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.SparseMapSystem.has(key);
 
 let _setNewDataToState =
     (
       newAliveUidArray,
-      state,
+      record,
       (
         newTransformMap,
         newMeshRendererMap,
@@ -20,23 +20,20 @@ let _setNewDataToState =
         newObjectInstanceMap
       )
     ) => {
-  ...state,
-  gameObjectRecord: {
-    ...state.gameObjectRecord,
-    disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-    aliveUidArray: newAliveUidArray,
-    transformMap: newTransformMap,
-    meshRendererMap: newMeshRendererMap,
-    boxGeometryMap: newGeometryMap,
-    basicCameraViewMap: newBasicCameraViewMap,
-    basicMaterialMap: newBasicMaterialMap,
-    lightMaterialMap: newLightMaterialMap,
-    ambientLightMap: newAmbientLightMap,
-    directionLightMap: newDirectionLightMap,
-    pointLightMap: newPointLightMap,
-    sourceInstanceMap: newSourceInstanceMap,
-    objectInstanceMap: newObjectInstanceMap
-  }
+  ...record,
+  disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  aliveUidArray: newAliveUidArray,
+  transformMap: newTransformMap,
+  meshRendererMap: newMeshRendererMap,
+  boxGeometryMap: newGeometryMap,
+  basicCameraViewMap: newBasicCameraViewMap,
+  basicMaterialMap: newBasicMaterialMap,
+  lightMaterialMap: newLightMaterialMap,
+  ambientLightMap: newAmbientLightMap,
+  directionLightMap: newDirectionLightMap,
+  pointLightMap: newPointLightMap,
+  sourceInstanceMap: newSourceInstanceMap,
+  objectInstanceMap: newObjectInstanceMap
 };
 
 let _setNewMap = (uid, oldMap, newMap) =>
@@ -45,20 +42,23 @@ let _setNewMap = (uid, oldMap, newMap) =>
   | Some(component) => newMap |> WonderCommonlib.SparseMapSystem.set(uid, component)
   };
 
-let _allocateNewMaps = (newAliveUidArray, {gameObjectRecord} as state) => {
-  let {
-    transformMap,
-    meshRendererMap,
-    boxGeometryMap,
-    basicMaterialMap,
-    lightMaterialMap,
-    ambientLightMap,
-    directionLightMap,
-    pointLightMap,
-    basicCameraViewMap,
-    sourceInstanceMap,
-    objectInstanceMap
-  } = gameObjectRecord;
+let _allocateNewMaps =
+    (
+      newAliveUidArray,
+      {
+        transformMap,
+        meshRendererMap,
+        boxGeometryMap,
+        basicMaterialMap,
+        lightMaterialMap,
+        ambientLightMap,
+        directionLightMap,
+        pointLightMap,
+        basicCameraViewMap,
+        sourceInstanceMap,
+        objectInstanceMap
+      } as record
+    ) =>
   newAliveUidArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]
@@ -109,13 +109,11 @@ let _allocateNewMaps = (newAliveUidArray, {gameObjectRecord} as state) => {
          WonderCommonlib.SparseMapSystem.createEmpty(),
          WonderCommonlib.SparseMapSystem.createEmpty()
        )
-     )
-};
+     );
 
-let reAllocateGameObject = ({gameObjectRecord} as state) => {
-  let {aliveUidArray, disposedUidMap} = gameObjectRecord;
+let reAllocateGameObject = ({aliveUidArray, disposedUidMap} as record) => {
   let newAliveUidArray =
     aliveUidArray
-    |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
-  state |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, state)
+    |> Js.Array.filter((aliveUid) => ! _isDisposed(aliveUid, disposedUidMap));
+  record |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, record)
 };
