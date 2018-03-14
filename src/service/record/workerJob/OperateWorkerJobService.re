@@ -1,6 +1,6 @@
-open WorkerJobConfigType;
+open WorkerJobType;
 
-let _unsafeGetWorkerJobConfig = (state: MainStateDataType.state) => {
+let _unsafeGetWorkerJobConfig = (record) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -8,22 +8,16 @@ let _unsafeGetWorkerJobConfig = (state: MainStateDataType.state) => {
           Operators.(
             test(
               Log.buildAssertMessage(~expect={j|render job config exist|j}, ~actual={j|not|j}),
-              () => state.workerJobConfig |> assertExist
+              () => record |> assertExist
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  state.workerJobConfig |> Js.Option.getExn
+  record |> Js.Option.getExn
 };
 
-/* let _getPipeline = (pipeline: string, pipelines) =>
-   JobConfigService.unsafeFindFirst(
-     pipelines,
-     pipeline,
-     ({name}) => JobConfigService.filterTargetName(name, pipeline)
-   ); */
 let _getExecutableJob = (jobs, jobItemName) =>
   JobConfigService.unsafeFindFirst(
     jobs,
@@ -95,8 +89,8 @@ let rec _find =
   };
 
 /* TODO refactor */
-let getMainInitJobStream = (jobHandleMap, stateData, state: MainStateDataType.state, getJobHandleFunc) => {
-  let {setting, mainInitPipelines, mainInitJobs} = _unsafeGetWorkerJobConfig(state);
+let getMainInitJobStream = (jobHandleMap, stateData, record, getJobHandleFunc) => {
+  let {setting, mainInitPipelines, mainInitJobs} = record |> OptionService.unsafeGet;
   /* TODO refactor */
   let {jobs}: mainInitPipeline =
     JobConfigService.unsafeFindFirst(
@@ -136,10 +130,10 @@ let getMainInitJobStream = (jobHandleMap, stateData, state: MainStateDataType.st
         ),
         [||]
       ); */
-let getSetting = (state) => _unsafeGetWorkerJobConfig(state).setting;
+let getSetting = (record) => _unsafeGetWorkerJobConfig(record).setting;
 
-let _getWorkerPipelineJobs = (state) => {
-  let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(state);
+let _getWorkerPipelineJobs = (record) => {
+  let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(record);
   /* _getPipeline(setting.workerPipeline, workerPipelines).jobs */
   JobConfigService.unsafeFindFirst(
     workerPipelines,
@@ -149,9 +143,9 @@ let _getWorkerPipelineJobs = (state) => {
     jobs
 };
 
-let getRenderWorkerPipelineJobs = (state) => _getWorkerPipelineJobs(state).render;
+let getRenderWorkerPipelineJobs = (record) => _getWorkerPipelineJobs(record).render;
 
-let getWorkerJobs = (state) => _unsafeGetWorkerJobConfig(state).workerJobs;
+let getWorkerJobs = (record) => _unsafeGetWorkerJobConfig(record).workerJobs;
 
 let _getExecutableWorkerJob = (jobs, jobItemName) =>
   JobConfigService.unsafeFindFirst(
@@ -177,14 +171,11 @@ let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), 
        )
   );
 
-
-let getRenderWorkerJobStreamArr = (
- pipelineJobs, workerJobs,
- 
-jobHandleMap, stateData, getJobHandleFunc) => {
+let getRenderWorkerJobStreamArr =
+    (pipelineJobs, workerJobs, jobHandleMap, stateData, getJobHandleFunc) => {
   /* let {setting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
      let {jobs} = _getPipeline(setting.worker_pipeline, workerPipelines); */
-  let state = StateRenderService.getState(stateData);
+  /* let state = StateRenderService.getState(stateData); */
   /* let workerJobs = StateRenderService.getJobs(state); */
   /* StateRenderService.getPipelineJobs(state) */
   pipelineJobs

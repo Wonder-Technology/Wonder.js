@@ -13,7 +13,7 @@ let _ =
           sandbox := createSandbox();
           TestToolMainWorker.initWithJobConfig(
             ~sandbox,
-            ~workerJobConfig=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
+            ~workerJobRecord=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
             ()
           )
         }

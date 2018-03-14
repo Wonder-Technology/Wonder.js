@@ -66,9 +66,9 @@ open GlobalTempType;
 
 open TypeArrayPoolType;
 
-open NoWorkerJobConfigType;
+open NoWorkerJobType;
 
-open WorkerJobConfigType;
+open WorkerJobType;
 
 open RenderConfigType;
 
@@ -151,8 +151,8 @@ and jobRecord = {
 and state = {
   settingRecord,
   jobRecord,
-  noWorkerJobConfig: option(noWorkerJobConfig),
-  workerJobConfig: option(workerJobConfig),
+  noWorkerJobRecord: option(noWorkerJobRecord),
+  workerJobRecord: option(workerJobRecord),
   renderConfigRecord: option(renderConfigRecord),
   gpuDetectRecord,
   sourceInstanceRecord,

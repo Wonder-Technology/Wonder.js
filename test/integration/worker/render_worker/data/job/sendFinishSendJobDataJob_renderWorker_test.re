@@ -14,7 +14,7 @@ let _ =
           sandbox := createSandbox();
           TestToolMainWorker.initWithJobConfig(
             ~sandbox,
-            ~workerJobConfig=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
+            ~workerJobRecord=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
             ()
           )
         }
@@ -36,7 +36,7 @@ let _ =
   let postMessageToRenderWorker = WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
   StateTool.getState() */
 
-       WorkerJobSystem.getRenderWorkerJobStreamArr(
+       WorkerJobService.getRenderWorkerJobStreamArr(
 
 
        {|

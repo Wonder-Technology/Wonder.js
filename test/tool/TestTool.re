@@ -37,12 +37,12 @@ let initWithJobConfigWithoutBuildFakeDom =
                |},
       ~useHardwareInstance="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
-      ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
+      ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
       ()
     ) =>
   SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
-  |> NoWorkerJobConfigTool.create(noWorkerJobConfig)
+  |> NoWorkerJobConfigTool.create(noWorkerJobRecord)
   |> NoWorkerJobTool.init
   |> RenderConfigDataTool.create(renderConfigRecord);
 
@@ -51,12 +51,12 @@ let initWithJobConfig =
       ~sandbox,
       ~isDebug="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
-      ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
+      ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
       ()
     ) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~noWorkerJobConfig, ())
+  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~noWorkerJobRecord, ())
 };
 
 let openContractCheck = () =>

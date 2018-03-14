@@ -15,7 +15,7 @@ let _ =
           state :=
             TestTool.initWithJobConfig(
               ~sandbox,
-              ~noWorkerJobConfig=
+              ~noWorkerJobRecord=
                 NoWorkerJobConfigTool.buildNoWorkerJobConfig(
                   ~initPipelines={|
         [

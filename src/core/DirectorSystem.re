@@ -1,5 +1,5 @@
 let _workerInit = (stateData, state: MainStateDataType.state) =>
-  WorkerJobSystem.getMainInitJobStream(stateData, state);
+  WorkerJobService.getMainInitJobStream(stateData, state);
 
 let _noWorkerInit = (state: MainStateDataType.state) =>
   state |> NoWorkerJobService.execNoWorkerInitJobs;

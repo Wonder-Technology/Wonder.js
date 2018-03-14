@@ -1,6 +1,8 @@
-open NoWorkerJobConfigType;
+open MainStateDataType;
 
-open NoWorkerJobConfigParseSystem;
+open NoWorkerJobType;
+
+open ParseNoWorkerJobService;
 
 let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
 [
@@ -252,7 +254,7 @@ let create =
       state: MainStateDataType.state
     ) => {
   ...state,
-  noWorkerJobConfig:
+  noWorkerJobRecord:
     Some({
       setting: convertSettingToRecord(noWorkerSetting |> Js.Json.parseExn),
       initPipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
@@ -262,14 +264,17 @@ let create =
     })
 };
 
-let getSetting = NoWorkerJobConfigSystem.getSetting;
+let getSetting = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getSetting;
 
-let getInitPipelines = NoWorkerJobConfigSystem.getInitPipelines;
+let getInitPipelines = (state) =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitPipelines;
 
-let getInitJobs = NoWorkerJobConfigSystem.getInitJobs;
+let getInitJobs = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitJobs;
 
-let getLoopPipelines = NoWorkerJobConfigSystem.getLoopPipelines;
+let getLoopPipelines = (state) =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getLoopPipelines;
 
-let getLoopJobs = NoWorkerJobConfigSystem.getLoopJobs;
+let getLoopJobs = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getLoopJobs;
 
-let getInitPipelines = NoWorkerJobConfigSystem.getInitPipelines;
+let getInitPipelines = (state) =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitPipelines;

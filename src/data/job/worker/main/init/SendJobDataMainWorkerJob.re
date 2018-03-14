@@ -1,3 +1,5 @@
+open MainStateDataType;
+
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
@@ -11,10 +13,13 @@ let execJob = (flags, stateData) =>
            /* "pipelineJobs": WorkerJobConfigSystem.getRenderWorkerPipelineJobs(state),
               "jobs": WorkerJobConfigSystem.getWorkerJobs(state) */
            "pipelineJobs":
-             WorkerJobConfigSystem.getRenderWorkerPipelineJobs(state)
+             OperateWorkerJobService.getRenderWorkerPipelineJobs(state.workerJobRecord)
              |> Obj.magic
              |> Js.Json.stringify,
-           "jobs": WorkerJobConfigSystem.getWorkerJobs(state) |> Obj.magic |> Js.Json.stringify
+           "jobs":
+             OperateWorkerJobService.getWorkerJobs(state.workerJobRecord)
+             |> Obj.magic
+             |> Js.Json.stringify
          });
       Some(operateType)
     }

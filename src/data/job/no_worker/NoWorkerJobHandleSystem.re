@@ -28,6 +28,6 @@ let _getLoopJobHandles = () => [
   ("front_render_light", FrontRenderLightJob.execJob)
 ];
 
-let createInitJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getInitJobHandles());
+let createInitJobHandleMap = () => HandleJobService.createJobHandleMap(_getInitJobHandles());
 
-let createLoopJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getLoopJobHandles());
+let createLoopJobHandleMap = () => HandleJobService.createJobHandleMap(_getLoopJobHandles());

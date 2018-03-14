@@ -81,7 +81,7 @@ MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
 |> Most.filter((e) => e##record##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
 |> Most.concatMap(
      (e) =>
-       WorkerJobSystem.getRenderWorkerJobStreamArr(
+       WorkerJobService.getRenderWorkerJobStreamArr(
          e##record##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
          e##record##jobs |> Js.Json.parseExn |> Obj.magic,
          RenderWorkerStateData.renderWorkerStateData

@@ -40,7 +40,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.initWithJobConfig(~sandbox, ~noWorkerJobConfig=_buildNoWorkerJobConfig(), ())
+            TestTool.initWithJobConfig(~sandbox, ~noWorkerJobRecord=_buildNoWorkerJobConfig(), ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

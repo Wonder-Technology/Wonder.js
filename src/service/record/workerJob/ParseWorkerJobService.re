@@ -1,6 +1,4 @@
-open MainStateDataType;
-
-open WorkerJobConfigType;
+open WorkerJobType;
 
 let convertSettingToRecord = (setting) => {
   open Json;

@@ -48,7 +48,7 @@ let _ =
           state :=
             TestTool.initWithJobConfig(
               ~sandbox,
-              ~noWorkerJobConfig=InitRenderJobTool.buildNoWorkerJobConfig(),
+              ~noWorkerJobRecord=InitRenderJobTool.buildNoWorkerJobConfig(),
               ()
             )
         }

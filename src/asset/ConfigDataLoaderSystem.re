@@ -1,3 +1,5 @@
+open MainStateDataType;
+
 open Js.Promise;
 
 open Most;
@@ -12,30 +14,30 @@ let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "no_worker/setting/setting.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertSettingToRecord(json)),
+  |> map((json) => ParseNoWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "no_worker/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertInitPipelinesToRecord(json))
+  |> map((json) => ParseNoWorkerJobService.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "no_worker/pipeline/loop_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertLoopPipelinesToRecord(json))
+  |> map((json) => ParseNoWorkerJobService.convertLoopPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "no_worker/job/init_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertInitJobsToRecord(json))
+  |> map((json) => ParseNoWorkerJobService.convertInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "no_worker/job/loop_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => NoWorkerJobConfigParseSystem.convertLoopJobsToRecord(json))
+  |> map((json) => ParseNoWorkerJobService.convertLoopJobsToRecord(json))
   |> Obj.magic
 |];
 
@@ -67,7 +69,7 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> _collectAllRecords
     |> then_(
          (recordArr) =>
-           NoWorkerJobConfigHelper.create(recordArr |> Obj.magic, state)
+           {...state, noWorkerJobRecord: RecordNoWorkerJobService.create(recordArr |> Obj.magic)}
            |> NoWorkerJobService.init
            |> resolve
        )
@@ -88,30 +90,30 @@ let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
     PathUtils.join([|dataDir, "worker/setting/setting.json"|]),
     fetchFunc
   )
-  |> map((json) => WorkerJobConfigParseSystem.convertSettingToRecord(json)),
+  |> map((json) => ParseWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "worker/pipeline/main/main_init_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => WorkerJobConfigParseSystem.convertMainInitPipelinesToRecord(json))
+  |> map((json) => ParseWorkerJobService.convertMainInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "worker/job/main/main_init_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => WorkerJobConfigParseSystem.convertMainInitJobsToRecord(json))
+  |> map((json) => ParseWorkerJobService.convertMainInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "worker/pipeline/worker/worker_pipelines.json"|]),
     fetchFunc
   )
-  |> map((json) => WorkerJobConfigParseSystem.convertWorkerPipelinesToRecord(json))
+  |> map((json) => ParseWorkerJobService.convertWorkerPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "worker/job/worker/worker_jobs.json"|]),
     fetchFunc
   )
-  |> map((json) => WorkerJobConfigParseSystem.convertWorkerJobsToRecord(json))
+  |> map((json) => ParseWorkerJobService.convertWorkerJobsToRecord(json))
   |> Obj.magic
 |];
 
@@ -120,7 +122,11 @@ let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createFetchWorkerJobStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
-    |> then_((recordArr) => WorkerJobConfigHelper.create(recordArr |> Obj.magic, state) |> resolve)
+    |> then_(
+         (recordArr) =>
+           {...state, workerJobRecord: RecordWorkerJobService.create(recordArr |> Obj.magic)}
+           |> resolve
+       )
   );
 
 let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>

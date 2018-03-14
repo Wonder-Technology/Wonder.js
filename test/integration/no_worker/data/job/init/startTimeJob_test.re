@@ -40,7 +40,7 @@ let _ =
           state :=
             TestTool.initWithJobConfigWithoutBuildFakeDom(
               ~sandbox,
-              ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+              ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
               ()
             )
         }

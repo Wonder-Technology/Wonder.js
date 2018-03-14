@@ -17,9 +17,9 @@ let _getWorkerJobHandles = () => [
 ];
 
 let createMainInitJobHandleMap = () =>
-  JobHandleSystem.createJobHandleMap(_getMainInitJobHandles());
+  HandleJobService.createJobHandleMap(_getMainInitJobHandles());
 
-let createWorkerJobHandleMap = () => JobHandleSystem.createJobHandleMap(_getWorkerJobHandles());
+let createWorkerJobHandleMap = () => HandleJobService.createJobHandleMap(_getWorkerJobHandles());
 
 let getMainInitJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {

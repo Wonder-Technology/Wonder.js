@@ -1,6 +1,4 @@
-open MainStateDataType;
-
-open NoWorkerJobConfigType;
+open NoWorkerJobType;
 
 let convertSettingToRecord = (loop_setting) => {
   open Json;

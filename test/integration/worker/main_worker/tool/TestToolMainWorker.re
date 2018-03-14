@@ -14,12 +14,12 @@ let initWithJobConfig =
         "preserve_drawing_buffer": false
         }
                |},
-      ~workerJobConfig=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
+      ~workerJobRecord=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
       ()
     ) => {
   SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
-  |> WorkerJobConfigToolWorker.create(workerJobConfig)
+  |> WorkerJobConfigToolWorker.create(workerJobRecord)
   |> RenderConfigDataTool.create(renderConfigRecord)
   |> StateTool.setState
   |> ignore;

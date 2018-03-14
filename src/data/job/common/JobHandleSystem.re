@@ -1,1 +1,0 @@
-let createJobHandleMap = (handleList) => HandleMapUtils.createHandleMap(handleList)

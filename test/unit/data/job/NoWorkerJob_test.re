@@ -25,7 +25,7 @@ let _ =
                       TestTool.initWithJobConfig(
                         ~sandbox,
                         ~isDebug="true",
-                        ~noWorkerJobConfig=
+                        ~noWorkerJobRecord=
                           NoWorkerJobConfigTool.buildNoWorkerJobConfig(
                             ~initPipelines={|
 [

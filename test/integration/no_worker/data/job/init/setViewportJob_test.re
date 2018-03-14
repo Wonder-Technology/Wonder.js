@@ -40,7 +40,7 @@ let _ =
         let (canvasDom, fakeGl, div, body) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
         TestTool.initWithJobConfigWithoutBuildFakeDom(
           ~sandbox,
-          ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+          ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
           ()
         )
         |> FakeGlTool.setFakeGl(fakeGl)

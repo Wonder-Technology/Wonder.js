@@ -1,18 +1,18 @@
 /* let _getDefaultRenderJobConfig = () => RenderJobConfigTool.buildRenderJobConfig(); */
-let initWithJobConfig = (sandbox, noWorkerJobConfig) =>
+let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfig(
     ~sandbox,
     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
-    ~noWorkerJobConfig,
+    ~noWorkerJobRecord,
     ()
   )
   |> DirectorTool.prepare;
 
-let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobConfig) =>
+let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
-    ~noWorkerJobConfig,
+    ~noWorkerJobRecord,
     ()
   )
   |> DirectorTool.prepare;

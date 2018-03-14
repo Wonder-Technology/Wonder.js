@@ -30,7 +30,7 @@ type executableJob = {
 };
 
 /* type executableJobFlags = (jobFlags, option(string)); */
-type noWorkerJobConfig = {
+type noWorkerJobRecord = {
   setting,
   initPipelines: pipelines,
   loopPipelines: pipelines,

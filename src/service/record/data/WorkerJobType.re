@@ -53,7 +53,7 @@ type workerPipeline = {
 
 type workerPipelines = array(workerPipeline);
 
-type workerJobConfig = {
+type workerJobRecord = {
   setting,
   mainInitPipelines,
   workerPipelines,

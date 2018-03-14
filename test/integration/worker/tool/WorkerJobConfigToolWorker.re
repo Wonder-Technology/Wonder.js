@@ -1,6 +1,6 @@
-open WorkerJobConfigType;
+open WorkerJobType;
 
-open WorkerJobConfigParseSystem;
+open ParseWorkerJobService;
 
 let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
 [
@@ -153,7 +153,7 @@ let create =
       state: MainStateDataType.state
     ) => {
   ...state,
-  workerJobConfig:
+  workerJobRecord:
     Some({
       setting: convertSettingToRecord(workerSetting |> Js.Json.parseExn),
       mainInitPipelines: convertMainInitPipelinesToRecord(mainInitPipelines |> Js.Json.parseExn),

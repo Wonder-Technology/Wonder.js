@@ -3,8 +3,8 @@ open MainStateDataType;
 let createState = () => {
   settingRecord: RecordSettingService.create(),
   jobRecord: RecordJobService.create(),
-  noWorkerJobConfig: None,
-  workerJobConfig: None,
+  noWorkerJobRecord: None,
+  workerJobRecord: None,
   renderConfigRecord: None,
   gpuDetectRecord: RecordGPUDetectService.create(),
   viewRecord: RecordViewService.create(),

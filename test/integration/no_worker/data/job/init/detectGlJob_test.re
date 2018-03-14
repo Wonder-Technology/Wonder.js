@@ -36,7 +36,7 @@ let _ =
       let _exec = (fakeGl) =>
         TestTool.initWithJobConfigWithoutBuildFakeDom(
           ~sandbox,
-          ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+          ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
           ()
         )
         |> FakeGlTool.setFakeGl(fakeGl)

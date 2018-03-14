@@ -77,7 +77,7 @@ let _ =
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
                       ~canvasId=Some("a"),
-                      ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+                      ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
                       ()
                     )
                     |> DirectorTool.init
@@ -91,7 +91,7 @@ let _ =
                   TestTool.initWithJobConfigWithoutBuildFakeDom(
                     ~sandbox,
                     ~canvasId=Some("#a"),
-                    ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+                    ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
                     ()
                   )
                   |> DirectorTool.init
@@ -110,7 +110,7 @@ let _ =
             let (canvasDom, _, div, body) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
             TestTool.initWithJobConfigWithoutBuildFakeDom(
               ~sandbox,
-              ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+              ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
               ()
             )
             |> DirectorTool.init

@@ -39,7 +39,7 @@ let _ =
         () =>
           TestTool.initWithJobConfigWithoutBuildFakeDom(
             ~sandbox,
-            ~noWorkerJobConfig=_buildNoWorkerJobConfig(),
+            ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
             ()
           ),
         (state) => state |> DirectorTool.init
