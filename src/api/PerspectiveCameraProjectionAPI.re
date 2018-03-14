@@ -28,7 +28,7 @@ let unsafeGetPerspectiveCameraProjectionPMatrix = (cameraProjection, state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   PMatrixService.unsafeGetPMatrix(
     cameraProjection,
@@ -50,7 +50,7 @@ let unsafeGetPerspectiveCameraProjectionGameObject = (cameraProjection, state) =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(cameraProjection, state.perspectiveCameraProjectionRecord)
 };

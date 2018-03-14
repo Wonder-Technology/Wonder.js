@@ -28,7 +28,7 @@ let setBoxGeometryConfigData =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -54,7 +54,7 @@ let unsafeGetBoxGeometryVertices = (geometry: int, state: MainStateDataType.stat
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] VerticesGeometryMainService.unsafeGetVertices(geometry, state)
 };
@@ -74,7 +74,7 @@ let setBoxGeometryVertices =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -99,7 +99,7 @@ let unsafeGetBoxGeometryNormals = (geometry: int, state: MainStateDataType.state
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] NormalsGeometryMainService.unsafeGetNormals(geometry, state)
 };
@@ -119,7 +119,7 @@ let setBoxGeometryNormals =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -144,7 +144,7 @@ let unsafeGetBoxGeometryIndices = (geometry: int, state: MainStateDataType.state
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] IndicesGeometryMainService.unsafeGetIndices(geometry, state)
 };
@@ -164,7 +164,7 @@ let setBoxGeometryIndices =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -189,7 +189,7 @@ let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataTy
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   ConfigDataGeometryService.unsafeGetConfigData(geometry, state.boxGeometryRecord)
 };
@@ -208,7 +208,7 @@ let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: MainStateDataTy
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   GameObjectGeometryService.unsafeGetGameObject(geometry, state.boxGeometryRecord)
 };

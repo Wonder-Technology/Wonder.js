@@ -135,7 +135,7 @@ let addAttributeSendData =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
@@ -165,7 +165,7 @@ let unsafeGetAttributeSendData = (shaderIndex: int, state: MainStateDataType.sta
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      )
 };
 
@@ -188,6 +188,6 @@ let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: MainStateData
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      )
 };

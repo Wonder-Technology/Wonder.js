@@ -53,5 +53,5 @@ let restore =
      [@bs]DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
       })
       );
-      }, MainStateData.stateData.isDebug); */
+      }, IsDebugMainService.getIsDebug(MainStateData.stateData)); */
 };

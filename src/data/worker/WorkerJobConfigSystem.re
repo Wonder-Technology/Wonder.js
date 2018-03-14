@@ -13,7 +13,7 @@ let _unsafeGetWorkerJobConfig = (state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   state.workerJobConfig |> Js.Option.getExn
 };

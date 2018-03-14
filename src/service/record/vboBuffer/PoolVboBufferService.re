@@ -101,7 +101,7 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
 let addInstanceBufferToPool =

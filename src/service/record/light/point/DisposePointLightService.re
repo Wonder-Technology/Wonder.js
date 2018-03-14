@@ -116,7 +116,7 @@ let handleDisposeComponent = (light, record) =>
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] _disposeData(light, record)
   }; */

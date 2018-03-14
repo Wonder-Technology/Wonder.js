@@ -31,7 +31,7 @@ let unsafeGetTransformGameObject = (transform: transform, state: MainStateDataTy
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(transform, state.transformRecord)
 };
@@ -50,7 +50,7 @@ let unsafeGetTransformParent = (transform: transform, state: MainStateDataType.s
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetParent(transform, state.transformRecord)
 };
@@ -72,7 +72,7 @@ let _checkParentAndChildTransformShouldAlive =
       );
       AliveComponentService.checkComponentShouldAlive(child, isAlive, state.transformRecord)
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
 
 let setTransformParent =
@@ -104,7 +104,7 @@ let unsafeGetTransformChildren = (transform: transform, state: MainStateDataType
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetChildren(transform, state.transformRecord)
 };
@@ -129,7 +129,7 @@ let getTransformLocalPosition = (transform: transform, state: MainStateDataType.
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getLocalPositionTuple(transform, state.transformRecord.localPositionMap)
 };
@@ -155,7 +155,7 @@ let setTransformLocalPosition = (transform: transform, localPosition, state: Mai
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -183,7 +183,7 @@ let getTransformPosition = (transform: transform, state: MainStateDataType.state
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   updateAndGetPositionTuple(transform, state.globalTempRecord, state.transformRecord)
 };
@@ -208,7 +208,7 @@ let setTransformPosition = (transform: transform, position: position, state: Mai
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,

@@ -69,7 +69,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let {disposedIndexArray} as boxGeometryRecord = boxGeometryRecord;
   switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
@@ -119,7 +119,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let {disposedIndexArray} = boxGeometryRecord;
       let (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord) =

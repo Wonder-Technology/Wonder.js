@@ -10,5 +10,3 @@ let setState = (stateData, state) => {
   stateData.state = Some(state);
   state
 };
-
-let getIsDebug = (stateData) => stateData.isDebug;

@@ -23,7 +23,7 @@ let disableVertexAttribArray = (gl, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let {vertexAttribHistoryArray} as record = state.glslSenderRecord;
   vertexAttribHistoryArray

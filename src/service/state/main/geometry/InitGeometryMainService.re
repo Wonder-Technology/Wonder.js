@@ -49,7 +49,7 @@ let init = (state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let {index} = state.boxGeometryRecord;
   ArraySystem.range(0, index - 1)

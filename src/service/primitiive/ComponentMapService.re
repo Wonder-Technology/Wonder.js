@@ -22,7 +22,7 @@ let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       ); */
 let addComponent = (uid: int, component: component, componentMap: array(int)) => {
   WonderLog.Contract.requireCheck(
@@ -40,7 +40,7 @@ let addComponent = (uid: int, component: component, componentMap: array(int)) =>
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
 };

@@ -18,7 +18,7 @@ let setFloat3 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.
         () => len == 3
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 2) {
@@ -58,7 +58,7 @@ let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array
         () => len == 16
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 15) {
@@ -92,7 +92,7 @@ let fillFloat32Array =
             () => actualLen <= range
           )
         },
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -128,7 +128,7 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
         () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
@@ -155,7 +155,7 @@ let fillUint16Array =
             () => actualLen <= range
           )
         },
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -190,7 +190,7 @@ let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
         () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };

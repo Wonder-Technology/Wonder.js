@@ -15,7 +15,7 @@ let _unsafeGetRenderConfigData = (state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   state.renderConfigData |> Js.Option.getExn
 };
@@ -42,7 +42,7 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
          () => first |> assertNullableExist
        )
      },
-     MainStateData.stateData.isDebug
+     IsDebugMainService.getIsDebug(MainStateData.stateData)
    ); */
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
@@ -98,7 +98,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
           ~description={j|static_branchs|j},
           ~var=static_branchs
         ),
-      MainStateData.stateData.isDebug
+      IsDebugMainService.getIsDebug(MainStateData.stateData)
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -128,7 +128,7 @@ let _getMaterialShaderLibDataArrByType =
   | _ =>
     WonderLog.Log.debugJson(
       () => WonderLog.Log.buildDebugJsonMessage(~description={j|shaderLibs|j}, ~var=shaderLibs),
-      MainStateData.stateData.isDebug
+      IsDebugMainService.getIsDebug(MainStateData.stateData)
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

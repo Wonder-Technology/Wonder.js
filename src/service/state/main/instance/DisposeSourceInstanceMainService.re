@@ -83,7 +83,7 @@ let handleDisposeComponent =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let {disposedIndexArray} = sourceInstanceRecord;
       let state = {
@@ -124,7 +124,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let {disposedIndexArray} = sourceInstanceRecord;
       let state = {

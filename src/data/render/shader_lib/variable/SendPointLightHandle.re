@@ -97,7 +97,7 @@ let send =
             () => maxCount == 4
           )
         },
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let lightGLSLDataStructureMemberNameArr = getLightGLSLDataStructureMemberNameArr();
       let {index} = state.pointLightRecord;

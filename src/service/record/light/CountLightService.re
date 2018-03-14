@@ -14,5 +14,5 @@ let getLightCount = (count, maxCount) =>
            () => assertLte(Int, count, maxCount)
          )
        },
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      );

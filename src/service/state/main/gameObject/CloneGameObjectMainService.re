@@ -103,7 +103,7 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: MainStateDataTy
           |> assertFalse
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let totalClonedGameObjectArr = [||];
   (

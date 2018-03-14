@@ -30,7 +30,7 @@ let createObjectInstanceGameObject = (sourceInstance, state: MainStateDataType.s
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   createInstance(sourceInstance, state)
 };
@@ -49,7 +49,7 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: MainStateData
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getObjectInstanceArray(sourceInstance, state.sourceInstanceRecord)
 };
@@ -69,7 +69,7 @@ let markSourceInstanceModelMatrixIsStatic =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,

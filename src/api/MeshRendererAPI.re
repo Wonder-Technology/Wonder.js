@@ -25,7 +25,7 @@ let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: MainSt
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(meshRenderer, state.meshRendererRecord)
 };

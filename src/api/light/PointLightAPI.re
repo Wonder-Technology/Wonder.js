@@ -25,7 +25,7 @@ let unsafeGetPointLightGameObject = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
@@ -46,7 +46,7 @@ let getPointLightColor = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getColor(
     MappedIndexService.getMappedIndex(
@@ -67,7 +67,7 @@ let setPointLightColor = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -93,7 +93,7 @@ let getPointLightIntensity = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getIntensity(
     MappedIndexService.getMappedIndex(
@@ -114,7 +114,7 @@ let setPointLightIntensity = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -140,7 +140,7 @@ let getPointLightConstant = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getConstant(
     MappedIndexService.getMappedIndex(
@@ -161,7 +161,7 @@ let setPointLightConstant = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -187,7 +187,7 @@ let getPointLightLinear = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getLinear(
     MappedIndexService.getMappedIndex(
@@ -208,7 +208,7 @@ let setPointLightLinear = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -234,7 +234,7 @@ let getPointLightQuadratic = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getQuadratic(
     MappedIndexService.getMappedIndex(
@@ -255,7 +255,7 @@ let setPointLightQuadratic = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -281,7 +281,7 @@ let getPointLightRange = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getRange(
     MappedIndexService.getMappedIndex(
@@ -302,7 +302,7 @@ let setPointLightRange = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,
@@ -328,7 +328,7 @@ let setPointLightRangeLevel = (light, level, state: MainStateDataType.state) => 
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,

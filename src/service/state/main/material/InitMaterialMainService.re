@@ -58,7 +58,7 @@ let init = (gl, (index, disposedIndexArray), initMaterialFunc, state: MainStateD
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   ArraySystem.range(0, index - 1)
   |> ArraySystem.reduceState(

@@ -196,7 +196,7 @@ let _checkShouldNotAddBefore = (shaderIndex, state) =>
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
 
 let addUniformSendData =

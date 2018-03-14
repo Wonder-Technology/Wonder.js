@@ -61,7 +61,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let (typeArrayPoolRecord, transformRecord) =
     _disposeData(transform, maxTypeArrayPoolSize, typeArrayPoolRecord, transformRecord);
@@ -98,7 +98,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       let {disposedIndexArray} = transformRecord;
       let transformRecord = {

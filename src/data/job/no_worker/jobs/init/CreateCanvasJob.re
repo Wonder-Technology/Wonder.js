@@ -25,7 +25,7 @@ let _getCanvasId = (domId: string) =>
                )
              )
            ),
-         MainStateData.stateData.isDebug
+         IsDebugMainService.getIsDebug(MainStateData.stateData)
        );
 
 let _createCanvas = ({canvasId}) =>

@@ -30,7 +30,7 @@ let unsafeGetAmbientLightGameObject = (light, state: MainStateDataType.state) =>
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
@@ -55,7 +55,7 @@ let getAmbientLightColor = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   getColor(
     MappedIndexService.getMappedIndex(
@@ -80,7 +80,7 @@ let setAmbientLightColor = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   {
     ...state,

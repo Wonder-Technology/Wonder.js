@@ -26,7 +26,7 @@ let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(cameraView, state.basicCameraViewRecord)
 };
@@ -45,7 +45,7 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: MainStateDataTyp
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   VMatrixService.getWorldToCameraMatrix(
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(

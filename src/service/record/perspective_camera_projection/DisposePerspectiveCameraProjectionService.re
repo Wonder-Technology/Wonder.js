@@ -33,7 +33,7 @@ let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) 
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   _disposeData(
     cameraProjection,
@@ -62,7 +62,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       cameraProjectionArray
       |> WonderCommonlib.ArraySystem.reduceOneParam(

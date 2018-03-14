@@ -13,7 +13,7 @@ let unsafeGetRenderWorker = (state: MainStateDataType.state) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   state.workerInstanceData.renderWorker |> Js.Option.getExn
 };
@@ -45,7 +45,7 @@ let _getRenderWorkerFilePath = (workerFileDir: string) => {
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   (workerFileDir |> _getValidFileDir) ++ "wd.render.worker.js"
 };

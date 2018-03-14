@@ -14,7 +14,7 @@ let unsafeGetShaderIndex = (materialIndex: int, shaderIndexMap) =>
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
 let hasShaderIndex = (materialIndex: int, shaderIndexMap) =>

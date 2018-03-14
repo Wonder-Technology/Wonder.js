@@ -26,7 +26,7 @@ let unsafeGetBasicMaterialGameObject = (material, state: MainStateDataType.state
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(material, state.basicMaterialRecord)
 };
@@ -45,7 +45,7 @@ let unsafeGetBasicMaterialColor = (material, state: MainStateDataType.state) => 
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetColor(material, state)
 };
@@ -64,7 +64,7 @@ let setBasicMaterialColor = (material, color, state: MainStateDataType.state) =>
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   setColor(material, color, state)
 };

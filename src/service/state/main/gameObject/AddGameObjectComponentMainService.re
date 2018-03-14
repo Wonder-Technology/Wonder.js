@@ -189,7 +189,7 @@ let _checkBatchAdd = (uidArr, componentArr) =>
         () => gameObjectCount == componentCount
       )
     },
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
 
 let _batchAddComponent =

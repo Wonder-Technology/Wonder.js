@@ -26,7 +26,7 @@ let unsafeGetLightMaterialGameObject = (material, state: MainStateDataType.state
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetGameObject(material, state.lightMaterialRecord)
 };
@@ -45,7 +45,7 @@ let unsafeGetLightMaterialDiffuseColor = (material, state: MainStateDataType.sta
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetDiffuseColor(material, state)
 };
@@ -64,7 +64,7 @@ let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.st
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   setDiffuseColor(material, color, state)
 };
@@ -83,7 +83,7 @@ let unsafeGetLightMaterialSpecularColor = (material, state: MainStateDataType.st
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetSpecularColor(material, state)
 };
@@ -102,7 +102,7 @@ let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.s
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   setSpecularColor(material, color, state)
 };
@@ -121,7 +121,7 @@ let unsafeGetLightMaterialShininess = (material, state: MainStateDataType.state)
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   unsafeGetShininess(material, state)
 };
@@ -140,7 +140,7 @@ let setLightMaterialShininess = (material, shininess, state: MainStateDataType.s
           )
         )
       ),
-    MainStateData.stateData.isDebug
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   setShininess(material, shininess, state)
 };

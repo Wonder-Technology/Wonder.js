@@ -23,7 +23,7 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrixM
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
 /* let getNormalMatrixTypeArray = (transform: transform, localToWorldMatrixMap, normalMatrixCacheMap) => */
@@ -58,7 +58,7 @@ let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
              )
            )
          ),
-       MainStateData.stateData.isDebug
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
 let getLocalPositionTuple = (transform: transform, localPositionMap) => {

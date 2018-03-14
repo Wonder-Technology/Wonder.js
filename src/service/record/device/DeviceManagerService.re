@@ -20,7 +20,7 @@ let unsafeGetGl =
               )
             )
           ),
-        MainStateData.stateData.isDebug
+        IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       gl |> OptionService.unsafeGet
     }
