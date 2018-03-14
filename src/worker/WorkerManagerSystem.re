@@ -1,7 +1,7 @@
 /* TODO use conditional compile */
 let _initWorkInstances = (workerFileDir: string, state: MainStateDataType.state) =>
-  WorkerDetectSystem.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
+  WorkerDetectMainService.isSupportRenderWorkerAndSharedArrayBuffer(state) ?
     WorkerInstanceSystem.initWorkInstances(workerFileDir, state) : state;
 
 let initWorker = (workerFileDir: string, state: MainStateDataType.state) =>
-  state |> WorkerDetectSystem.detect |> _initWorkInstances(workerFileDir);
+  state |> WorkerDetectMainService.detect |> _initWorkInstances(workerFileDir);

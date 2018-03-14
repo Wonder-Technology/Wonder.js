@@ -77,7 +77,7 @@ let start = (state: MainStateDataType.state) =>
 
    */
   /* state |> init(MainStateData.stateData) |> ignore; */
-  WorkerDetectSystem.isUseWorker(state) ?
+  WorkerDetectMainService.isUseWorker(state) ?
     state
     |> StateDataMainService.setState(MainStateData.stateData)
     |> _workerInit(MainStateData.stateData)

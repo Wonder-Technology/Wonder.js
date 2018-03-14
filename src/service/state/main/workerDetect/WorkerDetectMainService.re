@@ -9,19 +9,10 @@ let _isSupportSharedArrayBuffer = [%bs.raw
 ];
 
 let detect = (state: MainStateDataType.state) => {
-  /* /*!
-     for unit test
-      */
-     if (typeof root.isSupportSharedArrayBuffer_wonder !== "undefined" && typeof root.isSupportRenderWorkerAndSharedArrayBuffer_wonder !== "undefined") {
-         WorkerDetectData.isSupportSharedArrayBuffer = root.isSupportSharedArrayBuffer_wonder;
-         WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = root.isSupportRenderWorkerAndSharedArrayBuffer_wonder;
-
-         return;
-     } */
   let isSupportSharedArrayBuffer = _isSupportSharedArrayBuffer();
   {
     ...state,
-    workerDetectData: {
+    workerDetectRecord: {
       isSupportSharedArrayBuffer,
       isSupportRenderWorkerAndSharedArrayBuffer:
         ! isSupportSharedArrayBuffer ?
@@ -35,10 +26,10 @@ let detect = (state: MainStateDataType.state) => {
 };
 
 let isSupportSharedArrayBuffer = (state: MainStateDataType.state) =>
-  state.workerDetectData.isSupportSharedArrayBuffer;
+  state.workerDetectRecord.isSupportSharedArrayBuffer;
 
 let isSupportRenderWorkerAndSharedArrayBuffer = (state: MainStateDataType.state) =>
-  state.workerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
+  state.workerDetectRecord.isSupportRenderWorkerAndSharedArrayBuffer;
 
 let isUseWorker = (state: MainStateDataType.state) =>
   OperateSettingService.unsafeGetWorker(state.settingRecord).useWorker

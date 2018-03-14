@@ -183,7 +183,7 @@ and state = {
   globalTempRecord,
   typeArrayPoolRecord,
   workerInstanceData,
-  workerDetectData
+  workerDetectRecord
 };
 
 type sharedDataForRestoreState = {

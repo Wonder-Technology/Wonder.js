@@ -135,7 +135,7 @@ let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
   );
 
 let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
-  WorkerDetectSystem.isUseWorker(state) ?
+  WorkerDetectMainService.isUseWorker(state) ?
     _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state) :
     _createHandleNoWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
 
@@ -148,7 +148,7 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
        (json) =>
          ParseSettingService.convertToRecord(json)
          |> _setSetting(stateData, StateDataMainService.getState(stateData))
-         |> WorkerDetectSystem.detect
+         |> WorkerDetectMainService.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(
               (state) => state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)
