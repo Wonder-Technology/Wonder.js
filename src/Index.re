@@ -264,7 +264,7 @@ let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
 
-let load = LoaderManager.load;
+let load = LoaderManagerAPI.load;
 
 let loopBody = DirectorAPI.loopBody;
 
@@ -486,7 +486,7 @@ let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
 
-let load = LoaderManager.load;
+let load = LoaderManagerAPI.load;
 
 let loopBody = DirectorAPI.loopBody;
 
