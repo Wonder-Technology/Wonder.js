@@ -38,13 +38,13 @@ let initWithJobConfigWithoutBuildFakeDom =
       ~useHardwareInstance="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
       ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
-      ~renderConfigData=RenderConfigDataTool.buildRenderConfigData(),
+      ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
       ()
     ) =>
   SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
   |> NoWorkerJobConfigTool.create(noWorkerJobConfig)
   |> NoWorkerJobTool.init
-  |> RenderConfigDataTool.create(renderConfigData);
+  |> RenderConfigDataTool.create(renderConfigRecord);
 
 let initWithJobConfig =
     (
@@ -52,7 +52,7 @@ let initWithJobConfig =
       ~isDebug="true",
       ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
       ~noWorkerJobConfig=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
-      ~renderConfigData=RenderConfigDataTool.buildRenderConfigData(),
+      ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
       ()
     ) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;

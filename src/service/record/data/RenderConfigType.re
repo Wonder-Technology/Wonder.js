@@ -54,7 +54,7 @@ type shaderLib = {
 
 type shader_libs = array(shaderLib);
 
-type renderConfigData = {
+type renderConfigRecord = {
   shaders,
   shader_libs
 };

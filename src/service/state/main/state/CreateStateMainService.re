@@ -5,7 +5,7 @@ let createState = () => {
   jobData: JobHelper.create(),
   noWorkerJobConfig: None,
   workerJobConfig: None,
-  renderConfigData: None,
+  renderConfigRecord: None,
   gpuDetectRecord: RecordGPUDetectService.create(),
   viewRecord: RecordViewService.create(),
   sourceInstanceRecord: RecordSourceInstanceService.create(),

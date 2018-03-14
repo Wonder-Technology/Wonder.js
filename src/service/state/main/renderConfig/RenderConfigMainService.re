@@ -10,14 +10,14 @@ let _unsafeGetRenderConfigData = (state: MainStateDataType.state) => {
           Operators.(
             test(
               Log.buildAssertMessage(~expect={j|render job config exist|j}, ~actual={j|not|j}),
-              () => state.renderConfigData |> assertExist
+              () => state.renderConfigRecord |> assertExist
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  state.renderConfigData |> Js.Option.getExn
+  state.renderConfigRecord |> Js.Option.getExn
 };
 
 let getShaders = (state: MainStateDataType.state) => _unsafeGetRenderConfigData(state).shaders;

@@ -564,7 +564,7 @@ let buildRenderConfigData =
 
 let create = ((shaders, shaderLibs), state: MainStateDataType.state) => {
   ...state,
-  renderConfigData:
+  renderConfigRecord:
     Some({
       shaders: convertShadersToRecord(shaders |> Js.Json.parseExn),
       shader_libs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
