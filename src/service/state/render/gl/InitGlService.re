@@ -11,15 +11,15 @@ let initGl = (data, renderWorkerState) => {
   renderWorkerState
 };
 /*
- var _createGl = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData: any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
+ var _createGl = curry((canvas: HTMLCanvasElement, ContextType.contextConfigJsObj: ContextConfigOptionsData, WebGLDetectWorkerData: any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
      return IO.of(() => {
-         var gl = getOnlyGl(canvas, options, WebGLDetectWorkerData);
+         var gl = getOnlyGl(canvas, ContextType.contextConfigJsObj, WebGLDetectWorkerData);
 
          if (!gl) {
              DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
          }
 
-         return compose(setCanvas(canvas), setContextConfig(options), setGL(gl, DeviceManagerWorkerData))(state);
+         return compose(setCanvas(canvas), setContextConfig(ContextType.contextConfigJsObj), setGL(gl, DeviceManagerWorkerData))(state);
      });
  })
   */

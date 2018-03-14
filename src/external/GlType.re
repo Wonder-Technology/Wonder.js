@@ -13,13 +13,3 @@ type uniformLocation;
 type precisionFormat = {. "precision": int};
 
 type extension;
-
-type options = {
-  .
-  "alpha": Js.boolean,
-  "depth": Js.boolean,
-  "stencil": Js.boolean,
-  "antialias": Js.boolean,
-  "premultipliedAlpha": Js.boolean,
-  "preserveDrawingBuffer": Js.boolean
-};
