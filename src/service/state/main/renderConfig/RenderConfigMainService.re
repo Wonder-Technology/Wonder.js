@@ -2,7 +2,7 @@ open GameObjectType;
 
 open RenderConfigType;
 
-let _unsafeGetRenderConfigData = (state: MainStateDataType.state) => {
+let _unsafeGetRenderConfig = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -20,9 +20,9 @@ let _unsafeGetRenderConfigData = (state: MainStateDataType.state) => {
   state.renderConfigRecord |> Js.Option.getExn
 };
 
-let getShaders = (state: MainStateDataType.state) => _unsafeGetRenderConfigData(state).shaders;
+let getShaders = (state: MainStateDataType.state) => _unsafeGetRenderConfig(state).shaders;
 
-let getShaderLibs = (state: MainStateDataType.state) => _unsafeGetRenderConfigData(state).shader_libs;
+let getShaderLibs = (state: MainStateDataType.state) => _unsafeGetRenderConfig(state).shader_libs;
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   JobConfigService.unsafeFindFirst(

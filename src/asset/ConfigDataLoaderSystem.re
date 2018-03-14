@@ -41,18 +41,18 @@ let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   |> Obj.magic
 |];
 
-let _createFetchRenderConfigDataStreamArr = (dataDir, fetchFunc) => [|
+let _createFetchRenderConfigStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/shader/shaders.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderConfigDataParseSystem.convertShadersToRecord(json))
+  |> map((json) => ParseRenderConfigService.convertShadersToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathUtils.join([|dataDir, "render/shader/shader_libs.json"|]),
     fetchFunc
   )
-  |> map((json) => RenderConfigDataParseSystem.convertShaderLibsToRecord(json))
+  |> map((json) => ParseRenderConfigService.convertShaderLibsToRecord(json))
   |> Obj.magic
 |];
 
@@ -75,13 +75,18 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
        )
   );
 
-let _createHandleRenderConfigDataStreamArr = (dataDir, fetchFunc, state) =>
+let _createHandleRenderConfigStreamArr = (dataDir, fetchFunc, state) =>
   fromPromise(
-    _createFetchRenderConfigDataStreamArr(dataDir, fetchFunc)
+    _createFetchRenderConfigStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
     |> then_(
-         (recordArr) => RenderConfigDataHelper.create(recordArr |> Obj.magic, state) |> resolve
+         (recordArr) =>
+           {
+             ...state,
+             renderConfigRecord: RecordRenderConfigService.create(recordArr |> Obj.magic)
+           }
+           |> resolve
        )
   );
 
@@ -146,7 +151,7 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
          |> WorkerDetectSystem.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(
-              (state) => state |> _createHandleRenderConfigDataStreamArr(dataDir, fetchFunc)
+              (state) => state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)
             )
          |> Most.tap((state) => state |> StateDataMainService.setState(stateData) |> ignore)
      )

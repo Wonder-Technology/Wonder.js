@@ -13,10 +13,10 @@ let createState = CreateStateMainService.createState;
 let createNewCompleteState = (sandbox) =>
   createState() |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
-let createNewCompleteStateWithRenderConfigData = (sandbox) =>
+let createNewCompleteStateWithRenderConfig = (sandbox) =>
   createNewCompleteState(sandbox)
   |> (
-    (state) => state |> RenderConfigDataTool.create(RenderConfigDataTool.buildRenderConfigData())
+    (state) => state |> RenderConfigTool.create(RenderConfigTool.buildRenderConfig())
   );
 
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {

@@ -61,7 +61,7 @@ let _ =
             |> returns(_buildFakeFetchJsonResponse(initJobs))
             |> onCall(5)
             |> returns(_buildFakeFetchJsonResponse(loopJobs));
-            let (shaders, shaderLibs) = RenderConfigDataTool.buildRenderConfigData();
+            let (shaders, shaderLibs) = RenderConfigTool.buildRenderConfig();
             fetch
             |> onCall(6)
             |> returns(_buildFakeFetchJsonResponse(shaders))
@@ -196,7 +196,7 @@ let _ =
                   |> then_(
                        () => {
                          let state = StateTool.getState();
-                         RenderConfigDataTool.getShaders(state).static_branchs
+                         RenderConfigTool.getShaders(state).static_branchs
                          |>
                          expect == [|
                                      {
@@ -229,7 +229,7 @@ let _ =
                   |> then_(
                        () => {
                          let state = StateTool.getState();
-                         RenderConfigDataTool.getShaderLibs(state)[0]
+                         RenderConfigTool.getShaderLibs(state)[0]
                          |>
                          expect == {
                                      name: "common",

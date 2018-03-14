@@ -15,12 +15,12 @@ let initWithJobConfig =
         }
                |},
       ~workerJobRecord=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
-      ~renderConfigRecord=RenderConfigDataTool.buildRenderConfigData(),
+      ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
     ) => {
   SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
   |> WorkerJobConfigToolWorker.create(workerJobRecord)
-  |> RenderConfigDataTool.create(renderConfigRecord)
+  |> RenderConfigTool.create(renderConfigRecord)
   |> StateTool.setState
   |> ignore;
 };

@@ -1,4 +1,3 @@
-
 let addAmbientLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
   switch field {
@@ -6,7 +5,7 @@ let addAmbientLightSendData =
     HandleUniformShaderCachableFunctionMainService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendAmbientLightHandle.send
+      SendAmbientLightUniformMainService.send
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -27,7 +26,7 @@ let addDirectionLightSendData =
     HandleUniformShaderCachableFunctionMainService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendDirectionLightHandle.send
+      SendDirectionLightUniformMainService.send
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -48,7 +47,7 @@ let addPointLightSendData =
     HandleUniformShaderCachableFunctionMainService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendPointLightHandle.send
+      SendPointLightUniformMainService.send
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -61,4 +60,3 @@ let addPointLightSendData =
       )
     )
   };
-

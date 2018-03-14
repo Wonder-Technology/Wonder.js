@@ -119,7 +119,7 @@ let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =
   top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
 
 let _execHandle = (name, state) => {
-  let handleFunc = GlslHandleSystem.getHandle(name, state);
+  let handleFunc = HandleGLSLMainService.getHandle(name, state);
   handleFunc(state)
 };
 

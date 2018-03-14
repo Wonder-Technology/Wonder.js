@@ -195,7 +195,7 @@ let _ =
                       let state = state |> InitRenderJobTool.exec;
                       let copiedState = StateTool.deepCopyForRestore(state);
                       let currentState =
-                        StateTool.createNewCompleteStateWithRenderConfigData(sandbox);
+                        StateTool.createNewCompleteStateWithRenderConfig(sandbox);
                       let (currentState, gameObject) =
                         _prepareBasicMaterialGameObject(sandbox, currentState);
                       let (currentStateCreateProgram, initShaderCount) =
@@ -217,7 +217,7 @@ let _ =
                           let state = state |> InitRenderJobTool.exec;
                           let copiedState = StateTool.deepCopyForRestore(state);
                           let currentState =
-                            StateTool.createNewCompleteStateWithRenderConfigData(sandbox);
+                            StateTool.createNewCompleteStateWithRenderConfig(sandbox);
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
                           let (currentStateCreateProgram, initShaderCount) =

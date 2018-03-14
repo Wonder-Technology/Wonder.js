@@ -858,7 +858,7 @@ let _ =
         () => {
           let _testRestoreStateEqualTargetState = (state, prepareDataFunc, getDataFunc) => {
             let (state, _, _, _, _, _, _) = prepareDataFunc(state);
-            let currentState = StateTool.createNewCompleteStateWithRenderConfigData(sandbox);
+            let currentState = StateTool.createNewCompleteStateWithRenderConfig(sandbox);
             let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
             let _ = StateTool.restore(currentState, state);
             StateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
