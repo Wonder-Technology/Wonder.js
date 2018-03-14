@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let getRenderArray = (state: StateDataType.state) =>
+let getRenderArray = (state: MainStateDataType.state) =>
   RenderArrayMeshRendererService.getRenderArray(state.meshRendererRecord);
 
 let isMeshRenderer = (meshRenderer) => {

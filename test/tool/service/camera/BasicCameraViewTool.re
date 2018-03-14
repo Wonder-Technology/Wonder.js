@@ -7,12 +7,12 @@ let isBasicCameraView = (basicCameraView) => {
   expect(basicCameraView) >= 0
 };
 
-let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
+let getWorldToCameraMatrix = (transform, state: MainStateDataType.state) =>
   VMatrixService.getWorldToCameraMatrix(
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, state.transformRecord)
   );
 
-let getPosition = (transform, state: StateDataType.state) =>
+let getPosition = (transform, state: MainStateDataType.state) =>
   UpdateTransformService.updateAndGetPositionTuple(
     transform,
     state.globalTempRecord,

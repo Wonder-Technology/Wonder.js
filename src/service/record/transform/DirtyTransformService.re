@@ -25,5 +25,5 @@ let isDirty = (transform: transform, {dirtyMap} as record) =>
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );

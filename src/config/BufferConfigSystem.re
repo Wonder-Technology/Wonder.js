@@ -1,7 +1,7 @@
-open StateDataType;
+open MainStateDataType;
 
 external mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData :
-  MainConfigType.bufferConfig => StateDataType.bufferConfig =
+  MainConfigType.bufferConfig => MainStateDataType.bufferConfig =
   "%identity";
 
 let setConfig = (~bufferConfig: MainConfigType.bufferConfig, state: state) => {
@@ -9,4 +9,4 @@ let setConfig = (~bufferConfig: MainConfigType.bufferConfig, state: state) => {
   bufferConfig: Some(mainConfigTypeBufferConfigDataToStateDataTypeBufferConfigData(bufferConfig))
 };
 
-let getConfig = (state: StateDataType.state) => Js.Option.getExn(state.bufferConfig);
+let getConfig = (state: MainStateDataType.state) => Js.Option.getExn(state.bufferConfig);

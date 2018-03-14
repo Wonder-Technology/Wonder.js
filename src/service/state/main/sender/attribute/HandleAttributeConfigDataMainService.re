@@ -4,7 +4,7 @@ open Gl;
 
 open GameObjectType;
 
-open StateDataType;
+open MainStateDataType;
 
 open SendGLSLDataMainService;
 
@@ -118,7 +118,7 @@ let addAttributeSendData =
     (
       (gl, shaderIndex: int, program: program),
       shaderLibDataArr: shader_libs,
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -135,7 +135,7 @@ let addAttributeSendData =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
@@ -146,7 +146,7 @@ let addAttributeSendData =
   |> GLSLLocationMainService.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
 
-let unsafeGetAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
+let unsafeGetAttributeSendData = (shaderIndex: int, state: MainStateDataType.state) => {
   let {attributeSendDataMap} = state.glslSenderRecord;
   attributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
@@ -165,11 +165,11 @@ let unsafeGetAttributeSendData = (shaderIndex: int, state: StateDataType.state) 
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      )
 };
 
-let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
+let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: MainStateDataType.state) => {
   let {instanceAttributeSendDataMap} = state.glslSenderRecord;
   instanceAttributeSendDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
@@ -188,6 +188,6 @@ let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: StateDataType
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      )
 };

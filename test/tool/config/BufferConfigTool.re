@@ -2,7 +2,7 @@ open BufferConfigSystem;
 
 let setBufferSize =
     (
-      state: StateDataType.state,
+      state: MainStateDataType.state,
       ~geometryPointDataBufferCount=100,
       ()
     ) => {

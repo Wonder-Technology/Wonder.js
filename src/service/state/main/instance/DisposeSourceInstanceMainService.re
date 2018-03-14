@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open SourceInstanceType;
 
@@ -83,7 +83,7 @@ let handleDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let {disposedIndexArray} = sourceInstanceRecord;
       let state = {
@@ -124,7 +124,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let {disposedIndexArray} = sourceInstanceRecord;
       let state = {

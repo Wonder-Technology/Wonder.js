@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
@@ -270,7 +270,7 @@ let batchDisposePointLightComponent =
 };
 
 let batchDisposeSourceInstanceComponent =
-    (uidMap, state: StateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
+    (uidMap, state: MainStateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
   [@bs]
   DisposeSourceInstanceMainService.handleBatchDisposeComponent(
     componentArray,
@@ -295,7 +295,7 @@ let batchDisposeSourceInstanceComponent =
      }
    }; */
 let batchDisposeObjectInstanceComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+    (uidMap, state: MainStateDataType.state, componentArray: array(component)) =>
   switch (componentArray |> Js.Array.length) {
   | 0 => state
   | _ =>

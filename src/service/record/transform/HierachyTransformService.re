@@ -28,7 +28,7 @@ let unsafeGetChildren = (transform: transform, record) =>
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );
 
 let _setChildren = (record, parent, children) => {
@@ -82,7 +82,7 @@ let _addToParent = (parent: transform, child: transform, record) => {
         () => unsafeGetChildren(parent, record) |> Js.Array.includes(child) |> assertFalse
       )
     },
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   _setParent(parent, child, record) |> _addChild(parent, child)
 };

@@ -18,5 +18,5 @@ let unsafeGetGameObject = (component, gameObjectMap) =>
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );

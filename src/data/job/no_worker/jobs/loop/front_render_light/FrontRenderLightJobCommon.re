@@ -1,9 +1,9 @@
-open StateDataType;
+open MainStateDataType;
 
 let render =
   [@bs]
   (
-    (gl, uid, state: StateDataType.state) => {
+    (gl, uid, state: MainStateDataType.state) => {
       let materialIndex =
         GetComponentGameObjectService.unsafeGetLightMaterialComponent(uid, state.gameObjectRecord);
       RenderJobUtils.render(

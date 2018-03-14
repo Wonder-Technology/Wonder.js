@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let getMaterialRecord = (state) => state.basicMaterialRecord;
 
@@ -13,16 +13,16 @@ let createGameObject = (state) => {
 
 let initMaterials = InitBasicMaterialMainService.init;
 
-let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+let unsafeGetShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
   ShaderIndexBasicMaterialMainService.unsafeGetShaderIndex(materialIndex, state);
 
-let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+let hasShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
   ShaderIndexBasicMaterialMainService.hasShaderIndex(materialIndex, state);
 
-let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataType.state) =>
+let setShaderIndex = (materialIndex: int, shaderIndex, state: MainStateDataType.state) =>
   [@bs] ShaderIndexBasicMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
-let dispose = (material, state: StateDataType.state) => {
+let dispose = (material, state: MainStateDataType.state) => {
   ...state,
   basicMaterialRecord:
     DisposeBasicMaterialService.handleDisposeComponent(material, state.basicMaterialRecord)

@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let execJob = (flags, state) => {
   let glslRecord = state.glslRecord;

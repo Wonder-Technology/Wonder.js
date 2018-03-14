@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let deepCopyForRestore = (state: StateDataType.state) => {
+let deepCopyForRestore = (state: MainStateDataType.state) => {
   ...state,
   gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
   basicCameraViewRecord:

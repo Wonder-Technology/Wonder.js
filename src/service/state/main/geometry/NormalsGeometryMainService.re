@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open BoxGeometryType;
 
@@ -15,7 +15,7 @@ let unsafeGetNormals =
       NormalsService.unsafeGetNormals(index, boxGeometryRecord.normalsMap)
   );
 
-let setNormalsWithArray = (index: int, record: array(float), state: StateDataType.state) => {
+let setNormalsWithArray = (index: int, record: array(float), state: MainStateDataType.state) => {
   let {normalsMap} as boxGeometryRecord = state.boxGeometryRecord;
   let (typeArrayPoolRecord, normalsMap) =
     setPointsWithArray(

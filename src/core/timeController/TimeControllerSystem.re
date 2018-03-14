@@ -2,15 +2,15 @@ open Root;
 
 open TimeControllerType;
 
-let _getTimeControllerData = (state: StateDataType.state) => state.timeControllerData;
+let _getTimeControllerData = (state: MainStateDataType.state) => state.timeControllerData;
 
 let starting_fps = 60.;
 
 let gametime_scale = 1000.;
 
-let getGameTime = (state: StateDataType.state) => _getTimeControllerData(state).gameTime;
+let getGameTime = (state: MainStateDataType.state) => _getTimeControllerData(state).gameTime;
 
-let getFps = (state: StateDataType.state) => _getTimeControllerData(state).fps;
+let getFps = (state: MainStateDataType.state) => _getTimeControllerData(state).fps;
 
 let _computeFps = (deltaTime: float, lastTime: option(float)) =>
   switch lastTime {
@@ -18,7 +18,7 @@ let _computeFps = (deltaTime: float, lastTime: option(float)) =>
   | _ => gametime_scale /. deltaTime
   };
 
-let tick = (elapsed: float, state: StateDataType.state) => {
+let tick = (elapsed: float, state: MainStateDataType.state) => {
   let {lastTime} as record = _getTimeControllerData(state);
   let deltaTime =
     switch lastTime {
@@ -37,7 +37,7 @@ let _getNow = () => {
   [@bs] now()
 };
 
-let start = (state: StateDataType.state) => {
+let start = (state: MainStateDataType.state) => {
   let record = _getTimeControllerData(state);
   record.startTime = _getNow();
   record.elapsed = 0.;
@@ -45,7 +45,7 @@ let start = (state: StateDataType.state) => {
 };
 
 /* TODO support pause */
-let computeElapseTime = (time: float, state: StateDataType.state) => {
+let computeElapseTime = (time: float, state: MainStateDataType.state) => {
   let {startTime} as record = _getTimeControllerData(state);
   record.elapsed = NumberUtils.leastFloat(0., time -. startTime);
   record.elapsed
@@ -61,6 +61,6 @@ let computeElapseTime = (time: float, state: StateDataType.state) => {
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      )
 };

@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
@@ -189,7 +189,7 @@ let _checkBatchAdd = (uidArr, componentArr) =>
         () => gameObjectCount == componentCount
       )
     },
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
 
 let _batchAddComponent =

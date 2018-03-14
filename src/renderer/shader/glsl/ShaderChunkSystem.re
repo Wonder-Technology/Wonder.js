@@ -1,9 +1,9 @@
 
 open ShaderChunkType;
 
-let _getGLSLChunkMap = (state: StateDataType.state) => state.glslChunkData.chunkMap;
+let _getGLSLChunkMap = (state: MainStateDataType.state) => state.glslChunkData.chunkMap;
 
-let getChunk = (name: string, state: StateDataType.state) =>
+let getChunk = (name: string, state: MainStateDataType.state) =>
   state |> _getGLSLChunkMap |> WonderCommonlib.HashMapSystem.get(name) |> Js.Option.getExn;
 
 let _buildChunk =

@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let create = ({gameObjectRecord} as state) => {
   /* TODO add gameObjectRecord to state */

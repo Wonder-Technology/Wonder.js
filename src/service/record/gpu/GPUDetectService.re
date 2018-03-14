@@ -82,7 +82,7 @@ let unsafeGetInstanceExtension = (record) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   record.extensionInstancedArrays |> OptionService.unsafeGet; 
 };

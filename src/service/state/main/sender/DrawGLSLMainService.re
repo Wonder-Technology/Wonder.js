@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open Gl;
 
@@ -7,7 +7,7 @@ open GlType;
 let bindElementArrayBuffer =
   [@bs]
   (
-    (gl, (size: int, pos: attributeLocation), buffer, state: StateDataType.state) => {
+    (gl, (size: int, pos: attributeLocation), buffer, state: MainStateDataType.state) => {
       /* let {lastSendElementArrayBuffer} as record = state.glslSenderRecord; */
       /* switch lastSendElementArrayBuffer {
          | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state

@@ -12,7 +12,7 @@ let unsafeGet = (optionData) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   optionData |> Js.Option.getExn
 };

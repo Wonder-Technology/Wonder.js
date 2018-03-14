@@ -1,4 +1,4 @@
 open BasicCameraViewType;
 
-let getTransformFromBasicCameraView = (gameObject, state: StateDataType.state) =>
+let getTransformFromBasicCameraView = (gameObject, state: MainStateDataType.state) =>
   GetComponentGameObjectService.unsafeGetTransformComponent(gameObject, state.gameObjectRecord);

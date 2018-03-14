@@ -77,7 +77,7 @@ let handleDisposeComponent = (light, (isAliveFunc, handleDisposeFunc), record) =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   [@bs] handleDisposeFunc(light, record)
 };
@@ -97,7 +97,7 @@ let handleBatchDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   lightArray
   |> WonderCommonlib.ArraySystem.reduceOneParam(

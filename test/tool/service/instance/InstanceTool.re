@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let addSourceInstance = (gameObject, state) => {
   let (state, sourceInstance) = SourceInstanceAPI.createSourceInstance(state);

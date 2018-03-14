@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
@@ -26,7 +26,7 @@ let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceM
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );
 
 let _disposeData = (objectInstance: objectInstance, {objectInstanceRecord} as state) => {
@@ -66,7 +66,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let {disposedIndexArray} = objectInstanceRecord;
   let state =
@@ -146,7 +146,7 @@ let handleBatchDisposeComponent =
             }
           )
         },
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let {disposedIndexArray} = objectInstanceRecord;
       let objectInstanceRecord = {

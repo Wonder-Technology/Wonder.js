@@ -150,7 +150,7 @@ let buildWorkerJobConfig =
 let create =
     (
       (workerSetting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) => {
   ...state,
   workerJobConfig:

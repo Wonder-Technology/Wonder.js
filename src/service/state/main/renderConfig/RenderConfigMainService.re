@@ -2,7 +2,7 @@ open GameObjectType;
 
 open RenderConfigType;
 
-let _unsafeGetRenderConfigData = (state: StateDataType.state) => {
+let _unsafeGetRenderConfigData = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -15,14 +15,14 @@ let _unsafeGetRenderConfigData = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   state.renderConfigData |> Js.Option.getExn
 };
 
-let getShaders = (state: StateDataType.state) => _unsafeGetRenderConfigData(state).shaders;
+let getShaders = (state: MainStateDataType.state) => _unsafeGetRenderConfigData(state).shaders;
 
-let getShaderLibs = (state: StateDataType.state) => _unsafeGetRenderConfigData(state).shader_libs;
+let getShaderLibs = (state: MainStateDataType.state) => _unsafeGetRenderConfigData(state).shader_libs;
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   JobConfigService.unsafeFindFirst(
@@ -42,7 +42,7 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
          () => first |> assertNullableExist
        )
      },
-     StateData.stateData.isDebug
+     MainStateData.stateData.isDebug
    ); */
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
@@ -98,7 +98,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
           ~description={j|static_branchs|j},
           ~var=static_branchs
         ),
-      StateData.stateData.isDebug
+      MainStateData.stateData.isDebug
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -128,7 +128,7 @@ let _getMaterialShaderLibDataArrByType =
   | _ =>
     WonderLog.Log.debugJson(
       () => WonderLog.Log.buildDebugJsonMessage(~description={j|shaderLibs|j}, ~var=shaderLibs),
-      StateData.stateData.isDebug
+      MainStateData.stateData.isDebug
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -145,7 +145,7 @@ let getMaterialShaderLibDataArr =
     (
       gameObject: gameObject,
       ({static_branchs, groups}, shaderLibItems, shaderLibs: shader_libs),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) =>
   shaderLibItems
   |> WonderCommonlib.ArraySystem.reduceOneParam(

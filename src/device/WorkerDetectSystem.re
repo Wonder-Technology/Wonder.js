@@ -6,7 +6,7 @@ let _isSupportSharedArrayBuffer = [%bs.raw
     |}
 ];
 
-let detect = (state: StateDataType.state) => {
+let detect = (state: MainStateDataType.state) => {
   /* /*!
      for unit test
       */
@@ -32,11 +32,11 @@ let detect = (state: StateDataType.state) => {
   }
 };
 
-let isSupportSharedArrayBuffer = (state: StateDataType.state) =>
+let isSupportSharedArrayBuffer = (state: MainStateDataType.state) =>
   state.workerDetectData.isSupportSharedArrayBuffer;
 
-let isSupportRenderWorkerAndSharedArrayBuffer = (state: StateDataType.state) =>
+let isSupportRenderWorkerAndSharedArrayBuffer = (state: MainStateDataType.state) =>
   state.workerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 
-let isUseWorker = (state: StateDataType.state) =>
+let isUseWorker = (state: MainStateDataType.state) =>
   WorkerConfigSystem.getConfig(state).useWorker && isSupportRenderWorkerAndSharedArrayBuffer(state);

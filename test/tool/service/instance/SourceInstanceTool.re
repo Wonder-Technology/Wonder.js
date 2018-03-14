@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let createSourceInstanceGameObject = (state: StateDataType.state) => {
+let createSourceInstanceGameObject = (state: MainStateDataType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   /* let (state, _) = SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state); */
@@ -10,7 +10,7 @@ let createSourceInstanceGameObject = (state: StateDataType.state) => {
   (state, gameObject, sourceInstance)
 };
 
-let createSourceInstanceGameObjectArr = (count, state: StateDataType.state) =>
+let createSourceInstanceGameObjectArr = (count, state: MainStateDataType.state) =>
   ArraySystem.range(0, count)
   |> WonderCommonlib.ArraySystem.reduceOneParam(
        [@bs]

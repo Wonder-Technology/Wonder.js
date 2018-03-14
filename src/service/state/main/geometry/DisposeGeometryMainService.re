@@ -2,7 +2,7 @@ open BoxGeometryType;
 
 open GeometryType;
 
-open StateDataType;
+open MainStateDataType;
 
 open DisposeComponentService;
 
@@ -69,7 +69,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let {disposedIndexArray} as boxGeometryRecord = boxGeometryRecord;
   switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
@@ -119,7 +119,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let {disposedIndexArray} = boxGeometryRecord;
       let (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord) =

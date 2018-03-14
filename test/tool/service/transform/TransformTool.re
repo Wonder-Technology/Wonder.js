@@ -1,10 +1,10 @@
-open StateDataType;
+open MainStateDataType;
 
 open TransformType;
 
 open Js.Typed_array;
 
-let getTransformRecord = (state: StateDataType.state) => state.transformRecord;
+let getTransformRecord = (state: MainStateDataType.state) => state.transformRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
 
@@ -35,10 +35,10 @@ let isTransform = (transform: transform) => {
   expect(transform) >= 0
 };
 
-let getLocalToWorldMatrixTypeArray = (transform, state: StateDataType.state) =>
+let getLocalToWorldMatrixTypeArray = (transform, state: MainStateDataType.state) =>
   ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, state.transformRecord);
 
-let getNormalMatrixTypeArray = (transform, state: StateDataType.state) => {
+let getNormalMatrixTypeArray = (transform, state: MainStateDataType.state) => {
   let (normalMatrix, _) =
     UpdateTransformService.updateAndGetNormalMatrixTypeArray(
       transform,

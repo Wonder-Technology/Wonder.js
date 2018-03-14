@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
@@ -35,7 +35,7 @@ let rec _clone =
         (
           (uid: int, transform, countRangeArr, clonedParentTransformArr, totalClonedGameObjectArr),
           isShareMaterial,
-          state: StateDataType.state
+          state: MainStateDataType.state
         ) => {
   /* TODO add gameObjectRecord to state */
   let (gameObjectRecord, clonedGameObjectArr) =
@@ -78,7 +78,7 @@ let rec _clone =
                    cloneGeometry:true
                    ////shareGeometry:false
    } */
-let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.state) => {
+let clone = (uid: int, count: int, isShareMaterial: bool, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -103,7 +103,7 @@ let clone = (uid: int, count: int, isShareMaterial: bool, state: StateDataType.s
           |> assertFalse
       )
     },
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let totalClonedGameObjectArr = [||];
   (

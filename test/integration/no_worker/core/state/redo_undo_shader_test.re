@@ -12,7 +12,7 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateTool.createState());
       let _prepareGLSLSenderData = (state) => {
-        open StateDataType;
+        open MainStateDataType;
         let {attributeSendDataMap, vertexAttribHistoryArray} =
           state.glslSenderRecord;
         let shaderIndex1 = 0;
@@ -63,7 +63,7 @@ let _ =
               test(
                 "clear last send record",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
@@ -77,7 +77,7 @@ let _ =
               test(
                 "clear vertexAttribHistoryArray",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
@@ -260,7 +260,7 @@ let _ =
                     open GLSLLocationType;
                     open ProgramType;
                     open GLSLSenderType;
-                    open StateDataType;
+                    open MainStateDataType;
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
                     let shaderIndex3 = 2;
@@ -321,7 +321,7 @@ let _ =
                     )
                   };
                   let _prepareState2 = (state) => {
-                    open StateDataType;
+                    open MainStateDataType;
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
@@ -568,7 +568,7 @@ let _ =
                           test(
                             "get intersect map between current uniformShaderSendNoCachableDataMap and target nuiformShaderSendNoCachableDataMap whose value is the one in current niuformShaderSendNoCachableDataMap",
                             () => {
-                              open StateDataType;
+                              open MainStateDataType;
                               let (
                                 newState,
                                 (

@@ -303,7 +303,7 @@ let _ =
               test(
                 "change copied state shouldn't affect source state",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   let (
                     state,
                     gameObject1,
@@ -420,7 +420,7 @@ let _ =
             () => {
               let _testCopyTypeArraySingleValue =
                   ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
-                open StateDataType;
+                open MainStateDataType;
                 open SourceInstanceType;
                 let (state, gameObject1, light1) = createGameObjectFunc(state^);
                 let (data1, data2) = getTargetDataFunc();
@@ -452,7 +452,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      StateDataType.(
+                      MainStateDataType.(
                         AmbientLightType.(
                           StateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -504,7 +504,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      StateDataType.(
+                      MainStateDataType.(
                         DirectionLightType.(
                           StateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -608,7 +608,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      StateDataType.(
+                      MainStateDataType.(
                         PointLightType.(
                           StateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -631,7 +631,7 @@ let _ =
               test(
                 "deep copy objectInstanceArrayMap, matrixFloat32ArrayMap",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
@@ -676,7 +676,7 @@ let _ =
               test(
                 "shadow copy matrixInstanceBufferCapacityMap, isTransformStaticMap, gameObjectMap, disposedIndexArray",
                 () =>
-                  StateDataType.(
+                  MainStateDataType.(
                     SourceInstanceType.(
                       StateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
@@ -753,7 +753,7 @@ let _ =
               test(
                 "shadow copy sourceInstanceMap, gameObjectMap, disposedIndexArray",
                 () =>
-                  StateDataType.(
+                  MainStateDataType.(
                     ObjectInstanceType.(
                       StateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
@@ -960,7 +960,7 @@ let _ =
               test(
                 "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   open TypeArrayPoolType;
                   let (
                     state,
@@ -1075,7 +1075,7 @@ let _ =
               test(
                 "add current state->sourceInstanceRecord->matrixFloat32ArrayMap typeArr to pool",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;
@@ -1096,7 +1096,7 @@ let _ =
               test(
                 "mark is-not-send-modelMatrixData",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;

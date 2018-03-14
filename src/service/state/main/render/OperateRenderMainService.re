@@ -1,20 +1,20 @@
 open RenderType;
 
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
 let _getCameraData = (state) => state.renderRecord.cameraData |> OptionService.unsafeGet;
 
-let getCameraVMatrixData = [@bs] ((state: StateDataType.state) => _getCameraData(state).vMatrix);
+let getCameraVMatrixData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).vMatrix);
 
-let getCameraPMatrixData = [@bs] ((state: StateDataType.state) => _getCameraData(state).pMatrix);
+let getCameraPMatrixData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).pMatrix);
 
-let getCameraPositionData = [@bs] ((state: StateDataType.state) => _getCameraData(state).position);
+let getCameraPositionData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).position);
 
-let getRenderArray = (state: StateDataType.state) => state.renderRecord.renderArray;
+let getRenderArray = (state: MainStateDataType.state) => state.renderRecord.renderArray;
 
-let setRenderArray = (renderArray, state: StateDataType.state) => {
+let setRenderArray = (renderArray, state: MainStateDataType.state) => {
   ...state,
   renderRecord: {
     ...state.renderRecord,
@@ -26,7 +26,7 @@ let setRenderArray = (renderArray, state: StateDataType.state) => {
   }
 };
 
-let setCameraData = (cameraData, state: StateDataType.state) => {
+let setCameraData = (cameraData, state: MainStateDataType.state) => {
   ...state,
   renderRecord: {...state.renderRecord, cameraData}
 };

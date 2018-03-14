@@ -66,7 +66,7 @@ let _ =
                "contract check",
                () => {
                  let _buildState = (index) =>
-                   StateDataType.{
+                   MainStateDataType.{
                      ...state^,
                      transformRecord: Some({...Js.Option.getExn(state^.transformRecord), index})
                    };

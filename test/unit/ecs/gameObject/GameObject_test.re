@@ -543,7 +543,7 @@ let _ =
                 "dispose geometry component",
                 () => {
                   TestTool.closeContractCheck();
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GeometryTool.initGeometrys;
@@ -565,7 +565,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open StateDataType;
+                          open MainStateDataType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -582,7 +582,7 @@ let _ =
                         "test dispose two",
                         () => {
                           TestTool.closeContractCheck();
-                          open StateDataType;
+                          open MainStateDataType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -603,7 +603,7 @@ let _ =
                         "test dispose three",
                         () => {
                           TestTool.closeContractCheck();
-                          open StateDataType;
+                          open MainStateDataType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -633,7 +633,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open StateDataType;
+                          open MainStateDataType;
                           let (state, gameObject1, light1) =
                             DirectionLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -654,7 +654,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open StateDataType;
+                          open MainStateDataType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -1140,7 +1140,7 @@ let _ =
                 () => {
                   let _test = ((createGameObjectFunc, isAliveFunc), state) => {
                     TestTool.closeContractCheck();
-                    open StateDataType;
+                    open MainStateDataType;
                     let (state, gameObject1, light1) = createGameObjectFunc(state^);
                     let (state, gameObject2, light2) = createGameObjectFunc(state);
                     let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
@@ -1170,7 +1170,7 @@ let _ =
                 "batch dispose geometry componets",
                 () => {
                   TestTool.closeContractCheck();
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GeometryTool.initGeometrys;

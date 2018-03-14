@@ -1,6 +1,6 @@
 open WorkerJobConfigType;
 
-let _unsafeGetWorkerJobConfig = (state: StateDataType.state) => {
+let _unsafeGetWorkerJobConfig = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -13,7 +13,7 @@ let _unsafeGetWorkerJobConfig = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   state.workerJobConfig |> Js.Option.getExn
 };
@@ -95,7 +95,7 @@ let rec _find =
   };
 
 /* TODO refactor */
-let getMainInitJobStream = (jobHandleMap, stateData, state: StateDataType.state, getJobHandleFunc) => {
+let getMainInitJobStream = (jobHandleMap, stateData, state: MainStateDataType.state, getJobHandleFunc) => {
   let {setting, mainInitPipelines, mainInitJobs} = _unsafeGetWorkerJobConfig(state);
   /* TODO refactor */
   let {jobs}: mainInitPipeline =

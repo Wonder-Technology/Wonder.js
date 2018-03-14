@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open BoxGeometryType;
 
@@ -15,7 +15,7 @@ let unsafeGetIndices =
       IndicesService.unsafeGetIndices(index, boxGeometryRecord.indicesMap)
   );
 
-let setIndicesWithArray = (index: int, record: array(int), state: StateDataType.state) => {
+let setIndicesWithArray = (index: int, record: array(int), state: MainStateDataType.state) => {
   let {indicesMap} as boxGeometryRecord = state.boxGeometryRecord;
   let (typeArrayPoolRecord, indicesMap) =
     setPointsWithArray(

@@ -1,6 +1,6 @@
 open VboBufferType;
 
-open StateDataType;
+open MainStateDataType;
 
 let restore = (currentState, targetState) => {
   let (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool) =

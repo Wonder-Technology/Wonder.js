@@ -26,7 +26,7 @@ let _ =
         )
       };
       let _prepareTypeArrayPoolData = (state) => {
-        open StateDataType;
+        open MainStateDataType;
         let float32ArrayPoolMap = [|[|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|]|];
         let uint16ArrayPoolMap = [|[|Uint16Array.make([|RandomTool.getRandomInt(3)|])|]|];
         (
@@ -97,7 +97,7 @@ let _ =
               test(
                 "directly use readonly record",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, gl, (colorWrite, clearColor, side, viewport)) =
                     _prepareDeviceManagerData(state^);
                   let copiedState = StateTool.deepCopyForRestore(state);
@@ -158,7 +158,7 @@ let _ =
               test(
                 "clear pool map",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   open TypeArrayPoolType;
                   let (state, _) = _prepareTypeArrayPoolData(state^);
                   let copiedState = StateTool.deepCopyForRestore(state);

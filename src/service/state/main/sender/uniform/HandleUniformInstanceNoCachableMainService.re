@@ -4,7 +4,7 @@ open Gl;
 
 open GameObjectType;
 
-open StateDataType;
+open MainStateDataType;
 
 open SendGLSLDataMainService;
 
@@ -36,7 +36,7 @@ let setToUniformSendMap =
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
 
-let unsafeGetUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
+let unsafeGetUniformSendData = (shaderIndex: int, state: MainStateDataType.state) =>
   HandleUniformConfigDataMapService.unsafeGetUniformSendData(
     shaderIndex,
     state.glslSenderRecord.uniformInstanceSendNoCachableDataMap

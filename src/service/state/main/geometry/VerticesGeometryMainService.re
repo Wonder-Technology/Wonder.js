@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open BoxGeometryType;
 
@@ -18,7 +18,7 @@ let unsafeGetVertices =
       VerticesService.unsafeGetVertices(index, boxGeometryRecord.verticesMap)
   );
 
-let setVerticesWithArray = (index: int, record: array(float), state: StateDataType.state) => {
+let setVerticesWithArray = (index: int, record: array(float), state: MainStateDataType.state) => {
   let {verticesMap} as boxGeometryRecord = state.boxGeometryRecord;
   /* {
        ...state,

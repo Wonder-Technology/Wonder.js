@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open MaterialType;
 
@@ -16,7 +16,7 @@ let _getShaderLibs = ({material_shaders}) => {
     shader_libs
 };
 
-let _getShaderTuple = (materialIndex, state: StateDataType.state) => {
+let _getShaderTuple = (materialIndex, state: MainStateDataType.state) => {
   let shaderRecord = RenderConfigMainService.getShaders(state);
   (materialIndex, _getShaderLibs(shaderRecord), shaderRecord)
 };
@@ -29,7 +29,7 @@ let _getStateTuple = ({lightMaterialRecord} as state) => {
 let initMaterial =
   [@bs]
   (
-    (gl, materialIndex: int, state: StateDataType.state) =>
+    (gl, materialIndex: int, state: MainStateDataType.state) =>
       InitMaterialMainService.initMaterial(
         gl,
         _getShaderTuple(materialIndex, state),
@@ -38,14 +38,14 @@ let initMaterial =
       )
   );
 
-let initMaterials = (materialIndexArr, gl, state: StateDataType.state) =>
+let initMaterials = (materialIndexArr, gl, state: MainStateDataType.state) =>
   materialIndexArr
   |> ArraySystem.reduceState(
        [@bs] ((state, materialIndex: int) => [@bs] initMaterial(gl, materialIndex, state)),
        state
      );
 
-let handleInitComponent = (gl, index: int, state: StateDataType.state) =>
+let handleInitComponent = (gl, index: int, state: MainStateDataType.state) =>
   InitMaterialMainService.handleInitComponent(
     gl,
     _getShaderTuple(index, state),

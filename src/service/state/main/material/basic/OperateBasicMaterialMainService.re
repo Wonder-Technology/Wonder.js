@@ -1,6 +1,6 @@
 open BasicMaterialType;
 
-open StateDataType;
+open MainStateDataType;
 
 let unsafeGetColor = (material, {basicMaterialRecord}) =>
   ColorMapService.unsafeGetColor(material, basicMaterialRecord.colorMap);

@@ -1,6 +1,6 @@
 /* open MainConfigType;
 
-open StateDataType;
+open MainStateDataType;
 
 open InitConfigMainService;
 
@@ -62,7 +62,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
 
 let setConfig = (config: Js.t({..}), state: state) => {
   let config = _changeConfigToRecord(config);
-  setIsDebug(~isDebug=config.isDebug, StateData.stateData);
+  setIsDebug(~isDebug=config.isDebug, MainStateData.stateData);
   (config, state)
 };
 

@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => {
   let cachedMap = [@bs] getCacheMapFunc(state);

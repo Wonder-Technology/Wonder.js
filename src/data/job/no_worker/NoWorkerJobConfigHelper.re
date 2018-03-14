@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let create = ((setting, init_pipelines, loop_pipelines, init_jobs, loop_jobs), state) => {
   ...state,

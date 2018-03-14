@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open ShaderType;
 
@@ -26,7 +26,7 @@ let _join = (array: array(shaderLib)) => {
 let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
 
 let initMaterialShader =
-    (materialIndex: int, (gl, shaderLibDataArr), buildGLSLSource, state: StateDataType.state) => {
+    (materialIndex: int, (gl, shaderLibDataArr), buildGLSLSource, state: MainStateDataType.state) => {
   let shaderRecord = state.shaderRecord;
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderRecord)) {

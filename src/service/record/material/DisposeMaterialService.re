@@ -19,7 +19,7 @@ let disposeData = (material, (shaderIndexMap, groupCountMap, gameObjectMap)) => 
       materialArray: array(material),
       disposedIndexArray,
       (isAliveFunc, handleDisposeFunc),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -34,7 +34,7 @@ let disposeData = (material, (shaderIndexMap, groupCountMap, gameObjectMap)) => 
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   materialArray
   |> ArraySystem.reduceState(

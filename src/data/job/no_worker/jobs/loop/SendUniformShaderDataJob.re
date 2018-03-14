@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let execJob = (_, _, state) => {
   let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);

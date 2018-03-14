@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open VboBufferType;
 
@@ -6,7 +6,7 @@ open SourceInstanceType;
 
 open InstanceBufferMainService;
 
-let render = (gl, uid, renderFunc, state: StateDataType.state) => {
+let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
   let uniformInstanceSendNoCachableData =
     state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);

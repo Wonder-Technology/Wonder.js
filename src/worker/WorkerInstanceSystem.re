@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let unsafeGetRenderWorker = (state: StateDataType.state) => {
+let unsafeGetRenderWorker = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -13,12 +13,12 @@ let unsafeGetRenderWorker = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   state.workerInstanceData.renderWorker |> Js.Option.getExn
 };
 
-let _setRenderWorker = (state: StateDataType.state, worker: WorkerType.worker) => {
+let _setRenderWorker = (state: MainStateDataType.state, worker: WorkerType.worker) => {
   ...state,
   workerInstanceData: {renderWorker: Some(worker)}
 };
@@ -45,12 +45,12 @@ let _getRenderWorkerFilePath = (workerFileDir: string) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   (workerFileDir |> _getValidFileDir) ++ "wd.render.worker.js"
 };
 
 let _createWorker = (workerFilePath: string) => Worker.newWorker(workerFilePath);
 
-let initWorkInstances = (workerFileDir, state: StateDataType.state) =>
+let initWorkInstances = (workerFileDir, state: MainStateDataType.state) =>
   workerFileDir |> _getRenderWorkerFilePath |> _createWorker |> _setRenderWorker(state);

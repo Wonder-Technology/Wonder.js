@@ -1,6 +1,6 @@
 open GameObjectType;
 
-open StateDataType;
+open MainStateDataType;
 
 open ComponentType;
 

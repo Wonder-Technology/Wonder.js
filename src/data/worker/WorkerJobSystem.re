@@ -1,4 +1,4 @@
-let getMainInitJobStream = (stateData, state: StateDataType.state) =>
+let getMainInitJobStream = (stateData, state: MainStateDataType.state) =>
   WorkerJobConfigSystem.getMainInitJobStream(
     WorkerJobHandleSystem.createMainInitJobHandleMap(),
     stateData,

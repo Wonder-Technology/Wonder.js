@@ -4,7 +4,7 @@ open Gl;
 
 open GameObjectType;
 
-open StateDataType;
+open MainStateDataType;
 
 open SendGLSLDataMainService;
 
@@ -196,16 +196,16 @@ let _checkShouldNotAddBefore = (shaderIndex, state) =>
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
 
 let addUniformSendData =
     (
       gl,
       (program: program, shaderIndex: int, shaderLibDataArr: shader_libs),
-      state: StateDataType.state
+      state: MainStateDataType.state
     )
-    : StateDataType.state => {
+    : MainStateDataType.state => {
   _checkShouldNotAddBefore(shaderIndex, state);
   let record = state.glslSenderRecord;
   let uniformLocationMap =

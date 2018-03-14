@@ -49,7 +49,7 @@ let handleDisposeComponent = (material, {disposedIndexArray} as record) => {
           Operators.(DisposeComponentService.checkComponentShouldAlive(material, isAlive, record))
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   _handleDispose(disposedIndexArray, material, record)
 };
@@ -75,7 +75,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       materialArray
       |> WonderCommonlib.ArraySystem.reduceOneParam(

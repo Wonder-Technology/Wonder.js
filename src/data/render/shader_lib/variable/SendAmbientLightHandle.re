@@ -1,11 +1,11 @@
-open StateDataType;
+open MainStateDataType;
 
 open AmbientLightType;
 
 let send =
   [@bs]
   (
-    (gl, (program, uniformCacheMap, uniformLocationMap), state: StateDataType.state) => {
+    (gl, (program, uniformCacheMap, uniformLocationMap), state: MainStateDataType.state) => {
       let {index} = state.ambientLightRecord;
       WonderCommonlib.ArraySystem.range(0, index - 1)
       |> ArraySystem.reduceState(

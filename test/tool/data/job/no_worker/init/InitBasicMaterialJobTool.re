@@ -23,7 +23,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let exec = (state: StateDataType.state) => InitRenderJobTool.exec(state);
+let exec = (state: MainStateDataType.state) => InitRenderJobTool.exec(state);
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;

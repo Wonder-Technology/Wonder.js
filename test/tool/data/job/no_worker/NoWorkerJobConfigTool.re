@@ -249,7 +249,7 @@ let buildNoWorkerJobConfig =
 let create =
     (
       (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) => {
   ...state,
   noWorkerJobConfig:

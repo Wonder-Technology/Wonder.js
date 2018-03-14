@@ -1,7 +1,7 @@
-let _workerInit = (stateData, state: StateDataType.state) =>
+let _workerInit = (stateData, state: MainStateDataType.state) =>
   WorkerJobSystem.getMainInitJobStream(stateData, state);
 
-let _noWorkerInit = (state: StateDataType.state) =>
+let _noWorkerInit = (state: MainStateDataType.state) =>
   state |> NoWorkerJobSystem.execNoWorkerInitJobs;
 
 let init = _noWorkerInit;
@@ -15,14 +15,14 @@ let rec _createWorkerLoopStream = () =>
          Most.mergeArray([|
            MostUtils.callFunc(
              () => {
-               let state = StateDataMainService.getState(StateData.stateData);
+               let state = StateDataMainService.getState(MainStateData.stateData);
                WorkerInstanceSystem.unsafeGetRenderWorker(state)
                |> WorkerUtils.postMessage({"operateType": "loop"})
              }
            ),
            MostUtils.fromWorkerEvent(
              "message",
-             StateDataMainService.getState(StateData.stateData)
+             StateDataMainService.getState(MainStateData.stateData)
              |> WorkerInstanceSystem.unsafeGetRenderWorker
            )
            |> Most.filter(
@@ -41,42 +41,42 @@ let rec _createWorkerLoopStream = () =>
      )
   |> Most.continueWith(() => _createWorkerLoopStream());
 
-let _run = (time: float, state: StateDataType.state) =>
+let _run = (time: float, state: MainStateDataType.state) =>
   state
   |> NoWorkerJobSystem.execNoWorkerLoopJobs(TimeControllerSystem.computeElapseTime(time, state));
 
-let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);
+let loopBody = (time: float, state: MainStateDataType.state) => state |> _run(time);
 
-let rec _noWorkerLoop = (time: float, state: StateDataType.state) : int =>
+let rec _noWorkerLoop = (time: float, state: MainStateDataType.state) : int =>
   Dom.requestAnimationFrame(
     (time: float) =>
       state
       |> loopBody(time)
-      |> StateDataMainService.setState(StateData.stateData)
+      |> StateDataMainService.setState(MainStateData.stateData)
       |> _noWorkerLoop(time)
       |> ignore
   );
 
 /*
   TODO save loop id
-  state |> init(StateData.stateData) |> _loop(0.) |> ignore
+  state |> init(MainStateData.stateData) |> _loop(0.) |> ignore
 
  */
-let start = (state: StateDataType.state) =>
+let start = (state: MainStateDataType.state) =>
   /*
     TODO save loop id
-    let rec _loop = (time: float, state: StateDataType.state) : int =>
+    let rec _loop = (time: float, state: MainStateDataType.state) : int =>
       Dom.requestAnimationFrame(
         (time: float) => state |> loopBody(time) |> setState(stateData) |> _loop(time) |> ignore
       );
-    state |> init(StateData.stateData) |> _loop(0.) |> ignore
+    state |> init(MainStateData.stateData) |> _loop(0.) |> ignore
 
    */
-  /* state |> init(StateData.stateData) |> ignore; */
+  /* state |> init(MainStateData.stateData) |> ignore; */
   WorkerDetectSystem.isUseWorker(state) ?
     state
-    |> StateDataMainService.setState(StateData.stateData)
-    |> _workerInit(StateData.stateData)
+    |> StateDataMainService.setState(MainStateData.stateData)
+    |> _workerInit(MainStateData.stateData)
     |> Most.concat(_createWorkerLoopStream())
     |> Most.drain
     |> ignore :

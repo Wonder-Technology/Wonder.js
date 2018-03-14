@@ -1,13 +1,13 @@
-open StateDataType;
+open MainStateDataType;
 
-let _getLightMaterialRenderArray = (renderArray, state: StateDataType.state) =>
+let _getLightMaterialRenderArray = (renderArray, state: MainStateDataType.state) =>
   renderArray
   |> Js.Array.filter(
        (uid) =>
          HasComponentGameObjectService.hasLightMaterialComponent(uid, state.gameObjectRecord)
      );
 
-let _render = (gl, state: StateDataType.state) =>
+let _render = (gl, state: MainStateDataType.state) =>
   switch (state |> OperateRenderMainService.getRenderArray) {
   | None => state
   | Some(renderArray) =>

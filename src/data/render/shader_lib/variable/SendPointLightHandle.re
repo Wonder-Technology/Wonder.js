@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open PointLightType;
 
@@ -82,7 +82,7 @@ let _sendAttenuation =
 let send =
   [@bs]
   (
-    (gl, (program, uniformCacheMap, uniformLocationMap), state: StateDataType.state) => {
+    (gl, (program, uniformCacheMap, uniformLocationMap), state: MainStateDataType.state) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
@@ -97,7 +97,7 @@ let send =
             () => maxCount == 4
           )
         },
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let lightGLSLDataStructureMemberNameArr = getLightGLSLDataStructureMemberNameArr();
       let {index} = state.pointLightRecord;

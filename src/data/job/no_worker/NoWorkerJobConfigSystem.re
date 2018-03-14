@@ -1,6 +1,6 @@
 open NoWorkerJobConfigType;
 
-let _unsafeGetNoWorkerJobConfig = (state: StateDataType.state) => {
+let _unsafeGetNoWorkerJobConfig = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -13,22 +13,22 @@ let _unsafeGetNoWorkerJobConfig = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   state.noWorkerJobConfig |> Js.Option.getExn
 };
 
-let getInitPipelines = (state: StateDataType.state) =>
+let getInitPipelines = (state: MainStateDataType.state) =>
   _unsafeGetNoWorkerJobConfig(state).initPipelines;
 
-let getInitJobs = (state: StateDataType.state) => _unsafeGetNoWorkerJobConfig(state).initJobs;
+let getInitJobs = (state: MainStateDataType.state) => _unsafeGetNoWorkerJobConfig(state).initJobs;
 
-let getLoopPipelines = (state: StateDataType.state) =>
+let getLoopPipelines = (state: MainStateDataType.state) =>
   _unsafeGetNoWorkerJobConfig(state).loopPipelines;
 
-let getLoopJobs = (state: StateDataType.state) => _unsafeGetNoWorkerJobConfig(state).loopJobs;
+let getLoopJobs = (state: MainStateDataType.state) => _unsafeGetNoWorkerJobConfig(state).loopJobs;
 
-let getSetting = (state: StateDataType.state) => _unsafeGetNoWorkerJobConfig(state).setting;
+let getSetting = (state: MainStateDataType.state) => _unsafeGetNoWorkerJobConfig(state).setting;
 
 let _getExecutableJob = (jobs: array(job), {name: pipelineJobName}: pipelineJob) => {
   let {flags}: job =

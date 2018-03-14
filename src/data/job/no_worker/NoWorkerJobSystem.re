@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: StateDataType.state) =>
+let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: MainStateDataType.state) =>
   NoWorkerJobConfigType.(
     executableJobs
     |> WonderCommonlib.ArraySystem.reduceOneParam(
@@ -16,21 +16,21 @@ let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: StateDataType.st
        )
   );
 
-let _getNoWorkerInitJobList = (state: StateDataType.state) => state.jobData.noWorkerInitJobList;
+let _getNoWorkerInitJobList = (state: MainStateDataType.state) => state.jobData.noWorkerInitJobList;
 
-let _getNoWorkerLoopJobList = (state: StateDataType.state) => state.jobData.noWorkerLoopJobList;
+let _getNoWorkerLoopJobList = (state: MainStateDataType.state) => state.jobData.noWorkerLoopJobList;
 
-let execNoWorkerInitJobs = (state: StateDataType.state) : state =>
+let execNoWorkerInitJobs = (state: MainStateDataType.state) : state =>
   state
   |> _getNoWorkerInitJobList
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(state), state);
 
-let execNoWorkerLoopJobs = (elapsed: float, state: StateDataType.state) : state =>
+let execNoWorkerLoopJobs = (elapsed: float, state: MainStateDataType.state) : state =>
   state
   |> _getNoWorkerLoopJobList
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(elapsed, state), state);
 
-let init = (state: StateDataType.state) => {
+let init = (state: MainStateDataType.state) => {
   ...state,
   jobData: {
     ...state.jobData,
@@ -58,7 +58,7 @@ let init = (state: StateDataType.state) => {
 };
 
  let addNoWorkerInitJob =
-     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+     (targetJobName: string, afterJobName: string, targetHandleFunc, state: MainStateDataType.state) => {
    ...state,
    jobData: {
      ...state.jobData,
@@ -71,7 +71,7 @@ let init = (state: StateDataType.state) => {
  };
 
  let addNoWorkerLoopJob =
-     (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataType.state) => {
+     (targetJobName: string, afterJobName: string, targetHandleFunc, state: MainStateDataType.state) => {
    ...state,
    jobData: {
      ...state.jobData,
@@ -83,7 +83,7 @@ let init = (state: StateDataType.state) => {
    }
  };
 
- let removeNoWorkerInitJob = (targetJobName: string, state: StateDataType.state) => {
+ let removeNoWorkerInitJob = (targetJobName: string, state: MainStateDataType.state) => {
    ...state,
    jobData: {
      ...state.jobData,
@@ -91,7 +91,7 @@ let init = (state: StateDataType.state) => {
    }
  };
 
- let removeNoWorkerLoopJob = (targetJobName: string, state: StateDataType.state) => {
+ let removeNoWorkerLoopJob = (targetJobName: string, state: MainStateDataType.state) => {
    ...state,
    jobData: {
      ...state.jobData,

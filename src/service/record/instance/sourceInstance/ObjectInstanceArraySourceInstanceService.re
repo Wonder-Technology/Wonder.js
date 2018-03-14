@@ -18,7 +18,7 @@ let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );
 
 let getObjectInstanceArray = (sourceInstance, {objectInstanceArrayMap}) =>

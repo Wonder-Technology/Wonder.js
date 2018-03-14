@@ -1,14 +1,14 @@
 let _getModelMatrixNoCachableData =
   [@bs]
   (
-    (transform, state: StateDataType.state) =>
+    (transform, state: MainStateDataType.state) =>
       UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(transform, state.globalTempRecord, state.transformRecord)
   );
 
 let _getNormalMatrixNoCachableData =
   [@bs]
   (
-    (transform, state: StateDataType.state) => {
+    (transform, state: MainStateDataType.state) => {
       let (normalMatrix, _) = UpdateTransformService.updateAndGetNormalMatrixTypeArray(transform, state.globalTempRecord, state.transformRecord);
       normalMatrix
     }

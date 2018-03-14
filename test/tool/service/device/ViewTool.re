@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let getCanvas = (state) => state.viewRecord |> ViewService.getCanvas;
 

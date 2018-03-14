@@ -157,7 +157,7 @@ let _ =
               test(
                 "remove from verticesMap, normalsMap, indicesMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
                 () => {
-                  open StateDataType;
+                  open MainStateDataType;
                   let (state, gameObject1, geometry1) = _prepare(state);
                   let {
                     verticesMap,

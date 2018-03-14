@@ -1,8 +1,8 @@
-open StateDataType;
+open MainStateDataType;
 
 open Gl;
 
-let disableVertexAttribArray = (gl, state: StateDataType.state) => {
+let disableVertexAttribArray = (gl, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -23,7 +23,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let {vertexAttribHistoryArray} as record = state.glslSenderRecord;
   vertexAttribHistoryArray

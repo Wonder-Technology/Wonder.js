@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GlType;
 
@@ -32,7 +32,7 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>
 let sendBuffer =
   [@bs]
   (
-    (gl, (size: int, pos: attributeLocation), buffer: buffer, state: StateDataType.state) => {
+    (gl, (size: int, pos: attributeLocation), buffer: buffer, state: MainStateDataType.state) => {
       let {vertexAttribHistoryArray} as record = state.glslSenderRecord;
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);

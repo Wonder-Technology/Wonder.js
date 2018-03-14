@@ -17,15 +17,15 @@ let _compileShader = (gl, glslSource: string, shader) => {
               ~description="shader info log",
               ~params={j|$message|j}
             ),
-            StateData.stateData.isDebug
+            MainStateData.stateData.isDebug
           );
           WonderLog.Log.debug(
             WonderLog.Log.buildDebugMessage(~description="glsl source", ~params={j|$glslSource|j}),
-            StateData.stateData.isDebug
+            MainStateData.stateData.isDebug
           )
         } :
         (),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   shader
 };
@@ -48,7 +48,7 @@ let _linkProgram = (program, gl) => {
           )
         } :
         (),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   ()
 };
@@ -118,7 +118,7 @@ let unsafeGetProgram = (shaderIndex: int, {programMap}) =>
              )
            )
          ),
-       StateData.stateData.isDebug
+       MainStateData.stateData.isDebug
      );
 
 let registerProgram = (shaderIndex: int, {programMap}, program: program) => {

@@ -194,7 +194,7 @@ let buildPerspective = ((fovy: float, aspect: float, near: float, far: float), r
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
   let s = Js.Math.sin(fovy);

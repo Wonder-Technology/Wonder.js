@@ -31,7 +31,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let record = _disposeData(meshRenderer, record);
   {
@@ -58,7 +58,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let record = {
         ...record,

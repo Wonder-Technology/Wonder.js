@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let _getInitJobHandles = () => [
   ("create_canvas", CreateCanvasJob.execJob),

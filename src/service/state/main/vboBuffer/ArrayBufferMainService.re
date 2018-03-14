@@ -10,7 +10,7 @@ open VboBufferType;
 let createBuffer =
   [@bs]
   (
-    (gl, record: Float32Array.t, state: StateDataType.state) => {
+    (gl, record: Float32Array.t, state: MainStateDataType.state) => {
       let buffer = PoolVboBufferService.getArrayBuffer(gl, state.vboBufferRecord);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       bufferFloat32Data(getArrayBuffer(gl), record, getStaticDraw(gl), gl);
@@ -19,7 +19,7 @@ let createBuffer =
     }
   );
 
-let getOrCreateBuffer = (gl, (geometryIndex, bufferMap), getDataFunc, state: StateDataType.state) =>
+let getOrCreateBuffer = (gl, (geometryIndex, bufferMap), getDataFunc, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     gl,
     (geometryIndex, bufferMap),

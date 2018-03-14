@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open SourceInstanceType;
 
@@ -16,7 +16,7 @@ let createSourceInstance = (state) => {
   ({...state, sourceInstanceRecord}, index)
 };
 
-let createObjectInstanceGameObject = (sourceInstance, state: StateDataType.state) => {
+let createObjectInstanceGameObject = (sourceInstance, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -30,12 +30,12 @@ let createObjectInstanceGameObject = (sourceInstance, state: StateDataType.state
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   createInstance(sourceInstance, state)
 };
 
-let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataType.state) => {
+let getSourceInstanceObjectInstanceArray = (sourceInstance, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -49,13 +49,13 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataType
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   getObjectInstanceArray(sourceInstance, state.sourceInstanceRecord)
 };
 
 let markSourceInstanceModelMatrixIsStatic =
-    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: StateDataType.state) => {
+    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -69,7 +69,7 @@ let markSourceInstanceModelMatrixIsStatic =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   {
     ...state,

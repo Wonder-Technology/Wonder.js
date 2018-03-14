@@ -5,7 +5,7 @@ open Js.Typed_array;
 /*! start with a maximum of 64 instances */
 /* let _getDefaultCapacity = () => 64 * ( 16 + 9 ) * 4; */
 /* let _getDefaultCapacity = () => 64 * (16 + 0); */
-let createBuffer = (gl, capacity: int, state: StateDataType.state) => {
+let createBuffer = (gl, capacity: int, state: MainStateDataType.state) => {
   let buffer = PoolVboBufferService.getInstanceBuffer(gl, state.vboBufferRecord);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   bufferFloat32DataWithCapacity(getArrayBuffer(gl), capacity, getDynamicDraw(gl), gl);
@@ -28,7 +28,7 @@ let _getFloat32InstanceArraySize = (capacity: int) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   capacity / 4
 };
@@ -48,7 +48,7 @@ let _setCapacity = (sourceInstance, capacity, capacityMap) => {
 };
 
 let getOrCreateBuffer =
-    ((gl, sourceInstance, defaultCapacity), (capacityMap, bufferMap), state: StateDataType.state) =>
+    ((gl, sourceInstance, defaultCapacity), (capacityMap, bufferMap), state: MainStateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
@@ -63,7 +63,7 @@ let getOrCreateMatrixFloat32Array =
       sourceInstance: int,
       defaultCapacity,
       (capacityMap, matrixFloat32ArrayMap),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) => {
   let capacity = _getCapacity(sourceInstance, defaultCapacity, capacityMap);
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {

@@ -1,21 +1,21 @@
-open StateDataType;
+open MainStateDataType;
 
 open GeometryType;
 
 open BoxGeometryType;
 
-let _isInit = (index: int, state: StateDataType.state) =>
+let _isInit = (index: int, state: MainStateDataType.state) =>
   switch (state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapSystem.get(index)) {
   | None => false
   | Some(bool) => bool
   };
 
-let _markIsInit = (index: int, isInit: bool, state: StateDataType.state) => {
+let _markIsInit = (index: int, isInit: bool, state: MainStateDataType.state) => {
   state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapSystem.set(index, isInit);
   state
 };
 
-let initGeometry = (index: int, state: StateDataType.state) =>
+let initGeometry = (index: int, state: MainStateDataType.state) =>
   if (_isInit(index, state)) {
     state
   } else {
@@ -33,7 +33,7 @@ let initGeometry = (index: int, state: StateDataType.state) =>
     }
   };
 
-let init = (state: StateDataType.state) => {
+let init = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -49,7 +49,7 @@ let init = (state: StateDataType.state) => {
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let {index} = state.boxGeometryRecord;
   ArraySystem.range(0, index - 1)
@@ -59,4 +59,4 @@ let init = (state: StateDataType.state) => {
      )
 };
 
-let handleInitComponent = (index: int, state: StateDataType.state) => initGeometry(index, state);
+let handleInitComponent = (index: int, state: MainStateDataType.state) => initGeometry(index, state);

@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open Dom;
 
@@ -25,7 +25,7 @@ let _getCanvasId = (domId: string) =>
                )
              )
            ),
-         StateData.stateData.isDebug
+         MainStateData.stateData.isDebug
        );
 
 let _createCanvas = ({canvasId}) =>

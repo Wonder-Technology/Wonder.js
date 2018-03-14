@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open TransformType;
 
@@ -61,7 +61,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   let (typeArrayPoolRecord, transformRecord) =
     _disposeData(transform, maxTypeArrayPoolSize, typeArrayPoolRecord, transformRecord);
@@ -98,7 +98,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        StateData.stateData.isDebug
+        MainStateData.stateData.isDebug
       );
       let {disposedIndexArray} = transformRecord;
       let transformRecord = {

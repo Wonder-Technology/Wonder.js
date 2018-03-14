@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open GameObjectType;
 
@@ -69,7 +69,7 @@ let cloneLightMaterialComponent =
       isShareMaterial: bool,
       sourceComponent: component,
       countRangeArr: array(int),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) =>
   CloneLightMaterialMainService.handleCloneComponent(
     sourceComponent,

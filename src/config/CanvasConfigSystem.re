@@ -1,5 +1,5 @@
 open CanvasConfigType;
 
-let setConfig = (canvasId, state:StateDataType.state) => {...state, canvasConfig: Some({canvasId: canvasId})};
+let setConfig = (canvasId, state:MainStateDataType.state) => {...state, canvasConfig: Some({canvasId: canvasId})};
 
-let getConfig = (state: StateDataType.state) => Js.Option.getExn(state.canvasConfig);
+let getConfig = (state: MainStateDataType.state) => Js.Option.getExn(state.canvasConfig);

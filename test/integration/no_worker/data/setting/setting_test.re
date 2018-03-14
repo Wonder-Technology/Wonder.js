@@ -34,7 +34,7 @@ let _ =
                 () => {
                   buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
                   SettingTool.createStateAndSetToStateData(~isDebug="true", ()) |> ignore;
-                  getIsDebug(StateData.stateData) |> expect == true
+                  getIsDebug(MainStateData.stateData) |> expect == true
                 }
               )
           )
@@ -42,7 +42,7 @@ let _ =
       describe(
         "gpuConfig",
         () => {
-          open StateDataType;
+          open MainStateDataType;
           let _buildExpectedGpuConfig = (~useHardwareInstance=Js.true_, ()) => {
             useHardwareInstance: Js.to_bool(useHardwareInstance)
           };

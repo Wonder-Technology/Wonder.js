@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let handleGetNoneJob = (name, jobHandleMap) =>
   WonderLog.Log.fatal(

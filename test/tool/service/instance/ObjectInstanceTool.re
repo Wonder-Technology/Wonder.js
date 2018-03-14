@@ -1,6 +1,6 @@
-open StateDataType;
+open MainStateDataType;
 
-let createObjectInstanceGameObject = (state: StateDataType.state) => {
+let createObjectInstanceGameObject = (state: MainStateDataType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =
@@ -16,7 +16,7 @@ let createObjectInstanceGameObject = (state: StateDataType.state) => {
   )
 };
 
-let createObjectInstanceGameObjectArr = (count, state: StateDataType.state) => {
+let createObjectInstanceGameObjectArr = (count, state: MainStateDataType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =

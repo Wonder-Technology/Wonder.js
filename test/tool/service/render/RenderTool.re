@@ -1,5 +1,5 @@
 
-open StateDataType;
+open MainStateDataType;
 
 let getRenderRecord = (state) => state.renderRecord;
 

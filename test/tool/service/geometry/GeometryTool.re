@@ -1,10 +1,10 @@
-open StateDataType;
+open MainStateDataType;
 
 open BoxGeometryType;
 
-let initGeometrys = (state: StateDataType.state) => InitGeometryMainService.init(state);
+let initGeometrys = (state: MainStateDataType.state) => InitGeometryMainService.init(state);
 
-let initGeometry = (geometry, state: StateDataType.state) =>
+let initGeometry = (geometry, state: MainStateDataType.state) =>
   InitGeometryMainService.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
@@ -25,19 +25,19 @@ let buildBoxGeometryConfigDataJsObj =
   "depthSegment": depthSegment
 };
 
-let getVerticesCount = (index: int, state: StateDataType.state) =>
+let getVerticesCount = (index: int, state: MainStateDataType.state) =>
   VerticesService.getVerticesCount(index, state.boxGeometryRecord.verticesMap);
 
-let getIndicesCount = (index: int, state: StateDataType.state) =>
+let getIndicesCount = (index: int, state: MainStateDataType.state) =>
   IndicesService.getIndicesCount(index, state.boxGeometryRecord.indicesMap);
 
-let getIndexType = (state: StateDataType.state) =>
+let getIndexType = (state: MainStateDataType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> RenderGeometryService.getIndexType;
 
-let getIndexTypeSize = (state: StateDataType.state) =>
+let getIndexTypeSize = (state: MainStateDataType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> RenderGeometryService.getIndexTypeSize;
 
-let hasIndices = (index: int, state: StateDataType.state) =>
+let hasIndices = (index: int, state: MainStateDataType.state) =>
   IndicesService.hasIndices(index, state.boxGeometryRecord.indicesMap);
 
 let isGeometry = (geometry) => {
@@ -49,7 +49,7 @@ let isGeometry = (geometry) => {
 
 let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
-let dispose = (geometry, state: StateDataType.state) =>
+let dispose = (geometry, state: MainStateDataType.state) =>
   DisposeGeometryMainService.handleDisposeComponent(
     geometry,
     ConfigMemoryService.getMaxTypeArrayPoolSize(state.memoryConfig),
@@ -70,8 +70,8 @@ let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   state
 };
 
-let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) => {
-  open StateDataType;
+let createStubComputeFuncData = (sandbox, geometry, state: MainStateDataType.state) => {
+  open MainStateDataType;
   open Sinon;
   let {computeDataFuncMap} = state.boxGeometryRecord;
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
@@ -80,7 +80,7 @@ let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) 
 };
 
 let isGeometryDisposed = (geometry, state) => {
-  open StateDataType;
+  open MainStateDataType;
   let {disposedIndexArray} = state.boxGeometryRecord;
   disposedIndexArray |> Js.Array.includes(geometry)
 };

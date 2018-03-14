@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open RenderConfigType;
 
@@ -7,7 +7,7 @@ let _initMaterialShader =
       gl,
       (materialIndex: int, shaderLibs, shaderRecord),
       (initShaderFuncTuple, setShaderIndexFunc),
-      (gameObjectMap, shaderIndexMap, state: StateDataType.state)
+      (gameObjectMap, shaderIndexMap, state: MainStateDataType.state)
     ) =>
   ShaderIndexMapService.hasShaderIndex(materialIndex, shaderIndexMap) ?
     state :
@@ -42,7 +42,7 @@ let initMaterial = (gl, shaderTuple, setShaderIndexFunc, stateTuple) =>
 let handleInitComponent = (gl, shaderTuple, setShaderIndexFunc, stateTuple) =>
   initMaterial(gl, shaderTuple, setShaderIndexFunc, stateTuple);
 
-let init = (gl, (index, disposedIndexArray), initMaterialFunc, state: StateDataType.state) => {
+let init = (gl, (index, disposedIndexArray), initMaterialFunc, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -58,7 +58,7 @@ let init = (gl, (index, disposedIndexArray), initMaterialFunc, state: StateDataT
           )
         )
       ),
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   ArraySystem.range(0, index - 1)
   |> ArraySystem.reduceState(

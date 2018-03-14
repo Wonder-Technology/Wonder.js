@@ -2,7 +2,7 @@ open MaterialType;
 
 open LightMaterialType;
 
-open StateDataType;
+open MainStateDataType;
 
 let unsafeGetDiffuseColor = (material, {lightMaterialRecord}) =>
   ColorMapService.unsafeGetColor(material, lightMaterialRecord.diffuseColorMap);

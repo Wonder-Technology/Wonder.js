@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let execJob = (_, state) => {
   let (x, y, width, height, _, _) as screenData = ViewService.getFullScreenData();

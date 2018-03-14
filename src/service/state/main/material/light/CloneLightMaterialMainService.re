@@ -1,11 +1,11 @@
-open StateDataType;
+open MainStateDataType;
 
 open LightMaterialType;
 
 let _getData =
   [@bs]
   (
-    (sourceComponent, state: StateDataType.state) => (
+    (sourceComponent, state: MainStateDataType.state) => (
       OperateLightMaterialMainService.unsafeGetDiffuseColor(sourceComponent, state),
       OperateLightMaterialMainService.unsafeGetSpecularColor(sourceComponent, state),
       OperateLightMaterialMainService.unsafeGetShininess(sourceComponent, state)
@@ -18,7 +18,7 @@ let _setData =
     (
       sourceComponent,
       (diffuseColor, specularColor: array(float), shininess: float),
-      state: StateDataType.state
+      state: MainStateDataType.state
     ) =>
       OperateLightMaterialMainService.(
         state

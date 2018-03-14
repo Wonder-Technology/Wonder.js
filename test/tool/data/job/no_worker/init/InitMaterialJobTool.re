@@ -41,7 +41,7 @@ let testModelMatrixInstanceShaderLibs =
       describe(
         "else, use modelMatrix_batch_instance shader lib",
         () => {
-          open StateDataType;
+          open MainStateDataType;
           let _setGpuConfigDataAllowBatchInstance = (state) => {
             ...state,
             gpuConfig: Some({...state.gpuConfig, useHardwareInstance: false})

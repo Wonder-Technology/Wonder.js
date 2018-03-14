@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 let restore = (gl, currentState, targetState) => {
   let newState = {

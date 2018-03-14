@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 open ShaderType;
 
@@ -173,7 +173,7 @@ let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
 let buildGLSLSource =
   [@bs]
   (
-    (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
+    (materialIndex: int, shaderLibDataArr: shader_libs, state: MainStateDataType.state) => {
       let {precision} = state.glslRecord;
       let vs: glslChunk = _createEmptyChunk();
       let fs: glslChunk = _createEmptyChunk();

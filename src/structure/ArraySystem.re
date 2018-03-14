@@ -1,4 +1,4 @@
-open StateDataType;
+open MainStateDataType;
 
 [@bs.send.pipe : array('a)] external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
 
@@ -17,7 +17,7 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
         () => lastIndex |> assertEqual(Int, Js.Array.length(arr) - 1)
       )
     },
-    StateData.stateData.isDebug
+    MainStateData.stateData.isDebug
   );
   WonderCommonlib.ArraySystem.unsafeSet(
     arr,
