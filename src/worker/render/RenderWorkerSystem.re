@@ -77,7 +77,7 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
      }
    }; */
 /* TODO refactor: extract function */
-MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
+MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
 |> Most.filter((e) => e##record##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
 |> Most.concatMap(
      (e) =>
@@ -87,7 +87,7 @@ MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
          RenderWorkerStateData.renderWorkerStateData
        )
        |> ArrayService.push(
-            MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
+            MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
             |> Most.filter((e) => e##record##operateType === "loop" |> Js.Boolean.to_js_boolean)
             |> Most.map((e) => Some(e))
             |> Most.tap(
@@ -98,8 +98,8 @@ MostUtils.fromWorkerEvent("message", WorkerUtils.getSelf())
                  (e) =>
                    MostUtils.callFunc(
                      () => {
-                       WorkerUtils.getSelf()
-                       |> WorkerUtils.postMessage({"operateType": "finish_loop"});
+                       WorkerService.getSelf()
+                       |> WorkerService.postMessage({"operateType": "finish_loop"});
                        e
                      }
                    )

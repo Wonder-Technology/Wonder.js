@@ -1,1 +1,0 @@
-/* let isBool = (target) => target == true || target == false; */

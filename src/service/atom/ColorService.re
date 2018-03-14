@@ -21,7 +21,7 @@ let convert16HexToRGBA = (hexStr: string) =>
       let hex =
         Js.Math.floor
           /* Int32.to_float(Int32.of_string("0x111111")) ); */
-          (NumberUtils.hexFloat_of_string(result));
+          (NumberService.hexFloat_of_string(result));
       (
         float_of_int(hex lsr 16 land 255) /. 255.,
         float_of_int(hex lsr 8 land 255) /. 255.,

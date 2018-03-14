@@ -11,30 +11,30 @@ let _collectAllRecords = (stream) =>
 
 let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "no_worker/setting/setting.json"|]),
+    PathService.join([|dataDir, "no_worker/setting/setting.json"|]),
     fetchFunc
   )
   |> map((json) => ParseNoWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "no_worker/pipeline/init_pipelines.json"|]),
+    PathService.join([|dataDir, "no_worker/pipeline/init_pipelines.json"|]),
     fetchFunc
   )
   |> map((json) => ParseNoWorkerJobService.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "no_worker/pipeline/loop_pipelines.json"|]),
+    PathService.join([|dataDir, "no_worker/pipeline/loop_pipelines.json"|]),
     fetchFunc
   )
   |> map((json) => ParseNoWorkerJobService.convertLoopPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "no_worker/job/init_jobs.json"|]),
+    PathService.join([|dataDir, "no_worker/job/init_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseNoWorkerJobService.convertInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "no_worker/job/loop_jobs.json"|]),
+    PathService.join([|dataDir, "no_worker/job/loop_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseNoWorkerJobService.convertLoopJobsToRecord(json))
@@ -43,13 +43,13 @@ let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
 
 let _createFetchRenderConfigStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "render/shader/shaders.json"|]),
+    PathService.join([|dataDir, "render/shader/shaders.json"|]),
     fetchFunc
   )
   |> map((json) => ParseRenderConfigService.convertShadersToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "render/shader/shader_libs.json"|]),
+    PathService.join([|dataDir, "render/shader/shader_libs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseRenderConfigService.convertShaderLibsToRecord(json))
@@ -92,30 +92,30 @@ let _createHandleRenderConfigStreamArr = (dataDir, fetchFunc, state) =>
 
 let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "worker/setting/setting.json"|]),
+    PathService.join([|dataDir, "worker/setting/setting.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "worker/pipeline/main/main_init_pipelines.json"|]),
+    PathService.join([|dataDir, "worker/pipeline/main/main_init_pipelines.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertMainInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "worker/job/main/main_init_jobs.json"|]),
+    PathService.join([|dataDir, "worker/job/main/main_init_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertMainInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "worker/pipeline/worker/worker_pipelines.json"|]),
+    PathService.join([|dataDir, "worker/pipeline/worker/worker_pipelines.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertWorkerPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathUtils.join([|dataDir, "worker/job/worker/worker_jobs.json"|]),
+    PathService.join([|dataDir, "worker/job/worker/worker_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertWorkerJobsToRecord(json))

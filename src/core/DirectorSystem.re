@@ -17,7 +17,7 @@ let rec _createWorkerLoopStream = () =>
              () => {
                let state = StateDataMainService.getState(MainStateData.stateData);
                WorkerInstanceSystem.unsafeGetRenderWorker(state)
-               |> WorkerUtils.postMessage({"operateType": "loop"})
+               |> WorkerService.postMessage({"operateType": "loop"})
              }
            ),
            MostUtils.fromWorkerEvent(

@@ -2,8 +2,8 @@ let execJob = (flags, e, stateData) =>
   MostUtils.callFunc(
     () => {
       /* TODO refactor: move to utils */
-      WorkerUtils.getSelf()
-      |> WorkerUtils.postMessage({"operateType": JobConfigService.unsafeGetFlags(flags)[0]})
+      WorkerService.getSelf()
+      |> WorkerService.postMessage({"operateType": JobConfigService.unsafeGetFlags(flags)[0]})
       |> ignore;
       e
     }

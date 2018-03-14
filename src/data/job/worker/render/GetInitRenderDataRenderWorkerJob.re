@@ -1,2 +1,2 @@
 let execJob = (flags, _, stateData) =>
-  GetWorkerDataUtils.createGetMainWorkerDataStream(flags, WorkerUtils.getSelf());
+  GetWorkerDataUtils.createGetMainWorkerDataStream(flags, WorkerService.getSelf());

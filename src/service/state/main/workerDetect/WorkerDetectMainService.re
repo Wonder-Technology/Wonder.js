@@ -17,9 +17,9 @@ let detect = (state: MainStateDataType.state) => {
       isSupportRenderWorkerAndSharedArrayBuffer:
         ! isSupportSharedArrayBuffer ?
           false :
-          DetectUtils.hasProperty(
+          DetectService.hasProperty(
             "transferControlToOffscreen",
-            DomUtils.buildDom("<canvas></canvas>")
+            DomService.buildDom("<canvas></canvas>")
           )
     }
   }

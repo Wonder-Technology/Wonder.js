@@ -4,7 +4,7 @@ open SettingType;
 
 open Dom;
 
-open DomUtils;
+open DomService;
 
 let _getCanvasId = (domId: string) =>
   String.contains(domId, '#') ?

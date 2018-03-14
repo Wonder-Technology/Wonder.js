@@ -5,7 +5,7 @@ let execJob = (flags, stateData) =>
       let operateType = JobConfigService.unsafeGetFlags(flags)[0];
       /* TODO refactor: move to utils */
       WorkerInstanceSystem.unsafeGetRenderWorker(state)
-      |> WorkerUtils.postMessage({"operateType": operateType});
+      |> WorkerService.postMessage({"operateType": operateType});
       Some(operateType)
     }
   );
