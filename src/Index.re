@@ -266,21 +266,21 @@ let createTransform = TransformAPI.createTransform;
 
 let load = LoaderManager.load;
 
-let loopBody = Director.loopBody;
+let loopBody = DirectorAPI.loopBody;
 
-let initDirector = Director.initDirector;
+let initDirector = DirectorAPI.initDirector;
 
-let startDirector = Director.startDirector;
+let startDirector = DirectorAPI.startDirector;
 
-let setState = State.setState;
+let setState = StateAPI.setState;
 
-let getState = State.getState;
+let getState = StateAPI.getState;
 
-let getStateData = State.getStateData;
+let getStateData = StateAPI.getStateData;
 
-let restoreState = State.restoreState;
+let restoreState = StateAPI.restoreState;
 
-let deepCopyForRestore = State.deepCopyForRestore;
+let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
 let getFps = TimeControllerAPI.getFps;
 
@@ -488,21 +488,21 @@ let createTransform = TransformAPI.createTransform;
 
 let load = LoaderManager.load;
 
-let loopBody = Director.loopBody;
+let loopBody = DirectorAPI.loopBody;
 
-let initDirector = Director.initDirector;
+let initDirector = DirectorAPI.initDirector;
 
-let startDirector = Director.startDirector;
+let startDirector = DirectorAPI.startDirector;
 
-let setState = State.setState;
+let setState = StateAPI.setState;
 
-let getState = State.getState;
+let getState = StateAPI.getState;
 
-let getStateData = State.getStateData;
+let getStateData = StateAPI.getStateData;
 
-let restoreState = State.restoreState;
+let restoreState = StateAPI.restoreState;
 
-let deepCopyForRestore = State.deepCopyForRestore;
+let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
 let getFps = TimeControllerAPI.getFps;
 

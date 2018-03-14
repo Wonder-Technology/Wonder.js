@@ -1,8 +1,8 @@
-let deepCopyForRestore = State.deepCopyForRestore;
+let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
-let restore = State.restoreState;
+let restore = StateAPI.restoreState;
 
-let getStateData = () => State.getStateData();
+let getStateData = () => StateAPI.getStateData();
 
 let getState = () => StateDataMainService.getState(getStateData());
 
