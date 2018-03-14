@@ -4,12 +4,12 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferService;
+open InstanceBufferMainService;
 
 let render = (gl, uid, renderFunc, state: StateDataType.state) => {
   let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
   let uniformInstanceSendNoCachableData =
-    state |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
+    state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
@@ -51,7 +51,7 @@ let render = (gl, uid, renderFunc, state: StateDataType.state) => {
                   ),
                   state
                 );
-           DrawGLSLService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
+           DrawGLSLMainService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
            |> ignore;
            state
          }

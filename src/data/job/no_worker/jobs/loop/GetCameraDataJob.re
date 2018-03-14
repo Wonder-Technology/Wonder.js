@@ -13,7 +13,7 @@ let _getCameraData =
         gameObjectRecord
       } as state
     ) =>
-  switch (CameraSceneService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
+  switch (CameraSceneMainService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
   | None => None
   | Some(currentCameraGameObject) =>
     let transform =
@@ -21,7 +21,7 @@ let _getCameraData =
         currentCameraGameObject,
         gameObjectRecord
       );
-    /* OperateRenderService.isFirstRender(state) ?
+    /* OperateRenderMainService.isFirstRender(state) ?
        Some({
          vMatrix:
            CacheType.New(BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)),
@@ -65,4 +65,4 @@ let _getCameraData =
     })
   };
 
-let execJob = (_, _, state) => OperateRenderService.setCameraData(_getCameraData(state), state);
+let execJob = (_, _, state) => OperateRenderMainService.setCameraData(_getCameraData(state), state);

@@ -4,7 +4,7 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferService;
+open InstanceBufferMainService;
 
 let _fillObjectInstanceData =
     (objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc, stateOffsetTuple) => {
@@ -38,7 +38,7 @@ let _sendTransformMatrixDataBuffer =
     gl
   );
   [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1) |> ignore;
-  SendGLSLDataService.enableVertexAttribArray(
+  SendGLSLDataMainService.enableVertexAttribArray(
     gl,
     pos,
     state.glslSenderRecord.vertexAttribHistoryArray,
@@ -48,7 +48,7 @@ let _sendTransformMatrixDataBuffer =
 
 let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
-  |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(shaderIndex)
+  |> HandleAttributeConfigDataMainService.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> ArraySystem.reduceStatei(
        [@bs]
        (
@@ -88,13 +88,13 @@ let _sendTransformMatrixData =
       state
     ) => {
   let matrixInstanceBuffer =
-    InstanceBufferService.getOrCreateBuffer(
+    InstanceBufferMainService.getOrCreateBuffer(
       (gl, sourceInstance, defaultCapacity),
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
   let matricesArrayForInstance =
-    InstanceBufferService.getOrCreateMatrixFloat32Array(
+    InstanceBufferMainService.getOrCreateMatrixFloat32Array(
       sourceInstance,
       defaultCapacity,
       (matrixInstanceBufferCapacityMap, matrixFloat32ArrayMap),
@@ -136,9 +136,9 @@ let _sendStaticTransformMatrixData =
     ) =>
   StaticSourceInstanceService.isSendTransformMatrixData(sourceInstance, state.sourceInstanceRecord) ?
     {
-      InstanceBufferService.bind(
+      InstanceBufferMainService.bind(
         gl,
-        InstanceBufferService.getOrCreateBuffer(
+        InstanceBufferMainService.getOrCreateBuffer(
           (gl, sourceInstance, defaultCapacity),
           (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
           state
@@ -233,7 +233,7 @@ let render =
     StaticSourceInstanceService.isTransformStatic(sourceInstance, state.sourceInstanceRecord) ?
       _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
       _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
-  DrawGLSLService.drawElementsInstancedANGLE(
+  DrawGLSLMainService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),
       RenderGeometryService.getIndexType(gl),

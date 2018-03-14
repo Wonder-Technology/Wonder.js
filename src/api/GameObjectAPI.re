@@ -2,23 +2,23 @@ open GameObjectType;
 
 open ComponentType;
 
-open DisposeComponentGameObjectService;
+open DisposeComponentGameObjectMainService;
 
 open GetComponentGameObjectService;
 
 open HasComponentGameObjectService;
 
-open CloneComponentGameObjectService;
+open CloneComponentGameObjectMainService;
 
-open AddGameObjectComponentService;
+open AddGameObjectComponentMainService;
 
-open DisposeGameObjectService;
+open DisposeGameObjectMainService;
 
-open CloneGameObjectService;
+open CloneGameObjectMainService;
 
-open CreateGameObjectService;
+open CreateGameObjectMainService;
 
-open AliveGameObjectService;
+open AliveGameObjectMainService;
 
 let createGameObject = (state: StateDataType.state) => create(state);
 
@@ -413,7 +413,7 @@ let disposeGameObjectSourceInstanceComponent =
   disposeSourceInstanceComponent(
     gameObject,
     component,
-    DisposeGameObjectService.batchDispose,
+    DisposeGameObjectMainService.batchDispose,
     state
   )
 };
@@ -461,7 +461,7 @@ let initGameObject = (gameObject: gameObject, state: StateDataType.state) => {
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     StateData.stateData.isDebug
   );
-  InitGameObjectService.initGameObject(gameObject, state)
+  InitGameObjectMainService.initGameObject(gameObject, state)
 };
 
 let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataType.state) => {

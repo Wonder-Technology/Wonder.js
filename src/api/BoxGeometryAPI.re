@@ -4,7 +4,7 @@ open GeometryType;
 
 open BoxGeometryType;
 
-open DisposeGeometryService;
+open DisposeGeometryMainService;
 
 open RenderGeometryService;
 
@@ -56,7 +56,7 @@ let unsafeGetBoxGeometryVertices = (geometry: int, state: StateDataType.state) =
       ),
     StateData.stateData.isDebug
   );
-  [@bs] VerticesGeometryService.unsafeGetVertices(geometry, state)
+  [@bs] VerticesGeometryMainService.unsafeGetVertices(geometry, state)
 };
 
 let setBoxGeometryVertices =
@@ -101,7 +101,7 @@ let unsafeGetBoxGeometryNormals = (geometry: int, state: StateDataType.state) =>
       ),
     StateData.stateData.isDebug
   );
-  [@bs] NormalsGeometryService.unsafeGetNormals(geometry, state)
+  [@bs] NormalsGeometryMainService.unsafeGetNormals(geometry, state)
 };
 
 let setBoxGeometryNormals =
@@ -146,7 +146,7 @@ let unsafeGetBoxGeometryIndices = (geometry: int, state: StateDataType.state) =>
       ),
     StateData.stateData.isDebug
   );
-  [@bs] IndicesGeometryService.unsafeGetIndices(geometry, state)
+  [@bs] IndicesGeometryMainService.unsafeGetIndices(geometry, state)
 };
 
 let setBoxGeometryIndices =

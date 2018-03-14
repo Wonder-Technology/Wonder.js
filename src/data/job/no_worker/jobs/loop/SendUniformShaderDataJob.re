@@ -9,8 +9,8 @@ let execJob = (_, _, state) => {
          (state, shaderIndex) => {
            let program = ProgramService.unsafeGetProgram(shaderIndex, state.programRecord);
            state
-           |> UseProgramService.use(gl, program)
-           |> HandleUniformShaderNoCachableService.unsafeGetUniformSendData(shaderIndex)
+           |> UseProgramMainService.use(gl, program)
+           |> HandleUniformShaderNoCachableMainService.unsafeGetUniformSendData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (
@@ -21,7 +21,7 @@ let execJob = (_, _, state) => {
                 ),
                 state
               )
-           |> HandleUniformShaderCachableService.unsafeGetUniformSendData(shaderIndex)
+           |> HandleUniformShaderCachableMainService.unsafeGetUniformSendData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (
@@ -35,7 +35,7 @@ let execJob = (_, _, state) => {
                 ),
                 state
               )
-           |> HandleUniformShaderCachableFunctionService.unsafeGetUniformSendData(shaderIndex)
+           |> HandleUniformShaderCachableFunctionMainService.unsafeGetUniformSendData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (

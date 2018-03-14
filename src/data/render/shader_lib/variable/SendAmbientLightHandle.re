@@ -14,12 +14,12 @@ let send =
              (state, index) => {
                let name = "u_ambient";
                [@bs]
-               SendGLSLDataService.sendFloat3(
+               SendGLSLDataMainService.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (
                    name,
-                   GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl)
+                   GLSLLocationMainService.getUniformLocation(program, name, uniformLocationMap, gl)
                  ),
                  OperateAmbientLightService.getColor(index, state.ambientLightRecord)
                );

@@ -3,7 +3,7 @@ open StateDataType;
 open RenderType;
 
 let execJob = (_, _, state) =>
-  OperateRenderService.setRenderArray(
+  OperateRenderMainService.setRenderArray(
     RenderArrayMeshRendererService.getRenderArray(state.meshRendererRecord),
     state
   );

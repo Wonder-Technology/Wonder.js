@@ -571,8 +571,8 @@ let create = ((shaders, shaderLibs), state: StateDataType.state) => {
     })
 };
 
-let getShaders = RenderConfigService.getShaders;
+let getShaders = RenderConfigMainService.getShaders;
 
-let getShaderLibs = RenderConfigService.getShaderLibs;
+let getShaderLibs = RenderConfigMainService.getShaderLibs;
 
-let getMaterialShaderLibRecordArr = RenderConfigService.getMaterialShaderLibDataArr;
+let getMaterialShaderLibRecordArr = RenderConfigMainService.getMaterialShaderLibDataArr;

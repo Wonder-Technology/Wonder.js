@@ -49,31 +49,31 @@ let _sendAttenuation =
       state
     ) => {
   [@bs]
-  SendGLSLDataService.sendFloat(
+  SendGLSLDataMainService.sendFloat(
     gl,
     uniformCacheMap,
-    (constant, GLSLLocationService.getUniformLocation(program, constant, uniformLocationMap, gl)),
+    (constant, GLSLLocationMainService.getUniformLocation(program, constant, uniformLocationMap, gl)),
     OperatePointLightService.getConstant(index, state.pointLightRecord)
   );
   [@bs]
-  SendGLSLDataService.sendFloat(
+  SendGLSLDataMainService.sendFloat(
     gl,
     uniformCacheMap,
-    (linear, GLSLLocationService.getUniformLocation(program, linear, uniformLocationMap, gl)),
+    (linear, GLSLLocationMainService.getUniformLocation(program, linear, uniformLocationMap, gl)),
     OperatePointLightService.getLinear(index, state.pointLightRecord)
   );
   [@bs]
-  SendGLSLDataService.sendFloat(
+  SendGLSLDataMainService.sendFloat(
     gl,
     uniformCacheMap,
-    (quadratic, GLSLLocationService.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
+    (quadratic, GLSLLocationMainService.getUniformLocation(program, quadratic, uniformLocationMap, gl)),
     OperatePointLightService.getQuadratic(index, state.pointLightRecord)
   );
   [@bs]
-  SendGLSLDataService.sendFloat(
+  SendGLSLDataMainService.sendFloat(
     gl,
     uniformCacheMap,
-    (range, GLSLLocationService.getUniformLocation(program, range, uniformLocationMap, gl)),
+    (range, GLSLLocationMainService.getUniformLocation(program, range, uniformLocationMap, gl)),
     OperatePointLightService.getRange(index, state.pointLightRecord)
   );
   state
@@ -108,32 +108,32 @@ let send =
              (state, index) => {
                let {position, color, intensity, constant, linear, quadratic, range} as structureMemberNameData = lightGLSLDataStructureMemberNameArr[index];
                [@bs]
-               SendGLSLDataService.sendVec3(
+               SendGLSLDataMainService.sendVec3(
                  gl,
                  uniformCacheMap,
                  (
                    position,
-                   GLSLLocationService.getUniformLocation(program, position, uniformLocationMap, gl)
+                   GLSLLocationMainService.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
-                 PositionPointLightService.getPosition(index, state)
+                 PositionPointLightMainService.getPosition(index, state)
                );
                [@bs]
-               SendGLSLDataService.sendFloat3(
+               SendGLSLDataMainService.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (
                    color,
-                   GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
+                   GLSLLocationMainService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
                  OperatePointLightService.getColor(index, state.pointLightRecord)
                );
                [@bs]
-               SendGLSLDataService.sendFloat(
+               SendGLSLDataMainService.sendFloat(
                  gl,
                  uniformCacheMap,
                  (
                    intensity,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationMainService.getUniformLocation(
                      program,
                      intensity,
                      uniformLocationMap,

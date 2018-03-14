@@ -2,7 +2,7 @@
 
 open StateDataType;
 
-open InitConfigService;
+open InitConfigMainService;
 
 open InitDeviceSystem;
 

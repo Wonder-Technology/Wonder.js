@@ -2,10 +2,10 @@ open StateDataType;
 
 open BoxGeometryType;
 
-let initGeometrys = (state: StateDataType.state) => InitGeometryService.init(state);
+let initGeometrys = (state: StateDataType.state) => InitGeometryMainService.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
-  InitGeometryService.initGeometry(geometry, state);
+  InitGeometryMainService.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
     (
@@ -50,7 +50,7 @@ let isGeometry = (geometry) => {
 let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let dispose = (geometry, state: StateDataType.state) =>
-  DisposeGeometryService.handleDisposeComponent(
+  DisposeGeometryMainService.handleDisposeComponent(
     geometry,
     ConfigMemoryService.getMaxTypeArrayPoolSize(state.memoryConfig),
     state
@@ -88,8 +88,8 @@ let isGeometryDisposed = (geometry, state) => {
 let getGroupCount = (geometry, state) =>
   GroupGeometryService.getGroupCount(geometry, state.boxGeometryRecord);
 
-let setVerticesWithArray = VerticesGeometryService.setVerticesWithArray;
+let setVerticesWithArray = VerticesGeometryMainService.setVerticesWithArray;
 
-let setNormalsWithArray = NormalsGeometryService.setNormalsWithArray;
+let setNormalsWithArray = NormalsGeometryMainService.setNormalsWithArray;
 
-let setIndicesWithArray = IndicesGeometryService.setIndicesWithArray;
+let setIndicesWithArray = IndicesGeometryMainService.setIndicesWithArray;

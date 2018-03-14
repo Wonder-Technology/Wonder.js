@@ -2,11 +2,11 @@ open StateDataType;
 
 open BasicMaterialType;
 
-open CreateBasicMaterialService;
+open CreateBasicMaterialMainService;
 
 open GameObjectBasicMaterialService;
 
-open OperateBasicMaterialService;
+open OperateBasicMaterialMainService;
 
 open DisposeBasicMaterialService;
 

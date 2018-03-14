@@ -3,7 +3,7 @@ open StateDataType;
 let getGLSLSenderRecord = (state) => state.glslSenderRecord;
 
 let disableVertexAttribArray = (state: StateDataType.state) =>
-  VertexAttribArrayService.disableVertexAttribArray(
+  VertexAttribArrayMainService.disableVertexAttribArray(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     state
   );

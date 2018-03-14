@@ -1,32 +1,32 @@
 open StateDataType;
 
 let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
-  GetVboBufferService.getOrCreateBuffer(
+  GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.vertexBufferMap),
-    ([@bs] ArrayBufferService.createBuffer, [@bs] VerticesGeometryService.unsafeGetVertices),
+    ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesGeometryMainService.unsafeGetVertices),
     state
   );
 
 let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
-  GetVboBufferService.getOrCreateBuffer(
+  GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.normalBufferMap),
-    ([@bs] ArrayBufferService.createBuffer, [@bs] NormalsGeometryService.unsafeGetNormals),
+    ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsGeometryMainService.unsafeGetNormals),
     state
   );
 
 let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
-  GetVboBufferService.getOrCreateBuffer(
+  GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.elementArrayBufferMap),
-    ([@bs] ElementArrayBufferService.createBuffer, [@bs] IndicesGeometryService.unsafeGetIndices),
+    ([@bs] ElementArrayBufferMainService.createBuffer, [@bs] IndicesGeometryMainService.unsafeGetIndices),
     state
   );
 
 let getOrCreateInstanceBuffer =
     (sourceInstanceIndex: int, defaultCapacity, state: StateDataType.state) =>
-  InstanceBufferService.getOrCreateBuffer(
+  InstanceBufferMainService.getOrCreateBuffer(
     ([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), sourceInstanceIndex, defaultCapacity),
     (
       state.sourceInstanceRecord.matrixInstanceBufferCapacityMap,

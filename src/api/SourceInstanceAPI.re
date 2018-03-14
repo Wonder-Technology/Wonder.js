@@ -2,9 +2,9 @@ open StateDataType;
 
 open SourceInstanceType;
 
-open DisposeSourceInstanceService;
+open DisposeSourceInstanceMainService;
 
-open CreateObjectInstanceGameObjectService;
+open CreateObjectInstanceGameObjectMainService;
 
 open ObjectInstanceArraySourceInstanceService;
 

@@ -8,7 +8,7 @@ let _getBasicMaterialRenderArray = (renderArray, state: StateDataType.state) =>
      );
 
 let _render = (gl, state: StateDataType.state) =>
-  switch (state |> OperateRenderService.getRenderArray) {
+  switch (state |> OperateRenderMainService.getRenderArray) {
   | None => state
   | Some(renderArray) =>
     state
@@ -17,11 +17,11 @@ let _render = (gl, state: StateDataType.state) =>
          [@bs]
          (
            (state, uid: int) =>
-             if (JudgeInstanceService.isSourceInstance(uid, state)) {
+             if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
                RenderBasicInstanceJobCommon.render(gl, uid, state)
              } else {
                let (state, _, geometryIndex) = [@bs] RenderBasicJobCommon.render(gl, uid, state);
-               DrawGLSLService.drawElement(
+               DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),

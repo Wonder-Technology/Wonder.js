@@ -90,33 +90,33 @@ let _getSharedData =
 let restore =
     (stateData: stateData, currentState: StateDataType.state, targetState: StateDataType.state) => {
   let intersectShaderIndexDataArray =
-    IntersectShaderIndexService.getIntersectShaderIndexDataArray(currentState, targetState);
+    IntersectShaderIndexMainService.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
-    targetState |> RestoreBoxGeometryService.restore(currentState, sharedData);
+    targetState |> RestoreBoxGeometryMainService.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> RestoreTransformService.restore(currentState, sharedData);
+    targetState |> RestoreTransformMainService.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> RestoreSourceInstanceService.restore(currentState, sharedData);
-  let targetState = targetState |> RestoreDeviceManagerService.restore(currentState, sharedData);
+    targetState |> RestoreSourceInstanceMainService.restore(currentState, sharedData);
+  let targetState = targetState |> RestoreDeviceManagerMainService.restore(currentState, sharedData);
   let gl = [@bs] DeviceManagerService.unsafeGetGl(targetState.deviceManagerRecord);
   /* let targetState = {
        ...targetState,
-       typeArrayPoolRecord: RestoreTypeArrayPoolService.restore(currentState, targetState),
-       globalTempRecord: RestoreGlobalTempService.restore(currentState, targetState)
+       typeArrayPoolRecord: RestoreTypeArrayPoolMainService.restore(currentState, targetState),
+       globalTempRecord: RestoreGlobalTempMainService.restore(currentState, targetState)
      }; */
   targetState
   /* |> TypeArrayPoolService.restore(currentState, sharedData) */
-  |> RestoreTypeArrayPoolService.restore(currentState, sharedData)
-  |> RestoreGlobalTempService.restore(currentState)
-  |> RestoreVboBufferService.restore(currentState)
-  |> RestoreShaderService.restore(currentState)
-  |> RestoreProgramService.restore(intersectShaderIndexDataArray, currentState)
-  |> RestoreGLSLLocationService.restore(intersectShaderIndexDataArray, currentState)
-  |> RestoreGLSLSenderService.restore(intersectShaderIndexDataArray, currentState)
-  |> RestoreBasicMaterialService.restore(gl, currentState)
-  |> RestoreLightMaterialService.restore(gl, currentState)
-  |> RestoreRenderService.restore(currentState)
+  |> RestoreTypeArrayPoolMainService.restore(currentState, sharedData)
+  |> RestoreGlobalTempMainService.restore(currentState)
+  |> RestoreVboBufferMainService.restore(currentState)
+  |> RestoreShaderMainService.restore(currentState)
+  |> RestoreProgramMainService.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreGLSLLocationMainService.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreGLSLSenderMainService.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreBasicMaterialMainService.restore(gl, currentState)
+  |> RestoreLightMaterialMainService.restore(gl, currentState)
+  |> RestoreRenderMainService.restore(currentState)
   /* |> RecordGlobalTempService.restore(currentState) */
   |> setState(stateData)
   /* |> WonderLog.Contract.ensureCheck ((state) => {

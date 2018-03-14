@@ -7,11 +7,11 @@ let getOrCreateBuffer = (sourceInstance, defaultCapacity, state) => {
   open SourceInstanceType;
   let {matrixInstanceBufferMap} = state.vboBufferRecord;
   let {matrixInstanceBufferCapacityMap} = state.sourceInstanceRecord;
-  InstanceBufferService.getOrCreateBuffer(
+  InstanceBufferMainService.getOrCreateBuffer(
     ([@bs] GlTool.unsafeGetGl(state), sourceInstance, defaultCapacity),
     (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
     state
   )
 };
 
-let createMatrixFloat32Array = InstanceBufferService._createMatrixFloat32Array;
+let createMatrixFloat32Array = InstanceBufferMainService._createMatrixFloat32Array;

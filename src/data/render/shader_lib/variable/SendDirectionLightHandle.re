@@ -52,32 +52,32 @@ let send =
              (state, index) => {
                let {position, color, intensity} = lightGLSLDataStructureMemberNameArr[index];
                [@bs]
-               SendGLSLDataService.sendVec3(
+               SendGLSLDataMainService.sendVec3(
                  gl,
                  uniformCacheMap,
                  (
                    position,
-                   GLSLLocationService.getUniformLocation(program, position, uniformLocationMap, gl)
+                   GLSLLocationMainService.getUniformLocation(program, position, uniformLocationMap, gl)
                  ),
-                 PositionDirectionLightService.getPosition(index, state)
+                 PositionDirectionLightMainService.getPosition(index, state)
                );
                [@bs]
-               SendGLSLDataService.sendFloat3(
+               SendGLSLDataMainService.sendFloat3(
                  gl,
                  uniformCacheMap,
                  (
                    color,
-                   GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
+                   GLSLLocationMainService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
                  OperateDirectionLightService.getColor(index, state.directionLightRecord)
                );
                [@bs]
-               SendGLSLDataService.sendFloat(
+               SendGLSLDataMainService.sendFloat(
                  gl,
                  uniformCacheMap,
                  (
                    intensity,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationMainService.getUniformLocation(
                      program,
                      intensity,
                      uniformLocationMap,

@@ -11,16 +11,16 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
-let initMaterials = InitLightMaterialService.init;
+let initMaterials = InitLightMaterialMainService.init;
 
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
-  ShaderIndexLightMaterialService.unsafeGetShaderIndex(materialIndex, state);
+  ShaderIndexLightMaterialMainService.unsafeGetShaderIndex(materialIndex, state);
 
 let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
-  ShaderIndexLightMaterialService.hasShaderIndex(materialIndex, state);
+  ShaderIndexLightMaterialMainService.hasShaderIndex(materialIndex, state);
 
 let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataType.state) =>
-  [@bs] ShaderIndexLightMaterialService.setShaderIndex(materialIndex, shaderIndex, state);
+  [@bs] ShaderIndexLightMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
 let dispose = (material, state: StateDataType.state) => {
   ...state,
@@ -30,7 +30,7 @@ let dispose = (material, state: StateDataType.state) => {
 
 let initMaterial = (materialIndex, state) =>
   [@bs]
-  InitLightMaterialService.initMaterial(
+  InitLightMaterialMainService.initMaterial(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     materialIndex,
     state

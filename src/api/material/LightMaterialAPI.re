@@ -2,11 +2,11 @@ open StateDataType;
 
 open LightMaterialType;
 
-open CreateLightMaterialService;
+open CreateLightMaterialMainService;
 
 open GameObjectLightMaterialService;
 
-open OperateLightMaterialService;
+open OperateLightMaterialMainService;
 
 open DisposeLightMaterialService;
 

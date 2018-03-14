@@ -57,7 +57,7 @@ let _createFetchRenderConfigDataStreamArr = (dataDir, fetchFunc) => [|
 /* TODO set all setting to one state->xxx(set together) */
 let _setSetting =
     (stateData, state: StateDataType.state, {canvasId, isDebug, context, gpu, worker}) => {
-  InitConfigService.setIsDebug(isDebug, stateData) |> ignore;
+  InitConfigMainService.setIsDebug(isDebug, stateData) |> ignore;
   let state = state |> CanvasConfigSystem.setConfig(canvasId) |> GpuConfigSystem.setConfig(gpu);
   {...state, viewRecord: state.viewRecord |> ViewService.setContextConfig(context)}
   |> WorkerConfigSystem.setConfig(worker)

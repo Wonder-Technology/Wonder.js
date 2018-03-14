@@ -1,6 +1,6 @@
 open TransformType;
 
-open DisposeTransformService;
+open DisposeTransformMainService;
 
 open GameObjectTransformService;
 
@@ -10,11 +10,11 @@ open ModelMatrixTransformService;
 
 open UpdateTransformService;
 
-let createTransform = CreateTransformService.create;
+let createTransform = CreateTransformMainService.create;
 
 /* (state) => {
      let (typeArrayPoolRecord, transformRecord, index) =
-       CreateTransformService.create(state.typeArrayPoolRecord, state.transformRecord);
+       CreateTransformMainService.create(state.typeArrayPoolRecord, state.transformRecord);
      ({...state, typeArrayPoolRecord, transformRecord}, index)
    }; */
 let unsafeGetTransformGameObject = (transform: transform, state: StateDataType.state) => {

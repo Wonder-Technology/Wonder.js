@@ -1,3 +1,3 @@
 open StateDataType;
 
-let execJob = (_, state) => InitGeometryService.init(state);
+let execJob = (_, state) => InitGeometryMainService.init(state);
