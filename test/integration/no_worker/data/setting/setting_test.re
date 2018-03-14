@@ -41,7 +41,7 @@ let _ =
         "gpu config",
         () => {
           open SettingType;
-          let _buildExpectedGpuConfig = (~useHardwareInstance=Js.true_, ()) => {
+          let _buildExpectedGPUConfig = (~useHardwareInstance=Js.true_, ()) => {
             useHardwareInstance: Js.to_bool(useHardwareInstance)
           };
           describe(
@@ -60,7 +60,7 @@ let _ =
                     );
                   state
                   |> SettingTool.unsafeGetGPU
-                  |> expect == _buildExpectedGpuConfig(~useHardwareInstance, ())
+                  |> expect == _buildExpectedGPUConfig(~useHardwareInstance, ())
                 }
               )
           );
@@ -74,7 +74,7 @@ let _ =
                   let state = TestTool.initWithJobConfigWithoutBuildFakeDom(~sandbox, ());
                   state
                   |> SettingTool.unsafeGetGPU
-                  |> expect == _buildExpectedGpuConfig(~useHardwareInstance=Js.true_, ())
+                  |> expect == _buildExpectedGPUConfig(~useHardwareInstance=Js.true_, ())
                 }
               )
           )

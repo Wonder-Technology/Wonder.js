@@ -249,7 +249,7 @@ let _ =
                             );
                           let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
                           let state =
-                            state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
+                            state |> InstanceTool.setGPUDetectDataAllowHardwareInstance(sandbox);
                           let state = state |> InitLightMaterialJobTool.exec;
                           GLSLTool.containMultiline(
                             GLSLTool.getVsSource(shaderSource),
@@ -267,9 +267,9 @@ let _ =
                         "else, use normalMatrix_batch_instance shader lib",
                         () => {
                           open MainStateDataType;
-                          let _setGpuConfigDataAllowBatchInstance = (state) =>
+                          let _setGPUConfigDataAllowBatchInstance = (state) =>
                             SettingTool.setGPU({useHardwareInstance: false}, state);
-                          let _setGpuDetectDataAllowBatchInstance = (state) => {
+                          let _setGPUDetectDataAllowBatchInstance = (state) => {
                             ...state,
                             gpuDetectRecord: {
                               ...state.gpuDetectRecord,
@@ -286,7 +286,7 @@ let _ =
                                   state^
                                 );
                               let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-                              let state = state |> _setGpuConfigDataAllowBatchInstance;
+                              let state = state |> _setGPUConfigDataAllowBatchInstance;
                               let state = state |> InitLightMaterialJobTool.exec;
                               GLSLTool.containMultiline(
                                 GLSLTool.getVsSource(shaderSource),
@@ -308,8 +308,8 @@ let _ =
                                   state^
                                 );
                               let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-                              let state = state |> _setGpuDetectDataAllowBatchInstance;
-                              let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+                              let state = state |> _setGPUDetectDataAllowBatchInstance;
+                              let state = state |> InstanceTool.setGPUDetectDataAllowBatchInstance;
                               let state = state |> InitLightMaterialJobTool.exec;
                               GLSLTool.containMultiline(
                                 GLSLTool.getVsSource(shaderSource),

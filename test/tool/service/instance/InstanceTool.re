@@ -6,7 +6,7 @@ let addSourceInstance = (gameObject, state) => {
   (state, sourceInstance)
 };
 
-let setGpuDetectDataAllowHardwareInstance = (sandbox, state) => {
+let setGPUDetectDataAllowHardwareInstance = (sandbox, state) => {
   ...state,
   gpuDetectRecord: {
     ...state.gpuDetectRecord,
@@ -18,7 +18,7 @@ let setGpuDetectDataAllowHardwareInstance = (sandbox, state) => {
   }
 };
 
-let setGpuDetectDataAllowBatchInstance = (state) => {
+let setGPUDetectDataAllowBatchInstance = (state) => {
   ...state,
   gpuDetectRecord: {...state.gpuDetectRecord, extensionInstancedArrays: None}
 };

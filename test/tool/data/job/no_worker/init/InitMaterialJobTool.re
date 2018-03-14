@@ -23,7 +23,7 @@ let testModelMatrixInstanceShaderLibs =
         () => {
           let (state, shaderSource, gameObject) = prepareForJudgeGLSLNotExecFunc(sandbox, state^);
           let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-          let state = state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
+          let state = state |> InstanceTool.setGPUDetectDataAllowHardwareInstance(sandbox);
           let state = state |> execFunc;
           GLSLTool.containMultiline(
             GLSLTool.getVsSource(shaderSource),
@@ -42,7 +42,7 @@ let testModelMatrixInstanceShaderLibs =
         "else, use modelMatrix_batch_instance shader lib",
         () => {
           open MainStateDataType;
-          let _setGpuConfigDataAllowBatchInstance = (state) =>
+          let _setGPUConfigDataAllowBatchInstance = (state) =>
             SettingTool.setGPU({useHardwareInstance: false}, state);
           test(
             "if state->gpuConfig->useHardwareInstance == false, use batch",
@@ -50,7 +50,7 @@ let testModelMatrixInstanceShaderLibs =
               let (state, shaderSource, gameObject) =
                 prepareForJudgeGLSLNotExecFunc(sandbox, state^);
               let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-              let state = state |> _setGpuConfigDataAllowBatchInstance;
+              let state = state |> _setGPUConfigDataAllowBatchInstance;
               let state = state |> execFunc;
               GLSLTool.containMultiline(
                 GLSLTool.getVsSource(shaderSource),
@@ -65,7 +65,7 @@ let testModelMatrixInstanceShaderLibs =
               let (state, shaderSource, gameObject) =
                 prepareForJudgeGLSLNotExecFunc(sandbox, state^);
               let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-              let state = state |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+              let state = state |> InstanceTool.setGPUDetectDataAllowBatchInstance;
               let state = state |> execFunc;
               GLSLTool.containMultiline(
                 GLSLTool.getVsSource(shaderSource),
