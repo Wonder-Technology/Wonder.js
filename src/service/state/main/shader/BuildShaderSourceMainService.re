@@ -132,6 +132,24 @@ let _createEmptyChunk = () => {
   body: ""
 };
 
+let _buildVsAndFsByType = ((vs, fs), type_, name, state) =>
+  switch type_ {
+  | "vs" => (_setSource(vs, getChunk(name, state)), fs)
+  | "vs_function" => (_setSource(vs, _execHandle(name, state)), fs)
+  | "fs" => (vs, _setSource(fs, getChunk(name, state)))
+  | "fs_function" => (vs, _setSource(fs, _execHandle(name, state)))
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="buildGLSLSource",
+        ~description={j|unknown glsl type: $type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|name: $name|j}
+      )
+    )
+  };
+
 let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
   shaderLibDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -145,23 +163,8 @@ let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
              |> WonderCommonlib.ArrayService.reduceOneParam(
                   [@bs]
                   (
-                    ((vs, fs), {type_, name}: glsl) =>
-                      switch type_ {
-                      | "vs" => (_setSource(vs, getChunk(name, state)), fs)
-                      | "vs_function" => (_setSource(vs, _execHandle(name, state)), fs)
-                      | "fs" => (vs, _setSource(fs, getChunk(name, state)))
-                      | "fs_function" => (vs, _setSource(fs, _execHandle(name, state)))
-                      | _ =>
-                        WonderLog.Log.fatal(
-                          WonderLog.Log.buildFatalMessage(
-                            ~title="buildGLSLSource",
-                            ~description={j|unknown glsl type: $type_|j},
-                            ~reason="",
-                            ~solution={j||j},
-                            ~params={j|name: $name|j}
-                          )
-                        )
-                      }
+                    (sourceTuple, {type_, name}: glsl) =>
+                      _buildVsAndFsByType(sourceTuple, type_, name, state)
                   ),
                   glslTuple
                 )

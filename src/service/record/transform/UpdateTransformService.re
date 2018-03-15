@@ -67,8 +67,7 @@ let updateAndGetPositionTuple = (transform: transform, globalTempRecord, record)
   _updateAndGetPosition(transform, Matrix4Service.getTranslationTuple, globalTempRecord, record);
 
 let updateAndGetLocalToWorldMatrixTypeArray = (transform: transform, globalTempRecord, record) =>
-  update(transform, globalTempRecord, record)
-  |> getLocalToWorldMatrixTypeArray(transform);
+  update(transform, globalTempRecord, record) |> getLocalToWorldMatrixTypeArray(transform);
 
 let updateAndGetNormalMatrixTypeArray = (transform: transform, globalTempRecord, record) =>
   update(transform, globalTempRecord, record) |> getNormalMatrixTypeArray(transform);
