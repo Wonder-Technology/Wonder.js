@@ -1,1 +1,1 @@
-let getData = (e) => Js.Option.getExn(e)##record;
+let getData = (e) => OptionService.unsafeGet(e)##record;

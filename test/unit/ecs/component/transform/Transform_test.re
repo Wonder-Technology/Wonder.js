@@ -68,7 +68,7 @@ let _ =
                  let _buildState = (index) =>
                    MainStateDataType.{
                      ...state^,
-                     transformRecord: Some({...Js.Option.getExn(state^.transformRecord), index})
+                     transformRecord: Some({...OptionService.unsafeGet(state^.transformRecord), index})
                    };
                  beforeEach(
                    () =>

@@ -72,7 +72,7 @@ let _ =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
               let shaderIndex = BasicMaterialTool.unsafeGetShaderIndex(material, state);
-              state |> ProgramTool.getProgram(shaderIndex) |> Js.Option.getExn |> expect == program
+              state |> ProgramTool.getProgram(shaderIndex) |> OptionService.unsafeGet |> expect == program
             }
           );
           describe(

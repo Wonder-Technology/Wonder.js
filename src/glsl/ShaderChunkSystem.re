@@ -5,7 +5,7 @@ open MainStateDataType;
 let _getGLSLChunkMap = (state) => state.glslChunkRecord.chunkMap;
 
 let getChunk = (name: string, state) =>
-  state |> _getGLSLChunkMap |> WonderCommonlib.HashMapService.get(name) |> Js.Option.getExn;
+  state |> _getGLSLChunkMap |> WonderCommonlib.HashMapService.get(name) |> OptionService.unsafeGet;
 
 let _buildChunk =
     (

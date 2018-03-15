@@ -12,7 +12,7 @@ let createState = () => {
   deviceManagerRecord: RecordDeviceManagerService.create()
 };
 
-/* let getState = (stateData) => Js.Option.getExn(stateData.state); */
+/* let getState = (stateData) => OptionService.unsafeGet(stateData.state); */
 let getState = (stateData) =>
   switch stateData.state {
   | None => createState()

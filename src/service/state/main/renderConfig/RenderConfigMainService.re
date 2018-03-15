@@ -17,7 +17,7 @@ let _unsafeGetRenderConfig = (state: MainStateDataType.state) => {
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  state.renderConfigRecord |> Js.Option.getExn
+  state.renderConfigRecord |> OptionService.unsafeGet
 };
 
 let getShaders = (state: MainStateDataType.state) => _unsafeGetRenderConfig(state).shaders;

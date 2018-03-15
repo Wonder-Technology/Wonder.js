@@ -1,4 +1,3 @@
-/* TODO refactor all unsafe get */
 let unsafeGet = (optionData) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -6,7 +5,7 @@ let unsafeGet = (optionData) => {
         Contract.(
           Operators.(
             test(
-              Log.buildAssertMessage(~expect={j|record exist|j}, ~actual={j|not|j}),
+              Log.buildAssertMessage(~expect={j|data exist(get by getExn)|j}, ~actual={j|not|j}),
               () => optionData |> assertExist
             )
           )

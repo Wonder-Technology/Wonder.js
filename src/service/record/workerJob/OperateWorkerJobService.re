@@ -15,7 +15,7 @@ let _unsafeGetWorkerJobConfig = (record) => {
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  record |> Js.Option.getExn
+  record |> OptionService.unsafeGet
 };
 
 let _getExecutableJob = (jobs, jobItemName) =>
