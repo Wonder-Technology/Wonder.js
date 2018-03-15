@@ -22,8 +22,8 @@ let _ =
       testPromise(
         "send record",
         () =>
-          MainInitJobToolMainWorkerTool.prepare()
-          |> MainInitJobToolMainWorkerTool.test(
+          MainInitJobToolMainWorker.prepare()
+          |> MainInitJobToolMainWorker.test(
                sandbox,
                (postMessageToRenderWorker) =>
                  postMessageToRenderWorker
@@ -34,8 +34,8 @@ let _ =
       testPromise(
         "send after send job record",
         () =>
-          MainInitJobToolMainWorkerTool.prepare()
-          |> MainInitJobToolMainWorkerTool.test(
+          MainInitJobToolMainWorker.prepare()
+          |> MainInitJobToolMainWorker.test(
                sandbox,
                (postMessageToRenderWorker) =>
                  postMessageToRenderWorker

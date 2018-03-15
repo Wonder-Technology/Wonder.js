@@ -23,8 +23,8 @@ let _ =
       /* testPromise(
         "aaa",
         () =>{
-          /* MainInitJobToolMainWorkerTool.prepare()
-          |> MainInitJobToolMainWorkerTool.test(
+          /* MainInitJobToolMainWorker.prepare()
+          |> MainInitJobToolMainWorker.test(
                sandbox,
                (postMessageToRenderWorker) =>
                  postMessageToRenderWorker
