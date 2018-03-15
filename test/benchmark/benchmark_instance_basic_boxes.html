@@ -39,7 +39,7 @@
 
 
 
-        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, unsafeGetGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
 
 
         window.onload = function () {
@@ -80,8 +80,8 @@
 
 
 
-                var box1Transform = getGameObjectTransformComponent(box1, state);
-                var box2Transform = getGameObjectTransformComponent(box2, state);
+                var box1Transform = unsafeGetGameObjectTransformComponent(box1, state);
+                var box2Transform = unsafeGetGameObjectTransformComponent(box2, state);
 
 
 
@@ -93,8 +93,8 @@
                     let instance2 = objectInstanceArr2[i];
 
 
-                    var t1 = getGameObjectTransformComponent(instance1, state);
-                    var t2 = getGameObjectTransformComponent(instance2, state);
+                    var t1 = unsafeGetGameObjectTransformComponent(instance1, state);
+                    var t2 = unsafeGetGameObjectTransformComponent(instance2, state);
 
 
                     state = setTransformParent(t1, t2, state);
@@ -105,21 +105,21 @@
                 //                     state = setTransformParent(objectInstanceArr1[0], objectInstanceArr2[0], state);
 
 
-                // var t1 = getGameObjectTransformComponent(box1, state);
+                // var t1 = unsafeGetGameObjectTransformComponent(box1, state);
 
                 //                     state = setTransformLocalPosition(t1, [50,0,0], state);
 
 
-                // var t2 = getGameObjectTransformComponent(box2, state);
+                // var t2 = unsafeGetGameObjectTransformComponent(box2, state);
 
                 //                     state = setTransformLocalPosition(t2, [100,0,0], state);
 
 
-                // // var o1 = getGameObjectTransformComponent(objectInstanceArr1[0], state);
+                // // var o1 = unsafeGetGameObjectTransformComponent(objectInstanceArr1[0], state);
 
                 // //                     state = setTransformLocalPosition(o1, [0,50,0], state);
 
-                // var o2 = getGameObjectTransformComponent(objectInstanceArr2[0], state);
+                // var o2 = unsafeGetGameObjectTransformComponent(objectInstanceArr2[0], state);
 
                 //                     state = setTransformLocalPosition(o2, [0,100,0], state);
 
@@ -153,7 +153,7 @@
                     for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
                         let objectInstance = objectInstanceArray[i];
 
-                        var transform = getGameObjectTransformComponent(objectInstance, state);
+                        var transform = unsafeGetGameObjectTransformComponent(objectInstance, state);
 
 
                         // var pos = getTransformPosition(transform, state);
@@ -217,7 +217,7 @@
                     for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
                         let objectInstance = objectInstanceArray[i];
 
-                        var transform = getGameObjectTransformComponent(objectInstance, state);
+                        var transform = unsafeGetGameObjectTransformComponent(objectInstance, state);
 
 
                         var pos = getTransformPosition(transform, state);
@@ -443,7 +443,7 @@
 
                 state = addGameObjectCameraControllerComponent(obj, cameraController, state);
 
-                var transform = getGameObjectTransformComponent(obj, state);
+                var transform = unsafeGetGameObjectTransformComponent(obj, state);
 
                 state = setTransformLocalPosition(transform, [0, 0, 1500], state);
 

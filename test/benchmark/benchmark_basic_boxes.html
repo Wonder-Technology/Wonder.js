@@ -56,7 +56,7 @@
 
 
 
-                        var transform = wd.getGameObjectTransformComponent(camera, state);
+                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
                         var state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 
@@ -157,7 +157,7 @@
         //             // state = initGameObject(box, state);
 
 
-        //             var transform = wd.getGameObjectTransformComponent(box, state);
+        //             var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
 
         //             // var pos = wd.getTransformPosition(transform, state);
@@ -198,7 +198,7 @@
 
         //     let _setData = (boxes, state) => {
         //         boxes.forEach(function (box) {
-        //             var transform = wd.getGameObjectTransformComponent(box, state);
+        //             var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
 
         //             var pos = wd.getTransformPosition(transform, state);
@@ -339,7 +339,7 @@
 
         //         state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
 
-        //         var transform = wd.getGameObjectTransformComponent(obj, state);
+        //         var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
         //         state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 

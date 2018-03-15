@@ -44,7 +44,7 @@
 
 
 
-        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, unsafeGetGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/ecs/admin/api/GameObject.js";
 
 
         window.onload = function () {
@@ -167,7 +167,7 @@
                     // state = initGameObject(box, state);
 
 
-                    var transform = getGameObjectTransformComponent(box, state);
+                    var transform = unsafeGetGameObjectTransformComponent(box, state);
 
 
                     // var pos = getTransformPosition(transform, state);
@@ -415,7 +415,7 @@
 
                 state = addGameObjectCameraControllerComponent(obj, cameraController, state);
 
-                var transform = getGameObjectTransformComponent(obj, state);
+                var transform = unsafeGetGameObjectTransformComponent(obj, state);
 
                 state = setTransformLocalPosition(transform, [0, 0, 1500], state);
 

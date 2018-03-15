@@ -10,10 +10,31 @@ open ObjectInstanceArraySourceInstanceService;
 
 open StaticSourceInstanceService;
 
+open GameObjectSourceInstanceService;
+
 let createSourceInstance = (state) => {
   let (sourceInstanceRecord, index) =
     CreateSourceInstanceService.create(state.sourceInstanceRecord);
   ({...state, sourceInstanceRecord}, index)
+};
+
+let unsafeGetSourceInstanceGameObject = (sourceInstance, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              sourceInstance,
+              isAlive,
+              state.sourceInstanceRecord
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  unsafeGetGameObject(sourceInstance, state.sourceInstanceRecord)
 };
 
 let createObjectInstanceGameObject = (sourceInstance, state: MainStateDataType.state) => {

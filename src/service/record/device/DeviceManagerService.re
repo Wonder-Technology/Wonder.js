@@ -126,5 +126,5 @@ let setViewportOfGl = (gl, (x, y, width, height), {viewport} as record) =>
       when oldX === x && oldY === y && oldWidth === width && oldHeight === height => record
   | _ =>
     Gl.viewport(x, y, width, height, gl);
-    record
+    {...record, viewport: Some((x, y, width, height))}
   };

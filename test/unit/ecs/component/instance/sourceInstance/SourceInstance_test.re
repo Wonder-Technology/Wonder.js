@@ -30,6 +30,31 @@ let _ =
           )
       );
       describe(
+        "getGameObject",
+        () =>
+          test(
+            "get component's gameObject",
+            () => {
+              let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
+                ObjectInstanceTool.createObjectInstanceGameObject(state^);
+              SourceInstanceTool.getGameObject(sourceInstance, state) |> expect == Some(gameObject)
+            }
+          )
+      );
+      describe(
+        "unsafeGetGameObject",
+        () =>
+          test(
+            "unsafe get component's gameObject",
+            () => {
+              let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
+                ObjectInstanceTool.createObjectInstanceGameObject(state^);
+              SourceInstanceAPI.unsafeGetSourceInstanceGameObject(sourceInstance, state)
+              |> expect == gameObject
+            }
+          )
+      );
+      describe(
         "dispose component",
         () => {
           describe(
@@ -58,12 +83,12 @@ let _ =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
                     objectInstanceArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
-                    matrixFloat32ArrayMap
-                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixInstanceBufferCapacityMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     isTransformStaticMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
-                    isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    isSendTransformMatrixDataMap
+                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     gameObjectMap |> WonderCommonlib.SparseMapService.has(sourceInstance)
                   )
                   |> expect == (false, false, false, false, false, false)

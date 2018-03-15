@@ -80,7 +80,7 @@
                 // var [state, box2] = createBasicBox(state);
 
 
-                // var transform = wd.getGameObjectTransformComponent(box2, state);
+                // var transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
 
                 // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
 
@@ -109,7 +109,7 @@
                 var [state, directionLightObj] = createDirectionLight(state);
 
 
-                var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
                 state = wd.setTransformLocalPosition(transform, [-200, 0, 200], state);
 
@@ -120,7 +120,7 @@
                 var [state, lightObj] = createPointLight(state);
 
 
-                var transform = wd.getGameObjectTransformComponent(lightObj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(lightObj, state);
 
                 state = wd.setTransformLocalPosition(transform, [300, 0, 500], state);
 
@@ -160,7 +160,7 @@
                         for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
                             let objectInstance = objectInstanceArray[i];
 
-                            var transform = wd.getGameObjectTransformComponent(objectInstance, state);
+                            var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
 
 
                             var pos = wd.getTransformPosition(transform, state);
@@ -316,8 +316,8 @@
 
 
 
-                var box1Transform = wd.getGameObjectTransformComponent(box1, state);
-                var box2Transform = wd.getGameObjectTransformComponent(box2, state);
+                var box1Transform = wd.unsafeGetGameObjectTransformComponent(box1, state);
+                var box2Transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
 
 
 
@@ -329,8 +329,8 @@
                     let instance2 = objectInstanceArr2[i];
 
 
-                    var t1 = wd.getGameObjectTransformComponent(instance1, state);
-                    var t2 = wd.getGameObjectTransformComponent(instance2, state);
+                    var t1 = wd.unsafeGetGameObjectTransformComponent(instance1, state);
+                    var t2 = wd.unsafeGetGameObjectTransformComponent(instance2, state);
 
 
                     state = wd.setTransformParent(t1, t2, state);
@@ -341,21 +341,21 @@
                 //                     state = setTransformParent(objectInstanceArr1[0], objectInstanceArr2[0], state);
 
 
-                // var t1 = getGameObjectTransformComponent(box1, state);
+                // var t1 = unsafeGetGameObjectTransformComponent(box1, state);
 
                 //                     state = setTransformLocalPosition(t1, [50,0,0], state);
 
 
-                // var t2 = getGameObjectTransformComponent(box2, state);
+                // var t2 = unsafeGetGameObjectTransformComponent(box2, state);
 
                 //                     state = setTransformLocalPosition(t2, [100,0,0], state);
 
 
-                // // var o1 = getGameObjectTransformComponent(objectInstanceArr1[0], state);
+                // // var o1 = unsafeGetGameObjectTransformComponent(objectInstanceArr1[0], state);
 
                 // //                     state = setTransformLocalPosition(o1, [0,50,0], state);
 
-                // var o2 = getGameObjectTransformComponent(objectInstanceArr2[0], state);
+                // var o2 = unsafeGetGameObjectTransformComponent(objectInstanceArr2[0], state);
 
                 //                     state = setTransformLocalPosition(o2, [0,100,0], state);
 
@@ -511,7 +511,7 @@
                     // state = initGameObject(box, state);
 
 
-                    var transform = wd.getGameObjectTransformComponent(box, state);
+                    var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
 
 
                     // var pos = getTransformPosition(transform, state);
@@ -585,7 +585,7 @@
 
 
 
-                var transform = wd.getGameObjectTransformComponent(obj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
                 state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
@@ -675,7 +675,7 @@
 
                 state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
 
-                var transform = wd.getGameObjectTransformComponent(obj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
                 state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
                 // state = wd.setTransformLocalPosition(transform, [0, 0, 15], state);

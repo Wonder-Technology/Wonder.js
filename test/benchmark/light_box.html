@@ -90,7 +90,7 @@
                 // var [state, box2] = createBasicBox(state);
 
 
-                // var transform = wd.getGameObjectTransformComponent(box2, state);
+                // var transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
 
                 // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
 
@@ -105,7 +105,7 @@
                 var [state, lightObj] = createPointLight(state);
 
 
-                var transform = wd.getGameObjectTransformComponent(lightObj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(lightObj, state);
 
                 state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
 
@@ -114,7 +114,7 @@
                 // var [state, directionLightObj] = createDirectionLight(state);
 
 
-                // var transform = wd.getGameObjectTransformComponent(directionLightObj, state);
+                // var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
                 // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
@@ -303,7 +303,7 @@
 
                 state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
 
-                var transform = wd.getGameObjectTransformComponent(obj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
                 // state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
                 state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);

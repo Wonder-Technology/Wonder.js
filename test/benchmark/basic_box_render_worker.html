@@ -9,17 +9,17 @@
 <body>
     <script src="../../dist/wd.js"></script>
 
-      <script src="../e2e/js/AssetTool.js"></script>
-      <script src="../e2e/js/ReplaceFetchTool.js"></script>
-      <script src="../e2e/js/ScheduleTool.js"></script>
-      <script src="../e2e/js/BasicBoxesTool.js"></script>
-      <script src="../e2e/js/LightBoxesTool.js"></script>
-      <script src="../e2e/js/LightTool.js"></script>
-      <script src="../e2e/js/CameraTool.js"></script>
-      <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
-      <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
-      <script src="../e2e/js/RedoUndoTool.js"></script>
-      <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
 
     <script>
         window.onload = function () {
@@ -52,7 +52,7 @@
 
 
 
-            AssetTool.load([ "./data/setting.json", "./data/" ], null, function () {
+            AssetTool.load(["./data/setting.json", "./data/"], null, function () {
                 return initSample(wd.getState());
             });
 
@@ -63,14 +63,66 @@
                 var box = data[1];
 
 
+
+
+
+                var data = BasicBoxesTool.createBox(state);
+
+                var state = data[0];
+                var box2 = data[1];
+
+
+
+
                 var data = BasicBoxesTool.createCamera(state);
                 var state = data[0];
                 var camera = data[1];
 
 
-                var transform = wd.getGameObjectTransformComponent(camera, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
                 var state = wd.setTransformLocalPosition(transform, [0, 10, 30], state);
+
+
+
+
+                setTimeout(() => {
+                    var state = wd.getState();
+
+                    var state = wd.disposeGameObject(box, state);
+
+                    wd.setState(state);
+                }, 500)
+
+
+
+                setTimeout(() => {
+                    var state = wd.getState();
+
+                    var state = wd.disposeGameObject(box2, state);
+
+                    wd.setState(state);
+                }, 1000)
+
+
+
+
+
+                setTimeout(() => {
+                    var state = wd.getState();
+
+
+                    var data = BasicBoxesTool.createBox(state);
+
+                    var state = data[0];
+                    var box3 = data[1];
+
+                    var state = wd.initGameObject(box3, state);
+
+                    wd.setState(state);
+                }, 1500)
+
+
 
                 return wd.startDirector(state);
             }
@@ -141,7 +193,7 @@
 
             //     state = wd.addGameObjectPerspectiveCameraProjectionComponent(obj, cameraProjection, state);
 
-            //     var transform = wd.getGameObjectTransformComponent(obj, state);
+            //     var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
             //     state = wd.setTransformLocalPosition(transform, [0, 0, 100], state);
 

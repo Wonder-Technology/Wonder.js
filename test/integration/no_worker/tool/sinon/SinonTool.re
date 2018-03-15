@@ -1,4 +1,3 @@
-/* TODO move to wonder-bs-sinon */
 open Sinon;
 
 let _defer = [%bs.raw
@@ -12,6 +11,9 @@ let _defer = [%bs.raw
    }
     |}
 ];
+
+/* TODO move to wonder-bs-sinon */
+let calledWith = (stub, arg) => stub##calledWith(arg) |> Js.to_bool;
 
 let deferReturns = (timeout, returnedData, stub) => stub |> returns(_defer(timeout, returnedData));
 

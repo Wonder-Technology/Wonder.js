@@ -79,8 +79,8 @@ let _ =
             let state = RenderJobsTool.passGl(sandbox, state);
             (
               state,
-              (gameObject2, transform2, perspectiveCameraProjection2),
-              (gameObject3, transform3, perspectiveCameraProjection3)
+              (gameObject2, transform2, (basicCameraView2, perspectiveCameraProjection2)),
+              (gameObject3, transform3, (basicCameraView3, perspectiveCameraProjection3))
             )
           };
           describe(
@@ -91,8 +91,8 @@ let _ =
                 () => {
                   let (
                     state,
-                    (gameObject2, transform2, perspectiveCameraProjection2),
-                    (gameObject3, transform3, perspectiveCameraProjection3)
+                    (gameObject2, transform2, (basicCameraView2, perspectiveCameraProjection2)),
+                    (gameObject3, transform3, (basicCameraView3, perspectiveCameraProjection3))
                   ) =
                     _prepare(state);
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject2);
@@ -102,7 +102,10 @@ let _ =
                   |>
                   expect == Some({
                               vMatrix:
-                                BasicCameraViewTool.getWorldToCameraMatrix(transform2, state),
+                                BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix(
+                                  basicCameraView2,
+                                  state
+                                ),
                               pMatrix:
                                 PerspectiveCameraProjectionTool.unsafeGetPMatrix(
                                   perspectiveCameraProjection2,
@@ -117,8 +120,8 @@ let _ =
                 () => {
                   let (
                     state,
-                    (gameObject2, transform2, perspectiveCameraProjection2),
-                    (gameObject3, transform3, perspectiveCameraProjection3)
+                    (gameObject2, transform2, (basicCameraView2, perspectiveCameraProjection2)),
+                    (gameObject3, transform3, (basicCameraView3, perspectiveCameraProjection3))
                   ) =
                     _prepare(state);
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject3);
@@ -128,7 +131,10 @@ let _ =
                   |>
                   expect == Some({
                               vMatrix:
-                                BasicCameraViewTool.getWorldToCameraMatrix(transform3, state),
+                                BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix(
+                                  basicCameraView3,
+                                  state
+                                ),
                               pMatrix:
                                 PerspectiveCameraProjectionTool.unsafeGetPMatrix(
                                   perspectiveCameraProjection3,

@@ -1,4 +1,3 @@
-/* TODO duplicate */
 open Wonder_jest;
 
 let _ =
