@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.17",
+  "version": "1.0.0-alpha.17.1",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -48,7 +48,6 @@
     "wonder-bs-sinon": "^0.1.6",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "^0.1.8",
-    "wonder-most-animation-frame": "0.0.3",
     "wonder-render-test": "^0.1.15",
     "puppeteer": "^0.13.0"
   },
@@ -56,6 +55,7 @@
     "bs-fetch": "^0.2.1",
     "bs-json": "^0.2.3",
     "bs-most": "^0.1.1",
+    "wonder-most-animation-frame": "0.0.3",
     "wonder-commonlib": "^0.2.20",
     "wonder-log": "^0.1.1"
   },
