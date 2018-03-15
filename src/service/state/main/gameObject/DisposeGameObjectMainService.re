@@ -34,3 +34,12 @@ let dispose = (uid: int, state) => {
   |> DisposeGameObjectComponentMainService.dispose(uid, batchDispose)
   |> _handleByDisposeCount(record)
 };
+
+let disposeKeepOrder = (uid: int, state) => {
+  let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
+  record.disposeCount = succ(disposeCount);
+  disposedUidMap |> WonderCommonlib.SparseMapService.set(uid, true) |> ignore;
+  state
+  |> DisposeGameObjectComponentMainService.disposeKeepOrder(uid, batchDispose)
+  |> _handleByDisposeCount(record)
+};

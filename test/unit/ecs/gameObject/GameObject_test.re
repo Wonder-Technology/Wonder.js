@@ -44,7 +44,8 @@ let _ =
                 "state->uid + 1",
                 () => {
                   let (state, _) = createGameObject(state^);
-                  GameObjectTool.getGameObjectRecord(state) |> ((record) => expect(record.uid) == 1)
+                  GameObjectTool.getGameObjectRecord(state)
+                  |> ((record) => expect(record.uid) == 1)
                 }
               )
           )
@@ -188,7 +189,8 @@ let _ =
                       let (state, gameObject) = createGameObject(state^);
                       let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
                       let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-                      unsafeGetGameObjectBoxGeometryComponent(gameObject, state) |> GeometryTool.isGeometry
+                      unsafeGetGameObjectBoxGeometryComponent(gameObject, state)
+                      |> GeometryTool.isGeometry
                     }
                   )
               );
@@ -253,7 +255,8 @@ let _ =
                       let (state, gameObject) = createGameObject(state^);
                       let (state, light) = AmbientLightAPI.createAmbientLight(state);
                       let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
-                      unsafeGetGameObjectAmbientLightComponent(gameObject, state) |> expect == light
+                      unsafeGetGameObjectAmbientLightComponent(gameObject, state)
+                      |> expect == light
                     }
                   )
               );
@@ -826,8 +829,7 @@ let _ =
                             "new basicMaterialMap should only has alive record",
                             () => {
                               open GameObjectType;
-                              let state =
-                                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+                              let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 BasicMaterialTool.createGameObject(state);
                               let (state, gameObject2, material2) =
@@ -838,7 +840,8 @@ let _ =
                               let state = state |> disposeGameObject(gameObject2);
                               let {basicMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
-                                basicMaterialMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                                basicMaterialMap
+                                |> WonderCommonlib.SparseMapService.has(gameObject1),
                                 basicMaterialMap
                                 |> WonderCommonlib.SparseMapService.has(gameObject2),
                                 basicMaterialMap
@@ -851,8 +854,7 @@ let _ =
                             "new lightMaterialMap should only has alive record",
                             () => {
                               open GameObjectType;
-                              let state =
-                                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+                              let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 LightMaterialTool.createGameObject(state);
                               let (state, gameObject2, material2) =
@@ -863,7 +865,8 @@ let _ =
                               let state = state |> disposeGameObject(gameObject2);
                               let {lightMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
-                                lightMaterialMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                                lightMaterialMap
+                                |> WonderCommonlib.SparseMapService.has(gameObject1),
                                 lightMaterialMap
                                 |> WonderCommonlib.SparseMapService.has(gameObject2),
                                 lightMaterialMap
@@ -885,7 +888,8 @@ let _ =
                             let (state, gameObject3, light3) = createGameObjectFunc(state);
                             let state = state |> disposeGameObject(gameObject1);
                             let state = state |> disposeGameObject(gameObject2);
-                            let lightMap = getDataMapFunc(GameObjectTool.getGameObjectRecord(state));
+                            let lightMap =
+                              getDataMapFunc(GameObjectTool.getGameObjectRecord(state));
                             (
                               lightMap |> WonderCommonlib.SparseMapService.has(gameObject1),
                               lightMap |> WonderCommonlib.SparseMapService.has(gameObject2),
@@ -1056,6 +1060,26 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "disposeKeepOrder",
+        () =>
+          test(
+            "not change its current parent's children order",
+            () => {
+              let (state, parent, tra) = GameObjectTool.createGameObject(state^);
+              let (state, child1, tra1) = GameObjectTool.createGameObject(state);
+              let (state, child2, tra2) = GameObjectTool.createGameObject(state);
+              let (state, child3, tra3) = GameObjectTool.createGameObject(state);
+              let state =
+                state
+                |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra1)
+                |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra2)
+                |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra3);
+              let state = state |> disposeGameObjectKeepOrder(child1);
+              TransformAPI.unsafeGetTransformChildren(tra, state) |> expect == [|tra2, tra3|]
+            }
+          )
       );
       describe(
         "batchDispose",
@@ -1469,6 +1493,12 @@ let _ =
                 expect(() => func(Obj.magic(gameObject), Obj.magic(1), state))
                 |> toThrowMessage(_getErrorMsg())
               };
+              let _testFourParmFunc = (func) => {
+                let (state, gameObject) = createGameObject(state^);
+                let state = state |> disposeGameObject(gameObject);
+                expect(() => func(Obj.magic(gameObject), Obj.magic(1), Obj.magic(2), state))
+                |> toThrowMessage(_getErrorMsg())
+              };
               test(
                 "unsafeGetGameObjectTransformComponent should error",
                 () => _testTwoParamFunc(unsafeGetGameObjectTransformComponent)
@@ -1518,7 +1548,7 @@ let _ =
               );
               test(
                 "disposeGameObjectTransformComponent should error",
-                () => _testThreeParmFunc(disposeGameObjectTransformComponent)
+                () => _testFourParmFunc(disposeGameObjectTransformComponent)
               );
               test(
                 "addGameObjectBasicCameraViewComponent should error",

@@ -93,7 +93,8 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  TransformTool.getTransformRecord(state) |> ((record) => expect(record.index) == 1)
+                  TransformTool.getTransformRecord(state)
+                  |> ((record) => expect(record.index) == 1)
                 }
               )
           )
@@ -277,7 +278,9 @@ let _ =
                   let state =
                     setTransformLocalPosition(parent2, pos2, state)
                     |> setTransformParent(Js.Nullable.return(parent2), child);
-                  state |> unsafeGetTransformParent(child) |> expect == Js.Undefined.return(parent2)
+                  state
+                  |> unsafeGetTransformParent(child)
+                  |> expect == Js.Undefined.return(parent2)
                 }
               );
               test(
@@ -867,7 +870,11 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject1, transform1);
+                    |> GameObjectAPI.disposeGameObjectTransformComponent(
+                         gameObject1,
+                         transform1,
+                         false
+                       );
                   let {
                     localToWorldMatrixMap,
                     localPositionMap,
@@ -964,14 +971,19 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject1, transform1);
+                    |> GameObjectAPI.disposeGameObjectTransformComponent(
+                         gameObject1,
+                         transform1,
+                         false
+                       );
                   expect(
                     () => {
                       let state =
                         state
                         |> GameObjectAPI.disposeGameObjectTransformComponent(
                              gameObject1,
-                             transform1
+                             transform1,
+                             false
                            );
                       ()
                     }

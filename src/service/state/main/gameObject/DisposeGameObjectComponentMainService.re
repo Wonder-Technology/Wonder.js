@@ -14,6 +14,13 @@ let _dispose = (uid, (getComponentFunc, disposeComponentFunc), {gameObjectRecord
   | None => state
   };
 
+let _disposeWithData =
+    (uid, data, (getComponentFunc, disposeComponentFunc), {gameObjectRecord} as state) =>
+  switch ([@bs] getComponentFunc(uid, gameObjectRecord)) {
+  | Some(component) => [@bs] disposeComponentFunc(uid, component, data, state)
+  | None => state
+  };
+
 let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   switch (
     [@bs] GetComponentGameObjectService.getSourceInstanceComponent(uid, state.gameObjectRecord)
@@ -24,10 +31,11 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   | None => state
   };
 
-let dispose = (uid, batchDisposeFunc, state) =>
+let _dispose = (uid, batchDisposeFunc, isKeepOrder, state) =>
   state
-  |> _dispose(
+  |> _disposeWithData(
        uid,
+       isKeepOrder,
        (
          GetComponentGameObjectService.getTransformComponent,
          DisposeComponentGameObjectMainService.disposeTransformComponent
@@ -96,13 +104,6 @@ let dispose = (uid, batchDisposeFunc, state) =>
          DisposeComponentGameObjectMainService.disposePointLightComponent
        )
      )
-  /* |> _dispose(
-       uid,
-       (
-         GetComponentGameObjectService.getSourceInstanceComponent,
-         DisposeComponentGameObjectMainService.disposeSourceInstanceComponent
-       )
-     ) */
   |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
   |> _dispose(
        uid,
@@ -111,6 +112,11 @@ let dispose = (uid, batchDisposeFunc, state) =>
          DisposeComponentGameObjectMainService.disposeObjectInstanceComponent
        )
      );
+
+let dispose = (uid, batchDisposeFunc, state) => _dispose(uid, batchDisposeFunc, false, state);
+
+let disposeKeepOrder = (uid, batchDisposeFunc, state) =>
+  _dispose(uid, batchDisposeFunc, true, state);
 
 let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, state) => {
   let state =
@@ -126,7 +132,9 @@ let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, stat
        );
   let state =
     state
-    |> BatchGetComponentGameObjectMainService.batchGetPerspectiveCameraProjectionComponent(uidArray)
+    |> BatchGetComponentGameObjectMainService.batchGetPerspectiveCameraProjectionComponent(
+         uidArray
+       )
     |> DisposeComponentGameObjectMainService.batchDisposePerspectiveCameraProjectionComponent(
          disposedUidMap,
          state
@@ -138,23 +146,38 @@ let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, stat
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBoxGeometryComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
+         disposedUidMap,
+         state
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+         disposedUidMap,
+         state
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetLightMaterialComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+         disposedUidMap,
+         state
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetAmbientLightComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(
+         disposedUidMap,
+         state
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetDirectionLightComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(
+         disposedUidMap,
+         state
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPointLightComponent(uidArray)
@@ -162,10 +185,17 @@ let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, stat
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetSourceInstanceComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(disposedUidMap, state, batchDisposeFunc);
+    |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
+         disposedUidMap,
+         state,
+         batchDisposeFunc
+       );
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetObjectInstanceComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(disposedUidMap, state);
+    |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(
+         disposedUidMap,
+         state
+       );
   state
 };

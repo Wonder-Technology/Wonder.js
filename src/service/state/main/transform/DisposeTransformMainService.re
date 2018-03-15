@@ -7,7 +7,7 @@ open DisposeComponentService;
 let isAlive = (transform, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(transform, disposedIndexArray);
 
-let _disposeFromParentAndChildMap = (transform, record) => {
+let _disposeFromParentAndChildMap = (transform, isKeepOrder, record) => {
   record
   |> HierachyTransformService.unsafeGetChildren(transform)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -17,7 +17,7 @@ let _disposeFromParentAndChildMap = (transform, record) => {
      );
   switch (HierachyTransformService.getParent(transform, record)) {
   | None => record
-  | Some(parent) => record |> HierachyTransformService.removeFromChildMap(parent, transform, false)
+  | Some(parent) => record |> HierachyTransformService.removeFromChildMap(parent, transform, isKeepOrder)
   }
 };
 
@@ -25,10 +25,13 @@ let _disposeData =
     (
       transform: transform,
       maxTypeArrayPoolSize,
-      typeArrayPoolRecord,
-      {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as transformRecord
+      isKeepOrder,
+      (
+        typeArrayPoolRecord,
+        {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as transformRecord
+      )
     ) => {
-  let transformRecord = _disposeFromParentAndChildMap(transform, transformRecord);
+  let transformRecord = _disposeFromParentAndChildMap(transform, isKeepOrder, transformRecord);
   let typeArrayPoolRecord =
     TypeArrayPoolTransformService.addTypeArrayToPool(
       transform,
@@ -51,7 +54,12 @@ let _disposeData =
 };
 
 let handleDisposeComponent =
-    (transform: transform, maxTypeArrayPoolSize, {typeArrayPoolRecord, transformRecord} as state) => {
+    (
+      transform: transform,
+      maxTypeArrayPoolSize,
+      isKeepOrder,
+      {typeArrayPoolRecord, transformRecord} as state
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -64,7 +72,12 @@ let handleDisposeComponent =
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   let (typeArrayPoolRecord, transformRecord) =
-    _disposeData(transform, maxTypeArrayPoolSize, typeArrayPoolRecord, transformRecord);
+    _disposeData(
+      transform,
+      maxTypeArrayPoolSize,
+      isKeepOrder,
+      (typeArrayPoolRecord, transformRecord)
+    );
   let {disposedIndexArray} = transformRecord;
   {
     ...state,
@@ -111,13 +124,8 @@ let handleBatchDisposeComponent =
         |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
-               ((typeArrayPoolRecord, transformRecord), transform) =>
-                 _disposeData(
-                   transform,
-                   maxTypeArrayPoolSize,
-                   typeArrayPoolRecord,
-                   transformRecord
-                 )
+               (recordTuple, transform) =>
+                 _disposeData(transform, maxTypeArrayPoolSize, false, recordTuple)
              ),
              (typeArrayPoolRecord, transformRecord)
            );

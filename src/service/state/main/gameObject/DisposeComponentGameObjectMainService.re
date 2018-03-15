@@ -46,10 +46,11 @@ let disposeMeshRendererComponent =
 let disposeTransformComponent =
   [@bs]
   (
-    (uid: int, component: component, {settingRecord} as state) =>
+    (uid: int, component: component, isKeepOrder, {settingRecord} as state) =>
       DisposeTransformMainService.handleDisposeComponent(
         component,
         MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
+        isKeepOrder,
         state
       )
   );
@@ -270,7 +271,12 @@ let batchDisposePointLightComponent =
 };
 
 let batchDisposeSourceInstanceComponent =
-    (uidMap, state: MainStateDataType.state, disposeGameObjectFunc, componentArray: array(component)) =>
+    (
+      uidMap,
+      state: MainStateDataType.state,
+      disposeGameObjectFunc,
+      componentArray: array(component)
+    ) =>
   [@bs]
   DisposeSourceInstanceMainService.handleBatchDisposeComponent(
     componentArray,
@@ -299,5 +305,6 @@ let batchDisposeObjectInstanceComponent =
   switch (componentArray |> Js.Array.length) {
   | 0 => state
   | _ =>
-    [@bs] DisposeObjectInstanceMainService.handleBatchDisposeComponent(componentArray, uidMap, state)
+    [@bs]
+    DisposeObjectInstanceMainService.handleBatchDisposeComponent(componentArray, uidMap, state)
   };

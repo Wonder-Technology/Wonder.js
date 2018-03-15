@@ -59,7 +59,8 @@ let unsafeGetGameObjectBasicCameraViewComponent =
   unsafeGetBasicCameraViewComponent(gameObject, state.gameObjectRecord)
 };
 
-let hasGameObjectBasicCameraViewComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let hasGameObjectBasicCameraViewComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -113,15 +114,16 @@ let addGameObjectTransformComponent =
 };
 
 let disposeGameObjectTransformComponent =
-    (gameObject: gameObject, component: component, state: MainStateDataType.state) => {
+    (gameObject: gameObject, component: component, isKeepOrder, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  [@bs] disposeTransformComponent(gameObject, component, state)
+  [@bs] disposeTransformComponent(gameObject, component, isKeepOrder, state)
 };
 
-let unsafeGetGameObjectTransformComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let unsafeGetGameObjectTransformComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -155,7 +157,8 @@ let disposeGameObjectBoxGeometryComponent =
   [@bs] disposeBoxGeometryComponent(gameObject, component, state)
 };
 
-let unsafeGetGameObjectBoxGeometryComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let unsafeGetGameObjectBoxGeometryComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -259,7 +262,8 @@ let disposeGameObjectMeshRendererComponent =
   [@bs] disposeMeshRendererComponent(gameObject, component, state)
 };
 
-let unsafeGetGameObjectMeshRendererComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let unsafeGetGameObjectMeshRendererComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -293,7 +297,8 @@ let disposeGameObjectAmbientLightComponent =
   [@bs] disposeAmbientLightComponent(gameObject, component, state)
 };
 
-let unsafeGetGameObjectAmbientLightComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let unsafeGetGameObjectAmbientLightComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -362,7 +367,8 @@ let disposeGameObjectPointLightComponent =
   [@bs] disposePointLightComponent(gameObject, component, state)
 };
 
-let unsafeGetGameObjectPointLightComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+let unsafeGetGameObjectPointLightComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
@@ -456,6 +462,14 @@ let disposeGameObject = (gameObject: gameObject, state: MainStateDataType.state)
   dispose(gameObject, state)
 };
 
+let disposeGameObjectKeepOrder = (gameObject: gameObject, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  disposeKeepOrder(gameObject, state)
+};
+
 let initGameObject = (gameObject: gameObject, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
@@ -483,5 +497,10 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: MainSta
 };
 
 let cloneGameObject =
-    (gameObject: gameObject, count: int, isShareMaterial: Js.boolean, state: MainStateDataType.state) =>
+    (
+      gameObject: gameObject,
+      count: int,
+      isShareMaterial: Js.boolean,
+      state: MainStateDataType.state
+    ) =>
   clone(gameObject, count, Js.to_bool(isShareMaterial), state);

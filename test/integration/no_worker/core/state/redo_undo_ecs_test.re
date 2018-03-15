@@ -34,7 +34,7 @@ let _ =
         let state = TransformAPI.setTransformLocalPosition(transform2, pos2, state);
         let state = TransformAPI.setTransformLocalPosition(transform3, pos3, state);
         let state =
-          state |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject3, transform3);
+          state |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject3, transform3, false);
         (state, gameObject1, gameObject2, gameObject3, transform1, transform2, transform3)
       };
       let _prepareBasicCameraViewData = (state) => {
