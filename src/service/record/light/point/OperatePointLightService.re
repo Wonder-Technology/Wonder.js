@@ -24,11 +24,11 @@ let setConstant = (mappedIndex, constant, {constants} as record) => {
 };
 
 let getLinear = (mappedIndex, {linears}) =>
-  RecordPointLightService.getIntensity(mappedIndex, linears);
+  RecordPointLightService.getLinear(mappedIndex, linears);
 
 let setLinear = (mappedIndex, linear, {linears} as record) => {
   ...record,
-  linears: RecordPointLightService.setIntensity(mappedIndex, linear, linears)
+  linears: RecordPointLightService.setLinear(mappedIndex, linear, linears)
 };
 
 let getQuadratic = (mappedIndex, {quadratics}) =>

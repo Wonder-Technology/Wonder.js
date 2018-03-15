@@ -18,16 +18,17 @@ let getRangeDataSize = () => 1;
 
 let _getColorIndex = (index) => index * getColorDataSize();
 
-let _getIntensityIndex = (index) => index * getIntensityDataSize();
+/*
 
-let _getConstantIndex = (index) => index * getConstantDataSize();
+ let _getIntensityIndex = (index) => index * getIntensityDataSize();
 
-let _getLinearIndex = (index) => index * getLinearDataSize();
+ let _getConstantIndex = (index) => index * getConstantDataSize();
 
-let _getQuadraticIndex = (index) => index * getQuadraticDataSize();
+ let _getLinearIndex = (index) => index * getLinearDataSize();
 
-let _getRangeIndex = (index) => index * getRangeDataSize();
+ let _getQuadraticIndex = (index) => index * getQuadraticDataSize();
 
+ let _getRangeIndex = (index) => index * getRangeDataSize(); */
 let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
