@@ -260,6 +260,8 @@ let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceOb
 
 let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
 
+let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanceGameObject;
+
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
 let setState = StateAPI.setState;
@@ -483,6 +485,8 @@ let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstance
 let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceObjectInstanceArray;
 
 let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
+
+let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanceGameObject;
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 

@@ -3,20 +3,14 @@ open MainStateDataType;
 let _fillMatrixTypeArr =
   [@bs]
   (
-    (uid, matricesArrayForInstance, (state, offset)) => {
+    (uid, matricesArrayForInstance, (state, offset) as tuple) => {
       let transform =
         GetComponentGameObjectService.unsafeGetTransformComponent(uid, state.gameObjectRecord);
-      TypeArrayService.fillFloat32ArrayWithFloat32Array(
-        (matricesArrayForInstance, offset),
-        (
-          UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
-            transform,
-            state.globalTempRecord,
-            state.transformRecord
-          ),
-          0
-        ),
-        16
+      RenderHardwareInstanceJobUtils.fillMatrixTypeArr(
+        uid,
+        transform,
+        matricesArrayForInstance,
+        tuple
       )
       |> ignore;
       (state, offset + 16)

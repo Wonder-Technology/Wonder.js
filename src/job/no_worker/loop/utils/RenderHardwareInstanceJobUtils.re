@@ -246,3 +246,17 @@ let render =
   /* TODO unbind? */
   state
 };
+
+let fillMatrixTypeArr = (uid, transform, matricesArrayForInstance, (state, offset)) =>
+  TypeArrayService.fillFloat32ArrayWithFloat32Array(
+    (matricesArrayForInstance, offset),
+    (
+      UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
+        transform,
+        state.globalTempRecord,
+        state.transformRecord
+      ),
+      0
+    ),
+    16
+  );
