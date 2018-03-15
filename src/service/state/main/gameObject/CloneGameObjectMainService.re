@@ -37,11 +37,11 @@ let rec _clone =
           isShareMaterial,
           state: MainStateDataType.state
         ) => {
-  /* TODO add gameObjectRecord to state */
   let (gameObjectRecord, clonedGameObjectArr) =
     _createGameObjectArr(countRangeArr, state.gameObjectRecord);
   let totalClonedGameObjectArr =
     totalClonedGameObjectArr |> ArrayService.push(clonedGameObjectArr);
+  let state = {...state, gameObjectRecord};
   let (state, clonedTransformArr) =
     CloneGameObjectComponentMainService.clone(
       (uid, transform, countRangeArr, clonedGameObjectArr),

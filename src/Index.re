@@ -38,6 +38,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectKeepOrder = GameObjectAPI.disposeGameObjectKeepOrder;
+
 let disposeGameObject = GameObjectAPI.disposeGameObject;
 
 let isGameObjectAlive = GameObjectAPI.isGameObjectAlive;
@@ -333,6 +335,8 @@ let cloneGameObject = GameObjectAPI.cloneGameObject;
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObjectKeepOrder = GameObjectAPI.disposeGameObjectKeepOrder;
 
 let disposeGameObject = GameObjectAPI.disposeGameObject;
 

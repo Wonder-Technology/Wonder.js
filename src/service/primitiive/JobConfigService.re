@@ -30,7 +30,6 @@ let _throwJobFlagsShouldBeDefined = () =>
     )
   );
 
-/* TODO refactor: move out? */
 let unsafeGetFlags = (flags) =>
   switch flags {
   | None => _throwJobFlagsShouldBeDefined()

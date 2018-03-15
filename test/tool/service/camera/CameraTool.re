@@ -17,7 +17,6 @@ let createCameraGameObject = (state) => {
   open BasicCameraViewAPI;
   let (state, basicCameraView, perspectiveCameraProjection) =
     createBasicCameraViewPerspectiveCamera(state);
-  /* TODO refactor */
   let (state, gameObject) = state |> GameObjectAPI.createGameObject;
   let state = state |> addGameObjectBasicCameraViewComponent(gameObject, basicCameraView);
   let state =
