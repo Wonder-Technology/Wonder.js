@@ -26,6 +26,12 @@ let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
+let loopBody = DirectorAPI.loopBody;
+
+let initDirector = DirectorAPI.initDirector;
+
+let startDirector = DirectorAPI.startDirector;
+
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
@@ -132,6 +138,14 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
+
+let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
+
+let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
+
+let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
+
 let setAmbientLightColor = AmbientLightAPI.setAmbientLightColor;
 
 let getAmbientLightColor = AmbientLightAPI.getAmbientLightColor;
@@ -181,6 +195,8 @@ let getPointLightColor = PointLightAPI.getPointLightColor;
 let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
+
+let load = LoaderManagerAPI.load;
 
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
@@ -244,6 +260,20 @@ let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameO
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
+let setState = StateAPI.setState;
+
+let getState = StateAPI.getState;
+
+let getStateData = StateAPI.getStateData;
+
+let restoreState = StateAPI.restoreState;
+
+let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let getFps = TimeControllerAPI.getFps;
+
+let getGameTime = TimeControllerAPI.getGameTime;
+
 let setTransformPosition = TransformAPI.setTransformPosition;
 
 let getTransformPosition = TransformAPI.getTransformPosition;
@@ -263,36 +293,6 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
-
-let load = LoaderManagerAPI.load;
-
-let loopBody = DirectorAPI.loopBody;
-
-let initDirector = DirectorAPI.initDirector;
-
-let startDirector = DirectorAPI.startDirector;
-
-let setState = StateAPI.setState;
-
-let getState = StateAPI.getState;
-
-let getStateData = StateAPI.getStateData;
-
-let restoreState = StateAPI.restoreState;
-
-let deepCopyForRestore = StateAPI.deepCopyForRestore;
-
-let getFps = TimeControllerAPI.getFps;
-
-let getGameTime = TimeControllerAPI.getGameTime;
-
-let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
-
-let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
-
-let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
-
-let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
@@ -321,6 +321,12 @@ let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let loopBody = DirectorAPI.loopBody;
+
+let initDirector = DirectorAPI.initDirector;
+
+let startDirector = DirectorAPI.startDirector;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
@@ -428,6 +434,16 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
+
+let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
+
+let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
+
+let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
+
+let load = LoaderManagerAPI.load;
+
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
@@ -466,6 +482,20 @@ let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameO
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
+let setState = StateAPI.setState;
+
+let getState = StateAPI.getState;
+
+let getStateData = StateAPI.getStateData;
+
+let restoreState = StateAPI.restoreState;
+
+let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let getFps = TimeControllerAPI.getFps;
+
+let getGameTime = TimeControllerAPI.getGameTime;
+
 let setTransformPosition = TransformAPI.setTransformPosition;
 
 let getTransformPosition = TransformAPI.getTransformPosition;
@@ -485,33 +515,3 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
-
-let load = LoaderManagerAPI.load;
-
-let loopBody = DirectorAPI.loopBody;
-
-let initDirector = DirectorAPI.initDirector;
-
-let startDirector = DirectorAPI.startDirector;
-
-let setState = StateAPI.setState;
-
-let getState = StateAPI.getState;
-
-let getStateData = StateAPI.getStateData;
-
-let restoreState = StateAPI.restoreState;
-
-let deepCopyForRestore = StateAPI.deepCopyForRestore;
-
-let getFps = TimeControllerAPI.getFps;
-
-let getGameTime = TimeControllerAPI.getGameTime;
-
-let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
-
-let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
-
-let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
-
-let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
