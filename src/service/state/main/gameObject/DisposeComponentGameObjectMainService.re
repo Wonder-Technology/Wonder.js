@@ -4,11 +4,11 @@ open GameObjectType;
 
 open ComponentType;
 
-let isAlive = (uid: int, {gameObjectRecord}) => {
+/* let isAlive = (uid: int, {gameObjectRecord}) => {
   let {transformMap, disposedUidMap} = gameObjectRecord;
   disposedUidMap |> WonderCommonlib.SparseMapService.has(uid) ?
     false : transformMap |> WonderCommonlib.SparseMapService.has(uid) ? true : false
-};
+}; */
 
 let disposeBasicCameraViewComponent =
   [@bs]
