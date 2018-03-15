@@ -20,10 +20,11 @@ To build a elegant, high performance 3D engine with full functions.
 # Design
 - Functional Programming
 - Functional Reactive Programming
+- Microservice
+- Job Pipeline
 - Data Oriented Design
 - Data Driven
 - Entity Component System
-- Defer Shading
 - Design By Contract
 
 # Contributing
