@@ -1,21 +1,21 @@
 open TransformType;
 
 let _unsafeGetParent = (transform: transform, record) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(transform, record.parentMap);
+  WonderCommonlib.SparseMapService.unsafeGet(transform, record.parentMap);
 
 let unsafeGetParent = (transform: transform, record) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(transform, record.parentMap);
+  WonderCommonlib.SparseMapService.unsafeGet(transform, record.parentMap);
 
 let getParent = (transform: transform, record) =>
   unsafeGetParent(transform, record) |> Js.Undefined.to_opt;
 
 let removeFromParentMap = (child: int, record) => {
   ...record,
-  parentMap: WonderCommonlib.SparseMapSystem.deleteVal(child, record.parentMap)
+  parentMap: WonderCommonlib.SparseMapService.deleteVal(child, record.parentMap)
 };
 
 let unsafeGetChildren = (transform: transform, record) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(transform, record.childMap)
+  WonderCommonlib.SparseMapService.unsafeGet(transform, record.childMap)
   |> WonderLog.Contract.ensureCheck(
        (children) =>
          WonderLog.(
@@ -33,7 +33,7 @@ let unsafeGetChildren = (transform: transform, record) =>
 
 let _setChildren = (record, parent, children) => {
   ...record,
-  childMap: WonderCommonlib.SparseMapSystem.set(parent, children, record.childMap)
+  childMap: WonderCommonlib.SparseMapService.set(parent, children, record.childMap)
 };
 
 let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
@@ -59,7 +59,7 @@ let _removeFromParent = (currentParent: int, child: transform, isKeepOrder, reco
 let _setParent = (parent: transform, child: int, record) => {
   ...record,
   parentMap:
-    WonderCommonlib.SparseMapSystem.set(child, transformToJsUndefine(parent), record.parentMap)
+    WonderCommonlib.SparseMapService.set(child, transformToJsUndefine(parent), record.parentMap)
 };
 
 let _addChild = (parent: int, child: transform, record) => {
@@ -91,7 +91,7 @@ let rec markHierachyDirty = (transform: transform, {dirtyMap} as record) =>
   record
   |> DirtyTransformService.mark(transform, true)
   |> unsafeGetChildren(transform)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs] ((record, child) => markHierachyDirty(child, record)),
        record
      );

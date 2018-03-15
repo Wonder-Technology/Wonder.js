@@ -78,7 +78,7 @@ let handleBatchDisposeComponent =
         IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       materialArray
-      |> WonderCommonlib.ArraySystem.reduceOneParam(
+      |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs] ((record, material) => _handleDispose(disposedIndexArray, material, record)),
            record
          )

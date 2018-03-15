@@ -4,7 +4,7 @@ open GameObjectType;
 
 let _createGameObjectArr = (countRangeArr, gameObjectRecord) =>
   countRangeArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((gameObjectRecord, clonedGameObjectArr), _) => {
@@ -18,7 +18,7 @@ let _createGameObjectArr = (countRangeArr, gameObjectRecord) =>
 
 let _setParent = (clonedParentTransformArr, clonedTransformArr, transformRecord) =>
   clonedParentTransformArr
-  |> WonderCommonlib.ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (transformRecord, clonedParentTransform, i) =>

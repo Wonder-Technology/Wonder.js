@@ -19,7 +19,7 @@ let setPointsWithArray =
       | None => [@bs] makeTypeArrayFunc(record)
       | Some(typeArr) => [@bs] fillTypeArrayFunc(typeArr, record, 0)
       };
-    (typeArrayPoolRecord, pointsMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr))
+    (typeArrayPoolRecord, pointsMap |> WonderCommonlib.SparseMapService.set(index, typeArr))
   | Some(indices) =>
     [@bs] fillTypeArrayFunc(indices, record, 0) |> ignore;
     (typeArrayPoolRecord, pointsMap)

@@ -148,7 +148,7 @@ let getMaterialShaderLibDataArr =
       state: MainStateDataType.state
     ) =>
   shaderLibItems
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (resultDataArr, {type_, name}: shaderLibItem) =>
@@ -162,5 +162,5 @@ let getMaterialShaderLibDataArr =
              )
            }
        ),
-       WonderCommonlib.ArraySystem.createEmpty()
+       WonderCommonlib.ArrayService.createEmpty()
      );

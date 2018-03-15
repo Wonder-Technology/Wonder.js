@@ -10,7 +10,7 @@ open Matrix4Service;
 
 let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrixMap}) =>
   localToWorldMatrixMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> WonderCommonlib.SparseMapService.unsafeGet(transform)
   |> WonderLog.Contract.ensureCheck(
        (localToWorldMatrix) =>
          WonderLog.(
@@ -28,7 +28,7 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrixM
 
 /* let getNormalMatrixTypeArray = (transform: transform, localToWorldMatrixMap, normalMatrixCacheMap) => */
 let getNormalMatrixTypeArray = (transform: transform, {localToWorldMatrixMap, normalMatrixCacheMap} as record) =>
-  switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapSystem.get(transform)) {
+  switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
   | Some(normalMatrix) => (normalMatrix, normalMatrixCacheMap)
   | None =>
     let normalMatrix =
@@ -39,13 +39,13 @@ let getNormalMatrixTypeArray = (transform: transform, {localToWorldMatrixMap, no
       |> Matrix3Service.transposeSelf;
     (
       normalMatrix,
-      WonderCommonlib.SparseMapSystem.set(transform, normalMatrix, normalMatrixCacheMap)
+      WonderCommonlib.SparseMapService.set(transform, normalMatrix, normalMatrixCacheMap)
     )
   };
 
 let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
   localPositionMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> WonderCommonlib.SparseMapService.unsafeGet(transform)
   |> WonderLog.Contract.ensureCheck(
        (localPosition) =>
          WonderLog.(

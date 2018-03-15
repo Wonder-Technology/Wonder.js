@@ -4,11 +4,11 @@ open BasicMaterialType;
 
 let create = () => {
   index: 0,
-  shaderIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  colorMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
+  shaderIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
+  colorMap: WonderCommonlib.SparseMapService.createEmpty(),
+  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
 };
 
 let deepCopyForRestore = ({index, colorMap, groupCountMap, gameObjectMap, disposedIndexArray}) => {

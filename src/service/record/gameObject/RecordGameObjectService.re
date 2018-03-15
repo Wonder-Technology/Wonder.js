@@ -3,20 +3,20 @@ open GameObjectType;
 let create = () => {
   uid: 0,
   disposeCount: 0,
-  disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  aliveUidArray: WonderCommonlib.ArraySystem.createEmpty(),
-  transformMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  basicCameraViewMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  perspectiveCameraProjectionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  boxGeometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  basicMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  lightMaterialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  objectInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  ambientLightMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  directionLightMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  pointLightMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
+  aliveUidArray: WonderCommonlib.ArrayService.createEmpty(),
+  transformMap: WonderCommonlib.SparseMapService.createEmpty(),
+  basicCameraViewMap: WonderCommonlib.SparseMapService.createEmpty(),
+  perspectiveCameraProjectionMap: WonderCommonlib.SparseMapService.createEmpty(),
+  boxGeometryMap: WonderCommonlib.SparseMapService.createEmpty(),
+  meshRendererMap: WonderCommonlib.SparseMapService.createEmpty(),
+  basicMaterialMap: WonderCommonlib.SparseMapService.createEmpty(),
+  lightMaterialMap: WonderCommonlib.SparseMapService.createEmpty(),
+  sourceInstanceMap: WonderCommonlib.SparseMapService.createEmpty(),
+  objectInstanceMap: WonderCommonlib.SparseMapService.createEmpty(),
+  ambientLightMap: WonderCommonlib.SparseMapService.createEmpty(),
+  directionLightMap: WonderCommonlib.SparseMapService.createEmpty(),
+  pointLightMap: WonderCommonlib.SparseMapService.createEmpty()
 };
 
 let deepCopyForRestore =

@@ -1,7 +1,7 @@
 
 let unsafeGetShaderIndex = (materialIndex: int, shaderIndexMap) =>
   shaderIndexMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
+  |> WonderCommonlib.SparseMapService.unsafeGet(materialIndex)
   |> WonderLog.Contract.ensureCheck(
        (shaderIndex) =>
          WonderLog.(
@@ -18,7 +18,7 @@ let unsafeGetShaderIndex = (materialIndex: int, shaderIndexMap) =>
      );
 
 let hasShaderIndex = (materialIndex: int, shaderIndexMap) =>
-  shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(materialIndex);
+  shaderIndexMap |> WonderCommonlib.SparseMapService.has(materialIndex);
 
 let setShaderIndex = (materialIndex: int, shaderIndex: int, shaderIndexMap) =>
-  shaderIndexMap |> WonderCommonlib.SparseMapSystem.set(materialIndex, shaderIndex);
+  shaderIndexMap |> WonderCommonlib.SparseMapService.set(materialIndex, shaderIndex);

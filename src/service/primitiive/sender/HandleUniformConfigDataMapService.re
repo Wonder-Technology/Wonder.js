@@ -1,7 +1,7 @@
 
 let unsafeGetUniformSendData = (shaderIndex: int, map) =>
   map
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
        (sendData) =>
          WonderLog.(

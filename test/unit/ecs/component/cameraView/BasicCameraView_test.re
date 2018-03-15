@@ -86,7 +86,7 @@ let _ =
                        );
                   let {gameObjectMap} = state.basicCameraViewRecord;
                   gameObjectMap
-                  |> WonderCommonlib.SparseMapSystem.has(basicCameraView1)
+                  |> WonderCommonlib.SparseMapService.has(basicCameraView1)
                   |> expect == false
                 }
               )

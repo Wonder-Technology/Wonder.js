@@ -18,7 +18,7 @@ let _isFromEventStream = [%bs.raw
 let concatArray = (streamArr) =>
   streamArr
   |> Js.Array.sliceFrom(1)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (stream1, stream2) =>
@@ -34,13 +34,13 @@ let concatArray = (streamArr) =>
 let concatStreamFuncArray = (stateData, streamFuncArr) =>
   /* streamFuncArr
      |> Js.Array.sliceFrom(2)
-     |> WonderCommonlib.ArraySystem.reduceOneParam(
+     |> WonderCommonlib.ArrayService.reduceOneParam(
           [@bs] ((stream1, streamFunc2) => stream1 |> concat(streamFunc2(None, stateData))),
           streamFuncArr[0](None, stateData) |> concatMap((e) => streamFuncArr[1](e, stateData))
         ); */
   streamFuncArr
   |> Js.Array.sliceFrom(1)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs] ((stream1, streamFunc2) => stream1 |> concatMap((e) => streamFunc2(e, stateData))),
        streamFuncArr[0](None, stateData)
      );

@@ -42,7 +42,7 @@ let _disposeData =
     typeArrayPoolRecord,
     {
       ...boxGeometryRecord,
-      groupCountMap: groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0),
+      groupCountMap: groupCountMap |> WonderCommonlib.SparseMapService.set(geometry, 0),
       verticesMap: verticesMap |> disposeSparseMapData(geometry),
       normalsMap: normalsMap |> disposeSparseMapData(geometry),
       indicesMap: indicesMap |> disposeSparseMapData(geometry),
@@ -124,7 +124,7 @@ let handleBatchDisposeComponent =
       let {disposedIndexArray} = boxGeometryRecord;
       let (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord) =
         geometryArray
-        |> WonderCommonlib.ArraySystem.reduceOneParam(
+        |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
                ((vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord), geometry) =>

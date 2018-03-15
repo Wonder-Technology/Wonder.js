@@ -67,7 +67,7 @@ let handleBatchDisposeComponent =
           renderGameObjectArray |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
       };
       meshRendererArray
-      |> WonderCommonlib.ArraySystem.reduceOneParam(
+      |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs] ((record, meshRenderer) => record |> _disposeData(meshRenderer)),
            record
          )

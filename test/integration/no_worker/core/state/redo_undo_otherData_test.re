@@ -59,10 +59,10 @@ let _ =
         let bufferInMap2 = Obj.magic(11);
         let bufferInMap3 = Obj.magic(12);
         let bufferInMap4 = Obj.magic(13);
-        vertexBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap1);
-        normalBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap2);
-        elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap3);
-        matrixInstanceBufferMap |> WonderCommonlib.SparseMapSystem.set(geometry1, bufferInMap4);
+        vertexBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap1);
+        normalBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap2);
+        elementArrayBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap3);
+        matrixInstanceBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap4);
         (
           state,
           geometry1,
@@ -167,8 +167,8 @@ let _ =
                   (float32ArrayPoolMap, uint16ArrayPoolMap)
                   |>
                   expect == (
-                              WonderCommonlib.SparseMapSystem.createEmpty(),
-                              WonderCommonlib.SparseMapSystem.createEmpty()
+                              WonderCommonlib.SparseMapService.createEmpty(),
+                              WonderCommonlib.SparseMapService.createEmpty()
                             )
                 }
               )

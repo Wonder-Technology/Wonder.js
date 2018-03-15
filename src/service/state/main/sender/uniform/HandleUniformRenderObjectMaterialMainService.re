@@ -45,7 +45,7 @@ let addUniformSendDataByType =
 let setToUniformSendMap =
     (shaderIndex, uniformRenderObjectSendMaterialDataMap, renderObjectSendMaterialDataArr) =>
   uniformRenderObjectSendMaterialDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, renderObjectSendMaterialDataArr)
+  |> WonderCommonlib.SparseMapService.set(shaderIndex, renderObjectSendMaterialDataArr)
   |> ignore;
 
 let unsafeGetUniformSendData = (shaderIndex: int, state: MainStateDataType.state) =>

@@ -67,7 +67,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
            intersectShaderIndexDataArray,
            drawPointsFuncMap
          ), */
-      vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
+      vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
       lastSendMaterial: None,
       lastSendGeometry: None
     }

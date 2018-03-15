@@ -3,7 +3,7 @@ open GameObjectAPI;
 open GameObjectAPI;
 
 let getFlattenClonedGameObjectArr = (clonedGameObjectArr) =>
-  clonedGameObjectArr |> WonderCommonlib.ArraySystem.flatten;
+  clonedGameObjectArr |> WonderCommonlib.ArrayService.flatten;
 
 let cloneGameObject = (gameObject, count, isShareMaterial, state) =>
   GameObjectAPI.cloneGameObject(gameObject, count, Js.Boolean.to_js_boolean(isShareMaterial), state);

@@ -81,7 +81,7 @@ let _readUniforms =
   | None => sendDataArrTuple
   | Some(uniforms) =>
     uniforms
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (sendDataArrTuple, {name, field, type_, from}) =>
@@ -163,7 +163,7 @@ let _readUniforms =
 
 let _readUniformSendData = (shaderLibDataArr, gl, program, (uniformLocationMap, uniformCacheMap)) =>
   shaderLibDataArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (sendDataArrTuple, {variables}) =>
@@ -190,7 +190,7 @@ let _checkShouldNotAddBefore = (shaderIndex, state) =>
               Log.buildAssertMessage(~expect={j|not be added before|j}, ~actual={j|be|j}),
               () =>
                 state.glslSenderRecord.uniformRenderObjectSendModelDataMap
-                |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+                |> WonderCommonlib.SparseMapService.get(shaderIndex)
                 |> assertNotExist
             )
           )

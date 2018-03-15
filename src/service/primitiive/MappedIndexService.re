@@ -1,8 +1,8 @@
 let getMappedIndex = (index, mappedIndexMap) =>
-  mappedIndexMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index);
+  mappedIndexMap |> WonderCommonlib.SparseMapService.unsafeGet(index);
 
 let setMappedIndex = (index, mappedIndex, mappedIndexMap) =>
-  mappedIndexMap |> WonderCommonlib.SparseMapSystem.set(index, mappedIndex);
+  mappedIndexMap |> WonderCommonlib.SparseMapService.set(index, mappedIndex);
 
 let markDisposed = (index, mappedIndexMap) => setMappedIndex(index, (-1), mappedIndexMap);
 

@@ -3,12 +3,12 @@ open GeometryType;
 open BoxGeometryType;
 
 let _getConfig = (configDataMap) => (
-  WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap),
-  WonderCommonlib.HashMapSystem.unsafeGet("height", configDataMap),
-  WonderCommonlib.HashMapSystem.unsafeGet("depth", configDataMap),
-  WonderCommonlib.HashMapSystem.unsafeGet("widthSegment", configDataMap) |> int_of_float,
-  WonderCommonlib.HashMapSystem.unsafeGet("heightSegment", configDataMap) |> int_of_float,
-  WonderCommonlib.HashMapSystem.unsafeGet("depthSegment", configDataMap) |> int_of_float
+  WonderCommonlib.HashMapService.unsafeGet("width", configDataMap),
+  WonderCommonlib.HashMapService.unsafeGet("height", configDataMap),
+  WonderCommonlib.HashMapService.unsafeGet("depth", configDataMap),
+  WonderCommonlib.HashMapService.unsafeGet("widthSegment", configDataMap) |> int_of_float,
+  WonderCommonlib.HashMapService.unsafeGet("heightSegment", configDataMap) |> int_of_float,
+  WonderCommonlib.HashMapService.unsafeGet("depthSegment", configDataMap) |> int_of_float
 );
 
 let _buildFaceData = (width, height, depth) => (
@@ -77,12 +77,12 @@ let _generateVertex =
         corners[faceAxes[side][0]]
       )
     );
-  vertices |> WonderCommonlib.ArraySystem.pushMany([|vx, vy, vz|]) |> ignore
+  vertices |> WonderCommonlib.ArrayService.pushMany([|vx, vy, vz|]) |> ignore
 };
 
 let _generateNormal = (side, faceNormals, normals) =>
   normals
-  |> WonderCommonlib.ArraySystem.pushMany([|
+  |> WonderCommonlib.ArrayService.pushMany([|
        faceNormals[side][0],
        faceNormals[side][1],
        faceNormals[side][2]
@@ -93,7 +93,7 @@ let _generateIndex = ((uSegment, vSegment, offset), (uSegmentIndex, vSegmentInde
   switch (uSegmentIndex, vSegmentIndex) {
   | (i, j) when i < uSegment && j < vSegment =>
     indices
-    |> WonderCommonlib.ArraySystem.pushMany([|
+    |> WonderCommonlib.ArrayService.pushMany([|
          offset + j + i * (uSegment + 1),
          offset + j + (i + 1) * (uSegment + 1),
          offset + j + i * (uSegment + 1) + 1,
@@ -138,16 +138,16 @@ let _generateAllFaces = (configDataMap) => {
     _getConfig(configDataMap);
   let faceDataTuple = _buildFaceData(width, height, depth);
   _buildAllFaceDirectionDataTupleArr(widthSegment, heightSegment, depthSegment)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (pointsTuple, directionDataTuple) =>
            pointsTuple |> _generateFace(directionDataTuple, faceDataTuple)
        ),
        (
-         WonderCommonlib.ArraySystem.createEmpty(),
-         WonderCommonlib.ArraySystem.createEmpty(),
-         WonderCommonlib.ArraySystem.createEmpty()
+         WonderCommonlib.ArrayService.createEmpty(),
+         WonderCommonlib.ArrayService.createEmpty(),
+         WonderCommonlib.ArrayService.createEmpty()
        )
      )
 };
@@ -178,7 +178,7 @@ let create = ({computeDataFuncMap, index, disposedIndexArray} as record) => {
       index: newIndex,
       disposedIndexArray,
       computeDataFuncMap:
-        computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(index, _computeData)
+        computeDataFuncMap |> WonderCommonlib.SparseMapService.set(index, _computeData)
     },
     index
   )

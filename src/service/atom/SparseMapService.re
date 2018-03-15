@@ -9,7 +9,7 @@ let getValidValues = (map) =>
 
 let getValidKeys = (map) =>
   map
-  |> WonderCommonlib.ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (arr, value, key) =>
@@ -25,7 +25,7 @@ let getValidKeys = (map) =>
 
 let forEachValid = (func, map) =>
   map
-  |> WonderCommonlib.ArraySystem.forEach(
+  |> WonderCommonlib.ArrayService.forEach(
        [@bs]
        (
          (value) =>
@@ -39,7 +39,7 @@ let forEachValid = (func, map) =>
 
 let forEachiValid = (func, map) =>
   map
-  |> WonderCommonlib.ArraySystem.forEachi(
+  |> WonderCommonlib.ArrayService.forEachi(
        [@bs]
        (
          (value, index) =>
@@ -53,7 +53,7 @@ let forEachiValid = (func, map) =>
 
 let reduceiValid = (func, initValue, map) =>
   map
-  |> WonderCommonlib.ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (previousValue, value, index) =>

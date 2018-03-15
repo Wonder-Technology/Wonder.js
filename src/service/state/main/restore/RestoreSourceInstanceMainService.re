@@ -5,8 +5,8 @@ open SourceInstanceType;
 let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
   isSendTransformMatrixDataMap
   |> SparseMapService.reduceiValid(
-       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapSystem.set(index, false)),
-       WonderCommonlib.SparseMapSystem.createEmpty()
+       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapService.set(index, false)),
+       WonderCommonlib.SparseMapService.createEmpty()
      );
 
 let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {

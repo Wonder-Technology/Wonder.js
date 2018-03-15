@@ -40,8 +40,8 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
     };
   (
     buffer,
-    WonderCommonlib.ArraySystem.range(0, count - 1)
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    WonderCommonlib.ArrayService.range(0, count - 1)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            ((colors, intensities), index) => (
@@ -86,8 +86,8 @@ let create = () => {
     buffer,
     colors,
     intensities,
-    mappedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty()
+    mappedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
+    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty()
   }
 };
 

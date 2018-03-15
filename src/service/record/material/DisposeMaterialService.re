@@ -10,7 +10,7 @@ let addDisposeIndex = (material, disposedIndexArray) =>
 
 let disposeData = (material, (shaderIndexMap, groupCountMap, gameObjectMap)) => (
   disposeSparseMapData(material, shaderIndexMap),
-  groupCountMap |> WonderCommonlib.SparseMapSystem.set(material, 0),
+  groupCountMap |> WonderCommonlib.SparseMapService.set(material, 0),
   disposeSparseMapData(material, gameObjectMap)
 );
 

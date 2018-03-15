@@ -38,7 +38,7 @@ let _buildStreamArr =
       getJobHandleFunc
     ) =>
   pipelineSubJobs
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (streamArr, {name: subJobName}: mainInitPipelineSubJob) =>
@@ -119,7 +119,7 @@ let getMainInitJobStream = (jobHandleMap, stateData, record, getJobHandleFunc) =
 /* TODO refactor: move out? */
 /* let _buildWorkerStreamArr = (jobHandleMap, pipelineJobs, stateData, jobs) =>
    pipelineJobs
-   |> WonderCommonlib.ArraySystem.reduceOneParam(
+   |> WonderCommonlib.ArrayService.reduceOneParam(
         [@bs]
         (
           (streamArr, {name: jobName}) => {
@@ -158,7 +158,7 @@ let _getExecutableWorkerJob = (jobs, jobItemName) =>
 let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), getJobHandleFunc) =>
   RenderWorkerStateDataType.(
     pipelineJobs
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (streamArr, {name: jobName}) => {
@@ -179,7 +179,7 @@ let getRenderWorkerJobStreamArr =
   /* let workerJobs = StateRenderService.getJobs(state); */
   /* StateRenderService.getPipelineJobs(state) */
   pipelineJobs
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (streamArr, jobs) =>

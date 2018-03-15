@@ -2,15 +2,15 @@ open BoxGeometryType;
 
 let create = () => {
   index: 0,
-  verticesMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  normalsMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  indicesMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  configDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  computeDataFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
-  isInitMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  verticesMap: WonderCommonlib.SparseMapService.createEmpty(),
+  normalsMap: WonderCommonlib.SparseMapService.createEmpty(),
+  indicesMap: WonderCommonlib.SparseMapService.createEmpty(),
+  configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
+  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+  isInitMap: WonderCommonlib.SparseMapService.createEmpty(),
+  groupCountMap: WonderCommonlib.SparseMapService.createEmpty()
 };
 
 let deepCopyForRestore =

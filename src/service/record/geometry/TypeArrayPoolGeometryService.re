@@ -6,21 +6,21 @@ let addTypeArrayToPool =
     (geometry, maxSize, (verticesMap, normalsMap, indicesMap), typeArrayPoolRecord) => {
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
-    verticesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry),
     maxSize,
     TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
-    normalsMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry),
     maxSize,
     TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
   TypeArrayPoolService.addUint16TypeArrayToPool(
-    indicesMap |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry),
+    indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry),
     maxSize,
     TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
   )

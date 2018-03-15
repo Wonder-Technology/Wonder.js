@@ -6,17 +6,17 @@ let _getIntersectShaderIndexMap = (currentShaderIndexMap, targetShaderIndexMap) 
   let intersectShaderIndexDataArr =
     targetShaderIndexMap
     |> HashMapService.entries
-    |> Js.Array.filter(((key, _)) => WonderCommonlib.HashMapSystem.has(key, currentShaderIndexMap));
+    |> Js.Array.filter(((key, _)) => WonderCommonlib.HashMapService.has(key, currentShaderIndexMap));
   (
     intersectShaderIndexDataArr |> Js.Array.length,
     intersectShaderIndexDataArr
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (shaderMap, (key, shaderIndex)) =>
-             shaderMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex)
+             shaderMap |> WonderCommonlib.HashMapService.set(key, shaderIndex)
          ),
-         WonderCommonlib.HashMapSystem.createEmpty()
+         WonderCommonlib.HashMapService.createEmpty()
        )
   )
 };

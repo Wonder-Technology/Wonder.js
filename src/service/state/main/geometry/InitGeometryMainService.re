@@ -5,13 +5,13 @@ open GeometryType;
 open BoxGeometryType;
 
 let _isInit = (index: int, state: MainStateDataType.state) =>
-  switch (state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapSystem.get(index)) {
+  switch (state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapService.get(index)) {
   | None => false
   | Some(bool) => bool
   };
 
 let _markIsInit = (index: int, isInit: bool, state: MainStateDataType.state) => {
-  state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapSystem.set(index, isInit);
+  state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapService.set(index, isInit);
   state
 };
 
@@ -20,7 +20,7 @@ let initGeometry = (index: int, state: MainStateDataType.state) =>
     state
   } else {
     let {computeDataFuncMap} = state.boxGeometryRecord;
-    switch (computeDataFuncMap |> WonderCommonlib.SparseMapSystem.get(index)) {
+    switch (computeDataFuncMap |> WonderCommonlib.SparseMapService.get(index)) {
     | None => state
     | Some(computeDataFunc) =>
       let {vertices, normals, indices}: geometryComputeData =

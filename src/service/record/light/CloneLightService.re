@@ -2,7 +2,7 @@ let handleCloneComponent =
     (sourceComponent, countRangeArr, (createFunc, getDataFunc, setDataFunc), record) => {
   let dataTuple = [@bs] getDataFunc(sourceComponent, record);
   countRangeArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((record, componentArr), _) => {

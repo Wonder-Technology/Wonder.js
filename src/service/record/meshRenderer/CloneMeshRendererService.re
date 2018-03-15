@@ -2,7 +2,7 @@ open MeshRendererType;
 
 let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) =>
   countRangeArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((record, componentArr), _) => {

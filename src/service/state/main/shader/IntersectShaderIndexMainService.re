@@ -8,15 +8,15 @@ let getIntersectShaderIndexDataArray = (currentState, targetState) => {
   targetShaderIndexMap
   |> HashMapService.entries
   |> Js.Array.filter(
-       ((key, _)) => currentShaderIndexMap |> WonderCommonlib.HashMapSystem.has(key)
+       ((key, _)) => currentShaderIndexMap |> WonderCommonlib.HashMapService.has(key)
      )
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (dataArr, (key, shaderIndex)) => {
            dataArr
            |> Js.Array.push((
-                currentShaderIndexMap |> WonderCommonlib.HashMapSystem.unsafeGet(key),
+                currentShaderIndexMap |> WonderCommonlib.HashMapService.unsafeGet(key),
                 shaderIndex
               ))
            |> ignore;

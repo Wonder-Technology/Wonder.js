@@ -28,13 +28,13 @@ let setSpecularColor = (material, color: array(float), {lightMaterialRecord} as 
 };
 
 let unsafeGetShininess = (material, {lightMaterialRecord}) =>
-  lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapSystem.unsafeGet(material);
+  lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapService.unsafeGet(material);
 
 let setShininess = (material, shininess: float, {lightMaterialRecord} as state) => {
   ...state,
   lightMaterialRecord: {
     ...lightMaterialRecord,
     shininessMap:
-      lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapSystem.set(material, shininess)
+      lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapService.set(material, shininess)
   }
 };

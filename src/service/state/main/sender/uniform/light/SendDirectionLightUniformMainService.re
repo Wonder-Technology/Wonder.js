@@ -45,7 +45,7 @@ let send =
           intensity: "u_directionLights[3].intensity"
         }
       |];
-      WonderCommonlib.ArraySystem.range(0, index - 1)
+      WonderCommonlib.ArrayService.range(0, index - 1)
       |> ReduceStateMainService.reduceState(
            [@bs]
            (

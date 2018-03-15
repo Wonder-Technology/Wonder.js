@@ -33,8 +33,8 @@ let _clearDirtyArray = (record) => {...record, dirtyArray: DirtyArrayService.cre
 
 let update = ({dirtyArray} as record) =>
   dirtyArray
-  |> WonderCommonlib.ArraySystem.removeDuplicateItems
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.removeDuplicateItems
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs] ((record, dirtyIndex) => updateCameraProjection(dirtyIndex, record)),
        record
      )

@@ -18,7 +18,7 @@ let _handleNotShareMaterial =
       ShaderIndexMapService.unsafeGetShaderIndex(sourceComponent, shaderIndexMap) : (-1);
   let dataTuple = [@bs] getDataFunc(sourceComponent, state);
   countRangeArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((state, componentArr), _) => {

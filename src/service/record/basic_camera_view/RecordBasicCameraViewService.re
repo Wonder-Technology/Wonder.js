@@ -2,8 +2,8 @@ open BasicCameraViewType;
 
 let create = () => {
   index: 0,
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
+  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
 };
 
 let deepCopyForRestore = ({index, gameObjectMap, disposedIndexArray}) => {

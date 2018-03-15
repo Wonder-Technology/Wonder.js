@@ -2,7 +2,7 @@ open SourceInstanceType;
 
 let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
   objectInstanceArrayMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
+  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
   |> WonderLog.Contract.ensureCheck(
        (objectInstanceArray) =>
          WonderLog.(

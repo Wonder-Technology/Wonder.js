@@ -162,11 +162,11 @@ let _ =
                   } =
                     state.lightMaterialRecord;
                   (
-                    diffuseColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    specularColorMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    shininessMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
+                    diffuseColorMap |> WonderCommonlib.SparseMapService.has(material1),
+                    specularColorMap |> WonderCommonlib.SparseMapService.has(material1),
+                    shininessMap |> WonderCommonlib.SparseMapService.has(material1),
+                    shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
                   )
                   |> expect == (false, false, false, false, false)
                 }

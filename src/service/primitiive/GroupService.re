@@ -1,5 +1,5 @@
 let getGroupCount = (component: int, groupCountMap) =>
-  switch (groupCountMap |> WonderCommonlib.SparseMapSystem.get(component)) {
+  switch (groupCountMap |> WonderCommonlib.SparseMapService.get(component)) {
   | None => 0
   | Some(count) => count
   };
@@ -9,14 +9,14 @@ let isGroupComponent = (component: int, groupCountMap) =>
 
 let increaseGroupCount = (component: int, groupCountMap) =>
   groupCountMap
-  |> WonderCommonlib.SparseMapSystem.set(
+  |> WonderCommonlib.SparseMapService.set(
        component,
        getGroupCount(component, groupCountMap) |> succ
      );
 
 let decreaseGroupCount = (component: int, groupCountMap) =>
   groupCountMap
-  |> WonderCommonlib.SparseMapSystem.set(
+  |> WonderCommonlib.SparseMapService.set(
        component,
        getGroupCount(component, groupCountMap) |> pred
      );

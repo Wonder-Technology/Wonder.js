@@ -50,7 +50,7 @@ let handleBatchDisposeComponent =
         IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
       cameraViewArray
-      |> WonderCommonlib.ArraySystem.reduceOneParam(
+      |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs] ((record, cameraView) => record |> _disposeData(cameraView)),
            {...record, disposedIndexArray: disposedIndexArray |> Js.Array.concat(cameraViewArray)}
          )

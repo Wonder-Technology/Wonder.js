@@ -57,7 +57,7 @@ let dispose = (transform, state) => {
 
 let isDisposed = (transform, state) => {
   let {localToWorldMatrixMap} = getTransformRecord(state);
-  ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform))
+  ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform))
 };
 
 let getTransformLocalPositionTypeArray = (transform, state) =>

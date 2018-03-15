@@ -17,16 +17,16 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
     },
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  WonderCommonlib.ArraySystem.unsafeSet(
+  WonderCommonlib.ArrayService.unsafeSet(
     arr,
     index,
-    WonderCommonlib.ArraySystem.unsafeGet(arr, lastIndex)
+    WonderCommonlib.ArrayService.unsafeGet(arr, lastIndex)
   );
-  WonderCommonlib.ArraySystem.unsafePop(arr) |> ignore
+  WonderCommonlib.ArrayService.unsafePop(arr) |> ignore
 };
 
 let range = (a: int, b: int) => {
-  let result = WonderCommonlib.ArraySystem.createEmpty();
+  let result = WonderCommonlib.ArrayService.createEmpty();
   for (i in a to b) {
     Js.Array.push(i, result) |> ignore
   };

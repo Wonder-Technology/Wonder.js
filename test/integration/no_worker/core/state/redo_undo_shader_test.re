@@ -19,9 +19,9 @@ let _ =
         let data1 = Obj.magic(0);
         let func1 = Obj.magic(1);
         let history1 = Obj.magic(2);
-        attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, data1) |> ignore;
+        attributeSendDataMap |> WonderCommonlib.SparseMapService.set(shaderIndex1, data1) |> ignore;
         vertexAttribHistoryArray
-        |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, history1)
+        |> WonderCommonlib.SparseMapService.set(shaderIndex1, history1)
         |> ignore;
         (state, shaderIndex1, data1, func1, history1)
       };
@@ -30,15 +30,15 @@ let _ =
         let shaderIndex1 = 0;
         let shaderIndex2 = 1;
         record.index = 2;
-        record.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1) |> ignore;
-        record.shaderIndexMap |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2) |> ignore;
+        record.shaderIndexMap |> WonderCommonlib.HashMapService.set("key1", shaderIndex1) |> ignore;
+        record.shaderIndexMap |> WonderCommonlib.HashMapService.set("key2", shaderIndex2) |> ignore;
         (state, shaderIndex1, shaderIndex2)
       };
       let _prepareProgramData = (state) => {
         let record = ProgramTool.getProgramRecord(state);
         let shaderIndex1 = 0;
         let program1 = Obj.magic(11);
-        record.programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1) |> ignore;
+        record.programMap |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1) |> ignore;
         record.lastUsedProgram = program1;
         (state, shaderIndex1, program1)
       };
@@ -84,7 +84,7 @@ let _ =
                     _prepareGLSLSenderData(StateTool.createNewCompleteState(sandbox));
                   let newState = StateTool.restore(currentState, state);
                   let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderRecord;
-                  vertexAttribHistoryArray |> expect == WonderCommonlib.ArraySystem.createEmpty()
+                  vertexAttribHistoryArray |> expect == WonderCommonlib.ArrayService.createEmpty()
                 }
               )
             }
@@ -267,16 +267,16 @@ let _ =
                     let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);
                     record.index = 3;
                     shaderIndexMap
-                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                    |> WonderCommonlib.HashMapSystem.set("key2", shaderIndex2)
-                    |> WonderCommonlib.HashMapSystem.set("key3", shaderIndex3)
+                    |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapService.set("key2", shaderIndex2)
+                    |> WonderCommonlib.HashMapService.set("key3", shaderIndex3)
                     |> ignore;
                     let {programMap} as record = ProgramTool.getProgramRecord(state);
                     let program1 = Obj.magic(11);
                     let program2 = Obj.magic(12);
                     programMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, program2)
                     |> ignore;
                     record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
@@ -286,23 +286,23 @@ let _ =
                     let uniformLocationData1 = Obj.magic(31);
                     let uniformLocationData2 = Obj.magic(32);
                     attributeLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, attributeLocationData1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, attributeLocationData2)
                     |> ignore;
                     uniformLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, uniformLocationData1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
                     let {uniformShaderSendNoCachableDataMap} =
                       state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(121);
                     let uniformShaderSendNoCachableData2 = Obj.magic(122);
                     uniformShaderSendNoCachableDataMap
-                    |> WonderCommonlib.SparseMapSystem.set(
+                    |> WonderCommonlib.SparseMapService.set(
                          shaderIndex1,
                          uniformShaderSendNoCachableData1
                        )
-                    |> WonderCommonlib.SparseMapSystem.set(
+                    |> WonderCommonlib.SparseMapService.set(
                          shaderIndex2,
                          uniformShaderSendNoCachableData2
                        )
@@ -331,15 +331,15 @@ let _ =
                     let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);
                     record.index = 2;
                     shaderIndexMap
-                    |> WonderCommonlib.HashMapSystem.set("key1", shaderIndex1)
-                    |> WonderCommonlib.HashMapSystem.set("key4", shaderIndex2)
+                    |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
+                    |> WonderCommonlib.HashMapService.set("key4", shaderIndex2)
                     |> ignore;
                     let {programMap} as record = ProgramTool.getProgramRecord(state);
                     let program1 = Obj.magic(101);
                     let program2 = Obj.magic(102);
                     programMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, program1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, program2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, program2)
                     |> ignore;
                     record.lastUsedProgram = program2;
                     let {attributeLocationMap, uniformLocationMap} =
@@ -349,23 +349,23 @@ let _ =
                     let uniformLocationData1 = Obj.magic(301);
                     let uniformLocationData2 = Obj.magic(302);
                     attributeLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, attributeLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, attributeLocationData2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, attributeLocationData1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, attributeLocationData2)
                     |> ignore;
                     uniformLocationMap
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex1, uniformLocationData1)
-                    |> WonderCommonlib.SparseMapSystem.set(shaderIndex2, uniformLocationData2)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex1, uniformLocationData1)
+                    |> WonderCommonlib.SparseMapService.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
                     let {uniformShaderSendNoCachableDataMap} =
                       state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(10221);
                     let uniformShaderSendNoCachableData2 = Obj.magic(10222);
                     uniformShaderSendNoCachableDataMap
-                    |> WonderCommonlib.SparseMapSystem.set(
+                    |> WonderCommonlib.SparseMapService.set(
                          shaderIndex1,
                          uniformShaderSendNoCachableData1
                        )
-                    |> WonderCommonlib.SparseMapSystem.set(
+                    |> WonderCommonlib.SparseMapService.set(
                          shaderIndex2,
                          uniformShaderSendNoCachableData2
                        )
@@ -502,7 +502,7 @@ let _ =
                               (
                                 programMap |> SparseMapService.length,
                                 programMap
-                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                                |> WonderCommonlib.SparseMapService.unsafeGet(targetShaderIndex1)
                               )
                               |> expect == (1, currentProgram1)
                             }
@@ -552,7 +552,7 @@ let _ =
                               (
                                 attributeLocationMap |> SparseMapService.length,
                                 attributeLocationMap
-                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                                |> WonderCommonlib.SparseMapService.unsafeGet(targetShaderIndex1)
                               )
                               |> expect == (1, currentAttributeLocationData1)
                             }
@@ -598,7 +598,7 @@ let _ =
                               (
                                 uniformShaderSendNoCachableDataMap |> SparseMapService.length,
                                 uniformShaderSendNoCachableDataMap
-                                |> WonderCommonlib.SparseMapSystem.unsafeGet(targetShaderIndex1)
+                                |> WonderCommonlib.SparseMapService.unsafeGet(targetShaderIndex1)
                               )
                               |> expect == (1, currentShaderUniformSendRenderObjectModelData1)
                             }

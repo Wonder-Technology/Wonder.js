@@ -200,7 +200,7 @@ let _batchAddComponent =
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
-  |> WonderCommonlib.ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (componentRecord, uid, index) => {
@@ -281,7 +281,7 @@ let _batchAddSharableComponent =
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
-  |> WonderCommonlib.ArraySystem.reduceOneParami(
+  |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (record, uid, index) => {

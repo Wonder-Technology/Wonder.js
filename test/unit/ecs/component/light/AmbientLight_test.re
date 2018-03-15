@@ -133,7 +133,7 @@ let _ =
                   let state =
                     state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                   let {gameObjectMap} = AmbientLightTool.getLightRecord(state);
-                  gameObjectMap |> WonderCommonlib.SparseMapSystem.has(light1) |> expect == false
+                  gameObjectMap |> WonderCommonlib.SparseMapService.has(light1) |> expect == false
                 }
               );
               describe(

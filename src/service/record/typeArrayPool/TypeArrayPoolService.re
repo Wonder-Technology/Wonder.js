@@ -7,7 +7,7 @@ let getFloat32ArrayPoolMap = (record) => record.float32ArrayPoolMap;
 let getUint16ArrayPoolMap = (record) => record.uint16ArrayPoolMap;
 
 let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
-  switch (map |> WonderCommonlib.SparseMapSystem.get(count)) {
+  switch (map |> WonderCommonlib.SparseMapService.get(count)) {
   | Some(arr) =>
     switch (arr |> Js.Array.length) {
     | len when len >= maxSize => map
@@ -15,7 +15,7 @@ let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
       arr |> Js.Array.push(typeArray) |> ignore;
       map
     }
-  | None => map |> WonderCommonlib.SparseMapSystem.set(count, [|typeArray|])
+  | None => map |> WonderCommonlib.SparseMapService.set(count, [|typeArray|])
   };
 
 let addFloat32TypeArrayToPool =
@@ -33,7 +33,7 @@ let addUint16TypeArrayToPool =
   );
 
 let _getTypeArrayFromPool = (count, map) =>
-  switch (map |> WonderCommonlib.SparseMapSystem.get(count)) {
+  switch (map |> WonderCommonlib.SparseMapService.get(count)) {
   | None => None
   | Some(arr) =>
     switch (arr |> Js.Array.length) {

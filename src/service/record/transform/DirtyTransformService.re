@@ -1,15 +1,15 @@
 open TransformType;
 
 let mark = (transform: transform, isDirty, {dirtyMap} as record) => {
-  dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) |> ignore;
+  dirtyMap |> WonderCommonlib.SparseMapService.set(transform, isDirty) |> ignore;
   record
   /* ...record,
-     dirtyMap: dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty) */
+     dirtyMap: dirtyMap |> WonderCommonlib.SparseMapService.set(transform, isDirty) */
 };
 
 let isDirty = (transform: transform, {dirtyMap} as record) =>
   dirtyMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> WonderCommonlib.SparseMapService.unsafeGet(transform)
   |> WonderLog.Contract.ensureCheck(
        (isDirty) =>
          WonderLog.(

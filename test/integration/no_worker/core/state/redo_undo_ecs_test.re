@@ -194,7 +194,7 @@ let _ =
               disposedIndexArray |> Js.Array.pop |> ignore;
               gameObjectMap
               |> Obj.magic
-              |> WonderCommonlib.SparseMapSystem.deleteVal(meshRenderer2);
+              |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer2);
               MeshRendererTool.getMeshRendererRecord(state)
               |>
               expect == {
@@ -236,16 +236,16 @@ let _ =
                   let record = TransformTool.getTransformRecord(copiedState);
                   record.localToWorldMatrixMap
                   |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
+                  |> WonderCommonlib.SparseMapService.deleteVal(transform2);
                   record.localPositionMap
                   |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(transform2);
+                  |> WonderCommonlib.SparseMapService.deleteVal(transform2);
                   (
                     TransformTool.getTransformRecord(state).localToWorldMatrixMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(transform2)
                     |> JudgeTool.isUndefined,
                     TransformTool.getTransformRecord(state).localPositionMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(transform2)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(transform2)
                     |> JudgeTool.isUndefined
                   )
                   |> expect == (false, false)
@@ -292,7 +292,7 @@ let _ =
                   let copiedState = StateTool.deepCopyForRestore(state);
                   let (copiedState, transform4) = TransformAPI.createTransform(copiedState);
                   TransformTool.getTransformRecord(copiedState).normalMatrixCacheMap
-                  |> expect == WonderCommonlib.SparseMapSystem.createEmpty()
+                  |> expect == WonderCommonlib.SparseMapService.createEmpty()
                 }
               )
             }
@@ -318,23 +318,23 @@ let _ =
                   let record = copiedState.boxGeometryRecord;
                   record.verticesMap
                   |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
                   record.normalsMap
                   |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
                   record.indicesMap
                   |> Obj.magic
-                  |> WonderCommonlib.SparseMapSystem.deleteVal(geometry2);
+                  |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
                   let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
                   (
                     verticesMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
                     |> JudgeTool.isUndefined,
                     normalsMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
                     |> JudgeTool.isUndefined,
                     indicesMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(geometry2)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
                     |> JudgeTool.isUndefined
                   )
                   |> expect == (false, false, false)
@@ -365,10 +365,10 @@ let _ =
                       let record = copiedState.basicMaterialRecord;
                       record.colorMap
                       |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
                       let {colorMap} = state.basicMaterialRecord;
                       colorMap
-                      |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                      |> WonderCommonlib.SparseMapService.unsafeGet(material2)
                       |> JudgeTool.isUndefined
                       |> expect == false
                     }
@@ -395,18 +395,18 @@ let _ =
                       let record = copiedState.lightMaterialRecord;
                       record.diffuseColorMap
                       |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
                       record.specularColorMap
                       |> Obj.magic
-                      |> WonderCommonlib.SparseMapSystem.deleteVal(material2);
+                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
                       let {diffuseColorMap, specularColorMap} =
                         state.lightMaterialRecord;
                       (
                         diffuseColorMap
-                        |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                        |> WonderCommonlib.SparseMapService.unsafeGet(material2)
                         |> JudgeTool.isUndefined,
                         specularColorMap
-                        |> WonderCommonlib.SparseMapSystem.unsafeGet(material2)
+                        |> WonderCommonlib.SparseMapService.unsafeGet(material2)
                         |> JudgeTool.isUndefined
                       )
                       |> expect == (false, false)
@@ -639,14 +639,14 @@ let _ =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   let originMatrixFloat32Array = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap
-                  |> WonderCommonlib.SparseMapSystem.set(
+                  |> WonderCommonlib.SparseMapService.set(
                        sourceInstance1,
                        originMatrixFloat32Array
                      )
                   |> ignore;
                   let originObjectInstanceArray = [|20|];
                   objectInstanceArrayMap
-                  |> WonderCommonlib.SparseMapSystem.set(
+                  |> WonderCommonlib.SparseMapService.set(
                        sourceInstance1,
                        originObjectInstanceArray
                      )
@@ -656,19 +656,19 @@ let _ =
                     SourceInstanceTool.getSourceInstanceRecord(copiedState);
                   let objectInstanceArray =
                     objectInstanceArrayMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1);
+                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   objectInstanceArray |> Js.Array.push(100) |> ignore;
                   let matrixFloat32Array =
                     matrixFloat32ArrayMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1);
+                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   Float32Array.unsafe_set(matrixFloat32Array, 0, 1000.) |> ignore;
                   let {objectInstanceArrayMap, matrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
                     objectInstanceArrayMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1),
+                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1),
                     matrixFloat32ArrayMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance1)
+                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1)
                   )
                   |> expect == (originObjectInstanceArray, originMatrixFloat32Array)
                 }
@@ -839,13 +839,13 @@ let _ =
                   let {pMatrixMap} as record = copiedState.perspectiveCameraProjectionRecord;
                   let record = {...record, index: 0};
                   Js.Typed_array.Float32Array.unsafe_set(
-                    pMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(0),
+                    pMatrixMap |> WonderCommonlib.SparseMapService.unsafeGet(0),
                     1,
                     10.0
                   );
                   let oldPMatrix =
                     state.perspectiveCameraProjectionRecord.pMatrixMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(0);
+                    |> WonderCommonlib.SparseMapService.unsafeGet(0);
                   Js.Typed_array.Float32Array.unsafe_get(oldPMatrix, 1) |> expect != 10.0
                 }
               )
@@ -943,8 +943,8 @@ let _ =
                   let {float32ArrayPoolMap} =
                     StateTool.getState().typeArrayPoolRecord;
                   (
-                    float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(16),
-                    float32ArrayPoolMap |> WonderCommonlib.SparseMapSystem.unsafeGet(3)
+                    float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(16),
+                    float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(3)
                   )
                   |>
                   expect == (
@@ -980,12 +980,12 @@ let _ =
                     StateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                    |> WonderCommonlib.SparseMapService.unsafeGet(
                          BoxGeometryTool.getDefaultVertices() |> Float32Array.length
                        )
                     |> Js.Array.length,
                     uint16ArrayPoolMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                    |> WonderCommonlib.SparseMapService.unsafeGet(
                          BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
                        )
                     |> Js.Array.length
@@ -1084,12 +1084,12 @@ let _ =
                     SourceInstanceTool.getSourceInstanceRecord(currentState);
                   let index = 0;
                   let typeArr = Float32Array.make([|1.|]);
-                  matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.set(index, typeArr);
+                  matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.set(index, typeArr);
                   let _ = StateTool.restore(currentState, state);
                   let {float32ArrayPoolMap}: typeArrayPoolRecord =
                     StateTool.getState().typeArrayPoolRecord;
                   float32ArrayPoolMap
-                  |> WonderCommonlib.SparseMapSystem.unsafeGet(typeArr |> Float32Array.length)
+                  |> WonderCommonlib.SparseMapService.unsafeGet(typeArr |> Float32Array.length)
                   |> expect == [|typeArr|]
                 }
               );
@@ -1103,8 +1103,8 @@ let _ =
                   let {isSendTransformMatrixDataMap} =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   isSendTransformMatrixDataMap
-                  |> WonderCommonlib.SparseMapSystem.set(0, true)
-                  |> WonderCommonlib.SparseMapSystem.set(1, false)
+                  |> WonderCommonlib.SparseMapService.set(0, true)
+                  |> WonderCommonlib.SparseMapService.set(1, false)
                   |> ignore;
                   let _ = StateTool.restore(StateTool.createNewCompleteState(sandbox), state);
                   let {isSendTransformMatrixDataMap} =

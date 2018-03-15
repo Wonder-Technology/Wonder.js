@@ -101,11 +101,11 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
 };
 
 let getProgram = (shaderIndex: int, {programMap}) =>
-  programMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
+  programMap |> WonderCommonlib.SparseMapService.get(shaderIndex);
 
 let unsafeGetProgram = (shaderIndex: int, {programMap}) =>
   programMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
        (program) =>
          WonderLog.(
@@ -122,6 +122,6 @@ let unsafeGetProgram = (shaderIndex: int, {programMap}) =>
      );
 
 let registerProgram = (shaderIndex: int, {programMap}, program: program) => {
-  programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, program) |> ignore;
+  programMap |> WonderCommonlib.SparseMapService.set(shaderIndex, program) |> ignore;
   program
 };

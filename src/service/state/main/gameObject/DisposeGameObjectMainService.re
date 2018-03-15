@@ -29,7 +29,7 @@ let rec batchDispose = (uidArray: array(int), state) => {
 let dispose = (uid: int, state) => {
   let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
   record.disposeCount = succ(disposeCount);
-  disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
+  disposedUidMap |> WonderCommonlib.SparseMapService.set(uid, true) |> ignore;
   state
   |> DisposeGameObjectComponentMainService.dispose(uid, batchDispose)
   |> _handleByDisposeCount(record)

@@ -101,7 +101,7 @@ let send =
       );
       let lightGLSLDataStructureMemberNameArr = getLightGLSLDataStructureMemberNameArr();
       let {index} = state.pointLightRecord;
-      WonderCommonlib.ArraySystem.range(0, index - 1)
+      WonderCommonlib.ArrayService.range(0, index - 1)
       |> ReduceStateMainService.reduceState(
            [@bs]
            (

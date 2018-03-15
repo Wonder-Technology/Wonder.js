@@ -48,5 +48,5 @@ let getObjectInstanceRecord = (state) => state.objectInstanceRecord;
 let isDisposed = (objectInstance, state) => {
   open ObjectInstanceType;
   let {sourceInstanceMap} = getObjectInstanceRecord(state);
-  ! (sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(objectInstance))
+  ! (sourceInstanceMap |> WonderCommonlib.SparseMapService.has(objectInstance))
 };

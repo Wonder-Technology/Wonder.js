@@ -134,7 +134,7 @@ let _createEmptyChunk = () => {
 
 let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
   shaderLibDataArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (glslTuple, {glsls}) =>
@@ -142,7 +142,7 @@ let _buildVsAndFs = (vs, fs, shaderLibDataArr, state) =>
            | None => glslTuple
            | Some(glsls) =>
              glsls
-             |> WonderCommonlib.ArraySystem.reduceOneParam(
+             |> WonderCommonlib.ArrayService.reduceOneParam(
                   [@bs]
                   (
                     ((vs, fs), {type_, name}: glsl) =>

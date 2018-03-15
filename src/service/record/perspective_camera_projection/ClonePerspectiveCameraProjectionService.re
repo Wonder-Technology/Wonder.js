@@ -6,7 +6,7 @@ let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) 
   let fovy = unsafeGetFovy(sourceComponent, record);
   let aspect = unsafeGetAspect(sourceComponent, record);
   countRangeArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((record, componentArr), _) => {

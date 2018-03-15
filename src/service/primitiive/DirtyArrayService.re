@@ -1,4 +1,4 @@
-let create = () => WonderCommonlib.ArraySystem.createEmpty();
+let create = () => WonderCommonlib.ArrayService.createEmpty();
 
 let addToDirtyArray = (isDirty, dirtyArray) => dirtyArray |> ArrayService.push(isDirty);
 

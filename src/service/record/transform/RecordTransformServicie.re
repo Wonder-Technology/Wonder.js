@@ -4,14 +4,14 @@ open Js.Typed_array;
 
 let create = () => {
   index: 0,
-  parentMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  childMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  localToWorldMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  localPositionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
+  parentMap: WonderCommonlib.SparseMapService.createEmpty(),
+  childMap: WonderCommonlib.SparseMapService.createEmpty(),
+  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
+  localToWorldMatrixMap: WonderCommonlib.SparseMapService.createEmpty(),
+  localPositionMap: WonderCommonlib.SparseMapService.createEmpty(),
+  normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
 };
 
 let deepCopyForRestore =
@@ -31,7 +31,7 @@ let deepCopyForRestore =
   index,
   localToWorldMatrixMap: localToWorldMatrixMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
   localPositionMap: localPositionMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
-  normalMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
   parentMap: parentMap |> SparseMapService.copy,
   childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,
   dirtyMap: dirtyMap |> SparseMapService.copy,

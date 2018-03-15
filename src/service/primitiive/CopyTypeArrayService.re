@@ -18,7 +18,7 @@ let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
 
 /* let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
    arr
-   |> WonderCommonlib.ArraySystem.reduceOneParam(
+   |> WonderCommonlib.ArrayService.reduceOneParam(
         [@bs]
         (
           (newArr, typeArr) => {

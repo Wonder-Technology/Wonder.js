@@ -16,7 +16,7 @@ let handleCloneComponent =
     );
   let (state, componentArr) =
     countRangeArr
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            ((state, componentArr), _) => {

@@ -114,9 +114,9 @@ let _ =
                        );
                   let {colorMap, shaderIndexMap, gameObjectMap} = state.basicMaterialRecord;
                   (
-                    colorMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
+                    colorMap |> WonderCommonlib.SparseMapService.has(material1),
+                    shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
                   )
                   |> expect == (false, false, false)
                 }

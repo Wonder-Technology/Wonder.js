@@ -1,6 +1,6 @@
 open GameObjectType;
 
-let _isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.SparseMapSystem.has(key);
+let _isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.SparseMapService.has(key);
 
 let _setNewDataToState =
     (
@@ -21,7 +21,7 @@ let _setNewDataToState =
       )
     ) => {
   ...record,
-  disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
   transformMap: newTransformMap,
   meshRendererMap: newMeshRendererMap,
@@ -37,9 +37,9 @@ let _setNewDataToState =
 };
 
 let _setNewMap = (uid, oldMap, newMap) =>
-  switch (oldMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
+  switch (oldMap |> WonderCommonlib.SparseMapService.get(uid)) {
   | None => newMap
-  | Some(component) => newMap |> WonderCommonlib.SparseMapSystem.set(uid, component)
+  | Some(component) => newMap |> WonderCommonlib.SparseMapService.set(uid, component)
   };
 
 let _allocateNewMaps =
@@ -60,7 +60,7 @@ let _allocateNewMaps =
       } as record
     ) =>
   newAliveUidArray
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (
@@ -80,9 +80,9 @@ let _allocateNewMaps =
            uid
          ) => (
            newTransformMap
-           |> WonderCommonlib.SparseMapSystem.set(
+           |> WonderCommonlib.SparseMapService.set(
                 uid,
-                transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid)
+                transformMap |> WonderCommonlib.SparseMapService.unsafeGet(uid)
               ),
            _setNewMap(uid, meshRendererMap, newMeshRendererMap),
            _setNewMap(uid, boxGeometryMap, newGeometryMap),
@@ -97,17 +97,17 @@ let _allocateNewMaps =
          )
        ),
        (
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty(),
-         WonderCommonlib.SparseMapSystem.createEmpty()
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty()
        )
      );
 

@@ -57,14 +57,14 @@ let _ =
                   } =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
-                    objectInstanceArrayMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
+                    objectInstanceArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixFloat32ArrayMap
-                    |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
+                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixInstanceBufferCapacityMap
-                    |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    isTransformStaticMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
+                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    isTransformStaticMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(sourceInstance)
                   )
                   |> expect == (false, false, false, false, false, false)
                 }
@@ -83,7 +83,7 @@ let _ =
                        );
                   let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
                   matrixInstanceBufferMap
-                  |> WonderCommonlib.SparseMapSystem.has(sourceInstance)
+                  |> WonderCommonlib.SparseMapService.has(sourceInstance)
                   |> expect == false
                 }
               );

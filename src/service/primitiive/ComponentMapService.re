@@ -1,15 +1,15 @@
 open ComponentType;
 
 let getComponent = (uid: int, componentMap: array(int)) : option(component) =>
-  WonderCommonlib.SparseMapSystem.get(uid, componentMap);
+  WonderCommonlib.SparseMapService.get(uid, componentMap);
 
 let hasComponent = (uid: int, componentMap: array(int)) : bool =>
   Js.Option.isSome(getComponent(uid, componentMap));
 
 let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
-  WonderCommonlib.SparseMapSystem.get(uid, componentMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(uid, componentMap) |> OptionService.unsafeGet;
 
-/* WonderCommonlib.SparseMapSystem.unsafeGet(uid, componentMap)
+/* WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap)
    |> WonderLog.Contract.ensureCheck(
         (component) =>
           WonderLog.(
@@ -42,14 +42,14 @@ let addComponent = (uid: int, component: component, componentMap: array(int)) =>
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
+  WonderCommonlib.SparseMapService.set(uid, component, componentMap) |> ignore
 };
 
 let hasComponent = (uid: int, componentMap) : bool => componentMap |> hasComponent(uid);
 
 let batchGetComponent = (uidArray: array(int), componentMap) =>
   uidArray
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (arr, uid) =>

@@ -112,10 +112,10 @@ let _ =
                   let {dirtyArray, pMatrixMap, gameObjectMap} =
                     state.perspectiveCameraProjectionRecord;
                   (
-                    dirtyArray |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1),
-                    pMatrixMap |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1),
+                    dirtyArray |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
+                    pMatrixMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
                     gameObjectMap
-                    |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1)
+                    |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1)
                   )
                   |> expect == (false, false, false)
                 }
@@ -134,10 +134,10 @@ let _ =
                   let {nearMap, farMap, fovyMap, aspectMap} as record =
                     state.perspectiveCameraProjectionRecord;
                   (
-                    nearMap |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1),
-                    farMap |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1),
-                    fovyMap |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1),
-                    aspectMap |> WonderCommonlib.SparseMapSystem.has(perspectiveCameraProjection1)
+                    nearMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
+                    farMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
+                    fovyMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
+                    aspectMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1)
                   )
                   |> expect == (false, false, false, false)
                 }

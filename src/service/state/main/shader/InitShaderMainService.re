@@ -10,10 +10,10 @@ let _genereateShaderIndex = ({index} as record) => {
 };
 
 let _getShaderIndex = (key: string, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapSystem.get(key);
+  shaderIndexMap |> WonderCommonlib.HashMapService.get(key);
 
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
+  shaderIndexMap |> WonderCommonlib.HashMapService.set(key, shaderIndex);
 
 let _join = (array: array(shaderLib)) => {
   let output = ref("");

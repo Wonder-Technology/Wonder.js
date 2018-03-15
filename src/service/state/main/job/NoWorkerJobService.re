@@ -3,11 +3,11 @@ open MainStateDataType;
 let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: MainStateDataType.state) =>
   NoWorkerJobType.(
     executableJobs
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (list, {name, flags}: executableJob) =>
-             switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
+             switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
              | None => JobService.handleGetNoneJob(name, jobHandleMap)
              | Some(handleFunc) => list @ [(name, handleFunc(flags))]
              }

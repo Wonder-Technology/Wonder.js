@@ -3,7 +3,7 @@ open IndexComponentService;
 open ObjectInstanceType;
 
 let _setSourceInstance = (objectInstance, sourceInstance, sourceInstanceMap) =>
-  sourceInstanceMap |> WonderCommonlib.SparseMapSystem.set(objectInstance, sourceInstance);
+  sourceInstanceMap |> WonderCommonlib.SparseMapService.set(objectInstance, sourceInstance);
 
 let create =
     (sourceInstance, uid, {index, sourceInstanceMap, gameObjectMap, disposedIndexArray} as record) => {

@@ -6,7 +6,7 @@ let _setMapValue = (cameraProjection, dirtyArray, record) => {
 };
 
 let getFovy = (cameraProjection, record) =>
-  WonderCommonlib.SparseMapSystem.get(cameraProjection, record.fovyMap);
+  WonderCommonlib.SparseMapService.get(cameraProjection, record.fovyMap);
 
 let unsafeGetFovy = (cameraProjection, record) =>
   getFovy(cameraProjection, record) |> OptionService.unsafeGet;
@@ -15,11 +15,11 @@ let setFovy = (cameraProjection, fovy: float, {fovyMap, dirtyArray} as record) =
   _setMapValue(
     cameraProjection,
     dirtyArray,
-    {...record, fovyMap: WonderCommonlib.SparseMapSystem.set(cameraProjection, fovy, fovyMap)}
+    {...record, fovyMap: WonderCommonlib.SparseMapService.set(cameraProjection, fovy, fovyMap)}
   );
 
 let getAspect = (cameraProjection, record) =>
-  WonderCommonlib.SparseMapSystem.get(cameraProjection, record.aspectMap);
+  WonderCommonlib.SparseMapService.get(cameraProjection, record.aspectMap);
 
 let unsafeGetAspect = (cameraProjection, record) =>
   getAspect(cameraProjection, record) |> OptionService.unsafeGet;
@@ -30,12 +30,12 @@ let setAspect = (cameraProjection, aspect: float, {aspectMap, dirtyArray} as rec
     dirtyArray,
     {
       ...record,
-      aspectMap: WonderCommonlib.SparseMapSystem.set(cameraProjection, aspect, aspectMap)
+      aspectMap: WonderCommonlib.SparseMapService.set(cameraProjection, aspect, aspectMap)
     }
   );
 
 let getNear = (cameraProjection, record) =>
-  WonderCommonlib.SparseMapSystem.get(cameraProjection, record.nearMap);
+  WonderCommonlib.SparseMapService.get(cameraProjection, record.nearMap);
 
 let unsafeGetNear = (cameraProjection, record) =>
   getNear(cameraProjection, record) |> OptionService.unsafeGet;
@@ -44,11 +44,11 @@ let setNear = (cameraProjection, near: float, {nearMap, dirtyArray} as record) =
   _setMapValue(
     cameraProjection,
     dirtyArray,
-    {...record, nearMap: WonderCommonlib.SparseMapSystem.set(cameraProjection, near, nearMap)}
+    {...record, nearMap: WonderCommonlib.SparseMapService.set(cameraProjection, near, nearMap)}
   );
 
 let getFar = (cameraProjection, record) =>
-  WonderCommonlib.SparseMapSystem.get(cameraProjection, record.farMap);
+  WonderCommonlib.SparseMapService.get(cameraProjection, record.farMap);
 
 let unsafeGetFar = (cameraProjection, record) =>
   getFar(cameraProjection, record) |> OptionService.unsafeGet;
@@ -57,5 +57,5 @@ let setFar = (cameraProjection, far: float, {farMap, dirtyArray} as record) =>
   _setMapValue(
     cameraProjection,
     dirtyArray,
-    {...record, farMap: WonderCommonlib.SparseMapSystem.set(cameraProjection, far, farMap)}
+    {...record, farMap: WonderCommonlib.SparseMapService.set(cameraProjection, far, farMap)}
   );

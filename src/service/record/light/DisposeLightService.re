@@ -100,7 +100,7 @@ let handleBatchDisposeComponent =
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   lightArray
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs] ((record, light) => [@bs] handleDisposeFunc(light, record)),
        record
      )

@@ -43,11 +43,11 @@
 		"rollup": "^0.51.5",
 		"rollup-plugin-commonjs": "^8.2.6",
 		"rollup-plugin-node-resolve": "^2.0.0",
-		"wonder-benchmark": "^0.1.45",
+		"wonder-benchmark": "^0.1.46",
 		"wonder-bs-jest": "latest",
 		"wonder-bs-sinon": "^0.1.6",
 		"wonder-generate-index": "latest",
-		"wonder-glsl-compiler": "^0.1.7",
+		"wonder-glsl-compiler": "^0.1.8",
 		"wonder-most-animation-frame": "0.0.3",
 		"wonder-render-test": "^0.1.15",
 		"puppeteer": "^0.13.0"
@@ -56,11 +56,11 @@
 		"bs-fetch": "^0.2.1",
 		"bs-json": "^0.2.3",
 		"bs-most": "^0.1.1",
-		"wonder-commonlib": "^0.2.19",
+		"wonder-commonlib": "^0.2.20",
 		"wonder-log": "^0.1.1"
 	},
 	"resolutions": {
-		"wonder-commonlib": "0.2.19",
+		"wonder-commonlib": "0.2.20",
 		"wonder-bs-jest": "0.2.17",
 		"wonder-bs-puppeteer": "^0.1.1"
 	}

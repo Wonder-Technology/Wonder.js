@@ -75,7 +75,7 @@ let createStubComputeFuncData = (sandbox, geometry, state: MainStateDataType.sta
   open Sinon;
   let {computeDataFuncMap} = state.boxGeometryRecord;
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
-  computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(geometry, computeDataFunc);
+  computeDataFuncMap |> WonderCommonlib.SparseMapService.set(geometry, computeDataFunc);
   (state, computeDataFunc)
 };
 

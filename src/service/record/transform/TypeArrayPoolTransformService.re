@@ -11,14 +11,14 @@ let addTypeArrayToPool =
     ) => {
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
-    localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
+    localToWorldMatrixMap |> WonderCommonlib.SparseMapService.unsafeGet(transform),
     maxSize,
     TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )
   |> ignore;
   [@bs]
   TypeArrayPoolService.addFloat32TypeArrayToPool(
-    localPositionMap |> WonderCommonlib.SparseMapSystem.unsafeGet(transform),
+    localPositionMap |> WonderCommonlib.SparseMapService.unsafeGet(transform),
     maxSize,
     TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
   )

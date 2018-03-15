@@ -24,8 +24,8 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
     };
   (
     buffer,
-    WonderCommonlib.ArraySystem.range(0, count - 1)
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    WonderCommonlib.ArrayService.range(0, count - 1)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs] ((colors, index) => setColor(index, defaultColor, colors)),
          colors
        )
@@ -49,8 +49,8 @@ let create = () => {
     index: 0,
     buffer,
     colors,
-    mappedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty()
+    mappedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
+    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty()
   }
 };
 

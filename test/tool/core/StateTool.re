@@ -28,9 +28,9 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   |> Js.Array.forEach(
        (map) =>
          map
-         |> WonderCommonlib.SparseMapSystem.set(
+         |> WonderCommonlib.SparseMapService.set(
               index,
-              WonderCommonlib.SparseMapSystem.createEmpty()
+              WonderCommonlib.SparseMapService.createEmpty()
             )
          |> ignore
      )
@@ -38,17 +38,17 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   let copiedState = deepCopyForRestore(state);
   getMapFunc(copiedState)
   |> Js.Array.forEach(
-       (map) => map |> Obj.magic |> WonderCommonlib.SparseMapSystem.deleteVal(index) |> ignore
+       (map) => map |> Obj.magic |> WonderCommonlib.SparseMapService.deleteVal(index) |> ignore
      )
   |> ignore;
   let (sourceArr, targetArr) =
     getMapFunc(state)
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            ((sourceArr, targetArr), map) => {
              sourceArr
-             |> Js.Array.push(map |> WonderCommonlib.SparseMapSystem.unsafeGet(index))
+             |> Js.Array.push(map |> WonderCommonlib.SparseMapService.unsafeGet(index))
              |> ignore;
              targetArr |> Js.Array.push(Js.Undefined.empty |> Obj.magic) |> ignore;
              (sourceArr, targetArr)

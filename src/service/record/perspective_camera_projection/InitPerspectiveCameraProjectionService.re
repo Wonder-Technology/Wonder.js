@@ -8,8 +8,8 @@ let init = ({dirtyArray} as record) =>
   | 0 => record
   | _ =>
     dirtyArray
-    |> WonderCommonlib.ArraySystem.removeDuplicateItems
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.removeDuplicateItems
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs] ((record, dirtyIndex) => _init(dirtyIndex, record)),
          record
        )

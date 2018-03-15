@@ -351,7 +351,7 @@ let _ =
                       let record = Js.Typed_array.Float32Array.fromLength(64 * 16);
                       let transformArr = [|sourceTransform, objectTransform|];
                       ArrayService.range(0, 1)
-                      |> WonderCommonlib.ArraySystem.reduceOneParam(
+                      |> WonderCommonlib.ArrayService.reduceOneParam(
                            [@bs]
                            (
                              (offset, index) => {
@@ -368,7 +368,7 @@ let _ =
                          )
                       |> ignore;
                       ArrayService.range(2, 63)
-                      |> WonderCommonlib.ArraySystem.reduceOneParam(
+                      |> WonderCommonlib.ArrayService.reduceOneParam(
                            [@bs]
                            (
                              (offset, index) => {

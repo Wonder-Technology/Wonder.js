@@ -1,17 +1,17 @@
 
 let getIntersectShaderRelatedMap = (intersectShaderIndexDataArray, currentMap) =>
   intersectShaderIndexDataArray
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (intersectMap, (currentShaderIndex, targetShaderIndex)) => {
            intersectMap
-           |> WonderCommonlib.SparseMapSystem.set(
+           |> WonderCommonlib.SparseMapService.set(
                 targetShaderIndex,
-                currentMap |> WonderCommonlib.SparseMapSystem.unsafeGet(currentShaderIndex)
+                currentMap |> WonderCommonlib.SparseMapService.unsafeGet(currentShaderIndex)
               );
            intersectMap
          }
        ),
-       WonderCommonlib.SparseMapSystem.createEmpty()
+       WonderCommonlib.SparseMapService.createEmpty()
      );

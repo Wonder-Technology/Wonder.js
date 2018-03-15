@@ -21,7 +21,7 @@ let getBufferSizeByType = (type_: string) =>
   };
 
 let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray, state) =>
-  WonderCommonlib.ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
+  WonderCommonlib.ArrayService.isNotEqual(pos, true, vertexAttribHistoryArray) ?
     {
       enableVertexAttribArray(pos, gl);
       Array.unsafe_set(vertexAttribHistoryArray, pos, true);
@@ -55,13 +55,13 @@ let sendMatrix4 =
   );
 
 let _getCache = (shaderCacheMap, name: string) =>
-  shaderCacheMap |> WonderCommonlib.HashMapSystem.get(name);
+  shaderCacheMap |> WonderCommonlib.HashMapService.get(name);
 
 let _setCache = (shaderCacheMap, name: string, record) =>
-  shaderCacheMap |> WonderCommonlib.HashMapSystem.set(name, record);
+  shaderCacheMap |> WonderCommonlib.HashMapService.set(name, record);
 
 let getCacheMap = (shaderIndex: int, {uniformCacheMap}) =>
-  uniformCacheMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
+  uniformCacheMap |> WonderCommonlib.SparseMapService.get(shaderIndex);
 
 let _queryIsNotCacheWithCache = (cache, x, y, z) => {
   let isNotCached = ref(false);

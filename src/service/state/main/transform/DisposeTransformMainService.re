@@ -10,7 +10,7 @@ let isAlive = (transform, {disposedIndexArray}) =>
 let _disposeFromParentAndChildMap = (transform, record) => {
   record
   |> HierachyTransformService.unsafeGetChildren(transform)
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        ((record, child: transform) => HierachyTransformService.removeFromParentMap(child, record)),
        record
@@ -108,7 +108,7 @@ let handleBatchDisposeComponent =
       /* TODO optimize: batch remove parent,child? */
       let (typeArrayPoolRecord, transformRecord) =
         transformArray
-        |> WonderCommonlib.ArraySystem.reduceOneParam(
+        |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
                ((typeArrayPoolRecord, transformRecord), transform) =>

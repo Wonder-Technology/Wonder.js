@@ -1,5 +1,5 @@
 let unsafeGetPMatrix = (index, pMatrixMap) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(index, pMatrixMap)
+  WonderCommonlib.SparseMapService.unsafeGet(index, pMatrixMap)
   |> WonderLog.Contract.ensureCheck(
        (pMatrix) =>
          WonderLog.(
@@ -16,7 +16,7 @@ let unsafeGetPMatrix = (index, pMatrixMap) =>
      );
 
 let setDefaultPMatrix = (index, pMatrixMap) =>
-  WonderCommonlib.SparseMapSystem.set(
+  WonderCommonlib.SparseMapService.set(
     index,
     Matrix4Service.createIdentityMatrix4(),
     pMatrixMap

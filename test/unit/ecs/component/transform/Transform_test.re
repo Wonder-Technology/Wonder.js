@@ -878,12 +878,12 @@ let _ =
                   } =
                     TransformTool.getTransformRecord(state);
                   (
-                    localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.has(transform1),
-                    localPositionMap |> WonderCommonlib.SparseMapSystem.has(transform1),
-                    parentMap |> WonderCommonlib.SparseMapSystem.has(transform1),
-                    childMap |> WonderCommonlib.SparseMapSystem.has(transform1),
-                    dirtyMap |> WonderCommonlib.SparseMapSystem.has(transform1),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(transform1)
+                    localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform1),
+                    localPositionMap |> WonderCommonlib.SparseMapService.has(transform1),
+                    parentMap |> WonderCommonlib.SparseMapService.has(transform1),
+                    childMap |> WonderCommonlib.SparseMapService.has(transform1),
+                    dirtyMap |> WonderCommonlib.SparseMapService.has(transform1),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(transform1)
                   )
                   |> expect == (false, false, false, false, false, false)
                 }

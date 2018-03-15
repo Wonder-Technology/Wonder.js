@@ -55,7 +55,7 @@ let _ =
                        );
                   let {gameObjectMap} = MeshRendererTool.getMeshRendererRecord(state);
                   gameObjectMap
-                  |> WonderCommonlib.SparseMapSystem.has(meshRenderer1)
+                  |> WonderCommonlib.SparseMapService.has(meshRenderer1)
                   |> expect == false
                 }
               );

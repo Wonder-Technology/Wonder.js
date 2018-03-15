@@ -2,14 +2,14 @@ open PerspectiveCameraProjectionType;
 
 let create = () => {
   index: 0,
-  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
-  pMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  nearMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  farMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  fovyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  aspectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
+  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
+  pMatrixMap: WonderCommonlib.SparseMapService.createEmpty(),
+  nearMap: WonderCommonlib.SparseMapService.createEmpty(),
+  farMap: WonderCommonlib.SparseMapService.createEmpty(),
+  fovyMap: WonderCommonlib.SparseMapService.createEmpty(),
+  aspectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
 };
 
 let deepCopyForRestore =

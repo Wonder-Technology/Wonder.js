@@ -6,4 +6,4 @@ let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) 
 );
 
 let isCloned = (geometry, isClonedMap) =>
-  isClonedMap |> WonderCommonlib.SparseMapSystem.has(geometry);
+  isClonedMap |> WonderCommonlib.SparseMapService.has(geometry);

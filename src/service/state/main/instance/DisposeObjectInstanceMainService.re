@@ -13,7 +13,7 @@ let isAlive = (objectInstance, {disposedIndexArray} as objectInstanceRecord) =>
 
 let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceMap}) =>
   sourceInstanceMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(objectInstance)
+  |> WonderCommonlib.SparseMapService.unsafeGet(objectInstance)
   |> WonderLog.Contract.ensureCheck(
        (sourceInstance) =>
          WonderLog.(
@@ -97,7 +97,7 @@ let _batchDisposeObjectInstance =
     (sourceInstance, isUidDisposedMap, disposedUidArr, {sourceInstanceRecord} as state) => {
   let {objectInstanceArrayMap} = sourceInstanceRecord;
   objectInstanceArrayMap
-  |> WonderCommonlib.SparseMapSystem.set(
+  |> WonderCommonlib.SparseMapService.set(
        sourceInstance,
        batchRemoveFromArray(isUidDisposedMap, disposedUidArr)
      )
@@ -135,7 +135,7 @@ let handleBatchDisposeComponent =
               let sourceInstance =
                 _unsafeGetSourceInstance(objectInstanceArray[0], objectInstanceRecord);
               objectInstanceArray
-              |> WonderCommonlib.ArraySystem.forEach(
+              |> WonderCommonlib.ArrayService.forEach(
                    [@bs]
                    (
                      (objectInstance) =>
@@ -165,7 +165,7 @@ let handleBatchDisposeComponent =
       let isGameObjectDisposedMap =
         DisposeECSService.buildMapFromArray(
           disposedUidArr,
-          WonderCommonlib.SparseMapSystem.createEmpty()
+          WonderCommonlib.SparseMapService.createEmpty()
         );
       let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], objectInstanceRecord);
       let state = {...state, objectInstanceRecord};

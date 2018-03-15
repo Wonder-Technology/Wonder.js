@@ -16,7 +16,7 @@ let disableVertexAttribArray = (gl, state: MainStateDataType.state) => {
               () => {
                 let {vertexAttribHistoryArray} = state.glslSenderRecord;
                 vertexAttribHistoryArray
-                |> Js.Array.filter(WonderCommonlib.JudgeUtils.isBool)
+                |> Js.Array.filter(WonderCommonlib.JudgeService.isBool)
                 |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
               }
             )
@@ -42,6 +42,6 @@ let disableVertexAttribArray = (gl, state: MainStateDataType.state) => {
              )
            )
      );
-  record.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
+  record.vertexAttribHistoryArray = WonderCommonlib.ArrayService.createEmpty();
   state
 };

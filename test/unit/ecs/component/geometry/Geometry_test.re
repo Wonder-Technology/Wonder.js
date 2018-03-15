@@ -170,13 +170,13 @@ let _ =
                   } =
                     state.boxGeometryRecord;
                   (
-                    verticesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    normalsMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    indicesMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    configDataMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    isInitMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    computeDataFuncMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                    verticesMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    normalsMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    indicesMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    configDataMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    isInitMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    computeDataFuncMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(geometry1)
                   )
                   |> expect == (false, false, false, false, false, false, false)
                 }
@@ -204,9 +204,9 @@ let _ =
                   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
                     VboBufferTool.getVboBufferRecord(state);
                   (
-                    vertexBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    normalBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
-                    elementArrayBufferMap |> WonderCommonlib.SparseMapSystem.has(geometry1)
+                    vertexBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    normalBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                    elementArrayBufferMap |> WonderCommonlib.SparseMapService.has(geometry1)
                   )
                   |> expect == (false, false, false)
                 }
@@ -220,12 +220,12 @@ let _ =
                     StateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                    |> WonderCommonlib.SparseMapService.unsafeGet(
                          BoxGeometryTool.getDefaultVertices() |> Float32Array.length
                        )
                     |> Js.Array.length,
                     uint16ArrayPoolMap
-                    |> WonderCommonlib.SparseMapSystem.unsafeGet(
+                    |> WonderCommonlib.SparseMapService.unsafeGet(
                          BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
                        )
                     |> Js.Array.length

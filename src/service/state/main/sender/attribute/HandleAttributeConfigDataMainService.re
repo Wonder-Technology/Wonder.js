@@ -59,7 +59,7 @@ let _readAttributes = ((gl, program, attributeLocationMap), sendDataArrTuple, at
   | None => sendDataArrTuple
   | Some(attributes) =>
     attributes
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (sendDataArrTuple, {name, buffer, type_}) =>
@@ -91,7 +91,7 @@ let _readAttributes = ((gl, program, attributeLocationMap), sendDataArrTuple, at
 
 let _readAttributeSendData = (shaderLibDataArr, gl, program, attributeLocationMap) =>
   shaderLibDataArr
-  |> WonderCommonlib.ArraySystem.reduceOneParam(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (sendDataArrTuple, {variables}) =>
@@ -107,9 +107,9 @@ let _readAttributeSendData = (shaderLibDataArr, gl, program, attributeLocationMa
 let _setToAttributeSendMap =
     (shaderIndex, attributeLocationMap, state, (sendDataArr, instanceSendNoCachableDataArr)) => {
   let {attributeSendDataMap, instanceAttributeSendDataMap} = state.glslSenderRecord;
-  attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr) |> ignore;
+  attributeSendDataMap |> WonderCommonlib.SparseMapService.set(shaderIndex, sendDataArr) |> ignore;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendNoCachableDataArr)
+  |> WonderCommonlib.SparseMapService.set(shaderIndex, instanceSendNoCachableDataArr)
   |> ignore;
   state
 };
@@ -129,7 +129,7 @@ let addAttributeSendData =
               Log.buildAssertMessage(~expect={j|not be added before|j}, ~actual={j|be|j}),
               () =>
                 state.glslSenderRecord.attributeSendDataMap
-                |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+                |> WonderCommonlib.SparseMapService.get(shaderIndex)
                 |> assertNotExist
             )
           )
@@ -149,7 +149,7 @@ let addAttributeSendData =
 let unsafeGetAttributeSendData = (shaderIndex: int, state: MainStateDataType.state) => {
   let {attributeSendDataMap} = state.glslSenderRecord;
   attributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
        (sendData) =>
          WonderLog.(
@@ -172,7 +172,7 @@ let unsafeGetAttributeSendData = (shaderIndex: int, state: MainStateDataType.sta
 let unsafeGetInstanceAttributeSendData = (shaderIndex: int, state: MainStateDataType.state) => {
   let {instanceAttributeSendDataMap} = state.glslSenderRecord;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
        (sendData) =>
          WonderLog.(

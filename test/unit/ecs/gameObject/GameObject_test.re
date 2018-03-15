@@ -754,9 +754,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {transformMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -781,9 +781,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {meshRendererMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            meshRendererMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            meshRendererMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                            meshRendererMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -812,9 +812,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {boxGeometryMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            boxGeometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                            boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -838,11 +838,11 @@ let _ =
                               let state = state |> disposeGameObject(gameObject2);
                               let {basicMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
-                                basicMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                                basicMaterialMap |> WonderCommonlib.SparseMapService.has(gameObject1),
                                 basicMaterialMap
-                                |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                                |> WonderCommonlib.SparseMapService.has(gameObject2),
                                 basicMaterialMap
-                                |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                                |> WonderCommonlib.SparseMapService.has(gameObject3)
                               )
                               |> expect == (false, false, true)
                             }
@@ -863,11 +863,11 @@ let _ =
                               let state = state |> disposeGameObject(gameObject2);
                               let {lightMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
-                                lightMaterialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                                lightMaterialMap |> WonderCommonlib.SparseMapService.has(gameObject1),
                                 lightMaterialMap
-                                |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                                |> WonderCommonlib.SparseMapService.has(gameObject2),
                                 lightMaterialMap
-                                |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                                |> WonderCommonlib.SparseMapService.has(gameObject3)
                               )
                               |> expect == (false, false, true)
                             }
@@ -887,9 +887,9 @@ let _ =
                             let state = state |> disposeGameObject(gameObject2);
                             let lightMap = getDataMapFunc(GameObjectTool.getGameObjectRecord(state));
                             (
-                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                              lightMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                              lightMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                              lightMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                              lightMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                             )
                             |> expect == (false, false, true)
                           };
@@ -943,9 +943,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {basicCameraViewMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            basicCameraViewMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            basicCameraViewMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            basicCameraViewMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                            basicCameraViewMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            basicCameraViewMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                            basicCameraViewMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -962,8 +962,8 @@ let _ =
                           let state = state |> disposeGameObject(gameObject1);
                           let {sourceInstanceMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(gameObject2)
+                            sourceInstanceMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            sourceInstanceMap |> WonderCommonlib.SparseMapService.has(gameObject2)
                           )
                           |> expect == (false, true)
                         }
@@ -981,9 +981,9 @@ let _ =
                           let {objectInstanceMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             objectInstanceMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceGameObject1),
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceGameObject1),
                             objectInstanceMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceGameObject2)
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceGameObject2)
                           )
                           |> expect == (false, true)
                         }
@@ -1008,10 +1008,10 @@ let _ =
                           let state = state |> disposeGameObject(gameObject4);
                           let {transformMap} = GameObjectTool.getGameObjectRecord(state);
                           (
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3),
-                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject4)
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject3),
+                            transformMap |> WonderCommonlib.SparseMapService.has(gameObject4)
                           )
                           |> expect == (false, false, false, false)
                         }
@@ -1030,9 +1030,9 @@ let _ =
                       let state = state |> disposeGameObject(gameObject3);
                       let {disposedUidMap} = GameObjectTool.getGameObjectRecord(state);
                       (
-                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
+                        disposedUidMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                        disposedUidMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                        disposedUidMap |> WonderCommonlib.SparseMapService.has(gameObject3)
                       )
                       |> expect == (false, false, true)
                     }
@@ -1239,13 +1239,13 @@ let _ =
                             ObjectInstanceTool.getObjectInstanceRecord(state);
                           (
                             sourceInstanceMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[0]),
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
                             sourceInstanceMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[1]),
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1]),
                             gameObjectMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[0]),
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
                             sourceInstanceMap
-                            |> WonderCommonlib.SparseMapSystem.has(objectInstanceArr[1])
+                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1])
                           )
                           |> expect == (false, false, false, false)
                         }
@@ -1266,7 +1266,7 @@ let _ =
                           let {objectInstanceArrayMap} =
                             SourceInstanceTool.getSourceInstanceRecord(state);
                           objectInstanceArrayMap
-                          |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
+                          |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
                           |> expect == [||]
                         }
                       )
@@ -1332,9 +1332,9 @@ let _ =
                             SourceInstanceTool.getSourceInstanceRecord(state);
                           (
                             objectInstanceArrayMap
-                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
+                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
                             objectInstanceArrayMap
-                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
+                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
                           )
                           |> expect == (false, false)
                         }
@@ -1362,9 +1362,9 @@ let _ =
                           let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
                           (
                             matrixInstanceBufferMap
-                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[0]),
+                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
                             matrixInstanceBufferMap
-                            |> WonderCommonlib.SparseMapSystem.has(sourceInstanceArr[1])
+                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
                           )
                           |> expect == (false, false)
                         }
@@ -1397,10 +1397,10 @@ let _ =
                   let {transformMap, disposeCount} = GameObjectTool.getGameObjectRecord(state);
                   (
                     disposeCount,
-                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
-                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
-                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3),
-                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject4)
+                    transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
+                    transformMap |> WonderCommonlib.SparseMapService.has(gameObject2),
+                    transformMap |> WonderCommonlib.SparseMapService.has(gameObject3),
+                    transformMap |> WonderCommonlib.SparseMapService.has(gameObject4)
                   )
                   |> expect == (0, false, false, false, false)
                 }

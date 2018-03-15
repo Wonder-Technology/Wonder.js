@@ -9,7 +9,7 @@ open ModelMatrixTransformService;
 open DirtyTransformService;
 
 let _clearCache = (record) => {
-  record.normalMatrixCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  record.normalMatrixCacheMap = WonderCommonlib.SparseMapService.createEmpty();
   record
 };
 

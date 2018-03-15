@@ -1,17 +1,17 @@
 open MainStateDataType;
 
 let create = () => {
-  attributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  instanceAttributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformRenderObjectSendModelDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformRenderObjectSendMaterialDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformShaderSendNoCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformShaderSendCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformShaderSendCachableFunctionDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  uniformInstanceSendNoCachableDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  /* drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
-  vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
+  attributeSendDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  instanceAttributeSendDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformRenderObjectSendModelDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformRenderObjectSendMaterialDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformShaderSendNoCachableDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformShaderSendCachableDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformShaderSendCachableFunctionDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  uniformInstanceSendNoCachableDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  /* drawPointsFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
+  vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
   lastSendMaterial: None,
   lastSendGeometry: None
 };

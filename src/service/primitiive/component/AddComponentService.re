@@ -1,4 +1,4 @@
 open ComponentType;
 
 let addComponentToGameObjectMap = (component, gameObjectUid: int, gameObjectMap) =>
-  WonderCommonlib.SparseMapSystem.set(component, gameObjectUid, gameObjectMap);
+  WonderCommonlib.SparseMapService.set(component, gameObjectUid, gameObjectMap);

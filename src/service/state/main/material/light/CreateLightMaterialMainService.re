@@ -5,7 +5,7 @@ open MainStateDataType;
 open LightMaterialType;
 
 let _setDefaultShininess = (index: int, map) =>
-  map |> WonderCommonlib.SparseMapSystem.set(index, 32.);
+  map |> WonderCommonlib.SparseMapService.set(index, 32.);
 
 let _initDataWhenCreate = (index, {diffuseColorMap, specularColorMap, shininessMap} as record) =>
   ColorMapService.{

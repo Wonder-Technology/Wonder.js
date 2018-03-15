@@ -35,7 +35,7 @@ let _disposeData =
         isSendTransformMatrixDataMap,
         gameObjectMap
       } as record = sourceInstanceRecord;
-  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapSystem.get(sourceInstance)) {
+  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
   | Some(typeArr) =>
     [@bs]
     TypeArrayPoolService.addFloat32TypeArrayToPool(

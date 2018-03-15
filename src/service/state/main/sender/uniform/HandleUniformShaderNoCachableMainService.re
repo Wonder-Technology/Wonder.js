@@ -43,7 +43,7 @@ let addUniformSendDataByType =
 let setToUniformSendMap =
     (shaderIndex, uniformShaderSendNoCachableDataMap, shaderSendNoCachableDataArr) =>
   uniformShaderSendNoCachableDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendNoCachableDataArr);
+  |> WonderCommonlib.SparseMapService.set(shaderIndex, shaderSendNoCachableDataArr);
 
 let unsafeGetUniformSendData = (shaderIndex: int, state: MainStateDataType.state) =>
   HandleUniformConfigDataMapService.unsafeGetUniformSendData(

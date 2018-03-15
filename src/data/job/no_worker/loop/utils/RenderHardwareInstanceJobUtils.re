@@ -10,7 +10,7 @@ let _fillObjectInstanceData =
     (objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc, stateOffsetTuple) => {
   let (state, offset) =
     objectInstanceArray
-    |> WonderCommonlib.ArraySystem.reduceOneParam(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (stateOffsetTuple, objectInstance) =>

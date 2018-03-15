@@ -37,8 +37,8 @@ let _ =
                   let {sourceInstanceMap, gameObjectMap} =
                     ObjectInstanceTool.getObjectInstanceRecord(state);
                   (
-                    sourceInstanceMap |> WonderCommonlib.SparseMapSystem.has(objectInstance),
-                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(objectInstance)
+                    sourceInstanceMap |> WonderCommonlib.SparseMapService.has(objectInstance),
+                    gameObjectMap |> WonderCommonlib.SparseMapService.has(objectInstance)
                   )
                   |> expect == (false, false)
                 }
@@ -58,8 +58,8 @@ let _ =
                        );
                   let {objectInstanceArrayMap} = SourceInstanceTool.getSourceInstanceRecord(state);
                   objectInstanceArrayMap
-                  |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
-                  |> WonderCommonlib.SparseMapSystem.has(objectInstance)
+                  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
+                  |> WonderCommonlib.SparseMapService.has(objectInstance)
                   |> expect == false
                 }
               )

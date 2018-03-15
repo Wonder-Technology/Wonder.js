@@ -471,7 +471,7 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: MainSta
         Contract.(
           Operators.(
             gameObjectArray
-            |> WonderCommonlib.ArraySystem.forEach(
+            |> WonderCommonlib.ArrayService.forEach(
                  [@bs] ((gameObject) => _checkGameObjectShouldAlive(gameObject, state))
                )
           )
