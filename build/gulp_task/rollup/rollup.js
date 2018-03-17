@@ -54,7 +54,7 @@ gulp.task("rollup", function () {
 
 gulp.task("rollupRenderWorker", function () {
     var inputConfig = {
-        input: "./lib/es6_global/src/renderer/worker/RenderWorkerIndex.js",
+        input: "./lib/es6_global/src/worker/render/RenderWorkerIndex.js",
         plugins: [
             nodeResolve({
                 skip: [

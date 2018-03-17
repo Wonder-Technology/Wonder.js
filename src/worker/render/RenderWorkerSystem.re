@@ -56,7 +56,7 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        break; */
 /* let onmessage = (e: renderWorkerMessageEvent) => { */
 /* let onmessage = (e) => {
-     let record = e##record;
+     let record = e##data;
      switch record##operateType {
      | INIT_GL =>
        WonderLog.Log.print(("record:", record)) |> ignore;
@@ -78,17 +78,17 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
    }; */
 /* TODO refactor: extract function */
 MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
-|> Most.filter((e) => e##record##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
+|> Most.filter((e) => e##data##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
 |> Most.concatMap(
      (e) =>
        WorkerJobService.getRenderWorkerJobStreamArr(
-         e##record##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
-         e##record##jobs |> Js.Json.parseExn |> Obj.magic,
+         e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
+         e##data##jobs |> Js.Json.parseExn |> Obj.magic,
          RenderWorkerStateData.renderWorkerStateData
        )
        |> ArrayService.push(
             MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
-            |> Most.filter((e) => e##record##operateType === "loop" |> Js.Boolean.to_js_boolean)
+            |> Most.filter((e) => e##data##operateType === "loop" |> Js.Boolean.to_js_boolean)
             |> Most.map((e) => Some(e))
             |> Most.tap(
                  (e) =>
