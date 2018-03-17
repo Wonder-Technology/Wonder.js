@@ -1,5 +1,3 @@
-open MainStateDataType;
-
 let getMainInitJobStream = (stateData, state: MainStateDataType.state) =>
   OperateWorkerJobService.getMainInitJobStream(
     WorkerJobHandleSystem.createMainInitJobHandleMap(),
@@ -8,7 +6,8 @@ let getMainInitJobStream = (stateData, state: MainStateDataType.state) =>
     WorkerJobHandleSystem.getMainInitJobHandle
   );
 
-let getRenderWorkerJobStreamArr = (pipelineJobs, workerJobs, stateData) =>
+let getRenderWorkerJobStreamArr =
+    (pipelineJobs, workerJobs, stateData: RenderWorkerStateDataType.renderWorkerStateData) =>
   OperateWorkerJobService.getRenderWorkerJobStreamArr(
     pipelineJobs,
     workerJobs,

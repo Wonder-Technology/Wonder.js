@@ -132,18 +132,19 @@ let getMainInitJobStream = (jobHandleMap, stateData, record, getJobHandleFunc) =
       ); */
 let getSetting = (record) => _unsafeGetWorkerJobConfig(record).setting;
 
-let _getWorkerPipelineJobs = (record) => {
-  let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(record);
-  /* _getPipeline(setting.workerPipeline, workerPipelines).jobs */
+let _getRenderWorkerPipelineJobs = (workerPipeline, workerPipelines) =>
   JobConfigService.unsafeFindFirst(
     workerPipelines,
-    setting.workerPipeline,
-    ({name}) => JobConfigService.filterTargetName(name, setting.workerPipeline)
+    workerPipeline,
+    ({name}) => JobConfigService.filterTargetName(name, workerPipeline)
   ).
-    jobs
-};
+    jobs.
+    render;
 
-let getRenderWorkerPipelineJobs = (record) => _getWorkerPipelineJobs(record).render;
+let getRenderWorkerPipelineJobs = (record) => {
+  let {setting, workerPipelines} = _unsafeGetWorkerJobConfig(record);
+  _getRenderWorkerPipelineJobs(setting.workerPipeline, workerPipelines)
+};
 
 let getWorkerJobs = (record) => _unsafeGetWorkerJobConfig(record).workerJobs;
 
@@ -155,13 +156,14 @@ let _getExecutableWorkerJob = (jobs, jobItemName) =>
       JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
-let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), getJobHandleFunc) =>
+let _buildWorkerStreamFuncArr =
+    ((jobHandleMap, pipelineSubJobs, stateData, jobs), getJobHandleFunc) =>
   RenderWorkerStateDataType.(
-    pipelineJobs
+    pipelineSubJobs
     |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
-           (streamArr, {name: jobName}) => {
+           (streamArr, {name: jobName} as job) => {
              let {flags} = _getExecutableWorkerJob(jobs, jobName);
              let handleFunc = getJobHandleFunc(jobName, jobHandleMap);
              streamArr |> ArrayService.push(handleFunc(flags))
@@ -172,7 +174,7 @@ let _buildWorkerStreamFuncArr = ((jobHandleMap, pipelineJobs, stateData, jobs), 
   );
 
 let getRenderWorkerJobStreamArr =
-    (pipelineJobs, workerJobs, jobHandleMap, stateData, getJobHandleFunc) => {
+    (pipelineJobs, workerJobs, jobHandleMap, stateData, getJobHandleFunc) =>
   /* let {setting, workerPipelines, workerJobs} = _unsafeGetWorkerJobConfig(state);
      let {jobs} = _getPipeline(setting.worker_pipeline, workerPipelines); */
   /* let state = StateRenderService.getState(stateData); */
@@ -182,16 +184,15 @@ let getRenderWorkerJobStreamArr =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (streamArr, jobs) =>
+         (streamArr, pipelineSubJobs) =>
            streamArr
            |> ArrayService.push(
                 _buildWorkerStreamFuncArr(
-                  (jobHandleMap, jobs, stateData, workerJobs),
+                  (jobHandleMap, pipelineSubJobs, stateData, workerJobs),
                   getJobHandleFunc
                 )
                 |> MostUtils.concatStreamFuncArray(stateData)
               )
        ),
        [||]
-     )
-};
+     );

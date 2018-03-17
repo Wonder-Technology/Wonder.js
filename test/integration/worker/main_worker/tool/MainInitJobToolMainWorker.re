@@ -13,10 +13,10 @@ let setFakeWorkers = (state) =>
 
 let prepare = () => setFakeWorkers(StateTool.getState());
 
-let test = (sandbox, judgeFunc, state) => {
+let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   open Js.Promise;
-  let renderWorker = WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state);
-  let postMessageToRenderWorker = WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
+  let worker = getWorkerFunc(state);
+  let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
   StateTool.getState()
   |> WorkerJobToolWorker.getMainInitJobStream(StateTool.getStateData())
   |> Most.forEach(
@@ -24,20 +24,20 @@ let test = (sandbox, judgeFunc, state) => {
          switch record {
          | Some("SEND_JOB_DATA") =>
            EventToolWorker.triggerWorkerEvent(
-             renderWorker,
+             worker,
              "message",
-             {"record": {"operateType": "FINISH_SEND_JOB_DATA"}}
+             {"data": {"operateType": "FINISH_SEND_JOB_DATA"}}
            )
            |> ignore
          | Some("INIT_RENDER") =>
            EventToolWorker.triggerWorkerEvent(
-             renderWorker,
+             worker,
              "message",
-             {"record": {"operateType": "FINISH_INIT_RENDER"}}
+             {"data": {"operateType": "FINISH_INIT_RENDER"}}
            )
            |> ignore
          | _ => ()
          }
      )
-  |> then_(() => judgeFunc(postMessageToRenderWorker) |> resolve)
+  |> then_(() => judgeFunc(postMessageToWorker) |> resolve)
 };
