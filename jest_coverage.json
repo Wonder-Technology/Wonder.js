@@ -17,8 +17,6 @@
     "<rootDir>/lib/es6_global/src/service/atom/",
     "<rootDir>/lib/es6_global/src/external/",
     "<rootDir>/lib/es6_global/src/.+/LoaderManager\\.js",
-    "<rootDir>/lib/es6_global/src/.+/.*Worker.*",
-    "<rootDir>/lib/es6_global/src/.+/.*ReWo.*",
     "<rootDir>/lib/es6_global/src/Index.*"
   ],
   "collectCoverageFrom": [
