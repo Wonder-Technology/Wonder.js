@@ -94,12 +94,12 @@ let createStateAndSetToStateData =
       ~useWorker="false",
       ()
     ) => {
-  let stateData = StateTool.getStateData();
+  let stateData = MainStateTool.getStateData();
   ParseSettingService.convertToRecord(
     buildSetting(isDebug, canvasId, context, useHardwareInstance, useWorker) |> Js.Json.parseExn
   )
   |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
-  |> StateTool.setState
+  |> MainStateTool.setState
 };
 
 let setMemory = (state: MainStateDataType.state, ~maxDisposeCount=1000, ()) => {

@@ -1,5 +1,7 @@
 open Wonder_jest;
 
+open Js.Promise;
+
 let _ =
   describe(
     "SendFinishSendJobRenderWorkerJob",
@@ -8,11 +10,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      beforeEach(
-        () => {
-          sandbox := createSandbox();
-        }
-      );
+      beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "send data to main worker",
@@ -20,22 +18,19 @@ let _ =
           testPromise(
             "test send data",
             () => {
-              /* TODO refactor: move to test tool */
-              open Js.Promise;
-              /* TODO use tool instead of service (all) */
-              let worker = WorkerService.getSelf();
+              let worker = WorkerToolRenderWorker.getSelf();
               let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
               let flag = Some([|"FINISH_SEND_JOB_DATA"|]);
               SendFinishSendJobDataRenderWorkerJob.execJob(
                 flag,
                 None,
-                RenderWorkerStateData.renderWorkerStateData
+                RenderWorkerStateTool.getStateData()
               )
               |> Most.drain
               |> then_(
                    () =>
                      postMessageToWorker
-                     |> withOneArg({"operateType": OptionService.unsafeGet(flag)[0]})
+                     |> withOneArg({"operateType": OptionTool.unsafeGet(flag)[0]})
                      |> expect
                      |> toCalledOnce
                      |> resolve

@@ -10,7 +10,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       let _prepareGLSLSenderData = (state) => {
         open MainStateDataType;
         let {attributeSendDataMap, vertexAttribHistoryArray} =
@@ -67,8 +67,8 @@ let _ =
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
-                    _prepareGLSLSenderData(StateTool.createNewCompleteState(sandbox));
-                  let newState = StateTool.restore(currentState, state);
+                    _prepareGLSLSenderData(MainStateTool.createNewCompleteState(sandbox));
+                  let newState = MainStateTool.restore(currentState, state);
                   let {lastSendMaterial, lastSendGeometry} =
                     newState |> GLSLSenderTool.getGLSLSenderRecord;
                   (lastSendMaterial, lastSendGeometry) |> expect == (None, None)
@@ -81,8 +81,8 @@ let _ =
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
-                    _prepareGLSLSenderData(StateTool.createNewCompleteState(sandbox));
-                  let newState = StateTool.restore(currentState, state);
+                    _prepareGLSLSenderData(MainStateTool.createNewCompleteState(sandbox));
+                  let newState = MainStateTool.restore(currentState, state);
                   let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderRecord;
                   vertexAttribHistoryArray |> expect == WonderCommonlib.ArrayService.createEmpty()
                 }
@@ -100,12 +100,12 @@ let _ =
                     () => {
                       open ShaderType;
                       let (state, shaderIndex1, shaderIndex2) = _prepareShaderData(state^);
-                      let currentState = StateTool.createNewCompleteState(sandbox);
+                      let currentState = MainStateTool.createNewCompleteState(sandbox);
                       TestTool.openContractCheck();
                       currentState.glslRecord.precision = Some("aaa");
                       expect(
                         () => {
-                          let _ = StateTool.restore(currentState, state);
+                          let _ = MainStateTool.restore(currentState, state);
                           ()
                         }
                       )
@@ -125,8 +125,8 @@ let _ =
                   open ProgramType;
                   let (state, shaderIndex1, program1) = _prepareProgramData(state^);
                   let (currentState, _, _) =
-                    _prepareProgramData(StateTool.createNewCompleteState(sandbox));
-                  let newState = StateTool.restore(currentState, state);
+                    _prepareProgramData(MainStateTool.createNewCompleteState(sandbox));
+                  let newState = MainStateTool.restore(currentState, state);
                   let {lastUsedProgram} = newState |> ProgramTool.getProgramRecord;
                   lastUsedProgram |> expect == None
                 }
@@ -183,7 +183,7 @@ let _ =
                          );
                     let currentState = currentState |> GameObjectTool.initGameObject(gameObject);
                     let initShaderCount = getCallCount(currentStateCreateProgram);
-                    let _ = StateTool.restore(currentState, copiedState);
+                    let _ = MainStateTool.restore(currentState, copiedState);
                     (currentStateCreateProgram, initShaderCount)
                   };
                   test(
@@ -193,9 +193,9 @@ let _ =
                       let state =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let state = state |> InitRenderJobTool.exec;
-                      let copiedState = StateTool.deepCopyForRestore(state);
+                      let copiedState = MainStateTool.deepCopyForRestore(state);
                       let currentState =
-                        StateTool.createNewCompleteStateWithRenderConfig(sandbox);
+                        MainStateTool.createNewCompleteStateWithRenderConfig(sandbox);
                       let (currentState, gameObject) =
                         _prepareBasicMaterialGameObject(sandbox, currentState);
                       let (currentStateCreateProgram, initShaderCount) =
@@ -215,9 +215,9 @@ let _ =
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = state |> InitRenderJobTool.exec;
-                          let copiedState = StateTool.deepCopyForRestore(state);
+                          let copiedState = MainStateTool.deepCopyForRestore(state);
                           let currentState =
-                            StateTool.createNewCompleteStateWithRenderConfig(sandbox);
+                            MainStateTool.createNewCompleteStateWithRenderConfig(sandbox);
                           let (currentState, gameObject) =
                             _prepareBasicMaterialGameObject(sandbox, currentState);
                           let (currentStateCreateProgram, initShaderCount) =
@@ -238,7 +238,7 @@ let _ =
                               let state =
                                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                               let state = state |> InitRenderJobTool.exec;
-                              let copiedState = StateTool.deepCopyForRestore(state);
+                              let copiedState = MainStateTool.deepCopyForRestore(state);
                               let currentState = state;
                               let (currentState, gameObject) =
                                 _prepareBasicMaterialGameObject(sandbox, currentState);
@@ -399,8 +399,8 @@ let _ =
                       currentLocationTuple,
                       currentSenderTuple
                     ) =
-                      _prepareState2(StateTool.createNewCompleteState(sandbox));
-                    let newState = StateTool.restore(currentState, targetState);
+                      _prepareState2(MainStateTool.createNewCompleteState(sandbox));
+                    let newState = MainStateTool.restore(currentState, targetState);
                     (
                       newState,
                       (

@@ -1,0 +1,1 @@
+let getSelf = WorkerService.getSelf;

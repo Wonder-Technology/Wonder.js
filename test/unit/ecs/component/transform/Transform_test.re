@@ -10,7 +10,7 @@ let _ =
       open! Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       let _judgeOneToOne =
           ((parent, child), (parentLocalPos, parentPos), (childLocalPos, childPos), state) =>
         (
@@ -68,7 +68,7 @@ let _ =
                  let _buildState = (index) =>
                    MainStateDataType.{
                      ...state^,
-                     transformRecord: Some({...OptionService.unsafeGet(state^.transformRecord), index})
+                     transformRecord: Some({...OptionTool.unsafeGet(state^.transformRecord), index})
                    };
                  beforeEach(
                    () =>

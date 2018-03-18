@@ -14,7 +14,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -217,7 +217,7 @@ let _ =
                   open TypeArrayPoolType;
                   let (state, gameObject1, geometry1) = _prepare(state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                    StateTool.getState().typeArrayPoolRecord;
+                    MainStateTool.getState().typeArrayPoolRecord;
                   (
                     float32ArrayPoolMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(

@@ -100,7 +100,7 @@ let _ =
                       LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                       |> then_(
                            () => {
-                             let state = StateTool.getState();
+                             let state = MainStateTool.getState();
                              (
                                NoWorkerJobConfigTool.getSetting(state),
                                NoWorkerJobConfigTool.getInitPipelines(state),
@@ -195,7 +195,7 @@ let _ =
                   LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                   |> then_(
                        () => {
-                         let state = StateTool.getState();
+                         let state = MainStateTool.getState();
                          RenderConfigTool.getShaders(state).static_branchs
                          |>
                          expect == [|
@@ -228,7 +228,7 @@ let _ =
                   LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                   |> then_(
                        () => {
-                         let state = StateTool.getState();
+                         let state = MainStateTool.getState();
                          RenderConfigTool.getShaderLibs(state)[0]
                          |>
                          expect == {
@@ -278,7 +278,7 @@ let _ =
                       LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
                       |> then_(
                            () => {
-                             let state = StateTool.getState();
+                             let state = MainStateTool.getState();
                              NoWorkerJobConfigTool.getSetting(state)
                              |> expect == {initPipeline: "default", loopPipeline: "default"}
                              |> resolve

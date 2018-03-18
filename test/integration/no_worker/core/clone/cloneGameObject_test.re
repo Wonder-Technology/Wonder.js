@@ -12,7 +12,7 @@ let _ =
       open! Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       let _cloneGameObject = (gameObject, count, state) =>
         CloneTool.cloneGameObject(gameObject, count, false, state);
       let _getClonedTransformMatrixDataArr = (gameObject, count, state) => {

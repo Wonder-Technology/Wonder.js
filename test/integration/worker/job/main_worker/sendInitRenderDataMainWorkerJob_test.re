@@ -13,7 +13,7 @@ let _ =
           sandbox := createSandbox();
           TestToolMainWorker.initWithJobConfig(
             ~sandbox,
-            ~workerJobRecord=WorkerJobConfigToolWorker.buildWorkerJobConfig(),
+            ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
             ()
           )
         }
@@ -36,7 +36,7 @@ let _ =
                  )
           );
           testPromise(
-            "send after send job data",
+            "test send after send job data",
             () =>
               MainInitJobToolMainWorker.prepare()
               |> MainInitJobToolMainWorker.test(

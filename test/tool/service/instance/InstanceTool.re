@@ -23,4 +23,4 @@ let setGPUDetectDataAllowBatchInstance = (state) => {
   gpuDetectRecord: {...state.gpuDetectRecord, extensionInstancedArrays: None}
 };
 
-let getExtensionInstancedArrays = (state) => GPUDetectTool.getData(state).extensionInstancedArrays |> OptionService.unsafeGet;
+let getExtensionInstancedArrays = (state) => GPUDetectTool.getData(state).extensionInstancedArrays |> OptionTool.unsafeGet;

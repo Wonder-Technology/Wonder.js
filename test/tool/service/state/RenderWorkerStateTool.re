@@ -1,0 +1,1 @@
+let getStateData = () => RenderWorkerStateData.renderWorkerStateData;

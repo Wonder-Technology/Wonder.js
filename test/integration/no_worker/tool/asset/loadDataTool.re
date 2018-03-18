@@ -12,7 +12,7 @@ let load =
       ~nextFunc=(record) => (),
       ()
     ) =>
-  StateTool.getStateData()
+  MainStateTool.getStateData()
   |> LoaderManagerSystem.load(jsonPathArr, fetchFunc)
   /* |> Most.subscribe({"next": (record) => {}, "error": (e) => {}, "complete": () => { */
   /* |> Most.subscribe({"next": nextFunc, "error": errorFunc, "complete": completeFunc}); */

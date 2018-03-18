@@ -2,6 +2,8 @@ open Wonder_jest;
 
 open WorkerJobType;
 
+open Js.Promise;
+
 let _ =
   describe(
     "CreateWorkerInstanceMainWorkerJob",
@@ -18,39 +20,24 @@ let _ =
           testPromise(
             "create render worker",
             () => {
-              /* TODO refactor: move to test tool */
-              open Js.Promise;
               let workerFileDir = "./worker/";
-              let state = StateTool.getState();
-              let state = {
-                ...state,
-                workerJobRecord:
-                  RecordWorkerJobService.create((
-                    {workerFileDir, mainInitPipeline: "", workerPipeline: ""} |> Obj.magic,
-                    Obj.magic(1),
-                    Obj.magic(1),
-                    Obj.magic(1),
-                    Obj.magic(1)
-                  ))
-              };
-              let state = StateTool.setState(state);
-              let _buildFakeWorker = [%bs.raw
-                {|
-  function build(){
-  function Worker(path) {
-    this.path = path;
-  }
-
-  window.Worker = Worker;
-  }
-  |}
-              ];
-              _buildFakeWorker();
-              CreateWorkerInstanceMainWorkerJob.execJob(None, StateTool.getStateData())
+              let state = MainStateTool.getState();
+              let state =
+                state
+                |> WorkerJobTool.createWithRecord((
+                     {workerFileDir, mainInitPipeline: "", workerPipeline: ""} |> Obj.magic,
+                     Obj.magic(1),
+                     Obj.magic(1),
+                     Obj.magic(1),
+                     Obj.magic(1)
+                   ));
+              let state = MainStateTool.setState(state);
+              WorkerToolMainWorker.buildFakeWorker();
+              CreateWorkerInstanceMainWorkerJob.execJob(None, MainStateTool.getStateData())
               |> Most.drain
               |> then_(
                    () => {
-                     let state = StateTool.getState();
+                     let state = MainStateTool.getState();
                      Obj.magic(WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state))##path
                      |> expect == {j|$(workerFileDir)wd.render.worker.js|j}
                      |> resolve

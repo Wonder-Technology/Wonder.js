@@ -10,7 +10,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       let _prepareOne = (state) => MeshRendererTool.createGameObject(state);
       let _prepareTwo = (state) => {
         let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state);

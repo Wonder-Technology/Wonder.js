@@ -8,7 +8,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -72,7 +72,7 @@ let _ =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
               let shaderIndex = BasicMaterialTool.unsafeGetShaderIndex(material, state);
-              state |> ProgramTool.getProgram(shaderIndex) |> OptionService.unsafeGet |> expect == program
+              state |> ProgramTool.getProgram(shaderIndex) |> OptionTool.unsafeGet |> expect == program
             }
           );
           describe(

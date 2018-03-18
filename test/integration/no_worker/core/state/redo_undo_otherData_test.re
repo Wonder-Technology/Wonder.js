@@ -10,7 +10,7 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      let state = ref(StateTool.createState());
+      let state = ref(MainStateTool.createState());
       let _prepareDeviceManagerData = (state) => {
         open DeviceManagerType;
         let record = DeviceManagerTool.getDeviceManagerRecord(state);
@@ -88,7 +88,7 @@ let _ =
                 () => {
                   open DeviceManagerType;
                   let (state, gl, _) = _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
                   let {gl}: deviceManagerRecord =
                     DeviceManagerTool.getDeviceManagerRecord(copiedState);
                   gl |> expect == None
@@ -100,7 +100,7 @@ let _ =
                   open MainStateDataType;
                   let (state, gl, (colorWrite, clearColor, side, viewport)) =
                     _prepareDeviceManagerData(state^);
-                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerRecord(state);
                   let copiedData = DeviceManagerTool.getDeviceManagerRecord(copiedState);
                   (
@@ -128,7 +128,7 @@ let _ =
                 () => {
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);
-                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
                   let {
                     vertexBufferMap,
                     normalBufferMap,
@@ -161,7 +161,7 @@ let _ =
                   open MainStateDataType;
                   open TypeArrayPoolType;
                   let (state, _) = _prepareTypeArrayPoolData(state^);
-                  let copiedState = StateTool.deepCopyForRestore(state);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
                   let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolRecord =
                     copiedState.typeArrayPoolRecord;
                   (float32ArrayPoolMap, uint16ArrayPoolMap)
@@ -198,9 +198,9 @@ let _ =
                       cameraData: Some(Obj.magic(1))
                     }
                   };
-                  let _ = StateTool.restore(StateTool.createNewCompleteState(sandbox), state);
+                  let _ = MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
                   let {renderArray, cameraData} =
-                    RenderTool.getRenderRecord(StateTool.getState());
+                    RenderTool.getRenderRecord(MainStateTool.getState());
                   (renderArray, cameraData) |> expect == (None, None)
                 }
               )
@@ -213,11 +213,11 @@ let _ =
                 () => {
                   open GlobalTempType;
                   let state = state^;
-                  let currentState = StateTool.createNewCompleteState(sandbox);
+                  let currentState = MainStateTool.createNewCompleteState(sandbox);
                   let record = currentState.globalTempRecord;
                   record.float32Array1 = Float32Array.make([|2.|]);
-                  let _ = StateTool.restore(currentState, state);
-                  let {float32Array1} = StateTool.getState().globalTempRecord;
+                  let _ = MainStateTool.restore(currentState, state);
+                  let {float32Array1} = MainStateTool.getState().globalTempRecord;
                   float32Array1 |> expect == record.float32Array1
                 }
               )
@@ -231,8 +231,8 @@ let _ =
                   open VboBufferType;
                   let (state, _, _, _) = _prepareVboBufferData(state^);
                   let (currentState, _, _, _) =
-                    _prepareVboBufferData(StateTool.createNewCompleteState(sandbox));
-                  let newState = StateTool.restore(currentState, state);
+                    _prepareVboBufferData(MainStateTool.createNewCompleteState(sandbox));
+                  let newState = MainStateTool.restore(currentState, state);
                   let {
                     vertexBufferMap,
                     normalBufferMap,
@@ -266,10 +266,10 @@ let _ =
                     (bufferInMap4, bufferInMap5, bufferInMap6, bufferInMap7),
                     (buffer4, buffer5, buffer6, buffer7)
                   ) =
-                    _prepareVboBufferData(StateTool.createNewCompleteState(sandbox));
-                  let _ = StateTool.restore(currentState, state);
+                    _prepareVboBufferData(MainStateTool.createNewCompleteState(sandbox));
+                  let _ = MainStateTool.restore(currentState, state);
                   let {vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool} =
-                    StateTool.getState() |> VboBufferTool.getVboBufferRecord;
+                    MainStateTool.getState() |> VboBufferTool.getVboBufferRecord;
                   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>
                   expect == (

@@ -33,15 +33,15 @@ let _ =
                  |}
             |> Obj.magic
             |> Js.Json.parseExn
-            |> ParseWorkerJobService.convertWorkerJobsToRecord
+            |> WorkerJobTool.convertWorkerJobsToRecord
             |> Obj.magic;
           testPromise(
             "concat exec sub jobs",
             () => {
               open Js.Promise;
-              let worker = WorkerService.getSelf();
+              let worker = WorkerToolRenderWorker.getSelf();
               let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
-              WorkerJobService.getRenderWorkerJobStreamArr(
+              WorkerJobTool.getRenderWorkerJobStreamArr(
                 {|
          [
              {
@@ -64,11 +64,11 @@ let _ =
                  |}
                 |> Obj.magic
                 |> Js.Json.parseExn
-                |> ParseWorkerJobService.convertWorkerPipelinesToRecord
-                |> OperateWorkerJobService._getRenderWorkerPipelineJobs("default")
+                |> WorkerJobTool.convertWorkerPipelinesToRecord
+                |> WorkerJobTool.getRenderWorkerPipelineJobs("default")
                 |> Obj.magic,
                 _buildWorkerJobs(),
-                RenderWorkerStateData.renderWorkerStateData
+                RenderWorkerStateTool.getStateData()
               )
               |> Most.mergeArray
               |> Most.drain
@@ -89,9 +89,9 @@ let _ =
             () => {
               open Js.Promise;
               let callCount = ref(0);
-              let worker = WorkerService.getSelf();
+              let worker = WorkerToolRenderWorker.getSelf();
               let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
-              WorkerJobService.getRenderWorkerJobStreamArr(
+              WorkerJobTool.getRenderWorkerJobStreamArr(
                 {|
          [
              {
@@ -115,11 +115,11 @@ let _ =
                  |}
                 |> Obj.magic
                 |> Js.Json.parseExn
-                |> ParseWorkerJobService.convertWorkerPipelinesToRecord
-                |> OperateWorkerJobService._getRenderWorkerPipelineJobs("default")
+                |> WorkerJobTool.convertWorkerPipelinesToRecord
+                |> WorkerJobTool.getRenderWorkerPipelineJobs("default")
                 |> Obj.magic,
                 _buildWorkerJobs(),
-                RenderWorkerStateData.renderWorkerStateData
+                RenderWorkerStateTool.getStateData()
               )
               |> Most.mergeArray
               |> Most.forEach((record) => callCount := callCount^ + 1)

@@ -42,7 +42,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateTool.createState());
+                let state = ref(MainStateTool.createState());
                 beforeEach(
                   () =>
                     state :=
@@ -109,7 +109,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateTool.createState());
+                let state = ref(MainStateTool.createState());
                 beforeEach(
                   () =>
                     state :=
@@ -176,7 +176,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateTool.createState());
+                let state = ref(MainStateTool.createState());
                 let _prepare = (sandbox, state) => {
                   let (
                     state,
@@ -249,7 +249,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateTool.createState());
+                let state = ref(MainStateTool.createState());
                 let _prepare = (sandbox, state) => {
                   let (
                     state,
@@ -333,7 +333,7 @@ module JudgeSendUniformData = {
             describe(
               {j|send $name|j},
               () => {
-                let state = ref(StateTool.createState());
+                let state = ref(MainStateTool.createState());
                 let _prepare = (sandbox, state) => {
                   let (
                     state,
