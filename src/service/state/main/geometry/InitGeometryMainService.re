@@ -25,6 +25,7 @@ let initGeometry = (index: int, state: MainStateDataType.state) =>
     | Some(computeDataFunc) =>
       let {vertices, normals, indices}: geometryComputeData =
         computeDataFunc(index, state.boxGeometryRecord);
+        /* WonderLog.Log.print((index, vertices)) |> ignore; */
       state
       |> VerticesGeometryMainService.setVerticesWithArray(index, vertices)
       |> NormalsGeometryMainService.setNormalsWithArray(index, normals)

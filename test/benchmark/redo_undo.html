@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <script src="../../dist/wd.js"></script>
+
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+    <script>
+        window.onload = function () {
+            AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                return initSample(wd.getState());
+            });
+
+
+            function initSample(state) {
+                var data = BasicBoxesTool.createBox(state);
+
+                var state = data[0];
+                var box = data[1];
+
+
+
+
+
+
+
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                var state = wd.setTransformLocalPosition(transform, [0, 10, 30], state);
+
+
+
+
+
+
+                var isDispose = false,
+                    isAdd = false,
+                    isUndo = false,
+                    isUndo2 = false;
+
+                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                    if (elapsed < 500 || isDispose) {
+                        return state;
+                    }
+                    isDispose = true;
+
+
+
+                    window.copyState1 = wd.deepCopyForRestore(state);
+
+                    var state = wd.disposeGameObject(box, state);
+
+
+                    return state;
+
+                }, state);
+
+
+
+
+
+                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                    if (elapsed < 1000 || isAdd) {
+                        return state;
+                    }
+
+                    isAdd = true;
+
+
+                    window.copyState2 = wd.deepCopyForRestore(state);
+
+
+                    var data = BasicBoxesTool.createBox(state);
+
+                    var state = data[0];
+                    var box = data[1];
+
+                    var state = wd.initGameObject(box, state);
+
+                    return state;
+
+                }, state);
+
+
+
+
+
+                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                    if (elapsed < 1500 || isUndo) {
+                        return state;
+                    }
+
+                    isUndo = true;
+
+                    console.log("undo1");
+
+                    var state = wd.restoreState(state, window.copyState2);
+
+                    return state;
+
+                }, state);
+
+
+
+                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                    if (elapsed < 2000 || isUndo2) {
+                        return state;
+                    }
+
+                    console.log("undo2");
+                    isUndo2 = true;
+
+
+                    var state = wd.restoreState(state, window.copyState1);
+
+                    return state;
+
+                }, state);
+
+
+
+
+
+
+                return wd.startDirector(state);
+            }
+        }
+    </script>
+</body>
+
+</html>

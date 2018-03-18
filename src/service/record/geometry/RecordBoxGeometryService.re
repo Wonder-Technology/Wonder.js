@@ -29,12 +29,9 @@ let deepCopyForRestore =
       } as record
     ) => {
   index,
-  /*!
-    because vertices, indices are read-only record, so need to deep copy
-    */
-  verticesMap: verticesMap |> SparseMapService.copy,
-  normalsMap: normalsMap |> SparseMapService.copy,
-  indicesMap: indicesMap |> SparseMapService.copy,
+  verticesMap: verticesMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
+  normalsMap: normalsMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
+  indicesMap: indicesMap |> CopyTypeArrayService.deepCopyUint16ArrayArray,
   computeDataFuncMap: computeDataFuncMap |> SparseMapService.copy,
   configDataMap: configDataMap |> SparseMapService.copy,
   isInitMap: isInitMap |> SparseMapService.copy,
