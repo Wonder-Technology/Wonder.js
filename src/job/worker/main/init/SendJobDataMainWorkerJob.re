@@ -4,20 +4,16 @@ let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
       let state = StateDataMainService.getState(stateData);
-      /* TODO refactor: move to utils */
-      /* TODO refactor: not dependent on WorkerJobConfigSystem??? */
-      let operateType = JobConfigService.unsafeGetFlags(flags)[0];
+      let operateType = JobConfigUtils.getOperateType(flags);
       WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
       |> WorkerService.postMessage({
            "operateType": operateType,
-           /* "pipelineJobs": WorkerJobConfigSystem.getRenderWorkerPipelineJobs(state),
-              "jobs": WorkerJobConfigSystem.getWorkerJobs(state) */
            "pipelineJobs":
-             OperateWorkerJobService.getRenderWorkerPipelineJobs(state.workerJobRecord)
+             OperateRenderWorkerJobService.getRenderWorkerPipelineJobs(state.workerJobRecord)
              |> Obj.magic
              |> Js.Json.stringify,
            "jobs":
-             OperateWorkerJobService.getWorkerJobs(state.workerJobRecord)
+             OperateRenderWorkerJobService.getWorkerJobs(state.workerJobRecord)
              |> Obj.magic
              |> Js.Json.stringify
          });

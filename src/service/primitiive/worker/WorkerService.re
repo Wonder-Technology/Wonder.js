@@ -13,7 +13,6 @@ let _isInOtherWorker = [%bs.raw
 ];
 
 let postMessage = (data, worker) => {
-  /* TODO remove */
   _isInOtherWorker(worker) === Js.true_ ?
     {
       WonderLog.Log.log({j|--in other worker-- post message to main worker:|j});

@@ -7,7 +7,7 @@ let execJob = (_, stateData) => {
     workerInstanceRecord:
       state.workerInstanceRecord
       |> WorkerInstanceService.initWorkInstances(
-           OperateWorkerJobService.getSetting(state.workerJobRecord).workerFileDir
+           OperateRenderWorkerJobService.getSetting(state.workerJobRecord).workerFileDir
          )
   }
   |> StateDataMainService.setState(stateData)

@@ -1,0 +1,1 @@
+let getOperateType = (flags) => JobConfigService.unsafeGetFlags(flags)[0];

@@ -1,7 +1,6 @@
 external convertViewportArrayToTuple : array(float) => (float, float, float, float) = "%identity";
 
 let initGl = (data, renderWorkerState) => {
-  /* TODO init gl */
   /* let gl = GlService.createGl(record##contextConfig, record##canvas);
      WonderLog.Log.print(("gl: ", gl)) |> ignore;
      renderWorkerState
