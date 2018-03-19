@@ -5,7 +5,16 @@ let restoreState = (currentState, targetState) =>
 
 let getStateData = () => MainStateData.stateData;
 
+let createStateData = () => CreateStateDataMainService.createStateData();
+
 let getState = () => StateDataMainService.getState(getStateData());
+
+let getStateFromData = (stateData) => StateDataMainService.getState(stateData);
+
+let createState = () => CreateStateMainService.createState();
 
 let setState = (state: MainStateDataType.state) =>
   StateDataMainService.setState(getStateData(), state);
+
+let setStateToData = (stateData, state: MainStateDataType.state) =>
+  StateDataMainService.setState(stateData, state);
