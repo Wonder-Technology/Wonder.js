@@ -12,7 +12,7 @@
         ]
     },
     {
-        "name": "init_gl"
+        "name": "create_gl"
     },
     {
         "name": "send_finish_init_render_data",

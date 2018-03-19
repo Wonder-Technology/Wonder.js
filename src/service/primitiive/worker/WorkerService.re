@@ -12,7 +12,7 @@ let _isInOtherWorker = [%bs.raw
         |}
 ];
 
-let postMessage = (data, worker) => {
+let _logMessage = (data, worker) =>
   _isInOtherWorker(worker) === Js.true_ ?
     {
       WonderLog.Log.log({j|--in other worker-- post message to main worker:|j});
@@ -22,5 +22,13 @@ let postMessage = (data, worker) => {
       WonderLog.Log.log({j|**in main worker** post message to other worker:|j});
       WonderLog.Log.logJson(data)
     };
+
+let postMessage = (data, worker) => {
+  _logMessage(data, worker);
   worker |> Worker.postMessage(data)
+};
+
+let postMessageWithTransferData = (data, transferData, worker) => {
+  _logMessage(data, worker);
+  worker |> Worker.postMessageWithTransferData(data, transferData)
 };

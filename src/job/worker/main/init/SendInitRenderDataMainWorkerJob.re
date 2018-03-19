@@ -5,8 +5,18 @@ let execJob = (flags, stateData) =>
     () => {
       let state = StateDataMainService.getState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
+      let offscreen =
+        CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(state.settingRecord))
+        |> Worker.transferControlToOffscreen;
       WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
-      |> WorkerService.postMessage({"operateType": operateType});
+      |> WorkerService.postMessageWithTransferData(
+           {
+             "operateType": operateType,
+             "canvas": offscreen,
+             "contextConfig": OperateSettingService.unsafeGetContext(state.settingRecord)
+           },
+           [|offscreen|]
+         );
       Some(operateType)
     }
   );

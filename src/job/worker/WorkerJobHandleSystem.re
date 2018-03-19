@@ -12,7 +12,7 @@ let _getMainInitJobHandles = () => [
 let _getWorkerJobHandles = () => [
   ("send_finish_send_job_data", SendFinishSendJobDataRenderWorkerJob.execJob),
   ("get_init_render_data", GetInitRenderDataRenderWorkerJob.execJob),
-  ("init_gl", InitGlRenderWorkerJob.execJob),
+  ("create_gl", CreateGlRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob)
 ];
 

@@ -9,3 +9,5 @@ open WorkerType;
 [@bs.send.pipe : worker]
 external postMessageWithTransferData : (Js.t({..}), array('transferData)) => unit =
   "postMessage";
+
+[@bs.send.pipe : DomType.htmlElement] external transferControlToOffscreen : offscreen = "";
