@@ -18,3 +18,5 @@ let setState = (state: MainStateDataType.state) =>
 
 let setStateToData = (stateData, state: MainStateDataType.state) =>
   StateDataMainService.setState(stateData, state);
+
+let setIsDebug = (isDebug) => IsDebugMainService.setIsDebug(getStateData(), isDebug);
