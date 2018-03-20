@@ -40,26 +40,23 @@ let _getExecutableWorkerJob = (jobs, jobItemName) =>
   JobConfigService.unsafeFindFirst(
     jobs,
     jobItemName,
-    ({name: jobName}: RenderWorkerStateDataType.job) =>
-      JobConfigService.filterTargetName(jobName, jobItemName)
+    ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
 let _buildWorkerStreamFuncArr =
     ((jobHandleMap, pipelineSubJobs, stateData, jobs), getJobHandleFunc) =>
-  RenderWorkerStateDataType.(
-    pipelineSubJobs
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (streamArr, {name: jobName} as job) => {
-             let {flags} = _getExecutableWorkerJob(jobs, jobName);
-             let handleFunc = getJobHandleFunc(jobName, jobHandleMap);
-             streamArr |> ArrayService.push(handleFunc(flags))
-           }
-         ),
-         [||]
-       )
-  );
+  pipelineSubJobs
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (streamArr, {name: jobName} as job) => {
+           let {flags} = _getExecutableWorkerJob(jobs, jobName);
+           let handleFunc = getJobHandleFunc(jobName, jobHandleMap);
+           streamArr |> ArrayService.push(handleFunc(flags))
+         }
+       ),
+       [||]
+     );
 
 let getRenderWorkerJobStreamArr =
     (pipelineJobs, workerJobs, jobHandleMap, stateData, getJobHandleFunc) =>
