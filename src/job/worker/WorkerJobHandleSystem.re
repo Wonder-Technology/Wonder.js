@@ -1,7 +1,6 @@
 open MainStateDataType;
 
 let _getMainInitJobHandles = () => [
-  ("detect_worker", DetectWorkerMainWorkerJob.execJob),
   ("create_worker_instance", CreateWorkerInstanceMainWorkerJob.execJob),
   ("send_job_data", SendJobDataMainWorkerJob.execJob),
   ("get_finish_send_job_data", GetFinishSendJobDataMainWorkerJob.execJob),
