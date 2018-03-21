@@ -8,6 +8,18 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
   )
   |> DirectorTool.prepare;
 
+
+let initWithJobConfigAndBufferConfig = (sandbox, noWorkerJobRecord, buffer) =>
+  TestTool.initWithJobConfig(
+    ~sandbox,
+    ~buffer,
+    ~noWorkerJobRecord,
+    ()
+  )
+  |> DirectorTool.prepare;
+
+
+
 let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,

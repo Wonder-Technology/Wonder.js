@@ -36,6 +36,7 @@ let _ =
                    SettingTool.buildSetting(
                      "true",
                      None,
+                     SettingTool.buildBufferConfigStr(),
                      {|
         {
         "alpha": true,

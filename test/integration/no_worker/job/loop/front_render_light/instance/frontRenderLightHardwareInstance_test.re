@@ -15,7 +15,16 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            RenderJobsTool.initWithJobConfig(sandbox, LoopRenderJobTool.buildNoWorkerJobConfig())
+            RenderJobsTool.initWithJobConfigAndBufferConfig(
+              sandbox,
+              LoopRenderJobTool.buildNoWorkerJobConfig(),
+              {
+                "geometryPointDataBufferCount": 300,
+                "transformDataBufferCount": 500,
+                "basicMaterialDataBufferCount": 50,
+                "lightMaterialDataBufferCount": 50
+              }
+            )
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -271,7 +280,9 @@ let _ =
                         state |> GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject);
                       let objectTransform =
                         state
-                        |> GameObjectAPI.unsafeGetGameObjectTransformComponent(objectInstanceGameObject);
+                        |> GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             objectInstanceGameObject
+                           );
                       let pos1 = (1., 2., 3.);
                       let pos2 = (2., 4., 5.);
                       let state =

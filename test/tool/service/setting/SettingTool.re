@@ -47,12 +47,13 @@ let buildFakeDomForNotPassCanvasId = (sandbox) => {
   (canvasDom, fakeGl, div, body)
 };
 
-let buildSetting = (isDebug, canvasId, context, useHardwareInstance, useWorker) =>
+let buildSetting = (isDebug, canvasId, buffer, context, useHardwareInstance, useWorker) =>
   switch canvasId {
   | None => {j|
  {
     "is_debug": $isDebug,
     "context": $context,
+    "buffer": $buffer,
     "gpu": {
         "use_hardware_instance": $useHardwareInstance
     },
@@ -66,6 +67,7 @@ let buildSetting = (isDebug, canvasId, context, useHardwareInstance, useWorker) 
     "is_debug": $isDebug,
     "canvas_id": "$canvasId",
     "context": $context,
+    "buffer": $buffer,
     "gpu": {
         "use_hardware_instance": $useHardwareInstance
     },
@@ -75,6 +77,23 @@ let buildSetting = (isDebug, canvasId, context, useHardwareInstance, useWorker) 
 }
         |j}
   };
+
+let buildBufferConfigStr =
+    (
+      ~geometryPointDataBufferCount=300,
+      ~transformDataBufferCount=50,
+      ~basicMaterialDataBufferCount=50,
+      ~lightMaterialDataBufferCount=50,
+      ()
+    ) => {j|
+       {
+            "geometryPointDataBufferCount": $geometryPointDataBufferCount,
+  "transformDataBufferCount": $transformDataBufferCount,
+  "basicMaterialDataBufferCount": $basicMaterialDataBufferCount,
+  "lightMaterialDataBufferCount": $lightMaterialDataBufferCount
+
+       }
+        |j};
 
 let createStateAndSetToStateData =
     (
@@ -92,11 +111,13 @@ let createStateAndSetToStateData =
                |},
       ~useHardwareInstance="false",
       ~useWorker="false",
+      ~buffer=buildBufferConfigStr(),
       ()
     ) => {
   let stateData = MainStateTool.getStateData();
   ParseSettingService.convertToRecord(
-    buildSetting(isDebug, canvasId, context, useHardwareInstance, useWorker) |> Js.Json.parseExn
+    buildSetting(isDebug, canvasId, buffer, context, useHardwareInstance, useWorker)
+    |> Js.Json.parseExn
   )
   |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
   |> RecordTransformMainService.create
@@ -138,11 +159,9 @@ let setGPU = (config, state) => {
   settingRecord: {...state.settingRecord, gpu: Some(config)}
 };
 
-let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
-
 let setGPU = (config, state) => {
   ...state,
   settingRecord: {...state.settingRecord, gpu: Some(config)}
 };
 
-let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
+/* let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)}; */

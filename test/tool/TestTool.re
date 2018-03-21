@@ -1,23 +1,27 @@
-let initWithoutBuildFakeDom =
-    (
-      ~sandbox,
-      ~isDebug="true",
-      ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(300)},
-      ()
-    ) => {
-  Random.init(1);
-  SettingTool.createStateAndSetToStateData(~isDebug, ())
+let _buildDefaultBufferJsObj = () => {
+  "geometryPointDataBufferCount": 300,
+  "transformDataBufferCount": 50,
+  "basicMaterialDataBufferCount": 50,
+  "lightMaterialDataBufferCount": 50
 };
 
-let init =
-    (
-      ~sandbox,
-      ~isDebug="true",
-      ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(300)},
-      ()
-    ) => {
+let _buildBufferConfigStr = (buffer) =>
+  SettingTool.buildBufferConfigStr(
+    ~geometryPointDataBufferCount=buffer##geometryPointDataBufferCount,
+    ~transformDataBufferCount=buffer##transformDataBufferCount,
+    ~basicMaterialDataBufferCount=buffer##basicMaterialDataBufferCount,
+    ~lightMaterialDataBufferCount=buffer##lightMaterialDataBufferCount,
+    ()
+  );
+
+let initWithoutBuildFakeDom = (~sandbox, ~isDebug="true", ~buffer=_buildDefaultBufferJsObj(), ()) => {
+  Random.init(1);
+  SettingTool.createStateAndSetToStateData(~isDebug, ~buffer=_buildBufferConfigStr(buffer), ())
+};
+
+let init = (~sandbox, ~isDebug="true", ~buffer=_buildDefaultBufferJsObj(), ()) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ())
+  initWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ())
 };
 
 let initWithJobConfigWithoutBuildFakeDom =
@@ -36,12 +40,20 @@ let initWithJobConfigWithoutBuildFakeDom =
         }
                |},
       ~useHardwareInstance="true",
-      ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
+      /* ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)}, */
+      ~buffer=_buildDefaultBufferJsObj(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
     ) =>
-  SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
+  SettingTool.createStateAndSetToStateData(
+    ~isDebug,
+    ~canvasId,
+    ~buffer=_buildBufferConfigStr(buffer),
+    ~context,
+    ~useHardwareInstance,
+    ()
+  )
   |> NoWorkerJobConfigTool.create(noWorkerJobRecord)
   |> NoWorkerJobTool.init
   |> RenderConfigTool.create(renderConfigRecord);
@@ -50,13 +62,13 @@ let initWithJobConfig =
     (
       ~sandbox,
       ~isDebug="true",
-      ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)},
+      ~buffer=_buildDefaultBufferJsObj(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
     ) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~bufferConfig, ~noWorkerJobRecord, ())
+  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ~noWorkerJobRecord, ())
 };
 
 let openContractCheck = () =>
