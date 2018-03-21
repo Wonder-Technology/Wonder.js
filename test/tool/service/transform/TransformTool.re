@@ -84,6 +84,9 @@ let dispose = (transform, state) => {
 let isDisposed = (transform, state) =>
   ! DisposeTransformMainService.isAlive(transform, getTransformRecord(state));
 
+let isDirty = (transform, state) =>
+  DirtyTransformService.isDirty(transform, state |> RecordTransformMainService.getRecord);
+
 /* let {localToWorldMatrixMap} = getTransformRecord(state);
    ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform)) */
 let getTransformLocalPositionTypeArray = (transform, state) =>

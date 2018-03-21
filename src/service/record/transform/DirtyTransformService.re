@@ -3,8 +3,6 @@ open TransformType;
 let mark = (transform: transform, isDirty, {dirtyMap} as record) => {
   dirtyMap |> WonderCommonlib.SparseMapService.set(transform, isDirty) |> ignore;
   record
-  /* ...record,
-     dirtyMap: dirtyMap |> WonderCommonlib.SparseMapService.set(transform, isDirty) */
 };
 
 let isDirty = (transform: transform, {dirtyMap} as record) =>

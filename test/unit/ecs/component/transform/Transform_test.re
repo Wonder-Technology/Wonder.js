@@ -97,6 +97,13 @@ let _ =
                   |> ((record) => expect(record.index) == 1)
                 }
               )
+          );
+          test(
+            "mark new transform dirty",
+            () => {
+              let (state, transform) = createTransform(state^);
+              TransformTool.isDirty(transform, state) |> expect == true
+            }
           )
         }
       );

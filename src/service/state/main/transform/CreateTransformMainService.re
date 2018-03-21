@@ -85,8 +85,7 @@ let create = (state) => {
       ...state,
       transformRecord:
         Some(
-          /* TODO fix bug */
-          state |> RecordTransformMainService.getRecord |> DirtyTransformService.mark(index, false)
+          state |> RecordTransformMainService.getRecord |> DirtyTransformService.mark(index, true)
         )
     },
     index
