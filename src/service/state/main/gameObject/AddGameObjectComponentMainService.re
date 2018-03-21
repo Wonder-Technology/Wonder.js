@@ -52,10 +52,12 @@ let addTransformComponent =
     (uid: int, component: component, {transformRecord, gameObjectRecord} as state) => {
   ...state,
   transformRecord:
-    _addComponent(
-      (uid, component, gameObjectRecord.transformMap),
-      AddTransformService.handleAddComponent,
-      transformRecord
+    Some(
+      _addComponent(
+        (uid, component, gameObjectRecord.transformMap),
+        AddTransformService.handleAddComponent,
+        state |> RecordTransformMainService.getRecord
+      )
     )
 };
 

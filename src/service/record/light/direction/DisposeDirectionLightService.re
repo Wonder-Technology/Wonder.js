@@ -28,10 +28,10 @@ let _disposeData =
                (mappedSourceIndex, lastComponentIndex),
                (
                  mappedIndexMap,
-                 RecordDirectionLightService.getColorDataSize(),
+                 RecordDirectionLightService.getColorsSize(),
                  RecordDirectionLightService.getDefaultColor()
                ),
-               DisposeLightService.deleteBySwapAndResetFloat32TypeArr
+               DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
              ),
         intensities:
           intensities
@@ -39,10 +39,10 @@ let _disposeData =
                (mappedSourceIndex, lastComponentIndex),
                (
                  mappedIndexMap,
-                 RecordDirectionLightService.getIntensityDataSize(),
+                 RecordDirectionLightService.getIntensitiesSize(),
                  RecordDirectionLightService.getDefaultIntensity()
                ),
-               DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
              ),
         gameObjectMap
       }

@@ -110,13 +110,21 @@ let setMemory = (state: MainStateDataType.state, ~maxDisposeCount=1000, ()) => {
   }
 };
 
-let setBufferSize = (state: MainStateDataType.state, ~geometryPointDataBufferCount=100, ()) => {
+let setBufferSize =
+    (
+      state: MainStateDataType.state,
+      ~geometryPointDataBufferCount=100,
+      ~transformDataBufferCount=100,
+      ~basicMaterialDataBufferCount=100,
+      ~lightMaterialDataBufferCount=100,
+      ()
+    ) => {
   ...state,
   settingRecord: {
     ...state.settingRecord,
     buffer:
       Some({
-        ...OperateSettingService.unsafeGetBuffer(state.settingRecord),
+        ...BufferSettingService.unsafeGetBuffer(state.settingRecord),
         geometryPointDataBufferCount
       })
   }

@@ -17,7 +17,7 @@ let rec update =
         (
           transform: transform,
           globalTempRecord,
-          {localToWorldMatrixMap, localPositionMap} as transformRecord
+          {localPositions} as transformRecord
         ) =>
   switch (isDirty(transform, transformRecord)) {
   | false => transformRecord
@@ -30,7 +30,7 @@ let rec update =
       multiply(
         getLocalToWorldMatrixTypeArray(parent, transformRecord),
         fromTranslation(
-          getLocalPositionTypeArray(transform, localPositionMap),
+          getLocalPositionTypeArray(transform, localPositions),
           GlobalTempService.getFloat32Array1(globalTempRecord)
         ),
         getLocalToWorldMatrixTypeArray(transform, transformRecord)
@@ -39,7 +39,7 @@ let rec update =
       transformRecord
     | None =>
       fromTranslation(
-        getLocalPositionTypeArray(transform, localPositionMap),
+        getLocalPositionTypeArray(transform, localPositions),
         getLocalToWorldMatrixTypeArray(transform, transformRecord)
       )
       |> ignore;

@@ -10,7 +10,13 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
     },
   buffer:
     switch buffer {
-    | None => Some({geometryPointDataBufferCount: 1000 * 1000})
+    | None =>
+      Some({
+        geometryPointDataBufferCount: 1000 * 1000,
+        transformDataBufferCount: 10 * 1000,
+        basicMaterialDataBufferCount: 10 * 1000,
+        lightMaterialDataBufferCount: 10 * 1000
+      })
     | Some(buffer) => Some(buffer)
     },
   isDebug:
@@ -42,8 +48,6 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
     | Some(worker) => Some(worker)
     }
 };
-
-let unsafeGetBuffer = ({buffer}) => buffer |> OptionService.unsafeGet;
 
 let getCanvasId = ({canvasId}) => canvasId;
 

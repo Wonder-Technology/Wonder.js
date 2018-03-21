@@ -8,7 +8,6 @@ let _getCameraData =
         basicCameraViewRecord,
         perspectiveCameraProjectionRecord,
         sceneRecord,
-        transformRecord,
         globalTempRecord,
         gameObjectRecord
       } as state
@@ -16,6 +15,7 @@ let _getCameraData =
   switch (CameraSceneMainService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
   | None => None
   | Some(currentCameraGameObject) =>
+    let transformRecord = state |> RecordTransformMainService.getRecord;
     let transform =
       GetComponentGameObjectService.unsafeGetTransformComponent(
         currentCameraGameObject,
@@ -65,4 +65,5 @@ let _getCameraData =
     })
   };
 
-let execJob = (_, _, state) => OperateRenderMainService.setCameraData(_getCameraData(state), state);
+let execJob = (_, _, state) =>
+  OperateRenderMainService.setCameraData(_getCameraData(state), state);

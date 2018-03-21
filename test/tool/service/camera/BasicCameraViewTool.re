@@ -9,14 +9,14 @@ let isBasicCameraView = (basicCameraView) => {
 
 let getWorldToCameraMatrix = (transform, state: MainStateDataType.state) =>
   VMatrixService.getWorldToCameraMatrix(
-    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, state.transformRecord)
+    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(transform, state |> RecordTransformMainService.getRecord)
   );
 
 let getPosition = (transform, state: MainStateDataType.state) =>
   UpdateTransformService.updateAndGetPositionTuple(
     transform,
     state.globalTempRecord,
-    state.transformRecord
+    state |> RecordTransformMainService.getRecord
   );
 /* let getCurrentBasicCameraView = BasicCameraViewSystem.getCurrentBasicCameraView; */
 /* let testBuildPMatrix = (stateFunc, execFunc) =>

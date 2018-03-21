@@ -13,7 +13,12 @@ type memory = {
   maxBigTypeArrayPoolSize: int
 };
 
-type buffer = {geometryPointDataBufferCount: int};
+type buffer = {
+  geometryPointDataBufferCount: int,
+  transformDataBufferCount: int,
+  basicMaterialDataBufferCount: int,
+  lightMaterialDataBufferCount: int
+};
 
 type gpu = {useHardwareInstance: bool};
 

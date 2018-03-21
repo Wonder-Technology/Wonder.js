@@ -254,7 +254,7 @@ let fillMatrixTypeArr = (uid, transform, matricesArrayForInstance, (state, offse
       UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
         transform,
         state.globalTempRecord,
-        state.transformRecord
+        state |> RecordTransformMainService.getRecord
       ),
       0
     ),

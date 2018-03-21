@@ -624,7 +624,7 @@ let _ =
                     |> toCalledWith([|
                          pos,
                          Obj.magic(Js.false_),
-                         Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
+                         Obj.magic(TransformTool.getDefaultLocalToWorldMatrix(state))
                        |])
                   }
                 );
@@ -670,7 +670,7 @@ let _ =
                         |> toCalledWith([|
                              pos,
                              Obj.magic(Js.false_),
-                             Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
+                             Obj.magic(TransformTool.getDefaultLocalToWorldMatrix(state))
                            |])
                       }
                     )

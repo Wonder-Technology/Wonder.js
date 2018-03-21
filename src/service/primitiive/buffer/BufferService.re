@@ -1,8 +1,7 @@
-
 let checkNotExceedMaxCount = (maxCount, resultTuple) =>
   resultTuple
   |> WonderLog.Contract.ensureCheck(
-       ((record, index)) => {
+       ((_, index)) => {
          open WonderLog;
          open Contract;
          open Operators;

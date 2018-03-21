@@ -4,13 +4,13 @@ open Js.Typed_array;
 
 let getBufferMaxCount = () => 4;
 
-let getColorDataSize = () => 3;
+let getColorsSize = () => 3;
 
-let getIntensityDataSize = () => 1;
+let getIntensitiesSize = () => 1;
 
-let _getColorIndex = (index) => index * getColorDataSize();
+let _getColorIndex = (index) => index * getColorsSize();
 
-let _getIntensityIndex = (index) => index * getIntensityDataSize();
+let _getIntensityIndex = (index) => index * getIntensitiesSize();
 
 let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
@@ -31,13 +31,6 @@ let getDefaultIntensity = () => 1.;
 let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
-  let rec _set = ((index, count, record), setFunc, typeArr) =>
-    switch index {
-    | index when index >= count => typeArr
-    | index =>
-      [@bs] setFunc(index, record, typeArr)
-      |> _set((index + 1, count, record |> Obj.magic), setFunc)
-    };
   (
     buffer,
     WonderCommonlib.ArrayService.range(0, count - 1)
@@ -56,17 +49,17 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
 
 let getColorsOffset = () => 0;
 
-let getColorsLength = () => getBufferMaxCount() * getColorDataSize();
+let getColorsLength = () => getBufferMaxCount() * getColorsSize();
 
 let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getIntensitiesLength = () => getBufferMaxCount() * getIntensityDataSize();
+let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
 
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer =
     ArrayBuffer.make(
-      count * Float32Array._BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize())
+      count * Float32Array._BYTES_PER_ELEMENT * (getColorsSize() + getIntensitiesSize())
     );
   let colors =
     Float32Array.fromBufferRange(buffer, ~offset=getColorsOffset(), ~length=getColorsLength());

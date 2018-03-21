@@ -53,7 +53,7 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: MainStateDataTyp
         unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
         state.gameObjectRecord
       ),
-      state.transformRecord
+      state |> RecordTransformMainService.getRecord
     )
   )
 };

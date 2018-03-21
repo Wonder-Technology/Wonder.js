@@ -862,9 +862,9 @@ let _ =
           );
           describe(
             "dispose map record",
-            () =>
+            () => {
               test(
-                "remove from localToWorldMatrixMap, localPositionMap,parentMap, childMap,  dirtyMap, gameObjectMap",
+                "remove from parentMap, childMap,  dirtyMap, gameObjectMap",
                 () => {
                   open TransformType;
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
@@ -875,26 +875,139 @@ let _ =
                          transform1,
                          false
                        );
-                  let {
-                    localToWorldMatrixMap,
-                    localPositionMap,
-                    parentMap,
-                    childMap,
-                    dirtyMap,
-                    gameObjectMap
-                  } =
+                  let {parentMap, childMap, dirtyMap, gameObjectMap} =
                     TransformTool.getTransformRecord(state);
                   (
-                    localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform1),
-                    localPositionMap |> WonderCommonlib.SparseMapService.has(transform1),
                     parentMap |> WonderCommonlib.SparseMapService.has(transform1),
                     childMap |> WonderCommonlib.SparseMapService.has(transform1),
                     dirtyMap |> WonderCommonlib.SparseMapService.has(transform1),
                     gameObjectMap |> WonderCommonlib.SparseMapService.has(transform1)
                   )
-                  |> expect == (false, false, false, false, false, false)
+                  |> expect == (false, false, false, false)
+                }
+              );
+              describe(
+                "test remove from type array",
+                () => {
+                  describe(
+                    "remove from localToWorldMatrices",
+                    () => {
+                      let _prepare = (state) => {
+                        let (state, gameObject1, transform1) =
+                          GameObjectTool.createGameObject(state^);
+                        let (state, gameObject2, transform2) =
+                          GameObjectTool.createGameObject(state);
+                        let mat1 = [|
+                          2.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.
+                        |];
+                        let mat2 = [|
+                          20.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.
+                        |];
+                        let state = state |> TransformTool.setLocalToWorldMatrix(transform1, mat1);
+                        let state = state |> TransformTool.setLocalToWorldMatrix(transform2, mat2);
+                        let state =
+                          state
+                          |> GameObjectAPI.disposeGameObjectTransformComponent(
+                               gameObject1,
+                               transform1,
+                               false
+                             );
+                        (state, (gameObject1, gameObject2), (mat1, mat2), (transform1, transform2))
+                      };
+                      test(
+                        "reset removed one's value",
+                        () => {
+                          let (
+                            state,
+                            (gameObject1, gameObject2),
+                            (mat1, mat2),
+                            (transform1, transform2)
+                          ) =
+                            _prepare(state);
+                          (
+                            TransformTool.getLocalToWorldMatrix(transform1, state),
+                            TransformTool.getLocalToWorldMatrix(transform2, state)
+                          )
+                          |> expect == (TransformTool.getDefaultLocalToWorldMatrix(state), mat2)
+                        }
+                      )
+                    }
+                  );
+                  describe(
+                    "remove from localPositions",
+                    () => {
+                      let _prepare = (state) => {
+                        let (state, gameObject1, transform1) =
+                          GameObjectTool.createGameObject(state^);
+                        let (state, gameObject2, transform2) =
+                          GameObjectTool.createGameObject(state);
+                        let pos1 = (1., 2., 3.);
+                        let pos2 = (5., 10., 30.);
+                        let state =
+                          state |> TransformAPI.setTransformLocalPosition(transform1, pos1);
+                        let state =
+                          state |> TransformAPI.setTransformLocalPosition(transform2, pos2);
+                        let state =
+                          state
+                          |> GameObjectAPI.disposeGameObjectTransformComponent(
+                               gameObject1,
+                               transform1,
+                               false
+                             );
+                        (state, (gameObject1, gameObject2), (pos1, pos2), (transform1, transform2))
+                      };
+                      test(
+                        "reset removed one's value",
+                        () => {
+                          let (
+                            state,
+                            (gameObject1, gameObject2),
+                            (pos1, pos2),
+                            (transform1, transform2)
+                          ) =
+                            _prepare(state);
+                          (
+                            TransformAPI.getTransformLocalPosition(transform1, state),
+                            TransformAPI.getTransformLocalPosition(transform2, state)
+                          )
+                          |> expect == (TransformTool.getDefaultLocalPositionTuple(state), pos2)
+                        }
+                      )
+                    }
+                  )
                 }
               )
+            }
           );
           describe(
             "test add new one after dispose old one",
@@ -1049,7 +1162,7 @@ let _ =
               let (state, transform1) = createTransform(state^);
               let (state, transform2) = createTransform(state);
               TransformTool.getLocalToWorldMatrixTypeArray(transform2, state)
-              |> expect == TransformTool.getDefaultLocalToWorldMatrix()
+              |> expect == TransformTool.getDefaultLocalToWorldMatrixTypeArray(state)
             }
           );
           test(

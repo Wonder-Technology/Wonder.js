@@ -2,9 +2,9 @@ open AmbientLightType;
 
 let getBufferMaxCount = () => 3;
 
-let getColorDataSize = () => 3;
+let getColorsSize = () => 3;
 
-let _getColorIndex = (index) => index * getColorDataSize();
+let _getColorIndex = (index) => index * getColorsSize();
 
 let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
@@ -15,13 +15,6 @@ let getDefaultColor = () => [|1., 1., 1.|];
 
 let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
   let defaultColor = getDefaultColor();
-  let rec _set = ((index, count, record), setFunc, typeArr) =>
-    switch index {
-    | index when index >= count => typeArr
-    | index =>
-      [@bs] setFunc(index, record, typeArr)
-      |> _set((index + 1, count, record |> Obj.magic), setFunc)
-    };
   (
     buffer,
     WonderCommonlib.ArrayService.range(0, count - 1)
@@ -35,9 +28,9 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
 let _initBufferData = () => {
   open Js.Typed_array;
   let count = getBufferMaxCount();
-  let buffer = ArrayBuffer.make(count * Float32Array._BYTES_PER_ELEMENT * getColorDataSize());
+  let buffer = ArrayBuffer.make(count * Float32Array._BYTES_PER_ELEMENT * getColorsSize());
   let offset = ref(0);
-  let typeArrayLength = count * getColorDataSize();
+  let typeArrayLength = count * getColorsSize();
   let colors = Float32Array.fromBufferRange(buffer, ~offset=offset^, ~length=typeArrayLength);
   offset := typeArrayLength * Float32Array._BYTES_PER_ELEMENT;
   (buffer, colors) |> _setDefaultTypeArrData(count)

@@ -48,7 +48,7 @@ let rec _clone =
       isShareMaterial,
       state
     );
-  state.transformRecord
+  state |> RecordTransformMainService.getRecord
   |> _setParent(clonedParentTransformArr, clonedTransformArr)
   |> HierachyTransformService.unsafeGetChildren(transform)
   |> ReduceStateMainService.reduceState(
@@ -58,7 +58,7 @@ let rec _clone =
            state
            |> _clone(
                 (
-                  state.transformRecord
+                  state |> RecordTransformMainService.getRecord
                   |> GameObjectTransformService.unsafeGetGameObject(childTransform),
                   childTransform,
                   countRangeArr,

@@ -10,7 +10,7 @@ let _disposeData =
   (
     (sourceIndex, {index, colors, gameObjectMap, mappedIndexMap} as record) => {
       let gameObjectMap = DisposeLightService.disposeData(sourceIndex, gameObjectMap);
-      let colorDataSize = RecordAmbientLightService.getColorDataSize();
+      let colorDataSize = RecordAmbientLightService.getColorsSize();
       let lastComponentIndex = pred(index);
       let mappedSourceIndex = mappedIndexMap |> MappedIndexService.getMappedIndex(sourceIndex);
       {
@@ -28,7 +28,7 @@ let _disposeData =
           |> DisposeLightService.swapData(
                (mappedSourceIndex, lastComponentIndex),
                (mappedIndexMap, colorDataSize, RecordAmbientLightService.getDefaultColor()),
-               DisposeLightService.deleteBySwapAndResetFloat32TypeArr
+               DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
              ),
         gameObjectMap
       }

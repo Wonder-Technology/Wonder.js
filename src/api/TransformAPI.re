@@ -14,7 +14,7 @@ let createTransform = CreateTransformMainService.create;
 
 /* (state) => {
      let (typeArrayPoolRecord, transformRecord, index) =
-       CreateTransformMainService.create(state.typeArrayPoolRecord, state.transformRecord);
+       CreateTransformMainService.create(state.typeArrayPoolRecord, state |> RecordTransformMainService.getRecord);
      ({...state, typeArrayPoolRecord, transformRecord}, index)
    }; */
 let unsafeGetTransformGameObject = (transform: transform, state: MainStateDataType.state) => {
@@ -26,14 +26,14 @@ let unsafeGetTransformGameObject = (transform: transform, state: MainStateDataTy
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetGameObject(transform, state.transformRecord)
+  unsafeGetGameObject(transform, state |> RecordTransformMainService.getRecord)
 };
 
 let unsafeGetTransformParent = (transform: transform, state: MainStateDataType.state) => {
@@ -45,14 +45,14 @@ let unsafeGetTransformParent = (transform: transform, state: MainStateDataType.s
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetParent(transform, state.transformRecord)
+  unsafeGetParent(transform, state |> RecordTransformMainService.getRecord)
 };
 
 let _checkParentAndChildTransformShouldAlive =
@@ -67,10 +67,18 @@ let _checkParentAndChildTransformShouldAlive =
         [@bs]
         (
           (parent) =>
-            AliveComponentService.checkComponentShouldAlive(parent, isAlive, state.transformRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              parent,
+              isAlive,
+              state |> RecordTransformMainService.getRecord
+            )
         )
       );
-      AliveComponentService.checkComponentShouldAlive(child, isAlive, state.transformRecord)
+      AliveComponentService.checkComponentShouldAlive(
+        child,
+        isAlive,
+        state |> RecordTransformMainService.getRecord
+      )
     },
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
@@ -78,7 +86,11 @@ let _checkParentAndChildTransformShouldAlive =
 let setTransformParent =
     (parent: Js.nullable(transform), child: transform, state: MainStateDataType.state) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
-  {...state, transformRecord: setParent(Js.toOption(parent), child, state.transformRecord)}
+  {
+    ...state,
+    transformRecord:
+      Some(setParent(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord))
+  }
 };
 
 let setTransformParentKeepOrder =
@@ -86,7 +98,14 @@ let setTransformParentKeepOrder =
   _checkParentAndChildTransformShouldAlive(parent, child, state);
   {
     ...state,
-    transformRecord: setParentKeepOrder(Js.toOption(parent), child, state.transformRecord)
+    transformRecord:
+      Some(
+        setParentKeepOrder(
+          Js.toOption(parent),
+          child,
+          state |> RecordTransformMainService.getRecord
+        )
+      )
   }
 };
 
@@ -99,14 +118,14 @@ let unsafeGetTransformChildren = (transform: transform, state: MainStateDataType
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetChildren(transform, state.transformRecord)
+  unsafeGetChildren(transform, state |> RecordTransformMainService.getRecord)
 };
 
 /* let getTransformLocalPositionTypeArray = (transform: transform, state: MainStateDataType.state) => {
@@ -124,14 +143,14 @@ let getTransformLocalPosition = (transform: transform, state: MainStateDataType.
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  getLocalPositionTuple(transform, state.transformRecord.localPositionMap)
+  getLocalPositionTuple(transform, RecordTransformMainService.getRecord(state).localPositions)
 };
 
 /* let setTransformLocalPositionByTypeArray =
@@ -141,7 +160,8 @@ let getTransformLocalPosition = (transform: transform, state: MainStateDataType.
      );
      setLocalPositionByTypeArray(transform, localPosition, state)
    }; */
-let setTransformLocalPosition = (transform: transform, localPosition, state: MainStateDataType.state) => {
+let setTransformLocalPosition =
+    (transform: transform, localPosition, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -150,7 +170,7 @@ let setTransformLocalPosition = (transform: transform, localPosition, state: Mai
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
@@ -159,7 +179,14 @@ let setTransformLocalPosition = (transform: transform, localPosition, state: Mai
   );
   {
     ...state,
-    transformRecord: setLocalPositionByTuple(transform, localPosition, state.transformRecord)
+    transformRecord:
+      Some(
+        setLocalPositionByTuple(
+          transform,
+          localPosition,
+          state |> RecordTransformMainService.getRecord
+        )
+      )
   }
 };
 
@@ -178,14 +205,18 @@ let getTransformPosition = (transform: transform, state: MainStateDataType.state
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  updateAndGetPositionTuple(transform, state.globalTempRecord, state.transformRecord)
+  updateAndGetPositionTuple(
+    transform,
+    state.globalTempRecord,
+    state |> RecordTransformMainService.getRecord
+  )
 };
 
 /* let setTransformPositionByTypeArray = (transform: transform, position, state: MainStateDataType.state) => {
@@ -194,7 +225,8 @@ let getTransformPosition = (transform: transform, state: MainStateDataType.state
      );
      setPositionByTypeArray(transform, position, state)
    }; */
-let setTransformPosition = (transform: transform, position: position, state: MainStateDataType.state) => {
+let setTransformPosition =
+    (transform: transform, position: position, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -203,7 +235,7 @@ let setTransformPosition = (transform: transform, position: position, state: Mai
             AliveComponentService.checkComponentShouldAlive(
               transform,
               isAlive,
-              state.transformRecord
+              state |> RecordTransformMainService.getRecord
             )
           )
         )
@@ -213,11 +245,13 @@ let setTransformPosition = (transform: transform, position: position, state: Mai
   {
     ...state,
     transformRecord:
-      updateAndSetPositionByTuple(
-        transform,
-        position,
-        state.globalTempRecord,
-        state.transformRecord
+      Some(
+        updateAndSetPositionByTuple(
+          transform,
+          position,
+          state.globalTempRecord,
+          state |> RecordTransformMainService.getRecord
+        )
       )
   }
 };

@@ -12,11 +12,14 @@ type transformDirtyMap = array(bool);
 
 type transformRecord = {
   mutable index: int,
+  buffer: Js.Typed_array.array_buffer,
+  localToWorldMatrices: Js.Typed_array.Float32Array.t,
+  localPositions: Js.Typed_array.Float32Array.t,
+  defaultLocalToWorldMatrix: array(float),
+  defaultLocalPosition: array(float),
   parentMap: transformParentMap,
   childMap: transformChildMap,
   gameObjectMap,
-  localToWorldMatrixMap: array(Js.Typed_array.Float32Array.t),
-  localPositionMap: array(Js.Typed_array.Float32Array.t),
   dirtyMap: transformDirtyMap,
   mutable normalMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
   disposedIndexArray: array(transform)

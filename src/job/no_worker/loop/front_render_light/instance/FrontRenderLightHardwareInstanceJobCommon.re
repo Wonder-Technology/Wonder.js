@@ -17,7 +17,7 @@ let _fillMatrixTypeArr =
         UpdateTransformService.updateAndGetNormalMatrixTypeArray(
           transform,
           state.globalTempRecord,
-          state.transformRecord
+          state |> RecordTransformMainService.getRecord
         );
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (matricesArrayForInstance, offset + 16),

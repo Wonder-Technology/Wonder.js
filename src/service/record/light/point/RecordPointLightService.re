@@ -4,31 +4,31 @@ open Js.Typed_array;
 
 let getBufferMaxCount = () => 4;
 
-let getColorDataSize = () => 3;
+let getColorsSize = () => 3;
 
-let getIntensityDataSize = () => 1;
+let getIntensitiesSize = () => 1;
 
-let getConstantDataSize = () => 1;
+let getConstantsSize = () => 1;
 
-let getLinearDataSize = () => 1;
+let getLinearsSize = () => 1;
 
-let getQuadraticDataSize = () => 1;
+let getQuadraticsSize = () => 1;
 
-let getRangeDataSize = () => 1;
+let getRangesSize = () => 1;
 
-let _getColorIndex = (index) => index * getColorDataSize();
+let _getColorIndex = (index) => index * getColorsSize();
 
 /*
 
- let _getIntensityIndex = (index) => index * getIntensityDataSize();
+ let _getIntensityIndex = (index) => index * getIntensitiesSize();
 
- let _getConstantIndex = (index) => index * getConstantDataSize();
+ let _getConstantIndex = (index) => index * getConstantsSize();
 
- let _getLinearIndex = (index) => index * getLinearDataSize();
+ let _getLinearIndex = (index) => index * getLinearsSize();
 
- let _getQuadraticIndex = (index) => index * getQuadraticDataSize();
+ let _getQuadraticIndex = (index) => index * getQuadraticsSize();
 
- let _getRangeIndex = (index) => index * getRangeDataSize(); */
+ let _getRangeIndex = (index) => index * getRangesSize(); */
 let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
@@ -89,13 +89,6 @@ let _setDefaultTypeArrData =
   let defaultLinear = getDefaultLinear();
   let defaultQuadratic = getDefaultQuadratic();
   let defaultRange = getDefaultRange();
-  let rec _set = ((index, count, record), setFunc, typeArr) =>
-    switch index {
-    | index when index >= count => typeArr
-    | index =>
-      [@bs] setFunc(index, record, typeArr)
-      |> _set((index + 1, count, record |> Obj.magic), setFunc)
-    };
   (
     buffer,
     WonderCommonlib.ArrayService.range(0, count - 1)
@@ -118,31 +111,31 @@ let _setDefaultTypeArrData =
 
 let getColorsOffset = () => 0;
 
-let getColorsLength = () => getBufferMaxCount() * getColorDataSize();
+let getColorsLength = () => getBufferMaxCount() * getColorsSize();
 
 let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getIntensitiesLength = () => getBufferMaxCount() * getIntensityDataSize();
+let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
 
 let getConstantsOffset = () =>
   getIntensitiesOffset() + getIntensitiesLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getConstantsLength = () => getBufferMaxCount() * getConstantDataSize();
+let getConstantsLength = () => getBufferMaxCount() * getConstantsSize();
 
 let getLinearsOffset = () =>
   getConstantsOffset() + getConstantsLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getLinearsLength = () => getBufferMaxCount() * getLinearDataSize();
+let getLinearsLength = () => getBufferMaxCount() * getLinearsSize();
 
 let getQuadraticsOffset = () =>
   getLinearsOffset() + getLinearsLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getQuadraticsLength = () => getBufferMaxCount() * getQuadraticDataSize();
+let getQuadraticsLength = () => getBufferMaxCount() * getQuadraticsSize();
 
 let getRangesOffset = () =>
   getQuadraticsOffset() + getQuadraticsLength() * Float32Array._BYTES_PER_ELEMENT;
 
-let getRangesLength = () => getBufferMaxCount() * getRangeDataSize();
+let getRangesLength = () => getBufferMaxCount() * getRangesSize();
 
 let _initBufferData = () => {
   let count = getBufferMaxCount();
@@ -151,12 +144,12 @@ let _initBufferData = () => {
       count
       * Float32Array._BYTES_PER_ELEMENT
       * (
-        getColorDataSize()
-        + getIntensityDataSize()
-        + getConstantDataSize()
-        + getLinearDataSize()
-        + getQuadraticDataSize()
-        + getRangeDataSize()
+        getColorsSize()
+        + getIntensitiesSize()
+        + getConstantsSize()
+        + getLinearsSize()
+        + getQuadraticsSize()
+        + getRangesSize()
       )
     );
   let colors =

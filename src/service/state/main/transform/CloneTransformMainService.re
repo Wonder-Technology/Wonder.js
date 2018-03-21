@@ -3,16 +3,13 @@ open MainStateDataType;
 open TransformType;
 
 let handleCloneComponent =
-    (
-      sourceComponent: transform,
-      countRangeArr: array(int),
-      {typeArrayPoolRecord, transformRecord} as state
-    ) => {
+    (sourceComponent: transform, countRangeArr: array(int), {typeArrayPoolRecord} as state) => {
   let componentArr = [||];
+  let transformRecord = state |> RecordTransformMainService.getRecord;
   let localPosition =
     ModelMatrixTransformService.getLocalPositionTuple(
       sourceComponent,
-      transformRecord.localPositionMap
+      transformRecord.localPositions
     );
   let (state, componentArr) =
     countRangeArr
@@ -25,9 +22,12 @@ let handleCloneComponent =
                {
                  ...state,
                  transformRecord:
-                   state.transformRecord
-                   |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
-                   |> DirtyTransformService.mark(index, true)
+                   Some(
+                     state
+                     |> RecordTransformMainService.getRecord
+                     |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
+                     |> DirtyTransformService.mark(index, true)
+                   )
                },
                componentArr |> ArrayService.push(index)
              )
@@ -38,7 +38,12 @@ let handleCloneComponent =
   (
     {
       ...state,
-      transformRecord: state.transformRecord |> DirtyTransformService.mark(sourceComponent, true)
+      transformRecord:
+        Some(
+          state
+          |> RecordTransformMainService.getRecord
+          |> DirtyTransformService.mark(sourceComponent, true)
+        )
     },
     componentArr
   )

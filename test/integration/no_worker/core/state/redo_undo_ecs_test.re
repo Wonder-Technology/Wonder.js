@@ -218,39 +218,49 @@ let _ =
           describe(
             "deep copy transform record",
             () => {
+              /* TODO duplicate with light */
+              let _testCopyTypeArraySingleValue =
+                  ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
+                open MainStateDataType;
+                open SourceInstanceType;
+                let (state, gameObject1, light1) = createGameObjectFunc(state^);
+                let (data1, data2) = getTargetDataFunc();
+                let state = state |> setDataFunc(light1, data1);
+                let copiedState = MainStateTool.deepCopyForRestore(state);
+                let copiedState = copiedState |> setDataFunc(light1, data2);
+                getDataFunc(light1, state) |> expect == data1
+              };
               test(
-                "deep copy localToWorldMatrixMap, localPositionMap",
-                () => {
-                  open TransformType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    transform1,
-                    transform2,
-                    transform3
-                  ) =
-                    _prepareTransformMatrixData(state);
-                  let _ = TransformAPI.getTransformPosition(transform2, state);
-                  let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let record = TransformTool.getTransformRecord(copiedState);
-                  record.localToWorldMatrixMap
-                  |> Obj.magic
-                  |> WonderCommonlib.SparseMapService.deleteVal(transform2);
-                  record.localPositionMap
-                  |> Obj.magic
-                  |> WonderCommonlib.SparseMapService.deleteVal(transform2);
-                  (
-                    TransformTool.getTransformRecord(state).localToWorldMatrixMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(transform2)
-                    |> JudgeTool.isUndefined,
-                    TransformTool.getTransformRecord(state).localPositionMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(transform2)
-                    |> JudgeTool.isUndefined
+                "copy localToWorldMatrices",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      TransformTool.getLocalToWorldMatrix,
+                      TransformTool.setLocalToWorldMatrix,
+                      () => (
+                        [|2., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|],
+                        [|3., 1., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|]
+                      )
+                    ),
+                    state
                   )
-                  |> expect == (false, false)
-                }
+              );
+              test(
+                "copy localPositions",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      TransformAPI.getTransformLocalPosition,
+                      TransformAPI.setTransformLocalPosition,
+                      () => (
+                        (2., 0., 0.),
+                        (3., 1., 2.)
+                      )
+                    ),
+                    state
+                  )
               );
               test(
                 "deep copy childMap",
@@ -303,85 +313,84 @@ let _ =
           describe(
             "deep copy geometry record",
             () =>
-              test
-                (
-                  "deep copy verticesMap, normalsMap, indicesMap",
-                  () => {
-                    open MainStateDataType;
-                    open BoxGeometryAPI;
-                    open Js.Typed_array;
-                    let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                    let state = GeometryTool.initGeometrys(state);
-                    let copiedState = MainStateTool.deepCopyForRestore(state);
-                    let record = copiedState.boxGeometryRecord;
-                    let verticeTypeArr =
-                      record.verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                    Float32Array.unsafe_set(verticeTypeArr, 0, 100.);
-                    let normalsTypeArr =
-                      record.normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                    Float32Array.unsafe_set(normalsTypeArr, 0, 100.);
-                    let indicesTypeArr =
-                      record.indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                    Uint16Array.unsafe_set(indicesTypeArr, 0, 100);
-                    let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
-                    (
-                      Float32Array.unsafe_get(
-                        verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                        0
-                      ),
-                      Float32Array.unsafe_get(
-                        normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                        0
-                      ),
-                      Uint16Array.unsafe_get(
-                        indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                        0
-                      )
+              test(
+                "deep copy verticesMap, normalsMap, indicesMap",
+                () => {
+                  open MainStateDataType;
+                  open BoxGeometryAPI;
+                  open Js.Typed_array;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state = GeometryTool.initGeometrys(state);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
+                  let record = copiedState.boxGeometryRecord;
+                  let verticeTypeArr =
+                    record.verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
+                  Float32Array.unsafe_set(verticeTypeArr, 0, 100.);
+                  let normalsTypeArr =
+                    record.normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
+                  Float32Array.unsafe_set(normalsTypeArr, 0, 100.);
+                  let indicesTypeArr =
+                    record.indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
+                  Uint16Array.unsafe_set(indicesTypeArr, 0, 100);
+                  let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
+                  (
+                    Float32Array.unsafe_get(
+                      verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
+                      0
+                    ),
+                    Float32Array.unsafe_get(
+                      normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
+                      0
+                    ),
+                    Uint16Array.unsafe_get(
+                      indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
+                      0
                     )
-                    |> expect != (100., 100., 100)
-                  }
-                )
-                /* test(
-                     "change copied state shouldn't affect source state",
-                     () => {
-                       open MainStateDataType;
-                       let (
-                         state,
-                         gameObject1,
-                         gameObject2,
-                         gameObject3,
-                         geometry1,
-                         geometry2,
-                         geometry3
-                       ) =
-                         _prepareGeometryData(state);
-                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                       let record = copiedState.boxGeometryRecord;
-                       record.verticesMap
-                       |> Obj.magic
-                       |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-                       record.normalsMap
-                       |> Obj.magic
-                       |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-                       record.indicesMap
-                       |> Obj.magic
-                       |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-                       let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
-                       (
-                         verticesMap
-                         |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-                         |> JudgeTool.isUndefined,
-                         normalsMap
-                         |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-                         |> JudgeTool.isUndefined,
-                         indicesMap
-                         |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-                         |> JudgeTool.isUndefined
-                       )
-                       |> expect == (false, false, false)
-                     }
-                   ) */
+                  )
+                  |> expect != (100., 100., 100)
+                }
+              )
           );
+          /* test(
+               "change copied state shouldn't affect source state",
+               () => {
+                 open MainStateDataType;
+                 let (
+                   state,
+                   gameObject1,
+                   gameObject2,
+                   gameObject3,
+                   geometry1,
+                   geometry2,
+                   geometry3
+                 ) =
+                   _prepareGeometryData(state);
+                 let copiedState = MainStateTool.deepCopyForRestore(state);
+                 let record = copiedState.boxGeometryRecord;
+                 record.verticesMap
+                 |> Obj.magic
+                 |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
+                 record.normalsMap
+                 |> Obj.magic
+                 |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
+                 record.indicesMap
+                 |> Obj.magic
+                 |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
+                 let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
+                 (
+                   verticesMap
+                   |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
+                   |> JudgeTool.isUndefined,
+                   normalsMap
+                   |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
+                   |> JudgeTool.isUndefined,
+                   indicesMap
+                   |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
+                   |> JudgeTool.isUndefined
+                 )
+                 |> expect == (false, false, false)
+               }
+             ) */
           describe(
             "deep copy material record",
             () => {
@@ -968,7 +977,7 @@ let _ =
               )
             }
           );
-          describe(
+          /* describe(
             "restore transform record to target state",
             () =>
               test(
@@ -989,12 +998,12 @@ let _ =
                   )
                   |>
                   expect == (
-                              [|TransformTool.getDefaultLocalToWorldMatrix()|],
+                              [|TransformTool.getDefaultLocalToWorldMatrix(state)|],
                               [|TransformTool.changeTupleToTypeArray(pos4)|]
                             )
                 }
               )
-          );
+          ); */
           describe(
             "restore geometry record to target state",
             () =>

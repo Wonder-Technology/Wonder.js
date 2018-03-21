@@ -160,7 +160,7 @@ and state = {
   viewRecord,
   deviceManagerRecord,
   gameObjectRecord,
-  transformRecord,
+  transformRecord: option(transformRecord),
   sceneRecord,
   basicCameraViewRecord,
   perspectiveCameraProjectionRecord,

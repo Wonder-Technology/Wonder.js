@@ -39,10 +39,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getColorDataSize(),
+             RecordPointLightService.getColorsSize(),
              RecordPointLightService.getDefaultColor()
            ),
-           DisposeLightService.deleteBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
          ),
     intensities:
       intensities
@@ -50,10 +50,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getIntensityDataSize(),
+             RecordPointLightService.getIntensitiesSize(),
              RecordPointLightService.getDefaultIntensity()
            ),
-           DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     constants:
       constants
@@ -61,10 +61,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getConstantDataSize(),
+             RecordPointLightService.getConstantsSize(),
              RecordPointLightService.getDefaultConstant()
            ),
-           DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     linears:
       linears
@@ -72,10 +72,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getLinearDataSize(),
+             RecordPointLightService.getLinearsSize(),
              RecordPointLightService.getDefaultLinear()
            ),
-           DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     quadratics:
       quadratics
@@ -83,10 +83,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getQuadraticDataSize(),
+             RecordPointLightService.getQuadraticsSize(),
              RecordPointLightService.getDefaultQuadratic()
            ),
-           DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     ranges:
       ranges
@@ -94,10 +94,10 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getRangeDataSize(),
+             RecordPointLightService.getRangesSize(),
              RecordPointLightService.getDefaultRange()
            ),
-           DisposeLightService.deleteSingleValueBySwapAndResetFloat32TypeArr
+           DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
     gameObjectMap
   }

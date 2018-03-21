@@ -17,75 +17,87 @@ let _disposeFromParentAndChildMap = (transform, isKeepOrder, record) => {
      );
   switch (HierachyTransformService.getParent(transform, record)) {
   | None => record
-  | Some(parent) => record |> HierachyTransformService.removeFromChildMap(parent, transform, isKeepOrder)
+  | Some(parent) =>
+    record |> HierachyTransformService.removeFromChildMap(parent, transform, isKeepOrder)
   }
 };
 
 let _disposeData =
     (
       transform: transform,
-      maxTypeArrayPoolSize,
-      isKeepOrder,
-      (
-        typeArrayPoolRecord,
-        {localToWorldMatrixMap, localPositionMap, parentMap, childMap, dirtyMap, gameObjectMap} as transformRecord
-      )
+      (transformDataBufferCount, maxTypeArrayPoolSize, isKeepOrder),
+      {
+        localToWorldMatrices,
+        localPositions,
+        defaultLocalToWorldMatrix,
+        defaultLocalPosition,
+        parentMap,
+        childMap,
+        dirtyMap,
+        gameObjectMap
+      } as transformRecord
     ) => {
   let transformRecord = _disposeFromParentAndChildMap(transform, isKeepOrder, transformRecord);
-  let typeArrayPoolRecord =
-    TypeArrayPoolTransformService.addTypeArrayToPool(
-      transform,
-      maxTypeArrayPoolSize,
-      (localToWorldMatrixMap, localPositionMap),
-      typeArrayPoolRecord
-    );
-  (
-    typeArrayPoolRecord,
-    {
-      ...transformRecord,
-      localToWorldMatrixMap: localToWorldMatrixMap |> disposeSparseMapData(transform),
-      localPositionMap: localPositionMap |> disposeSparseMapData(transform),
-      parentMap: parentMap |> disposeSparseMapData(transform),
-      childMap: childMap |> disposeSparseMapData(transform),
-      dirtyMap: dirtyMap |> disposeSparseMapData(transform),
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(transform)
-    }
-  )
+  {
+    ...transformRecord,
+    localToWorldMatrices:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+        RecordTransformMainService.getLocalToWorldMatrixIndex(transform),
+        RecordTransformMainService.getLocalToWorldMatricesLength(transformDataBufferCount),
+        defaultLocalToWorldMatrix,
+        localToWorldMatrices
+      ),
+    localPositions:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+        RecordTransformMainService.getLocalPositionIndex(transform),
+        RecordTransformMainService.getLocalPositionsLength(transformDataBufferCount),
+        defaultLocalPosition,
+        localPositions
+      ),
+    parentMap: parentMap |> disposeSparseMapData(transform),
+    childMap: childMap |> disposeSparseMapData(transform),
+    dirtyMap: dirtyMap |> disposeSparseMapData(transform),
+    gameObjectMap: gameObjectMap |> disposeSparseMapData(transform)
+  }
 };
 
 let handleDisposeComponent =
-    (
-      transform: transform,
-      maxTypeArrayPoolSize,
-      isKeepOrder,
-      {typeArrayPoolRecord, transformRecord} as state
-    ) => {
+    (transform: transform, maxTypeArrayPoolSize, isKeepOrder, {settingRecord} as state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
-            DisposeComponentService.checkComponentShouldAlive(transform, isAlive, transformRecord)
+            DisposeComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord
+            )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  let (typeArrayPoolRecord, transformRecord) =
+  let transformRecord =
     _disposeData(
       transform,
-      maxTypeArrayPoolSize,
-      isKeepOrder,
-      (typeArrayPoolRecord, transformRecord)
+      (
+        BufferSettingService.getTransformDataBufferCount(settingRecord),
+        maxTypeArrayPoolSize,
+        isKeepOrder
+      ),
+      state |> RecordTransformMainService.getRecord
     );
   let {disposedIndexArray} = transformRecord;
   {
     ...state,
-    typeArrayPoolRecord,
-    transformRecord: {
-      ...transformRecord,
-      disposedIndexArray: disposedIndexArray |> ArrayService.push(transform)
-    }
+    transformRecord:
+      Some({
+        ...transformRecord,
+        disposedIndexArray: disposedIndexArray |> ArrayService.push(transform)
+      })
   }
 };
 
@@ -93,10 +105,10 @@ let handleBatchDisposeComponent =
   [@bs]
   (
     (
-      transformArray: array(transform),
+      transformArray: array(int),
       isGameObjectDisposedMap: array(bool),
-      maxTypeArrayPoolSize,
-      {typeArrayPoolRecord, transformRecord} as state
+      maxTypeArrayPoolSize: int,
+      {settingRecord, transformRecord} as state: MainStateDataType.state
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -106,29 +118,29 @@ let handleBatchDisposeComponent =
                 DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
                   transformArray,
                   isAlive,
-                  transformRecord
+                  state |> RecordTransformMainService.getRecord
                 )
               )
             )
           ),
         IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
-      let {disposedIndexArray} = transformRecord;
+      let {disposedIndexArray} as transformRecord = state |> RecordTransformMainService.getRecord;
       let transformRecord = {
         ...transformRecord,
         disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
       };
+      let transformDataBufferCount =
+        BufferSettingService.getTransformDataBufferCount(settingRecord);
+      let dataTuple = (transformDataBufferCount, maxTypeArrayPoolSize, false);
       /* TODO optimize: batch remove parent,child? */
-      let (typeArrayPoolRecord, transformRecord) =
+      let transformRecord =
         transformArray
         |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
-             (
-               (recordTuple, transform) =>
-                 _disposeData(transform, maxTypeArrayPoolSize, false, recordTuple)
-             ),
-             (typeArrayPoolRecord, transformRecord)
+             ((transformRecord, transform) => _disposeData(transform, dataTuple, transformRecord)),
+             transformRecord
            );
-      {...state, typeArrayPoolRecord, transformRecord}
+      {...state, transformRecord:Some(transformRecord)}
     }
   );
