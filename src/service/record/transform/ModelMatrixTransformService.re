@@ -44,8 +44,8 @@ let getNormalMatrixTypeArray =
   };
 
 let getLocalPositionTypeArray = (transform: transform, localPositions) =>
-  RecordTransformMainService.getLocalPositionTypeArray(transform, localPositions)
-  |> WonderLog.Contract.ensureCheck(
+  RecordTransformMainService.getLocalPositionTypeArray(transform, localPositions);
+  /* |> WonderLog.Contract.ensureCheck(
        (localPosition) =>
          WonderLog.(
            Contract.(
@@ -58,15 +58,11 @@ let getLocalPositionTypeArray = (transform: transform, localPositions) =>
            )
          ),
        IsDebugMainService.getIsDebug(MainStateData.stateData)
-     );
+     ); */
 
 let getLocalPositionTuple = (transform: transform, localPositions) => {
-  let typeArr = getLocalPositionTypeArray(transform, localPositions);
-  (
-    Float32Array.unsafe_get(typeArr, 0),
-    Float32Array.unsafe_get(typeArr, 1),
-    Float32Array.unsafe_get(typeArr, 2)
-  )
+   RecordTransformMainService.getLocalPositionTuple(transform, localPositions);
+  
 };
 
 let setLocalPositionByTuple = (transform: transform, dataTuple, {localPositions} as record) => {

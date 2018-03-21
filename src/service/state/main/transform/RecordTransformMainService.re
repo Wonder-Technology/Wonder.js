@@ -35,6 +35,9 @@ let getLocalToWorldMatrix = (index, typeArr) =>
 let setLocalToWorldMatrix = (index, data, typeArr) =>
   TypeArrayService.setFloat16(getLocalToWorldMatrixIndex(index), data, typeArr);
 
+let getLocalPositionTuple = (index, typeArr) =>
+  TypeArrayService.getFloat3Tuple(getLocalPositionIndex(index), typeArr);
+
 let getLocalPositionTypeArray = (index, typeArr) =>
   TypeArrayService.getFloat3TypeArray(getLocalPositionIndex(index), typeArr);
 

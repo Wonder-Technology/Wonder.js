@@ -44,7 +44,7 @@ let _disposeData =
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
         RecordTransformMainService.getLocalToWorldMatrixIndex(transform),
-        RecordTransformMainService.getLocalToWorldMatricesLength(transformDataBufferCount),
+        RecordTransformMainService.getLocalToWorldMatricesSize(),
         defaultLocalToWorldMatrix,
         localToWorldMatrices
       ),
@@ -52,7 +52,7 @@ let _disposeData =
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
         RecordTransformMainService.getLocalPositionIndex(transform),
-        RecordTransformMainService.getLocalPositionsLength(transformDataBufferCount),
+        RecordTransformMainService.getLocalPositionsSize(),
         defaultLocalPosition,
         localPositions
       ),

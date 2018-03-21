@@ -99,6 +99,7 @@ let createStateAndSetToStateData =
     buildSetting(isDebug, canvasId, context, useHardwareInstance, useWorker) |> Js.Json.parseExn
   )
   |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
+  |> RecordTransformMainService.create
   |> MainStateTool.setState
 };
 
@@ -131,6 +132,13 @@ let setBufferSize =
 };
 
 let unsafeGetGPU = (state) => state.settingRecord |> OperateSettingService.unsafeGetGPU;
+
+let setGPU = (config, state) => {
+  ...state,
+  settingRecord: {...state.settingRecord, gpu: Some(config)}
+};
+
+let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let setGPU = (config, state) => {
   ...state,

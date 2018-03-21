@@ -11,13 +11,31 @@ let setState = (state) => StateDataMainService.setState(getStateData(), state);
 let createState = CreateStateMainService.createState;
 
 let createNewCompleteState = (sandbox) =>
-  createState() |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+  SettingType.(
+    createState()
+    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+    |> (
+      (state) =>
+        {
+          ...state,
+          settingRecord:
+            OperateSettingService.setSetting({
+              canvasId: Some(""),
+              memory: None,
+              buffer: None,
+              isDebug: None,
+              context: None,
+              gpu: None,
+              worker: None
+            })
+        }
+        |> RecordTransformMainService.create
+    )
+  );
 
 let createNewCompleteStateWithRenderConfig = (sandbox) =>
   createNewCompleteState(sandbox)
-  |> (
-    (state) => state |> RenderConfigTool.create(RenderConfigTool.buildRenderConfig())
-  );
+  |> ((state) => state |> RenderConfigTool.create(RenderConfigTool.buildRenderConfig()));
 
 let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   open Wonder_jest;

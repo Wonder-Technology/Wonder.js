@@ -624,7 +624,7 @@ let _ =
                     |> toCalledWith([|
                          pos,
                          Obj.magic(Js.false_),
-                         Obj.magic(TransformTool.getDefaultLocalToWorldMatrix(state))
+                         Obj.magic(TransformTool.getDefaultLocalToWorldMatrixTypeArray(state))
                        |])
                   }
                 );
@@ -644,7 +644,10 @@ let _ =
                           RenderBasicJobTool.prepareGameObject(sandbox, state);
                         let state =
                           state
-                          |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                          |> TransformAPI.setTransformLocalPosition(
+                               gameObjectTransform,
+                               (1., 2., 3.)
+                             );
                         let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
@@ -670,7 +673,7 @@ let _ =
                         |> toCalledWith([|
                              pos,
                              Obj.magic(Js.false_),
-                             Obj.magic(TransformTool.getDefaultLocalToWorldMatrix(state))
+                             Obj.magic(TransformTool.getDefaultLocalToWorldMatrixTypeArray(state))
                            |])
                       }
                     )
@@ -743,7 +746,8 @@ let _ =
                         let (state, gameObject2, _, material2, _) =
                           RenderBasicJobTool.prepareGameObject(sandbox, state);
                         let state =
-                          state |> BasicMaterialAPI.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
+                          state
+                          |> BasicMaterialAPI.setBasicMaterialColor(material1, [|0., 1., 0.2|]);
                         let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
@@ -816,8 +820,7 @@ let _ =
                         () => {
                           let (state, _, geometry, _, _) =
                             RenderBasicJobTool.prepareGameObject(sandbox, state^);
-                          let (state, _, _, _) =
-                            CameraTool.createCameraGameObject(state);
+                          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                           let (state, _, _, _, _) =
                             RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
                               sandbox,
@@ -838,8 +841,7 @@ let _ =
                         () => {
                           let (state, _, geometry, _, _) =
                             RenderBasicJobTool.prepareGameObject(sandbox, state^);
-                          let (state, _, _, _) =
-                            CameraTool.createCameraGameObject(state);
+                          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                           let (state, _, _, _, _) =
                             RenderBasicJobTool.prepareGameObject(sandbox, state);
                           let (state, bindBuffer, element_array_buffer) =

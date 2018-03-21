@@ -57,13 +57,13 @@ let _initDataWhenCreate =
       ...transformRecord,
       childMap: childMap |> _setDefaultChildren(index)
       /* localToWorldMatrices:
-        RecordTransformMainService.setLocalToWorldMatrix(
-          index,
-          defaultLocalToWorldMatrix,
-          localToWorldMatrices
-        ),
-      localPositions:
-        RecordTransformMainService.setLocalPosition(index, defaultLocalPosition, localPositions) */
+           RecordTransformMainService.setLocalToWorldMatrix(
+             index,
+             defaultLocalToWorldMatrix,
+             localToWorldMatrices
+           ),
+         localPositions:
+           RecordTransformMainService.setLocalPosition(index, defaultLocalPosition, localPositions) */
     };
 
 let createWithoutMarkNotDirty = ({settingRecord} as state) => {

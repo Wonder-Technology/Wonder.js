@@ -989,6 +989,7 @@ let _ =
                       test(
                         "reset removed one's value",
                         () => {
+                          TestTool.closeContractCheck();
                           let (
                             state,
                             (gameObject1, gameObject2),

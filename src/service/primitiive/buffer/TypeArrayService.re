@@ -6,8 +6,14 @@ let getFloat3 = (index: int, typeArray: Float32Array.t) => [|
   Float32Array.unsafe_get(typeArray, index + 2)
 |];
 
-let getFloat3TypeArray = (index: int, typeArr: Float32Array.t) =>
-  Float32Array.subarray(~start=index, ~end_=index + 2, typeArr);
+let getFloat3TypeArray = (index: int, typeArray: Float32Array.t) =>
+  Float32Array.subarray(~start=index, ~end_=index + 3, typeArray);
+
+let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
+  Float32Array.unsafe_get(typeArray, index),
+  Float32Array.unsafe_get(typeArray, index + 1),
+  Float32Array.unsafe_get(typeArray, index + 2)
+);
 
 let setFloat3 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(
@@ -37,27 +43,27 @@ let setFloat3ByTuple = (index: int, (x, y, z), typeArray: Float32Array.t) => {
   typeArray
 };
 
-let getFloat16 = (index: int, typeArr: Float32Array.t) => [|
-  Float32Array.unsafe_get(typeArr, index),
-  Float32Array.unsafe_get(typeArr, index + 1),
-  Float32Array.unsafe_get(typeArr, index + 2),
-  Float32Array.unsafe_get(typeArr, index + 3),
-  Float32Array.unsafe_get(typeArr, index + 4),
-  Float32Array.unsafe_get(typeArr, index + 5),
-  Float32Array.unsafe_get(typeArr, index + 6),
-  Float32Array.unsafe_get(typeArr, index + 7),
-  Float32Array.unsafe_get(typeArr, index + 8),
-  Float32Array.unsafe_get(typeArr, index + 9),
-  Float32Array.unsafe_get(typeArr, index + 10),
-  Float32Array.unsafe_get(typeArr, index + 11),
-  Float32Array.unsafe_get(typeArr, index + 12),
-  Float32Array.unsafe_get(typeArr, index + 13),
-  Float32Array.unsafe_get(typeArr, index + 14),
-  Float32Array.unsafe_get(typeArr, index + 15)
+let getFloat16 = (index: int, typeArray: Float32Array.t) => [|
+  Float32Array.unsafe_get(typeArray, index),
+  Float32Array.unsafe_get(typeArray, index + 1),
+  Float32Array.unsafe_get(typeArray, index + 2),
+  Float32Array.unsafe_get(typeArray, index + 3),
+  Float32Array.unsafe_get(typeArray, index + 4),
+  Float32Array.unsafe_get(typeArray, index + 5),
+  Float32Array.unsafe_get(typeArray, index + 6),
+  Float32Array.unsafe_get(typeArray, index + 7),
+  Float32Array.unsafe_get(typeArray, index + 8),
+  Float32Array.unsafe_get(typeArray, index + 9),
+  Float32Array.unsafe_get(typeArray, index + 10),
+  Float32Array.unsafe_get(typeArray, index + 11),
+  Float32Array.unsafe_get(typeArray, index + 12),
+  Float32Array.unsafe_get(typeArray, index + 13),
+  Float32Array.unsafe_get(typeArray, index + 14),
+  Float32Array.unsafe_get(typeArray, index + 15)
 |];
 
-let getFloat16TypeArray = (index: int, typeArr: Float32Array.t) =>
-  Float32Array.subarray(~start=index, ~end_=index + 15, typeArr);
+let getFloat16TypeArray = (index: int, typeArray: Float32Array.t) =>
+  Float32Array.subarray(~start=index, ~end_=index + 16, typeArray);
 
 let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(
@@ -88,14 +94,14 @@ let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array
 let fillFloat32Array =
   [@bs]
   (
-    (typeArr: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
+    (typeArray: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
           open Contract;
           open Operators;
           let actualLen = Js.Array.length(dataArr) + startIndex;
-          let range = Float32Array.length(typeArr);
+          let range = Float32Array.length(typeArray);
           test(
             Log.buildAssertMessage(
               ~expect={j|not exceed Float32Array range:$range|j},
@@ -108,15 +114,15 @@ let fillFloat32Array =
       );
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
-        /* Js.Typed_array.Float32Array.unsafe_set(typeArr, i, dataArr[dataArrIndex^]); */
+        /* Js.Typed_array.Float32Array.unsafe_set(typeArray, i, dataArr[dataArrIndex^]); */
         Js.Typed_array.Float32Array.unsafe_set(
-          typeArr,
+          typeArray,
           i,
           Array.unsafe_get(dataArr, dataArrIndex^)
         );
         dataArrIndex := succ(dataArrIndex^)
       };
-      typeArr
+      typeArray
     }
   );
 
@@ -145,19 +151,19 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-/* let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
-   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArr); */
+/* let getFloat32ArrSubarray = (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
+   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArray); */
 let fillUint16Array =
   [@bs]
   (
-    (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
+    (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
           open Contract;
           open Operators;
           let actualLen = Js.Array.length(dataArr) + startIndex;
-          let range = Uint16Array.length(typeArr);
+          let range = Uint16Array.length(typeArray);
           test(
             Log.buildAssertMessage(
               ~expect={j|not exceed Uint16Array range:$range|j},
@@ -171,13 +177,13 @@ let fillUint16Array =
       let dataArrIndex = ref(0);
       for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
         Js.Typed_array.Uint16Array.unsafe_set(
-          typeArr,
+          typeArray,
           i,
           Array.unsafe_get(dataArr, dataArrIndex^)
         );
         dataArrIndex := succ(dataArrIndex^)
       };
-      typeArr
+      typeArray
     }
   );
 
@@ -205,8 +211,8 @@ let fillUint16Array =
      );
      targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
    }; */
-/* let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
-   Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArr); */
+/* let getUint16ArrSubarray = (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
+   Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArray); */
 let _setFloat32ArrayWithFloat32Array =
   [@bs]
   (

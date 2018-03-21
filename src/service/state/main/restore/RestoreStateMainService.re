@@ -10,26 +10,22 @@ let _getSharedData =
 };
 
 let restore =
-    (stateData: stateData, currentState: MainStateDataType.state, targetState: MainStateDataType.state) => {
+    (
+      stateData: stateData,
+      currentState: MainStateDataType.state,
+      targetState: MainStateDataType.state
+    ) => {
   let intersectShaderIndexDataArray =
     IntersectShaderIndexMainService.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
     targetState |> RestoreBoxGeometryMainService.restore(currentState, sharedData);
   let (targetState, sharedData) =
-    targetState |> RestoreTransformMainService.restore(currentState, sharedData);
-  let (targetState, sharedData) =
     targetState |> RestoreSourceInstanceMainService.restore(currentState, sharedData);
   let targetState =
     targetState |> RestoreDeviceManagerMainService.restore(currentState, sharedData);
   let gl = [@bs] DeviceManagerService.unsafeGetGl(targetState.deviceManagerRecord);
-  /* let targetState = {
-       ...targetState,
-       typeArrayPoolRecord: RestoreTypeArrayPoolMainService.restore(currentState, targetState),
-       globalTempRecord: RestoreGlobalTempMainService.restore(currentState, targetState)
-     }; */
   targetState
-  /* |> TypeArrayPoolService.restore(currentState, sharedData) */
   |> RestoreTypeArrayPoolMainService.restore(currentState, sharedData)
   |> RestoreGlobalTempMainService.restore(currentState)
   |> RestoreVboBufferMainService.restore(currentState)
@@ -40,18 +36,5 @@ let restore =
   |> RestoreBasicMaterialMainService.restore(gl, currentState)
   |> RestoreLightMaterialMainService.restore(gl, currentState)
   |> RestoreRenderMainService.restore(currentState)
-  /* |> RecordGlobalTempService.restore(currentState) */
   |> setState(stateData)
-  /* |> WonderLog.Contract.ensureCheck ((state) => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      test
-      (Log.buildAssertMessage(~expect={j|gl exist|j}, ~actual={j|not|j}),
-      (
-      () => {
-     [@bs]DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
-      })
-      );
-      }, IsDebugMainService.getIsDebug(MainStateData.stateData)); */
 };
