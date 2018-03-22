@@ -101,46 +101,61 @@ let _ =
           describe(
             "dispose data",
             () => {
-              test(
-                "remove from colorMap, shaderIndexMap, gameObjectMap",
-                () => {
-                  open BasicMaterialType;
-                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
-                  let state =
-                    state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
-                         gameObject1,
-                         material1
-                       );
-                  let {colorMap, shaderIndexMap, gameObjectMap} = state.basicMaterialRecord;
-                  (
-                    colorMap |> WonderCommonlib.SparseMapService.has(material1),
-                    shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
-                    gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
+              describe(
+                "test dispose shared material",
+                () =>
+                  test(
+                    "descrease group count",
+                    () => {
+                      let (state, material1) = createBasicMaterial(state^);
+                      let (state, gameObject1) = GameObjectAPI.createGameObject(state);
+                      let state =
+                        state
+                        |> GameObjectAPI.addGameObjectBasicMaterialComponent(
+                             gameObject1,
+                             material1
+                           );
+                      let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+                      let state =
+                        state
+                        |> GameObjectAPI.addGameObjectBasicMaterialComponent(
+                             gameObject2,
+                             material1
+                           );
+                      let state =
+                        state
+                        |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                             gameObject1,
+                             material1
+                           );
+                      BasicMaterialTool.getGroupCount(material1, state) |> expect == 0
+                    }
                   )
-                  |> expect == (false, false, false)
-                }
               );
-              test(
-                "reset group count",
-                () => {
-                  let (state, material1) = createBasicMaterial(state^);
-                  let (state, gameObject1) = GameObjectAPI.createGameObject(state);
-                  let state =
-                    state
-                    |> GameObjectAPI.addGameObjectBasicMaterialComponent(gameObject1, material1);
-                  let (state, gameObject2) = GameObjectAPI.createGameObject(state);
-                  let state =
-                    state
-                    |> GameObjectAPI.addGameObjectBasicMaterialComponent(gameObject2, material1);
-                  let state =
-                    state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
-                         gameObject1,
-                         material1
-                       );
-                  BasicMaterialTool.getGroupCount(material1, state) |> expect == 0
-                }
+              describe(
+                "test dispose not shared material",
+                () =>
+                  test(
+                    "remove from colorMap, shaderIndexMap, gameObjectMap",
+                    () => {
+                      open BasicMaterialType;
+                      let (state, gameObject1, material1) =
+                        BasicMaterialTool.createGameObject(state^);
+                      let state =
+                        state
+                        |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                             gameObject1,
+                             material1
+                           );
+                      let {colorMap, shaderIndexMap, gameObjectMap} = state.basicMaterialRecord;
+                      (
+                        colorMap |> WonderCommonlib.SparseMapService.has(material1),
+                        shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
+                        gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
+                      )
+                      |> expect == (false, false, false)
+                    }
+                  )
               )
             }
           );
