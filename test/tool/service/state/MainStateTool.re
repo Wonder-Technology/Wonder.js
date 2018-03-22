@@ -29,7 +29,7 @@ let createNewCompleteState = (sandbox) =>
               worker: None
             })
         }
-        |> RecordTransformMainService.create
+        |> ConfigDataLoaderSystem._createRecordWithState
     )
   );
 

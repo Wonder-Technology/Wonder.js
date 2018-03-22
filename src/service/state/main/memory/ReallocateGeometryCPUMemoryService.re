@@ -4,27 +4,23 @@ open BoxGeometryType;
 
 open VboBufferType;
 
-let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, offset: int) => {
+let _updateInfoArray = (infoArray, index: int, {startIndex, endIndex}, offset: int) => {
   let increment = endIndex - startIndex;
-  Array.unsafe_set(
-    newInfoArray,
-    newIndex,
-    PointsGeometryMainService.buildInfo(offset, offset + increment)
-  );
-  newInfoArray
+  let newInfo = PointsGeometryMainService.buildInfo(offset, offset + increment);
+  Array.unsafe_set(infoArray, index, newInfo);
+  newInfo
 };
 
-let _setNewMap = (index, oldMap, newMap) =>
+let _setNewMap = (oldIndex, newIndex, oldMap, newMap) =>
   newMap
   |> WonderCommonlib.SparseMapService.set(
-       index,
-       oldMap |> WonderCommonlib.SparseMapService.unsafeGet(index)
+       newIndex,
+       oldMap |> WonderCommonlib.SparseMapService.unsafeGet(oldIndex)
      );
 
 let _allocateNewData =
     (
       newAliveIndexArray,
-      {vertexBufferMap, normalBufferMap, elementArrayBufferMap},
       {
         vertices,
         normals,
@@ -32,16 +28,8 @@ let _allocateNewData =
         verticesInfoArray,
         normalsInfoArray,
         indicesInfoArray,
-        configDataMap,
-        computeDataFuncMap,
-        gameObjectMap,
-        mappedIndexMap,
-        /* indicesCountCacheMap,
-           verticesCountCacheMap, */
         disposedIndexMap,
-        aliveIndexArray,
-        isInitMap,
-        groupCountMap
+        aliveIndexArray
       }
     ) =>
   newAliveIndexArray
@@ -50,18 +38,8 @@ let _allocateNewData =
        (
          (
            (
-             newVertexBufferMap,
-             newNormalBufferMap,
-             newElementArrayBufferMap,
              newIndex,
-             newMappedIndexMap,
-             newComputeDataFuncMap,
-             newConfigDataMap,
-             newGameObjectMap,
-             /* newIndicesCountCacheMap ,
-                newVerticesCountCacheMap, */
-             newIsInitMap,
-             newGroupCountMap,
+             /* newMappedIndexMap, */
              newVerticesInfoArray,
              newNormalsInfoArray,
              newIndicesInfoArray,
@@ -77,34 +55,40 @@ let _allocateNewData =
            let verticesInfo = PointsGeometryMainService.getInfo(verticesInfoArray, newIndex);
            let normalsInfo = PointsGeometryMainService.getInfo(normalsInfoArray, newIndex);
            let indicesInfo = PointsGeometryMainService.getInfo(indicesInfoArray, newIndex);
+           let newVerticesInfo =
+             _updateInfoArray(verticesInfoArray, index, verticesInfo, newVerticesOffset);
+           let newNormalsInfo =
+             _updateInfoArray(normalsInfoArray, index, normalsInfo, newNormalsOffset);
+           let newIndicesInfo =
+             _updateInfoArray(indicesInfoArray, index, indicesInfo, newIndicesOffset);
            (
-             _setNewMap(index, vertexBufferMap, newVertexBufferMap),
-             _setNewMap(index, normalBufferMap, newNormalBufferMap),
-             _setNewMap(index, elementArrayBufferMap, newElementArrayBufferMap),
              succ(newIndex),
-             MappedIndexService.setMappedIndex(index, newIndex, newMappedIndexMap),
-             _setNewMap(newIndex, computeDataFuncMap, newComputeDataFuncMap),
-             _setNewMap(newIndex, configDataMap, newConfigDataMap),
-             _setNewMap(newIndex, gameObjectMap, newGameObjectMap),
-             _setNewMap(newIndex, isInitMap, newIsInitMap),
-             _setNewMap(newIndex, groupCountMap, newGroupCountMap),
-             _updateInfoArray(newVerticesInfoArray, newIndex, verticesInfo, newVerticesOffset),
-             _updateInfoArray(newNormalsInfoArray, newIndex, normalsInfo, newNormalsOffset),
-             _updateInfoArray(newIndicesInfoArray, newIndex, indicesInfo, newIndicesOffset),
+             /* MappedIndexService.setMappedIndex(index, newIndex, newMappedIndexMap), */
+             verticesInfoArray,
+             normalsInfoArray,
+             indicesInfoArray,
+             /* _setNewMap(index, newIndex, computeDataFuncMap, newComputeDataFuncMap),
+                _setNewMap(index, newIndex, configDataMap, newConfigDataMap),
+                _setNewMap(index, newIndex, gameObjectMap, newGameObjectMap),
+                _setNewMap(index, newIndex, isInitMap, newIsInitMap),
+                _setNewMap(index, newIndex, groupCountMap, newGroupCountMap),
+                _updateInfoArray(newVerticesInfoArray, newIndex, verticesInfo, newVerticesOffset),
+                _updateInfoArray(newNormalsInfoArray, newIndex, normalsInfo, newNormalsOffset),
+                _updateInfoArray(newIndicesInfoArray, newIndex, indicesInfo, newIndicesOffset), */
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (vertices, newVerticesOffset),
-               (vertices, verticesInfo.startIndex),
-               verticesInfo.endIndex
+               (vertices, newVerticesInfo.startIndex),
+               newVerticesInfo.endIndex
              ),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (normals, newNormalsOffset),
-               (normals, normalsInfo.startIndex),
-               normalsInfo.endIndex
+               (normals, newNormalsInfo.startIndex),
+               newNormalsInfo.endIndex
              ),
              TypeArrayService.fillUint16ArrayWithUint16Array(
                (indices, newIndicesOffset),
-               (indices, indicesInfo.startIndex),
-               indicesInfo.endIndex
+               (indices, newIndicesInfo.startIndex),
+               newIndicesInfo.endIndex
              ),
              vertices,
              normals,
@@ -113,19 +97,10 @@ let _allocateNewData =
          }
        ),
        (
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
          0,
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.ArrayService.createEmpty(),
-         WonderCommonlib.ArrayService.createEmpty(),
-         WonderCommonlib.ArrayService.createEmpty(),
          0,
          0,
          0,
@@ -138,21 +113,10 @@ let _allocateNewData =
 let _setNewDataToState =
     (
       newAliveIndexArray,
-      vboBufferRecord,
       boxGeometryRecord,
       (
-        newVertexBufferMap,
-        newNormalBufferMap,
-        newElementArrayBufferMap,
         newIndex,
-        newMappedIndexMap,
-        newComputeDataFuncMap,
-        newConfigDataMap,
-        newGameObjectMap,
-        /* newIndicesCountCacheMap ,
-           newVerticesCountCacheMap, */
-        newIsInitMap,
-        newGroupCountMap,
+        /* newMappedIndexMap, */
         newVerticesInfoArray,
         newNormalsInfoArray,
         newIndicesInfoArray,
@@ -163,44 +127,28 @@ let _setNewDataToState =
         newNormals,
         newIndices
       )
-    ) => (
-  {
-    ...vboBufferRecord,
-    vertexBufferMap: newVertexBufferMap,
-    normalBufferMap: newNormalBufferMap,
-    elementArrayBufferMap: newElementArrayBufferMap
-  },
-  {
-    ...boxGeometryRecord,
-    index: newIndex,
-    mappedIndexMap: newMappedIndexMap,
-    computeDataFuncMap: newComputeDataFuncMap,
-    configDataMap: newConfigDataMap,
-    gameObjectMap: newGameObjectMap,
-    /* newIndicesCountCacheMap ,
-       newVerticesCountCacheMap, */
-    isInitMap: newIsInitMap,
-    groupCountMap: newGroupCountMap,
-    verticesInfoArray: newVerticesInfoArray,
-    normalsInfoArray: newNormalsInfoArray,
-    indicesInfoArray: newIndicesInfoArray,
-    verticesOffset: newVerticesOffset,
-    normalsOffset: newNormalsOffset,
-    indicesOffset: newIndicesOffset,
-    vertices: newVertices,
-    normals: newNormals,
-    indices: newIndices,
-    aliveIndexArray: newAliveIndexArray,
-    disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty()
-  }
-);
+    ) => {
+  ...boxGeometryRecord,
+  verticesInfoArray: newVerticesInfoArray,
+  normalsInfoArray: newNormalsInfoArray,
+  indicesInfoArray: newIndicesInfoArray,
+  verticesOffset: newVerticesOffset,
+  normalsOffset: newNormalsOffset,
+  indicesOffset: newIndicesOffset,
+  vertices: newVertices,
+  normals: newNormals,
+  indices: newIndices,
+  aliveIndexArray: newAliveIndexArray,
+  disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty()
+};
 
-let reAllocate = (vboBufferRecord, {disposedIndexMap, aliveIndexArray} as boxGeometryRecord) => {
+let reAllocate = ({disposedIndexMap, aliveIndexArray} as boxGeometryRecord) => {
   let newAliveIndexArray =
     aliveIndexArray
     |> Js.Array.filter(
          (aliveIndex) => ! ReallocateCPUMemoryService.isDisposed(aliveIndex, disposedIndexMap)
        );
-  _allocateNewData(newAliveIndexArray, vboBufferRecord, boxGeometryRecord)
-  |> _setNewDataToState(newAliveIndexArray, vboBufferRecord, boxGeometryRecord)
+  /* WonderLog.Log.print((newAliveIndexArray, aliveIndexArray)) |> ignore; */
+  _allocateNewData(newAliveIndexArray, boxGeometryRecord)
+  |> _setNewDataToState(newAliveIndexArray, boxGeometryRecord)
 };

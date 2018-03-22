@@ -75,11 +75,11 @@ let create = ({settingRecord} as state) => {
       normalsOffset: 0,
       indicesOffset: 0,
       disposeCount: 0,
-      mappedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
       configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
       computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       aliveIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       isInitMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty()
@@ -106,7 +106,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     computeDataFuncMap,
     groupCountMap,
     gameObjectMap,
-    mappedIndexMap,
+    disposedIndexArray,
     disposedIndexMap,
     aliveIndexArray
   } =
@@ -150,7 +150,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         isInitMap: isInitMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
-        mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
         aliveIndexArray: aliveIndexArray |> Js.Array.copy
       })

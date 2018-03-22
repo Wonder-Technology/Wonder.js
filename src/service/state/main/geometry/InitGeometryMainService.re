@@ -16,22 +16,22 @@ let _markIsInit = (index: int, isInit: bool, state: MainStateDataType.state) => 
   state
 };
 
-let initGeometry = (index: int, mappedIndex, state: MainStateDataType.state) => {
+let initGeometry = (index: int, state: MainStateDataType.state) => {
   let {isInitMap, computeDataFuncMap} as boxGeometryRecord =
     state |> RecordBoxGeometryMainService.getRecord;
   if (_isInit(index, isInitMap)) {
     state
   } else {
     /* let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord; */
-    switch (computeDataFuncMap |> WonderCommonlib.SparseMapService.get(mappedIndex)) {
+    switch (computeDataFuncMap |> WonderCommonlib.SparseMapService.get(index)) {
     | None => state
     | Some(computeDataFunc) =>
       let {vertices, normals, indices}: geometryComputeData =
-        computeDataFunc(mappedIndex, boxGeometryRecord);
+        computeDataFunc(index, boxGeometryRecord);
       state
-      |> VerticesGeometryMainService.setVertices(mappedIndex, vertices)
-      |> NormalsGeometryMainService.setNormals(mappedIndex, normals)
-      |> IndicesGeometryMainService.setIndices(mappedIndex, indices)
+      |> VerticesGeometryMainService.setVertices(index, vertices)
+      |> NormalsGeometryMainService.setNormals(index, normals)
+      |> IndicesGeometryMainService.setIndices(index, indices)
       |> _markIsInit(index, true)
     }
   }
@@ -59,21 +59,13 @@ let init = (state: MainStateDataType.state) => {
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  let {index, mappedIndexMap} = state |> RecordBoxGeometryMainService.getRecord;
+  let {index} = state |> RecordBoxGeometryMainService.getRecord;
   ArrayService.range(0, index - 1)
   |> ReduceStateMainService.reduceState(
-       [@bs]
-       (
-         (state, geometryIndex: int) =>
-           initGeometry(
-             geometryIndex,
-             MappedIndexService.getMappedIndex(geometryIndex, mappedIndexMap),
-             state
-           )
-       ),
+       [@bs] ((state, geometryIndex: int) => initGeometry(geometryIndex, state)),
        state
      )
 };
 
-let handleInitComponent = (index: int, mappedIndex, state: MainStateDataType.state) =>
-  initGeometry(index, mappedIndex, state);
+let handleInitComponent = (index: int, state: MainStateDataType.state) =>
+  initGeometry(index, state);

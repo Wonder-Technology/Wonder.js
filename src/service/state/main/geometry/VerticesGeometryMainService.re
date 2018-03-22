@@ -13,23 +13,23 @@ open Js.Typed_array;
 let getVertices =
   [@bs]
   (
-    (mappedIndex, state) => {
+    (index, state) => {
       let {vertices, verticesInfoArray} = getRecord(state);
-      getFloat32PointData(mappedIndex, vertices, verticesInfoArray)
+      getFloat32PointData(index, vertices, verticesInfoArray)
     }
   );
 
 /* let getVertices =
    [@bs]
    (
-     (mappedIndex, {boxGeometryRecord}) =>
-       VerticesService.getVertices(mappedIndex, boxGeometryRecord.verticesMap)
+     (index, {boxGeometryRecord}) =>
+       VerticesService.getVertices(index, boxGeometryRecord.verticesMap)
    ); */
-let setVertices = (mappedIndex: int, data: array(float), state) => {
+let setVertices = (index, data: array(float), state) => {
   let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);
   record.verticesOffset =
     setFloat32PointData(
-      mappedIndex,
+      index,
       verticesInfoArray,
       verticesOffset,
       Js.Array.length(data),
@@ -38,11 +38,11 @@ let setVertices = (mappedIndex: int, data: array(float), state) => {
   state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset)
 };
 
-let setVerticesWithTypeArray = (mappedIndex: int, data: Float32Array.t, state) => {
+let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state) => {
   let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);
   record.verticesOffset =
     setFloat32PointData(
-      mappedIndex,
+      index,
       verticesInfoArray,
       verticesOffset,
       Float32Array.length(data),
@@ -50,7 +50,7 @@ let setVerticesWithTypeArray = (mappedIndex: int, data: Float32Array.t, state) =
     );
   state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset)
 };
-/* let setVerticesWithArray = (mappedIndex: int, record: array(float), state: MainStateDataType.state) => {
+/* let setVerticesWithArray = (index: int, record: array(float), state: MainStateDataType.state) => {
    let {verticesMap} as boxGeometryRecord = state.boxGeometryRecord;
    /* {
         ...state,
@@ -58,7 +58,7 @@ let setVerticesWithTypeArray = (mappedIndex: int, data: Float32Array.t, state) =
           ...boxGeometryRecord,
           verticesMap:
             setPointsWithArray(
-              (mappedIndex, getVertices(mappedIndex, state), record),
+              (index, getVertices(index, state), record),
               (
                 TypeArrayPoolService.getFloat32TypeArrayFromPool,
                 TypeArrayService.fillFloat32Array,
@@ -70,7 +70,7 @@ let setVerticesWithTypeArray = (mappedIndex: int, data: Float32Array.t, state) =
       } */
    let (typeArrayPoolRecord, verticesMap) =
      setPointsWithArray(
-       (mappedIndex, [@bs] getVertices(mappedIndex, state), record),
+       (index, [@bs] getVertices(index, state), record),
        (
          TypeArrayPoolService.getFloat32TypeArrayFromPool,
          TypeArrayService.fillFloat32Array,

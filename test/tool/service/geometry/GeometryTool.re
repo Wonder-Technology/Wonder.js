@@ -4,16 +4,15 @@ open BoxGeometryType;
 
 let buildInfo = PointsGeometryMainService.buildInfo;
 
-let getMappedIndex = (geometry, state) =>
-  MappedIndexService.getMappedIndex(
-    geometry,
-    RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-  );
-
+/* let getMappedIndex = (geometry, state) =>
+   MappedIndexService.getMappedIndex(
+     geometry,
+     RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
+   ); */
 let initGeometrys = (state: MainStateDataType.state) => InitGeometryMainService.init(state);
 
 let initGeometry = (geometry, state: MainStateDataType.state) =>
-  InitGeometryMainService.initGeometry(geometry, getMappedIndex(geometry, state), state);
+  InitGeometryMainService.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
     (
@@ -37,7 +36,7 @@ let buildBoxGeometryConfigDataJsObj =
    VerticesService.getVerticesCount(index, state.boxGeometryRecord.verticesMap); */
 let getIndicesCount = (index: int, state: MainStateDataType.state) =>
   /* IndicesService.getIndicesCount(index, state.boxGeometryRecord.indicesMap); */
-  IndicesGeometryMainService.getIndicesCount(getMappedIndex(index, state), state);
+  IndicesGeometryMainService.getIndicesCount(index, state);
 
 let getIndexType = (state: MainStateDataType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
@@ -95,10 +94,10 @@ let getGroupCount = (geometry, state) =>
   GroupGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let setVerticesWithArray = (geometry, data, state) =>
-  VerticesGeometryMainService.setVertices(getMappedIndex(geometry, state), data, state);
+  VerticesGeometryMainService.setVertices(geometry, data, state);
 
 let setNormalsWithArray = (geometry, data, state) =>
-  NormalsGeometryMainService.setNormals(getMappedIndex(geometry, state), data, state);
+  NormalsGeometryMainService.setNormals(geometry, data, state);
 
 let setIndicesWithArray = (geometry, data, state) =>
-  IndicesGeometryMainService.setIndices(getMappedIndex(geometry, state), data, state);
+  IndicesGeometryMainService.setIndices(geometry, data, state);

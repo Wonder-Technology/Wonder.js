@@ -1002,7 +1002,7 @@ let _ =
                    }
                  )
              ); */
-          describe(
+          /* describe(
             "restore geometry record to target state",
             () =>
               test(
@@ -1043,7 +1043,7 @@ let _ =
                   |> expect == (2, 1)
                 }
               )
-          );
+          ); */
           describe(
             "restore material record to target state",
             () => {

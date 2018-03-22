@@ -8,10 +8,6 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     | Some(geometry) =>
       InitGeometryMainService.handleInitComponent(
         geometry,
-        MappedIndexService.getMappedIndex(
-          geometry,
-          RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-        ),
         state
       )
     | None => state

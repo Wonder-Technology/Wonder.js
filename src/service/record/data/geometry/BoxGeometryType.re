@@ -27,12 +27,12 @@ type boxGeometryRecord = {
   mutable normalsOffset: int,
   mutable indicesOffset: int,
   mutable disposeCount: int,
-  mappedIndexMap: geometryMappedIndexMap,
   computeDataFuncMap: array(((int, boxGeometryRecord) => geometryComputeData)),
   configDataMap: geometryConfigDataMap,
   gameObjectMap,
   isInitMap: geometryIsInitMap,
   groupCountMap: geometryGroupCountMap,
+  mutable disposedIndexArray: array(geometry),
   mutable disposedIndexMap: geometryDisposedIndexMap,
   aliveIndexArray: array(int)
 };

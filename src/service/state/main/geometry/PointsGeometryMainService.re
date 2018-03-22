@@ -52,8 +52,8 @@ let buildInfo = (startIndex: int, endIndex: int) =>
        IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
-let getInfo = (infoArray, mappedIndex) =>
-  Array.unsafe_get(infoArray, mappedIndex)
+let getInfo = (infoArray, index) =>
+  Array.unsafe_get(infoArray, index)
   |> WonderLog.Contract.ensureCheck(
        (r) =>
          WonderLog.(
@@ -61,10 +61,10 @@ let getInfo = (infoArray, mappedIndex) =>
              Operators.(
                test(
                  Log.buildAssertMessage(
-                   ~expect={j|infoArray[$mappedIndex] exist|j},
+                   ~expect={j|infoArray[$index] exist|j},
                    ~actual={j|not|j}
                  ),
-                 () => infoArray |> Js.Array.length >= mappedIndex + 1
+                 () => infoArray |> Js.Array.length >= index + 1
                )
              )
            )
@@ -72,29 +72,29 @@ let getInfo = (infoArray, mappedIndex) =>
        IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
 
-let getFloat32PointData = (mappedIndex: int, points: Float32Array.t, infoArray) => {
-  let {startIndex, endIndex} = getInfo(infoArray, mappedIndex);
+let getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
+  let {startIndex, endIndex} = getInfo(infoArray, index);
   TypeArrayService.getFloat32ArrSubarray(points, startIndex, endIndex)
 };
 
 let setFloat32PointData =
-    (mappedIndex: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
+    (index: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, mappedIndex, buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
   fillFloat32ArrayFunc(startIndex);
   newOffset
 };
 
-let getUint16PointData = (mappedIndex: int, points: Uint16Array.t, infoArray) => {
-  let {startIndex, endIndex} = getInfo(infoArray, mappedIndex);
+let getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
+  let {startIndex, endIndex} = getInfo(infoArray, index);
   getUint16ArrSubarray(points, startIndex, endIndex)
 };
 
-let setUint16PointData = (mappedIndex: int, infoArray, offset: int, count, fillUint16ArraryFunc) => {
+let setUint16PointData = (index: int, infoArray, offset: int, count, fillUint16ArraryFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, mappedIndex, buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
   fillUint16ArraryFunc(startIndex);
   newOffset
 };

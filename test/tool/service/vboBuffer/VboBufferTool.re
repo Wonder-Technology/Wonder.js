@@ -5,14 +5,7 @@ let getData = (state) => state.vboBufferRecord;
 let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      geometryIndex,
-      MappedIndexService.getMappedIndex(
-        geometryIndex,
-        RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-      ),
-      state.vboBufferRecord.vertexBufferMap
-    ),
+    (geometryIndex, state.vboBufferRecord.vertexBufferMap),
     ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesGeometryMainService.getVertices),
     state
   );
@@ -20,14 +13,7 @@ let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType
 let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      geometryIndex,
-      MappedIndexService.getMappedIndex(
-        geometryIndex,
-        RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-      ),
-      state.vboBufferRecord.normalBufferMap
-    ),
+    (geometryIndex, state.vboBufferRecord.normalBufferMap),
     ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsGeometryMainService.getNormals),
     state
   );
@@ -35,14 +21,7 @@ let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType
 let getOrCreateElementArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      geometryIndex,
-      MappedIndexService.getMappedIndex(
-        geometryIndex,
-        RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-      ),
-      state.vboBufferRecord.elementArrayBufferMap
-    ),
+    (geometryIndex, state.vboBufferRecord.elementArrayBufferMap),
     (
       [@bs] ElementArrayBufferMainService.createBuffer,
       [@bs] IndicesGeometryMainService.getIndices

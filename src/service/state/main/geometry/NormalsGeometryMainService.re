@@ -38,17 +38,17 @@ open Js.Typed_array;
 let getNormals =
   [@bs]
   (
-    (mappedIndex, state) => {
+    (index, state) => {
       let {normals, normalsInfoArray} = getRecord(state);
-      getFloat32PointData(mappedIndex, normals, normalsInfoArray)
+      getFloat32PointData(index, normals, normalsInfoArray)
     }
   );
 
-let setNormals = (mappedIndex: int, data: array(float), state) => {
+let setNormals = (index: int, data: array(float), state) => {
   let {normalsInfoArray, normals, normalsOffset} as record = getRecord(state);
   record.normalsOffset =
     setFloat32PointData(
-      mappedIndex,
+      index,
       normalsInfoArray,
       normalsOffset,
       Js.Array.length(data),
@@ -57,11 +57,11 @@ let setNormals = (mappedIndex: int, data: array(float), state) => {
   state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset)
 };
 
-let setNormalsWithTypeArray = (mappedIndex: int, data: Float32Array.t, state) => {
+let setNormalsWithTypeArray = (index: int, data: Float32Array.t, state) => {
   let {normalsInfoArray, normals, normalsOffset} as record = getRecord(state);
   record.normalsOffset =
     setFloat32PointData(
-      mappedIndex,
+      index,
       normalsInfoArray,
       normalsOffset,
       Float32Array.length(data),

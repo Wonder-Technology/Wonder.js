@@ -83,14 +83,7 @@ let setBoxGeometryVertices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  VerticesGeometryMainService.setVerticesWithTypeArray(
-    MappedIndexService.getMappedIndex(
-      geometry,
-      RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-    ),
-    data,
-    state
-  )
+  VerticesGeometryMainService.setVerticesWithTypeArray(geometry, data, state)
 };
 
 let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
@@ -129,14 +122,7 @@ let setBoxGeometryNormals =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  NormalsGeometryMainService.setNormalsWithTypeArray(
-    MappedIndexService.getMappedIndex(
-      geometry,
-      RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-    ),
-    data,
-    state
-  )
+  NormalsGeometryMainService.setNormalsWithTypeArray(geometry, data, state)
 };
 
 let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
@@ -175,14 +161,7 @@ let setBoxGeometryIndices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  IndicesGeometryMainService.setIndicesWithTypeArray(
-    MappedIndexService.getMappedIndex(
-      geometry,
-      RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
-    ),
-    data,
-    state
-  )
+  IndicesGeometryMainService.setIndicesWithTypeArray(geometry, data, state)
 };
 
 let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataType.state) => {

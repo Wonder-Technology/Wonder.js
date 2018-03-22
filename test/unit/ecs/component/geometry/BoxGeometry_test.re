@@ -757,36 +757,36 @@ let _ =
         () => {
           describe(
             "dispose data",
-            () =>
-              /* describe(
-                   "test dispose shared geometry",
-                   () =>
-                     test(
-                       "descrease group count",
-                       () => {
-                         let (state, geometry1) = createBoxGeometry(state^);
-                         let (state, gameObject1) = GameObjectAPI.createGameObject(state);
-                         let state =
-                           state
-                           |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject1, geometry1);
-                         let (state, gameObject2) = GameObjectAPI.createGameObject(state);
-                         let state =
-                           state
-                           |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject2, geometry1);
-                         let (state, gameObject3) = GameObjectAPI.createGameObject(state);
-                         let state =
-                           state
-                           |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject3, geometry1);
-                         let state =
-                           state
-                           |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                gameObject1,
-                                geometry1
-                              );
-                         GeometryTool.getGroupCount(geometry1, state) |> expect == 1
-                       }
-                     )
-                 ); */
+            () => {
+              describe(
+                "test dispose shared geometry",
+                () =>
+                  test(
+                    "descrease group count",
+                    () => {
+                      let (state, geometry1) = createBoxGeometry(state^);
+                      let (state, gameObject1) = GameObjectAPI.createGameObject(state);
+                      let state =
+                        state
+                        |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                      let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+                      let state =
+                        state
+                        |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject2, geometry1);
+                      let (state, gameObject3) = GameObjectAPI.createGameObject(state);
+                      let state =
+                        state
+                        |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject3, geometry1);
+                      let state =
+                        state
+                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                             gameObject1,
+                             geometry1
+                           );
+                      GeometryTool.getGroupCount(geometry1, state) |> expect == 1
+                    }
+                  )
+              );
               describe(
                 "test dispose not shared geometry",
                 () => {
@@ -842,28 +842,28 @@ let _ =
                       |> expect == (false, false, false)
                     }
                   );
-                  test(
-                    "collect typeArr to pool",
-                    () => {
-                      open TypeArrayPoolType;
-                      let (state, gameObject1, geometry1) = _prepare(state);
-                      let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                        MainStateTool.getState().typeArrayPoolRecord;
-                      (
-                        float32ArrayPoolMap
-                        |> WonderCommonlib.SparseMapService.unsafeGet(
-                             BoxGeometryTool.getDefaultVertices() |> Float32Array.length
-                           )
-                        |> Js.Array.length,
-                        uint16ArrayPoolMap
-                        |> WonderCommonlib.SparseMapService.unsafeGet(
-                             BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
-                           )
-                        |> Js.Array.length
-                      )
-                      |> expect == (2, 1)
-                    }
-                  );
+                  /* test(
+                       "collect typeArr to pool",
+                       () => {
+                         open TypeArrayPoolType;
+                         let (state, gameObject1, geometry1) = _prepare(state);
+                         let {float32ArrayPoolMap, uint16ArrayPoolMap} =
+                           MainStateTool.getState().typeArrayPoolRecord;
+                         (
+                           float32ArrayPoolMap
+                           |> WonderCommonlib.SparseMapService.unsafeGet(
+                                BoxGeometryTool.getDefaultVertices() |> Float32Array.length
+                              )
+                           |> Js.Array.length,
+                           uint16ArrayPoolMap
+                           |> WonderCommonlib.SparseMapService.unsafeGet(
+                                BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
+                              )
+                           |> Js.Array.length
+                         )
+                         |> expect == (2, 1)
+                       }
+                     ); */
                   describe(
                     "test reallocate geometry",
                     () =>
@@ -897,7 +897,7 @@ let _ =
                                 "pack old type array with alived data",
                                 () => {
                                   test(
-                                    "alive geometry's vertices should exist",
+                                    "alive geometry's points should exist",
                                     () => {
                                       let (
                                         state,
@@ -917,15 +917,19 @@ let _ =
                                            );
                                       (
                                         getBoxGeometryVertices(geometry2, state),
+                                        getBoxGeometryNormals(geometry2, state),
                                         getBoxGeometryIndices(geometry2, state),
                                         getBoxGeometryVertices(geometry3, state),
+                                        getBoxGeometryNormals(geometry3, state),
                                         getBoxGeometryIndices(geometry3, state)
                                       )
                                       |>
                                       expect == (
                                                   BoxGeometryTool.getDefaultVertices(),
+                                                  BoxGeometryTool.getDefaultNormals(),
                                                   BoxGeometryTool.getDefaultIndices(),
                                                   BoxGeometryTool.getDefaultVertices(),
+                                                  BoxGeometryTool.getDefaultNormals(),
                                                   BoxGeometryTool.getDefaultIndices()
                                                 )
                                     }
@@ -951,10 +955,13 @@ let _ =
                                              gameObject2,
                                              geometry2
                                            );
-                                      let {vertices, indices} = state |> BoxGeometryTool.getData;
+                                      let {vertices, normals, indices} =
+                                        state |> BoxGeometryTool.getData;
                                       (
                                         vertices |> Float32Array.slice(~start=0, ~end_=72),
                                         vertices |> Float32Array.slice(~start=72, ~end_=144),
+                                        normals |> Float32Array.slice(~start=0, ~end_=72),
+                                        normals |> Float32Array.slice(~start=72, ~end_=144),
                                         indices |> Uint16Array.slice(~start=0, ~end_=36),
                                         indices |> Uint16Array.slice(~start=36, ~end_=72)
                                       )
@@ -962,6 +969,8 @@ let _ =
                                       expect == (
                                                   BoxGeometryTool.getDefaultVertices(),
                                                   BoxGeometryTool.getDefaultVertices(),
+                                                  BoxGeometryTool.getDefaultNormals(),
+                                                  BoxGeometryTool.getDefaultNormals(),
                                                   BoxGeometryTool.getDefaultIndices(),
                                                   BoxGeometryTool.getDefaultIndices()
                                                 )
@@ -970,105 +979,107 @@ let _ =
                                 }
                               )
                           );
-                          test(
-                            "all alive geometryIndex are changed",
-                            () => {
-                              open Js_typed_array;
-                              open MainStateDataType;
-                              let (
-                                state,
-                                gameObject1,
-                                geometry1,
-                                gameObject2,
-                                geometry2,
-                                gameObject3,
-                                geometry3
-                              ) =
-                                _prepare(state^);
-                              let state =
-                                state
-                                |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                          /* test(
+                               "all alive geometryIndex are changed",
+                               () => {
+                                 open Js_typed_array;
+                                 open MainStateDataType;
+                                 let (
+                                   state,
+                                   gameObject1,
+                                   geometry1,
+                                   gameObject2,
+                                   geometry2,
+                                   gameObject3,
+                                   geometry3
+                                 ) =
+                                   _prepare(state^);
+                                 let state =
+                                   state
+                                   |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                        gameObject2,
+                                        geometry2
+                                      );
+                                 (
+                                   geometry1,
+                                   /* geometry2, */
+                                   geometry3
+                                 )
+                                 |> expect == (0, 1)
+                               }
+                             ); */
+                          describe
+                            (
+                              "test info array",
+                              () =>
+                                test(
+                                  "update startIndex, endIndex for packed type array",
+                                  () => {
+                                    open MainStateDataType;
+                                    let (
+                                      state,
+                                      gameObject1,
+                                      geometry1,
+                                      gameObject2,
+                                      geometry2,
+                                      gameObject3,
+                                      geometry3
+                                    ) =
+                                      _prepare(state^);
+                                    let state =
+                                      state
+                                      |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                           gameObject1,
+                                           geometry1
+                                         );
+                                    let {verticesInfoArray, indicesInfoArray} =
+                                      state |> BoxGeometryTool.getData;
+                                    (verticesInfoArray, indicesInfoArray)
+                                    |>
+                                    expect == (
+                                                [|
+                                                  GeometryTool.buildInfo(0, 72),
+                                                  GeometryTool.buildInfo(0, 72),
+                                                  GeometryTool.buildInfo(72, 144)
+                                                |],
+                                                [|
+                                                  GeometryTool.buildInfo(0, 36),
+                                                  GeometryTool.buildInfo(0, 36),
+                                                  GeometryTool.buildInfo(36, 72)
+                                                |]
+                                              )
+                                  }
+                                )
+                            );
+                            /* test(
+                                 "should only has alive data",
+                                 () => {
+                                   open MainStateDataType;
+                                   let (
+                                     state,
+                                     gameObject1,
+                                     geometry1,
                                      gameObject2,
-                                     geometry2
-                                   );
-                              (
-                                GeometryTool.getMappedIndex(geometry1, state),
-                                /* GeometryTool.getMappedIndex(geometry2, state), */
-                                GeometryTool.getMappedIndex(geometry3, state)
-                              )
-                              |> expect == (0, 1)
-                            }
-                          );
-                          describe(
-                            "test new info array",
-                            () => {
-                              test(
-                                "update startIndex, endIndex",
-                                () => {
-                                  open MainStateDataType;
-                                  let (
-                                    state,
-                                    gameObject1,
-                                    geometry1,
-                                    gameObject2,
-                                    geometry2,
-                                    gameObject3,
-                                    geometry3
-                                  ) =
-                                    _prepare(state^);
-                                  let state =
-                                    state
-                                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                         gameObject1,
-                                         geometry1
-                                       );
-                                  let {verticesInfoArray, indicesInfoArray} =
-                                    state |> BoxGeometryTool.getData;
-                                  (verticesInfoArray, indicesInfoArray)
-                                  |>
-                                  expect == (
-                                              [|
-                                                GeometryTool.buildInfo(0, 72),
-                                                GeometryTool.buildInfo(72, 144)
-                                              |],
-                                              [|
-                                                GeometryTool.buildInfo(0, 36),
-                                                GeometryTool.buildInfo(36, 72)
-                                              |]
-                                            )
-                                }
-                              );
-                              test(
-                                "should only has alive data",
-                                () => {
-                                  open MainStateDataType;
-                                  let (
-                                    state,
-                                    gameObject1,
-                                    geometry1,
-                                    gameObject2,
-                                    geometry2,
-                                    gameObject3,
-                                    geometry3
-                                  ) =
-                                    _prepare(state^);
-                                  let state =
-                                    state
-                                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                         gameObject1,
-                                         geometry1
-                                       );
-                                  let {verticesInfoArray, indicesInfoArray} =
-                                    state |> BoxGeometryTool.getData;
-                                  (
-                                    verticesInfoArray |> Js.Array.length,
-                                    indicesInfoArray |> Js.Array.length
-                                  )
-                                  |> expect == (2, 2)
-                                }
-                              )
-                            }
-                          );
+                                     geometry2,
+                                     gameObject3,
+                                     geometry3
+                                   ) =
+                                     _prepare(state^);
+                                   let state =
+                                     state
+                                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                          gameObject1,
+                                          geometry1
+                                        );
+                                   let {verticesInfoArray, indicesInfoArray} =
+                                     state |> BoxGeometryTool.getData;
+                                   (
+                                     verticesInfoArray |> Js.Array.length,
+                                     indicesInfoArray |> Js.Array.length
+                                   )
+                                   |> expect == (2, 2)
+                                 }
+                               ) */
                           describe(
                             "test reallocate maps",
                             () => {
@@ -1077,228 +1088,222 @@ let _ =
                                 |> WonderCommonlib.SparseMapService.get(index)
                                 |> Js.Option.isSome;
                               let _unsafeGetSparseMapData = (index, map, state) =>
-                                map
-                                |> WonderCommonlib.SparseMapService.unsafeGet(
-                                     GeometryTool.getMappedIndex(index, state)
-                                   );
+                                map |> WonderCommonlib.SparseMapService.unsafeGet(index);
                               let _unsafeGetMapData = (index, map, state) =>
-                                map
-                                |> WonderCommonlib.SparseMapService.unsafeGet(
-                                     GeometryTool.getMappedIndex(index, state)
-                                   );
+                                map |> WonderCommonlib.SparseMapService.unsafeGet(index);
                               describe(
                                 "maps should only has alive data",
-                                () => {
-                                  describe(
-                                    "test gameObjectMap",
-                                    () => {
-                                      test(
-                                        "test gameObjectMap",
-                                        () => {
-                                          open MainStateDataType;
-                                          let (
-                                            state,
-                                            gameObject1,
-                                            geometry1,
-                                            gameObject2,
-                                            geometry2,
-                                            gameObject3,
-                                            geometry3
-                                          ) =
-                                            _prepare(state^);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject1,
-                                                 geometry1
-                                               );
-                                          let {gameObjectMap} = state |> BoxGeometryTool.getData;
-                                          (
-                                            _unsafeGetSparseMapData(
-                                              geometry2,
-                                              gameObjectMap,
-                                              state
-                                            ),
-                                            _unsafeGetSparseMapData(
-                                              geometry3,
-                                              gameObjectMap,
-                                              state
-                                            )
-                                          )
-                                          |> expect == (gameObject2, gameObject3)
-                                        }
-                                      );
-                                      test(
-                                        "test BoxGeometryAPI.unsafeGetBoxGeometryGameObject",
-                                        () => {
-                                          open MainStateDataType;
-                                          let (
-                                            state,
-                                            gameObject1,
-                                            geometry1,
-                                            gameObject2,
-                                            geometry2,
-                                            gameObject3,
-                                            geometry3
-                                          ) =
-                                            _prepare(state^);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject1,
-                                                 geometry1
-                                               );
-                                          let {gameObjectMap} = state |> BoxGeometryTool.getData;
-                                          (
-                                            BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
-                                              geometry2,
-                                              state
-                                            ),
-                                            BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
-                                              geometry3,
-                                              state
-                                            )
-                                          )
-                                          |> expect == (gameObject2, gameObject3)
-                                        }
-                                      )
-                                    }
-                                  );
-                                  test(
-                                    "test configDataMap, computeDataFuncMap",
-                                    () => {
-                                      open MainStateDataType;
-                                      let (
-                                        state,
-                                        gameObject1,
-                                        geometry1,
-                                        gameObject2,
-                                        geometry2,
-                                        gameObject3,
-                                        geometry3
-                                      ) =
-                                        _prepare(state^);
-                                      /* let _ = state |> GeometryTool.getVerticesCount(geometry1);
-                                         let _ = state |> GeometryTool.getVerticesCount(geometry2);
-                                         let _ = state |> GeometryTool.getVerticesCount(geometry3);
-                                         let _ = state |> GeometryTool.getIndicesCount(geometry1);
-                                         let _ = state |> GeometryTool.getIndicesCount(geometry2);
-                                         let _ = state |> GeometryTool.getIndicesCount(geometry3); */
-                                      let state =
-                                        state
-                                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                             gameObject1,
-                                             geometry1
-                                           );
-                                      let {
-                                        configDataMap,
-                                        computeDataFuncMap
-                                        /* indicesCountCacheMap,
-                                           verticesCountCacheMap */
-                                      } =
-                                        state |> BoxGeometryTool.getData;
-                                      (
-                                        _hasMapData(0, configDataMap),
-                                        _hasMapData(1, configDataMap),
-                                        _hasMapData(2, configDataMap),
-                                        _hasMapData(0, computeDataFuncMap),
-                                        _hasMapData(1, computeDataFuncMap),
-                                        _hasMapData(2, computeDataFuncMap)
-                                        /* _hasMapData(0, verticesCountCacheMap),
-                                           _hasMapData(1, verticesCountCacheMap),
-                                           _hasMapData(2, verticesCountCacheMap),
-                                           _hasMapData(0, indicesCountCacheMap),
-                                           _hasMapData(1, indicesCountCacheMap),
-                                           _hasMapData(2, indicesCountCacheMap) */
-                                      )
-                                      |>
-                                      expect == (
-                                                  true,
-                                                  true,
-                                                  false,
-                                                  true,
-                                                  true,
-                                                  false
-                                                  /* true,
+                                () =>
+                                  /* describe(
+                                       "test gameObjectMap",
+                                       () => {
+                                         test(
+                                           "test gameObjectMap",
+                                           () => {
+                                             open MainStateDataType;
+                                             let (
+                                               state,
+                                               gameObject1,
+                                               geometry1,
+                                               gameObject2,
+                                               geometry2,
+                                               gameObject3,
+                                               geometry3
+                                             ) =
+                                               _prepare(state^);
+                                             let state =
+                                               state
+                                               |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                                    gameObject1,
+                                                    geometry1
+                                                  );
+                                             let {gameObjectMap} = state |> BoxGeometryTool.getData;
+                                             (
+                                               _unsafeGetSparseMapData(
+                                                 geometry2,
+                                                 gameObjectMap,
+                                                 state
+                                               ),
+                                               _unsafeGetSparseMapData(
+                                                 geometry3,
+                                                 gameObjectMap,
+                                                 state
+                                               )
+                                             )
+                                             |> expect == (gameObject2, gameObject3)
+                                           }
+                                         );
+                                         test(
+                                           "test BoxGeometryAPI.unsafeGetBoxGeometryGameObject",
+                                           () => {
+                                             open MainStateDataType;
+                                             let (
+                                               state,
+                                               gameObject1,
+                                               geometry1,
+                                               gameObject2,
+                                               geometry2,
+                                               gameObject3,
+                                               geometry3
+                                             ) =
+                                               _prepare(state^);
+                                             let state =
+                                               state
+                                               |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                                    gameObject1,
+                                                    geometry1
+                                                  );
+                                             let {gameObjectMap} = state |> BoxGeometryTool.getData;
+                                             (
+                                               BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
+                                                 geometry2,
+                                                 state
+                                               ),
+                                               BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
+                                                 geometry3,
+                                                 state
+                                               )
+                                             )
+                                             |> expect == (gameObject2, gameObject3)
+                                           }
+                                         )
+                                       }
+                                     );
+                                     test(
+                                       "test configDataMap, computeDataFuncMap",
+                                       () => {
+                                         open MainStateDataType;
+                                         let (
+                                           state,
+                                           gameObject1,
+                                           geometry1,
+                                           gameObject2,
+                                           geometry2,
+                                           gameObject3,
+                                           geometry3
+                                         ) =
+                                           _prepare(state^);
+                                         /* let _ = state |> GeometryTool.getVerticesCount(geometry1);
+                                            let _ = state |> GeometryTool.getVerticesCount(geometry2);
+                                            let _ = state |> GeometryTool.getVerticesCount(geometry3);
+                                            let _ = state |> GeometryTool.getIndicesCount(geometry1);
+                                            let _ = state |> GeometryTool.getIndicesCount(geometry2);
+                                            let _ = state |> GeometryTool.getIndicesCount(geometry3); */
+                                         let state =
+                                           state
+                                           |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                                gameObject1,
+                                                geometry1
+                                              );
+                                         let {
+                                           configDataMap,
+                                           computeDataFuncMap
+                                           /* indicesCountCacheMap,
+                                              verticesCountCacheMap */
+                                         } =
+                                           state |> BoxGeometryTool.getData;
+                                         (
+                                           _hasMapData(0, configDataMap),
+                                           _hasMapData(1, configDataMap),
+                                           _hasMapData(2, configDataMap),
+                                           _hasMapData(0, computeDataFuncMap),
+                                           _hasMapData(1, computeDataFuncMap),
+                                           _hasMapData(2, computeDataFuncMap)
+                                           /* _hasMapData(0, verticesCountCacheMap),
+                                              _hasMapData(1, verticesCountCacheMap),
+                                              _hasMapData(2, verticesCountCacheMap),
+                                              _hasMapData(0, indicesCountCacheMap),
+                                              _hasMapData(1, indicesCountCacheMap),
+                                              _hasMapData(2, indicesCountCacheMap) */
+                                         )
+                                         |>
+                                         expect == (
+                                                     true,
                                                      true,
                                                      false,
                                                      true,
                                                      true,
-                                                     false */
-                                                )
-                                    }
-                                  );
-                                  test(
-                                    "test isInitMap",
-                                    () => {
-                                      open MainStateDataType;
-                                      let (
-                                        state,
-                                        gameObject1,
-                                        geometry1,
-                                        gameObject2,
-                                        geometry2,
-                                        gameObject3,
-                                        geometry3
-                                      ) =
-                                        _prepare(state^);
-                                      let state =
-                                        state
-                                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                             gameObject1,
-                                             geometry1
-                                           );
-                                      let {isInitMap} = state |> BoxGeometryTool.getData;
-                                      (
-                                        _hasMapData(0, isInitMap),
-                                        _hasMapData(1, isInitMap),
-                                        _hasMapData(2, isInitMap),
-                                        _hasMapData(3, isInitMap),
-                                        _hasMapData(4, isInitMap)
-                                      )
-                                      |> expect == (true, true, false, false, false)
-                                    }
-                                  );
-                                  test(
-                                    "test groupCountMap",
-                                    () => {
-                                      open MainStateDataType;
-                                      let (
-                                        state,
-                                        gameObject1,
-                                        geometry1,
-                                        gameObject2,
-                                        geometry2,
-                                        gameObject3,
-                                        geometry3
-                                      ) =
-                                        _prepare(state^);
-                                      let {groupCountMap} = state |> BoxGeometryTool.getData;
-                                      groupCountMap
-                                      |> WonderCommonlib.SparseMapService.set(geometry1, 1);
-                                      groupCountMap
-                                      |> WonderCommonlib.SparseMapService.set(geometry2, 1);
-                                      groupCountMap
-                                      |> WonderCommonlib.SparseMapService.set(geometry3, 1);
-                                      groupCountMap
-                                      |> WonderCommonlib.SparseMapService.set(geometry1, 0);
-                                      let state =
-                                        state
-                                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                             gameObject1,
-                                             geometry1
-                                           );
-                                      let {groupCountMap} = state |> BoxGeometryTool.getData;
-                                      (
-                                        _hasMapData(0, groupCountMap),
-                                        _hasMapData(1, groupCountMap),
-                                        _hasMapData(2, groupCountMap),
-                                        _hasMapData(3, groupCountMap),
-                                        _hasMapData(4, groupCountMap)
-                                      )
-                                      |> expect == (true, true, false, false, false)
-                                    }
-                                  );
+                                                     false
+                                                     /* true,
+                                                        true,
+                                                        false,
+                                                        true,
+                                                        true,
+                                                        false */
+                                                   )
+                                       }
+                                     );
+                                     test(
+                                       "test isInitMap",
+                                       () => {
+                                         open MainStateDataType;
+                                         let (
+                                           state,
+                                           gameObject1,
+                                           geometry1,
+                                           gameObject2,
+                                           geometry2,
+                                           gameObject3,
+                                           geometry3
+                                         ) =
+                                           _prepare(state^);
+                                         let state =
+                                           state
+                                           |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                                gameObject1,
+                                                geometry1
+                                              );
+                                         let {isInitMap} = state |> BoxGeometryTool.getData;
+                                         (
+                                           _hasMapData(0, isInitMap),
+                                           _hasMapData(1, isInitMap),
+                                           _hasMapData(2, isInitMap),
+                                           _hasMapData(3, isInitMap),
+                                           _hasMapData(4, isInitMap)
+                                         )
+                                         |> expect == (true, true, false, false, false)
+                                       }
+                                     );
+                                     test(
+                                       "test groupCountMap",
+                                       () => {
+                                         open MainStateDataType;
+                                         let (
+                                           state,
+                                           gameObject1,
+                                           geometry1,
+                                           gameObject2,
+                                           geometry2,
+                                           gameObject3,
+                                           geometry3
+                                         ) =
+                                           _prepare(state^);
+                                         let {groupCountMap} = state |> BoxGeometryTool.getData;
+                                         groupCountMap
+                                         |> WonderCommonlib.SparseMapService.set(geometry1, 1);
+                                         groupCountMap
+                                         |> WonderCommonlib.SparseMapService.set(geometry2, 1);
+                                         groupCountMap
+                                         |> WonderCommonlib.SparseMapService.set(geometry3, 1);
+                                         groupCountMap
+                                         |> WonderCommonlib.SparseMapService.set(geometry1, 0);
+                                         let state =
+                                           state
+                                           |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                                gameObject1,
+                                                geometry1
+                                              );
+                                         let {groupCountMap} = state |> BoxGeometryTool.getData;
+                                         (
+                                           _hasMapData(0, groupCountMap),
+                                           _hasMapData(1, groupCountMap),
+                                           _hasMapData(2, groupCountMap),
+                                           _hasMapData(3, groupCountMap),
+                                           _hasMapData(4, groupCountMap)
+                                         )
+                                         |> expect == (true, true, false, false, false)
+                                       }
+                                     ); */
                                   test(
                                     "test buffer map",
                                     () => {
@@ -1338,42 +1343,41 @@ let _ =
                                       |> expect == (false, false)
                                     }
                                   )
-                                }
                               )
                             }
                           );
                           /* test(
-                            "reset mappedIndex to alive geometry's count",
-                            () => {
-                              open MainStateDataType;
-                              let (
-                                state,
-                                gameObject1,
-                                geometry1,
-                                gameObject2,
-                                geometry2,
-                                gameObject3,
-                                geometry3
-                              ) =
-                                _prepare(state^);
-                              let state =
-                                state
-                                |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                     gameObject1,
-                                     geometry1
-                                   );
-                              let {mappedIndex, disposedIndexMap} =
-                                state |> BoxGeometryTool.getData;
-                              let state =
-                                state
-                                |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                     gameObject3,
-                                     geometry3
-                                   );
-                              let {mappedIndex} = state |> BoxGeometryTool.getData;
-                              mappedIndex |> expect == 1
-                            }
-                          ); */
+                               "reset mappedIndex to alive geometry's count",
+                               () => {
+                                 open MainStateDataType;
+                                 let (
+                                   state,
+                                   gameObject1,
+                                   geometry1,
+                                   gameObject2,
+                                   geometry2,
+                                   gameObject3,
+                                   geometry3
+                                 ) =
+                                   _prepare(state^);
+                                 let state =
+                                   state
+                                   |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                        gameObject1,
+                                        geometry1
+                                      );
+                                 let {mappedIndex, disposedIndexMap} =
+                                   state |> BoxGeometryTool.getData;
+                                 let state =
+                                   state
+                                   |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                        gameObject3,
+                                        geometry3
+                                      );
+                                 let {mappedIndex} = state |> BoxGeometryTool.getData;
+                                 mappedIndex |> expect == 1
+                               }
+                             ); */
                           test(
                             "reset offset",
                             () => {
@@ -1400,9 +1404,10 @@ let _ =
                                      gameObject3,
                                      geometry3
                                    );
-                              let {verticesOffset, indicesOffset} =
+                              let {verticesOffset, normalsOffset, indicesOffset} =
                                 state |> BoxGeometryTool.getData;
-                              (verticesOffset, indicesOffset) |> expect == (72, 36)
+                              (verticesOffset, normalsOffset, indicesOffset)
+                              |> expect == (72, 72, 36)
                             }
                           );
                           test(
@@ -1454,102 +1459,13 @@ let _ =
                             }
                           );
                           describe(
-                            "fix bug",
-                            () =>
+                            "test add new one after dispose old one",
+                            () => {
                               describe(
-                                "test add new one after dispose old one",
-                                () => {
-                                  describe(
-                                    "the new one's mappedIndex should be correct",
-                                    () => {
-                                      test(
-                                        "test1",
-                                        () => {
-                                          open MainStateDataType;
-                                          let (
-                                            state,
-                                            gameObject1,
-                                            geometry1,
-                                            gameObject2,
-                                            geometry2,
-                                            gameObject3,
-                                            geometry3
-                                          ) =
-                                            _prepare(state^);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject2,
-                                                 geometry2
-                                               );
-                                          let (state, gameObject4, geometry4) =
-                                            BoxGeometryTool.createGameObject(state);
-                                          let state =
-                                            state |> GameObjectAPI.initGameObject(gameObject4);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject4,
-                                                 geometry4
-                                               );
-                                          let (state, gameObject5, geometry5) =
-                                            BoxGeometryTool.createGameObject(state);
-                                          let state =
-                                            state |> GameObjectAPI.initGameObject(gameObject5);
-                                          (
-                                            GeometryTool.getMappedIndex(geometry1, state),
-                                            GeometryTool.getMappedIndex(geometry3, state),
-                                            GeometryTool.getMappedIndex(geometry5, state)
-                                          )
-                                          |> expect == (0, 1, 2)
-                                        }
-                                      );
-                                      test(
-                                        "test2",
-                                        () => {
-                                          open MainStateDataType;
-                                          let (
-                                            state,
-                                            gameObject1,
-                                            geometry1,
-                                            gameObject2,
-                                            geometry2,
-                                            gameObject3,
-                                            geometry3
-                                          ) =
-                                            _prepare(state^);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject2,
-                                                 geometry2
-                                               );
-                                          let (state, gameObject4, geometry4) =
-                                            BoxGeometryTool.createGameObject(state);
-                                          let state =
-                                            state |> GameObjectAPI.initGameObject(gameObject4);
-                                          let (state, gameObject5, geometry5) =
-                                            BoxGeometryTool.createGameObject(state);
-                                          let state =
-                                            state |> GameObjectAPI.initGameObject(gameObject5);
-                                          let state =
-                                            state
-                                            |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                                                 gameObject5,
-                                                 geometry5
-                                               );
-                                          (
-                                            GeometryTool.getMappedIndex(geometry1, state),
-                                            GeometryTool.getMappedIndex(geometry3, state),
-                                            GeometryTool.getMappedIndex(geometry4, state)
-                                          )
-                                          |> expect == (0, 1, 2)
-                                        }
-                                      )
-                                    }
-                                  );
-                                  /* test(
-                                    "test hasIndices",
+                                "if has disposed one",
+                                () =>
+                                  test(
+                                    "use disposed index as new index",
                                     () => {
                                       open MainStateDataType;
                                       let (
@@ -1572,22 +1488,80 @@ let _ =
                                         BoxGeometryTool.createGameObject(state);
                                       let state =
                                         state |> GameObjectAPI.initGameObject(gameObject4);
-                                      (
-                                        GeometryTool.hasIndices(geometry1, state),
-                                        GeometryTool.hasIndices(geometry3, state),
-                                        GeometryTool.hasIndices(geometry4, state)
-                                      )
-                                      |> expect == (true, true, true)
+                                      let state =
+                                        state
+                                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                             gameObject4,
+                                             geometry4
+                                           );
+                                      let (state, gameObject5, geometry5) =
+                                        BoxGeometryTool.createGameObject(state);
+                                      let (state, gameObject6, geometry6) =
+                                        BoxGeometryTool.createGameObject(state);
+                                      (geometry1, geometry3, geometry5, geometry6)
+                                      |> expect == (0, 2, 1, 3)
                                     }
-                                  ) */
+                                  )
+                              );
+                              test(
+                                "else, increase record.index ",
+                                () => {
+                                  open MainStateDataType;
+                                  let (
+                                    state,
+                                    gameObject1,
+                                    geometry1,
+                                    gameObject2,
+                                    geometry2,
+                                    gameObject3,
+                                    geometry3
+                                  ) =
+                                    _prepare(state^);
+                                  let (state, gameObject4, geometry4) =
+                                    BoxGeometryTool.createGameObject(state);
+                                  geometry4 |> expect == geometry3 + 1
                                 }
                               )
+                            }
                           )
+                          /* test(
+                               "test hasIndices",
+                               () => {
+                                 open MainStateDataType;
+                                 let (
+                                   state,
+                                   gameObject1,
+                                   geometry1,
+                                   gameObject2,
+                                   geometry2,
+                                   gameObject3,
+                                   geometry3
+                                 ) =
+                                   _prepare(state^);
+                                 let state =
+                                   state
+                                   |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                                        gameObject2,
+                                        geometry2
+                                      );
+                                 let (state, gameObject4, geometry4) =
+                                   BoxGeometryTool.createGameObject(state);
+                                 let state =
+                                   state |> GameObjectAPI.initGameObject(gameObject4);
+                                 (
+                                   GeometryTool.hasIndices(geometry1, state),
+                                   GeometryTool.hasIndices(geometry3, state),
+                                   GeometryTool.hasIndices(geometry4, state)
+                                 )
+                                 |> expect == (true, true, true)
+                               }
+                             ) */
                         }
                       )
                   )
                 }
               )
+            }
           );
           describe(
             "test add new one after dispose old one",
@@ -1623,7 +1597,7 @@ let _ =
                 "fix bug",
                 () =>
                   test(
-                    "new one after init should has its own geometry point record",
+                    "new one after init should has its own geometry point data",
                     () => {
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);

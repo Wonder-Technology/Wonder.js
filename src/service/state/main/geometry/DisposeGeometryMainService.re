@@ -6,24 +6,53 @@ open MainStateDataType;
 
 open DisposeComponentService;
 
-let isAlive = (geometry, {disposedIndexMap} as record) =>
-  disposedIndexMap |> WonderCommonlib.SparseMapService.has(geometry) ?
-    false :
-    MappedIndexService.isComponentAlive(
-      geometry,
-      IndexBoxGeometryService.getMappedIndexMap(record)
-    );
+/* let isAlive = (geometry, {disposedIndexMap} as record) =>
+   disposedIndexMap |> WonderCommonlib.SparseMapService.has(geometry) ?
+     false :
+     MappedIndexService.isComponentAlive(
+       geometry,
+       IndexBoxGeometryService.getMappedIndexMap(record)
+     ); */
+let isAlive = (geometry, {disposedIndexArray}) =>
+  DisposeComponentService.isAlive(geometry, disposedIndexArray);
 
 let _disposeData =
-    (geometry, (vboBufferRecord, {disposeCount, disposedIndexMap} as boxGeometryRecord)) => {
+    (
+      geometry,
+      (
+        vboBufferRecord,
+        {
+          disposeCount,
+          disposedIndexArray,
+          disposedIndexMap,
+          /* verticesInfoArray,
+             normalsInfoArray,
+             indicesInfoArray, */
+          computeDataFuncMap,
+          configDataMap,
+          gameObjectMap,
+          isInitMap,
+          groupCountMap
+        } as boxGeometryRecord
+      )
+    ) => {
   let vboBufferRecord =
     DisposeVboBufferService.disposeGeometryBufferData(geometry, vboBufferRecord);
   (
     vboBufferRecord,
     {
       ...boxGeometryRecord,
+      disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
       disposedIndexMap: disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
-      disposeCount: succ(disposeCount)
+      disposeCount: succ(disposeCount),
+      /* verticesInfoArray: verticesInfoArray |> disposeSparseMapData(geometry),
+         normalsInfoArray: normalsInfoArray |> disposeSparseMapData(geometry),
+         indicesInfoArray: indicesInfoArray |> disposeSparseMapData(geometry), */
+      computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
+      configDataMap: configDataMap |> disposeSparseMapData(geometry),
+      gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
+      isInitMap: isInitMap |> disposeSparseMapData(geometry),
+      groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
     }
   )
 };
@@ -31,7 +60,7 @@ let _disposeData =
 let _handleByDisposeCount = (settingRecord, (vboBufferRecord, boxGeometryRecord)) =>
   if (QueryCPUMemoryService.isDisposeTooMany(boxGeometryRecord.disposeCount, settingRecord)) {
     boxGeometryRecord.disposeCount = 0;
-    ReallocateGeometryCPUMemoryService.reAllocate(vboBufferRecord, boxGeometryRecord)
+    (vboBufferRecord, ReallocateGeometryCPUMemoryService.reAllocate(boxGeometryRecord))
   } else {
     (vboBufferRecord, boxGeometryRecord)
   };
@@ -120,4 +149,4 @@ let handleBatchDisposeComponent =
     }
   );
 
-let isNotDisposed = ({disposeCount}) => disposeCount == 0;
+let isNotDisposed = ({disposedIndexArray}) => disposedIndexArray |> Js.Array.length === 0;
