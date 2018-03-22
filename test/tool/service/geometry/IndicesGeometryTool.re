@@ -1,0 +1,1 @@
+let getIndicesCount = IndicesGeometryMainService.getIndicesCount;

@@ -40,17 +40,17 @@ open Js.Typed_array;
 let getIndices =
   [@bs]
   (
-    (mappedIndex: int, state) => {
+    (index: int, state) => {
       let {indices, indicesInfoArray} = getRecord(state);
-      getUint16PointData(mappedIndex, indices, indicesInfoArray)
+      getUint16PointData(index, indices, indicesInfoArray)
     }
   );
 
-let setIndices = (mappedIndex: int, data: array(int), state) => {
+let setIndices = (index: int, data: array(int), state) => {
   let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
-      mappedIndex,
+      index,
       indicesInfoArray,
       indicesOffset,
       Js.Array.length(data),
@@ -59,11 +59,11 @@ let setIndices = (mappedIndex: int, data: array(int), state) => {
   state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset)
 };
 
-let setIndicesWithTypeArray = (mappedIndex: int, data: Uint16Array.t, state) => {
+let setIndicesWithTypeArray = (index: int, data: Uint16Array.t, state) => {
   let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
-      mappedIndex,
+      index,
       indicesInfoArray,
       indicesOffset,
       Uint16Array.length(data),
@@ -72,8 +72,8 @@ let setIndicesWithTypeArray = (mappedIndex: int, data: Uint16Array.t, state) => 
   state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset)
 };
 
-let getIndicesCount = (mappedIndex, state) => {
+let getIndicesCount = (index, state) => {
   let {indicesInfoArray} = getRecord(state);
-  let {startIndex, endIndex} = PointsGeometryMainService.getInfo(indicesInfoArray, mappedIndex);
-  endIndex - startIndex + 1
+  let {startIndex, endIndex} = PointsGeometryMainService.getInfo(indicesInfoArray, index);
+  endIndex - startIndex
 };

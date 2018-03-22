@@ -609,7 +609,6 @@ let _ =
             () => {
               let _testSetFunc = (setFunc) => {
                 open GameObjectAPI;
-                open GameObjectAPI;
                 let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                 let state = state |> GeometryTool.initGeometrys;
                 TestTool.closeContractCheck();
