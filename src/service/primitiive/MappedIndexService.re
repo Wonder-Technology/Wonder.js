@@ -7,3 +7,6 @@ let setMappedIndex = (index, mappedIndex, mappedIndexMap) =>
 let markDisposed = (index, mappedIndexMap) => setMappedIndex(index, (-1), mappedIndexMap);
 
 let isDisposed = (mappedIndex) => mappedIndex === (-1);
+
+let isComponentAlive = (component, mappedIndexMap) =>
+  ! isDisposed(getMappedIndex(component, mappedIndexMap));

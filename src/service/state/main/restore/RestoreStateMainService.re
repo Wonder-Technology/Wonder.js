@@ -19,8 +19,6 @@ let restore =
     IntersectShaderIndexMainService.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
-    targetState |> RestoreBoxGeometryMainService.restore(currentState, sharedData);
-  let (targetState, sharedData) =
     targetState |> RestoreSourceInstanceMainService.restore(currentState, sharedData);
   let targetState =
     targetState |> RestoreDeviceManagerMainService.restore(currentState, sharedData);

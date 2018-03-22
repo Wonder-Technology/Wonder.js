@@ -70,7 +70,7 @@ let _ =
             (state, gameObject1, basicCameraView1, gameObject2, basicCameraView2)
           };
           describe(
-            "dispose record",
+            "dispose data",
             () =>
               test(
                 "remove from gameObjectMap",

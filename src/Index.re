@@ -10,15 +10,15 @@ let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigDa
 
 let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
 
-let unsafeGetBoxGeometryIndices = BoxGeometryAPI.unsafeGetBoxGeometryIndices;
+let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
 
 let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
 
-let unsafeGetBoxGeometryNormals = BoxGeometryAPI.unsafeGetBoxGeometryNormals;
+let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
 
 let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
 
-let unsafeGetBoxGeometryVertices = BoxGeometryAPI.unsafeGetBoxGeometryVertices;
+let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
 
 let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 
@@ -310,15 +310,15 @@ let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigDa
 
 let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
 
-let unsafeGetBoxGeometryIndices = BoxGeometryAPI.unsafeGetBoxGeometryIndices;
+let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
 
 let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
 
-let unsafeGetBoxGeometryNormals = BoxGeometryAPI.unsafeGetBoxGeometryNormals;
+let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
 
 let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
 
-let unsafeGetBoxGeometryVertices = BoxGeometryAPI.unsafeGetBoxGeometryVertices;
+let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
 
 let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
 

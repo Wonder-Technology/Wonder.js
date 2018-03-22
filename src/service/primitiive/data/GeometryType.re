@@ -17,8 +17,17 @@ type geometryIndicesMap = array(Uint16Array.t);
 
 type geometryConfigDataMap = array(Js.Dict.t(float));
 
-type geometryDisposedIndexArray = array(geometry);
+type geometryDisposedIndexMap = array(bool);
 
 type geometryIsInitMap = array(bool);
 
 type geometryGroupCountMap = array(int);
+
+type geometryInfo = {
+  startIndex: int,
+  endIndex: int
+};
+
+type geometryInfoArray = array(geometryInfo);
+
+type geometryMappedIndexMap = array(int);

@@ -6,93 +6,65 @@ open MainStateDataType;
 
 open DisposeComponentService;
 
-let isAlive = (transform, {disposedIndexArray}) =>
-  DisposeComponentService.isAlive(transform, disposedIndexArray);
+let isAlive = (geometry, {disposedIndexMap} as record) =>
+  disposedIndexMap |> WonderCommonlib.SparseMapService.has(geometry) ?
+    false :
+    MappedIndexService.isComponentAlive(
+      geometry,
+      IndexBoxGeometryService.getMappedIndexMap(record)
+    );
 
 let _disposeData =
-    (
-      geometry,
-      maxTypeArrayPoolSize,
-      (
-        vboBufferRecord,
-        typeArrayPoolRecord,
-        {
-          verticesMap,
-          normalsMap,
-          indicesMap,
-          configDataMap,
-          isInitMap,
-          computeDataFuncMap,
-          groupCountMap,
-          gameObjectMap
-        } as boxGeometryRecord
-      )
-    ) => {
+    (geometry, (vboBufferRecord, {disposeCount, disposedIndexMap} as boxGeometryRecord)) => {
   let vboBufferRecord =
     DisposeVboBufferService.disposeGeometryBufferData(geometry, vboBufferRecord);
-  let typeArrayPoolRecord =
-    typeArrayPoolRecord
-    |> TypeArrayPoolGeometryService.addTypeArrayToPool(
-         geometry,
-         maxTypeArrayPoolSize,
-         (verticesMap, normalsMap, indicesMap)
-       );
   (
     vboBufferRecord,
-    typeArrayPoolRecord,
     {
       ...boxGeometryRecord,
-      groupCountMap: groupCountMap |> WonderCommonlib.SparseMapService.set(geometry, 0),
-      verticesMap: verticesMap |> disposeSparseMapData(geometry),
-      normalsMap: normalsMap |> disposeSparseMapData(geometry),
-      indicesMap: indicesMap |> disposeSparseMapData(geometry),
-      configDataMap: configDataMap |> disposeSparseMapData(geometry),
-      isInitMap: isInitMap |> disposeSparseMapData(geometry),
-      computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry)
+      disposedIndexMap: disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
+      disposeCount: succ(disposeCount)
     }
   )
 };
 
-let handleDisposeComponent =
-    (
-      geometry: geometry,
-      maxTypeArrayPoolSize,
-      {vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord} as state
-    ) => {
+let _handleByDisposeCount = (settingRecord, (vboBufferRecord, boxGeometryRecord)) =>
+  if (QueryCPUMemoryService.isDisposeTooMany(boxGeometryRecord.disposeCount, settingRecord)) {
+    boxGeometryRecord.disposeCount = 0;
+    ReallocateGeometryCPUMemoryService.reAllocate(vboBufferRecord, boxGeometryRecord)
+  } else {
+    (vboBufferRecord, boxGeometryRecord)
+  };
+
+let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecord} as state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
-            DisposeComponentService.checkComponentShouldAlive(geometry, isAlive, boxGeometryRecord)
+            DisposeComponentService.checkComponentShouldAlive(
+              geometry,
+              isAlive,
+              state |> RecordBoxGeometryMainService.getRecord
+            )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  let {disposedIndexArray} as boxGeometryRecord = boxGeometryRecord;
+  /* let {disposedIndexArray} as boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord; */
+  let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
   | false =>
     let vboBufferRecord = PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
-    let (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord) =
-      _disposeData(
-        geometry,
-        maxTypeArrayPoolSize,
-        (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord)
-      );
-    {
-      ...state,
-      vboBufferRecord,
-      typeArrayPoolRecord,
-      boxGeometryRecord: {
-        ...boxGeometryRecord,
-        disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry)
-      }
-    }
+    let (vboBufferRecord, boxGeometryRecord) =
+      _disposeData(geometry, (vboBufferRecord, boxGeometryRecord))
+      |> _handleByDisposeCount(settingRecord);
+    /* boxGeometryRecord.disposedIndexArray = disposedIndexArray |> ArrayService.push(geometry); */
+    {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
   | true => {
       ...state,
-      boxGeometryRecord: GroupGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
+      boxGeometryRecord: Some(GroupGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
     }
   }
 };
@@ -103,8 +75,7 @@ let handleBatchDisposeComponent =
     (
       geometryArray: array(geometry),
       isGameObjectDisposedMap: array(bool),
-      maxTypeArrayPoolSize,
-      {vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord} as state
+      {settingRecord, vboBufferRecord} as state
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -114,45 +85,39 @@ let handleBatchDisposeComponent =
                 DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
                   geometryArray,
                   isAlive,
-                  boxGeometryRecord
+                  state |> RecordBoxGeometryMainService.getRecord
                 )
               )
             )
           ),
         IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
-      let {disposedIndexArray} = boxGeometryRecord;
-      let (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord) =
+      /* let {disposedIndexMap} = state |> RecordBoxGeometryMainService.getRecord; */
+      let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
+      let (vboBufferRecord, boxGeometryRecord) =
         geometryArray
         |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
-               ((vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord), geometry) =>
+               ((vboBufferRecord, boxGeometryRecord), geometry) =>
                  switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
                  | false =>
                    let vboBufferRecord =
                      PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
-                   let boxGeometryRecord = {
-                     ...boxGeometryRecord,
-                     disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry)
-                   };
-                   _disposeData(
-                     geometry,
-                     maxTypeArrayPoolSize,
-                     (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord)
-                   )
+                   /* boxGeometryRecord.disposedIndexArray =
+                      disposedIndexArray |> ArrayService.push(geometry); */
+                   _disposeData(geometry, (vboBufferRecord, boxGeometryRecord))
+                   |> _handleByDisposeCount(settingRecord)
                  | true => (
                      vboBufferRecord,
-                     typeArrayPoolRecord,
                      GroupGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
                    )
                  }
              ),
-             (vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord)
+             (vboBufferRecord, boxGeometryRecord)
            );
-      {...state, vboBufferRecord, typeArrayPoolRecord, boxGeometryRecord}
+      {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
     }
   );
 
-let isNotDisposed = ({boxGeometryRecord}) =>
-  boxGeometryRecord.disposedIndexArray |> Js.Array.length == 0;
+let isNotDisposed = ({disposeCount}) => disposeCount == 0;

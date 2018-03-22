@@ -7,14 +7,14 @@ open SourceInstanceType;
 open InstanceBufferMainService;
 
 let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
-  let (state, shaderIndex, geometryIndex) = [@bs] renderFunc(gl, uid, state);
+  let (state, shaderIndex, geometryIndex, mappedGeometryIndex) = [@bs] renderFunc(gl, uid, state);
   let uniformInstanceSendNoCachableData =
     state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
   let indicesCount =
-    IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap);
+    IndicesGeometryMainService.getIndicesCount(mappedGeometryIndex, state);
   let sourceInstance =
     GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
   let objectInstanceArray =

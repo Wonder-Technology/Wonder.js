@@ -197,7 +197,20 @@ let create = () => {
 };
 
 let deepCopyForRestore =
-    ({index, buffer, colors, intensities, constants, linears, quadratics, ranges, gameObjectMap}) => {
+    (
+      {
+        index,
+        buffer,
+        colors,
+        intensities,
+        constants,
+        linears,
+        quadratics,
+        ranges,
+        gameObjectMap,
+        mappedIndexMap
+      }
+    ) => {
   let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
   {
     index,
@@ -238,7 +251,7 @@ let deepCopyForRestore =
         getRangesOffset(),
         getRangesLength()
       ),
-    mappedIndexMap: gameObjectMap |> SparseMapService.copy,
+    mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
     gameObjectMap: gameObjectMap |> SparseMapService.copy
   }
 };

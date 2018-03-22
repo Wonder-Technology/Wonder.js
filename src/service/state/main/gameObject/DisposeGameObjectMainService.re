@@ -8,7 +8,7 @@ let _handleByDisposeCount = (record, state) =>
     {
       ...state,
       gameObjectRecord:
-        ReallocateGameObjectCPUMemoryService.reAllocateGameObject(state.gameObjectRecord)
+        ReallocateGameObjectCPUMemoryService.reAllocate(state.gameObjectRecord)
     }
   } else {
     state

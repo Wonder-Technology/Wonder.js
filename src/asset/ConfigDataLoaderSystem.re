@@ -139,6 +139,11 @@ let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state) :
     _createHandleNoWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
 
+    let _createRecordWithState = (state) => {
+
+        state |> RecordTransformMainService.create |> RecordBoxGeometryMainService.create;
+    };
+
 let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   let settingFilePath = Array.unsafe_get(jsonPathArr, 0);
   let dataDir = Array.unsafe_get(jsonPathArr, 1);
@@ -148,7 +153,7 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
        (json) =>
          ParseSettingService.convertToRecord(json)
          |> _setSetting(stateData, StateDataMainService.getState(stateData))
-         |> RecordTransformMainService.create
+         |> _createRecordWithState
          |> WorkerDetectMainService.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(

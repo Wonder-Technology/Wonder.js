@@ -20,17 +20,14 @@ let _render = (gl, state: MainStateDataType.state) =>
              if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
                FrontRenderLightInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, geometryIndex) =
+               let (state, _, geometryIndex, mappedGeometryIndex) =
                  [@bs] FrontRenderLightJobCommon.render(gl, uid, state);
                DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),
                    RenderGeometryService.getIndexTypeSize(gl),
-                   IndicesService.getIndicesCount(
-                     geometryIndex,
-                     state.boxGeometryRecord.indicesMap
-                   )
+                   IndicesGeometryMainService.getIndicesCount(mappedGeometryIndex, state)
                  ),
                  gl
                );
@@ -41,4 +38,5 @@ let _render = (gl, state: MainStateDataType.state) =>
        )
   };
 
-let execJob = (flags, _, state) => _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
+let execJob = (flags, _, state) =>
+  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);

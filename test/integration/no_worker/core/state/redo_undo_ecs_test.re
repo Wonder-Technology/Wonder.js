@@ -215,21 +215,20 @@ let _ =
       describe(
         "deepCopyForRestore",
         () => {
+          let _testCopyTypeArraySingleValue =
+              ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
+            open MainStateDataType;
+            /* open SourceInstanceType; */
+            let (state, gameObject1, component1) = createGameObjectFunc(state^);
+            let (data1, data2) = getTargetDataFunc();
+            let state = state |> setDataFunc(component1, data1);
+            let copiedState = MainStateTool.deepCopyForRestore(state);
+            let copiedState = copiedState |> setDataFunc(component1, data2);
+            getDataFunc(component1, state) |> expect == data1
+          };
           describe(
             "deep copy transform record",
             () => {
-              /* TODO duplicate with light */
-              let _testCopyTypeArraySingleValue =
-                  ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
-                open MainStateDataType;
-                open SourceInstanceType;
-                let (state, gameObject1, light1) = createGameObjectFunc(state^);
-                let (data1, data2) = getTargetDataFunc();
-                let state = state |> setDataFunc(light1, data1);
-                let copiedState = MainStateTool.deepCopyForRestore(state);
-                let copiedState = copiedState |> setDataFunc(light1, data2);
-                getDataFunc(light1, state) |> expect == data1
-              };
               test(
                 "copy localToWorldMatrices",
                 () =>
@@ -254,10 +253,7 @@ let _ =
                       GameObjectTool.createGameObject,
                       TransformAPI.getTransformLocalPosition,
                       TransformAPI.setTransformLocalPosition,
-                      () => (
-                        (2., 0., 0.),
-                        (3., 1., 2.)
-                      )
+                      () => ((2., 0., 0.), (3., 1., 2.))
                     ),
                     state
                   )
@@ -311,44 +307,57 @@ let _ =
             }
           );
           describe(
-            "deep copy geometry record",
+            "deep copy box geometry record",
             () =>
               test(
-                "deep copy verticesMap, normalsMap, indicesMap",
-                () => {
-                  open MainStateDataType;
-                  open BoxGeometryAPI;
-                  open Js.Typed_array;
-                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state = GeometryTool.initGeometrys(state);
-                  let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let record = copiedState.boxGeometryRecord;
-                  let verticeTypeArr =
-                    record.verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                  Float32Array.unsafe_set(verticeTypeArr, 0, 100.);
-                  let normalsTypeArr =
-                    record.normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                  Float32Array.unsafe_set(normalsTypeArr, 0, 100.);
-                  let indicesTypeArr =
-                    record.indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
-                  Uint16Array.unsafe_set(indicesTypeArr, 0, 100);
-                  let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
-                  (
-                    Float32Array.unsafe_get(
-                      verticesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                      0
+                "copy vertices",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      BoxGeometryAPI.getBoxGeometryVertices,
+                      BoxGeometryAPI.setBoxGeometryVertices,
+                      () => (
+                        Float32Array.make([|
+                          2.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.
+                        |]),
+                        Float32Array.make([|
+                          3.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.
+                        |])
+                      )
                     ),
-                    Float32Array.unsafe_get(
-                      normalsMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                      0
-                    ),
-                    Uint16Array.unsafe_get(
-                      indicesMap |> WonderCommonlib.SparseMapService.unsafeGet(geometry1),
-                      0
-                    )
+                    state
                   )
-                  |> expect != (100., 100., 100)
-                }
               )
           );
           /* test(
@@ -467,17 +476,6 @@ let _ =
           describe(
             "deep copy light record",
             () => {
-              let _testCopyTypeArraySingleValue =
-                  ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
-                open MainStateDataType;
-                open SourceInstanceType;
-                let (state, gameObject1, light1) = createGameObjectFunc(state^);
-                let (data1, data2) = getTargetDataFunc();
-                let state = state |> setDataFunc(light1, data1);
-                let copiedState = MainStateTool.deepCopyForRestore(state);
-                let copiedState = copiedState |> setDataFunc(light1, data2);
-                getDataFunc(light1, state) |> expect == data1
-              };
               describe(
                 "test ambient light",
                 () => {
@@ -978,32 +976,32 @@ let _ =
             }
           );
           /* describe(
-            "restore transform record to target state",
-            () =>
-              test(
-                "add current state->transformRecord->localToWorldMatrixMap, localPositionMap typeArr to pool",
-                () => {
-                  open TypeArrayPoolType;
-                  let (state, _, _, _, _, _, _) = _prepareTransformMatrixData(state);
-                  let (currentState, _, transform4) =
-                    GameObjectTool.createGameObject(MainStateTool.createNewCompleteState(sandbox));
-                  let pos4 = ((-1.), 4., 5.);
-                  let currentState =
-                    TransformAPI.setTransformLocalPosition(transform4, pos4, currentState);
-                  let _ = MainStateTool.restore(currentState, state);
-                  let {float32ArrayPoolMap} = MainStateTool.getState().typeArrayPoolRecord;
-                  (
-                    float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(16),
-                    float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(3)
-                  )
-                  |>
-                  expect == (
-                              [|TransformTool.getDefaultLocalToWorldMatrix(state)|],
-                              [|TransformTool.changeTupleToTypeArray(pos4)|]
-                            )
-                }
-              )
-          ); */
+               "restore transform record to target state",
+               () =>
+                 test(
+                   "add current state->transformRecord->localToWorldMatrixMap, localPositionMap typeArr to pool",
+                   () => {
+                     open TypeArrayPoolType;
+                     let (state, _, _, _, _, _, _) = _prepareTransformMatrixData(state);
+                     let (currentState, _, transform4) =
+                       GameObjectTool.createGameObject(MainStateTool.createNewCompleteState(sandbox));
+                     let pos4 = ((-1.), 4., 5.);
+                     let currentState =
+                       TransformAPI.setTransformLocalPosition(transform4, pos4, currentState);
+                     let _ = MainStateTool.restore(currentState, state);
+                     let {float32ArrayPoolMap} = MainStateTool.getState().typeArrayPoolRecord;
+                     (
+                       float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(16),
+                       float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(3)
+                     )
+                     |>
+                     expect == (
+                                 [|TransformTool.getDefaultLocalToWorldMatrix(state)|],
+                                 [|TransformTool.changeTupleToTypeArray(pos4)|]
+                               )
+                   }
+                 )
+             ); */
           describe(
             "restore geometry record to target state",
             () =>

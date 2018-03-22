@@ -61,20 +61,24 @@ let addTransformComponent =
     )
 };
 
-let addBoxGeometryComponent =
-    (uid: int, component: component, {boxGeometryRecord, gameObjectRecord} as state) => {
-  ...state,
-  boxGeometryRecord:
-    boxGeometryRecord
-    |> _addSharableComponent(
-         (
-           uid,
-           component,
-           gameObjectRecord.boxGeometryMap,
-           GameObjectGeometryService.getGameObject(component, boxGeometryRecord)
-         ),
-         (GroupGeometryService.increaseGroupCount, AddGeometryService.handleAddComponent)
-       )
+let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+  let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
+  {
+    ...state,
+    boxGeometryRecord:
+      Some(
+        boxGeometryRecord
+        |> _addSharableComponent(
+             (
+               uid,
+               component,
+               gameObjectRecord.boxGeometryMap,
+               GameObjectGeometryService.getGameObject(component, boxGeometryRecord)
+             ),
+             (GroupGeometryService.increaseGroupCount, AddGeometryService.handleAddComponent)
+           )
+      )
+  }
 };
 
 let addBasicMaterialComponent =

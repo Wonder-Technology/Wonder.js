@@ -64,7 +64,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (unsafeGetBoxGeometryVertices(geometry1, state), unsafeGetBoxGeometryVertices(geometry2, state))
+              (getBoxGeometryVertices(geometry1, state), getBoxGeometryVertices(geometry2, state))
               |>
               expect == (
                           BoxGeometryTool.getDefaultVertices(),
@@ -77,7 +77,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (unsafeGetBoxGeometryNormals(geometry1, state), unsafeGetBoxGeometryNormals(geometry2, state))
+              (getBoxGeometryNormals(geometry1, state), getBoxGeometryNormals(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultNormals(), BoxGeometryTool.getDefaultNormals())
             }
@@ -87,7 +87,7 @@ let _ =
             () => {
               let (state, geometry1, geometry2) = _prepare();
               let state = state |> GeometryTool.initGeometrys;
-              (unsafeGetBoxGeometryIndices(geometry1, state), unsafeGetBoxGeometryIndices(geometry2, state))
+              (getBoxGeometryIndices(geometry1, state), getBoxGeometryIndices(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultIndices(), BoxGeometryTool.getDefaultIndices())
             }

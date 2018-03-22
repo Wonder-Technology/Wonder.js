@@ -114,24 +114,22 @@ let create = ({settingRecord} as state) => {
   let defaultLocalPosition = [|0., 0., 0.|];
   let (buffer, (localToWorldMatrices, localPositions)) =
     _initBufferData(transformDataBufferCount, defaultLocalToWorldMatrix, defaultLocalPosition);
-  {
-    ...state,
-    transformRecord:
-      Some({
-        index: 0,
-        buffer,
-        localToWorldMatrices,
-        localPositions,
-        defaultLocalToWorldMatrix,
-        defaultLocalPosition,
-        parentMap: WonderCommonlib.SparseMapService.createEmpty(),
-        childMap: WonderCommonlib.SparseMapService.createEmpty(),
-        gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-        dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
-        normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-        disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
-      })
-  }
+  state.transformRecord =
+    Some({
+      index: 0,
+      buffer,
+      localToWorldMatrices,
+      localPositions,
+      defaultLocalToWorldMatrix,
+      defaultLocalPosition,
+      parentMap: WonderCommonlib.SparseMapService.createEmpty(),
+      childMap: WonderCommonlib.SparseMapService.createEmpty(),
+      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+      dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
+      normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+    });
+  state
 };
 
 let deepCopyForRestore = ({settingRecord} as state) => {

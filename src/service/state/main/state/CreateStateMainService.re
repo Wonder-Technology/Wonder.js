@@ -21,7 +21,7 @@ let createState = () => {
   ambientLightRecord: RecordAmbientLightService.create(),
   directionLightRecord: RecordDirectionLightService.create(),
   pointLightRecord: RecordPointLightService.create(),
-  boxGeometryRecord: RecordBoxGeometryService.create(),
+  boxGeometryRecord: None,
   meshRendererRecord: RecordMeshRendererService.create(),
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),

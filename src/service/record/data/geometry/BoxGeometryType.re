@@ -16,13 +16,23 @@ type boxGeometryConfigDataJsObj = {
 
 type boxGeometryRecord = {
   index: int,
-  verticesMap: geometryVerticesMap,
-  normalsMap: geometryNormalsMap,
-  indicesMap: geometryIndicesMap,
+  buffer: Js.Typed_array.array_buffer,
+  vertices: Js.Typed_array.Float32Array.t,
+  normals: Js.Typed_array.Float32Array.t,
+  indices: Js.Typed_array.Uint16Array.t,
+  verticesInfoArray: geometryInfoArray,
+  normalsInfoArray: geometryInfoArray,
+  indicesInfoArray: geometryInfoArray,
+  mutable verticesOffset: int,
+  mutable normalsOffset: int,
+  mutable indicesOffset: int,
+  mutable disposeCount: int,
+  mappedIndexMap: geometryMappedIndexMap,
   computeDataFuncMap: array(((int, boxGeometryRecord) => geometryComputeData)),
   configDataMap: geometryConfigDataMap,
   gameObjectMap,
-  disposedIndexArray: geometryDisposedIndexArray,
   isInitMap: geometryIsInitMap,
-  groupCountMap: geometryGroupCountMap
+  groupCountMap: geometryGroupCountMap,
+  mutable disposedIndexMap: geometryDisposedIndexMap,
+  aliveIndexArray: array(int)
 };

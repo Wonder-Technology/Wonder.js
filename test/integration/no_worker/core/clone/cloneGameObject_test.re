@@ -2,8 +2,6 @@ open Wonder_jest;
 
 open GameObjectAPI;
 
-open GameObjectAPI;
-
 let _ =
   describe(
     "clone gameObject",

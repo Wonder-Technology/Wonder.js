@@ -91,40 +91,32 @@ let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array
 
    let setUint16ArraySingleVale = (index: int, record: int, typeArray: Uint16Array.t) =>
      Uint16Array.unsafe_set(typeArray, index, record); */
-let fillFloat32Array =
-  [@bs]
-  (
-    (typeArray: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
-      WonderLog.Contract.requireCheck(
-        () => {
-          open WonderLog;
-          open Contract;
-          open Operators;
-          let actualLen = Js.Array.length(dataArr) + startIndex;
-          let range = Float32Array.length(typeArray);
-          test(
-            Log.buildAssertMessage(
-              ~expect={j|not exceed Float32Array range:$range|j},
-              ~actual={j|is $actualLen|j}
-            ),
-            () => actualLen <= range
-          )
-        },
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
-      );
-      let dataArrIndex = ref(0);
-      for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
-        /* Js.Typed_array.Float32Array.unsafe_set(typeArray, i, dataArr[dataArrIndex^]); */
-        Js.Typed_array.Float32Array.unsafe_set(
-          typeArray,
-          i,
-          Array.unsafe_get(dataArr, dataArrIndex^)
-        );
-        dataArrIndex := succ(dataArrIndex^)
-      };
-      typeArray
-    }
+let fillFloat32Array = (typeArray: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let actualLen = Js.Array.length(dataArr) + startIndex;
+      let range = Float32Array.length(typeArray);
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|not exceed Float32Array range:$range|j},
+          ~actual={j|is $actualLen|j}
+        ),
+        () => actualLen <= range
+      )
+    },
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
+  let dataArrIndex = ref(0);
+  for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
+    /* Js.Typed_array.Float32Array.unsafe_set(typeArray, i, dataArr[dataArrIndex^]); */
+    Js.Typed_array.Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(dataArr, dataArrIndex^));
+    dataArrIndex := succ(dataArrIndex^)
+  };
+  typeArray
+};
 
 let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, offset) => {
   WonderLog.Contract.requireCheck(
@@ -151,68 +143,63 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-/* let getFloat32ArrSubarray = (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
-   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArray); */
-let fillUint16Array =
-  [@bs]
-  (
-    (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
-      WonderLog.Contract.requireCheck(
-        () => {
-          open WonderLog;
-          open Contract;
-          open Operators;
-          let actualLen = Js.Array.length(dataArr) + startIndex;
-          let range = Uint16Array.length(typeArray);
-          test(
-            Log.buildAssertMessage(
-              ~expect={j|not exceed Uint16Array range:$range|j},
-              ~actual={j|is $actualLen|j}
-            ),
-            () => actualLen <= range
-          )
-        },
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
-      );
-      let dataArrIndex = ref(0);
-      for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
-        Js.Typed_array.Uint16Array.unsafe_set(
-          typeArray,
-          i,
-          Array.unsafe_get(dataArr, dataArrIndex^)
-        );
-        dataArrIndex := succ(dataArrIndex^)
-      };
-      typeArray
-    }
-  );
+let getFloat32ArrSubarray = (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
+  Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
 
-/* let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
-     WonderLog.Contract.requireCheck(
-       () => {
-         open WonderLog;
-         open Contract;
-         open Operators;
-         test(
-           Log.buildAssertMessage(~expect={j|offset should >= 0|j}, ~actual={j|is $offset|j}),
-           () => offset >= 0
-         );
-         let sourceTypeArrLen = Uint16Array.length(sourceTypeArr);
-         let targetTypeArrLen = Uint16Array.length(targetTypeArr);
-         test(
-           Log.buildAssertMessage(
-             ~expect={j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
-             ~actual={j||j}
-           ),
-           () => sourceTypeArrLen + offset <= targetTypeArrLen
-         )
-       },
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
-     );
-     targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
-   }; */
-/* let getUint16ArrSubarray = (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
-   Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArray); */
+let fillUint16Array = (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let actualLen = Js.Array.length(dataArr) + startIndex;
+      let range = Uint16Array.length(typeArray);
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|not exceed Uint16Array range:$range|j},
+          ~actual={j|is $actualLen|j}
+        ),
+        () => actualLen <= range
+      )
+    },
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  let dataArrIndex = ref(0);
+  for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
+    Js.Typed_array.Uint16Array.unsafe_set(typeArray, i, Array.unsafe_get(dataArr, dataArrIndex^));
+    dataArrIndex := succ(dataArrIndex^)
+  };
+  typeArray
+};
+
+let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test(
+        Log.buildAssertMessage(~expect={j|offset should >= 0|j}, ~actual={j|is $offset|j}),
+        () => offset >= 0
+      );
+      let sourceTypeArrLen = Uint16Array.length(sourceTypeArr);
+      let targetTypeArrLen = Uint16Array.length(targetTypeArr);
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+          ~actual={j||j}
+        ),
+        () => sourceTypeArrLen + offset <= targetTypeArrLen
+      )
+    },
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
+};
+
+let getUint16ArrSubarray = (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
+  Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
+
 let _setFloat32ArrayWithFloat32Array =
   [@bs]
   (
@@ -250,8 +237,9 @@ let _fillTypeArrayWithTypeArray =
   typeArrIndex^
 };
 
-/* let fillUint16ArrayWithUint16Array = (targetData, sourceData, endIndex) =>
-   _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setUint16ArrayWithUint16Array); */
+let fillUint16ArrayWithUint16Array = (targetData, sourceData, endIndex) =>
+  _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setUint16ArrayWithUint16Array);
+
 let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
   _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setFloat32ArrayWithFloat32Array);
 

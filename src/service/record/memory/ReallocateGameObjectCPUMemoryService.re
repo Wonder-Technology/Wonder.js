@@ -1,7 +1,5 @@
 open GameObjectType;
 
-let _isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.SparseMapService.has(key);
-
 let _setNewDataToState =
     (
       newAliveUidArray,
@@ -111,9 +109,9 @@ let _allocateNewMaps =
        )
      );
 
-let reAllocateGameObject = ({aliveUidArray, disposedUidMap} as record) => {
+let reAllocate = ({aliveUidArray, disposedUidMap} as record) => {
   let newAliveUidArray =
     aliveUidArray
-    |> Js.Array.filter((aliveUid) => ! _isDisposed(aliveUid, disposedUidMap));
+    |> Js.Array.filter((aliveUid) => ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap));
   record |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, record)
 };

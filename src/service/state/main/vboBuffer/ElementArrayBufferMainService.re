@@ -20,10 +20,16 @@ let createBuffer =
     }
   );
 
-let getOrCreateBuffer = (gl, (geometryIndex, bufferMap), getDataFunc, state: MainStateDataType.state) =>
+let getOrCreateBuffer =
+    (
+      gl,
+      (geometryIndex, mappedGeometryIndex, bufferMap),
+      getDataFunc,
+      state: MainStateDataType.state
+    ) =>
   GetVboBufferMainService.getOrCreateBuffer(
     gl,
-    (geometryIndex, bufferMap),
+    (geometryIndex, mappedGeometryIndex, bufferMap),
     (createBuffer, getDataFunc),
     state
   );

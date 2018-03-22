@@ -4,8 +4,10 @@ open BoxGeometryType;
 
 open BoxGeometryAPI;
 
+let getData = (state) => RecordBoxGeometryMainService.getRecord(state);
+
 let computeData = (geometry, state: MainStateDataType.state) =>
-  CreateBoxGeometryService._computeData(geometry, state.boxGeometryRecord);
+  CreateBoxGeometryService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let getDefaultIndicesArray = () => [|
   0,

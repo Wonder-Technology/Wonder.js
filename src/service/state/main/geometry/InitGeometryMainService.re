@@ -4,35 +4,38 @@ open GeometryType;
 
 open BoxGeometryType;
 
-let _isInit = (index: int, state: MainStateDataType.state) =>
-  switch (state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapService.get(index)) {
+let _isInit = (index: int, isInitMap) =>
+  switch (isInitMap |> WonderCommonlib.SparseMapService.get(index)) {
   | None => false
   | Some(bool) => bool
   };
 
 let _markIsInit = (index: int, isInit: bool, state: MainStateDataType.state) => {
-  state.boxGeometryRecord.isInitMap |> WonderCommonlib.SparseMapService.set(index, isInit);
+  let {isInitMap} = state |> RecordBoxGeometryMainService.getRecord;
+  isInitMap |> WonderCommonlib.SparseMapService.set(index, isInit) |> ignore;
   state
 };
 
-let initGeometry = (index: int, state: MainStateDataType.state) =>
-  if (_isInit(index, state)) {
+let initGeometry = (index: int, mappedIndex, state: MainStateDataType.state) => {
+  let {isInitMap, computeDataFuncMap} as boxGeometryRecord =
+    state |> RecordBoxGeometryMainService.getRecord;
+  if (_isInit(index, isInitMap)) {
     state
   } else {
-    let {computeDataFuncMap} = state.boxGeometryRecord;
-    switch (computeDataFuncMap |> WonderCommonlib.SparseMapService.get(index)) {
+    /* let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord; */
+    switch (computeDataFuncMap |> WonderCommonlib.SparseMapService.get(mappedIndex)) {
     | None => state
     | Some(computeDataFunc) =>
       let {vertices, normals, indices}: geometryComputeData =
-        computeDataFunc(index, state.boxGeometryRecord);
-        /* WonderLog.Log.print((index, vertices)) |> ignore; */
+        computeDataFunc(mappedIndex, boxGeometryRecord);
       state
-      |> VerticesGeometryMainService.setVerticesWithArray(index, vertices)
-      |> NormalsGeometryMainService.setNormalsWithArray(index, normals)
-      |> IndicesGeometryMainService.setIndicesWithArray(index, indices)
+      |> VerticesGeometryMainService.setVertices(mappedIndex, vertices)
+      |> NormalsGeometryMainService.setNormals(mappedIndex, normals)
+      |> IndicesGeometryMainService.setIndices(mappedIndex, indices)
       |> _markIsInit(index, true)
     }
-  };
+  }
+};
 
 let init = (state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
@@ -45,19 +48,32 @@ let init = (state: MainStateDataType.state) => {
                 ~expect={j|not dispose any geometry before init|j},
                 ~actual={j|not|j}
               ),
-              () => DisposeGeometryMainService.isNotDisposed(state) |> assertTrue
+              () =>
+                DisposeGeometryMainService.isNotDisposed(
+                  state |> RecordBoxGeometryMainService.getRecord
+                )
+                |> assertTrue
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  let {index} = state.boxGeometryRecord;
+  let {index, mappedIndexMap} = state |> RecordBoxGeometryMainService.getRecord;
   ArrayService.range(0, index - 1)
   |> ReduceStateMainService.reduceState(
-       [@bs] ((state, geometryIndex: int) => initGeometry(geometryIndex, state)),
+       [@bs]
+       (
+         (state, geometryIndex: int) =>
+           initGeometry(
+             geometryIndex,
+             MappedIndexService.getMappedIndex(geometryIndex, mappedIndexMap),
+             state
+           )
+       ),
        state
      )
 };
 
-let handleInitComponent = (index: int, state: MainStateDataType.state) => initGeometry(index, state);
+let handleInitComponent = (index: int, mappedIndex, state: MainStateDataType.state) =>
+  initGeometry(index, mappedIndex, state);

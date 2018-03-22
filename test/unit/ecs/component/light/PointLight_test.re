@@ -241,7 +241,7 @@ let _ =
         "disposeComponent",
         () =>
           describe(
-            "dispose record",
+            "dispose data",
             () => {
               test(
                 "mark disposed",

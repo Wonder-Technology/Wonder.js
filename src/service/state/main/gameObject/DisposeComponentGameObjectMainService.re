@@ -5,11 +5,10 @@ open GameObjectType;
 open ComponentType;
 
 /* let isAlive = (uid: int, {gameObjectRecord}) => {
-  let {transformMap, disposedUidMap} = gameObjectRecord;
-  disposedUidMap |> WonderCommonlib.SparseMapService.has(uid) ?
-    false : transformMap |> WonderCommonlib.SparseMapService.has(uid) ? true : false
-}; */
-
+     let {transformMap, disposedUidMap} = gameObjectRecord;
+     disposedUidMap |> WonderCommonlib.SparseMapService.has(uid) ?
+       false : transformMap |> WonderCommonlib.SparseMapService.has(uid) ? true : false
+   }; */
 let disposeBasicCameraViewComponent =
   [@bs]
   (
@@ -59,11 +58,7 @@ let disposeBoxGeometryComponent =
   [@bs]
   (
     (uid: int, component: component, {settingRecord} as state) =>
-      DisposeGeometryMainService.handleDisposeComponent(
-        component,
-        MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
-        state
-      )
+      DisposeGeometryMainService.handleDisposeComponent(component, state)
   );
 
 let disposePerspectiveCameraProjectionComponent =
@@ -202,13 +197,7 @@ let batchDisposeTransformComponent =
 
 let batchDisposeBoxGeometryComponent =
     (uidMap, {settingRecord} as state, componentArray: array(component)) =>
-  [@bs]
-  DisposeGeometryMainService.handleBatchDisposeComponent(
-    componentArray,
-    uidMap,
-    MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
-    state
-  );
+  [@bs] DisposeGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
 let batchDisposeBasicMaterialComponent =
     (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {

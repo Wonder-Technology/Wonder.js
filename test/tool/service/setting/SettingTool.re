@@ -120,7 +120,7 @@ let createStateAndSetToStateData =
     |> Js.Json.parseExn
   )
   |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
-  |> RecordTransformMainService.create
+  |> ConfigDataLoaderSystem._createRecordWithState
   |> MainStateTool.setState
 };
 
@@ -163,5 +163,4 @@ let setGPU = (config, state) => {
   ...state,
   settingRecord: {...state.settingRecord, gpu: Some(config)}
 };
-
 /* let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)}; */

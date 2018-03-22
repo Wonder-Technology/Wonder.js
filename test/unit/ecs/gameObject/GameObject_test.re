@@ -1244,7 +1244,7 @@ let _ =
                 "batch dispose objectInstance componets",
                 () => {
                   describe(
-                    "dispose record",
+                    "dispose data",
                     () => {
                       test(
                         "remove from sourceInstanceMap, gameObjectMap",
@@ -1330,7 +1330,7 @@ let _ =
                 "batch dispose sourceInstance componets",
                 () =>
                   describe(
-                    "dispose record",
+                    "dispose data",
                     () => {
                       test(
                         "remove from map",
@@ -1468,7 +1468,7 @@ let _ =
                   let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
                   let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
                   let state = state |> initGameObject(gameObject);
-                  BoxGeometryAPI.unsafeGetBoxGeometryVertices(geometry, state)
+                  BoxGeometryAPI.getBoxGeometryVertices(geometry, state)
                   |> expect == BoxGeometryTool.getDefaultVertices()
                 }
               )

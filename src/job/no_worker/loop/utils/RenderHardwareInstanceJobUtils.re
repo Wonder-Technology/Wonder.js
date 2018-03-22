@@ -221,7 +221,7 @@ let render =
   /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, geometryIndex) =
+  let (state, shaderIndex, geometryIndex, mappedGeometryIndex) =
     _renderSourceInstanceGameObject(gl, uid, renderFunc, state);
   let (
         (gl, extension, _),
@@ -238,7 +238,7 @@ let render =
       RenderGeometryService.getDrawMode(gl),
       RenderGeometryService.getIndexType(gl),
       RenderGeometryService.getIndexTypeSize(gl),
-      IndicesService.getIndicesCount(geometryIndex, state.boxGeometryRecord.indicesMap),
+      IndicesGeometryMainService.getIndicesCount(mappedGeometryIndex, state),
       instanceRenderListCount
     ),
     Obj.magic(extension)

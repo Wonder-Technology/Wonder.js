@@ -90,7 +90,7 @@ let _ =
             )
           };
           describe(
-            "dispose record",
+            "dispose data",
             () => {
               test(
                 "dirtyArray: remove from array",

@@ -35,4 +35,7 @@ let copyFloat32TypeArrayFromBuffer = (buffer) => Js.Typed_array.Float32Array.fro
 let copyFloat32TypeArrayFromBufferRange = (buffer, offset, length) =>
   Js.Typed_array.Float32Array.fromBufferRange(buffer, ~offset, ~length);
 
+let copyUint16TypeArrayFromBufferRange = (buffer, offset, length) =>
+  Js.Typed_array.Uint16Array.fromBufferRange(buffer, ~offset, ~length);
+
 let copyUint8TypeArrayFromBuffer = (buffer) => Js.Typed_array.Uint8Array.fromBuffer(buffer);

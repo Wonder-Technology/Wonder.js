@@ -1,6 +1,5 @@
-/* let isAlive = (light, maxCount) => light < maxCount; */
 let isAlive = (light, mappedIndexMap) =>
-  ! MappedIndexService.isDisposed(MappedIndexService.getMappedIndex(light, mappedIndexMap));
+  MappedIndexService.isComponentAlive(light, mappedIndexMap);
 
 let disposeData = (light, gameObjectMap) =>
   DisposeComponentService.disposeSparseMapData(light, gameObjectMap);
