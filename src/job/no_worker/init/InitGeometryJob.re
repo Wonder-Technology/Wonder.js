@@ -1,3 +1,3 @@
 open MainStateDataType;
 
-let execJob = (_, state) => InitGeometryMainService.init(state);
+let execJob = (_, state) => InitBoxGeometryMainService.init(state);

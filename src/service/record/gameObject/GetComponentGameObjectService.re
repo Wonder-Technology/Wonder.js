@@ -30,6 +30,12 @@ let getBoxGeometryComponent =
 let unsafeGetBoxGeometryComponent = (uid: int, {boxGeometryMap}) =>
   boxGeometryMap |> unsafeGetComponent(uid);
 
+let getCustomGeometryComponent =
+  [@bs] ((uid: int, {customGeometryMap}) => customGeometryMap |> getComponent(uid));
+
+let unsafeGetCustomGeometryComponent = (uid: int, {customGeometryMap}) =>
+  customGeometryMap |> unsafeGetComponent(uid);
+
 let getBasicMaterialComponent =
   [@bs] ((uid: int, {basicMaterialMap}) => basicMaterialMap |> getComponent(uid));
 

@@ -17,6 +17,9 @@ let hasTransformComponent = (uid: int, gameObjectRecord) : bool =>
 let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.boxGeometryMap);
 
+let hasCustomGeometryComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.customGeometryMap);
+
 let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.basicMaterialMap);
 

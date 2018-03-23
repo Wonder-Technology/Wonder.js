@@ -4,7 +4,7 @@ let getColor = (mappedIndex, {colors}) => RecordPointLightService.getColor(mappe
 
 let setColor = (mappedIndex, color: array(float), {colors} as record) => {
   ...record,
-  colors: RecordAmbientLightService.setColor(mappedIndex, color, colors)
+  colors: RecordPointLightService.setColor(mappedIndex, color, colors)
 };
 
 let getIntensity = (mappedIndex, {intensities}) =>

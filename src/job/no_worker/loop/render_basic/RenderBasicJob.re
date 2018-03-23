@@ -26,7 +26,7 @@ let _render = (gl, state: MainStateDataType.state) =>
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),
                    RenderGeometryService.getIndexTypeSize(gl),
-                   IndicesGeometryMainService.getIndicesCount(geometryIndex, state)
+                   IndicesBoxGeometryMainService.getIndicesCount(geometryIndex, state)
                  ),
                  gl
                );

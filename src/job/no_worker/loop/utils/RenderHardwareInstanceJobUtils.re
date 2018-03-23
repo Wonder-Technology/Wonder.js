@@ -238,7 +238,7 @@ let render =
       RenderGeometryService.getDrawMode(gl),
       RenderGeometryService.getIndexType(gl),
       RenderGeometryService.getIndexTypeSize(gl),
-      IndicesGeometryMainService.getIndicesCount(geometryIndex, state),
+      IndicesBoxGeometryMainService.getIndicesCount(geometryIndex, state),
       instanceRenderListCount
     ),
     Obj.magic(extension)

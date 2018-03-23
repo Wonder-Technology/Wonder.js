@@ -72,6 +72,13 @@ let _dispose = (uid, batchDisposeFunc, isKeepOrder, state) =>
   |> _dispose(
        uid,
        (
+         GetComponentGameObjectService.getCustomGeometryComponent,
+         DisposeComponentGameObjectMainService.disposeCustomGeometryComponent
+       )
+     )
+  |> _dispose(
+       uid,
+       (
          GetComponentGameObjectService.getBasicMaterialComponent,
          DisposeComponentGameObjectMainService.disposeBasicMaterialComponent
        )
@@ -147,6 +154,13 @@ let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, stat
     state
     |> BatchGetComponentGameObjectMainService.batchGetBoxGeometryComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
+         disposedUidMap,
+         state
+       );
+  let state =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetCustomGeometryComponent(uidArray)
+    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
          disposedUidMap,
          state
        );

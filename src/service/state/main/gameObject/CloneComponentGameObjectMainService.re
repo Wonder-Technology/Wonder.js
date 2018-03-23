@@ -55,6 +55,17 @@ let cloneBoxGeometryComponent =
   ({...state, boxGeometryRecord}, componentArr)
 };
 
+let cloneCustomGeometryComponent =
+    (sourceComponent: component, countRangeArr: array(int), {customGeometryRecord} as state) => {
+  let (customGeometryRecord, componentArr) =
+    CloneCustomGeometryMainService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      customGeometryRecord
+    );
+  ({...state, customGeometryRecord}, componentArr)
+};
+
 let cloneBasicMaterialComponent =
     (isShareMaterial: bool, sourceComponent: component, countRangeArr: array(int), state) =>
   CloneBasicMaterialMainService.handleCloneComponent(

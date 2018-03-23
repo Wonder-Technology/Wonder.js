@@ -49,6 +49,7 @@ type gameObjectRecord = {
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
   mutable boxGeometryMap: gameObjectGeometryMap,
+  mutable customGeometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,

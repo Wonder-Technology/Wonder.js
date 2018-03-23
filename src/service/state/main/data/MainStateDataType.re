@@ -6,6 +6,8 @@ open TransformType;
 
 open BoxGeometryType;
 
+open CustomGeometryType;
+
 open BasicCameraViewType;
 
 open PerspectiveCameraProjectionType;
@@ -170,6 +172,7 @@ and state = {
   directionLightRecord,
   pointLightRecord,
   mutable boxGeometryRecord: option(boxGeometryRecord),
+  mutable customGeometryRecord: option(customGeometryRecord),
   meshRendererRecord,
   shaderRecord,
   glslRecord,

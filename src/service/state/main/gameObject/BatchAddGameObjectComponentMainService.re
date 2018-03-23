@@ -130,8 +130,21 @@ let batchAddBoxGeometryComponentForClone =
     Some(
       _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
-        GroupGeometryService.increaseGroupCount,
+        GroupBoxGeometryService.increaseGroupCount,
         state |> RecordBoxGeometryMainService.getRecord
+      )
+    )
+};
+
+let batchAddCustomGeometryComponentForClone =
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  ...state,
+  customGeometryRecord:
+    Some(
+      _batchAddSharableComponent(
+        (uidArr, componentArr, gameObjectRecord.customGeometryMap),
+        GroupCustomGeometryService.increaseGroupCount,
+        state |> RecordCustomGeometryMainService.getRecord
       )
     )
 };

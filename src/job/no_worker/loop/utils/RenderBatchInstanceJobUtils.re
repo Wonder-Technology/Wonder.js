@@ -13,7 +13,7 @@ let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let indicesCount = IndicesGeometryMainService.getIndicesCount(geometryIndex, state);
+  let indicesCount = IndicesBoxGeometryMainService.getIndicesCount(geometryIndex, state);
   let sourceInstance =
     GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
   let objectInstanceArray =

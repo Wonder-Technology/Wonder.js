@@ -29,9 +29,9 @@ let initGeometry = (index: int, state: MainStateDataType.state) => {
       let {vertices, normals, indices}: geometryComputeData =
         computeDataFunc(index, boxGeometryRecord);
       state
-      |> VerticesGeometryMainService.setVertices(index, vertices)
-      |> NormalsGeometryMainService.setNormals(index, normals)
-      |> IndicesGeometryMainService.setIndices(index, indices)
+      |> VerticesBoxGeometryMainService.setVertices(index, vertices)
+      |> NormalsBoxGeometryMainService.setNormals(index, normals)
+      |> IndicesBoxGeometryMainService.setIndices(index, indices)
       |> _markIsInit(index, true)
     }
   }
@@ -49,7 +49,7 @@ let init = (state: MainStateDataType.state) => {
                 ~actual={j|not|j}
               ),
               () =>
-                DisposeGeometryMainService.isNotDisposed(
+                DisposeBoxGeometryMainService.isNotDisposed(
                   state |> RecordBoxGeometryMainService.getRecord
                 )
                 |> assertTrue

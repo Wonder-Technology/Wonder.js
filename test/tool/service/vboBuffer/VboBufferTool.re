@@ -6,7 +6,7 @@ let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.vertexBufferMap),
-    ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesGeometryMainService.getVertices),
+    ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesBoxGeometryMainService.getVertices),
     state
   );
 
@@ -14,7 +14,7 @@ let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.normalBufferMap),
-    ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsGeometryMainService.getNormals),
+    ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsBoxGeometryMainService.getNormals),
     state
   );
 
@@ -24,7 +24,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: MainStateDataTyp
     (geometryIndex, state.vboBufferRecord.elementArrayBufferMap),
     (
       [@bs] ElementArrayBufferMainService.createBuffer,
-      [@bs] IndicesGeometryMainService.getIndices
+      [@bs] IndicesBoxGeometryMainService.getIndices
     ),
     state
   );

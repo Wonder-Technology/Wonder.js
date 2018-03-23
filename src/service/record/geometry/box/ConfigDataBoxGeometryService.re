@@ -2,6 +2,12 @@ open BoxGeometryType;
 
 open JsObjService;
 
+let getConfigData = (geometry, record) =>
+  record.configDataMap |> WonderCommonlib.SparseMapService.get(geometry);
+
+let unsafeGetConfigData = (geometry, record) =>
+  getConfigData(geometry, record) |> OptionService.unsafeGet;
+
 let setConfigData = (geometry, configData: boxGeometryConfigDataJsObj, {configDataMap} as record) => {
   ...record,
   configDataMap:

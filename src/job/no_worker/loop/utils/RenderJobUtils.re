@@ -18,21 +18,21 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
                ArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, vertexBufferMap),
-                 [@bs] VerticesGeometryMainService.getVertices,
+                 [@bs] VerticesBoxGeometryMainService.getVertices,
                  state
                )
              | "normal" =>
                ArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, normalBufferMap),
-                 [@bs] NormalsGeometryMainService.getNormals,
+                 [@bs] NormalsBoxGeometryMainService.getNormals,
                  state
                )
              | "index" =>
                ElementArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, elementArrayBufferMap),
-                 [@bs] IndicesGeometryMainService.getIndices,
+                 [@bs] IndicesBoxGeometryMainService.getIndices,
                  state
                )
              | _ =>

@@ -153,7 +153,7 @@ let _generateAllFaces = (configDataMap) => {
 };
 
 let _computeData = (index: int, record) =>
-  switch (ConfigDataGeometryService.getConfigData(index, record)) {
+  switch (ConfigDataBoxGeometryService.getConfigData(index, record)) {
   | None =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

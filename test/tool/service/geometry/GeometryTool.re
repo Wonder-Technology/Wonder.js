@@ -9,10 +9,10 @@ let buildInfo = PointsGeometryMainService.buildInfo;
      geometry,
      RecordBoxGeometryMainService.getRecord(state).mappedIndexMap
    ); */
-let initGeometrys = (state: MainStateDataType.state) => InitGeometryMainService.init(state);
+let initGeometrys = (state: MainStateDataType.state) => InitBoxGeometryMainService.init(state);
 
 let initGeometry = (geometry, state: MainStateDataType.state) =>
-  InitGeometryMainService.initGeometry(geometry, state);
+  InitBoxGeometryMainService.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
     (
@@ -36,7 +36,7 @@ let buildBoxGeometryConfigDataJsObj =
    VerticesService.getVerticesCount(index, state.boxGeometryRecord.verticesMap); */
 let getIndicesCount = (index: int, state: MainStateDataType.state) =>
   /* IndicesService.getIndicesCount(index, state.boxGeometryRecord.indicesMap); */
-  IndicesGeometryMainService.getIndicesCount(index, state);
+  IndicesBoxGeometryMainService.getIndicesCount(index, state);
 
 let getIndexType = (state: MainStateDataType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
@@ -55,10 +55,10 @@ let isGeometry = (geometry) => {
   expect(geometry) >= 0
 };
 
-let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
+let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let dispose = (geometry, state: MainStateDataType.state) =>
-  DisposeGeometryMainService.handleDisposeComponent(geometry, state);
+  DisposeBoxGeometryMainService.handleDisposeComponent(geometry, state);
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();
@@ -88,16 +88,16 @@ let isGeometryDisposed = (geometry, state) =>
        let {disposedIndexArray} =
      state |> RecordBoxGeometryMainService.getRecord
        disposedIndexArray |> Js.Array.includes(geometry) */
-  ! DisposeGeometryMainService.isAlive(geometry, state |> RecordBoxGeometryMainService.getRecord);
+  ! DisposeBoxGeometryMainService.isAlive(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let getGroupCount = (geometry, state) =>
-  GroupGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
+  GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let setVerticesWithArray = (geometry, data, state) =>
-  VerticesGeometryMainService.setVertices(geometry, data, state);
+  VerticesBoxGeometryMainService.setVertices(geometry, data, state);
 
 let setNormalsWithArray = (geometry, data, state) =>
-  NormalsGeometryMainService.setNormals(geometry, data, state);
+  NormalsBoxGeometryMainService.setNormals(geometry, data, state);
 
 let setIndicesWithArray = (geometry, data, state) =>
-  IndicesGeometryMainService.setIndices(geometry, data, state);
+  IndicesBoxGeometryMainService.setIndices(geometry, data, state);

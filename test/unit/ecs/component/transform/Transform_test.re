@@ -1038,6 +1038,7 @@ let _ =
                     "new one can get default localPosition",
                     () => {
                       let (state, transform1, _) = _prepare();
+                      let state = state |> setTransformLocalPosition(transform1, (1., 2., 3.));
                       let state = state |> dispose(transform1);
                       let (state, transform2) = createTransform(state);
                       state

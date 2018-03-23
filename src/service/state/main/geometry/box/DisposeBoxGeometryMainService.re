@@ -60,7 +60,7 @@ let _disposeData =
 let _handleByDisposeCount = (settingRecord, (vboBufferRecord, boxGeometryRecord)) =>
   if (QueryCPUMemoryService.isDisposeTooMany(boxGeometryRecord.disposeCount, settingRecord)) {
     boxGeometryRecord.disposeCount = 0;
-    (vboBufferRecord, ReallocateGeometryCPUMemoryService.reAllocate(boxGeometryRecord))
+    (vboBufferRecord, ReallocateBoxGeometryCPUMemoryService.reAllocate(boxGeometryRecord))
   } else {
     (vboBufferRecord, boxGeometryRecord)
   };
@@ -83,7 +83,7 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
   );
   /* let {disposedIndexArray} as boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord; */
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-  switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
+  switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
   | false =>
     let vboBufferRecord = PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
     let (vboBufferRecord, boxGeometryRecord) =
@@ -93,7 +93,7 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
     {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
   | true => {
       ...state,
-      boxGeometryRecord: Some(GroupGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
+      boxGeometryRecord: Some(GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
     }
   }
 };
@@ -129,7 +129,7 @@ let handleBatchDisposeComponent =
              [@bs]
              (
                ((vboBufferRecord, boxGeometryRecord), geometry) =>
-                 switch (GroupGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
+                 switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
                  | false =>
                    let vboBufferRecord =
                      PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
@@ -139,7 +139,7 @@ let handleBatchDisposeComponent =
                    |> _handleByDisposeCount(settingRecord)
                  | true => (
                      vboBufferRecord,
-                     GroupGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
+                     GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
                    )
                  }
              ),

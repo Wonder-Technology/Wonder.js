@@ -29,5 +29,3 @@ type geometryInfo = {
 };
 
 type geometryInfoArray = array(geometryInfo);
-
-type geometryMappedIndexMap = array(int);

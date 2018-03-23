@@ -108,12 +108,12 @@ let ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state) =>
              Operators.(
                test(
                  Log.buildAssertMessage(
-                   ~expect={j|not exceed geometryPointDataBufferCount|j},
+                   ~expect={j|not exceed boxGeometryPointDataBufferCount|j},
                    ~actual={j|exceed|j}
                  ),
                  () =>
                    offset
-                   <= BufferSettingService.getGeometryPointDataBufferCount(
+                   <= BufferSettingService.getBoxGeometryPointDataBufferCount(
                         state.settingRecord
                       )
                )

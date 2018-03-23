@@ -19,7 +19,8 @@ let _ =
               sandbox,
               LoopRenderJobTool.buildNoWorkerJobConfig(),
               {
-                "geometryPointDataBufferCount": 300,
+                "boxGeometryPointDataBufferCount": 300,
+                "customGeometryPointDataBufferCount": 300,
                 "transformDataBufferCount": 500,
                 "basicMaterialDataBufferCount": 50,
                 "lightMaterialDataBufferCount": 50

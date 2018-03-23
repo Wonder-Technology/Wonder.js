@@ -1,5 +1,6 @@
 let _buildDefaultBufferJsObj = () => {
-  "geometryPointDataBufferCount": 300,
+  "boxGeometryPointDataBufferCount": 300,
+  "customGeometryPointDataBufferCount": 300,
   "transformDataBufferCount": 50,
   "basicMaterialDataBufferCount": 50,
   "lightMaterialDataBufferCount": 50
@@ -7,7 +8,8 @@ let _buildDefaultBufferJsObj = () => {
 
 let _buildBufferConfigStr = (buffer) =>
   SettingTool.buildBufferConfigStr(
-    ~geometryPointDataBufferCount=buffer##geometryPointDataBufferCount,
+    ~boxGeometryPointDataBufferCount=buffer##boxGeometryPointDataBufferCount,
+    ~customGeometryPointDataBufferCount=buffer##customGeometryPointDataBufferCount,
     ~transformDataBufferCount=buffer##transformDataBufferCount,
     ~basicMaterialDataBufferCount=buffer##basicMaterialDataBufferCount,
     ~lightMaterialDataBufferCount=buffer##lightMaterialDataBufferCount,
@@ -40,7 +42,7 @@ let initWithJobConfigWithoutBuildFakeDom =
         }
                |},
       ~useHardwareInstance="true",
-      /* ~bufferConfig={"geometryPointDataBufferCount": Js.Nullable.return(5)}, */
+      /* ~bufferConfig={"boxGeometryPointDataBufferCount": Js.Nullable.return(5)}, */
       ~buffer=_buildDefaultBufferJsObj(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),

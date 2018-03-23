@@ -4,7 +4,7 @@ open GeometryType;
 
 open BoxGeometryType;
 
-open DisposeGeometryMainService;
+open DisposeBoxGeometryMainService;
 
 open RenderGeometryService;
 
@@ -63,7 +63,7 @@ let getBoxGeometryVertices = (geometry: int, state: MainStateDataType.state) => 
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  [@bs] VerticesGeometryMainService.getVertices(geometry, state)
+  [@bs] VerticesBoxGeometryMainService.getVertices(geometry, state)
 };
 
 let setBoxGeometryVertices =
@@ -83,7 +83,7 @@ let setBoxGeometryVertices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  VerticesGeometryMainService.setVerticesWithTypeArray(geometry, data, state)
+  VerticesBoxGeometryMainService.setVerticesWithTypeArray(geometry, data, state)
 };
 
 let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
@@ -102,7 +102,7 @@ let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  [@bs] NormalsGeometryMainService.getNormals(geometry, state)
+  [@bs] NormalsBoxGeometryMainService.getNormals(geometry, state)
 };
 
 let setBoxGeometryNormals =
@@ -122,7 +122,7 @@ let setBoxGeometryNormals =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  NormalsGeometryMainService.setNormalsWithTypeArray(geometry, data, state)
+  NormalsBoxGeometryMainService.setNormalsWithTypeArray(geometry, data, state)
 };
 
 let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
@@ -141,7 +141,7 @@ let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  [@bs] IndicesGeometryMainService.getIndices(geometry, state)
+  [@bs] IndicesBoxGeometryMainService.getIndices(geometry, state)
 };
 
 let setBoxGeometryIndices =
@@ -161,7 +161,7 @@ let setBoxGeometryIndices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  IndicesGeometryMainService.setIndicesWithTypeArray(geometry, data, state)
+  IndicesBoxGeometryMainService.setIndicesWithTypeArray(geometry, data, state)
 };
 
 let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataType.state) => {
@@ -180,7 +180,7 @@ let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataTy
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  ConfigDataGeometryService.unsafeGetConfigData(
+  ConfigDataBoxGeometryService.unsafeGetConfigData(
     geometry,
     RecordBoxGeometryMainService.getRecord(state)
   )
@@ -202,7 +202,7 @@ let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: MainStateDataTy
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  GameObjectGeometryService.unsafeGetGameObject(
+  GameObjectBoxGeometryService.unsafeGetGameObject(
     geometry,
     RecordBoxGeometryMainService.getRecord(state)
   )

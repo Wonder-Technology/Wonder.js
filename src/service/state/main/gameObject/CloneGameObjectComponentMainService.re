@@ -80,13 +80,27 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
+         [@bs] GetComponentGameObjectService.getCustomGeometryComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectMainService.cloneCustomGeometryComponent,
+         BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForClone
+       )
+     )
+  |> _clone(
+       (
+         uid,
          [@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, gameObjectRecord),
          countRangeArr,
          clonedGameObjectArr
        ),
        (
          CloneComponentGameObjectMainService.cloneBasicMaterialComponent(isShareMaterial),
-         BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone(isShareMaterial)
+         BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone(
+           isShareMaterial
+         )
        )
      )
   |> _clone(
@@ -98,7 +112,9 @@ let _cloneComponentExceptTransform =
        ),
        (
          CloneComponentGameObjectMainService.cloneLightMaterialComponent(isShareMaterial),
-         BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone(isShareMaterial)
+         BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone(
+           isShareMaterial
+         )
        )
      )
   |> _clone(

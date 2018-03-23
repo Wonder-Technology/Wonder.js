@@ -58,7 +58,14 @@ let disposeBoxGeometryComponent =
   [@bs]
   (
     (uid: int, component: component, {settingRecord} as state) =>
-      DisposeGeometryMainService.handleDisposeComponent(component, state)
+      DisposeBoxGeometryMainService.handleDisposeComponent(component, state)
+  );
+
+let disposeCustomGeometryComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {settingRecord} as state) =>
+      DisposeCustomGeometryMainService.handleDisposeComponent(component, state)
   );
 
 let disposePerspectiveCameraProjectionComponent =
@@ -197,7 +204,11 @@ let batchDisposeTransformComponent =
 
 let batchDisposeBoxGeometryComponent =
     (uidMap, {settingRecord} as state, componentArray: array(component)) =>
-  [@bs] DisposeGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
+  [@bs] DisposeBoxGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
+
+let batchDisposeCustomGeometryComponent =
+    (uidMap, {settingRecord} as state, componentArray: array(component)) =>
+  [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
 let batchDisposeBasicMaterialComponent =
     (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {

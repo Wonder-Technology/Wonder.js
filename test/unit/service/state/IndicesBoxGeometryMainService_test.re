@@ -1,7 +1,7 @@
 open Wonder_jest;
 
 describe(
-  "IndicesGeometryMainService",
+  "IndicesBoxGeometryMainService",
   () => {
     open Expect;
     open Expect.Operators;
@@ -23,7 +23,7 @@ describe(
           () => {
             let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
             let state = state |> GeometryTool.initGeometrys;
-            IndicesGeometryTool.getIndicesCount(geometry, state) |> expect == 36
+            IndicesBoxGeometryTool.getIndicesCount(geometry, state) |> expect == 36
           }
         )
     )

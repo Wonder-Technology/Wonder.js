@@ -73,9 +73,32 @@ let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord
                uid,
                component,
                gameObjectRecord.boxGeometryMap,
-               GameObjectGeometryService.getGameObject(component, boxGeometryRecord)
+               GameObjectBoxGeometryService.getGameObject(component, boxGeometryRecord)
              ),
-             (GroupGeometryService.increaseGroupCount, AddGeometryService.handleAddComponent)
+             (GroupBoxGeometryService.increaseGroupCount, AddBoxGeometryService.handleAddComponent)
+           )
+      )
+  }
+};
+
+let addCustomGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+  let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
+  {
+    ...state,
+    customGeometryRecord:
+      Some(
+        customGeometryRecord
+        |> _addSharableComponent(
+             (
+               uid,
+               component,
+               gameObjectRecord.customGeometryMap,
+               GameObjectCustomGeometryService.getGameObject(component, customGeometryRecord)
+             ),
+             (
+               GroupCustomGeometryService.increaseGroupCount,
+               AddCustomGeometryService.handleAddComponent
+             )
            )
       )
   }
