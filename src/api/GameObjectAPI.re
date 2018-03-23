@@ -174,6 +174,41 @@ let hasGameObjectBoxGeometryComponent = (gameObject: gameObject, state: MainStat
   hasBoxGeometryComponent(gameObject, state.gameObjectRecord)
 };
 
+let addGameObjectCustomGeometryComponent =
+    (gameObject: gameObject, component: component, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  addCustomGeometryComponent(gameObject, component, state)
+};
+
+let disposeGameObjectCustomGeometryComponent =
+    (gameObject: gameObject, component: component, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  [@bs] disposeCustomGeometryComponent(gameObject, component, state)
+};
+
+let unsafeGetGameObjectCustomGeometryComponent =
+    (gameObject: gameObject, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  unsafeGetCustomGeometryComponent(gameObject, state.gameObjectRecord)
+};
+
+let hasGameObjectCustomGeometryComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  hasCustomGeometryComponent(gameObject, state.gameObjectRecord)
+};
+
 let addGameObjectBasicMaterialComponent =
     (gameObject: gameObject, component: component, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
