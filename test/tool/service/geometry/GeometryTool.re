@@ -89,15 +89,3 @@ let isGeometryDisposed = (geometry, state) =>
      state |> RecordBoxGeometryMainService.getRecord
        disposedIndexArray |> Js.Array.includes(geometry) */
   ! DisposeBoxGeometryMainService.isAlive(geometry, state |> RecordBoxGeometryMainService.getRecord);
-
-let getGroupCount = (geometry, state) =>
-  GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
-
-let setVerticesWithArray = (geometry, data, state) =>
-  VerticesBoxGeometryMainService.setVertices(geometry, data, state);
-
-let setNormalsWithArray = (geometry, data, state) =>
-  NormalsBoxGeometryMainService.setNormals(geometry, data, state);
-
-let setIndicesWithArray = (geometry, data, state) =>
-  IndicesBoxGeometryMainService.setIndices(geometry, data, state);

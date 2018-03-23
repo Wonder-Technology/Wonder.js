@@ -684,7 +684,7 @@ let _ =
                              gameObject1,
                              geometry1
                            );
-                      GeometryTool.getGroupCount(geometry1, state) |> expect == 1
+                      BoxGeometryTool.getGroupCount(geometry1, state) |> expect == 1
                     }
                   )
               );

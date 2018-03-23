@@ -239,3 +239,6 @@ let setNormals =
 let setIndices =
     (geometry: int, data: Js.Typed_array.Uint16Array.t, state: MainStateDataType.state) =>
   IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state);
+
+let getGroupCount = (geometry, state) =>
+  GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
