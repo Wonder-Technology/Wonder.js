@@ -169,14 +169,13 @@ let _computeData = (index: int, record) =>
     {vertices, normals, indices}
   };
 
-let create = ({disposedIndexArray, computeDataFuncMap, aliveIndexArray, index} as record) => {
+let create = ({disposedIndexArray, computeDataFuncMap, index} as record) => {
   let (index, newIndex, disposedIndexArray) =
     IndexComponentService.generateIndex(index, disposedIndexArray);
   (
     {
       ...record,
       index: newIndex,
-      aliveIndexArray: aliveIndexArray |> ArrayService.push(index),
       computeDataFuncMap:
         computeDataFuncMap |> WonderCommonlib.SparseMapService.set(index, _computeData)
     },

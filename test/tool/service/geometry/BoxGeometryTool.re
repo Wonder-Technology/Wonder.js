@@ -227,3 +227,15 @@ let createGameObject = (state: MainStateDataType.state) => {
   let state = state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry)
 };
+
+let setVertices =
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) =>
+  VerticesBoxGeometryMainService.setVerticesByTypeArray(geometry, data, state);
+
+let setNormals =
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) =>
+  NormalsBoxGeometryMainService.setNormalsByTypeArray(geometry, data, state);
+
+let setIndices =
+    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: MainStateDataType.state) =>
+  IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state);

@@ -6,13 +6,6 @@ open MainStateDataType;
 
 open DisposeComponentService;
 
-/* let isAlive = (geometry, {disposedIndexMap} as record) =>
-   disposedIndexMap |> WonderCommonlib.SparseMapService.has(geometry) ?
-     false :
-     MappedIndexService.isComponentAlive(
-       geometry,
-       IndexBoxGeometryService.getMappedIndexMap(record)
-     ); */
 let isAlive = (geometry, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(geometry, disposedIndexArray);
 
@@ -22,12 +15,7 @@ let _disposeData =
       (
         vboBufferRecord,
         {
-          disposeCount,
           disposedIndexArray,
-          disposedIndexMap,
-          /* verticesInfoArray,
-             normalsInfoArray,
-             indicesInfoArray, */
           computeDataFuncMap,
           configDataMap,
           gameObjectMap,
@@ -43,11 +31,6 @@ let _disposeData =
     {
       ...boxGeometryRecord,
       disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-      disposedIndexMap: disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
-      disposeCount: succ(disposeCount),
-      /* verticesInfoArray: verticesInfoArray |> disposeSparseMapData(geometry),
-         normalsInfoArray: normalsInfoArray |> disposeSparseMapData(geometry),
-         indicesInfoArray: indicesInfoArray |> disposeSparseMapData(geometry), */
       computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
       configDataMap: configDataMap |> disposeSparseMapData(geometry),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
@@ -56,14 +39,6 @@ let _disposeData =
     }
   )
 };
-
-let _handleByDisposeCount = (settingRecord, (vboBufferRecord, boxGeometryRecord)) =>
-  if (QueryCPUMemoryService.isDisposeTooMany(boxGeometryRecord.disposeCount, settingRecord)) {
-    boxGeometryRecord.disposeCount = 0;
-    (vboBufferRecord, ReallocateBoxGeometryCPUMemoryService.reAllocate(boxGeometryRecord))
-  } else {
-    (vboBufferRecord, boxGeometryRecord)
-  };
 
 let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecord} as state) => {
   WonderLog.Contract.requireCheck(
@@ -81,19 +56,17 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  /* let {disposedIndexArray} as boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord; */
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
   | false =>
     let vboBufferRecord = PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
     let (vboBufferRecord, boxGeometryRecord) =
-      _disposeData(geometry, (vboBufferRecord, boxGeometryRecord))
-      |> _handleByDisposeCount(settingRecord);
-    /* boxGeometryRecord.disposedIndexArray = disposedIndexArray |> ArrayService.push(geometry); */
+      _disposeData(geometry, (vboBufferRecord, boxGeometryRecord));
     {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
   | true => {
       ...state,
-      boxGeometryRecord: Some(GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
+      boxGeometryRecord:
+        Some(GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
     }
   }
 };
@@ -121,7 +94,6 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(MainStateData.stateData)
       );
-      /* let {disposedIndexMap} = state |> RecordBoxGeometryMainService.getRecord; */
       let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
       let (vboBufferRecord, boxGeometryRecord) =
         geometryArray
@@ -133,10 +105,7 @@ let handleBatchDisposeComponent =
                  | false =>
                    let vboBufferRecord =
                      PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
-                   /* boxGeometryRecord.disposedIndexArray =
-                      disposedIndexArray |> ArrayService.push(geometry); */
                    _disposeData(geometry, (vboBufferRecord, boxGeometryRecord))
-                   |> _handleByDisposeCount(settingRecord)
                  | true => (
                      vboBufferRecord,
                      GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)

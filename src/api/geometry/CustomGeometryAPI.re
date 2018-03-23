@@ -53,7 +53,7 @@ let setCustomGeometryVertices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  VerticesCustomGeometryMainService.setVerticesWithTypeArray(geometry, data, state)
+  VerticesCustomGeometryMainService.setVerticesByTypeArray(geometry, data, state)
 };
 
 let getCustomGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
@@ -92,7 +92,7 @@ let setCustomGeometryNormals =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  NormalsCustomGeometryMainService.setNormalsWithTypeArray(geometry, data, state)
+  NormalsCustomGeometryMainService.setNormalsByTypeArray(geometry, data, state)
 };
 
 let getCustomGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
@@ -131,7 +131,7 @@ let setCustomGeometryIndices =
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  IndicesCustomGeometryMainService.setIndicesWithTypeArray(geometry, data, state)
+  IndicesCustomGeometryMainService.setIndicesByTypeArray(geometry, data, state)
 };
 
 let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: MainStateDataType.state) => {

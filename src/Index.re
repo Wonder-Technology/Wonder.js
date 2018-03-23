@@ -4,28 +4,6 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
-let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
-
-let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
-
-let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
-
-let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
-
-let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
-
-let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
-
-let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
-
-let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
-
-let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
-
-let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
-
-let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
-
 let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
@@ -140,6 +118,40 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
+
+let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
+
+let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
+
+let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
+
+let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
+
+let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
+
+let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
+
+let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
+
+let unsafeGetCustomGeometryGameObject = CustomGeometryAPI.unsafeGetCustomGeometryGameObject;
+
+let setCustomGeometryIndices = CustomGeometryAPI.setCustomGeometryIndices;
+
+let getCustomGeometryIndices = CustomGeometryAPI.getCustomGeometryIndices;
+
+let setCustomGeometryNormals = CustomGeometryAPI.setCustomGeometryNormals;
+
+let getCustomGeometryNormals = CustomGeometryAPI.getCustomGeometryNormals;
+
+let setCustomGeometryVertices = CustomGeometryAPI.setCustomGeometryVertices;
+
+let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
+
+let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
+
+let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
+
 let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
 let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
@@ -197,6 +209,8 @@ let getPointLightColor = PointLightAPI.getPointLightColor;
 let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
+
+let loadToData = LoaderManagerAPI.loadToData;
 
 let load = LoaderManagerAPI.load;
 
@@ -264,9 +278,19 @@ let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanc
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
+let setIsDebug = StateAPI.setIsDebug;
+
+let setStateToData = StateAPI.setStateToData;
+
 let setState = StateAPI.setState;
 
+let createState = StateAPI.createState;
+
+let getStateFromData = StateAPI.getStateFromData;
+
 let getState = StateAPI.getState;
+
+let createStateData = StateAPI.createStateData;
 
 let getStateData = StateAPI.getStateData;
 
@@ -303,28 +327,6 @@ let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraVie
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
-
-let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
-
-let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
-
-let setBoxGeometryIndices = BoxGeometryAPI.setBoxGeometryIndices;
-
-let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
-
-let setBoxGeometryNormals = BoxGeometryAPI.setBoxGeometryNormals;
-
-let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
-
-let setBoxGeometryVertices = BoxGeometryAPI.setBoxGeometryVertices;
-
-let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
-
-let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
-
-let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
-
-let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
 let loopBody = DirectorAPI.loopBody;
 
@@ -448,6 +450,8 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
+let loadToData = LoaderManagerAPI.loadToData;
+
 let load = LoaderManagerAPI.load;
 
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
@@ -490,9 +494,19 @@ let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanc
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
+let setIsDebug = StateAPI.setIsDebug;
+
+let setStateToData = StateAPI.setStateToData;
+
 let setState = StateAPI.setState;
 
+let createState = StateAPI.createState;
+
+let getStateFromData = StateAPI.getStateFromData;
+
 let getState = StateAPI.getState;
+
+let createStateData = StateAPI.createStateData;
 
 let getStateData = StateAPI.getStateData;
 

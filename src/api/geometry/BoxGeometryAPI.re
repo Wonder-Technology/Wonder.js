@@ -66,26 +66,6 @@ let getBoxGeometryVertices = (geometry: int, state: MainStateDataType.state) => 
   [@bs] VerticesBoxGeometryMainService.getVertices(geometry, state)
 };
 
-let setBoxGeometryVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
-  );
-  VerticesBoxGeometryMainService.setVerticesWithTypeArray(geometry, data, state)
-};
-
 let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -105,26 +85,6 @@ let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
   [@bs] NormalsBoxGeometryMainService.getNormals(geometry, state)
 };
 
-let setBoxGeometryNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
-  );
-  NormalsBoxGeometryMainService.setNormalsWithTypeArray(geometry, data, state)
-};
-
 let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -142,26 +102,6 @@ let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] IndicesBoxGeometryMainService.getIndices(geometry, state)
-};
-
-let setBoxGeometryIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: MainStateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
-  );
-  IndicesBoxGeometryMainService.setIndicesWithTypeArray(geometry, data, state)
 };
 
 let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataType.state) => {

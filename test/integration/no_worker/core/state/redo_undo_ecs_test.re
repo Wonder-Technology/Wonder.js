@@ -96,17 +96,6 @@ let _ =
           perspectiveCameraProjection3
         )
       };
-      let _prepareGeometryData = (state) => {
-        open BoxGeometryAPI;
-        open Js.Typed_array;
-        let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-        let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-        let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
-        let state = GeometryTool.initGeometrys(state);
-        let state = state |> setBoxGeometryVertices(geometry2, Float32Array.make([|3., 5., 5.|]));
-        let state = state |> setBoxGeometryIndices(geometry2, Uint16Array.make([|1, 2, 4|]));
-        (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3)
-      };
       let _prepareBasicMaterialData = (state) => {
         open BasicMaterialAPI;
         open Js.Typed_array;
@@ -308,7 +297,7 @@ let _ =
           );
           describe(
             "deep copy box geometry record",
-            () =>
+            () => {
               test(
                 "copy vertices",
                 () =>
@@ -316,7 +305,7 @@ let _ =
                     (
                       GameObjectTool.createGameObject,
                       BoxGeometryAPI.getBoxGeometryVertices,
-                      BoxGeometryAPI.setBoxGeometryVertices,
+                      BoxGeometryTool.setVertices,
                       () => (
                         Float32Array.make([|
                           2.,
@@ -334,15 +323,66 @@ let _ =
                           0.,
                           0.,
                           0.,
-                          1.
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.
                         |]),
                         Float32Array.make([|
-                          3.,
-                          1.,
-                          0.,
-                          0.,
-                          0.,
-                          1.,
+                          4.,
                           0.,
                           0.,
                           0.,
@@ -352,13 +392,327 @@ let _ =
                           0.,
                           0.,
                           0.,
-                          1.
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.
+                        |])
+                      )
+                    ),
+                    state
+                  )
+              );
+              test(
+                "copy normals",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      BoxGeometryAPI.getBoxGeometryNormals,
+                      BoxGeometryTool.setNormals,
+                      () => (
+                        Float32Array.make([|
+                          2.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.
+                        |]),
+                        Float32Array.make([|
+                          4.,
+                          2.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          0.
+                        |])
+                      )
+                    ),
+                    state
+                  )
+              );
+              test(
+                "copy indices",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      BoxGeometryAPI.getBoxGeometryIndices,
+                      BoxGeometryTool.setIndices,
+                      () => (
+                        Uint16Array.make([|
+                          4,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0
+                        |]),
+                        Uint16Array.make([|
+                          7,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0
                         |])
                       )
                     ),
                     state
                   )
               )
+            }
           );
           /* test(
                "change copied state shouldn't affect source state",
@@ -1003,47 +1357,47 @@ let _ =
                  )
              ); */
           /* describe(
-            "restore geometry record to target state",
-            () =>
-              test(
-                "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
-                () => {
-                  open MainStateDataType;
-                  open TypeArrayPoolType;
-                  let (
-                    state,
-                    gameObject1,
-                    gameObject2,
-                    gameObject3,
-                    geometry1,
-                    geometry2,
-                    geometry3
-                  ) =
-                    _prepareGeometryData(state);
-                  let (currentState, gameObject4, geometry4) =
-                    BoxGeometryTool.createGameObject(
-                      MainStateTool.createNewCompleteState(sandbox)
-                    );
-                  let currentState = GeometryTool.initGeometry(geometry4, currentState);
-                  let _ = MainStateTool.restore(currentState, state);
-                  let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                    MainStateTool.getState().typeArrayPoolRecord;
-                  (
-                    float32ArrayPoolMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(
-                         BoxGeometryTool.getDefaultVertices() |> Float32Array.length
-                       )
-                    |> Js.Array.length,
-                    uint16ArrayPoolMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(
-                         BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
-                       )
-                    |> Js.Array.length
-                  )
-                  |> expect == (2, 1)
-                }
-              )
-          ); */
+               "restore geometry record to target state",
+               () =>
+                 test(
+                   "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
+                   () => {
+                     open MainStateDataType;
+                     open TypeArrayPoolType;
+                     let (
+                       state,
+                       gameObject1,
+                       gameObject2,
+                       gameObject3,
+                       geometry1,
+                       geometry2,
+                       geometry3
+                     ) =
+                       _prepareGeometryData(state);
+                     let (currentState, gameObject4, geometry4) =
+                       BoxGeometryTool.createGameObject(
+                         MainStateTool.createNewCompleteState(sandbox)
+                       );
+                     let currentState = GeometryTool.initGeometry(geometry4, currentState);
+                     let _ = MainStateTool.restore(currentState, state);
+                     let {float32ArrayPoolMap, uint16ArrayPoolMap} =
+                       MainStateTool.getState().typeArrayPoolRecord;
+                     (
+                       float32ArrayPoolMap
+                       |> WonderCommonlib.SparseMapService.unsafeGet(
+                            BoxGeometryTool.getDefaultVertices() |> Float32Array.length
+                          )
+                       |> Js.Array.length,
+                       uint16ArrayPoolMap
+                       |> WonderCommonlib.SparseMapService.unsafeGet(
+                            BoxGeometryTool.getDefaultIndices() |> Uint16Array.length
+                          )
+                       |> Js.Array.length
+                     )
+                     |> expect == (2, 1)
+                   }
+                 )
+             ); */
           describe(
             "restore material record to target state",
             () => {

@@ -29,10 +29,11 @@ let setNormals = (index: int, data: array(float), state) => {
       Js.Array.length(data),
       fillFloat32Array(normals, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset) */
+  state
 };
 
-let setNormalsWithTypeArray = (index: int, data: Float32Array.t, state) => {
+let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {normalsInfoArray, normals, normalsOffset} as record = getRecord(state);
   record.normalsOffset =
     setFloat32PointData(
@@ -42,5 +43,6 @@ let setNormalsWithTypeArray = (index: int, data: Float32Array.t, state) => {
       Float32Array.length(data),
       fillFloat32ArrayWithOffset(normals, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset) */
+  state
 };

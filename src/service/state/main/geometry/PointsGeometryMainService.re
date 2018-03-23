@@ -99,7 +99,7 @@ let setUint16PointData = (index: int, infoArray, offset: int, count, fillUint16A
   newOffset
 };
 
-let ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state) =>
+/* let ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state) =>
   state
   |> WonderLog.Contract.ensureCheck(
        (r) =>
@@ -121,4 +121,4 @@ let ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state) =>
            )
          ),
        IsDebugMainService.getIsDebug(MainStateData.stateData)
-     );
+     ); */

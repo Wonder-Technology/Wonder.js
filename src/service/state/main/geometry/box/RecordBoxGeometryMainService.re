@@ -15,12 +15,63 @@ let getVerticesOffset = (count) => 0;
 let getNormalsOffset = (count) =>
   getVerticesOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
-let getIndicesSize = () => 1;
+let getIndexSize = () => 1;
 
-let getIndicesLength = (count) => count * getIndicesSize();
+let getIndicesLength = (count) => count * getIndexSize();
 
 let getIndicesOffset = (count) =>
   getNormalsOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
+
+let getVerticesCount = () => 72;
+
+let getNormalsCount = () => 72;
+
+let getIndicesCount = () => 36;
+
+let getVertexIndex = (index) => index * getVertexSize() * getVerticesCount();
+
+let getNormalIndex = (index) => index * getVertexSize() * getNormalsCount();
+
+let getIndexIndex = (index) => index * getIndexSize() * getIndicesCount();
+
+let getVerticesTypeArray = (index: int, points: Float32Array.t) =>
+  TypeArrayService.getFloat32ArrSubarray(
+    points,
+    getVertexIndex(index),
+    getVertexIndex(index) + getVerticesCount()
+  );
+
+let setVertices = (index: int, points: array(float), typeArr) =>
+  TypeArrayService.fillFloat32Array(typeArr, points, getVertexIndex(index));
+
+let setVerticesByTypeArray = (index: int, points: Float32Array.t, typeArr) =>
+  TypeArrayService.fillFloat32ArrayWithOffset(typeArr, points, getVertexIndex(index));
+
+let getNormalsTypeArray = (index: int, points: Float32Array.t) =>
+  TypeArrayService.getFloat32ArrSubarray(
+    points,
+    getNormalIndex(index),
+    getNormalIndex(index) + getNormalsCount()
+  );
+
+let setNormals = (index: int, points: array(float), typeArr) =>
+  TypeArrayService.fillFloat32Array(typeArr, points, getNormalIndex(index));
+
+let setNormalsByTypeArray = (index: int, points: Float32Array.t, typeArr) =>
+  TypeArrayService.fillFloat32ArrayWithOffset(typeArr, points, getNormalIndex(index));
+
+let getIndicesTypeArray = (index: int, points: Uint16Array.t) =>
+  TypeArrayService.getUint16ArrSubarray(
+    points,
+    getIndexIndex(index),
+    getIndexIndex(index) + getIndicesCount()
+  );
+
+let setIndices = (index: int, points: array(int), typeArr) =>
+  TypeArrayService.fillUint16Array(typeArr, points, getIndexIndex(index));
+
+let setIndicesByTypeArray = (index: int, points: Uint16Array.t, typeArr) =>
+  TypeArrayService.fillUint16ArrWithOffset(typeArr, points, getIndexIndex(index));
 
 let _initBufferData = (count) => {
   let buffer =
@@ -31,11 +82,9 @@ let _initBufferData = (count) => {
         * getVertexSize()
         * 2
         + Uint16Array._BYTES_PER_ELEMENT
-        * getIndicesSize()
+        * getIndexSize()
       )
     );
-  /* let count = _getBufferCount(state);
-     _createTypeArrays(buffer, count) */
   let vertices =
     Float32Array.fromBufferRange(
       buffer,
@@ -68,19 +117,10 @@ let create = ({settingRecord} as state) => {
       vertices,
       normals,
       indices,
-      verticesInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
-      normalsInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
-      indicesInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
-      verticesOffset: 0,
-      normalsOffset: 0,
-      indicesOffset: 0,
-      disposeCount: 0,
       configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
       computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      aliveIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       isInitMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty()
     });
@@ -94,21 +134,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     vertices,
     normals,
     indices,
-    verticesInfoArray,
-    normalsInfoArray,
-    indicesInfoArray,
-    verticesOffset,
-    normalsOffset,
-    indicesOffset,
-    disposeCount,
     configDataMap,
     isInitMap,
     computeDataFuncMap,
     groupCountMap,
     gameObjectMap,
-    disposedIndexArray,
-    disposedIndexMap,
-    aliveIndexArray
+    disposedIndexArray
   } =
     state |> getRecord;
   let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
@@ -138,21 +169,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
             getIndicesOffset(geometryDataBufferCount),
             getIndicesLength(geometryDataBufferCount)
           ),
-        verticesInfoArray: verticesInfoArray |> SparseMapService.copy,
-        normalsInfoArray: normalsInfoArray |> SparseMapService.copy,
-        indicesInfoArray: indicesInfoArray |> SparseMapService.copy,
-        verticesOffset,
-        normalsOffset,
-        indicesOffset,
-        disposeCount,
         computeDataFuncMap: computeDataFuncMap |> SparseMapService.copy,
         configDataMap: configDataMap |> SparseMapService.copy,
         isInitMap: isInitMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
-        aliveIndexArray: aliveIndexArray |> Js.Array.copy
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy
       })
   }
 };

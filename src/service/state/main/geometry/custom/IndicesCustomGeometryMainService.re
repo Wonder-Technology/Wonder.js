@@ -31,10 +31,11 @@ let setIndices = (index: int, data: array(int), state) => {
       Js.Array.length(data),
       fillUint16Array(indices, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset) */
+  state
 };
 
-let setIndicesWithTypeArray = (index: int, data: Uint16Array.t, state) => {
+let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
   let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
@@ -44,7 +45,8 @@ let setIndicesWithTypeArray = (index: int, data: Uint16Array.t, state) => {
       Uint16Array.length(data),
       fillUint16ArrWithOffset(indices, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset) */
+  state
 };
 
 let getIndicesCount = (index, state) => {

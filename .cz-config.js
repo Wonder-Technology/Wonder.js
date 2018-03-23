@@ -26,7 +26,8 @@ module.exports = {
     { name: "render-worker" },
     { name: "lightMaterial" },
     { name: "instance" },
-    { name: "geometry" },
+    { name: "boxGeometry" },
+    { name: "customGeometry" },
     { name: "light" },
     { name: "gameObject" },
     { name: "microservice" }

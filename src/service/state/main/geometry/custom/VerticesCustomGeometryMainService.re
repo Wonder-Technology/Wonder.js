@@ -29,10 +29,11 @@ let setVertices = (index, data: array(float), state) => {
       Js.Array.length(data),
       fillFloat32Array(vertices, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset) */
+  state
 };
 
-let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state) => {
+let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);
   record.verticesOffset =
     setFloat32PointData(
@@ -42,5 +43,6 @@ let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state) => {
       Float32Array.length(data),
       fillFloat32ArrayWithOffset(vertices, data)
     );
-  state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset)
+  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset) */
+  state
 };
