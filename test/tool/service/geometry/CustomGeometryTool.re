@@ -51,3 +51,10 @@ let getGroupCount = (geometry, state) =>
     geometry,
     state |> RecordCustomGeometryMainService.getRecord
   );
+
+let isGeometryDisposed = (geometry, state) =>
+  !
+    DisposeCustomGeometryMainService.isAlive(
+      geometry,
+      state |> RecordCustomGeometryMainService.getRecord
+    );

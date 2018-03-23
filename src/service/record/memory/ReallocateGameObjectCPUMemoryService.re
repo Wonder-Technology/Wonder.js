@@ -7,7 +7,8 @@ let _setNewDataToState =
       (
         newTransformMap,
         newMeshRendererMap,
-        newGeometryMap,
+        newBoxGeometryMap,
+        newCustomGeometryMap,
         newBasicCameraViewMap,
         newBasicMaterialMap,
         newLightMaterialMap,
@@ -23,7 +24,8 @@ let _setNewDataToState =
   aliveUidArray: newAliveUidArray,
   transformMap: newTransformMap,
   meshRendererMap: newMeshRendererMap,
-  boxGeometryMap: newGeometryMap,
+  boxGeometryMap: newBoxGeometryMap,
+  customGeometryMap: newCustomGeometryMap,
   basicCameraViewMap: newBasicCameraViewMap,
   basicMaterialMap: newBasicMaterialMap,
   lightMaterialMap: newLightMaterialMap,
@@ -47,6 +49,7 @@ let _allocateNewMaps =
         transformMap,
         meshRendererMap,
         boxGeometryMap,
+        customGeometryMap,
         basicMaterialMap,
         lightMaterialMap,
         ambientLightMap,
@@ -65,7 +68,8 @@ let _allocateNewMaps =
            (
              newTransformMap,
              newMeshRendererMap,
-             newGeometryMap,
+             newBoxGeometryMap,
+             newCustomGeometryMap,
              newBasicCameraViewMap,
              newBasicMaterialMap,
              newLightMaterialMap,
@@ -83,7 +87,8 @@ let _allocateNewMaps =
                 transformMap |> WonderCommonlib.SparseMapService.unsafeGet(uid)
               ),
            _setNewMap(uid, meshRendererMap, newMeshRendererMap),
-           _setNewMap(uid, boxGeometryMap, newGeometryMap),
+           _setNewMap(uid, boxGeometryMap, newBoxGeometryMap),
+           _setNewMap(uid, customGeometryMap, newCustomGeometryMap),
            _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
            _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
            _setNewMap(uid, lightMaterialMap, newLightMaterialMap),
@@ -105,6 +110,7 @@ let _allocateNewMaps =
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty()
        )
      );
@@ -112,6 +118,8 @@ let _allocateNewMaps =
 let reAllocate = ({aliveUidArray, disposedUidMap} as record) => {
   let newAliveUidArray =
     aliveUidArray
-    |> Js.Array.filter((aliveUid) => ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap));
+    |> Js.Array.filter(
+         (aliveUid) => ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap)
+       );
   record |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, record)
 };
