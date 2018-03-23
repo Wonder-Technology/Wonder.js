@@ -144,7 +144,8 @@ let _ =
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let color1 = [|1., 0., 1.|];
-                          let state = state |> AmbientLightAPI.setAmbientLightColor(light1, color1);
+                          let state =
+                            state |> AmbientLightAPI.setAmbientLightColor(light1, color1);
                           let (state, _, clonedComponentArr) = _clone(gameObject1, state);
                           (
                             AmbientLightAPI.getAmbientLightColor(clonedComponentArr[0], state),
@@ -210,11 +211,18 @@ let _ =
                             DirectionLightTool.createGameObject(state^);
                           let intensity1 = 2.;
                           let state =
-                            state |> DirectionLightAPI.setDirectionLightIntensity(light1, intensity1);
+                            state
+                            |> DirectionLightAPI.setDirectionLightIntensity(light1, intensity1);
                           let (state, _, clonedComponentArr) = _clone(gameObject1, state);
                           (
-                            DirectionLightAPI.getDirectionLightIntensity(clonedComponentArr[0], state),
-                            DirectionLightAPI.getDirectionLightIntensity(clonedComponentArr[1], state)
+                            DirectionLightAPI.getDirectionLightIntensity(
+                              clonedComponentArr[0],
+                              state
+                            ),
+                            DirectionLightAPI.getDirectionLightIntensity(
+                              clonedComponentArr[1],
+                              state
+                            )
                           )
                           |> expect == (intensity1, intensity1)
                         }
@@ -291,7 +299,8 @@ let _ =
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let constant1 = 2.;
-                          let state = state |> PointLightAPI.setPointLightConstant(light1, constant1);
+                          let state =
+                            state |> PointLightAPI.setPointLightConstant(light1, constant1);
                           let (state, _, clonedComponentArr) = _clone(gameObject1, state);
                           (
                             PointLightAPI.getPointLightConstant(clonedComponentArr[0], state),
@@ -358,21 +367,49 @@ let _ =
           describe(
             "test clone geometry component",
             () => {
-              let _createAndInitGameObject = (state) => {
-                let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
-                let state = state |> initGameObject(gameObject1);
-                (state, gameObject1, geometry1)
-              };
-              let _prepare = (state) => {
-                open GameObjectType;
-                let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
-                CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 2)
-              };
-              test(
-                "test clone specific count of geometrys",
+              describe(
+                "test clone box geometry component",
                 () => {
-                  let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
-                  clonedGeometryArr |> Js.Array.length |> expect == 2
+                  let _createAndInitGameObject = (state) => {
+                    let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
+                    let state = state |> initGameObject(gameObject1);
+                    (state, gameObject1, geometry1)
+                  };
+                  let _prepare = (state) => {
+                    open GameObjectType;
+                    let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
+                    CloneTool.cloneWithBoxGeometry(state, gameObject1, geometry1, 2)
+                  };
+                  test(
+                    "test clone specific count of geometrys",
+                    () => {
+                      let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
+                      clonedGeometryArr |> Js.Array.length |> expect == 2
+                    }
+                  )
+                }
+              );
+              describe(
+                "test clone custom geometry component",
+                () => {
+                  let _createAndInitGameObject = (state) => {
+                    let (state, gameObject1, geometry1) =
+                      CustomGeometryTool.createGameObject(state);
+                    let state = state |> initGameObject(gameObject1);
+                    (state, gameObject1, geometry1)
+                  };
+                  let _prepare = (state) => {
+                    open GameObjectType;
+                    let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
+                    CloneTool.cloneWithCustomGeometry(state, gameObject1, geometry1, 2)
+                  };
+                  test(
+                    "test clone specific count of geometrys",
+                    () => {
+                      let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
+                      clonedGeometryArr |> Js.Array.length |> expect == 2
+                    }
+                  )
                 }
               )
             }
@@ -435,8 +472,14 @@ let _ =
                     () => {
                       let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare();
                       (
-                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(clonedMaterialArr[0], state),
-                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(clonedMaterialArr[1], state)
+                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
+                          clonedMaterialArr[0],
+                          state
+                        ),
+                        BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
+                          clonedMaterialArr[1],
+                          state
+                        )
                       )
                       |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1])
                     }
@@ -475,8 +518,14 @@ let _ =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = AllMaterialTool.prepareForInit(state);
                           (
-                            BasicMaterialAPI.unsafeGetBasicMaterialColor(clonedMaterialArr[0], state),
-                            BasicMaterialAPI.unsafeGetBasicMaterialColor(clonedMaterialArr[1], state)
+                            BasicMaterialAPI.unsafeGetBasicMaterialColor(
+                              clonedMaterialArr[0],
+                              state
+                            ),
+                            BasicMaterialAPI.unsafeGetBasicMaterialColor(
+                              clonedMaterialArr[1],
+                              state
+                            )
                           )
                           |> expect == (color, color)
                         }
@@ -498,7 +547,10 @@ let _ =
                             |> CloneTool.getFlattenClonedGameObjectArr
                             |> Js.Array.map(
                                  (clonedGameObject) =>
-                                   unsafeGetGameObjectBasicMaterialComponent(clonedGameObject, state)
+                                   unsafeGetGameObjectBasicMaterialComponent(
+                                     clonedGameObject,
+                                     state
+                                   )
                                );
                           BasicMaterialTool.hasShaderIndex(clonedMaterialArr[0], state)
                           |> expect == false
@@ -543,8 +595,14 @@ let _ =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                           let state = AllMaterialTool.prepareForInit(state);
                           (
-                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(clonedMaterialArr[0], state),
-                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(clonedMaterialArr[1], state)
+                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(
+                              clonedMaterialArr[0],
+                              state
+                            ),
+                            LightMaterialAPI.unsafeGetLightMaterialDiffuseColor(
+                              clonedMaterialArr[1],
+                              state
+                            )
                           )
                           |> expect == (color, color)
                         }
@@ -555,7 +613,8 @@ let _ =
                           let (state, gameObject, material) = _prepare();
                           let color = [|1., 0.2, 0.3|];
                           let state =
-                            state |> LightMaterialAPI.setLightMaterialSpecularColor(material, color);
+                            state
+                            |> LightMaterialAPI.setLightMaterialSpecularColor(material, color);
                           let (state, _, clonedMaterialArr) = _clone(gameObject, state);
                           let state =
                             state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
@@ -884,7 +943,7 @@ let _ =
                   |> expect == 4
                 }
               );
-              describe(
+              /* describe(
                 "test clone geometry component",
                 () =>
                   test(
@@ -911,7 +970,7 @@ let _ =
                       |> expect == 4
                     }
                   )
-              );
+              ); */
               /* describe(
                    "test clone material component",
                    () =>
