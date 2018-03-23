@@ -6,7 +6,7 @@ open VboBufferType;
 
 let _updateInfoArray = (infoArray, index: int, {startIndex, endIndex}, offset: int) => {
   let increment = endIndex - startIndex;
-  let newInfo = PointsGeometryMainService.buildInfo(offset, offset + increment);
+  let newInfo = ReallocatedPointsGeometryService.buildInfo(offset, offset + increment);
   Array.unsafe_set(infoArray, index, newInfo);
   infoArray
 };
@@ -51,9 +51,9 @@ let _allocateNewData =
            ),
            index
          ) => {
-           let verticesInfo = PointsGeometryMainService.getInfo(verticesInfoArray, index);
-           let normalsInfo = PointsGeometryMainService.getInfo(normalsInfoArray, index);
-           let indicesInfo = PointsGeometryMainService.getInfo(indicesInfoArray, index);
+           let verticesInfo = ReallocatedPointsGeometryService.getInfo(verticesInfoArray, index);
+           let normalsInfo = ReallocatedPointsGeometryService.getInfo(normalsInfoArray, index);
+           let indicesInfo = ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
            (
              succ(newIndex),
              _updateInfoArray(verticesInfoArray, index, verticesInfo, newVerticesOffset),

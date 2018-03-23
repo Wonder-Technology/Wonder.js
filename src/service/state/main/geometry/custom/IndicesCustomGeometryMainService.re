@@ -4,7 +4,7 @@ open CustomGeometryType;
 
 open GeometryType;
 
-open PointsGeometryMainService;
+open ReallocatedPointsGeometryService;
 
 open RecordCustomGeometryMainService;
 
@@ -31,7 +31,6 @@ let setIndices = (index: int, data: array(int), state) => {
       Js.Array.length(data),
       fillUint16Array(indices, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset) */
   state
 };
 
@@ -45,12 +44,11 @@ let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
       Uint16Array.length(data),
       fillUint16ArrWithOffset(indices, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(indicesOffset) */
   state
 };
 
 let getIndicesCount = (index, state) => {
   let {indicesInfoArray} = getRecord(state);
-  let {startIndex, endIndex} = PointsGeometryMainService.getInfo(indicesInfoArray, index);
+  let {startIndex, endIndex} = ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
   endIndex - startIndex
 };

@@ -2,7 +2,7 @@ open MainStateDataType;
 
 open CustomGeometryType;
 
-open PointsGeometryMainService;
+open ReallocatedPointsGeometryService;
 
 open RecordCustomGeometryMainService;
 
@@ -29,7 +29,6 @@ let setVertices = (index, data: array(float), state) => {
       Js.Array.length(data),
       fillFloat32Array(vertices, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset) */
   state
 };
 
@@ -43,6 +42,5 @@ let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
       Float32Array.length(data),
       fillFloat32ArrayWithOffset(vertices, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(verticesOffset) */
   state
 };

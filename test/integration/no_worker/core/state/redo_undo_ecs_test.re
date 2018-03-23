@@ -209,15 +209,8 @@ let _ =
             let (state, gameObject1, component1) = createGameObjectFunc(state^);
             let (data1, data2) = getTargetDataFunc();
             let state = state |> setDataFunc(component1, data1);
-            WonderLog.Log.print(getDataFunc(component1, state)) |> ignore;
             let copiedState = MainStateTool.deepCopyForRestore(state);
             let copiedState = copiedState |> setDataFunc(component1, data2);
-            /* WonderLog.Log.print(
-
-               CustomGeometryTool.getRecord(state).vertices
-
-                           ) |> ignore; */
-            WonderLog.Log.print(component1) |> ignore;
             getDataFunc(component1, state) |> expect == data1
           };
           describe(

@@ -2,7 +2,7 @@ open MainStateDataType;
 
 open CustomGeometryType;
 
-open PointsGeometryMainService;
+open ReallocatedPointsGeometryService;
 
 open RecordCustomGeometryMainService;
 
@@ -29,7 +29,6 @@ let setNormals = (index: int, data: array(float), state) => {
       Js.Array.length(data),
       fillFloat32Array(normals, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset) */
   state
 };
 
@@ -43,6 +42,5 @@ let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
       Float32Array.length(data),
       fillFloat32ArrayWithOffset(normals, data)
     );
-  /* state |> ensureCheckNotExceedGeometryPointDataBufferCount(normalsOffset) */
   state
 };
