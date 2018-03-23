@@ -152,7 +152,7 @@ let testDrawElements = (sandbox, prepareFunc, state) =>
               drawElements
               |> withFourArgs(
                    triangles,
-                   GeometryTool.getIndicesCount(geometry, state),
+                   BoxGeometryTool.getIndicesCount(geometry, state),
                    GeometryTool.getIndexType(state),
                    GeometryTool.getIndexTypeSize(state) * 0
                  )

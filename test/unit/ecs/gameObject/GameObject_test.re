@@ -549,11 +549,11 @@ let _ =
                   open MainStateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                  let state = state |> GeometryTool.initGeometrys;
+                  let state = state |> BoxGeometryTool.initGeometrys;
                   let state = state |> disposeGameObject(gameObject1);
                   (
-                    GeometryTool.isGeometryDisposed(geometry1, state),
-                    GeometryTool.isGeometryDisposed(geometry2, state)
+                    BoxGeometryTool.isGeometryDisposed(geometry1, state),
+                    BoxGeometryTool.isGeometryDisposed(geometry2, state)
                   )
                   |> expect == (true, false)
                 }
@@ -810,7 +810,7 @@ let _ =
                             BoxGeometryTool.createGameObject(state);
                           let (state, gameObject3, geometry3) =
                             BoxGeometryTool.createGameObject(state);
-                          let state = state |> GeometryTool.initGeometrys;
+                          let state = state |> BoxGeometryTool.initGeometrys;
                           let state = state |> disposeGameObject(gameObject1);
                           let state = state |> disposeGameObject(gameObject2);
                           let {boxGeometryMap} = GameObjectTool.getGameObjectRecord(state);
@@ -1197,11 +1197,11 @@ let _ =
                   open MainStateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                  let state = state |> GeometryTool.initGeometrys;
+                  let state = state |> BoxGeometryTool.initGeometrys;
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   (
-                    GeometryTool.isGeometryDisposed(geometry1, state),
-                    GeometryTool.isGeometryDisposed(geometry2, state)
+                    BoxGeometryTool.isGeometryDisposed(geometry1, state),
+                    BoxGeometryTool.isGeometryDisposed(geometry2, state)
                   )
                   |> expect == (true, true)
                 }

@@ -6,6 +6,59 @@ open BoxGeometryAPI;
 
 let getRecord = (state) => RecordBoxGeometryMainService.getRecord(state);
 
+let buildBoxGeometryConfigDataJsObj =
+    (
+      ~width=Js.Nullable.undefined,
+      ~height=Js.Nullable.undefined,
+      ~depth=Js.Nullable.undefined,
+      ~widthSegment=Js.Nullable.undefined,
+      ~heightSegment=Js.Nullable.undefined,
+      ~depthSegment=Js.Nullable.undefined,
+      ()
+    ) => {
+  "width": width,
+  "height": height,
+  "depth": depth,
+  "widthSegment": widthSegment,
+  "heightSegment": heightSegment,
+  "depthSegment": depthSegment
+};
+
+let getIndicesCount = (index: int, state: MainStateDataType.state) =>
+  IndicesBoxGeometryMainService.getIndicesCount(index, state);
+
+let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
+
+let dispose = (geometry, state: MainStateDataType.state) =>
+  DisposeBoxGeometryMainService.handleDisposeComponent(geometry, state);
+
+let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
+  TestTool.closeContractCheck();
+  let state = state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+  TestTool.openContractCheck();
+  state
+};
+
+let createStubComputeFuncData = (sandbox, geometry, state: MainStateDataType.state) => {
+  open MainStateDataType;
+  open Sinon;
+  let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord;
+  let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
+  computeDataFuncMap |> WonderCommonlib.SparseMapService.set(geometry, computeDataFunc);
+  (state, computeDataFunc)
+};
+
+let isGeometryDisposed = (geometry, state) =>
+  /* open MainStateDataType;
+       let {disposedIndexArray} =
+     state |> RecordBoxGeometryMainService.getRecord
+       disposedIndexArray |> Js.Array.includes(geometry) */
+  !
+    DisposeBoxGeometryMainService.isAlive(
+      geometry,
+      state |> RecordBoxGeometryMainService.getRecord
+    );
+
 let computeData = (geometry, state: MainStateDataType.state) =>
   CreateBoxGeometryService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
@@ -206,7 +259,7 @@ let setDefaultConfigData = (geometry: geometry, state: MainStateDataType.state) 
   state
   |> setBoxGeometryConfigData(
        geometry,
-       GeometryTool.buildBoxGeometryConfigDataJsObj(
+       buildBoxGeometryConfigDataJsObj(
          ~width=Js.Nullable.return(10.),
          ~height=Js.Nullable.return(10.),
          ~depth=Js.Nullable.return(10.),
@@ -242,3 +295,8 @@ let setIndices =
 
 let getGroupCount = (geometry, state) =>
   GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
+
+let initGeometrys = (state: MainStateDataType.state) => InitBoxGeometryMainService.init(state);
+
+let initGeometry = (geometry, state: MainStateDataType.state) =>
+  InitBoxGeometryMainService.initGeometry(geometry, state);

@@ -63,7 +63,7 @@ let _ =
             "compute and set vertices",
             () => {
               let (state, geometry1, geometry2) = _prepare();
-              let state = state |> GeometryTool.initGeometrys;
+              let state = state |> BoxGeometryTool.initGeometrys;
               (getBoxGeometryVertices(geometry1, state), getBoxGeometryVertices(geometry2, state))
               |>
               expect == (
@@ -76,7 +76,7 @@ let _ =
             "compute and set normals",
             () => {
               let (state, geometry1, geometry2) = _prepare();
-              let state = state |> GeometryTool.initGeometrys;
+              let state = state |> BoxGeometryTool.initGeometrys;
               (getBoxGeometryNormals(geometry1, state), getBoxGeometryNormals(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultNormals(), BoxGeometryTool.getDefaultNormals())
@@ -86,7 +86,7 @@ let _ =
             "compute and set indices",
             () => {
               let (state, geometry1, geometry2) = _prepare();
-              let state = state |> GeometryTool.initGeometrys;
+              let state = state |> BoxGeometryTool.initGeometrys;
               (getBoxGeometryIndices(geometry1, state), getBoxGeometryIndices(geometry2, state))
               |>
               expect == (BoxGeometryTool.getDefaultIndices(), BoxGeometryTool.getDefaultIndices())
@@ -104,7 +104,7 @@ let _ =
               let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
               let state =
                 VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
-              expect(() => state |> GeometryTool.dispose(geometry1) |> GeometryTool.initGeometrys)
+              expect(() => state |> BoxGeometryTool.dispose(geometry1) |> BoxGeometryTool.initGeometrys)
               |> toThrowMessage("not dispose any geometry before init")
             }
           )

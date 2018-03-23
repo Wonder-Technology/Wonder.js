@@ -874,7 +874,7 @@ let _ =
                   drawElements
                   |> withFourArgs(
                        triangles,
-                       GeometryTool.getIndicesCount(geometry, state),
+                       BoxGeometryTool.getIndicesCount(geometry, state),
                        GeometryTool.getIndexType(state),
                        GeometryTool.getIndexTypeSize(state) * 0
                      )
@@ -911,7 +911,7 @@ let _ =
                            drawElements
                          |> withFourArgs(
                               triangles,
-                              GeometryTool.getIndicesCount(geometry1, state),
+                              BoxGeometryTool.getIndicesCount(geometry1, state),
                               GeometryTool.getIndexType(state),
                               GeometryTool.getIndexTypeSize(state) * 0
                             )
@@ -919,7 +919,7 @@ let _ =
                            drawElements
                          |> withFourArgs(
                               triangles,
-                              GeometryTool.getIndicesCount(geometry2, state),
+                              BoxGeometryTool.getIndicesCount(geometry2, state),
                               GeometryTool.getIndexType(state),
                               GeometryTool.getIndexTypeSize(state) * 0
                             )

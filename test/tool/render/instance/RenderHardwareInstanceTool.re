@@ -123,7 +123,7 @@ let testDrawElementsInstancedANGLE = (sandbox, prepareFunc, state) =>
               |> expect
               |> toCalledWith([|
                    triangles,
-                   GeometryTool.getIndicesCount(geometry, state),
+                   BoxGeometryTool.getIndicesCount(geometry, state),
                    GeometryTool.getIndexType(state),
                    GeometryTool.getIndexTypeSize(state) * 0,
                    2

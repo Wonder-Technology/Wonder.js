@@ -22,7 +22,7 @@ describe(
           "get indices count",
           () => {
             let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-            let state = state |> GeometryTool.initGeometrys;
+            let state = state |> BoxGeometryTool.initGeometrys;
             IndicesBoxGeometryTool.getIndicesCount(geometry, state) |> expect == 36
           }
         )

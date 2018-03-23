@@ -46,7 +46,7 @@ let _ =
                 state
                 |> setBoxGeometryConfigData(
                      geometry,
-                     GeometryTool.buildBoxGeometryConfigDataJsObj(
+                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
                        ~width=Js.Nullable.return(10.),
                        ~height=Js.Nullable.return(20.),
                        ~depth=Js.Nullable.return(30.),
@@ -77,7 +77,7 @@ let _ =
                 state
                 |> setBoxGeometryConfigData(
                      geometry,
-                     GeometryTool.buildBoxGeometryConfigDataJsObj(
+                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
                        ~height=Js.Nullable.return(20.),
                        ()
                      )
@@ -108,7 +108,7 @@ let _ =
                 state
                 |> setBoxGeometryConfigData(
                      geometry,
-                     GeometryTool.buildBoxGeometryConfigDataJsObj(
+                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
                        ~width=Js.Nullable.return(10.),
                        ~height=Js.Nullable.return(20.),
                        ~depth=Js.Nullable.return(30.),
@@ -610,7 +610,7 @@ let _ =
               let _testSetFunc = (setFunc) => {
                 open GameObjectAPI;
                 let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                let state = state |> GeometryTool.initGeometrys;
+                let state = state |> BoxGeometryTool.initGeometrys;
                 TestTool.closeContractCheck();
                 let state =
                   state
@@ -698,7 +698,7 @@ let _ =
                         geometry1,
                         state
                       );
-                    let state = state |> GeometryTool.initGeometrys;
+                    let state = state |> BoxGeometryTool.initGeometrys;
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
@@ -806,14 +806,14 @@ let _ =
                         state
                         |> setBoxGeometryConfigData(
                              geometry2,
-                             GeometryTool.buildBoxGeometryConfigDataJsObj(
+                             BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
                                ~width=Js.Nullable.return(20.),
                                ~height=Js.Nullable.return(30.),
                                ~depth=Js.Nullable.return(40.),
                                ()
                              )
                            );
-                      let state = state |> GeometryTool.initGeometry(geometry2);
+                      let state = state |> BoxGeometryTool.initGeometry(geometry2);
                       (
                         getBoxGeometryVertices(geometry2, state),
                         getBoxGeometryIndices(geometry2, state)
@@ -981,7 +981,7 @@ let _ =
                     open GameObjectAPI;
                     open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                    let state = state |> GeometryTool.initGeometrys;
+                    let state = state |> BoxGeometryTool.initGeometrys;
                     let state =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                     let state =
@@ -994,7 +994,7 @@ let _ =
                     open GameObjectAPI;
                     open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                    let state = state |> GeometryTool.initGeometrys;
+                    let state = state |> BoxGeometryTool.initGeometrys;
                     let state =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                     let state =
