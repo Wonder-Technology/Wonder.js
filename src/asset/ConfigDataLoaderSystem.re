@@ -82,10 +82,7 @@ let _createHandleRenderConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> _collectAllRecords
     |> then_(
          (recordArr) =>
-           {
-             ...state,
-             renderConfigRecord: RecordRenderConfigService.create(recordArr |> Obj.magic)
-           }
+           {...state, renderConfigRecord: RecordRenderConfigService.create(recordArr |> Obj.magic)}
            |> resolve
        )
   );
@@ -139,10 +136,8 @@ let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state) :
     _createHandleNoWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
 
-    let _createRecordWithState = (state) => {
-
-        state |> RecordTransformMainService.create |> RecordBoxGeometryMainService.create;
-    };
+let _createRecordWithState = (state) =>
+  state |> RecordTransformMainService.create |> RecordBoxGeometryMainService.create |> RecordCustomGeometryMainService.create;
 
 let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   let settingFilePath = Array.unsafe_get(jsonPathArr, 0);
