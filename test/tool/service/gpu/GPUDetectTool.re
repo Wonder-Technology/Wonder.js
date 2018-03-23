@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-let getData = (state) => state.gpuDetectRecord;
+let getRecord = (state) => state.gpuDetectRecord;
 
 let setPrecision = (precision, state) => {
   ...state,

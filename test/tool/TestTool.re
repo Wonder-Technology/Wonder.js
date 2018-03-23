@@ -1,11 +1,26 @@
-let _buildDefaultBufferJsObj = () => {
-  "boxGeometryPointDataBufferCount": 300,
-  "customGeometryPointDataBufferCount": 300,
-  "transformDataBufferCount": 50,
-  "basicMaterialDataBufferCount": 50,
-  "lightMaterialDataBufferCount": 50
+let buildBufferJsObj =
+    (
+      ~boxGeometryPointDataBufferCount=300,
+      ~customGeometryPointDataBufferCount=300,
+      ~transformDataBufferCount=50,
+      ~basicMaterialDataBufferCount=50,
+      ~lightMaterialDataBufferCount=50,
+      ()
+    ) => {
+  "boxGeometryPointDataBufferCount": boxGeometryPointDataBufferCount,
+  "customGeometryPointDataBufferCount": customGeometryPointDataBufferCount,
+  "transformDataBufferCount": transformDataBufferCount,
+  "basicMaterialDataBufferCount": basicMaterialDataBufferCount,
+  "lightMaterialDataBufferCount": lightMaterialDataBufferCount
 };
 
+/* let _buildDefaultBufferJsObj = () => {
+     "boxGeometryPointDataBufferCount": 300,
+     "customGeometryPointDataBufferCount": 300,
+     "transformDataBufferCount": 50,
+     "basicMaterialDataBufferCount": 50,
+     "lightMaterialDataBufferCount": 50
+   }; */
 let _buildBufferConfigStr = (buffer) =>
   SettingTool.buildBufferConfigStr(
     ~boxGeometryPointDataBufferCount=buffer##boxGeometryPointDataBufferCount,
@@ -16,12 +31,12 @@ let _buildBufferConfigStr = (buffer) =>
     ()
   );
 
-let initWithoutBuildFakeDom = (~sandbox, ~isDebug="true", ~buffer=_buildDefaultBufferJsObj(), ()) => {
+let initWithoutBuildFakeDom = (~sandbox, ~isDebug="true", ~buffer=buildBufferJsObj(), ()) => {
   Random.init(1);
   SettingTool.createStateAndSetToStateData(~isDebug, ~buffer=_buildBufferConfigStr(buffer), ())
 };
 
-let init = (~sandbox, ~isDebug="true", ~buffer=_buildDefaultBufferJsObj(), ()) => {
+let init = (~sandbox, ~isDebug="true", ~buffer=buildBufferJsObj(), ()) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   initWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ())
 };
@@ -43,7 +58,7 @@ let initWithJobConfigWithoutBuildFakeDom =
                |},
       ~useHardwareInstance="true",
       /* ~bufferConfig={"boxGeometryPointDataBufferCount": Js.Nullable.return(5)}, */
-      ~buffer=_buildDefaultBufferJsObj(),
+      ~buffer=buildBufferJsObj(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
@@ -64,7 +79,7 @@ let initWithJobConfig =
     (
       ~sandbox,
       ~isDebug="true",
-      ~buffer=_buildDefaultBufferJsObj(),
+      ~buffer=buildBufferJsObj(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()

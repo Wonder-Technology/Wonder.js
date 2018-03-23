@@ -4,7 +4,7 @@ open BoxGeometryType;
 
 open BoxGeometryAPI;
 
-let getData = (state) => RecordBoxGeometryMainService.getRecord(state);
+let getRecord = (state) => RecordBoxGeometryMainService.getRecord(state);
 
 let computeData = (geometry, state: MainStateDataType.state) =>
   CreateBoxGeometryService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);

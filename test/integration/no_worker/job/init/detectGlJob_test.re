@@ -82,7 +82,7 @@ let _ =
               |> returns({"precision": 1})
               |> ignore;
               let state = _exec(fakeGl);
-              GPUDetectTool.getData(state).precision |> expect == Some(HIGHP)
+              GPUDetectTool.getRecord(state).precision |> expect == Some(HIGHP)
             }
           );
           test(
@@ -98,7 +98,7 @@ let _ =
               |> returns({"precision": 1})
               |> ignore;
               let state = _exec(fakeGl);
-              (warn |> getCallCount, GPUDetectTool.getData(state).precision)
+              (warn |> getCallCount, GPUDetectTool.getRecord(state).precision)
               |> expect == (1, Some(MEDIUMP))
             }
           );
@@ -107,7 +107,7 @@ let _ =
             () => {
               let (fakeGl, warn, _, _, _, _) = _prepare(sandbox);
               let state = _exec(fakeGl);
-              (warn |> getCallCount, GPUDetectTool.getData(state).precision)
+              (warn |> getCallCount, GPUDetectTool.getRecord(state).precision)
               |> expect == (1, Some(LOWP))
             }
           )

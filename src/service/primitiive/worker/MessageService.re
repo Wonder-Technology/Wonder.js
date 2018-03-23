@@ -1,1 +1,1 @@
-let getData = (e) => OptionService.unsafeGet(e)##data;
+let getRecord = (e) => OptionService.unsafeGet(e)##data;

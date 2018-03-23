@@ -4,7 +4,7 @@ let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
       let state = StateRenderService.getState(stateData);
-      let data = MessageService.getData(e);
+      let data = MessageService.getRecord(e);
       let gl =
         data##canvas
         |> GlService.createGl(

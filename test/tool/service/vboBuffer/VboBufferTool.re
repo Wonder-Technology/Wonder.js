@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-let getData = (state) => state.vboBufferRecord;
+let getRecord = (state) => state.vboBufferRecord;
 
 let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(

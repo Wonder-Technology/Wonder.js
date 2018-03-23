@@ -6,30 +6,6 @@ open Js.Typed_array;
 
 open TypeArrayService;
 
-/* /* let setPointsWithArray =
-      (
-        (index: int, points, record, pointsMap),
-        (getTypeArrFromPoolFunc, fillTypeArrayFunc, makeTypeArrayFunc),
-        typeArrayPoolRecord
-      ) => */
-   let setPointsWithArray =
-       (
-         (index: int, points, record),
-         (getTypeArrFromPoolFunc, fillTypeArrayFunc, makeTypeArrayFunc),
-         (typeArrayPoolRecord, pointsMap)
-       ) =>
-     switch points {
-     | None =>
-       let typeArr =
-         switch ([@bs] getTypeArrFromPoolFunc(record |> Js.Array.length, typeArrayPoolRecord)) {
-         | None => [@bs] makeTypeArrayFunc(record)
-         | Some(typeArr) => [@bs] fillTypeArrayFunc(typeArr, record, 0)
-         };
-       (typeArrayPoolRecord, pointsMap |> WonderCommonlib.SparseMapService.set(index, typeArr))
-     | Some(indices) =>
-       [@bs] fillTypeArrayFunc(indices, record, 0) |> ignore;
-       (typeArrayPoolRecord, pointsMap)
-     }; */
 let buildInfo = (startIndex: int, endIndex: int) =>
   {startIndex, endIndex}
   |> WonderLog.Contract.ensureCheck(
@@ -60,10 +36,7 @@ let getInfo = (infoArray, index) =>
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(
-                   ~expect={j|infoArray[$index] exist|j},
-                   ~actual={j|not|j}
-                 ),
+                 Log.buildAssertMessage(~expect={j|infoArray[$index] exist|j}, ~actual={j|not|j}),
                  () => infoArray |> Js.Array.length >= index + 1
                )
              )
@@ -98,27 +71,3 @@ let setUint16PointData = (index: int, infoArray, offset: int, count, fillUint16A
   fillUint16ArraryFunc(startIndex);
   newOffset
 };
-
-/* let ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state) =>
-  state
-  |> WonderLog.Contract.ensureCheck(
-       (r) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|not exceed boxGeometryPointDataBufferCount|j},
-                   ~actual={j|exceed|j}
-                 ),
-                 () =>
-                   offset
-                   <= BufferSettingService.getBoxGeometryPointDataBufferCount(
-                        state.settingRecord
-                      )
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
-     ); */

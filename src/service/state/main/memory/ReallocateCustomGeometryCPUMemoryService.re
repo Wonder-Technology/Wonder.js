@@ -8,7 +8,7 @@ let _updateInfoArray = (infoArray, index: int, {startIndex, endIndex}, offset: i
   let increment = endIndex - startIndex;
   let newInfo = PointsGeometryMainService.buildInfo(offset, offset + increment);
   Array.unsafe_set(infoArray, index, newInfo);
-  newInfo
+  infoArray
 };
 
 let _setNewMap = (oldIndex, newIndex, oldMap, newMap) =>
@@ -39,7 +39,6 @@ let _allocateNewData =
          (
            (
              newIndex,
-             /* newMappedIndexMap, */
              newVerticesInfoArray,
              newNormalsInfoArray,
              newIndicesInfoArray,
@@ -52,43 +51,28 @@ let _allocateNewData =
            ),
            index
          ) => {
-           let verticesInfo = PointsGeometryMainService.getInfo(verticesInfoArray, newIndex);
-           let normalsInfo = PointsGeometryMainService.getInfo(normalsInfoArray, newIndex);
-           let indicesInfo = PointsGeometryMainService.getInfo(indicesInfoArray, newIndex);
-           let newVerticesInfo =
-             _updateInfoArray(verticesInfoArray, index, verticesInfo, newVerticesOffset);
-           let newNormalsInfo =
-             _updateInfoArray(normalsInfoArray, index, normalsInfo, newNormalsOffset);
-           let newIndicesInfo =
-             _updateInfoArray(indicesInfoArray, index, indicesInfo, newIndicesOffset);
+           let verticesInfo = PointsGeometryMainService.getInfo(verticesInfoArray, index);
+           let normalsInfo = PointsGeometryMainService.getInfo(normalsInfoArray, index);
+           let indicesInfo = PointsGeometryMainService.getInfo(indicesInfoArray, index);
            (
              succ(newIndex),
-             /* MappedIndexService.setMappedIndex(index, newIndex, newMappedIndexMap), */
-             verticesInfoArray,
-             normalsInfoArray,
-             indicesInfoArray,
-             /* _setNewMap(index, newIndex, computeDataFuncMap, newComputeDataFuncMap),
-                _setNewMap(index, newIndex, configDataMap, newConfigDataMap),
-                _setNewMap(index, newIndex, gameObjectMap, newGameObjectMap),
-                _setNewMap(index, newIndex, isInitMap, newIsInitMap),
-                _setNewMap(index, newIndex, groupCountMap, newGroupCountMap),
-                _updateInfoArray(newVerticesInfoArray, newIndex, verticesInfo, newVerticesOffset),
-                _updateInfoArray(newNormalsInfoArray, newIndex, normalsInfo, newNormalsOffset),
-                _updateInfoArray(newIndicesInfoArray, newIndex, indicesInfo, newIndicesOffset), */
+             _updateInfoArray(verticesInfoArray, index, verticesInfo, newVerticesOffset),
+             _updateInfoArray(normalsInfoArray, index, normalsInfo, newNormalsOffset),
+             _updateInfoArray(indicesInfoArray, index, indicesInfo, newIndicesOffset),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (vertices, newVerticesOffset),
-               (vertices, newVerticesInfo.startIndex),
-               newVerticesInfo.endIndex
+               (vertices, verticesInfo.startIndex),
+               verticesInfo.endIndex
              ),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (normals, newNormalsOffset),
-               (normals, newNormalsInfo.startIndex),
-               newNormalsInfo.endIndex
+               (normals, normalsInfo.startIndex),
+               normalsInfo.endIndex
              ),
              TypeArrayService.fillUint16ArrayWithUint16Array(
                (indices, newIndicesOffset),
-               (indices, newIndicesInfo.startIndex),
-               newIndicesInfo.endIndex
+               (indices, indicesInfo.startIndex),
+               indicesInfo.endIndex
              ),
              vertices,
              normals,
@@ -116,7 +100,6 @@ let _setNewDataToState =
       customGeometryRecord,
       (
         newIndex,
-        /* newMappedIndexMap, */
         newVerticesInfoArray,
         newNormalsInfoArray,
         newIndicesInfoArray,
@@ -148,7 +131,6 @@ let reAllocate = ({disposedIndexMap, aliveIndexArray} as customGeometryRecord) =
     |> Js.Array.filter(
          (aliveIndex) => ! ReallocateCPUMemoryService.isDisposed(aliveIndex, disposedIndexMap)
        );
-  /* WonderLog.Log.print((newAliveIndexArray, aliveIndexArray)) |> ignore; */
   _allocateNewData(newAliveIndexArray, customGeometryRecord)
   |> _setNewDataToState(newAliveIndexArray, customGeometryRecord)
 };
