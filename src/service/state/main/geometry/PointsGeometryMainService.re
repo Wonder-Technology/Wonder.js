@@ -47,6 +47,7 @@ let getInfo = (infoArray, index) =>
 
 let getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
   let {startIndex, endIndex} = getInfo(infoArray, index);
+  WonderLog.Log.print(("infoArray:", infoArray)) |> ignore;
   TypeArrayService.getFloat32ArrSubarray(points, startIndex, endIndex)
 };
 
@@ -54,7 +55,14 @@ let setFloat32PointData =
     (index: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
+
+
+  WonderLog.Log.print(("before set infoArray:", infoArray)) |> ignore;
+
   Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
+
+
+  WonderLog.Log.print(("after set infoArray:", infoArray)) |> ignore;
   fillFloat32ArrayFunc(startIndex);
   newOffset
 };

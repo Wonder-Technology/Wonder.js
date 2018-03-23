@@ -4,7 +4,8 @@ let deepCopyForRestore = (state: MainStateDataType.state) => {
   let state =
     state
     |> RecordTransformMainService.deepCopyForRestore
-    |> RecordBoxGeometryMainService.deepCopyForRestore;
+    |> RecordBoxGeometryMainService.deepCopyForRestore
+    |> RecordCustomGeometryMainService.deepCopyForRestore;
   {
     ...state,
     gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
