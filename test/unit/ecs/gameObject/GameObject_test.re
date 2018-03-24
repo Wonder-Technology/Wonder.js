@@ -848,6 +848,46 @@ let _ =
                         }
                       );
                       describe(
+                        "test current component data map",
+                        () =>
+                          test(
+                            "new currentGeometryDataMap should only has alive record",
+                            () => {
+                              open MainStateDataType;
+                              let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
+                              TestTool.closeContractCheck();
+                              let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
+                              let (state, gameObject1, geometry1) =
+                                BoxGeometryTool.createGameObject(state);
+                              let (state, gameObject2, geometry2) =
+                                BoxGeometryTool.createGameObject(state);
+                              let (state, gameObject3, geometry3) =
+                                BoxGeometryTool.createGameObject(state);
+                              let state = state |> BoxGeometryTool.initGeometrys;
+                              let {currentGeometryDataMap as oldCurrentGeometryDataMap} =
+                                GameObjectTool.getGameObjectRecord(state);
+                              let state = state |> disposeGameObject(gameObject1);
+                              let state = state |> disposeGameObject(gameObject2);
+                              let {currentGeometryDataMap} =
+                                GameObjectTool.getGameObjectRecord(state);
+                              WonderLog.Log.print(currentGeometryDataMap) |> ignore;
+                              (
+                                ArrayTool.isArraySame(
+                                  currentGeometryDataMap,
+                                  oldCurrentGeometryDataMap
+                                ),
+                                currentGeometryDataMap
+                                |> WonderCommonlib.SparseMapService.has(gameObject1),
+                                currentGeometryDataMap
+                                |> WonderCommonlib.SparseMapService.has(gameObject2),
+                                currentGeometryDataMap
+                                |> WonderCommonlib.SparseMapService.has(gameObject3)
+                              )
+                              |> expect == (false, false, false, true)
+                            }
+                          )
+                      );
+                      describe(
                         "test geometry map",
                         () => {
                           test(
@@ -857,8 +897,6 @@ let _ =
                               let state =
                                 TestTool.initWithoutBuildFakeDom(
                                   ~sandbox,
-                                  /* ~bufferConfig=
-                                     Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
                                   ()
                                 );
                               TestTool.closeContractCheck();

@@ -15,7 +15,7 @@ let unsafeGetComponentData = (uid, currentComponentDataMap) =>
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|component exist|j}, ~actual={j|not|j}),
+                 Log.buildAssertMessage(~expect={j|has component|j}, ~actual={j|not|j}),
                  () => r |> assertNullableExist
                )
              )

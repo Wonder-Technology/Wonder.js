@@ -5,6 +5,7 @@ let _setNewDataToState =
       newAliveUidArray,
       record,
       (
+        newCurrentGeometryDataMap,
         newTransformMap,
         newMeshRendererMap,
         newBoxGeometryMap,
@@ -22,6 +23,7 @@ let _setNewDataToState =
   ...record,
   disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
+  currentGeometryDataMap : newCurrentGeometryDataMap ,
   transformMap: newTransformMap,
   meshRendererMap: newMeshRendererMap,
   boxGeometryMap: newBoxGeometryMap,
@@ -46,6 +48,8 @@ let _allocateNewMaps =
     (
       newAliveUidArray,
       {
+
+currentGeometryDataMap,
         transformMap,
         meshRendererMap,
         boxGeometryMap,
@@ -66,6 +70,7 @@ let _allocateNewMaps =
        (
          (
            (
+             newCurrentGeometryDataMap,
              newTransformMap,
              newMeshRendererMap,
              newBoxGeometryMap,
@@ -81,6 +86,7 @@ let _allocateNewMaps =
            ),
            uid
          ) => (
+           _setNewMap(uid, currentGeometryDataMap , newCurrentGeometryDataMap ),
            newTransformMap
            |> WonderCommonlib.SparseMapService.set(
                 uid,
@@ -100,6 +106,7 @@ let _allocateNewMaps =
          )
        ),
        (
+         WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
