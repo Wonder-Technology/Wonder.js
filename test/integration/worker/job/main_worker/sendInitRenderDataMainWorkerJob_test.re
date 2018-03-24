@@ -11,6 +11,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
+          SettingToolWorker.buildFakeCanvasForNotPassCanvasId(sandbox);
           TestToolMainWorker.initWithJobConfig(
             ~sandbox,
             ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
@@ -32,7 +33,13 @@ let _ =
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> expect
-                     |> toCalledWith([|{"operateType": "INIT_RENDER"}|])
+                     |> toCalledWith([|
+                          {
+                            "operateType": "INIT_RENDER",
+                            "canvas": Sinon.matchAny,
+                            "contextConfig": Sinon.matchAny
+                          }
+                        |])
                  )
           );
           testPromise(
@@ -44,7 +51,11 @@ let _ =
                    (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
-                     |> withOneArg({"operateType": "INIT_RENDER"})
+                     |> withOneArg({
+                          "operateType": "INIT_RENDER",
+                          "canvas": Sinon.matchAny,
+                          "contextConfig": Sinon.matchAny
+                        })
                      |> expect
                      |> toCalledAfter(
                           postMessageToRenderWorker

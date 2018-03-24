@@ -27,9 +27,7 @@ let _getCanvasId = (domId: string) =>
 let createCanvas = (canvasId) =>
   (
     switch canvasId {
-    | None =>
-      buildDom("<canvas></canvas>")
-      |> prependTo(~targetElement=findFirstHtmlElement(~document, "body"))
+    | None => buildCanvas() |> prependTo(~targetElement=findFirstHtmlElement(~document, "body"))
     | Some(canvasId) =>
       switch (canvasId |> _getCanvasId |> findFirstHtmlElement(~document)) {
       | None => failwith({j|canvas whose id is $canvasId should exist|j})

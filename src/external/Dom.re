@@ -12,6 +12,8 @@ external querySelectorAll : (document, string) => option(htmlElement) =
 
 external htmlElementToJsObj : htmlElement => Js.t({..}) = "%identity";
 
+external jsObjToHtmlElement : Js.t({..}) => htmlElement = "%identity";
+
 /* external htmlElementToCanvasElement : htmlElement => canvasElement = "%identity"; */
 [@bs.send] external querySelectorAll : (document, string) => array(htmlElement) = "";
 

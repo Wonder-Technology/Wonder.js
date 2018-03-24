@@ -121,7 +121,7 @@ let _ =
             "test create canvas",
             () => {
               let (_, div, _) = exec();
-              div##innerHTML |> expect == "<canvas></canvas>"
+              Obj.magic(Dom.document)##createElement |> expect |> toCalledWith([|"canvas"|])
             }
           );
           test(

@@ -4,6 +4,7 @@ let createWorker = [%bs.raw
        var div = document.createElement("div");
 
 div.postMessage = function(){};
+
 return div;
    }
     |}
