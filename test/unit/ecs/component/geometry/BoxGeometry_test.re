@@ -694,7 +694,7 @@ let _ =
                   let _prepare = (state) => {
                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
                         geometry1,
                         state
                       );
@@ -735,12 +735,12 @@ let _ =
                     () => {
                       open VboBufferType;
                       let (state, gameObject1, geometry1) = _prepare(state);
-                      let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} =
+                      let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} =
                         VboBufferTool.getVboBufferRecord(state);
                       (
-                        vertexBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        normalBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        elementArrayBufferMap |> WonderCommonlib.SparseMapService.has(geometry1)
+                        boxGeometryVertexBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                        boxGeometryNormalBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
+                        boxGeometryElementArrayBufferMap |> WonderCommonlib.SparseMapService.has(geometry1)
                       )
                       |> expect == (false, false, false)
                     }
@@ -758,7 +758,7 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -772,7 +772,7 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -791,7 +791,7 @@ let _ =
                         BoxGeometryTool.createGameObject(state^);
                       let state = state |> GameObjectAPI.initGameObject(gameObject1);
                       let state =
-                        VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                        VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
                           geometry1,
                           state
                         );
@@ -947,7 +947,7 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -983,7 +983,7 @@ let _ =
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> BoxGeometryTool.initGeometrys;
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry, state);
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
@@ -996,7 +996,7 @@ let _ =
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                     let state = state |> BoxGeometryTool.initGeometrys;
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry, state);
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);

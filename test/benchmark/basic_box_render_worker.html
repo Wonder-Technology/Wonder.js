@@ -23,6 +23,7 @@
 
 
     <script src="../e2e/render/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/render/js/BasicMaterialTool.js"></script>
 
     <script>
         window.onload = function () {
@@ -68,6 +69,15 @@
 
 
 
+                var data = BasicMaterialTool.createDefaultBasicMaterial(state);
+
+
+                var state = data[0];
+                var material = data[1];
+
+
+
+                var state = wd.addGameObjectBasicMaterialComponent(box, material, state);
 
 
                 // var data = BasicBoxesTool.createBox(state);

@@ -37,7 +37,7 @@ let _disposeData =
       )
     ) => {
   let vboBufferRecord =
-    DisposeVboBufferService.disposeGeometryBufferData(geometry, vboBufferRecord);
+    DisposeVboBufferService.disposeCustomGeometryBufferData(geometry, vboBufferRecord);
   (
     vboBufferRecord,
     {
@@ -83,7 +83,7 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
   switch (GroupCustomGeometryService.isGroupGeometry(geometry, customGeometryRecord)) {
   | false =>
-    let vboBufferRecord = PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
+    let vboBufferRecord = PoolVboBufferService.addCustomGeometryBufferToPool(geometry, vboBufferRecord);
     let (vboBufferRecord, customGeometryRecord) =
       _disposeData(geometry, (vboBufferRecord, customGeometryRecord))
       |> _handleByDisposeCount(settingRecord);
@@ -133,7 +133,7 @@ let handleBatchDisposeComponent =
                  ) {
                  | false =>
                    let vboBufferRecord =
-                     PoolVboBufferService.addGeometryBufferToPool(geometry, vboBufferRecord);
+                     PoolVboBufferService.addCustomGeometryBufferToPool(geometry, vboBufferRecord);
                    /* customGeometryRecord.disposedIndexArray =
                       disposedIndexArray |> ArrayService.push(geometry); */
                    _disposeData(geometry, (vboBufferRecord, customGeometryRecord))

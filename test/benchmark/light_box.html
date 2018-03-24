@@ -8,307 +8,64 @@
 
 <body>
     <script src="../../dist/wd.js"></script>
+
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+
+    <script src="../e2e/render/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/render/js/LightMaterialTool.js"></script>
+
     <script>
-
-
         window.onload = function () {
-            // var state = wd.setMainConfig({
-            //     isDebug: true
-            // });
-
-            // wd.load("../../data/", state).then(function (state) {
-            //     console.log("complete", state);
-            //     initSample(state);
-            // });
-
-            wd.load("./data/").subscribe({
-                next: (state) => {
-                    console.log("next: ", state)
-                },
-                complete: () => {
-                    console.log("complete");
-                    initSample(wd.getState());
-                }
-            })
-
-
-
-            function createBoxes(count, state) {
-                var boxes = [];
-
-                var [state, box] = createBox(state);
-
-
-                var [state, newBoxes] = wd.cloneGameObject(box, count, true, state);
-
-
-                let flatten = (arr) => {
-                    return arr.reduce((a, b) => {
-                        let arr = a.concat(b);
-                        return arr;
-                    }, []);
-                };
-                newBoxes = flatten(newBoxes);
-
-                return [state, newBoxes];
-            }
-
-            function createBasicBox(state) {
-                var [state, material] = wd.createBasicMaterial(state);
-
-                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
-
-                var [state, meshRenderer] = wd.createMeshRenderer(state);
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
-                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
-
-
-                var [state, geometry] = wd.createBoxGeometry(state);
-
-                state = wd.setBoxGeometryConfigData(geometry, {
-                    width: 5,
-                    height: 5,
-                    depth: 5
-                }, state);
-
-
-
-
-                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
-
-                return [state, obj];
-
-            }
+            AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                return initSample(wd.getState());
+            });
 
             function initSample(state) {
-                // var [state, box1] = createBox(state);
+                var data = CustomGeometryTool.createTriangle(state);
 
+                var state = data[0];
+                var box = data[1];
 
-                // var [state, box2] = createBasicBox(state);
 
 
-                // var transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
 
-                // state = wd.setTransformLocalPosition(transform, [10, 0, 0], state);
+                var data = LightMaterialTool.createDefaultLightMaterial(state);
 
-                var [state, box2] = createBox(state);
-                // var [state, boxes] = createBoxes(20000, state);
 
-                // var [state, ambientLight] = createAmbientLight(state);
+                var state = data[0];
+                var material = data[1];
 
 
 
+                var state = wd.addGameObjectLightMaterialComponent(box, material, state);
 
-                var [state, lightObj] = createPointLight(state);
 
+                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
-                var transform = wd.unsafeGetGameObjectTransformComponent(lightObj, state);
 
-                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
 
 
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
 
-                // var [state, directionLightObj] = createDirectionLight(state);
 
+                var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
-                // var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+                var state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);
 
-                // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
-
-
-
-
-                var [state, camera] = createCamera(state);
-
-
-
-                // var state = wd.addLogicInitJob("initJob1", "", function (state) {
-                //     console.log("initJob1");
-                //     return state
-                // }, state);
-
-
-                // var state = wd.addLogicUpdateJob("updateJob1", "", function (elapsed, state) {
-                //     console.log("updateJob1", elapsed);
-                //     return state
-                // }, state);
-
-
-                // var state = wd.addRenderInitJob("initRenderJob1", "", function (gl, state) {
-                //     console.log("initRenderJob1", gl);
-                //     return state
-                // }, state);
-
-                // var state = wd.addRenderInitJob("initRenderJob2", "preget_glslData", function (gl, state) {
-                //     console.log("initRenderJob2", gl);
-                //     return state
-                // }, state);
-
-
-                // var state = wd.addRenderRenderJob("renderRenderJob1", "", function (gl, state) {
-                //     console.log("renderRenderJob1");
-                //     return state
-                // }, state);
-
-
-                wd.startDirector(state);
-            }
-
-            function createBox(state) {
-                var [state, material] = wd.createLightMaterial(state);
-
-                state = wd.setLightMaterialDiffuseColor(material, [0.0, 0.5, 0.2], state);
-
-                var [state, meshRenderer] = wd.createMeshRenderer(state);
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectLightMaterialComponent(obj, material, state);
-                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
-
-
-                var [state, geometry] = wd.createBoxGeometry(state);
-
-                state = wd.setBoxGeometryConfigData(geometry, {
-                    width: 5,
-                    height: 5,
-                    depth: 5
-                }, state);
-
-
-
-
-                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
-
-                return [state, obj];
-
-            }
-
-
-            function createAmbientLight(state) {
-                var [state, light] = wd.createAmbientLight(state);
-
-                var state = wd.setAmbientLightColor(light, [1.0, 1.0, 1.0], state);
-
-
-
-                var [state, obj] = wd.createGameObject(state);
-
-
-
-                state = wd.addGameObjectAmbientLightComponent(obj, light, state);
-
-                return [state, obj];
-            }
-
-            function createDirectionLight(state) {
-                var [state, light] = wd.createDirectionLight(state);
-
-                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
-
-
-
-                var [state, obj] = wd.createGameObject(state);
-
-
-
-
-
-                state = wd.addGameObjectDirectionLightComponent(obj, light, state);
-
-                return [state, obj];
-            }
-
-
-            function createPointLight(state) {
-                var [state, light] = wd.createPointLight(state);
-
-                var state = wd.setPointLightColor(light, [1.0, 0.0, 1.0], state);
-                var state = wd.setPointLightRangeLevel(light, 10, state);
-
-
-
-
-                var [state, obj] = wd.createGameObject(state);
-
-
-
-
-
-                state = wd.addGameObjectPointLightComponent(obj, light, state);
-
-
-
-
-                var [state, material] = wd.createLightMaterial(state);
-
-                state = wd.setLightMaterialDiffuseColor(material, [1.0, 0.5, 0.2], state);
-
-                var [state, meshRenderer] = wd.createMeshRenderer(state);
-
-                state = wd.addGameObjectLightMaterialComponent(obj, material, state);
-                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
-
-
-                var [state, geometry] = wd.createBoxGeometry(state);
-
-                state = wd.setBoxGeometryConfigData(geometry, {
-                    width: 2,
-                    height: 2,
-                    depth: 2
-                }, state);
-
-
-
-
-                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                return [state, obj];
-            }
-
-
-            function createCamera(state) {
-
-                var [state, cameraController] = wd.createCameraController(state);
-
-                state = wd.setPerspectiveCameraNear(cameraController, 0.1, state);
-                state = wd.setPerspectiveCameraFar(cameraController, 2000, state);
-                state = wd.setPerspectiveCameraFovy(cameraController, 60, state);
-                state = wd.setPerspectiveCameraAspect(cameraController, 1.0, state);
-
-
-                state = wd.setCameraControllerPerspectiveCamera(cameraController, state);
-
-
-
-                var [state, obj] = wd.createGameObject(state);
-
-                state = wd.addGameObjectCameraControllerComponent(obj, cameraController, state);
-
-                var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
-
-                // state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
-                state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);
-
-                return [state, obj];
+                return wd.startDirector(state);
             }
         }
     </script>

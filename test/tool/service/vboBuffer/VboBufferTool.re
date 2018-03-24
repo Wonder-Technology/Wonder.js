@@ -2,26 +2,26 @@ open MainStateDataType;
 
 let getRecord = (state) => state.vboBufferRecord;
 
-let getOrCreateVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.vertexBufferMap),
+    (geometryIndex, state.vboBufferRecord.boxGeometryVertexBufferMap),
     ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesBoxGeometryMainService.getVertices),
     state
   );
 
-let getOrCreateNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.normalBufferMap),
+    (geometryIndex, state.vboBufferRecord.boxGeometryNormalBufferMap),
     ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsBoxGeometryMainService.getNormals),
     state
   );
 
-let getOrCreateElementArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.elementArrayBufferMap),
+    (geometryIndex, state.vboBufferRecord.boxGeometryElementArrayBufferMap),
     (
       [@bs] ElementArrayBufferMainService.createBuffer,
       [@bs] IndicesBoxGeometryMainService.getIndices
@@ -44,12 +44,37 @@ let getOrCreateInstanceBuffer =
     state
   );
 
-let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: MainStateDataType.state) => {
+let passBufferShouldExistCheckWhenDisposeBoxGeometry =
+    (geometryIndex, state: MainStateDataType.state) => {
   open VboBufferType;
-  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
-  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(0), vertexBufferMap);
-  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(1), normalBufferMap);
-  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(2), elementArrayBufferMap);
+  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} =
+    state.vboBufferRecord;
+  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(0), boxGeometryVertexBufferMap);
+  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(1), boxGeometryNormalBufferMap);
+  WonderCommonlib.SparseMapService.set(
+    geometryIndex,
+    Obj.magic(2),
+    boxGeometryElementArrayBufferMap
+  );
+  state
+};
+
+let passBufferShouldExistCheckWhenDisposeCustomGeometry =
+    (geometryIndex, state: MainStateDataType.state) => {
+  open VboBufferType;
+  let {
+    customGeometryVertexBufferMap,
+    customGeometryNormalBufferMap,
+    customGeometryElementArrayBufferMap
+  } =
+    state.vboBufferRecord;
+  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(0), customGeometryVertexBufferMap);
+  WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(1), customGeometryNormalBufferMap);
+  WonderCommonlib.SparseMapService.set(
+    geometryIndex,
+    Obj.magic(2),
+    customGeometryElementArrayBufferMap
+  );
   state
 };
 
@@ -87,8 +112,8 @@ let prepareCreatedBuffer = (sandbox, state) => {
   )
 };
 
-let getOrCreateAllBuffers = (geometry, state) => (
-  getOrCreateVertexArrayBuffer(geometry, state),
-  getOrCreateNormalArrayBuffer(geometry, state),
-  getOrCreateElementArrayBuffer(geometry, state)
+let getOrCreateAllBoxGeometryBuffers = (geometry, state) => (
+  getOrCreateBoxGeometryVertexArrayBuffer(geometry, state),
+  getOrCreateBoxGeometryNormalArrayBuffer(geometry, state),
+  getOrCreateBoxGeometryElementArrayBuffer(geometry, state)
 );

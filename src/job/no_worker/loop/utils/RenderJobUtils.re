@@ -2,8 +2,22 @@ open MainStateDataType;
 
 open VboBufferType;
 
-let _directlySendAttributeData = (gl, shaderIndex, (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, _), state) => {
-  let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
+let _directlySendAttributeData =
+    (
+      gl,
+      shaderIndex,
+      (
+        geometryIndex,
+        _,
+        (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
+        getVerticesFunc,
+        getNormalsFunc,
+        getIndicesFunc,
+        _
+      ),
+      state
+    ) =>
+  /* let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord; */
   state
   |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(
@@ -48,15 +62,21 @@ let _directlySendAttributeData = (gl, shaderIndex, (geometryIndex, getVerticesFu
          }
        ),
        state
-     )
-};
+     );
 
-let _sendAttributeData = (gl, shaderIndex, (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, _) as geometryData, state) => {
+let _sendAttributeData =
+    (
+      gl,
+      shaderIndex,
+      (geometryIndex, type_, _, getVerticesFunc, getNormalsFunc, getIndicesFunc, _) as geometryData,
+      state
+    ) => {
   let {lastSendGeometry} as record = state.glslSenderRecord;
   switch lastSendGeometry {
-  | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
+  | Some((lastSendGeometryIndex, lastSendGeometryType))
+      when lastSendGeometryIndex === geometryIndex && lastSendGeometryType === type_ => state
   | _ =>
-    record.lastSendGeometry = Some(geometryIndex);
+    record.lastSendGeometry = Some((geometryIndex, type_));
     _directlySendAttributeData(gl, shaderIndex, geometryData, state)
   }
 };
@@ -96,7 +116,7 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
 let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectRecord} as state) => {
   let transformIndex: int =
     GetComponentGameObjectService.unsafeGetTransformComponent(uid, gameObjectRecord);
-  let (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, getIndicesCountFunc) as geometryData = 
+  let geometryData =
     GetComponentGameObjectService.unsafeGetGeometryDataComponent(uid, gameObjectRecord);
   let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
   let state =

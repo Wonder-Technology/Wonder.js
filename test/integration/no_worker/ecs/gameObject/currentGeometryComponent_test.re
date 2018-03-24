@@ -55,6 +55,8 @@ let _ =
                        );
                   let (
                     geometryIndex,
+                    type_,
+                    _,
                     getVerticesFunc,
                     getNormalsFunc,
                     getIndicesFunc,
@@ -63,6 +65,7 @@ let _ =
                     state |> GetComponentGameObjectTool.unsafeGetGeometryDataComponent(gameObject);
                   (
                     geometryIndex,
+                    type_,
                     [@bs] getVerticesFunc(geometryIndex, state),
                     [@bs] getNormalsFunc(geometryIndex, state),
                     [@bs] getIndicesFunc(geometryIndex, state),
@@ -71,6 +74,7 @@ let _ =
                   |>
                   expect == (
                               customGeometry2,
+                              "custom",
                               vertices2,
                               normals2,
                               indices2,
@@ -78,6 +82,7 @@ let _ =
                             )
                 }
               );
+              /* TODO test vbo buffer */
               test(
                 "test get box geometry component data",
                 () => {
@@ -94,6 +99,8 @@ let _ =
                     |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject, boxGeometry2);
                   let (
                     geometryIndex,
+                    type_,
+                    _,
                     getVerticesFunc,
                     getNormalsFunc,
                     getIndicesFunc,
@@ -102,12 +109,13 @@ let _ =
                     state |> GetComponentGameObjectTool.unsafeGetGeometryDataComponent(gameObject);
                   (
                     geometryIndex,
+                    type_,
                     [@bs] getVerticesFunc(geometryIndex, state) |> Float32Array.length,
                     [@bs] getNormalsFunc(geometryIndex, state) |> Float32Array.length,
                     [@bs] getIndicesFunc(geometryIndex, state) |> Uint16Array.length,
                     getIndicesCountFunc(geometryIndex, state)
                   )
-                  |> expect == (boxGeometry2, 72, 72, 36, 36)
+                  |> expect == (boxGeometry2, "box", 72, 72, 36, 36)
                 }
               )
             }

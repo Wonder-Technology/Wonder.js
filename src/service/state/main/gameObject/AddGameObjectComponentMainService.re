@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open MainStateDataType;
+open VboBufferType;
 
 open ComponentType;
 
@@ -61,13 +61,16 @@ let addTransformComponent =
     )
 };
 
-let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+let addBoxGeometryComponent =
+    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-  /* CurrentComponentDataMapService.addToMap(uid, component, gameObjectRecord.currentGeometryDataMap) */
+  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
   CurrentComponentDataMapService.addToMap(
     uid,
     (
       component,
+      CurrentComponentDataMapService.getBoxGeometryType(),
+      (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
       VerticesBoxGeometryMainService.getVertices,
       NormalsBoxGeometryMainService.getNormals,
       IndicesBoxGeometryMainService.getIndices,
@@ -94,13 +97,24 @@ let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord
   }
 };
 
-let addCustomGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+let addCustomGeometryComponent =
+    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
-  /* CurrentComponentDataMapService.addToMap(uid, component, gameObjectRecord.currentGeometryDataMap) */
+  let {
+    customGeometryVertexBufferMap,
+    customGeometryNormalBufferMap,
+    customGeometryElementArrayBufferMap
+  } = vboBufferRecord;
   CurrentComponentDataMapService.addToMap(
     uid,
     (
       component,
+      CurrentComponentDataMapService.getCustomGeometryType(),
+      (
+        customGeometryVertexBufferMap,
+        customGeometryNormalBufferMap,
+        customGeometryElementArrayBufferMap
+      ),
       VerticesCustomGeometryMainService.getVertices,
       NormalsCustomGeometryMainService.getNormals,
       IndicesCustomGeometryMainService.getIndices,

@@ -26,6 +26,17 @@ var CustomGeometryTool = (function () {
                 state
             );
 
+
+            var state = wd.setCustomGeometryNormals(geometry,
+                new Float32Array([
+                    0.0, 0.0, 1.0,
+                    0.0, 0.0, 1.0,
+                    0.0, 0.0, 1.0
+                ]),
+                state
+            );
+
+
             var state = wd.setCustomGeometryIndices(geometry,
                 new Uint16Array([
                     0, 1, 2

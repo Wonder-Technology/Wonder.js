@@ -103,7 +103,7 @@ let _ =
               let (state, geometry1) = BoxGeometryTool.createBoxGeometry(state^);
               let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
               let state =
-                VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
               expect(() => state |> BoxGeometryTool.dispose(geometry1) |> BoxGeometryTool.initGeometrys)
               |> toThrowMessage("not dispose any geometry before init")
             }

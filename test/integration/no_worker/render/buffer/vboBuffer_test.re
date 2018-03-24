@@ -62,13 +62,13 @@ let _ =
                     createBuffer
                   ) =
                     VboBufferTool.prepareCreatedBuffer(sandbox, state);
-                  VboBufferTool.getOrCreateAllBuffers(geometry1, state);
+                  VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry1, state);
                   let (
                     resultVertexArrayBuffer1,
                     resultNormalArrayBuffer1,
                     resultElementArrayBuffer1
                   ) =
-                    VboBufferTool.getOrCreateAllBuffers(geometry1, state);
+                    VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry1, state);
                   let state =
                     state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
@@ -78,7 +78,7 @@ let _ =
                     resultNormalArrayBuffer2,
                     resultElementArrayBuffer2
                   ) =
-                    VboBufferTool.getOrCreateAllBuffers(geometry2, state);
+                    VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry2, state);
                   (
                     createBuffer |> getCallCount,
                     resultVertexArrayBuffer2,

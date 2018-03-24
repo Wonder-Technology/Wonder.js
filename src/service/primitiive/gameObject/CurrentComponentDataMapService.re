@@ -23,3 +23,7 @@ let unsafeGetComponentData = (uid, currentComponentDataMap) =>
          ),
        IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
+
+let getBoxGeometryType = () => "box";
+
+let getCustomGeometryType = () => "custom";

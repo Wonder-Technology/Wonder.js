@@ -6,12 +6,32 @@ open VboBufferType;
 
 open DisposeComponentService;
 
-let disposeGeometryBufferData =
-    (geometry, {vertexBufferMap, normalBufferMap, elementArrayBufferMap} as record) => {
+let disposeBoxGeometryBufferData =
+    (
+      geometry,
+      {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} as record
+    ) => {
   ...record,
-  vertexBufferMap: disposeSparseMapData(geometry, vertexBufferMap),
-  normalBufferMap: disposeSparseMapData(geometry, normalBufferMap),
-  elementArrayBufferMap: disposeSparseMapData(geometry, elementArrayBufferMap)
+  boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
+  boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
+  boxGeometryElementArrayBufferMap:
+    disposeSparseMapData(geometry, boxGeometryElementArrayBufferMap)
+};
+
+let disposeCustomGeometryBufferData =
+    (
+      geometry,
+      {
+        customGeometryVertexBufferMap,
+        customGeometryNormalBufferMap,
+        customGeometryElementArrayBufferMap
+      } as record
+    ) => {
+  ...record,
+  customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
+  customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),
+  customGeometryElementArrayBufferMap:
+    disposeSparseMapData(geometry, customGeometryElementArrayBufferMap)
 };
 
 let disposeInstanceBufferData =
