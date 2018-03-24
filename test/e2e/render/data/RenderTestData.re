@@ -17,6 +17,9 @@ let renderTestData = {
       "./test/e2e/js/InstanceLightBoxesTool.js",
       "./test/e2e/js/RedoUndoTool.js",
       "./test/e2e/js/RandomTool.js",
+      "./test/e2e/render/js/CustomGeometryTool.js",
+      "./test/e2e/render/js/BasicMaterialTool.js",
+      "./test/e2e/render/js/LightMaterialTool.js",
       "./dist/wd.js"
     ],
     replaceForDebug: (htmlStr) =>
@@ -37,15 +40,15 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var record = BasicBoxesTool.createBox(state);
+                        var data = BasicBoxesTool.createBox(state);
 
-                        var state = record[0];
-                        var box = record[1];
+                        var state = data[0];
+                        var box = data[1];
 
 
-                        var record = BasicBoxesTool.createCamera(state);
-                        var state = record[0];
-                        var camera = record[1];
+                        var data = BasicBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
 
 
                         var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
@@ -77,16 +80,16 @@ let renderTestData = {
                           function initSample(state) {
                           RandomTool.stubMathRandom(10000);
 
-                          var record = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
-                          var state = record[0];
-                          var boxes = record[1];
+                          var data = InstanceBasicBoxesTool.createBoxes(1, 100, true, state);
+                          var state = data[0];
+                          var boxes = data[1];
 
-                          var record = InstanceBasicBoxesTool.setPosition(boxes, state);
-                          var state = record[0];
-                          var boxes = record[1];
+                          var data = InstanceBasicBoxesTool.setPosition(boxes, state);
+                          var state = data[0];
+                          var boxes = data[1];
 
-                          var record = InstanceBasicBoxesTool.createCamera(state);
-                          var state = record[0];
+                          var data = InstanceBasicBoxesTool.createCamera(state);
+                          var state = data[0];
 
 
                           return wd.startDirector(state);
@@ -116,10 +119,10 @@ let renderTestData = {
 
 
                        function initSample(state) {
-                           var record = LightBoxesTool.createBox(state);
+                           var data = LightBoxesTool.createBox(state);
 
-                           var state = record[0];
-                           var box = record[1];
+                           var state = data[0];
+                           var box = data[1];
 
 
 
@@ -128,9 +131,9 @@ let renderTestData = {
 
 
 
-                           var record = LightBoxesTool.createCamera(state);
-                           var state = record[0];
-                           var camera = record[1];
+                           var data = LightBoxesTool.createCamera(state);
+                           var state = data[0];
+                           var camera = data[1];
 
 
                            var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
@@ -163,13 +166,13 @@ let renderTestData = {
                           function initSample(state) {
                           RandomTool.stubMathRandom(10000);
 
-                          var record = InstanceLightBoxesTool.createBoxes(1, 100, true, state);
-                          var state = record[0];
-                          var boxes = record[1];
+                          var data = InstanceLightBoxesTool.createBoxes(1, 100, true, state);
+                          var state = data[0];
+                          var boxes = data[1];
 
-                          var record = InstanceLightBoxesTool.setPosition(boxes, state);
-                          var state = record[0];
-                          var boxes = record[1];
+                          var data = InstanceLightBoxesTool.setPosition(boxes, state);
+                          var state = data[0];
+                          var boxes = data[1];
 
 
 
@@ -179,8 +182,8 @@ let renderTestData = {
 
 
 
-                          var record = InstanceLightBoxesTool.createCamera(state);
-                          var state = record[0];
+                          var data = InstanceLightBoxesTool.createCamera(state);
+                          var state = data[0];
 
 
                           return wd.startDirector(state);
@@ -192,6 +195,107 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}]
     },
+
+    {
+      name: "custom_geometry_basic_material",
+      bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                        return initSample(wd.getState());
+                    });
+
+                    function initSample(state) {
+                        var data = CustomGeometryTool.createTriangle(state);
+                        
+
+                        var state = data[0];
+                        var box = data[1];
+
+
+                        var data = BasicMaterialTool.createDefaultBasicMaterial(state);
+
+
+                        var state = data[0];
+                        var material = data[1];
+
+
+
+                        var state = wd.addGameObjectBasicMaterialComponent(box, material, state);
+
+
+                        var data = BasicBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
+
+
+                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                        var state = wd.setTransformLocalPosition(transform, [0, 10, 30], state);
+
+                        return wd.startDirector(state);
+                    }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}]
+    },
+    {
+      name: "custom_geometry_light_material",
+      bodyFuncStr: {|
+                    ReplaceFetchTool.replaceFetchForTest();
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                        return initSample(wd.getState());
+                    });
+
+                    function initSample(state) {
+                        var data = CustomGeometryTool.createTriangle(state);
+                        
+
+                        var state = data[0];
+                        var box = data[1];
+
+
+                        var data = LightMaterialTool.createDefaultLightMaterial(state);
+
+
+                        var state = data[0];
+                        var material = data[1];
+
+
+
+                        var state = wd.addGameObjectLightMaterialComponent(box, material, state);
+
+
+
+
+                        var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
+
+
+
+
+                           var data = LightBoxesTool.createCamera(state);
+                           var state = data[0];
+                           var camera = data[1];
+
+
+                           var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                           var state = wd.setTransformLocalPosition(transform, [0, 0, 80], state);
+
+                           return wd.startDirector(state);
+                    }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}]
+    },
+
     {
       name: "redo_undo",
       bodyFuncStr: {|
@@ -208,16 +312,16 @@ let renderTestData = {
                           RandomTool.stubMathRandom(10000);
 
 
-                          var record = RedoUndoTool.createBoxesByInstance(10, state);
-                          var state = record[0];
-                          var box = record[1];
+                          var data = RedoUndoTool.createBoxesByInstance(10, state);
+                          var state = data[0];
+                          var box = data[1];
 
-                          var record = RedoUndoTool.setPosition([box], state);
-                          var state = record[0];
-                          var boxes = record[1];
+                          var data = RedoUndoTool.setPosition([box], state);
+                          var state = data[0];
+                          var boxes = data[1];
 
-                          var record = RedoUndoTool.createCamera(state);
-                          var state = record[0];
+                          var data = RedoUndoTool.createCamera(state);
+                          var state = data[0];
 
 
 

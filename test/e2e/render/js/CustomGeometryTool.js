@@ -1,12 +1,6 @@
 var CustomGeometryTool = (function () {
     return {
         createTriangle: function (state) {
-            var record = wd.createBasicMaterial(state);
-            var state = record[0];
-            var material = record[1];
-
-            state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
-
             var record = wd.createMeshRenderer(state);
             var state = record[0];
             var meshRenderer = record[1];
@@ -15,7 +9,6 @@ var CustomGeometryTool = (function () {
             var state = record[0];
             var obj = record[1];
 
-            state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
             state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
