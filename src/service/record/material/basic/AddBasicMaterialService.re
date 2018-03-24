@@ -1,6 +1,6 @@
 open MaterialType;
 
-open GameObjectType;
+open MainStateDataType;
 
 open BasicMaterialType;
 

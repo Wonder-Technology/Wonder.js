@@ -39,23 +39,3 @@ type gameObjectSourceInstanceMap = array(sourceInstance);
 type gameObjectObjectInstanceMap = array(objectInstance);
 
 type gameObjectLightMap = array(int);
-
-type gameObjectRecord = {
-  mutable uid: int,
-  mutable disposeCount: int,
-  mutable disposedUidMap: gameObjectDisposedUidMap,
-  mutable aliveUidArray: gameObjectAliveUidArray,
-  mutable transformMap: gameObjectTransformMap,
-  mutable basicCameraViewMap: gameObjectCameraViewMap,
-  mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
-  mutable boxGeometryMap: gameObjectGeometryMap,
-  mutable customGeometryMap: gameObjectGeometryMap,
-  mutable meshRendererMap: gameObjectMeshRendererMap,
-  mutable basicMaterialMap: gameObjectMaterialMap,
-  mutable lightMaterialMap: gameObjectMaterialMap,
-  mutable sourceInstanceMap: gameObjectSourceInstanceMap,
-  mutable objectInstanceMap: gameObjectObjectInstanceMap,
-  mutable ambientLightMap: gameObjectLightMap,
-  mutable directionLightMap: gameObjectLightMap,
-  mutable pointLightMap: gameObjectLightMap
-};

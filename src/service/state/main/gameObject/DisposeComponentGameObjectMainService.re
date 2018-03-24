@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 open ComponentType;
 
@@ -57,15 +57,19 @@ let disposeTransformComponent =
 let disposeBoxGeometryComponent =
   [@bs]
   (
-    (uid: int, component: component, {settingRecord} as state) =>
+    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
+      CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap) |> ignore;
       DisposeBoxGeometryMainService.handleDisposeComponent(component, state)
+    }
   );
 
 let disposeCustomGeometryComponent =
   [@bs]
   (
-    (uid: int, component: component, {settingRecord} as state) =>
+    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
+      CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap) |> ignore;
       DisposeCustomGeometryMainService.handleDisposeComponent(component, state)
+    }
   );
 
 let disposePerspectiveCameraProjectionComponent =
@@ -208,7 +212,8 @@ let batchDisposeBoxGeometryComponent =
 
 let batchDisposeCustomGeometryComponent =
     (uidMap, {settingRecord} as state, componentArray: array(component)) =>
-  [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
+  [@bs]
+  DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
 let batchDisposeBasicMaterialComponent =
     (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {

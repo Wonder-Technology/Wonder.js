@@ -804,7 +804,7 @@ let _ =
                       test(
                         "new transformMap should only has alive record",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -823,7 +823,7 @@ let _ =
                       test(
                         "new meshRendererMap should only has alive record",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -853,7 +853,7 @@ let _ =
                           test(
                             "new boxGeometryMap should only has alive record",
                             () => {
-                              open GameObjectType;
+                              open MainStateDataType;
                               let state =
                                 TestTool.initWithoutBuildFakeDom(
                                   ~sandbox,
@@ -884,7 +884,7 @@ let _ =
                           test(
                             "new customGeometryMap should only has alive record",
                             () => {
-                              open GameObjectType;
+                              open MainStateDataType;
                               let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                               TestTool.closeContractCheck();
                               let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
@@ -919,7 +919,7 @@ let _ =
                           test(
                             "new basicMaterialMap should only has alive record",
                             () => {
-                              open GameObjectType;
+                              open MainStateDataType;
                               let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 BasicMaterialTool.createGameObject(state);
@@ -944,7 +944,7 @@ let _ =
                           test(
                             "new lightMaterialMap should only has alive record",
                             () => {
-                              open GameObjectType;
+                              open MainStateDataType;
                               let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 LightMaterialTool.createGameObject(state);
@@ -972,7 +972,7 @@ let _ =
                         "test light map",
                         () => {
                           let _test = (createGameObjectFunc, getDataMapFunc, state) => {
-                            open GameObjectType;
+                            open MainStateDataType;
                             let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                             let (state, gameObject1, light1) = createGameObjectFunc(state);
                             let (state, gameObject2, light2) = createGameObjectFunc(state);
@@ -991,7 +991,7 @@ let _ =
                           test(
                             "new ambientLightMap should only has alive record",
                             () =>
-                              GameObjectType.(
+                              MainStateDataType.(
                                 _test(
                                   AmbientLightTool.createGameObject,
                                   ({ambientLightMap}) => ambientLightMap,
@@ -1002,7 +1002,7 @@ let _ =
                           test(
                             "new directionLightMap should only has alive record",
                             () =>
-                              GameObjectType.(
+                              MainStateDataType.(
                                 _test(
                                   DirectionLightTool.createGameObject,
                                   ({directionLightMap}) => directionLightMap,
@@ -1013,7 +1013,7 @@ let _ =
                           test(
                             "new pointLightMap should only has alive record",
                             () =>
-                              GameObjectType.(
+                              MainStateDataType.(
                                 _test(
                                   PointLightTool.createGameObject,
                                   ({pointLightMap}) => pointLightMap,
@@ -1026,7 +1026,7 @@ let _ =
                       test(
                         "new basicCameraViewMap should only has alive record",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1, _, basicCameraView1) =
                             CameraTool.createCameraGameObject(state);
@@ -1048,7 +1048,7 @@ let _ =
                       test(
                         "new sourceInstanceMap should only has alive record",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, gameObject1, _) =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
@@ -1066,7 +1066,7 @@ let _ =
                       test(
                         "new objectInstanceMap should only has alive record",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, _, _, objectInstanceGameObject1, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
@@ -1091,7 +1091,7 @@ let _ =
                       test(
                         "test reallocate component maps",
                         () => {
-                          open GameObjectType;
+                          open MainStateDataType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -1115,7 +1115,7 @@ let _ =
                   test(
                     "empty disposedUidMap",
                     () => {
-                      open GameObjectType;
+                      open MainStateDataType;
                       let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
@@ -1135,7 +1135,7 @@ let _ =
                   test(
                     "update aliveUidArray",
                     () => {
-                      open GameObjectType;
+                      open MainStateDataType;
                       let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
@@ -1519,7 +1519,7 @@ let _ =
               test(
                 "if have dispose too many gameObjects, reallocate gameObject",
                 () => {
-                  open GameObjectType;
+                  open MainStateDataType;
                   let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                   let (state, gameObject1) = createGameObject(state);
                   let (state, gameObject2) = createGameObject(state);

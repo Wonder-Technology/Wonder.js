@@ -21,6 +21,9 @@
     <script src="../e2e/js/RedoUndoTool.js"></script>
     <script src="../e2e/js/RandomTool.js"></script>
 
+
+    <script src="../e2e/render/js/CustomGeometryTool.js"></script>
+
     <script>
         window.onload = function () {
             // wd.load("./data/").then(function (state) {
@@ -57,7 +60,8 @@
             });
 
             function initSample(state) {
-                var data = BasicBoxesTool.createBox(state);
+                // var data = BasicBoxesTool.createBox(state);
+                var data = CustomGeometryTool.createTriangle(state);
 
                 var state = data[0];
                 var box = data[1];
@@ -66,10 +70,10 @@
 
 
 
-                var data = BasicBoxesTool.createBox(state);
+                // var data = BasicBoxesTool.createBox(state);
 
-                var state = data[0];
-                var box2 = data[1];
+                // var state = data[0];
+                // var box2 = data[1];
 
 
 

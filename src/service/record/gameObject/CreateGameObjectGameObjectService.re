@@ -1,4 +1,4 @@
-open GameObjectType;
+open MainStateDataType;
 
 let create = ({uid, aliveUidArray} as record) => {
   record.uid = UidService.increase(uid);

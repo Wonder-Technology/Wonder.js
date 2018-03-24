@@ -1,4 +1,4 @@
-open GameObjectType;
+open MainStateDataType;
 
 open ComponentMapService;
 
@@ -23,6 +23,9 @@ let getTransformComponent =
 
 let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
+
+let unsafeGetGeometryDataComponent = (uid, {currentGeometryDataMap}) =>
+  CurrentComponentDataMapService.unsafeGetComponentData(uid, currentGeometryDataMap);
 
 let getBoxGeometryComponent =
   [@bs] ((uid: int, {boxGeometryMap}) => boxGeometryMap |> getComponent(uid));

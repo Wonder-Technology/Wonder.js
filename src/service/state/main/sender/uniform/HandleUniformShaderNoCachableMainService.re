@@ -2,7 +2,7 @@ open GlType;
 
 open Gl;
 
-open GameObjectType;
+open MainStateDataType;
 
 open MainStateDataType;
 

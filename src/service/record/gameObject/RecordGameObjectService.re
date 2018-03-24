@@ -1,10 +1,11 @@
-open GameObjectType;
+open MainStateDataType;
 
 let create = () => {
   uid: 0,
   disposeCount: 0,
   disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: WonderCommonlib.ArrayService.createEmpty(),
+  currentGeometryDataMap: WonderCommonlib.SparseMapService.createEmpty(),
   transformMap: WonderCommonlib.SparseMapService.createEmpty(),
   basicCameraViewMap: WonderCommonlib.SparseMapService.createEmpty(),
   perspectiveCameraProjectionMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -27,6 +28,7 @@ let deepCopyForRestore =
         disposeCount,
         disposedUidMap,
         aliveUidArray,
+        currentGeometryDataMap,
         transformMap,
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
@@ -47,6 +49,7 @@ let deepCopyForRestore =
   disposeCount,
   disposedUidMap: disposedUidMap |> SparseMapService.copy,
   aliveUidArray: aliveUidArray |> SparseMapService.copy,
+  currentGeometryDataMap: currentGeometryDataMap |> SparseMapService.copy,
   transformMap: transformMap |> SparseMapService.copy,
   basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
   perspectiveCameraProjectionMap: perspectiveCameraProjectionMap |> SparseMapService.copy,

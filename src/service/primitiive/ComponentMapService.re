@@ -7,7 +7,21 @@ let hasComponent = (uid: int, componentMap: array(int)) : bool =>
   Js.Option.isSome(getComponent(uid, componentMap));
 
 let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
-  WonderCommonlib.SparseMapService.get(uid, componentMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap)
+  |> WonderLog.Contract.ensureCheck(
+       (r) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|component exist|j}, ~actual={j|not|j}),
+                 () => r |> assertNullableExist
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
+     );
 
 let addComponent = (uid: int, component: component, componentMap: array(int)) => {
   WonderLog.Contract.requireCheck(

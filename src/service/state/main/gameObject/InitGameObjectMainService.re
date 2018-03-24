@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 let initGameObject = (uid: int, {gameObjectRecord} as state) => {
   let state =

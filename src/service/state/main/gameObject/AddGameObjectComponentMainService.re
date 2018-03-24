@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 open ComponentType;
 
@@ -63,6 +63,19 @@ let addTransformComponent =
 
 let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
+  /* CurrentComponentDataMapService.addToMap(uid, component, gameObjectRecord.currentGeometryDataMap) */
+  CurrentComponentDataMapService.addToMap(
+    uid,
+    (
+      component,
+      VerticesBoxGeometryMainService.getVertices,
+      NormalsBoxGeometryMainService.getNormals,
+      IndicesBoxGeometryMainService.getIndices,
+      IndicesBoxGeometryMainService.getIndicesCount
+    ),
+    gameObjectRecord.currentGeometryDataMap
+  )
+  |> ignore;
   {
     ...state,
     boxGeometryRecord:
@@ -83,6 +96,19 @@ let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord
 
 let addCustomGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
+  /* CurrentComponentDataMapService.addToMap(uid, component, gameObjectRecord.currentGeometryDataMap) */
+  CurrentComponentDataMapService.addToMap(
+    uid,
+    (
+      component,
+      VerticesCustomGeometryMainService.getVertices,
+      NormalsCustomGeometryMainService.getNormals,
+      IndicesCustomGeometryMainService.getIndices,
+      IndicesCustomGeometryMainService.getIndicesCount
+    ),
+    gameObjectRecord.currentGeometryDataMap
+  )
+  |> ignore;
   {
     ...state,
     customGeometryRecord:

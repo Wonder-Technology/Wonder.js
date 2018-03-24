@@ -1,4 +1,4 @@
-open GameObjectType;
+open MainStateDataType;
 
 open ComponentMapService;
 

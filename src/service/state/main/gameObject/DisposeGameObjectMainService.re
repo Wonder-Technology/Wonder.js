@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 let _handleByDisposeCount = (record, state) =>
   if (QueryCPUMemoryService.isDisposeTooMany(record.disposeCount, state.settingRecord)) {

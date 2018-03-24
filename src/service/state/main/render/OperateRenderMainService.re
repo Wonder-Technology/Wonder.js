@@ -2,7 +2,7 @@ open RenderType;
 
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 let _getCameraData = (state) => state.renderRecord.cameraData |> OptionService.unsafeGet;
 

@@ -2,9 +2,7 @@ open MainStateDataType;
 
 open VboBufferType;
 
-open BoxGeometryType;
-
-let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
+let _directlySendAttributeData = (gl, shaderIndex, (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, _), state) => {
   let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord;
   state
   |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
@@ -18,21 +16,21 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
                ArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, vertexBufferMap),
-                 [@bs] VerticesBoxGeometryMainService.getVertices,
+                 [@bs] getVerticesFunc,
                  state
                )
              | "normal" =>
                ArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, normalBufferMap),
-                 [@bs] NormalsBoxGeometryMainService.getNormals,
+                 [@bs] getNormalsFunc,
                  state
                )
              | "index" =>
                ElementArrayBufferMainService.getOrCreateBuffer(
                  gl,
                  (geometryIndex, elementArrayBufferMap),
-                 [@bs] IndicesBoxGeometryMainService.getIndices,
+                 [@bs] getIndicesFunc,
                  state
                )
              | _ =>
@@ -53,13 +51,13 @@ let _directlySendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
      )
 };
 
-let _sendAttributeData = (gl, shaderIndex, geometryIndex, state) => {
+let _sendAttributeData = (gl, shaderIndex, (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, _) as geometryData, state) => {
   let {lastSendGeometry} as record = state.glslSenderRecord;
   switch lastSendGeometry {
   | Some(lastSendGeometry) when lastSendGeometry === geometryIndex => state
   | _ =>
     record.lastSendGeometry = Some(geometryIndex);
-    _directlySendAttributeData(gl, shaderIndex, geometryIndex, state)
+    _directlySendAttributeData(gl, shaderIndex, geometryData, state)
   }
 };
 
@@ -98,13 +96,13 @@ let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, stat
 let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectRecord} as state) => {
   let transformIndex: int =
     GetComponentGameObjectService.unsafeGetTransformComponent(uid, gameObjectRecord);
-  let geometryIndex: int =
-    GetComponentGameObjectService.unsafeGetBoxGeometryComponent(uid, gameObjectRecord);
+  let (geometryIndex, getVerticesFunc, getNormalsFunc, getIndicesFunc, getIndicesCountFunc) as geometryData = 
+    GetComponentGameObjectService.unsafeGetGeometryDataComponent(uid, gameObjectRecord);
   let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
   let state =
     state
     |> UseProgramMainService.use(gl, program)
-    |> _sendAttributeData(gl, shaderIndex, geometryIndex)
+    |> _sendAttributeData(gl, shaderIndex, geometryData)
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
   let {lastSendMaterial} as record = state.glslSenderRecord;
   let state =
@@ -114,5 +112,5 @@ let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectR
       record.lastSendMaterial = Some(materialIndex);
       state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
     };
-  (state, shaderIndex, geometryIndex)
+  (state, shaderIndex, geometryData)
 };

@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open GameObjectType;
+open MainStateDataType;
 
 let _createGameObjectArr = (countRangeArr, gameObjectRecord) =>
   countRangeArr

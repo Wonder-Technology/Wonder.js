@@ -1180,7 +1180,7 @@ let _ =
               test(
                 "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, boxGeometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
-                  GameObjectType.(
+                  MainStateDataType.(
                     MainStateTool.testShadowCopyArrayLikeMapData(
                       (state) => {
                         let {

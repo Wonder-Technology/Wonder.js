@@ -20,13 +20,14 @@ let _render = (gl, state: MainStateDataType.state) =>
              if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
                RenderBasicInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, geometryIndex) = [@bs] RenderBasicJobCommon.render(gl, uid, state);
+               let (state, _, (geometryIndex, _, _, _, getIndicesCountFunc)) =
+                 [@bs] RenderBasicJobCommon.render(gl, uid, state);
                DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),
                    RenderGeometryService.getIndexTypeSize(gl),
-                   IndicesBoxGeometryMainService.getIndicesCount(geometryIndex, state)
+                   getIndicesCountFunc(geometryIndex, state)
                  ),
                  gl
                );
