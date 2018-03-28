@@ -27,7 +27,6 @@ let prepareGameObject = (sandbox, state) => {
 
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObjectAPI;
-  open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
   open MeshRendererAPI;

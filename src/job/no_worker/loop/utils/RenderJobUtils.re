@@ -17,7 +17,6 @@ let _directlySendAttributeData =
       ),
       state
     ) =>
-  /* let {vertexBufferMap, normalBufferMap, elementArrayBufferMap} = state.vboBufferRecord; */
   state
   |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(

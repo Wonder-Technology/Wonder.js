@@ -50,7 +50,7 @@ let _ =
         }
       );
       describe(
-        "send attribute record",
+        "send attribute data",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -389,7 +389,7 @@ let _ =
         }
       );
       describe(
-        "send uniform record",
+        "send uniform data",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, gameObject, _, material, _) =

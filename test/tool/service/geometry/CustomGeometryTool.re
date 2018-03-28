@@ -11,6 +11,32 @@ let createGameObject = (state: MainStateDataType.state) => {
   (state, gameObject, geometry)
 };
 
+
+
+let createGameObjectAndSetPointData = (state: MainStateDataType.state) => {
+  open Js.Typed_array;
+  let (state, geometry) = createCustomGeometry(state);
+  let (state, gameObject) = GameObjectAPI.createGameObject(state);
+  let state = state |> GameObjectAPI.addGameObjectCustomGeometryComponent(gameObject, geometry);
+
+
+
+  let vertices1 = Float32Array.make([|10.|]);
+  let normals1 = Float32Array.make([|1.|]);
+  let indices1 = Uint16Array.make([|2|]);
+
+  let state =
+    state
+    |> setCustomGeometryVertices(geometry, vertices1)
+    |> setCustomGeometryNormals(geometry, normals1)
+    |> setCustomGeometryIndices(geometry, indices1);
+
+  (state, gameObject, geometry, (
+vertices1, normals1, indices1
+  ))
+};
+
+
 let createThreeGameObjectsAndSetPointData = (state) => {
   open Js.Typed_array;
   let vertices1 = Float32Array.make([|10.|]);

@@ -101,7 +101,7 @@ let _ =
         }
       );
       describe(
-        "send attribute record",
+        "send attribute data",
         () => {
           let _prepare = (sandbox, state) => {
             let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
@@ -458,106 +458,13 @@ let _ =
                     }
                   )
                 }
-              );
-              describe(
-                "fix bug",
-                () => {
-                  let _prepareTwo = (sandbox, state) => {
-                    let (state, _, geometry1, _, _) =
-                      RenderBasicJobTool.prepareGameObject(sandbox, state);
-                    let (state, _, geometry2, _, _) =
-                      RenderBasicJobTool.prepareGameObject(sandbox, state);
-                    let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-                    (state, geometry1, geometry2)
-                  };
-                  test(
-                    "different gameObject(with different geometry) should bufferData different array buffer and element array buffer",
-                    () => {
-                      let (state, geometry1, geomemtry2) = _prepareTwo(sandbox, state^);
-                      let element_array_buffer = 1;
-                      let static_draw = 2;
-                      let array_buffer = 3;
-                      let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~element_array_buffer,
-                               ~array_buffer,
-                               ~static_draw,
-                               ~bufferData,
-                               ()
-                             )
-                           );
-                      let state =
-                        state
-                        |> RenderJobsTool.initSystemAndRender
-                        |> DirectorTool.runWithDefaultTime;
-                      let indices = BoxGeometryAPI.getBoxGeometryIndices(geometry1, state);
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(geometry1, state);
-                      (
-                        bufferData
-                        |> withThreeArgs(array_buffer, vertices, static_draw)
-                        |> getCallCount,
-                        bufferData
-                        |> withThreeArgs(element_array_buffer, indices, static_draw)
-                        |> getCallCount
-                      )
-                      |> expect == (2, 2)
-                    }
-                  );
-                  test(
-                    "different gameObject(with different geometry) should bind different array buffer and element array buffer",
-                    () => {
-                      let (state, _, _) = _prepareTwo(sandbox, state^);
-                      let element_array_buffer = 1;
-                      let array_buffer = 2;
-                      let arrayBuffer1 = Obj.magic(10);
-                      let arrayBuffer2 = Obj.magic(11);
-                      let elementArrayBuffer1 = Obj.magic(12);
-                      let elementArrayBuffer2 = Obj.magic(13);
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                      createBuffer |> onCall(0) |> returns(arrayBuffer1);
-                      createBuffer |> onCall(1) |> returns(elementArrayBuffer1);
-                      createBuffer |> onCall(2) |> returns(arrayBuffer2);
-                      createBuffer |> onCall(3) |> returns(elementArrayBuffer2);
-                      let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~element_array_buffer,
-                               ~array_buffer,
-                               ~createBuffer,
-                               ~bindBuffer,
-                               ()
-                             )
-                           );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
-                      let state = state |> DirectorTool.runWithDefaultTime;
-                      (
-                        bindBuffer |> withTwoArgs(array_buffer, arrayBuffer1) |> getCallCount,
-                        bindBuffer |> withTwoArgs(array_buffer, arrayBuffer2) |> getCallCount,
-                        bindBuffer
-                        |> withTwoArgs(element_array_buffer, elementArrayBuffer1)
-                        |> getCallCount,
-                        bindBuffer
-                        |> withTwoArgs(element_array_buffer, elementArrayBuffer2)
-                        |> getCallCount
-                      )
-                      |> expect == (2, 2, 2, 2)
-                    }
-                  )
-                }
               )
             }
           )
         }
       );
       describe(
-        "send uniform record",
+        "send uniform data",
         () => {
           let testSendShaderUniformMatrix4DataOnlyOnce = (name, prepareSendUinformDataFunc) =>
             RenderJobsTool.testSendShaderUniformMatrix4DataOnlyOnce(

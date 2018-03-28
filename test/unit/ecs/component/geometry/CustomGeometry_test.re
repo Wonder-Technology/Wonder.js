@@ -23,7 +23,11 @@ let _ =
           state := TestTool.init(~sandbox, ())
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => {restoreSandbox(refJsObjToSandbox(sandbox^));
+      
+                            /* let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ()); */
+      
+      });
       describe(
         "createCustomGeometry",
         () =>
