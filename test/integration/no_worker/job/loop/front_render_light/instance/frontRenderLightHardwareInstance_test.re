@@ -685,7 +685,13 @@ let _ =
       );
       describe(
         "draw instance",
-        () => RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(sandbox, _prepare, state)
+        () =>
+          RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
+            sandbox,
+            _prepare,
+            BoxGeometryTool.getIndicesCount,
+            state
+          )
       )
     }
   );

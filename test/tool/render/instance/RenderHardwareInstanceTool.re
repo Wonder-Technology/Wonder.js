@@ -55,7 +55,8 @@ let testAttachBufferToAttribute = (sandbox, (name, callIndex, size), prepareFunc
                        ()
                      )
                    );
-              let state = state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+              let state =
+                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
               vertexAttribPointer
               |> getCall(callIndex)
               |> expect
@@ -89,10 +90,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
                      FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
                    );
               let state =
-                state
-                |> RenderJobsTool.initSystemAndRender
-                
-                |> DirectorTool.runWithDefaultTime;
+                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           )
@@ -101,7 +99,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
     )
   );
 
-let testDrawElementsInstancedANGLE = (sandbox, prepareFunc, state) =>
+let testDrawElementsInstancedANGLE = (sandbox, prepareFunc, getIndicesCountFunc, state) =>
   Wonder_jest.(
     Expect.(
       Expect.Operators.(
@@ -123,7 +121,7 @@ let testDrawElementsInstancedANGLE = (sandbox, prepareFunc, state) =>
               |> expect
               |> toCalledWith([|
                    triangles,
-                   BoxGeometryTool.getIndicesCount(geometry, state),
+                   getIndicesCountFunc(geometry, state),
                    GeometryTool.getIndexType(state),
                    GeometryTool.getIndexTypeSize(state) * 0,
                    2

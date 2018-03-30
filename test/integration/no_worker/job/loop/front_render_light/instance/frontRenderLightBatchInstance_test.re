@@ -13,7 +13,6 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-
           state :=
             RenderJobsTool.initWithJobConfig(sandbox, LoopRenderJobTool.buildNoWorkerJobConfig())
         }
@@ -96,10 +95,7 @@ let _ =
                          )
                        );
                   let state =
-                    state
-                    |> RenderJobsTool.initSystemAndRender
-                    
-                    |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
                   uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
                 }
               );
@@ -126,10 +122,7 @@ let _ =
                          )
                        );
                   let state =
-                    state
-                    |> RenderJobsTool.initSystemAndRender
-                    
-                    |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
                   uniformMatrix3fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
                 }
               )
@@ -143,6 +136,7 @@ let _ =
           RenderBatchInstanceTool.testDrawElements(
             sandbox,
             FrontRenderLightBatchInstanceTool.prepare,
+            BoxGeometryTool.getIndicesCount,
             state
           )
       )

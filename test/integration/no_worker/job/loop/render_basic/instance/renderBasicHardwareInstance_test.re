@@ -845,7 +845,28 @@ let _ =
       );
       describe(
         "draw instance",
-        () => RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(sandbox, _prepare, state)
+        () => {
+          describe(
+            "test source gameObject has box geometry component",
+            () =>
+              RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
+                sandbox,
+                RenderBasicHardwareInstanceTool.prepare,
+                BoxGeometryTool.getIndicesCount,
+                state
+              )
+          );
+          describe(
+            "test source gameObject has custom geometry component",
+            () =>
+              RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
+                sandbox,
+                RenderBasicHardwareInstanceTool.prepareWithCustomGeometry,
+                CustomGeometryTool.getIndicesCount,
+                state
+              )
+          )
+        }
       )
       /* test(
            "not unbind instance buffer",

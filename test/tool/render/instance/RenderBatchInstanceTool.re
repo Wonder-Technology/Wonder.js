@@ -55,7 +55,8 @@ let testAttachBufferToAttribute = (sandbox, (name, callIndex, size), prepareFunc
                        ()
                      )
                    );
-              let state = state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+              let state =
+                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
               vertexAttribPointer
               |> getCall(callIndex)
               |> expect
@@ -89,9 +90,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
                      FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
                    );
               let state =
-                state
-                |> RenderJobsTool.initSystemAndRender
-                |> DirectorTool.runWithDefaultTime;
+                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           )
@@ -126,12 +125,12 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
                    let state =
                      state
                      |> RenderJobsTool.initSystemAndRender
-                     
+
                      |> DirectorTool.runWithDefaultTime;
                    uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
 
    }; */
-let testDrawElements = (sandbox, prepareFunc, state) =>
+let testDrawElements = (sandbox, prepareFunc, getIndicesCountFunc, state) =>
   Wonder_jest.(
     Expect.(
       Expect.Operators.(
@@ -152,7 +151,7 @@ let testDrawElements = (sandbox, prepareFunc, state) =>
               drawElements
               |> withFourArgs(
                    triangles,
-                   BoxGeometryTool.getIndicesCount(geometry, state),
+                   getIndicesCountFunc(geometry, state),
                    GeometryTool.getIndexType(state),
                    GeometryTool.getIndexTypeSize(state) * 0
                  )

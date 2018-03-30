@@ -87,12 +87,28 @@ let _ =
       );
       describe(
         "draw",
-        () =>
-          RenderBatchInstanceTool.testDrawElements(
-            sandbox,
-            RenderBasicBatchInstanceTool.prepare,
-            state
+        () => {
+          describe(
+            "test source gameObject has box geometry component",
+            () =>
+              RenderBatchInstanceTool.testDrawElements(
+                sandbox,
+                RenderBasicBatchInstanceTool.prepare,
+                BoxGeometryTool.getIndicesCount,
+                state
+              )
+          );
+          describe(
+            "test source gameObject has custom geometry component",
+            () =>
+              RenderBatchInstanceTool.testDrawElements(
+                sandbox,
+                RenderBasicBatchInstanceTool.prepareWithCustomGeometry,
+                CustomGeometryTool.getIndicesCount,
+                state
+              )
           )
+        }
       )
     }
   );
