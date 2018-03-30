@@ -1,7 +1,5 @@
 open MainStateDataType;
 
-open MainStateDataType;
-
 open ComponentType;
 
 open DisposeComponentGameObjectMainService;
@@ -31,7 +29,21 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   | None => state
   };
 
-let _dispose = (uid, batchDisposeFunc, isKeepOrder, state) =>
+/* let _disposeFromCurrentComponentMap = (uid, gameObjectRecord) => {
+
+WonderLog.Log.print("aaa") |> ignore;
+  {   /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+     |> ignore;
+     gameObjectRecord */
+  ...gameObjectRecord,
+  currentGeometryDataMap:
+    CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+    /* |>WonderLog.Log.print */ }
+}; */
+
+let _disposeGameObjectComponents = (uid, batchDisposeFunc, isKeepOrder, {gameObjectRecord} as state) =>
+  /* _disposeFromCurrentComponentMap(uid, gameObjectRecord) |> ignore; */
+  /* {...state, gameObjectRecord: _disposeFromCurrentComponentMap(uid, gameObjectRecord)} */
   state
   |> _disposeWithData(
        uid,
@@ -120,12 +132,32 @@ let _dispose = (uid, batchDisposeFunc, isKeepOrder, state) =>
        )
      );
 
-let dispose = (uid, batchDisposeFunc, state) => _dispose(uid, batchDisposeFunc, false, state);
+let dispose = (uid, batchDisposeFunc, state) => _disposeGameObjectComponents(uid, batchDisposeFunc, false, state);
 
 let disposeKeepOrder = (uid, batchDisposeFunc, state) =>
-  _dispose(uid, batchDisposeFunc, true, state);
+  _disposeGameObjectComponents(uid, batchDisposeFunc, true, state);
 
-let batchDispose = (uidArray: array(int), disposedUidMap, batchDisposeFunc, state) => {
+/* let _batchDisposeFromCurrentComponentMap = (uidArray, gameObjectRecord) => {
+  ...gameObjectRecord,
+  currentGeometryDataMap:
+    uidArray
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         [@bs]
+         (
+           (currentGeometryDataMap, uid) =>
+             CurrentComponentDataMapService.removeFromMap(uid, currentGeometryDataMap)
+         ),
+         gameObjectRecord.currentGeometryDataMap
+       )
+}; */
+
+let batchDispose =
+    (uidArray: array(int), disposedUidMap, batchDisposeFunc, {gameObjectRecord} as state) => {
+  /* let state = {
+    ...state,
+    gameObjectRecord: _batchDisposeFromCurrentComponentMap(uidArray, gameObjectRecord)
+  }; */
+  /* _batchDisposeFromCurrentComponentMap(uidArray, gameObjectRecord) |> ignore; */
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)

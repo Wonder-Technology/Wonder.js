@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-open MainStateDataType;
+open VboBufferType;
 
 open ComponentType;
 
@@ -124,29 +124,105 @@ let _batchAddSharableComponent =
 };
 
 let batchAddBoxGeometryComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  ...state,
-  boxGeometryRecord:
-    Some(
-      _batchAddSharableComponent(
-        (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
-        GroupBoxGeometryService.increaseGroupCount,
-        state |> RecordBoxGeometryMainService.getRecord
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {vboBufferRecord, gameObjectRecord} as state
+    ) => {
+  /* TODO refactor */
+  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
+  uidArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       [@bs]
+       (
+         (currentGeometryDataMap, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           CurrentComponentDataMapService.addToMap(
+             uid,
+             (
+               component,
+               CurrentComponentDataMapService.getBoxGeometryType(),
+               (
+                 boxGeometryVertexBufferMap,
+                 boxGeometryNormalBufferMap,
+                 boxGeometryElementArrayBufferMap
+               ),
+               VerticesBoxGeometryMainService.getVertices,
+               NormalsBoxGeometryMainService.getNormals,
+               IndicesBoxGeometryMainService.getIndices,
+               IndicesBoxGeometryMainService.getIndicesCount
+             ),
+             currentGeometryDataMap
+           )
+         }
+       ),
+       gameObjectRecord.currentGeometryDataMap
+     )
+  |> ignore;
+  {
+    ...state,
+    boxGeometryRecord:
+      Some(
+        _batchAddSharableComponent(
+          (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
+          GroupBoxGeometryService.increaseGroupCount,
+          state |> RecordBoxGeometryMainService.getRecord
+        )
       )
-    )
+  }
 };
 
 let batchAddCustomGeometryComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  ...state,
-  customGeometryRecord:
-    Some(
-      _batchAddSharableComponent(
-        (uidArr, componentArr, gameObjectRecord.customGeometryMap),
-        GroupCustomGeometryService.increaseGroupCount,
-        state |> RecordCustomGeometryMainService.getRecord
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {vboBufferRecord, gameObjectRecord} as state
+    ) => {
+  /* TODO refactor */
+  let {
+    customGeometryVertexBufferMap,
+    customGeometryNormalBufferMap,
+    customGeometryElementArrayBufferMap
+  } = vboBufferRecord;
+  uidArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       [@bs]
+       (
+         (currentGeometryDataMap, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           CurrentComponentDataMapService.addToMap(
+             uid,
+             (
+               component,
+               CurrentComponentDataMapService.getCustomGeometryType(),
+               (
+                 customGeometryVertexBufferMap,
+                 customGeometryNormalBufferMap,
+                 customGeometryElementArrayBufferMap
+               ),
+               VerticesCustomGeometryMainService.getVertices,
+               NormalsCustomGeometryMainService.getNormals,
+               IndicesCustomGeometryMainService.getIndices,
+               IndicesCustomGeometryMainService.getIndicesCount
+             ),
+             currentGeometryDataMap
+           )
+         }
+       ),
+       gameObjectRecord.currentGeometryDataMap
+     )
+  |> ignore;
+  {
+    ...state,
+    customGeometryRecord:
+      Some(
+        _batchAddSharableComponent(
+          (uidArr, componentArr, gameObjectRecord.customGeometryMap),
+          GroupCustomGeometryService.increaseGroupCount,
+          state |> RecordCustomGeometryMainService.getRecord
+        )
       )
-    )
+  }
 };
 
 let _batchAddMaterialComponentForClone =

@@ -63,6 +63,7 @@ let addTransformComponent =
 
 let addBoxGeometryComponent =
     (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
+      /* TODO refactor */
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
   CurrentComponentDataMapService.addToMap(

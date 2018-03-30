@@ -58,7 +58,8 @@ let disposeBoxGeometryComponent =
   [@bs]
   (
     (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
-      CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap) |> ignore;
+      /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+      |> ignore; */
       DisposeBoxGeometryMainService.handleDisposeComponent(component, state)
     }
   );
@@ -67,7 +68,9 @@ let disposeCustomGeometryComponent =
   [@bs]
   (
     (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
-      CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap) |> ignore;
+      /* TODO refactor: move to handleDisposeComponent */
+      /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+      |> ignore; */
       DisposeCustomGeometryMainService.handleDisposeComponent(component, state)
     }
   );
@@ -211,9 +214,11 @@ let batchDisposeBoxGeometryComponent =
   [@bs] DisposeBoxGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
 let batchDisposeCustomGeometryComponent =
-    (uidMap, {settingRecord} as state, componentArray: array(component)) =>
-  [@bs]
-  DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
+    (uidMap, {settingRecord} as state, componentArray: array(component)) => {
+
+
+  [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state)
+};
 
 let batchDisposeBasicMaterialComponent =
     (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {
