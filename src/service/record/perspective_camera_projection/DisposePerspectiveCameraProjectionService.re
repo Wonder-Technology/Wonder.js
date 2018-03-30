@@ -9,14 +9,13 @@ let _disposeData =
       {gameObjectMap, dirtyArray, pMatrixMap, nearMap, farMap, fovyMap, aspectMap} as record
     ) => {
   ...record,
-  dirtyArray: DisposeComponentService.disposeSparseMapData(cameraProjection, dirtyArray),
+  dirtyArray: DisposeComponentService.removeFromArray(cameraProjection, dirtyArray),
   pMatrixMap: DisposeComponentService.disposeSparseMapData(cameraProjection, pMatrixMap),
   nearMap: DisposeComponentService.disposeSparseMapData(cameraProjection, nearMap),
   farMap: DisposeComponentService.disposeSparseMapData(cameraProjection, farMap),
   fovyMap: DisposeComponentService.disposeSparseMapData(cameraProjection, fovyMap),
   aspectMap: DisposeComponentService.disposeSparseMapData(cameraProjection, aspectMap),
-  gameObjectMap:
-    DisposeComponentService.disposeSparseMapData(cameraProjection, gameObjectMap)
+  gameObjectMap: DisposeComponentService.disposeSparseMapData(cameraProjection, gameObjectMap)
 };
 
 let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) => {
@@ -25,11 +24,7 @@ let handleDisposeComponent = (cameraProjection, {disposedIndexArray} as record) 
       WonderLog.(
         Contract.(
           Operators.(
-            DisposeComponentService.checkComponentShouldAlive(
-              cameraProjection,
-              isAlive,
-              record
-            )
+            DisposeComponentService.checkComponentShouldAlive(cameraProjection, isAlive, record)
           )
         )
       ),

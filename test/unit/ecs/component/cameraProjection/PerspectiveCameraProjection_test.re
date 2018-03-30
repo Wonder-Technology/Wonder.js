@@ -93,7 +93,7 @@ let _ =
             "dispose record",
             () => {
               test(
-                "remove from dirtyArray, pMatrixMap, gameObjectMap",
+                "dirtyArray: remove from array",
                 () => {
                   open PerspectiveCameraProjectionType;
                   let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
@@ -109,15 +109,36 @@ let _ =
                          gameObject1,
                          perspectiveCameraProjection1
                        );
-                  let {dirtyArray, pMatrixMap, gameObjectMap} =
-                    state.perspectiveCameraProjectionRecord;
+                  let {dirtyArray} = state.perspectiveCameraProjectionRecord;
+                  dirtyArray
+                  |> WonderCommonlib.ArrayService.removeDuplicateItems
+                  |> expect == [|0|]
+                }
+              );
+              test(
+                "remove from pMatrixMap, gameObjectMap",
+                () => {
+                  open PerspectiveCameraProjectionType;
+                  let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
+                    CameraTool.createCameraGameObject(state^);
+                  let state =
+                    PerspectiveCameraProjectionTool.updateCameraProjection(
+                      perspectiveCameraProjection1,
+                      state
+                    );
+                  let state =
+                    state
+                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                         gameObject1,
+                         perspectiveCameraProjection1
+                       );
+                  let {pMatrixMap, gameObjectMap} = state.perspectiveCameraProjectionRecord;
                   (
-                    dirtyArray |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
                     pMatrixMap |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1),
                     gameObjectMap
                     |> WonderCommonlib.SparseMapService.has(perspectiveCameraProjection1)
                   )
-                  |> expect == (false, false, false)
+                  |> expect == (false, false)
                 }
               );
               test(
