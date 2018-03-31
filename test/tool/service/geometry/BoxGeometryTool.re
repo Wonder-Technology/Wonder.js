@@ -4,6 +4,8 @@ open BoxGeometryType;
 
 open BoxGeometryAPI;
 
+open MainStateDataType;
+
 let getRecord = (state) => RecordBoxGeometryMainService.getRecord(state);
 
 let buildBoxGeometryConfigDataJsObj =
@@ -300,3 +302,28 @@ let initGeometrys = (state: MainStateDataType.state) => InitBoxGeometryMainServi
 
 let initGeometry = (geometry, state: MainStateDataType.state) =>
   InitBoxGeometryMainService.initGeometry(geometry, state);
+
+let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
+  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
+  |> WonderLog.Contract.ensureCheck(
+       (r) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
+                 () => {
+                   let (_, type_, _, _) =
+                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
+                       uid,
+                       gameObjectRecord
+                     );
+                   type_ ==^ CurrentComponentDataMapService.getBoxGeometryType()
+                 }
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
+     );
+     

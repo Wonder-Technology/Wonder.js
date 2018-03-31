@@ -86,19 +86,17 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
-
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
 
 let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
 
-let unsafeGetGameObjectBoxGeometryComponent = GameObjectAPI.unsafeGetGameObjectBoxGeometryComponent;
-
 let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
+
+let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
@@ -418,19 +416,17 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
-
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
 
 let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
 
-let unsafeGetGameObjectBoxGeometryComponent = GameObjectAPI.unsafeGetGameObjectBoxGeometryComponent;
-
 let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
+
+let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 

@@ -28,6 +28,7 @@ module.exports = {
     { name: "instance" },
     { name: "boxGeometry" },
     { name: "customGeometry" },
+    { name: "geometry" },
     { name: "light" },
     { name: "gameObject" },
     { name: "microservice" }

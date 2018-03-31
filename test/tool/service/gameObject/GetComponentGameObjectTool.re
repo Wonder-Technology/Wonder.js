@@ -1,3 +1,3 @@
 open MainStateDataType;
 
-let unsafeGetGeometryDataComponent = (uid, state) => GetComponentGameObjectService.unsafeGetGeometryDataComponent(uid, state.gameObjectRecord);
+let unsafeGetGeometryComponentData = (uid, state) => GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, state.gameObjectRecord);

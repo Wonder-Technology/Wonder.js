@@ -75,8 +75,8 @@ let rec _clone =
 
 /* {
                    cloneChildren:true,
-                   cloneGeometry:true
-                   ////shareGeometry:false
+                   ////cloneGeometry:true
+                   shareGeometry:true
    } */
 let clone = (uid: int, count: int, isShareMaterial: bool, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(

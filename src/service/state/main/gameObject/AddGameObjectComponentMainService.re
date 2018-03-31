@@ -61,35 +61,54 @@ let addTransformComponent =
     )
 };
 
-let addBoxGeometryComponent =
-    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
-      /* TODO refactor */
-  let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
+let _addSharableGeometryComponent =
+    (
+      (uid, component, gameObject),
+      (increaseGroupCountFunc, handleAddComponentFunc),
+      componentRecord
+    ) =>
+  switch gameObject {
+  | Some(_) => [@bs] increaseGroupCountFunc(component, componentRecord)
+  | _ => [@bs] handleAddComponentFunc(component, uid, componentRecord)
+  };
+
+let _addCurrentBoxGeometryComponentData =
+    (
+      uid,
+      component,
+      {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap},
+      {currentGeometryDataMap}
+    ) =>
   CurrentComponentDataMapService.addToMap(
     uid,
     (
       component,
       CurrentComponentDataMapService.getBoxGeometryType(),
       (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
-      VerticesBoxGeometryMainService.getVertices,
-      NormalsBoxGeometryMainService.getNormals,
-      IndicesBoxGeometryMainService.getIndices,
-      IndicesBoxGeometryMainService.getIndicesCount
+      (
+        VerticesBoxGeometryMainService.getVertices,
+        NormalsBoxGeometryMainService.getNormals,
+        IndicesBoxGeometryMainService.getIndices,
+        IndicesBoxGeometryMainService.getIndicesCount
+      )
     ),
-    gameObjectRecord.currentGeometryDataMap
-  )
-  |> ignore;
+    currentGeometryDataMap
+  );
+
+let addBoxGeometryComponent =
+    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
+  _addCurrentBoxGeometryComponentData(uid, component, vboBufferRecord, gameObjectRecord) |> ignore;
+  let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   {
     ...state,
     boxGeometryRecord:
       Some(
         boxGeometryRecord
-        |> _addSharableComponent(
+        |> _addSharableGeometryComponent(
              (
                uid,
                component,
-               gameObjectRecord.boxGeometryMap,
+               /* gameObjectRecord.boxGeometryMap, */
                GameObjectBoxGeometryService.getGameObject(component, boxGeometryRecord)
              ),
              (GroupBoxGeometryService.increaseGroupCount, AddBoxGeometryService.handleAddComponent)
@@ -98,14 +117,17 @@ let addBoxGeometryComponent =
   }
 };
 
-let addCustomGeometryComponent =
-    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
-  let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
-  let {
-    customGeometryVertexBufferMap,
-    customGeometryNormalBufferMap,
-    customGeometryElementArrayBufferMap
-  } = vboBufferRecord;
+let _addCurrentCustomGeometryComponentData =
+    (
+      uid,
+      component,
+      {
+        customGeometryVertexBufferMap,
+        customGeometryNormalBufferMap,
+        customGeometryElementArrayBufferMap
+      },
+      {currentGeometryDataMap}
+    ) =>
   CurrentComponentDataMapService.addToMap(
     uid,
     (
@@ -116,24 +138,31 @@ let addCustomGeometryComponent =
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap
       ),
-      VerticesCustomGeometryMainService.getVertices,
-      NormalsCustomGeometryMainService.getNormals,
-      IndicesCustomGeometryMainService.getIndices,
-      IndicesCustomGeometryMainService.getIndicesCount
+      (
+        VerticesCustomGeometryMainService.getVertices,
+        NormalsCustomGeometryMainService.getNormals,
+        IndicesCustomGeometryMainService.getIndices,
+        IndicesCustomGeometryMainService.getIndicesCount
+      )
     ),
-    gameObjectRecord.currentGeometryDataMap
-  )
+    currentGeometryDataMap
+  );
+
+let addCustomGeometryComponent =
+    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
+  _addCurrentCustomGeometryComponentData(uid, component, vboBufferRecord, gameObjectRecord)
   |> ignore;
+  let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
   {
     ...state,
     customGeometryRecord:
       Some(
         customGeometryRecord
-        |> _addSharableComponent(
+        |> _addSharableGeometryComponent(
              (
                uid,
                component,
-               gameObjectRecord.customGeometryMap,
+               /* gameObjectRecord.customGeometryMap, */
                GameObjectCustomGeometryService.getGameObject(component, customGeometryRecord)
              ),
              (

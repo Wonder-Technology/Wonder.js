@@ -7,6 +7,9 @@ let removeFromMap = (uid, currentComponentDataMap) =>
   |> WonderCommonlib.SparseMapService.deleteVal(uid)
   |> Obj.magic;
 
+let getComponentData = (uid, currentComponentDataMap) =>
+  WonderCommonlib.SparseMapService.get(uid, currentComponentDataMap);
+
 let unsafeGetComponentData = (uid, currentComponentDataMap) =>
   WonderCommonlib.SparseMapService.unsafeGet(uid, currentComponentDataMap)
   |> WonderLog.Contract.ensureCheck(
@@ -23,6 +26,12 @@ let unsafeGetComponentData = (uid, currentComponentDataMap) =>
          ),
        IsDebugMainService.getIsDebug(MainStateData.stateData)
      );
+
+let hasComponent = (uid, currentComponentDataMap, targetType_) =>
+  switch (getComponentData(uid, currentComponentDataMap)) {
+  | None => false
+  | Some((_, type_, _, _)) => type_ === targetType_
+  };
 
 let getBoxGeometryType = () => "box";
 

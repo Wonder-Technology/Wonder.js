@@ -7,7 +7,7 @@ open SourceInstanceType;
 open InstanceBufferMainService;
 
 let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
-  let (state, shaderIndex, (geometryIndex, _, _, _, _, _, getIndicesCountFunc)) =
+  let (state, shaderIndex, (geometryIndex, _, _, (_, _, _, getIndicesCountFunc))) =
     [@bs] renderFunc(gl, uid, state);
   let uniformInstanceSendNoCachableData =
     state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);

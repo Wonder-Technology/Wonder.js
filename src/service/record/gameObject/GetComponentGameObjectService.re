@@ -24,21 +24,21 @@ let getTransformComponent =
 let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
 
-let unsafeGetGeometryDataComponent = (uid, {currentGeometryDataMap}) =>
-  { 
-    CurrentComponentDataMapService.unsafeGetComponentData(uid, currentGeometryDataMap); };
+let unsafeGetGeometryComponentData = (uid, {currentGeometryDataMap}) =>
+  CurrentComponentDataMapService.unsafeGetComponentData(uid, currentGeometryDataMap);
 
-let getBoxGeometryComponent =
-  [@bs] ((uid: int, {boxGeometryMap}) => boxGeometryMap |> getComponent(uid));
+let getGeometryComponentData =
+  [@bs]
+  (
+    (uid: int, {currentGeometryDataMap}) =>
+      currentGeometryDataMap |> CurrentComponentDataMapService.getComponentData(uid)
+  );
 
-let unsafeGetBoxGeometryComponent = (uid: int, {boxGeometryMap}) =>
-  boxGeometryMap |> unsafeGetComponent(uid);
-
-let getCustomGeometryComponent =
-  [@bs] ((uid: int, {customGeometryMap}) => customGeometryMap |> getComponent(uid));
-
-let unsafeGetCustomGeometryComponent = (uid: int, {customGeometryMap}) =>
-  customGeometryMap |> unsafeGetComponent(uid);
+let unsafeGetGeometryComponent = (uid: int, {currentGeometryDataMap}) => {
+  let (component, _, _, _) =
+    currentGeometryDataMap |> CurrentComponentDataMapService.unsafeGetComponentData(uid);
+  component
+};
 
 let getBasicMaterialComponent =
   [@bs] ((uid: int, {basicMaterialMap}) => basicMaterialMap |> getComponent(uid));

@@ -221,7 +221,7 @@ let render =
   /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, (geometryIndex, _, _, _, _, _, getIndicesCountFunc)) =
+  let (state, shaderIndex, (geometryIndex, _, _, (_, _, _, getIndicesCountFunc))) =
     _renderSourceInstanceGameObject(gl, uid, renderFunc, state);
   let (
         (gl, extension, _),

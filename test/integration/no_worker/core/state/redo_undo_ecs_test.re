@@ -1178,7 +1178,7 @@ let _ =
             "deep copy gameObject record",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, boxGeometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   MainStateDataType.(
                     MainStateTool.testShadowCopyArrayLikeMapData(
@@ -1188,7 +1188,7 @@ let _ =
                           aliveUidArray,
                           transformMap,
                           basicCameraViewMap,
-                          boxGeometryMap,
+                          currentGeometryDataMap,
                           meshRendererMap,
                           basicMaterialMap,
                           lightMaterialMap,
@@ -1204,7 +1204,7 @@ let _ =
                           aliveUidArray |> Obj.magic,
                           transformMap |> Obj.magic,
                           basicCameraViewMap |> Obj.magic,
-                          boxGeometryMap |> Obj.magic,
+                          currentGeometryDataMap |> Obj.magic,
                           meshRendererMap |> Obj.magic,
                           basicMaterialMap |> Obj.magic,
                           lightMaterialMap |> Obj.magic,

@@ -4,7 +4,7 @@ open GameObjectAPI;
 
 let _ =
   describe(
-    "GameObjectAPI",
+    "GameObject",
     () => {
       open Expect;
       open! Expect.Operators;
@@ -179,7 +179,7 @@ let _ =
             "test box geometry component",
             () => {
               describe(
-                "unsafeGetGameObjectBoxGeometryComponent",
+                "BoxGeometryTool.unsafeGetBoxGeometryComponent",
                 () =>
                   test(
                     "get geometry component",
@@ -187,7 +187,7 @@ let _ =
                       let (state, gameObject) = createGameObject(state^);
                       let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
                       let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-                      unsafeGetGameObjectBoxGeometryComponent(gameObject, state)
+                      BoxGeometryTool.unsafeGetBoxGeometryComponent(gameObject, state)
                       |> GeometryTool.isGeometry
                     }
                   )
@@ -211,7 +211,7 @@ let _ =
             "test custom geometry component",
             () => {
               describe(
-                "unsafeGetGameObjectCustomGeometryComponent",
+                "CustomGeometryTool.unsafeGetCustomGeometryComponent",
                 () =>
                   test(
                     "get geometry component",
@@ -220,7 +220,7 @@ let _ =
                       let (state, geometry) = CustomGeometryAPI.createCustomGeometry(state);
                       let state =
                         state |> addGameObjectCustomGeometryComponent(gameObject, geometry);
-                      unsafeGetGameObjectCustomGeometryComponent(gameObject, state)
+                      CustomGeometryTool.unsafeGetCustomGeometryComponent(gameObject, state)
                       |> GeometryTool.isGeometry
                     }
                   )
@@ -870,7 +870,6 @@ let _ =
                               let state = state |> disposeGameObject(gameObject2);
                               let {currentGeometryDataMap} =
                                 GameObjectTool.getGameObjectRecord(state);
-                              WonderLog.Log.print(currentGeometryDataMap) |> ignore;
                               (
                                 ArrayTool.isArraySame(
                                   currentGeometryDataMap,
@@ -889,16 +888,12 @@ let _ =
                       );
                       describe(
                         "test geometry map",
-                        () => {
+                        () =>
                           test(
-                            "new boxGeometryMap should only has alive record",
+                            "new currentGeometryDataMap should only has alive record",
                             () => {
                               open MainStateDataType;
-                              let state =
-                                TestTool.initWithoutBuildFakeDom(
-                                  ~sandbox,
-                                  ()
-                                );
+                              let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                               TestTool.closeContractCheck();
                               let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
                               let (state, gameObject1, geometry1) =
@@ -910,46 +905,19 @@ let _ =
                               let state = state |> BoxGeometryTool.initGeometrys;
                               let state = state |> disposeGameObject(gameObject1);
                               let state = state |> disposeGameObject(gameObject2);
-                              let {boxGeometryMap} = GameObjectTool.getGameObjectRecord(state);
+                              let {currentGeometryDataMap} =
+                                GameObjectTool.getGameObjectRecord(state);
                               (
-                                boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject1),
-                                boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject2),
-                                boxGeometryMap |> WonderCommonlib.SparseMapService.has(gameObject3)
-                              )
-                              |> expect == (false, false, true)
-                            }
-                          );
-                          test(
-                            "new customGeometryMap should only has alive record",
-                            () => {
-                              open MainStateDataType;
-                              let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
-                              TestTool.closeContractCheck();
-                              let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
-                              let (
-                                state,
-                                (gameObject1, gameObject2, gameObject3),
-                                (geometry1, geometry2, geometry3),
-                                (vertices1, vertices2, vertices3),
-                                (normals1, normals2, normals3),
-                                (indices1, indices2, indices3)
-                              ) =
-                                CustomGeometryTool.createThreeGameObjectsAndSetPointData(state);
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
-                              let {customGeometryMap} = GameObjectTool.getGameObjectRecord(state);
-                              (
-                                customGeometryMap
+                                currentGeometryDataMap
                                 |> WonderCommonlib.SparseMapService.has(gameObject1),
-                                customGeometryMap
+                                currentGeometryDataMap
                                 |> WonderCommonlib.SparseMapService.has(gameObject2),
-                                customGeometryMap
+                                currentGeometryDataMap
                                 |> WonderCommonlib.SparseMapService.has(gameObject3)
                               )
                               |> expect == (false, false, true)
                             }
                           )
-                        }
                       );
                       describe(
                         "test material map",
@@ -1687,12 +1655,8 @@ let _ =
                 () => _testTwoParamFunc(unsafeGetGameObjectMeshRendererComponent)
               );
               test(
-                "unsafeGetGameObjectBoxGeometryComponent should error",
-                () => _testTwoParamFunc(unsafeGetGameObjectBoxGeometryComponent)
-              );
-              test(
-                "unsafeGetGameObjectCustomGeometryComponent should error",
-                () => _testTwoParamFunc(unsafeGetGameObjectCustomGeometryComponent)
+                "unsafeGetGeometryComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectGeometryComponent)
               );
               test(
                 "unsafeGetGameObjectBasicCameraViewComponent should error",

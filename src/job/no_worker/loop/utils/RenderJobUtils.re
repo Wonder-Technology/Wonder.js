@@ -10,10 +10,7 @@ let _directlySendAttributeData =
         geometryIndex,
         _,
         (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
-        getVerticesFunc,
-        getNormalsFunc,
-        getIndicesFunc,
-        _
+        (getVerticesFunc, getNormalsFunc, getIndicesFunc, _)
       ),
       state
     ) =>
@@ -67,7 +64,7 @@ let _sendAttributeData =
     (
       gl,
       shaderIndex,
-      (geometryIndex, type_, _, getVerticesFunc, getNormalsFunc, getIndicesFunc, _) as geometryData,
+      (geometryIndex, type_, _, (getVerticesFunc, getNormalsFunc, getIndicesFunc, _)) as geometryData,
       state
     ) => {
   let {lastSendGeometry} as record = state.glslSenderRecord;
@@ -116,7 +113,7 @@ let render = (gl, (materialIndex, shaderIndex, uid), {programRecord, gameObjectR
   let transformIndex: int =
     GetComponentGameObjectService.unsafeGetTransformComponent(uid, gameObjectRecord);
   let geometryData =
-    GetComponentGameObjectService.unsafeGetGeometryDataComponent(uid, gameObjectRecord);
+    GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, gameObjectRecord);
   let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
   let state =
     state

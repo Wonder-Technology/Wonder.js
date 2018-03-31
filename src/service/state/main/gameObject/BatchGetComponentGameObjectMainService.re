@@ -16,11 +16,40 @@ let batchGetPerspectiveCameraProjectionComponent =
 let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.transformMap);
 
-let batchGetBoxGeometryComponent = (uidArray: array(int), {gameObjectRecord}) =>
-  batchGetComponent(uidArray, gameObjectRecord.boxGeometryMap);
-
-let batchGetCustomGeometryComponent = (uidArray: array(int), {gameObjectRecord}) =>
-  batchGetComponent(uidArray, gameObjectRecord.customGeometryMap);
+let batchGetGeometryComponentData = (uidArray: array(int), {gameObjectRecord}) => {
+  let currentGeometryDataMap = gameObjectRecord.currentGeometryDataMap;
+  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
+  let customGeometryType = CurrentComponentDataMapService.getCustomGeometryType();
+  uidArray
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         ((boxGeometryArr, customGeometryArr) as arrTuple, uid) =>
+           switch (currentGeometryDataMap |> CurrentComponentDataMapService.getComponentData(uid)) {
+           | None => arrTuple
+           | Some((component, type_, _, _)) =>
+             switch type_ {
+             | type_ when type_ === boxGeometryType =>
+               boxGeometryArr |> ArrayService.push(component) |> ignore
+             | type_ when type_ === customGeometryType =>
+               customGeometryArr |> ArrayService.push(component) |> ignore
+             | _ =>
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="unknonw type_",
+                   ~description={j||j},
+                   ~reason="",
+                   ~solution={j||j},
+                   ~params={j|type_: $type_|j}
+                 )
+               )
+             };
+             arrTuple
+           }
+       ),
+       ([||], [||])
+     )
+};
 
 let batchGetBasicMaterialComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.basicMaterialMap);

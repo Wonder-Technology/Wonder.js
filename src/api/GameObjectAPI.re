@@ -141,6 +141,14 @@ let hasGameObjectTransformComponent = (gameObject: gameObject, state: MainStateD
   hasTransformComponent(gameObject, state.gameObjectRecord)
 };
 
+let unsafeGetGameObjectGeometryComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(MainStateData.stateData)
+  );
+  (gameObject, state.gameObjectRecord)
+};
+
 let addGameObjectBoxGeometryComponent =
     (gameObject: gameObject, component: component, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
@@ -157,15 +165,6 @@ let disposeGameObjectBoxGeometryComponent =
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] disposeBoxGeometryComponent(gameObject, component, state)
-};
-
-let unsafeGetGameObjectBoxGeometryComponent =
-    (gameObject: gameObject, state: MainStateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
-  );
-  unsafeGetBoxGeometryComponent(gameObject, state.gameObjectRecord)
 };
 
 let hasGameObjectBoxGeometryComponent = (gameObject: gameObject, state: MainStateDataType.state) => {
@@ -192,15 +191,6 @@ let disposeGameObjectCustomGeometryComponent =
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
   [@bs] disposeCustomGeometryComponent(gameObject, component, state)
-};
-
-let unsafeGetGameObjectCustomGeometryComponent =
-    (gameObject: gameObject, state: MainStateDataType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
-  );
-  unsafeGetCustomGeometryComponent(gameObject, state.gameObjectRecord)
 };
 
 let hasGameObjectCustomGeometryComponent = (gameObject: gameObject, state: MainStateDataType.state) => {

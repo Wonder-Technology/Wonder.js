@@ -29,21 +29,23 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   | None => state
   };
 
-/* let _disposeFromCurrentComponentMap = (uid, gameObjectRecord) => {
+let _disposeGameObjectGeometryComponent = (uid, {gameObjectRecord} as state) => {
+  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
+  let customGeometryType = CurrentComponentDataMapService.getCustomGeometryType();
+  switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
+  | Some((component, type_, _, _)) =>
+    switch type_ {
+    | type_ when type_ === boxGeometryType =>
+      [@bs] disposeBoxGeometryComponent(uid, component, state)
+    | type_ when type_ === customGeometryType =>
+      [@bs] disposeCustomGeometryComponent(uid, component, state)
+    }
+  | None => state
+  }
+};
 
-WonderLog.Log.print("aaa") |> ignore;
-  {   /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
-     |> ignore;
-     gameObjectRecord */
-  ...gameObjectRecord,
-  currentGeometryDataMap:
-    CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
-    /* |>WonderLog.Log.print */ }
-}; */
-
-let _disposeGameObjectComponents = (uid, batchDisposeFunc, isKeepOrder, {gameObjectRecord} as state) =>
-  /* _disposeFromCurrentComponentMap(uid, gameObjectRecord) |> ignore; */
-  /* {...state, gameObjectRecord: _disposeFromCurrentComponentMap(uid, gameObjectRecord)} */
+let _disposeGameObjectComponents =
+    (uid, batchDisposeFunc, isKeepOrder, {gameObjectRecord} as state) =>
   state
   |> _disposeWithData(
        uid,
@@ -53,6 +55,7 @@ let _disposeGameObjectComponents = (uid, batchDisposeFunc, isKeepOrder, {gameObj
          DisposeComponentGameObjectMainService.disposeTransformComponent
        )
      )
+  |> _disposeGameObjectGeometryComponent(uid)
   |> _dispose(
        uid,
        (
@@ -72,20 +75,6 @@ let _disposeGameObjectComponents = (uid, batchDisposeFunc, isKeepOrder, {gameObj
        (
          GetComponentGameObjectService.getMeshRendererComponent,
          DisposeComponentGameObjectMainService.disposeMeshRendererComponent
-       )
-     )
-  |> _dispose(
-       uid,
-       (
-         GetComponentGameObjectService.getBoxGeometryComponent,
-         DisposeComponentGameObjectMainService.disposeBoxGeometryComponent
-       )
-     )
-  |> _dispose(
-       uid,
-       (
-         GetComponentGameObjectService.getCustomGeometryComponent,
-         DisposeComponentGameObjectMainService.disposeCustomGeometryComponent
        )
      )
   |> _dispose(
@@ -132,36 +121,35 @@ let _disposeGameObjectComponents = (uid, batchDisposeFunc, isKeepOrder, {gameObj
        )
      );
 
-let dispose = (uid, batchDisposeFunc, state) => _disposeGameObjectComponents(uid, batchDisposeFunc, false, state);
+let dispose = (uid, batchDisposeFunc, state) =>
+  _disposeGameObjectComponents(uid, batchDisposeFunc, false, state);
 
 let disposeKeepOrder = (uid, batchDisposeFunc, state) =>
   _disposeGameObjectComponents(uid, batchDisposeFunc, true, state);
 
-/* let _batchDisposeFromCurrentComponentMap = (uidArray, gameObjectRecord) => {
-  ...gameObjectRecord,
-  currentGeometryDataMap:
-    uidArray
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (currentGeometryDataMap, uid) =>
-             CurrentComponentDataMapService.removeFromMap(uid, currentGeometryDataMap)
-         ),
-         gameObjectRecord.currentGeometryDataMap
-       )
-}; */
+let _batchDisposeGeometryComponent = (uidArray, disposedUidMap, state) => {
+  let (boxGeometryArr, customGeometryArr) =
+    state |> BatchGetComponentGameObjectMainService.batchGetGeometryComponentData(uidArray);
+  let state =
+    boxGeometryArr
+    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
+         disposedUidMap,
+         state
+       );
+  customGeometryArr
+  |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
+       disposedUidMap,
+       state
+     )
+};
 
 let batchDispose =
     (uidArray: array(int), disposedUidMap, batchDisposeFunc, {gameObjectRecord} as state) => {
-  /* let state = {
-    ...state,
-    gameObjectRecord: _batchDisposeFromCurrentComponentMap(uidArray, gameObjectRecord)
-  }; */
-  /* _batchDisposeFromCurrentComponentMap(uidArray, gameObjectRecord) |> ignore; */
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(disposedUidMap, state);
+  let state = state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(uidArray)
@@ -182,20 +170,20 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetMeshRendererComponent(uidArray)
     |> batchDisposeMeshRendererComponent(disposedUidMap, state);
-  let state =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetBoxGeometryComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
-         disposedUidMap,
-         state
-       );
-  let state =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetCustomGeometryComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
-         disposedUidMap,
-         state
-       );
+  /* let state =
+       state
+       |> BatchGetComponentGameObjectMainService.batchGetBoxGeometryComponent(uidArray)
+       |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
+            disposedUidMap,
+            state
+          );
+     let state =
+       state
+       |> BatchGetComponentGameObjectMainService.batchGetCustomGeometryComponent(uidArray)
+       |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
+            disposedUidMap,
+            state
+          ); */
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(uidArray)

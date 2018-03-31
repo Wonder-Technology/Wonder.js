@@ -3,9 +3,15 @@ open MainStateDataType;
 open MainStateDataType;
 
 let initGameObject = (uid: int, {gameObjectRecord} as state) => {
+  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
   let state =
-    switch ([@bs] GetComponentGameObjectService.getBoxGeometryComponent(uid, gameObjectRecord)) {
-    | Some(geometry) => InitBoxGeometryMainService.handleInitComponent(geometry, state)
+    switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
+    | Some((component, type_, _, _)) =>
+      switch type_ {
+      | type_ when type_ === boxGeometryType =>
+        InitBoxGeometryMainService.handleInitComponent(component, state)
+      | _ => state
+      }
     | None => state
     };
   let state =

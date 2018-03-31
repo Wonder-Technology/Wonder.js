@@ -156,10 +156,12 @@ and gameObjectCurrentGeometryDataMap =
       geometry,
       string,
       (array(GlType.buffer), array(GlType.buffer), array(GlType.buffer)),
-      [@bs] ((int, state) => Float32Array.t),
-      [@bs] ((int, state) => Float32Array.t),
-      [@bs] ((int, state) => Uint16Array.t),
-      (int, state) => int
+      (
+        [@bs] ((int, state) => Float32Array.t),
+        [@bs] ((int, state) => Float32Array.t),
+        [@bs] ((int, state) => Uint16Array.t),
+        (int, state) => int
+      )
     )
   )
 and gameObjectRecord = {
@@ -171,8 +173,6 @@ and gameObjectRecord = {
   mutable transformMap: gameObjectTransformMap,
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
-  mutable boxGeometryMap: gameObjectGeometryMap,
-  mutable customGeometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,

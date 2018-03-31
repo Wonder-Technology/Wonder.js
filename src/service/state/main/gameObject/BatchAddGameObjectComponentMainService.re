@@ -123,6 +123,52 @@ let _batchAddSharableComponent =
      )
 };
 
+let _batchAddSharableGeometryComponent =
+    (
+      (uidArr: array(int), componentArr: array(component), dataTupleForBatchAddComponentDataFunc),
+      increaseGroupCountFunc,
+      batchAddComponentDataFunc,
+      record
+    ) => {
+  _checkBatchAdd(uidArr, componentArr);
+  uidArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       [@bs]
+       (
+         (record, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           [@bs] batchAddComponentDataFunc(dataTupleForBatchAddComponentDataFunc, component, uid)
+           |> ignore;
+           [@bs] increaseGroupCountFunc(component, record)
+         }
+       ),
+       record
+     )
+};
+
+let _batchAddBoxGeometryComponentDataForClone =
+  [@bs]
+  (
+    ((currentGeometryDataMap, type_, bufferMapTuple), component, uid) =>
+      /* let component = Array.unsafe_get(componentArr, index); */
+      CurrentComponentDataMapService.addToMap(
+        uid,
+        (
+          component,
+          /* CurrentComponentDataMapService.getBoxGeometryType(), */
+          type_,
+          bufferMapTuple,
+          (
+            VerticesBoxGeometryMainService.getVertices,
+            NormalsBoxGeometryMainService.getNormals,
+            IndicesBoxGeometryMainService.getIndices,
+            IndicesBoxGeometryMainService.getIndicesCount
+          )
+        ),
+        currentGeometryDataMap
+      )
+  );
+
 let batchAddBoxGeometryComponentForClone =
     (
       uidArr: array(int),
@@ -131,46 +177,82 @@ let batchAddBoxGeometryComponentForClone =
     ) => {
   /* TODO refactor */
   let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
-  uidArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (currentGeometryDataMap, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           CurrentComponentDataMapService.addToMap(
-             uid,
-             (
-               component,
-               CurrentComponentDataMapService.getBoxGeometryType(),
-               (
-                 boxGeometryVertexBufferMap,
-                 boxGeometryNormalBufferMap,
-                 boxGeometryElementArrayBufferMap
-               ),
-               VerticesBoxGeometryMainService.getVertices,
-               NormalsBoxGeometryMainService.getNormals,
-               IndicesBoxGeometryMainService.getIndices,
-               IndicesBoxGeometryMainService.getIndicesCount
-             ),
-             currentGeometryDataMap
-           )
-         }
-       ),
-       gameObjectRecord.currentGeometryDataMap
-     )
-  |> ignore;
+  /* uidArr
+     |> WonderCommonlib.ArrayService.reduceOneParami(
+          [@bs]
+          (
+            (currentGeometryDataMap, uid, index) => {
+              let component = Array.unsafe_get(componentArr, index);
+              CurrentComponentDataMapService.addToMap(
+                uid,
+                (
+                  component,
+                  CurrentComponentDataMapService.getBoxGeometryType(),
+                  (
+                    boxGeometryVertexBufferMap,
+                    boxGeometryNormalBufferMap,
+                    boxGeometryElementArrayBufferMap
+                  ),
+                  VerticesBoxGeometryMainService.getVertices,
+                  NormalsBoxGeometryMainService.getNormals,
+                  IndicesBoxGeometryMainService.getIndices,
+                  IndicesBoxGeometryMainService.getIndicesCount
+                ),
+                currentGeometryDataMap
+              )
+            }
+          ),
+          gameObjectRecord.currentGeometryDataMap
+        )
+     |> ignore; */
   {
     ...state,
     boxGeometryRecord:
       Some(
-        _batchAddSharableComponent(
-          (uidArr, componentArr, gameObjectRecord.boxGeometryMap),
+        _batchAddSharableGeometryComponent(
+          (
+            uidArr,
+            componentArr,
+            (
+              gameObjectRecord.currentGeometryDataMap,
+              CurrentComponentDataMapService.getBoxGeometryType(),
+              (
+                boxGeometryVertexBufferMap,
+                boxGeometryNormalBufferMap,
+                boxGeometryElementArrayBufferMap
+              )
+            )
+          ),
           GroupBoxGeometryService.increaseGroupCount,
+          _batchAddBoxGeometryComponentDataForClone,
           state |> RecordBoxGeometryMainService.getRecord
         )
       )
   }
 };
+
+let _batchAddCustomGeometryComponentDataForClone =
+  [@bs]
+  (
+    ((currentGeometryDataMap, type_, bufferMapTuple), component, uid) =>
+      /* let component = Array.unsafe_get(componentArr, index); */
+      CurrentComponentDataMapService.addToMap(
+        uid,
+        (
+          component,
+          /* CurrentComponentDataMapService.getCustomGeometryType(), */
+          type_,
+          bufferMapTuple,
+          (
+            VerticesCustomGeometryMainService.getVertices,
+            NormalsCustomGeometryMainService.getNormals,
+            IndicesCustomGeometryMainService.getIndices,
+            IndicesCustomGeometryMainService.getIndicesCount
+          )
+        ),
+        currentGeometryDataMap
+      )
+  );
 
 let batchAddCustomGeometryComponentForClone =
     (
@@ -184,44 +266,63 @@ let batchAddCustomGeometryComponentForClone =
     customGeometryNormalBufferMap,
     customGeometryElementArrayBufferMap
   } = vboBufferRecord;
-  uidArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (currentGeometryDataMap, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           CurrentComponentDataMapService.addToMap(
-             uid,
-             (
-               component,
-               CurrentComponentDataMapService.getCustomGeometryType(),
-               (
-                 customGeometryVertexBufferMap,
-                 customGeometryNormalBufferMap,
-                 customGeometryElementArrayBufferMap
-               ),
-               VerticesCustomGeometryMainService.getVertices,
-               NormalsCustomGeometryMainService.getNormals,
-               IndicesCustomGeometryMainService.getIndices,
-               IndicesCustomGeometryMainService.getIndicesCount
-             ),
-             currentGeometryDataMap
-           )
-         }
-       ),
-       gameObjectRecord.currentGeometryDataMap
-     )
-  |> ignore;
+  /* uidArr
+     |> WonderCommonlib.ArrayService.reduceOneParami(
+          [@bs]
+          (
+            (currentGeometryDataMap, uid, index) => {
+              let component = Array.unsafe_get(componentArr, index);
+              CurrentComponentDataMapService.addToMap(
+                uid,
+                (
+                  component,
+                  CurrentComponentDataMapService.getCustomGeometryType(),
+                  (
+                    customGeometryVertexBufferMap,
+                    customGeometryNormalBufferMap,
+                    customGeometryElementArrayBufferMap
+                  ),
+                  VerticesCustomGeometryMainService.getVertices,
+                  NormalsCustomGeometryMainService.getNormals,
+                  IndicesCustomGeometryMainService.getIndices,
+                  IndicesCustomGeometryMainService.getIndicesCount
+                ),
+                currentGeometryDataMap
+              )
+            }
+          ),
+          gameObjectRecord.currentGeometryDataMap
+        )
+     |> ignore; */
   {
     ...state,
     customGeometryRecord:
-      Some(
-        _batchAddSharableComponent(
-          (uidArr, componentArr, gameObjectRecord.customGeometryMap),
-          GroupCustomGeometryService.increaseGroupCount,
-          state |> RecordCustomGeometryMainService.getRecord
+      Some
+        /* _batchAddSharableComponent(
+             (uidArr, componentArr, gameObjectRecord.customGeometryMap),
+             GroupCustomGeometryService.increaseGroupCount,
+             state |> RecordCustomGeometryMainService.getRecord
+           ) */
+        (
+          _batchAddSharableGeometryComponent(
+            (
+              uidArr,
+              componentArr,
+              (
+                gameObjectRecord.currentGeometryDataMap,
+                CurrentComponentDataMapService.getCustomGeometryType(),
+                (
+                  customGeometryVertexBufferMap,
+                  customGeometryNormalBufferMap,
+                  customGeometryElementArrayBufferMap
+                )
+              )
+            ),
+            GroupCustomGeometryService.increaseGroupCount,
+            _batchAddCustomGeometryComponentDataForClone,
+            state |> RecordCustomGeometryMainService.getRecord
+          )
         )
-      )
   }
 };
 

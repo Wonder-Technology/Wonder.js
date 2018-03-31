@@ -1,3 +1,5 @@
+open MainStateDataType;
+
 open CustomGeometryType;
 
 open CustomGeometryAPI;
@@ -76,3 +78,27 @@ let isGeometryDisposed = (geometry, state) =>
     );
 
 let getIndicesCount = IndicesCustomGeometryMainService.getIndicesCount;
+
+let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
+  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
+  |> WonderLog.Contract.ensureCheck(
+       (r) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
+                 () => {
+                   let (_, type_, _, _) =
+                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
+                       uid,
+                       gameObjectRecord
+                     );
+                   type_ ==^ CurrentComponentDataMapService.getCustomGeometryType()
+                 }
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(MainStateData.stateData)
+     );

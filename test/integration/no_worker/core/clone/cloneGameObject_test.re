@@ -964,7 +964,7 @@ let _ =
                       |> CloneTool.getFlattenClonedGameObjectArr
                       |> Js.Array.map(
                            (clonedGameObject) =>
-                             unsafeGetGameObjectBoxGeometryComponent(clonedGameObject, state)
+                             BoxGeometryTool.unsafeGetBoxGeometryComponent(clonedGameObject, state)
                          )
                       |> Js.Array.length
                       |> expect == 4
