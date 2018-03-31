@@ -21,7 +21,7 @@ let _ =
       "name": "default",
       "jobs": [
         {
-          "name": "init_geometry"
+          "name": "init_boxGeometry"
         }
       ]
     }
@@ -30,7 +30,7 @@ let _ =
           ~initJobs={|
 [
         {
-          "name": "init_geometry"
+          "name": "init_boxGeometry"
         }
 ]
         |},
