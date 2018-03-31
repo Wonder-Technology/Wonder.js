@@ -175,36 +175,7 @@ let batchAddBoxGeometryComponentForClone =
       componentArr: array(component),
       {vboBufferRecord, gameObjectRecord} as state
     ) => {
-  /* TODO refactor */
   let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
-  /* uidArr
-     |> WonderCommonlib.ArrayService.reduceOneParami(
-          [@bs]
-          (
-            (currentGeometryDataMap, uid, index) => {
-              let component = Array.unsafe_get(componentArr, index);
-              CurrentComponentDataMapService.addToMap(
-                uid,
-                (
-                  component,
-                  CurrentComponentDataMapService.getBoxGeometryType(),
-                  (
-                    boxGeometryVertexBufferMap,
-                    boxGeometryNormalBufferMap,
-                    boxGeometryElementArrayBufferMap
-                  ),
-                  VerticesBoxGeometryMainService.getVertices,
-                  NormalsBoxGeometryMainService.getNormals,
-                  IndicesBoxGeometryMainService.getIndices,
-                  IndicesBoxGeometryMainService.getIndicesCount
-                ),
-                currentGeometryDataMap
-              )
-            }
-          ),
-          gameObjectRecord.currentGeometryDataMap
-        )
-     |> ignore; */
   {
     ...state,
     boxGeometryRecord:
@@ -260,69 +231,34 @@ let batchAddCustomGeometryComponentForClone =
       componentArr: array(component),
       {vboBufferRecord, gameObjectRecord} as state
     ) => {
-  /* TODO refactor */
   let {
     customGeometryVertexBufferMap,
     customGeometryNormalBufferMap,
     customGeometryElementArrayBufferMap
   } = vboBufferRecord;
-  /* uidArr
-     |> WonderCommonlib.ArrayService.reduceOneParami(
-          [@bs]
-          (
-            (currentGeometryDataMap, uid, index) => {
-              let component = Array.unsafe_get(componentArr, index);
-              CurrentComponentDataMapService.addToMap(
-                uid,
-                (
-                  component,
-                  CurrentComponentDataMapService.getCustomGeometryType(),
-                  (
-                    customGeometryVertexBufferMap,
-                    customGeometryNormalBufferMap,
-                    customGeometryElementArrayBufferMap
-                  ),
-                  VerticesCustomGeometryMainService.getVertices,
-                  NormalsCustomGeometryMainService.getNormals,
-                  IndicesCustomGeometryMainService.getIndices,
-                  IndicesCustomGeometryMainService.getIndicesCount
-                ),
-                currentGeometryDataMap
-              )
-            }
-          ),
-          gameObjectRecord.currentGeometryDataMap
-        )
-     |> ignore; */
   {
     ...state,
     customGeometryRecord:
-      Some
-        /* _batchAddSharableComponent(
-             (uidArr, componentArr, gameObjectRecord.customGeometryMap),
-             GroupCustomGeometryService.increaseGroupCount,
-             state |> RecordCustomGeometryMainService.getRecord
-           ) */
-        (
-          _batchAddSharableGeometryComponent(
+      Some(
+        _batchAddSharableGeometryComponent(
+          (
+            uidArr,
+            componentArr,
             (
-              uidArr,
-              componentArr,
+              gameObjectRecord.currentGeometryDataMap,
+              CurrentComponentDataMapService.getCustomGeometryType(),
               (
-                gameObjectRecord.currentGeometryDataMap,
-                CurrentComponentDataMapService.getCustomGeometryType(),
-                (
-                  customGeometryVertexBufferMap,
-                  customGeometryNormalBufferMap,
-                  customGeometryElementArrayBufferMap
-                )
+                customGeometryVertexBufferMap,
+                customGeometryNormalBufferMap,
+                customGeometryElementArrayBufferMap
               )
-            ),
-            GroupCustomGeometryService.increaseGroupCount,
-            _batchAddCustomGeometryComponentDataForClone,
-            state |> RecordCustomGeometryMainService.getRecord
-          )
+            )
+          ),
+          GroupCustomGeometryService.increaseGroupCount,
+          _batchAddCustomGeometryComponentDataForClone,
+          state |> RecordCustomGeometryMainService.getRecord
         )
+      )
   }
 };
 
