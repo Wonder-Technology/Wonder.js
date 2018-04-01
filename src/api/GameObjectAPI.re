@@ -146,7 +146,7 @@ let unsafeGetGameObjectGeometryComponent = (gameObject: gameObject, state: MainS
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  (gameObject, state.gameObjectRecord)
+  unsafeGetGeometryComponent(gameObject, state.gameObjectRecord)
 };
 
 let addGameObjectBoxGeometryComponent =

@@ -176,67 +176,61 @@ let _ =
             }
           );
           describe(
-            "test box geometry component",
+            "test geometry component",
             () => {
               describe(
-                "BoxGeometryTool.unsafeGetBoxGeometryComponent",
+                "unsafeGetGeometryComponent",
                 () =>
                   test(
-                    "get geometry component",
+                    "get last added geometry component",
                     () => {
                       let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
-                      let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-                      BoxGeometryTool.unsafeGetBoxGeometryComponent(gameObject, state)
-                      |> GeometryTool.isGeometry
+                      let (state, boxGeometry) = BoxGeometryAPI.createBoxGeometry(state);
+                      let (state, customGeometry1) = CustomGeometryAPI.createCustomGeometry(state);
+                      let (state, customGeometry2) = CustomGeometryAPI.createCustomGeometry(state);
+                      let state =
+                        state
+                        |> addGameObjectBoxGeometryComponent(gameObject, boxGeometry)
+                        |> addGameObjectCustomGeometryComponent(gameObject, customGeometry2);
+                      unsafeGetGameObjectGeometryComponent(gameObject, state)
+                      |> expect == customGeometry2
                     }
                   )
               );
               describe(
-                "hasGameObjectBoxGeometryComponent",
+                "test box geometry component",
                 () =>
-                  test(
-                    "has geometry component",
-                    () => {
-                      let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
-                      let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-                      hasGameObjectBoxGeometryComponent(gameObject, state) |> expect == true
-                    }
-                  )
-              )
-            }
-          );
-          describe(
-            "test custom geometry component",
-            () => {
-              describe(
-                "CustomGeometryTool.unsafeGetCustomGeometryComponent",
-                () =>
-                  test(
-                    "get geometry component",
-                    () => {
-                      let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = CustomGeometryAPI.createCustomGeometry(state);
-                      let state =
-                        state |> addGameObjectCustomGeometryComponent(gameObject, geometry);
-                      CustomGeometryTool.unsafeGetCustomGeometryComponent(gameObject, state)
-                      |> GeometryTool.isGeometry
-                    }
+                  describe(
+                    "hasGameObjectBoxGeometryComponent",
+                    () =>
+                      test(
+                        "has geometry component",
+                        () => {
+                          let (state, gameObject) = createGameObject(state^);
+                          let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
+                          let state =
+                            state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+                          hasGameObjectBoxGeometryComponent(gameObject, state) |> expect == true
+                        }
+                      )
                   )
               );
               describe(
-                "hasGameObjectCustomGeometryComponent",
+                "test custom geometry component",
                 () =>
-                  test(
-                    "has geometry component",
-                    () => {
-                      let (state, gameObject) = createGameObject(state^);
-                      let (state, geometry) = CustomGeometryAPI.createCustomGeometry(state);
-                      let state =
-                        state |> addGameObjectCustomGeometryComponent(gameObject, geometry);
-                      hasGameObjectCustomGeometryComponent(gameObject, state) |> expect == true
-                    }
+                  describe(
+                    "hasGameObjectCustomGeometryComponent",
+                    () =>
+                      test(
+                        "has geometry component",
+                        () => {
+                          let (state, gameObject) = createGameObject(state^);
+                          let (state, geometry) = CustomGeometryAPI.createCustomGeometry(state);
+                          let state =
+                            state |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+                          hasGameObjectCustomGeometryComponent(gameObject, state) |> expect == true
+                        }
+                      )
                   )
               )
             }
