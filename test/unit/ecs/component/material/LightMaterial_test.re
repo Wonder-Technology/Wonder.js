@@ -59,7 +59,8 @@ let _ =
           test(
             "get material's gameObject",
             () => {
-              open GameObjectAPI; open GameObjectAPI;
+              open GameObjectAPI;
+              open GameObjectAPI;
               let (state, material) = createLightMaterial(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
@@ -68,76 +69,95 @@ let _ =
           )
       );
       describe(
-        "unsafeGetLightMaterialDiffuseColor",
-        () =>
+        "operate data",
+        () => {
           test(
-            "test default color",
-            () => {
-              let (state, material) = createLightMaterial(state^);
-              unsafeGetLightMaterialDiffuseColor(material, state) |> expect == [|1., 1., 1.|]
-            }
-          )
-      );
-      describe(
-        "setLightMaterialDiffuseColor",
-        () =>
-          test(
-            "test set color",
+            "get the data from array buffer may not equal to the value which is setted",
             () => {
               let (state, material) = createLightMaterial(state^);
               let color = [|0.2, 0.3, 0.5|];
               let state = state |> setLightMaterialDiffuseColor(material, color);
-              unsafeGetLightMaterialDiffuseColor(material, state) |> expect == color
+              getLightMaterialDiffuseColor(material, state)
+              |> expect == [|0.20000000298023224, 0.30000001192092896, 0.5|]
             }
+          );
+          describe(
+            "getLightMaterialDiffuseColor",
+            () =>
+              test(
+                "test default color",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  getLightMaterialDiffuseColor(material, state) |> expect == [|1., 1., 1.|]
+                }
+              )
+          );
+          describe(
+            "setLightMaterialDiffuseColor",
+            () =>
+              test(
+                "test set color",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  let color = [|0.2, 0.3, 0.5|];
+                  let state = state |> setLightMaterialDiffuseColor(material, color);
+                  getLightMaterialDiffuseColor(material, state)
+                  |> TypeArrayTool.truncateArray
+                  |> expect == color
+                }
+              )
+          );
+          describe(
+            "getLightMaterialSpecularColor",
+            () =>
+              test(
+                "test default color",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  getLightMaterialSpecularColor(material, state) |> expect == [|1., 1., 1.|]
+                }
+              )
+          );
+          describe(
+            "setLightMaterialSpecularColor",
+            () =>
+              test(
+                "test set color",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  let color = [|0.2, 0.3, 0.5|];
+                  let state = state |> setLightMaterialSpecularColor(material, color);
+                  getLightMaterialSpecularColor(material, state)
+                  |> TypeArrayTool.truncateArray
+                  |> expect == color
+                }
+              )
+          );
+          describe(
+            "getLightMaterialShininess",
+            () =>
+              test(
+                "test default shininess",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  getLightMaterialShininess(material, state) |> expect == 32.
+                }
+              )
+          );
+          describe(
+            "setLightMaterialShininess",
+            () =>
+              test(
+                "test set shininess",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  let shininess = 30.;
+                  let state = state |> setLightMaterialShininess(material, shininess);
+                  getLightMaterialShininess(material, state) |> expect == shininess
+                }
+              )
           )
-      );
-      describe(
-        "unsafeGetLightMaterialSpecularColor",
-        () =>
-          test(
-            "test default color",
-            () => {
-              let (state, material) = createLightMaterial(state^);
-              unsafeGetLightMaterialSpecularColor(material, state) |> expect == [|1., 1., 1.|]
-            }
-          )
-      );
-      describe(
-        "setLightMaterialSpecularColor",
-        () =>
-          test(
-            "test set color",
-            () => {
-              let (state, material) = createLightMaterial(state^);
-              let color = [|0.2, 0.3, 0.5|];
-              let state = state |> setLightMaterialSpecularColor(material, color);
-              unsafeGetLightMaterialSpecularColor(material, state) |> expect == color
-            }
-          )
-      );
-      describe(
-        "unsafeGetLightMaterialShininess",
-        () =>
-          test(
-            "test default shininess",
-            () => {
-              let (state, material) = createLightMaterial(state^);
-              unsafeGetLightMaterialShininess(material, state) |> expect == 32.
-            }
-          )
-      );
-      describe(
-        "setLightMaterialShininess",
-        () =>
-          test(
-            "test set shininess",
-            () => {
-              let (state, material) = createLightMaterial(state^);
-              let shininess = 30.;
-              let state = state |> setLightMaterialShininess(material, shininess);
-              unsafeGetLightMaterialShininess(material, state) |> expect == shininess
-            }
-          )
+        }
       );
       describe(
         "disposeComponent",
@@ -146,29 +166,119 @@ let _ =
             "dispose data",
             () => {
               test(
-                "remove from diffuseColorMap, specularColorMap, shininessMap, shaderIndexMap, gameObjectMap",
+                "remove from gameObjectMap",
                 () => {
                   open LightMaterialType;
                   let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                  let {
-                    diffuseColorMap,
-                    specularColorMap,
-                    shininessMap,
-                    shaderIndexMap,
-                    gameObjectMap
-                  } =
-                    state.lightMaterialRecord;
-                  (
-                    diffuseColorMap |> WonderCommonlib.SparseMapService.has(material1),
-                    specularColorMap |> WonderCommonlib.SparseMapService.has(material1),
-                    shininessMap |> WonderCommonlib.SparseMapService.has(material1),
-                    shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
-                    gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
+                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
+                  let {gameObjectMap} = LightMaterialTool.getMaterialRecord(state);
+                  gameObjectMap
+                  |> WonderCommonlib.SparseMapService.has(material1)
+                  |> expect == false
+                }
+              );
+              describe(
+                "test remove from type array",
+                () => {
+                  let _testRemoveFromTypeArr =
+                      (
+                        state,
+                        valueTuple,
+                        defaultValue,
+                        (createGameObjectFunc, getValueFunc, setValueFunc)
+                      ) =>
+                    AllMaterialTool.testRemoveFromTypeArr(
+                      state,
+                      valueTuple,
+                      defaultValue,
+                      (
+                        GameObjectAPI.disposeGameObjectLightMaterialComponent,
+                        createGameObjectFunc,
+                        getValueFunc,
+                        setValueFunc
+                      )
+                    );
+                  describe(
+                    "remove from shaderIndices",
+                    () =>
+                      test(
+                        "reset removed one's value",
+                        () =>
+                          _testRemoveFromTypeArr(
+                            state,
+                            (1, 2),
+                            LightMaterialTool.getDefaultShaderIndex(state^),
+                            (
+                              LightMaterialTool.createGameObject,
+                              LightMaterialTool.getShaderIndex,
+                              LightMaterialTool.setShaderIndex
+                            )
+                          )
+                      )
+                  );
+                  describe(
+                    "remove from diffuseColors",
+                    () =>
+                      test(
+                        "reset removed one's value",
+                        () =>
+                          _testRemoveFromTypeArr(
+                            state,
+                            ([|1., 0.2, 0.3|], [|0., 0.2, 0.3|]),
+                            LightMaterialTool.getDefaultDiffuseColor(state^),
+                            (
+                              LightMaterialTool.createGameObject,
+                              (material, state) =>
+                                getLightMaterialDiffuseColor(material, state)
+                                |> TypeArrayTool.truncateArray,
+                              setLightMaterialDiffuseColor
+                            )
+                          )
+                      )
+                  );
+                  describe(
+                    "remove from specularColors",
+                    () =>
+                      test(
+                        "reset removed one's value",
+                        () =>
+                          _testRemoveFromTypeArr(
+                            state,
+                            ([|1., 0.2, 0.3|], [|0., 0.2, 0.3|]),
+                            LightMaterialTool.getDefaultSpecularColor(state^),
+                            (
+                              LightMaterialTool.createGameObject,
+                              (material, state) =>
+                                getLightMaterialSpecularColor(material, state)
+                                |> TypeArrayTool.truncateArray,
+                              setLightMaterialSpecularColor
+                            )
+                          )
+                      )
+                  );
+                  describe(
+                    "remove from shininess",
+                    () =>
+                      test(
+                        "reset removed one's value",
+                        () =>
+                          _testRemoveFromTypeArr(
+                            state,
+                            (1., 2.),
+                            LightMaterialTool.getDefaultShininess(state^),
+                            (
+                              LightMaterialTool.createGameObject,
+                              getLightMaterialShininess,
+                              setLightMaterialShininess
+                            )
+                          )
+                      )
                   )
-                  |> expect == (false, false, false, false, false)
                 }
               );
               test(
@@ -177,49 +287,24 @@ let _ =
                   let (state, material1) = createLightMaterial(state^);
                   let (state, gameObject1) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject1, material1);
+                    state
+                    |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject1, material1);
                   let (state, gameObject2) = GameObjectAPI.createGameObject(state);
                   let state =
-                    state |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject2, material1);
+                    state
+                    |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject2, material1);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
+                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
                   LightMaterialTool.getGroupCount(material1, state) |> expect == 0
                 }
               )
             }
           )
       );
-      /* describe(
-           "test add new one after dispose old one",
-           () => {
-             test(
-               "use disposed index as new index firstly",
-               () => {
-                 let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
-                 let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
-                 let state =
-                   state
-                   |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                 let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
-                 material3 |> expect == material1
-               }
-             );
-             test(
-               "if has no disposed index, get index from materialData.index",
-               () => {
-                 let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
-                 let (state, gameObject2, material2) = LightMaterialTool.createGameObject(state);
-                 let state =
-                   state
-                   |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject1, material1);
-                 let (state, gameObject3, material3) = LightMaterialTool.createGameObject(state);
-                 let (state, gameObject4, material4) = LightMaterialTool.createGameObject(state);
-                 (material3, material4) |> expect == (material1, material2 + 1)
-               }
-             )
-           }
-         ) */
       describe(
         "contract check: is alive",
         () =>
@@ -227,12 +312,14 @@ let _ =
             "if material is disposed",
             () => {
               let _testGetFunc = (getFunc) => {
-                open GameObjectAPI; open GameObjectAPI;
+                open GameObjectAPI;
+                open GameObjectAPI;
                 let (state, material) = createLightMaterial(state^);
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
                 let state =
-                  state |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject, material);
+                  state
+                  |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject, material);
                 expect(() => getFunc(material, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };
@@ -241,12 +328,12 @@ let _ =
                 () => _testGetFunc(unsafeGetLightMaterialGameObject)
               );
               test(
-                "unsafeGetLightMaterialDiffuseColor should error",
-                () => _testGetFunc(unsafeGetLightMaterialDiffuseColor)
+                "getLightMaterialDiffuseColor should error",
+                () => _testGetFunc(getLightMaterialDiffuseColor)
               );
               test(
-                "unsafeGetLightMaterialSpecularColor should error",
-                () => _testGetFunc(unsafeGetLightMaterialSpecularColor)
+                "getLightMaterialSpecularColor should error",
+                () => _testGetFunc(getLightMaterialSpecularColor)
               )
             }
           )

@@ -33,21 +33,49 @@ let _ =
               let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
               (
-                BasicMaterialTool.unsafeGetShaderIndex(material1, state),
-                BasicMaterialTool.unsafeGetShaderIndex(material2, state)
+                BasicMaterialTool.getShaderIndex(material1, state),
+                BasicMaterialTool.getShaderIndex(material2, state)
               )
               |> expect == (0, 0)
             }
           );
-          test(
-            "generate shaderIndex, set to material record",
+          describe(
+            "generate shaderIndex",
             () => {
-              let (state, _, _, material1) =
-                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-              InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
-              let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-              let state = state |> InitBasicMaterialJobTool.exec;
-              BasicMaterialTool.unsafeGetShaderIndex(material1, state) |> expect == 0
+              test(
+                "set to material record",
+                () => {
+                  let (state, _, _, material1) =
+                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                  InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                  let state = state |> InitBasicMaterialJobTool.exec;
+                  BasicMaterialTool.getShaderIndex(material1, state) |> expect == 0
+                }
+              );
+              test(
+                "if equal default shader index, error",
+                () => {
+                  let (state, _, _, material1) =
+                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                  InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                  let state = {
+                    ...state,
+                    shaderRecord: {
+                      ...ShaderTool.getShaderRecord(state),
+                      index: DefaultShaderIndexService.getDefaultShaderIndex()
+                    }
+                  };
+                  expect(
+                    () => {
+                      let state = state |> InitBasicMaterialJobTool.exec;
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("expect not equal default shader index")
+                }
+              )
             }
           );
           test(
@@ -71,8 +99,11 @@ let _ =
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
-              let shaderIndex = BasicMaterialTool.unsafeGetShaderIndex(material, state);
-              state |> ProgramTool.getProgram(shaderIndex) |> OptionTool.unsafeGet |> expect == program
+              let shaderIndex = BasicMaterialTool.getShaderIndex(material, state);
+              state
+              |> ProgramTool.getProgram(shaderIndex)
+              |> OptionTool.unsafeGet
+              |> expect == program
             }
           );
           describe(

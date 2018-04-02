@@ -8,7 +8,7 @@ let _getData =
   [@bs]
   (
     (sourceComponent, state: MainStateDataType.state) =>
-      OperateBasicMaterialMainService.unsafeGetColor(sourceComponent, state)
+      OperateBasicMaterialMainService.getColor(sourceComponent, state)
   );
 
 let _setData =
@@ -19,12 +19,8 @@ let _setData =
   );
 
 let handleCloneComponent =
-    (
-      sourceComponent,
-      countRangeArr: array(int),
-      isShareMaterial: bool,
-      {basicMaterialRecord} as state
-    ) =>
+    (sourceComponent, countRangeArr: array(int), isShareMaterial: bool, state) => {
+  let {shaderIndices} = state |> RecordBasicMaterialMainService.getRecord;
   CloneMaterialMainService.handleCloneComponent(
     (sourceComponent, countRangeArr, isShareMaterial),
     (
@@ -33,5 +29,6 @@ let handleCloneComponent =
       _setData |> Obj.magic,
       ShaderIndexBasicMaterialMainService.setShaderIndex
     ),
-    (basicMaterialRecord.shaderIndexMap, state)
-  );
+    (shaderIndices, state)
+  )
+};

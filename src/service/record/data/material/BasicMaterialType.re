@@ -4,8 +4,11 @@ open MaterialType;
 
 type basicMaterialRecord = {
   index: int,
-  shaderIndexMap,
-  colorMap,
+  buffer: Js.Typed_array.array_buffer,
+  shaderIndices: Js.Typed_array.Uint32Array.t,
+  colors: Js.Typed_array.Float32Array.t,
+  defaultShaderIndex: int,
+  defaultColor: array(float),
   gameObjectMap,
   groupCountMap,
   disposedIndexArray

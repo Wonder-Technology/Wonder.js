@@ -21,17 +21,17 @@ let unsafeGetBasicMaterialGameObject = (material, state: MainStateDataType.state
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.basicMaterialRecord
+              RecordBasicMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetGameObject(material, state.basicMaterialRecord)
+  unsafeGetGameObject(material, RecordBasicMaterialMainService.getRecord(state))
 };
 
-let unsafeGetBasicMaterialColor = (material, state: MainStateDataType.state) => {
+let getBasicMaterialColor = (material, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -40,14 +40,14 @@ let unsafeGetBasicMaterialColor = (material, state: MainStateDataType.state) => 
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.basicMaterialRecord
+              RecordBasicMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetColor(material, state)
+  getColor(material, state)
 };
 
 let setBasicMaterialColor = (material, color, state: MainStateDataType.state) => {
@@ -59,7 +59,7 @@ let setBasicMaterialColor = (material, color, state: MainStateDataType.state) =>
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.basicMaterialRecord
+              RecordBasicMaterialMainService.getRecord(state)
             )
           )
         )

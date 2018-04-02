@@ -50,7 +50,7 @@ let _ =
             "u_color",
             (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
               state |> BasicMaterialAPI.setBasicMaterialColor(material, [|0., 1., 0.2|]),
-            [0., 1., 0.2],
+            [0., 1., 0.20000000298023224],
             ()
           );
           describe(

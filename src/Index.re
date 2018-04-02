@@ -222,7 +222,7 @@ let load = LoaderManagerAPI.load;
 
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
-let unsafeGetBasicMaterialColor = BasicMaterialAPI.unsafeGetBasicMaterialColor;
+let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 
 let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGameObject;
 
@@ -230,15 +230,15 @@ let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
 let setLightMaterialShininess = LightMaterialAPI.setLightMaterialShininess;
 
-let unsafeGetLightMaterialShininess = LightMaterialAPI.unsafeGetLightMaterialShininess;
+let getLightMaterialShininess = LightMaterialAPI.getLightMaterialShininess;
 
 let setLightMaterialSpecularColor = LightMaterialAPI.setLightMaterialSpecularColor;
 
-let unsafeGetLightMaterialSpecularColor = LightMaterialAPI.unsafeGetLightMaterialSpecularColor;
+let getLightMaterialSpecularColor = LightMaterialAPI.getLightMaterialSpecularColor;
 
 let setLightMaterialDiffuseColor = LightMaterialAPI.setLightMaterialDiffuseColor;
 
-let unsafeGetLightMaterialDiffuseColor = LightMaterialAPI.unsafeGetLightMaterialDiffuseColor;
+let getLightMaterialDiffuseColor = LightMaterialAPI.getLightMaterialDiffuseColor;
 
 let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGameObject;
 

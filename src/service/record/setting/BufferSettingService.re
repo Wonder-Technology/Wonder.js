@@ -9,3 +9,9 @@ let getBoxGeometryPointDataBufferCount = (record) =>
 
 let getCustomGeometryPointDataBufferCount = (record) =>
   (record |> unsafeGetBuffer).customGeometryPointDataBufferCount;
+
+let getBasicMaterialDataBufferCount = (record) =>
+  (record |> unsafeGetBuffer).basicMaterialDataBufferCount;
+
+let getLightMaterialDataBufferCount = (record) =>
+  (record |> unsafeGetBuffer).basicMaterialDataBufferCount;

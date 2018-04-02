@@ -10,7 +10,7 @@ let render =
         gl,
         (
           materialIndex,
-          ShaderIndexBasicMaterialMainService.unsafeGetShaderIndex(materialIndex, state),
+          ShaderIndexBasicMaterialMainService.getShaderIndex(materialIndex, state),
           uid
         ),
         state

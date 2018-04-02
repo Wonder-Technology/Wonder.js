@@ -2,13 +2,20 @@ open BasicMaterialType;
 
 open MainStateDataType;
 
-let unsafeGetColor = (material, {basicMaterialRecord}) =>
-  ColorMapService.unsafeGetColor(material, basicMaterialRecord.colorMap);
+let getColor = (material, state) =>
+  RecordBasicMaterialMainService.getColor(
+    material,
+    RecordBasicMaterialMainService.getRecord(state).colors
+  );
 
-let setColor = (material, color: array(float), {basicMaterialRecord} as state) => {
-  ...state,
-  basicMaterialRecord: {
-    ...basicMaterialRecord,
-    colorMap: ColorMapService.setColor(material, color, basicMaterialRecord.colorMap)
+let setColor = (material, color: array(float), state) => {
+  let {colors} as basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  {
+    ...state,
+    basicMaterialRecord:
+      Some({
+        ...basicMaterialRecord,
+        colors: RecordBasicMaterialMainService.setColor(material, color, colors)
+      })
   }
 };

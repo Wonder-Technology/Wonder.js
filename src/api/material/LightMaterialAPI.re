@@ -21,17 +21,17 @@ let unsafeGetLightMaterialGameObject = (material, state: MainStateDataType.state
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetGameObject(material, state.lightMaterialRecord)
+  unsafeGetGameObject(material, RecordLightMaterialMainService.getRecord(state))
 };
 
-let unsafeGetLightMaterialDiffuseColor = (material, state: MainStateDataType.state) => {
+let getLightMaterialDiffuseColor = (material, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -40,14 +40,14 @@ let unsafeGetLightMaterialDiffuseColor = (material, state: MainStateDataType.sta
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetDiffuseColor(material, state)
+  getDiffuseColor(material, state)
 };
 
 let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.state) => {
@@ -59,7 +59,7 @@ let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.st
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
@@ -69,7 +69,7 @@ let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.st
   setDiffuseColor(material, color, state)
 };
 
-let unsafeGetLightMaterialSpecularColor = (material, state: MainStateDataType.state) => {
+let getLightMaterialSpecularColor = (material, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -78,14 +78,14 @@ let unsafeGetLightMaterialSpecularColor = (material, state: MainStateDataType.st
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetSpecularColor(material, state)
+  getSpecularColor(material, state)
 };
 
 let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.state) => {
@@ -97,7 +97,7 @@ let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.s
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
@@ -107,7 +107,7 @@ let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.s
   setSpecularColor(material, color, state)
 };
 
-let unsafeGetLightMaterialShininess = (material, state: MainStateDataType.state) => {
+let getLightMaterialShininess = (material, state: MainStateDataType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -116,14 +116,14 @@ let unsafeGetLightMaterialShininess = (material, state: MainStateDataType.state)
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(MainStateData.stateData)
   );
-  unsafeGetShininess(material, state)
+  getShininess(material, state)
 };
 
 let setLightMaterialShininess = (material, shininess, state: MainStateDataType.state) => {
@@ -135,7 +135,7 @@ let setLightMaterialShininess = (material, shininess, state: MainStateDataType.s
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              state.lightMaterialRecord
+              RecordLightMaterialMainService.getRecord(state)
             )
           )
         )

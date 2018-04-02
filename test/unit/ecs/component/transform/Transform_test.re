@@ -1175,7 +1175,7 @@ let _ =
             }
           );
           test(
-            "get the record from Float32Array may not equal to the value which is setted",
+            "get the data from Float32Array may not equal to the value which is setted",
             () => {
               let (state, transform0) = createTransform(state^);
               let pos0 = (0.1, 0., 0.);

@@ -4,24 +4,31 @@ open MaterialType;
 
 open BasicMaterialType;
 
-let unsafeGetShaderIndex = (materialIndex: int, {basicMaterialRecord}) =>
-  ShaderIndexMapService.unsafeGetShaderIndex(materialIndex, basicMaterialRecord.shaderIndexMap);
+let getShaderIndex = (materialIndex: int, state) =>
+  ShaderIndicesService.getShaderIndex(
+    materialIndex,
+    RecordBasicMaterialMainService.getRecord(state).shaderIndices
+  );
 
-let hasShaderIndex = (materialIndex: int, {basicMaterialRecord}) =>
-  ShaderIndexMapService.hasShaderIndex(materialIndex, basicMaterialRecord.shaderIndexMap);
+/* let hasShaderIndex = (materialIndex: int, state) =>
+  ShaderIndicesService.hasShaderIndex(
+    materialIndex,
+    RecordBasicMaterialMainService.getRecord(state).shaderIndices
+  ); */
 
 let setShaderIndex =
   [@bs]
   (
-    (materialIndex: int, shaderIndex: int, {basicMaterialRecord} as state) => {
-      let {shaderIndexMap} as record = basicMaterialRecord;
+    (materialIndex: int, shaderIndex: int, state) => {
+      let {shaderIndices} as record = state |> RecordBasicMaterialMainService.getRecord;
       {
         ...state,
-        basicMaterialRecord: {
-          ...record,
-          shaderIndexMap:
-            ShaderIndexMapService.setShaderIndex(materialIndex, shaderIndex, shaderIndexMap)
-        }
+        basicMaterialRecord:
+          Some({
+            ...record,
+            shaderIndices:
+              ShaderIndicesService.setShaderIndex(materialIndex, shaderIndex, shaderIndices)
+          })
       }
     }
   );

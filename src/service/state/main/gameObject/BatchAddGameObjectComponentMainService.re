@@ -282,15 +282,17 @@ let batchAddBasicMaterialComponentForClone =
       isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
-      {basicMaterialRecord, gameObjectRecord} as state
+      {gameObjectRecord} as state
     ) => {
   ...state,
   basicMaterialRecord:
-    _batchAddMaterialComponentForClone(
-      isShareMaterial,
-      (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
-      (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent),
-      basicMaterialRecord
+    Some(
+      _batchAddMaterialComponentForClone(
+        isShareMaterial,
+        (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
+        (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent),
+        RecordBasicMaterialMainService.getRecord(state)
+      )
     )
 };
 
@@ -299,15 +301,17 @@ let batchAddLightMaterialComponentForClone =
       isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
-      {lightMaterialRecord, gameObjectRecord} as state
+      {gameObjectRecord} as state
     ) => {
   ...state,
   lightMaterialRecord:
-    _batchAddMaterialComponentForClone(
-      isShareMaterial,
-      (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
-      (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent),
-      lightMaterialRecord
+    Some(
+      _batchAddMaterialComponentForClone(
+        isShareMaterial,
+        (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
+        (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent),
+        RecordLightMaterialMainService.getRecord(state)
+      )
     )
 };
 

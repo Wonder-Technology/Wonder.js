@@ -833,69 +833,68 @@ let _ =
                 "test basic material",
                 () =>
                   test(
-                    "change copied state shouldn't affect source state",
-                    () => {
-                      open BasicMaterialType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        material1,
-                        material2,
-                        material3
-                      ) =
-                        _prepareBasicMaterialData(state);
-                      let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let record = copiedState.basicMaterialRecord;
-                      record.colorMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
-                      let {colorMap} = state.basicMaterialRecord;
-                      colorMap
-                      |> WonderCommonlib.SparseMapService.unsafeGet(material2)
-                      |> JudgeTool.isUndefined
-                      |> expect == false
-                    }
+                    "copy colors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            BasicMaterialAPI.getBasicMaterialColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          BasicMaterialAPI.setBasicMaterialColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
                   )
               );
               describe(
                 "test light material",
-                () =>
+                () => {
                   test(
-                    "change copied state shouldn't affect source state",
-                    () => {
-                      open LightMaterialType;
-                      let (
-                        state,
-                        gameObject1,
-                        gameObject2,
-                        gameObject3,
-                        material1,
-                        material2,
-                        material3
-                      ) =
-                        _prepareLightMaterialData(state);
-                      let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let record = copiedState.lightMaterialRecord;
-                      record.diffuseColorMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
-                      record.specularColorMap
-                      |> Obj.magic
-                      |> WonderCommonlib.SparseMapService.deleteVal(material2);
-                      let {diffuseColorMap, specularColorMap} = state.lightMaterialRecord;
-                      (
-                        diffuseColorMap
-                        |> WonderCommonlib.SparseMapService.unsafeGet(material2)
-                        |> JudgeTool.isUndefined,
-                        specularColorMap
-                        |> WonderCommonlib.SparseMapService.unsafeGet(material2)
-                        |> JudgeTool.isUndefined
+                    "copy diffuseColors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialAPI.getLightMaterialDiffuseColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          LightMaterialAPI.setLightMaterialDiffuseColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
                       )
-                      |> expect == (false, false)
-                    }
+                  );
+                  test(
+                    "copy specularColors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialAPI.getLightMaterialSpecularColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          LightMaterialAPI.setLightMaterialSpecularColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy shininess",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          LightMaterialAPI.getLightMaterialShininess,
+                          LightMaterialAPI.setLightMaterialShininess,
+                          () => (1., 2.)
+                        ),
+                        state
+                      )
                   )
+                }
               )
             }
           );

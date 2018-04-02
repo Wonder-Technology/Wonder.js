@@ -57,22 +57,20 @@ let disposeTransformComponent =
 let disposeBoxGeometryComponent =
   [@bs]
   (
-    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
+    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) =>
       /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
-      |> ignore; */
+         |> ignore; */
       DisposeBoxGeometryMainService.handleDisposeComponent(component, state)
-    }
   );
 
 let disposeCustomGeometryComponent =
   [@bs]
   (
-    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) => {
+    (uid: int, component: component, {settingRecord, gameObjectRecord} as state) =>
       /* TODO refactor: move to handleDisposeComponent */
       /* CurrentComponentDataMapService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
-      |> ignore; */
+         |> ignore; */
       DisposeCustomGeometryMainService.handleDisposeComponent(component, state)
-    }
   );
 
 let disposePerspectiveCameraProjectionComponent =
@@ -91,20 +89,30 @@ let disposePerspectiveCameraProjectionComponent =
 let disposeBasicMaterialComponent =
   [@bs]
   (
-    (uid: int, component: component, {basicMaterialRecord} as state) => {
+    (uid: int, component: component, state) => {
       ...state,
       basicMaterialRecord:
-        DisposeBasicMaterialService.handleDisposeComponent(component, basicMaterialRecord)
+        Some(
+          DisposeBasicMaterialService.handleDisposeComponent(
+            component,
+            RecordBasicMaterialMainService.getRecord(state)
+          )
+        )
     }
   );
 
 let disposeLightMaterialComponent =
   [@bs]
   (
-    (uid: int, component: component, {lightMaterialRecord} as state) => {
+    (uid: int, component: component, state) => {
       ...state,
       lightMaterialRecord:
-        DisposeLightMaterialService.handleDisposeComponent(component, lightMaterialRecord)
+        Some(
+          DisposeLightMaterialService.handleDisposeComponent(
+            component,
+            RecordLightMaterialMainService.getRecord(state)
+          )
+        )
     }
   );
 
@@ -214,33 +222,33 @@ let batchDisposeBoxGeometryComponent =
   [@bs] DisposeBoxGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
 let batchDisposeCustomGeometryComponent =
-    (uidMap, {settingRecord} as state, componentArray: array(component)) => {
+    (uidMap, {settingRecord} as state, componentArray: array(component)) =>
+  [@bs]
+  DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state);
 
-
-  [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, uidMap, state)
-};
-
-let batchDisposeBasicMaterialComponent =
-    (uidMap, {basicMaterialRecord} as state, componentArray: array(component)) => {
+let batchDisposeBasicMaterialComponent = (uidMap, state, componentArray: array(component)) => {
   ...state,
   basicMaterialRecord:
-    ComponentMapService.batchDisposeComponent(
-      uidMap,
-      basicMaterialRecord,
-      DisposeBasicMaterialService.handleBatchDisposeComponent,
-      componentArray
+    Some(
+      ComponentMapService.batchDisposeComponent(
+        uidMap,
+        RecordBasicMaterialMainService.getRecord(state),
+        DisposeBasicMaterialService.handleBatchDisposeComponent,
+        componentArray
+      )
     )
 };
 
-let batchDisposeLightMaterialComponent =
-    (uidMap, {lightMaterialRecord} as state, componentArray: array(component)) => {
+let batchDisposeLightMaterialComponent = (uidMap, state, componentArray: array(component)) => {
   ...state,
   lightMaterialRecord:
-    ComponentMapService.batchDisposeComponent(
-      uidMap,
-      lightMaterialRecord,
-      DisposeLightMaterialService.handleBatchDisposeComponent,
-      componentArray
+    Some(
+      ComponentMapService.batchDisposeComponent(
+        uidMap,
+        RecordLightMaterialMainService.getRecord(state),
+        DisposeLightMaterialService.handleBatchDisposeComponent,
+        componentArray
+      )
     )
 };
 

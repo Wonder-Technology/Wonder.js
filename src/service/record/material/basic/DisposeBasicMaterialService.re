@@ -7,13 +7,28 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(material, disposedIndexArray);
 
-let _disposeData = (material, {colorMap, shaderIndexMap, groupCountMap, gameObjectMap} as record) => {
-  let (shaderIndexMap, groupCountMap, gameObjectMap) =
-    DisposeMaterialService.disposeData(material, (shaderIndexMap, groupCountMap, gameObjectMap));
+let _disposeData =
+    (
+      material,
+      {shaderIndices, colors, defaultShaderIndex, defaultColor, groupCountMap, gameObjectMap} as record
+    ) => {
+  let (shaderIndices, groupCountMap, gameObjectMap) =
+    DisposeMaterialService.disposeData(
+      material,
+      (shaderIndices, groupCountMap, gameObjectMap),
+      defaultShaderIndex
+    );
   {
     ...record,
-    colorMap: disposeSparseMapData(material, colorMap),
-    shaderIndexMap,
+    shaderIndices,
+    colors:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+        RecordBasicMaterialMainService.getColorIndex(material),
+        RecordBasicMaterialMainService.getColorsSize(),
+        defaultColor,
+        colors
+      ),
     groupCountMap,
     gameObjectMap
   }

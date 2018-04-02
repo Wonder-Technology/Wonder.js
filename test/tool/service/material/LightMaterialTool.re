@@ -1,6 +1,6 @@
 open MainStateDataType;
 
-let getMaterialRecord = (state) => state.lightMaterialRecord;
+let getMaterialRecord = (state) => RecordLightMaterialMainService.getRecord(state);
 
 let createGameObject = (state) => {
   open LightMaterialAPI;
@@ -11,21 +11,28 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
+let getDefaultShaderIndex = (state) => getMaterialRecord(state).defaultShaderIndex;
+
+let getDefaultDiffuseColor = (state) => getMaterialRecord(state).defaultDiffuseColor;
+
+let getDefaultSpecularColor = (state) => getMaterialRecord(state).defaultSpecularColor;
+
+let getDefaultShininess = (state) => getMaterialRecord(state).defaultShininess;
+
 let initMaterials = InitLightMaterialMainService.init;
 
-let unsafeGetShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
-  ShaderIndexLightMaterialMainService.unsafeGetShaderIndex(materialIndex, state);
+let getShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+  ShaderIndexLightMaterialMainService.getShaderIndex(materialIndex, state);
 
-let hasShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
-  ShaderIndexLightMaterialMainService.hasShaderIndex(materialIndex, state);
-
+/* let hasShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+   ShaderIndexLightMaterialMainService.hasShaderIndex(materialIndex, state); */
 let setShaderIndex = (materialIndex: int, shaderIndex, state: MainStateDataType.state) =>
   [@bs] ShaderIndexLightMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
 let dispose = (material, state: MainStateDataType.state) => {
   ...state,
   lightMaterialRecord:
-    DisposeLightMaterialService.handleDisposeComponent(material, state.lightMaterialRecord)
+    Some(DisposeLightMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))
 };
 
 let initMaterial = (materialIndex, state) =>
@@ -38,9 +45,9 @@ let initMaterial = (materialIndex, state) =>
 
 let isMaterialDisposed = (material, state) => {
   open LightMaterialType;
-  let {disposedIndexArray} = state.lightMaterialRecord;
+  let {disposedIndexArray} = getMaterialRecord(state);
   disposedIndexArray |> Js.Array.includes(material)
 };
 
 let getGroupCount = (material, state) =>
-  GroupLightMaterialService.getGroupCount(material, state.lightMaterialRecord);
+  GroupLightMaterialService.getGroupCount(material, getMaterialRecord(state));

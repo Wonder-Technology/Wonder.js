@@ -7,9 +7,9 @@ let _initMaterialShader =
       gl,
       (materialIndex: int, shaderLibs, shaderRecord),
       (initShaderFuncTuple, setShaderIndexFunc),
-      (gameObjectMap, shaderIndexMap, state: MainStateDataType.state)
+      (gameObjectMap, shaderIndices, state: MainStateDataType.state)
     ) =>
-  ShaderIndexMapService.hasShaderIndex(materialIndex, shaderIndexMap) ?
+  ShaderIndicesService.hasShaderIndex(materialIndex, shaderIndices) ?
     state :
     [@bs]
     setShaderIndexFunc(

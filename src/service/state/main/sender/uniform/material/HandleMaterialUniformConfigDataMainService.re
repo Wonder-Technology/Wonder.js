@@ -4,7 +4,7 @@ let addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), send
     HandleUniformRenderObjectMaterialMainService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      OperateBasicMaterialMainService.unsafeGetColor
+      OperateBasicMaterialMainService.getColor
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -24,19 +24,19 @@ let addLightMaterialSendData = ((field, pos, name, type_, uniformCacheMap), send
     HandleUniformRenderObjectMaterialMainService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      OperateLightMaterialMainService.unsafeGetDiffuseColor
+      OperateLightMaterialMainService.getDiffuseColor
     )
   | "specularColor" =>
     HandleUniformRenderObjectMaterialMainService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      OperateLightMaterialMainService.unsafeGetSpecularColor
+      OperateLightMaterialMainService.getSpecularColor
     )
   | "shininess" =>
     HandleUniformRenderObjectMaterialMainService.addUniformSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      OperateLightMaterialMainService.unsafeGetShininess
+      OperateLightMaterialMainService.getShininess
     )
   | _ =>
     WonderLog.Log.fatal(

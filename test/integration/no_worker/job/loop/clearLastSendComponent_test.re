@@ -50,7 +50,7 @@ let _ =
                   let (state, gameObject2, _, material2, _) =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
                   let state = state |> GameObjectAPI.initGameObject(gameObject2);
-                  let colorArr2 = [|0.0, 0.1, 0.2|];
+                  let colorArr2 = [|0.0, 0.5, 0.0|];
                   let state = state |> BasicMaterialAPI.setBasicMaterialColor(material2, colorArr2);
                   let state = state |> DirectorTool.runWithDefaultTime;
                   uniform3f

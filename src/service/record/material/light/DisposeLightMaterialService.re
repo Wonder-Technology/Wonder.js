@@ -11,22 +11,50 @@ let _disposeData =
     (
       material,
       {
-        diffuseColorMap,
-        specularColorMap,
-        shininessMap,
-        shaderIndexMap,
+        shaderIndices,
+        diffuseColors,
+        specularColors,
+        shininess,
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShininess,
         groupCountMap,
         gameObjectMap
       } as record
     ) => {
-  let (shaderIndexMap, groupCountMap, gameObjectMap) =
-    DisposeMaterialService.disposeData(material, (shaderIndexMap, groupCountMap, gameObjectMap));
+  let (shaderIndices, groupCountMap, gameObjectMap) =
+    DisposeMaterialService.disposeData(
+      material,
+      (shaderIndices, groupCountMap, gameObjectMap),
+      defaultShaderIndex
+    );
   {
     ...record,
-    diffuseColorMap: disposeSparseMapData(material, diffuseColorMap),
-    specularColorMap: disposeSparseMapData(material, specularColorMap),
-    shininessMap: disposeSparseMapData(material, shininessMap),
-    shaderIndexMap,
+    shaderIndices,
+    diffuseColors:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+        RecordLightMaterialMainService.getDiffuseColorIndex(material),
+        RecordLightMaterialMainService.getDiffuseColorsSize(),
+        defaultDiffuseColor,
+        diffuseColors
+      ),
+    specularColors:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+        RecordLightMaterialMainService.getSpecularColorIndex(material),
+        RecordLightMaterialMainService.getSpecularColorsSize(),
+        defaultSpecularColor,
+        specularColors
+      ),
+    shininess:
+      [@bs]
+      DisposeTypeArrayService.deleteAndResetFloat32(
+        RecordLightMaterialMainService.getShininessIndex(material),
+        defaultShininess,
+        shininess
+      ),
     groupCountMap,
     gameObjectMap
   }

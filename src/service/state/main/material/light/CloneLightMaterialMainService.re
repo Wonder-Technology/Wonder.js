@@ -6,9 +6,9 @@ let _getData =
   [@bs]
   (
     (sourceComponent, state: MainStateDataType.state) => (
-      OperateLightMaterialMainService.unsafeGetDiffuseColor(sourceComponent, state),
-      OperateLightMaterialMainService.unsafeGetSpecularColor(sourceComponent, state),
-      OperateLightMaterialMainService.unsafeGetShininess(sourceComponent, state)
+      OperateLightMaterialMainService.getDiffuseColor(sourceComponent, state),
+      OperateLightMaterialMainService.getSpecularColor(sourceComponent, state),
+      OperateLightMaterialMainService.getShininess(sourceComponent, state)
     )
   );
 
@@ -29,12 +29,8 @@ let _setData =
   );
 
 let handleCloneComponent =
-    (
-      sourceComponent,
-      countRangeArr: array(int),
-      isShareMaterial: bool,
-      {lightMaterialRecord} as state
-    ) =>
+    (sourceComponent, countRangeArr: array(int), isShareMaterial: bool, state) => {
+  let {shaderIndices} = state |> RecordLightMaterialMainService.getRecord;
   CloneMaterialMainService.handleCloneComponent(
     (sourceComponent, countRangeArr, isShareMaterial),
     (
@@ -43,5 +39,6 @@ let handleCloneComponent =
       _setData |> Obj.magic,
       ShaderIndexLightMaterialMainService.setShaderIndex
     ),
-    (lightMaterialRecord.shaderIndexMap, state)
-  );
+    (shaderIndices, state)
+  )
+};

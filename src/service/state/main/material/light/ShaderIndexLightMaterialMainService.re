@@ -4,24 +4,31 @@ open MainStateDataType;
 
 open LightMaterialType;
 
-let unsafeGetShaderIndex = (materialIndex: int, {lightMaterialRecord}) =>
-  ShaderIndexMapService.unsafeGetShaderIndex(materialIndex, lightMaterialRecord.shaderIndexMap);
+let getShaderIndex = (materialIndex: int, state) =>
+  ShaderIndicesService.getShaderIndex(
+    materialIndex,
+    RecordLightMaterialMainService.getRecord(state).shaderIndices
+  );
 
-let hasShaderIndex = (materialIndex: int, {lightMaterialRecord}) =>
-  ShaderIndexMapService.hasShaderIndex(materialIndex, lightMaterialRecord.shaderIndexMap);
+/* let hasShaderIndex = (materialIndex: int, state) =>
+  ShaderIndicesService.hasShaderIndex(
+    materialIndex,
+    RecordLightMaterialMainService.getRecord(state).shaderIndices
+  ); */
 
 let setShaderIndex =
   [@bs]
   (
-    (materialIndex: int, shaderIndex: int, {lightMaterialRecord} as state) => {
-      let {shaderIndexMap} as record = lightMaterialRecord;
+    (materialIndex: int, shaderIndex: int, state) => {
+      let {shaderIndices} as record = state |> RecordLightMaterialMainService.getRecord;
       {
         ...state,
-        lightMaterialRecord: {
-          ...record,
-          shaderIndexMap:
-            ShaderIndexMapService.setShaderIndex(materialIndex, shaderIndex, shaderIndexMap)
-        }
+        lightMaterialRecord:
+          Some({
+            ...record,
+            shaderIndices:
+              ShaderIndicesService.setShaderIndex(materialIndex, shaderIndex, shaderIndices)
+          })
       }
     }
   );

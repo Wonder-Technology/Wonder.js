@@ -36,11 +36,31 @@ let deleteSingleValueBySwapAndResetUint8TypeArr = (sourceIndex, lastIndex, typeA
 let deleteAndResetFloat32TypeArr =
   [@bs]
   (
-    (sourceIndex,  length, defaultValueArr, typeArr) => {
+    (sourceIndex, length, defaultValueArr, typeArr) => {
       open Js.Typed_array;
       for (i in 0 to length - 1) {
         Float32Array.unsafe_set(typeArr, sourceIndex + i, defaultValueArr[i])
       };
+      typeArr
+    }
+  );
+
+let deleteAndResetFloat32 =
+  [@bs]
+  (
+    (sourceIndex, defaultValue, typeArr) => {
+      open Js.Typed_array;
+      Float32Array.unsafe_set(typeArr, sourceIndex, defaultValue);
+      typeArr
+    }
+  );
+
+let deleteAndResetUint32 =
+  [@bs]
+  (
+    (sourceIndex, defaultValue, typeArr) => {
+      open Js.Typed_array;
+      Uint32Array.unsafe_set(typeArr, sourceIndex, defaultValue);
       typeArr
     }
   );

@@ -72,28 +72,45 @@ let _ =
           )
       );
       describe(
-        "unsafeGetBasicMaterialColor",
-        () =>
+        "operate data",
+        () => {
           test(
-            "test default color",
-            () => {
-              let (state, material) = createBasicMaterial(state^);
-              unsafeGetBasicMaterialColor(material, state) |> expect == [|1., 1., 1.|]
-            }
-          )
-      );
-      describe(
-        "setBasicMaterialColor",
-        () =>
-          test(
-            "test set color",
+            "get the data from array buffer may not equal to the value which is setted",
             () => {
               let (state, material) = createBasicMaterial(state^);
               let color = [|0.2, 0.3, 0.5|];
               let state = state |> setBasicMaterialColor(material, color);
-              unsafeGetBasicMaterialColor(material, state) |> expect == color
+              getBasicMaterialColor(material, state)
+              |> expect == [|0.20000000298023224, 0.30000001192092896, 0.5|]
             }
+          );
+          describe(
+            "getBasicMaterialColor",
+            () =>
+              test(
+                "test default color",
+                () => {
+                  let (state, material) = createBasicMaterial(state^);
+                  getBasicMaterialColor(material, state) |> expect == [|1., 1., 1.|]
+                }
+              )
+          );
+          describe(
+            "setBasicMaterialColor",
+            () =>
+              test(
+                "test set color",
+                () => {
+                  let (state, material) = createBasicMaterial(state^);
+                  let color = [|0.2, 0.3, 0.5|];
+                  let state = state |> setBasicMaterialColor(material, color);
+                  getBasicMaterialColor(material, state)
+                  |> TypeArrayTool.truncateArray
+                  |> expect == color
+                }
+              )
           )
+        }
       );
       describe(
         "disposeComponent",
@@ -134,9 +151,9 @@ let _ =
               );
               describe(
                 "test dispose not shared material",
-                () =>
+                () => {
                   test(
-                    "remove from colorMap, shaderIndexMap, gameObjectMap",
+                    "remove from gameObjectMap",
                     () => {
                       open BasicMaterialType;
                       let (state, gameObject1, material1) =
@@ -147,21 +164,98 @@ let _ =
                              gameObject1,
                              material1
                            );
-                      let {colorMap, shaderIndexMap, gameObjectMap} = state.basicMaterialRecord;
-                      (
-                        colorMap |> WonderCommonlib.SparseMapService.has(material1),
-                        shaderIndexMap |> WonderCommonlib.SparseMapService.has(material1),
-                        gameObjectMap |> WonderCommonlib.SparseMapService.has(material1)
+                      let {gameObjectMap} = BasicMaterialTool.getMaterialRecord(state);
+                      gameObjectMap
+                      |> WonderCommonlib.SparseMapService.has(material1)
+                      |> expect == false
+                    }
+                  );
+                  describe(
+                    "test remove from type array",
+                    () => {
+                      let _testRemoveFromTypeArr =
+                          (
+                            state,
+                            valueTuple,
+                            defaultValue,
+                            (createGameObjectFunc, getValueFunc, setValueFunc)
+                          ) =>
+                        AllMaterialTool.testRemoveFromTypeArr(
+                          state,
+                          valueTuple,
+                          defaultValue,
+                          (
+                            GameObjectAPI.disposeGameObjectBasicMaterialComponent,
+                            createGameObjectFunc,
+                            getValueFunc,
+                            setValueFunc
+                          )
+                        );
+                      describe(
+                        "remove from shaderIndices",
+                        () =>
+                          test(
+                            "reset removed one's value",
+                            () =>
+                              _testRemoveFromTypeArr(
+                                state,
+                                (1, 2),
+                                BasicMaterialTool.getDefaultShaderIndex(state^),
+                                (
+                                  BasicMaterialTool.createGameObject,
+                                  BasicMaterialTool.getShaderIndex,
+                                  BasicMaterialTool.setShaderIndex
+                                )
+                              )
+                          )
+                      );
+                      describe(
+                        "remove from colors",
+                        () =>
+                          test(
+                            "reset removed one's value",
+                            () =>
+                              _testRemoveFromTypeArr(
+                                state,
+                                ([|1., 0.2, 0.3|], [|0., 0.2, 0.3|]),
+                                BasicMaterialTool.getDefaultColor(state^),
+                                (
+                                  BasicMaterialTool.createGameObject,
+                                  (material, state) =>
+                                    getBasicMaterialColor(material, state)
+                                    |> TypeArrayTool.truncateArray,
+                                  setBasicMaterialColor
+                                )
+                              )
+                          )
                       )
-                      |> expect == (false, false, false)
                     }
                   )
+                }
               )
             }
           );
           describe(
             "test add new one after dispose old one",
             () => {
+              test(
+                "new one's data should be default value",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let color = [|0.2, 0.3, 0.5|];
+                  let state = state |> setBasicMaterialColor(material1, color);
+                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
+                  let state =
+                    state
+                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
+                  let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
+                  getBasicMaterialColor(material3, state)
+                  |> expect == BasicMaterialTool.getDefaultColor(state)
+                }
+              );
               test(
                 "use disposed index as new index firstly",
                 () => {

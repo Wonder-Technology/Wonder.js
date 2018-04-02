@@ -174,36 +174,50 @@ let addCustomGeometryComponent =
   }
 };
 
-let addBasicMaterialComponent =
-    (uid: int, component: component, {basicMaterialRecord, gameObjectRecord} as state) => {
-  ...state,
-  basicMaterialRecord:
-    basicMaterialRecord
-    |> _addSharableComponent(
-         (
-           uid,
-           component,
-           gameObjectRecord.basicMaterialMap,
-           GameObjectBasicMaterialService.getGameObject(component, basicMaterialRecord)
-         ),
-         (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent)
-       )
+let addBasicMaterialComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  {
+    ...state,
+    basicMaterialRecord:
+      Some(
+        basicMaterialRecord
+        |> _addSharableComponent(
+             (
+               uid,
+               component,
+               gameObjectRecord.basicMaterialMap,
+               GameObjectBasicMaterialService.getGameObject(component, basicMaterialRecord)
+             ),
+             (
+               GroupBasicMaterialService.increaseGroupCount,
+               AddBasicMaterialService.handleAddComponent
+             )
+           )
+      )
+  }
 };
 
-let addLightMaterialComponent =
-    (uid: int, component: component, {lightMaterialRecord, gameObjectRecord} as state) => {
-  ...state,
-  lightMaterialRecord:
-    lightMaterialRecord
-    |> _addSharableComponent(
-         (
-           uid,
-           component,
-           gameObjectRecord.lightMaterialMap,
-           GameObjectLightMaterialService.getGameObject(component, lightMaterialRecord)
-         ),
-         (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent)
-       )
+let addLightMaterialComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
+  let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  {
+    ...state,
+    lightMaterialRecord:
+      Some(
+        lightMaterialRecord
+        |> _addSharableComponent(
+             (
+               uid,
+               component,
+               gameObjectRecord.lightMaterialMap,
+               GameObjectLightMaterialService.getGameObject(component, lightMaterialRecord)
+             ),
+             (
+               GroupLightMaterialService.increaseGroupCount,
+               AddLightMaterialService.handleAddComponent
+             )
+           )
+      )
+  }
 };
 
 let addMeshRendererComponent =

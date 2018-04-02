@@ -21,9 +21,9 @@ let _getShaderTuple = (materialIndex, state: MainStateDataType.state) => {
   (materialIndex, _getShaderLibs(shaderRecord), shaderRecord)
 };
 
-let _getStateTuple = ({lightMaterialRecord} as state) => {
-  let {gameObjectMap, shaderIndexMap} = lightMaterialRecord;
-  (gameObjectMap, shaderIndexMap, state)
+let _getStateTuple = (state) => {
+  let {gameObjectMap, shaderIndices} = state |> RecordLightMaterialMainService.getRecord;
+  (gameObjectMap, shaderIndices, state)
 };
 
 let initMaterial =
@@ -53,7 +53,7 @@ let handleInitComponent = (gl, index: int, state: MainStateDataType.state) =>
     _getStateTuple(state)
   );
 
-let init = (gl, {lightMaterialRecord} as state) => {
-  let {index, disposedIndexArray} = lightMaterialRecord;
+let init = (gl, state) => {
+  let {index, disposedIndexArray} = RecordLightMaterialMainService.getRecord(state);
   InitMaterialMainService.init(gl, (index, disposedIndexArray), initMaterial, state)
 };

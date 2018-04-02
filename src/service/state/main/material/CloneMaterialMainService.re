@@ -10,12 +10,9 @@ let _handleNotShareMaterial =
       sourceComponent,
       countRangeArr,
       (createFunc, getDataFunc, setDataFunc, setShaderIndexFunc),
-      (shaderIndexMap, state)
+      (shaderIndices, state)
     ) => {
-  let hasShaderIndex = ShaderIndexMapService.hasShaderIndex(sourceComponent, shaderIndexMap);
-  let shaderIndex =
-    hasShaderIndex ?
-      ShaderIndexMapService.unsafeGetShaderIndex(sourceComponent, shaderIndexMap) : (-1);
+  let shaderIndex = ShaderIndicesService.getShaderIndex(sourceComponent, shaderIndices);
   let dataTuple = [@bs] getDataFunc(sourceComponent, state);
   countRangeArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -24,8 +21,7 @@ let _handleNotShareMaterial =
          ((state, componentArr), _) => {
            let (state, index) = [@bs] createFunc(state);
            let state = [@bs] setDataFunc(index, dataTuple, state);
-           let state =
-             hasShaderIndex ? [@bs] setShaderIndexFunc(index, shaderIndex, state) : state;
+           let state = [@bs] setShaderIndexFunc(index, shaderIndex, state);
            (state, componentArr |> ArrayService.push(index))
          }
        ),

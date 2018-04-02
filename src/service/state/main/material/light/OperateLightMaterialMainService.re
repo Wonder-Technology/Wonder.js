@@ -4,37 +4,58 @@ open LightMaterialType;
 
 open MainStateDataType;
 
-let unsafeGetDiffuseColor = (material, {lightMaterialRecord}) =>
-  ColorMapService.unsafeGetColor(material, lightMaterialRecord.diffuseColorMap);
+let getDiffuseColor = (material, state) =>
+  RecordLightMaterialMainService.getDiffuseColor(
+    material,
+    RecordLightMaterialMainService.getRecord(state).diffuseColors
+  );
 
-let setDiffuseColor = (material, color: array(float), {lightMaterialRecord} as state) => {
-  ...state,
-  lightMaterialRecord: {
-    ...lightMaterialRecord,
-    diffuseColorMap: ColorMapService.setColor(material, color, lightMaterialRecord.diffuseColorMap)
+let setDiffuseColor = (material, color: array(float), state) => {
+  let {diffuseColors} as lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...lightMaterialRecord,
+        diffuseColors:
+          RecordLightMaterialMainService.setDiffuseColor(material, color, diffuseColors)
+      })
   }
 };
 
-let unsafeGetSpecularColor = (material, {lightMaterialRecord}) =>
-  ColorMapService.unsafeGetColor(material, lightMaterialRecord.specularColorMap);
+let getSpecularColor = (material, state) =>
+  RecordLightMaterialMainService.getSpecularColor(
+    material,
+    RecordLightMaterialMainService.getRecord(state).specularColors
+  );
 
-let setSpecularColor = (material, color: array(float), {lightMaterialRecord} as state) => {
-  ...state,
-  lightMaterialRecord: {
-    ...lightMaterialRecord,
-    specularColorMap:
-      ColorMapService.setColor(material, color, lightMaterialRecord.specularColorMap)
+let setSpecularColor = (material, color: array(float), state) => {
+  let {specularColors} as lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...lightMaterialRecord,
+        specularColors:
+          RecordLightMaterialMainService.setSpecularColor(material, color, specularColors)
+      })
   }
 };
 
-let unsafeGetShininess = (material, {lightMaterialRecord}) =>
-  lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapService.unsafeGet(material);
+let getShininess = (material, state) =>
+  RecordLightMaterialMainService.getShininess(
+    material,
+    RecordLightMaterialMainService.getRecord(state).shininess
+  );
 
-let setShininess = (material, shininess: float, {lightMaterialRecord} as state) => {
-  ...state,
-  lightMaterialRecord: {
-    ...lightMaterialRecord,
-    shininessMap:
-      lightMaterialRecord.shininessMap |> WonderCommonlib.SparseMapService.set(material, shininess)
+let setShininess = (material, value, state) => {
+  let {shininess} as lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...lightMaterialRecord,
+        shininess: RecordLightMaterialMainService.setShininess(material, value, shininess)
+      })
   }
 };

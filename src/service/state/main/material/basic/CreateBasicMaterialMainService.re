@@ -2,19 +2,17 @@ open MainStateDataType;
 
 open BasicMaterialType;
 
-let _initDataWhenCreate = (index, {colorMap} as record) =>
-  ColorMapService.{...record, colorMap: setDefaultColor(index, colorMap)};
-
 let create =
   [@bs]
   (
-    ({basicMaterialRecord} as state) => {
-      let {index, disposedIndexArray} = basicMaterialRecord;
+    ({settingRecord} as state) => {
+      let {index, disposedIndexArray} as basicMaterialRecord =
+        state |> RecordBasicMaterialMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-      (
-        {...state, basicMaterialRecord: {..._initDataWhenCreate(index, basicMaterialRecord), index: newIndex}},
-        index
-      )
+      ({...state, basicMaterialRecord: Some({...basicMaterialRecord, index: newIndex})}, index)
+      |> BufferService.checkNotExceedMaxCount(
+           BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+         )
     }
   );

@@ -65,7 +65,7 @@ let _ =
             "u_diffuse",
             (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
               state |> LightMaterialAPI.setLightMaterialDiffuseColor(material, [|0., 1., 0.2|]),
-            [0., 1., 0.2],
+            [0., 1., 0.20000000298023224],
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ()
           );

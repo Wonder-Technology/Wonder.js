@@ -4,33 +4,17 @@ open MainStateDataType;
 
 open LightMaterialType;
 
-let _setDefaultShininess = (index: int, map) =>
-  map |> WonderCommonlib.SparseMapService.set(index, 32.);
-
-let _initDataWhenCreate = (index, {diffuseColorMap, specularColorMap, shininessMap} as record) =>
-  ColorMapService.{
-    ...record,
-    diffuseColorMap: setDefaultColor(index, diffuseColorMap),
-    specularColorMap: setDefaultColor(index, specularColorMap),
-    shininessMap: _setDefaultShininess(index, shininessMap)
-  };
-
 let create =
   [@bs]
   (
-    ({lightMaterialRecord} as state) => {
-      let {index, disposedIndexArray} = lightMaterialRecord;
+    ({settingRecord} as state) => {
+      let {index, disposedIndexArray} as lightMaterialRecord =
+        state |> RecordLightMaterialMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-      (
-        {
-          ...state,
-          lightMaterialRecord: {
-            ..._initDataWhenCreate(index, lightMaterialRecord),
-            index: newIndex
-          }
-        },
-        index
-      )
+      ({...state, lightMaterialRecord: Some({...lightMaterialRecord, index: newIndex})}, index)
+      |> BufferService.checkNotExceedMaxCount(
+           BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+         )
     }
   );
