@@ -23,7 +23,7 @@ let _cloneGeometryComponent =
   let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
   let customGeometryType = CurrentComponentDataMapService.getCustomGeometryType();
   switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
-  | Some((component, type_, _, _)) =>
+  | Some((component, type_)) =>
     switch type_ {
     | type_ when type_ === boxGeometryType =>
       let (componentRecord, clonedComponentArr) =

@@ -20,8 +20,10 @@ let _render = (gl, state: MainStateDataType.state) =>
              if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
                FrontRenderLightInstanceJobCommon.render(gl, uid, state)
              } else {
-               let (state, _, (geometryIndex, _, _, (_, _, _, getIndicesCountFunc))) =
+               let (state, _, (geometryIndex, type_)) =
                  [@bs] FrontRenderLightJobCommon.render(gl, uid, state);
+               let getIndicesCountFunc =
+                 CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
                DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),

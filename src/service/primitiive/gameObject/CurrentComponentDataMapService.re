@@ -30,9 +30,15 @@ let unsafeGetComponentData = (uid, currentComponentDataMap) =>
 let hasComponent = (uid, currentComponentDataMap, targetType_) =>
   switch (getComponentData(uid, currentComponentDataMap)) {
   | None => false
-  | Some((_, type_, _, _)) => type_ === targetType_
+  | Some((_, type_)) => type_ === targetType_
   };
 
-let getBoxGeometryType = () => "box";
+let getBoxGeometryType = () => 0;
 
-let getCustomGeometryType = () => "custom";
+let getCustomGeometryType = () => 1;
+
+let getGetIndicesCountFunc = (type_) =>
+  switch type_ {
+  | type_ when type_ === getBoxGeometryType() => IndicesBoxGeometryMainService.getIndicesCount
+  | _ => IndicesCustomGeometryMainService.getIndicesCount
+  };

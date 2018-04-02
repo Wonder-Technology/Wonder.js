@@ -35,7 +35,7 @@ let getGeometryComponentData =
   );
 
 let unsafeGetGeometryComponent = (uid: int, {currentGeometryDataMap}) => {
-  let (component, _, _, _) =
+  let (component, _) =
     currentGeometryDataMap |> CurrentComponentDataMapService.unsafeGetComponentData(uid);
   component
 };

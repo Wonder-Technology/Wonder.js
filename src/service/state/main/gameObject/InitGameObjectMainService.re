@@ -6,7 +6,7 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
   let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
   let state =
     switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
-    | Some((component, type_, _, _)) =>
+    | Some((component, type_)) =>
       switch type_ {
       | type_ when type_ === boxGeometryType =>
         InitBoxGeometryMainService.handleInitComponent(component, state)

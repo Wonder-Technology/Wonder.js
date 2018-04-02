@@ -8,12 +8,38 @@ let _directlySendAttributeData =
       shaderIndex,
       (
         geometryIndex,
-        _,
-        (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
-        (getVerticesFunc, getNormalsFunc, getIndicesFunc, _)
+        type_
+        /* (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
+           (getVerticesFunc, getNormalsFunc, getIndicesFunc, _) */
       ),
-      state
-    ) =>
+      {vboBufferRecord} as state
+    ) => {
+  let (
+    (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
+    (getVerticesFunc, getNormalsFunc, getIndicesFunc)
+  ) =
+    switch type_ {
+    | type_ when type_ === CurrentComponentDataMapService.getBoxGeometryType() => (
+        (vboBufferRecord.boxGeometryVertexBufferMap, vboBufferRecord.boxGeometryNormalBufferMap, vboBufferRecord.boxGeometryElementArrayBufferMap),
+        (
+          VerticesBoxGeometryMainService.getVertices,
+          NormalsBoxGeometryMainService.getNormals,
+          IndicesBoxGeometryMainService.getIndices
+        )
+      )
+    | _ => (
+        (
+          vboBufferRecord.customGeometryVertexBufferMap,
+          vboBufferRecord.customGeometryNormalBufferMap,
+          vboBufferRecord.customGeometryElementArrayBufferMap
+        ),
+        (
+          VerticesCustomGeometryMainService.getVertices,
+          NormalsCustomGeometryMainService.getNormals,
+          IndicesCustomGeometryMainService.getIndices
+        )
+      )
+    };
   state
   |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(
@@ -58,15 +84,10 @@ let _directlySendAttributeData =
          }
        ),
        state
-     );
+     )
+};
 
-let _sendAttributeData =
-    (
-      gl,
-      shaderIndex,
-      (geometryIndex, type_, _, (getVerticesFunc, getNormalsFunc, getIndicesFunc, _)) as geometryData,
-      state
-    ) => {
+let _sendAttributeData = (gl, shaderIndex, (geometryIndex, type_) as geometryData, state) => {
   let {lastSendGeometry} as record = state.glslSenderRecord;
   switch lastSendGeometry {
   | Some((lastSendGeometryIndex, lastSendGeometryType))

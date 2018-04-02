@@ -76,28 +76,28 @@ let _addCurrentBoxGeometryComponentData =
     (
       uid,
       component,
-      {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap},
+      /* {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap}, */
       {currentGeometryDataMap}
     ) =>
   CurrentComponentDataMapService.addToMap(
     uid,
     (
       component,
-      CurrentComponentDataMapService.getBoxGeometryType(),
-      (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
+      CurrentComponentDataMapService.getBoxGeometryType()
+      /* (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
       (
         VerticesBoxGeometryMainService.getVertices,
         NormalsBoxGeometryMainService.getNormals,
         IndicesBoxGeometryMainService.getIndices,
         IndicesBoxGeometryMainService.getIndicesCount
-      )
+      ) */
     ),
     currentGeometryDataMap
   );
 
 let addBoxGeometryComponent =
-    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
-  _addCurrentBoxGeometryComponentData(uid, component, vboBufferRecord, gameObjectRecord) |> ignore;
+    (uid: int, component: component, { gameObjectRecord} as state) => {
+  _addCurrentBoxGeometryComponentData(uid, component, gameObjectRecord) |> ignore;
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   {
     ...state,
@@ -121,19 +121,19 @@ let _addCurrentCustomGeometryComponentData =
     (
       uid,
       component,
-      {
+      /* {
         customGeometryVertexBufferMap,
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap
-      },
+      }, */
       {currentGeometryDataMap}
     ) =>
   CurrentComponentDataMapService.addToMap(
     uid,
     (
       component,
-      CurrentComponentDataMapService.getCustomGeometryType(),
-      (
+      CurrentComponentDataMapService.getCustomGeometryType()
+      /* (
         customGeometryVertexBufferMap,
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap
@@ -143,14 +143,14 @@ let _addCurrentCustomGeometryComponentData =
         NormalsCustomGeometryMainService.getNormals,
         IndicesCustomGeometryMainService.getIndices,
         IndicesCustomGeometryMainService.getIndicesCount
-      )
+      ) */
     ),
     currentGeometryDataMap
   );
 
 let addCustomGeometryComponent =
-    (uid: int, component: component, {vboBufferRecord, gameObjectRecord} as state) => {
-  _addCurrentCustomGeometryComponentData(uid, component, vboBufferRecord, gameObjectRecord)
+    (uid: int, component: component, {gameObjectRecord} as state) => {
+  _addCurrentCustomGeometryComponentData(uid, component, gameObjectRecord)
   |> ignore;
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
   {

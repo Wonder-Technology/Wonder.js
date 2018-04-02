@@ -149,117 +149,105 @@ let _batchAddSharableGeometryComponent =
 let _batchAddBoxGeometryComponentDataForClone =
   [@bs]
   (
-    ((currentGeometryDataMap, type_, bufferMapTuple), component, uid) =>
+    ((currentGeometryDataMap, type_), component, uid) =>
       /* let component = Array.unsafe_get(componentArr, index); */
       CurrentComponentDataMapService.addToMap(
         uid,
         (
           component,
           /* CurrentComponentDataMapService.getBoxGeometryType(), */
-          type_,
-          bufferMapTuple,
-          (
-            VerticesBoxGeometryMainService.getVertices,
-            NormalsBoxGeometryMainService.getNormals,
-            IndicesBoxGeometryMainService.getIndices,
-            IndicesBoxGeometryMainService.getIndicesCount
-          )
+          type_
+          /* bufferMapTuple,
+             (
+               VerticesBoxGeometryMainService.getVertices,
+               NormalsBoxGeometryMainService.getNormals,
+               IndicesBoxGeometryMainService.getIndices,
+               IndicesBoxGeometryMainService.getIndicesCount
+             ) */
         ),
         currentGeometryDataMap
       )
   );
 
 let batchAddBoxGeometryComponentForClone =
-    (
-      uidArr: array(int),
-      componentArr: array(component),
-      {vboBufferRecord, gameObjectRecord} as state
-    ) => {
-  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord;
-  {
-    ...state,
-    boxGeometryRecord:
-      Some(
-        _batchAddSharableGeometryComponent(
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  /* let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord; */
+  ...state,
+  boxGeometryRecord:
+    Some(
+      _batchAddSharableGeometryComponent(
+        (
+          uidArr,
+          componentArr,
           (
-            uidArr,
-            componentArr,
-            (
-              gameObjectRecord.currentGeometryDataMap,
-              CurrentComponentDataMapService.getBoxGeometryType(),
-              (
-                boxGeometryVertexBufferMap,
-                boxGeometryNormalBufferMap,
-                boxGeometryElementArrayBufferMap
-              )
-            )
-          ),
-          GroupBoxGeometryService.increaseGroupCount,
-          _batchAddBoxGeometryComponentDataForClone,
-          state |> RecordBoxGeometryMainService.getRecord
-        )
+            gameObjectRecord.currentGeometryDataMap,
+            CurrentComponentDataMapService.getBoxGeometryType()
+            /* (
+                 boxGeometryVertexBufferMap,
+                 boxGeometryNormalBufferMap,
+                 boxGeometryElementArrayBufferMap
+               ) */
+          )
+        ),
+        GroupBoxGeometryService.increaseGroupCount,
+        _batchAddBoxGeometryComponentDataForClone,
+        state |> RecordBoxGeometryMainService.getRecord
       )
-  }
+    )
 };
 
 let _batchAddCustomGeometryComponentDataForClone =
   [@bs]
   (
-    ((currentGeometryDataMap, type_, bufferMapTuple), component, uid) =>
+    ((currentGeometryDataMap, type_), component, uid) =>
       /* let component = Array.unsafe_get(componentArr, index); */
       CurrentComponentDataMapService.addToMap(
         uid,
         (
           component,
           /* CurrentComponentDataMapService.getCustomGeometryType(), */
-          type_,
-          bufferMapTuple,
-          (
-            VerticesCustomGeometryMainService.getVertices,
-            NormalsCustomGeometryMainService.getNormals,
-            IndicesCustomGeometryMainService.getIndices,
-            IndicesCustomGeometryMainService.getIndicesCount
-          )
+          type_
+          /* bufferMapTuple,
+             (
+               VerticesCustomGeometryMainService.getVertices,
+               NormalsCustomGeometryMainService.getNormals,
+               IndicesCustomGeometryMainService.getIndices,
+               IndicesCustomGeometryMainService.getIndicesCount
+             ) */
         ),
         currentGeometryDataMap
       )
   );
 
 let batchAddCustomGeometryComponentForClone =
-    (
-      uidArr: array(int),
-      componentArr: array(component),
-      {vboBufferRecord, gameObjectRecord} as state
-    ) => {
-  let {
-    customGeometryVertexBufferMap,
-    customGeometryNormalBufferMap,
-    customGeometryElementArrayBufferMap
-  } = vboBufferRecord;
-  {
-    ...state,
-    customGeometryRecord:
-      Some(
-        _batchAddSharableGeometryComponent(
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  /* let {
+       customGeometryVertexBufferMap,
+       customGeometryNormalBufferMap,
+       customGeometryElementArrayBufferMap
+     } = vboBufferRecord; */
+  ...state,
+  customGeometryRecord:
+    Some(
+      _batchAddSharableGeometryComponent(
+        (
+          uidArr,
+          componentArr,
           (
-            uidArr,
-            componentArr,
-            (
-              gameObjectRecord.currentGeometryDataMap,
-              CurrentComponentDataMapService.getCustomGeometryType(),
-              (
-                customGeometryVertexBufferMap,
-                customGeometryNormalBufferMap,
-                customGeometryElementArrayBufferMap
-              )
-            )
-          ),
-          GroupCustomGeometryService.increaseGroupCount,
-          _batchAddCustomGeometryComponentDataForClone,
-          state |> RecordCustomGeometryMainService.getRecord
-        )
+            gameObjectRecord.currentGeometryDataMap,
+            CurrentComponentDataMapService.getCustomGeometryType()
+            /* (
+                 customGeometryVertexBufferMap,
+                 customGeometryNormalBufferMap,
+                 customGeometryElementArrayBufferMap
+               ) */
+          )
+        ),
+        GroupCustomGeometryService.increaseGroupCount,
+        _batchAddCustomGeometryComponentDataForClone,
+        state |> RecordCustomGeometryMainService.getRecord
       )
-  }
+    )
 };
 
 let _batchAddMaterialComponentForClone =

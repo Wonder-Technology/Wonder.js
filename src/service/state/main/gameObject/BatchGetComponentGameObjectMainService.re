@@ -27,7 +27,7 @@ let batchGetGeometryComponentData = (uidArray: array(int), {gameObjectRecord}) =
          ((boxGeometryArr, customGeometryArr) as arrTuple, uid) =>
            switch (currentGeometryDataMap |> CurrentComponentDataMapService.getComponentData(uid)) {
            | None => arrTuple
-           | Some((component, type_, _, _)) =>
+           | Some((component, type_)) =>
              switch type_ {
              | type_ when type_ === boxGeometryType =>
                boxGeometryArr |> ArrayService.push(component) |> ignore

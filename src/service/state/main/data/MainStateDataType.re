@@ -144,7 +144,7 @@ and glslSenderRecord = {
   /* drawPointsFuncMap: array((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray: array(bool),
   mutable lastSendMaterial: option(material),
-  mutable lastSendGeometry: option((geometry, string))
+  mutable lastSendGeometry: option((geometry, int))
 }
 and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
@@ -154,14 +154,14 @@ and gameObjectCurrentGeometryDataMap =
   array(
     (
       geometry,
-      string,
-      (array(GlType.buffer), array(GlType.buffer), array(GlType.buffer)),
-      (
-        [@bs] ((int, state) => Float32Array.t),
-        [@bs] ((int, state) => Float32Array.t),
-        [@bs] ((int, state) => Uint16Array.t),
-        (int, state) => int
-      )
+      int
+      /* (array(GlType.buffer), array(GlType.buffer), array(GlType.buffer)),
+         (
+           [@bs] ((int, state) => Float32Array.t),
+           [@bs] ((int, state) => Float32Array.t),
+           [@bs] ((int, state) => Uint16Array.t),
+           (int, state) => int
+         ) */
     )
   )
 and gameObjectRecord = {

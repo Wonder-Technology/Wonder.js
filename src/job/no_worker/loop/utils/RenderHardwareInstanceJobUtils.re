@@ -221,7 +221,7 @@ let render =
   /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, (geometryIndex, _, _, (_, _, _, getIndicesCountFunc))) =
+  let (state, shaderIndex, (geometryIndex, type_)) =
     _renderSourceInstanceGameObject(gl, uid, renderFunc, state);
   let (
         (gl, extension, _),
@@ -233,6 +233,7 @@ let render =
     StaticSourceInstanceService.isTransformStatic(sourceInstance, state.sourceInstanceRecord) ?
       _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
       _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
+  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
   DrawGLSLMainService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),

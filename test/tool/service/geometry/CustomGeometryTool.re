@@ -89,12 +89,12 @@ let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
                test(
                  Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
                  () => {
-                   let (_, type_, _, _) =
+                   let (_, type_) =
                      GetComponentGameObjectService.unsafeGetGeometryComponentData(
                        uid,
                        gameObjectRecord
                      );
-                   type_ ==^ CurrentComponentDataMapService.getCustomGeometryType()
+                   type_ == CurrentComponentDataMapService.getCustomGeometryType()
                  }
                )
              )
