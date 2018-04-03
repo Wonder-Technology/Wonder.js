@@ -2,31 +2,22 @@ open RenderType;
 
 open MainStateDataType;
 
-open MainStateDataType;
-
 let _getCameraData = (state) => state.renderRecord.cameraRecord |> OptionService.unsafeGet;
 
-let getCameraVMatrixData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).vMatrix);
+let getCameraVMatrixData =
+  [@bs] ((state: MainStateDataType.state) => _getCameraData(state).vMatrix);
 
-let getCameraPMatrixData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).pMatrix);
+let getCameraPMatrixData =
+  [@bs] ((state: MainStateDataType.state) => _getCameraData(state).pMatrix);
 
-let getCameraPositionData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).position);
-
-let getRenderArray = (state: MainStateDataType.state) => state.renderRecord.renderArray;
-
-let setRenderArray = (renderArray, state: MainStateDataType.state) => {
-  ...state,
-  renderRecord: {
-    ...state.renderRecord,
-    renderArray:
-      switch (Js.Array.length(renderArray)) {
-      | 0 => None
-      | _ => Some(renderArray)
-      }
-  }
-};
+let getCameraPositionData =
+  [@bs] ((state: MainStateDataType.state) => _getCameraData(state).position);
 
 let setCameraData = (cameraRecord, state: MainStateDataType.state) => {
   ...state,
   renderRecord: {...state.renderRecord, cameraRecord}
 };
+
+let getBasicRenderObjectRecord = (state) => state.renderRecord.basicRenderObjectRecord;
+
+let getLightRenderObjectRecord = (state) => state.renderRecord.lightRenderObjectRecord;

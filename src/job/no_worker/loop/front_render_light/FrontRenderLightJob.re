@@ -1,31 +1,57 @@
 open MainStateDataType;
 
-let _getLightMaterialRenderArray = (renderArray, state: MainStateDataType.state) =>
-  renderArray
-  |> Js.Array.filter(
-       (uid) =>
-         HasComponentGameObjectService.hasLightMaterialComponent(uid, state.gameObjectRecord)
-     );
-
-     /* TODO finish! */
-/* 
 let _render = (gl, state: MainStateDataType.state) =>
-  switch (state |> OperateRenderMainService.getRenderArray) {
+  switch (state |> OperateRenderMainService.getLightRenderObjectRecord) {
   | None => state
-  | Some(renderArray) =>
-    state
-    |> _getLightMaterialRenderArray(renderArray)
+  | Some({
+      count,
+      transformIndices,
+      materialIndices,
+      shaderIndices,
+      geometryIndices,
+      geometryTypes,
+      sourceInstanceIndices
+    }) =>
+    ArrayService.range(0, count - 1)
     |> ReduceStateMainService.reduceState(
          [@bs]
          (
-           (state, uid: int) =>
-             if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
-               FrontRenderLightInstanceJobCommon.render(gl, uid, state)
+           (state, index) => {
+             let transformIndex =
+               RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
+             let materialIndex =
+               RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
+             let shaderIndex =
+               RenderObjectBufferTypeArrayService.getComponent(index, shaderIndices);
+             let geometryIndex =
+               RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
+             let geometryType =
+               RenderObjectBufferTypeArrayService.getGeometryType(index, geometryTypes);
+             let sourceInstance =
+               RenderObjectBufferTypeArrayService.getComponent(index, sourceInstanceIndices);
+             if (RenderObjectBufferTypeArrayService.hasSourceInstance(sourceInstance)) {
+               FrontRenderLightInstanceJobCommon.render(
+                 gl,
+                 (
+                   transformIndex,
+                   materialIndex,
+                   shaderIndex,
+                   geometryIndex,
+                   geometryType,
+                   sourceInstance
+                 ),
+                 state
+               )
              } else {
-               let (state, _, (geometryIndex, type_)) =
-                 [@bs] FrontRenderLightJobCommon.render(gl, uid, state);
+               let state =
+                 [@bs]
+                 FrontRenderLightJobCommon.render(
+                   gl,
+                   (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
+                   state
+                 );
                let getIndicesCountFunc =
-                 CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
+                 CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
                DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
@@ -37,11 +63,11 @@ let _render = (gl, state: MainStateDataType.state) =>
                );
                state
              }
+           }
          ),
          state
        )
-  }; */
+  };
 
 let execJob = (flags, _, state) =>
-  /* _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state); */
-  state;
+  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);

@@ -6,7 +6,7 @@ type renderCameraRecord = {
   position: (float, float, float)
 };
 
-type basicRenderObjectRecord = {
+type renderObjectRecord = {
   buffer: Js.Typed_array.array_buffer,
   count: int,
   transformIndices: Js.Typed_array.Uint32Array.t,
@@ -18,8 +18,7 @@ type basicRenderObjectRecord = {
 };
 
 type renderRecord = {
-  /* TODO remove */
-  renderArray: option(array(int)),
-  basicRenderObjectRecord: option(basicRenderObjectRecord),
+  basicRenderObjectRecord: option(renderObjectRecord),
+  lightRenderObjectRecord: option(renderObjectRecord),
   cameraRecord: option(renderCameraRecord)
 };

@@ -2,11 +2,30 @@ open MainStateDataType;
 
 open RenderType;
 
+open Js.Typed_array;
 
+let _getLightMaterialRenderArray = (renderArray, state: MainStateDataType.state) =>
+  renderArray
+  |> Js.Array.filter(
+       (uid) =>
+         HasComponentGameObjectService.hasLightMaterialComponent(uid, state.gameObjectRecord)
+     );
 
-
-let execJob = (_, _, state) =>
-  OperateRenderMainService.setRenderArray(
-    RenderArrayMeshRendererService.getRenderArray(state.meshRendererRecord),
-    state
-  );
+let execJob = (_, _, {gameObjectRecord, meshRendererRecord} as state) => {
+  ...state,
+  renderRecord: {
+    ...state.renderRecord,
+    lightRenderObjectRecord:
+      state
+      |> CreateRenderObjectBufferMainService.create(
+           state
+           |> _getLightMaterialRenderArray(
+                meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
+              ),
+           (
+             GetComponentGameObjectService.unsafeGetLightMaterialComponent,
+             ShaderIndexLightMaterialMainService.getShaderIndex
+           )
+         )
+  }
+};

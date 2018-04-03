@@ -1,3 +1,3 @@
 open RenderType;
 
-let create = () => {renderArray: None, basicRenderObjectRecord: None, cameraRecord: None};
+let create = () => {basicRenderObjectRecord: None, lightRenderObjectRecord: None, cameraRecord: None};

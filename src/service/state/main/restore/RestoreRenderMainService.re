@@ -2,6 +2,5 @@ open MainStateDataType;
 
 let restore = (currentState, targetState) => {
   ...targetState,
-  /* TODO test */
-  renderRecord: {renderArray: None, basicRenderObjectRecord: None, cameraRecord: None}
+  renderRecord: {basicRenderObjectRecord: None, lightRenderObjectRecord: None, cameraRecord: None}
 };

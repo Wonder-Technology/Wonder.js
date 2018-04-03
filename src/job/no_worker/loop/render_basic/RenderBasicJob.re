@@ -1,14 +1,7 @@
 open MainStateDataType;
 
-let _getBasicMaterialRenderArray = (renderArray, state: MainStateDataType.state) =>
-  renderArray
-  |> Js.Array.filter(
-       (uid) =>
-         HasComponentGameObjectService.hasBasicMaterialComponent(uid, state.gameObjectRecord)
-     );
-
 let _render = (gl, state: MainStateDataType.state) =>
-  switch state.renderRecord.basicRenderObjectRecord {
+  switch (state |> OperateRenderMainService.getBasicRenderObjectRecord) {
   | None => state
   | Some({
       count,
@@ -25,17 +18,30 @@ let _render = (gl, state: MainStateDataType.state) =>
          (
            (state, index) => {
              let transformIndex =
-               BasicRenderObjectBufferService.getComponent(index, transformIndices);
+               RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
              let materialIndex =
-               BasicRenderObjectBufferService.getComponent(index, materialIndices);
-             let shaderIndex = BasicRenderObjectBufferService.getComponent(index, shaderIndices);
+               RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
+             let shaderIndex =
+               RenderObjectBufferTypeArrayService.getComponent(index, shaderIndices);
              let geometryIndex =
-               BasicRenderObjectBufferService.getComponent(index, geometryIndices);
-             let geometryType = BasicRenderObjectBufferService.getGeometryType(index, geometryTypes);
+               RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
+             let geometryType =
+               RenderObjectBufferTypeArrayService.getGeometryType(index, geometryTypes);
              let sourceInstance =
-               BasicRenderObjectBufferService.getComponent(index, sourceInstanceIndices);
-             if (BasicRenderObjectBufferService.hasSourceInstance(sourceInstance)) {
-               RenderBasicInstanceJobCommon.render(gl, (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType, sourceInstance), state)
+               RenderObjectBufferTypeArrayService.getComponent(index, sourceInstanceIndices);
+             if (RenderObjectBufferTypeArrayService.hasSourceInstance(sourceInstance)) {
+               RenderBasicInstanceJobCommon.render(
+                 gl,
+                 (
+                   transformIndex,
+                   materialIndex,
+                   shaderIndex,
+                   geometryIndex,
+                   geometryType,
+                   sourceInstance
+                 ),
+                 state
+               )
              } else {
                let state =
                  [@bs]

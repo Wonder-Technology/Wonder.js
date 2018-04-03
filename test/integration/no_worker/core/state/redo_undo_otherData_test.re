@@ -191,28 +191,25 @@ let _ =
           describe(
             "restore render record to target state",
             () =>
-              /* TODO test more render record */
               test(
-                "clear renderArray, cameraRecord",
+                "clear basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord",
                 () => {
                   open RenderType;
                   let state = state^;
-                  /* let record = RenderTool.getRenderRecord(state);
-                     record.renderArray = Some([|0|]);
-                     record.cameraRecord = Some(Obj.magic(1)); */
                   let state = {
                     ...state,
                     renderRecord: {
                       ...RenderTool.getRenderRecord(state),
-                      renderArray: Some([|0|]),
+                      basicRenderObjectRecord: Some(Obj.magic(10)),
+                      lightRenderObjectRecord: Some(Obj.magic(11)),
                       cameraRecord: Some(Obj.magic(1))
                     }
                   };
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
-                  let {renderArray, cameraRecord} =
+                  let {basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord} =
                     RenderTool.getRenderRecord(MainStateTool.getState());
-                  (renderArray, cameraRecord) |> expect == (None, None)
+                  (basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord) |> expect == (None, None, None)
                 }
               )
           );
