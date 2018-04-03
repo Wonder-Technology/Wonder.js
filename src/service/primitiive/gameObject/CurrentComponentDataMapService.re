@@ -1,3 +1,5 @@
+open VboBufferType;
+
 let addToMap = (uid, componentData, currentComponentDataMap) =>
   WonderCommonlib.SparseMapService.set(uid, componentData, currentComponentDataMap);
 
@@ -36,6 +38,34 @@ let hasComponent = (uid, currentComponentDataMap, targetType_) =>
 let getBoxGeometryType = () => 0;
 
 let getCustomGeometryType = () => 1;
+
+let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
+  switch type_ {
+  | type_ when type_ === getBoxGeometryType() => (
+      (
+        vboBufferRecord.boxGeometryVertexBufferMap,
+        vboBufferRecord.boxGeometryNormalBufferMap,
+        vboBufferRecord.boxGeometryElementArrayBufferMap
+      ),
+      (
+        VerticesBoxGeometryMainService.getVertices,
+        NormalsBoxGeometryMainService.getNormals,
+        IndicesBoxGeometryMainService.getIndices
+      )
+    )
+  | _ => (
+      (
+        vboBufferRecord.customGeometryVertexBufferMap,
+        vboBufferRecord.customGeometryNormalBufferMap,
+        vboBufferRecord.customGeometryElementArrayBufferMap
+      ),
+      (
+        VerticesCustomGeometryMainService.getVertices,
+        NormalsCustomGeometryMainService.getNormals,
+        IndicesCustomGeometryMainService.getIndices
+      )
+    )
+  };
 
 let getGetIndicesCountFunc = (type_) =>
   switch type_ {

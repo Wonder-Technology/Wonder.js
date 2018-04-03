@@ -1,6 +1,6 @@
-let render = (gl, uid, state: MainStateDataType.state) =>
+let render = (gl, indexTuple, state: MainStateDataType.state) =>
   if (JudgeInstanceMainService.isSupportInstance(state)) {
-    RenderBasicHardwareInstanceJobCommon.render(gl, uid, state)
+    RenderBasicHardwareInstanceJobCommon.render(gl, indexTuple, state)
   } else {
-    RenderBasicBatchInstanceJobCommon.render(gl, uid, state)
+    RenderBasicBatchInstanceJobCommon.render(gl, indexTuple, state)
   };

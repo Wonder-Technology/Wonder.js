@@ -137,8 +137,9 @@ let _ =
                                              jobs: [|
                                                {name: "tick"},
                                                {name: "update_camera"},
-                                               {name: "get_render_array"},
                                                {name: "get_camera_data"},
+                                               {name: "create_basic_render_object_buffer"},
+                                               {name: "create_light_render_object_buffer"},
                                                {name: "clear_color"},
                                                {name: "clear_buffer"},
                                                {name: "clear_last_send_component"},
@@ -165,8 +166,15 @@ let _ =
                                          [|
                                            {name: "tick", flags: None},
                                            {name: "update_camera", flags: None},
-                                           {name: "get_render_array", flags: None},
                                            {name: "get_camera_data", flags: None},
+                                           {
+                                             name: "create_basic_render_object_buffer",
+                                             flags: None
+                                           },
+                                           {
+                                             name: "create_light_render_object_buffer",
+                                             flags: None
+                                           },
                                            {name: "clear_color", flags: Some([|"#000000"|])},
                                            {
                                              name: "clear_buffer",

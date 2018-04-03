@@ -64,7 +64,7 @@ let _ =
                     ...state,
                     shaderRecord: {
                       ...ShaderTool.getShaderRecord(state),
-                      index: DefaultShaderIndexService.getDefaultShaderIndex()
+                      index: DefaultTypeArrayValueService.getDefaultShaderIndex()
                     }
                   };
                   expect(

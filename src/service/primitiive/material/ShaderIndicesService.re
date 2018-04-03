@@ -14,4 +14,4 @@ let setShaderIndex = (index, data, typeArr) =>
 
 let hasShaderIndex = (materialIndex: int, shaderIndices) =>
   getShaderIndex(materialIndex, shaderIndices)
-  !== DefaultShaderIndexService.getDefaultShaderIndex();
+  !== DefaultTypeArrayValueService.getDefaultShaderIndex();

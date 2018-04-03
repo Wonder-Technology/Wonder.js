@@ -71,11 +71,10 @@ let _updateAndSendTransformMatrixDataBufferData =
 
 let _sendTransformMatrixData =
     (
+      (transformIndex, sourceInstance),
       (
         (gl, extension, shaderIndex),
         (
-          uid,
-          sourceInstance,
           defaultCapacity,
           strideForCapacity,
           strideForSend,
@@ -107,7 +106,7 @@ let _sendTransformMatrixData =
       (matrixInstanceBufferMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap),
       state
     );
-  [@bs] fillMatrixTypeArrFunc(uid, matricesArrayForInstance, (state, 0))
+  [@bs] fillMatrixTypeArrFunc(transformIndex, matricesArrayForInstance, (state, 0))
   |> _fillObjectInstanceData(objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc)
   |> _updateAndSendTransformMatrixDataBufferData(
        (gl, extension),
@@ -118,11 +117,10 @@ let _sendTransformMatrixData =
 
 let _sendStaticTransformMatrixData =
     (
+      (transformIndex, sourceInstance) as componentTuple,
       (
         (gl, extension, shaderIndex),
         (
-          uid,
-          sourceInstance,
           defaultCapacity,
           strideForCapacity,
           strideForSend,
@@ -148,7 +146,8 @@ let _sendStaticTransformMatrixData =
       _sendTransformMatrixDataBufferData((gl, extension), shaderIndex, strideForSend, state)
     } :
     {
-      let state = state |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc);
+      let state =
+        state |> _sendTransformMatrixData(componentTuple, dataTuple, fillMatrixTypeArrFunc);
       {
         ...state,
         sourceInstanceRecord:
@@ -159,7 +158,8 @@ let _sendStaticTransformMatrixData =
 
 let _sendDynamicTransformMatrixData =
     (
-      (glDataTuple, (_, sourceInstance, _, _, _, _, _), matrixMapTuple) as dataTuple,
+      (transformIndex, sourceInstance) as componentTuple,
+      (glDataTuple, _, matrixMapTuple) as dataTuple,
       fillMatrixTypeArrFunc,
       {sourceInstanceRecord} as state
     ) =>
@@ -169,7 +169,7 @@ let _sendDynamicTransformMatrixData =
       sourceInstanceRecord
       |> StaticSourceInstanceService.markIsSendTransformMatrixData(sourceInstance, false)
   }
-  |> _sendTransformMatrixData(dataTuple, fillMatrixTypeArrFunc);
+  |> _sendTransformMatrixData(componentTuple, dataTuple, fillMatrixTypeArrFunc);
 
 let _geMatrixMapTuple = (state) => {
   let {matrixInstanceBufferMap} = state.vboBufferRecord;
@@ -177,19 +177,17 @@ let _geMatrixMapTuple = (state) => {
   (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
 };
 
-let _renderSourceInstanceGameObject = (gl, uid, renderFunc, state) =>
-  [@bs] renderFunc(gl, uid, state);
+let _renderSourceInstanceGameObject = (gl, indexTuple, renderFunc, state) =>
+  [@bs] renderFunc(gl, indexTuple, state);
 
 let _prepareData =
     (
       gl,
       shaderIndex,
-      (uid, defaultCapacity, strideForCapacity, strideForSend),
+      (sourceInstance, defaultCapacity, strideForCapacity, strideForSend),
       state: MainStateDataType.state
     ) => {
   let extension = GPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
-  let sourceInstance =
-    GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
   let objectInstanceArray =
     ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
       sourceInstance,
@@ -199,8 +197,6 @@ let _prepareData =
   (
     (gl, extension, shaderIndex),
     (
-      uid,
-      sourceInstance,
       defaultCapacity,
       strideForCapacity,
       strideForSend,
@@ -214,26 +210,54 @@ let _prepareData =
 let render =
     (
       gl,
-      (uid, defaultCapacity, strideForCapacity, strideForSend),
+      (
+        (
+          transformIndex,
+          materialIndex,
+          shaderIndex,
+          geometryIndex,
+          geometryType,
+          sourceInstance
+        ) as indexTuple,
+        defaultCapacity,
+        strideForCapacity,
+        strideForSend
+      ),
       (renderFunc, fillMatrixTypeArrFunc),
       state: MainStateDataType.state
     ) => {
   /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, (geometryIndex, type_)) =
-    _renderSourceInstanceGameObject(gl, uid, renderFunc, state);
-  let (
-        (gl, extension, _),
-        (_, sourceInstance, _, _, _, _, instanceRenderListCount),
-        matrixMapTuple
-      ) as dataTuple =
-    _prepareData(gl, shaderIndex, (uid, defaultCapacity, strideForCapacity, strideForSend), state);
+  let state =
+    _renderSourceInstanceGameObject(
+      gl,
+      (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
+      renderFunc,
+      state
+    );
+  let ((gl, extension, _), (_, _, _, _, instanceRenderListCount), matrixMapTuple) as dataTuple =
+    _prepareData(
+      gl,
+      shaderIndex,
+      (sourceInstance, defaultCapacity, strideForCapacity, strideForSend),
+      state
+    );
   let state =
     StaticSourceInstanceService.isTransformStatic(sourceInstance, state.sourceInstanceRecord) ?
-      _sendStaticTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state) :
-      _sendDynamicTransformMatrixData(dataTuple, fillMatrixTypeArrFunc, state);
-  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
+      _sendStaticTransformMatrixData(
+        (transformIndex, sourceInstance),
+        dataTuple,
+        fillMatrixTypeArrFunc,
+        state
+      ) :
+      _sendDynamicTransformMatrixData(
+        (transformIndex, sourceInstance),
+        dataTuple,
+        fillMatrixTypeArrFunc,
+        state
+      );
+  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
   DrawGLSLMainService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),
@@ -248,12 +272,12 @@ let render =
   state
 };
 
-let fillMatrixTypeArr = (uid, transform, matricesArrayForInstance, (state, offset)) =>
+let fillMatrixTypeArr = (transformIndex, matricesArrayForInstance, (state, offset)) =>
   TypeArrayService.fillFloat32ArrayWithFloat32Array(
     (matricesArrayForInstance, offset),
     (
       UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
-        transform,
+        transformIndex,
         state.globalTempRecord,
         state |> RecordTransformMainService.getRecord
       ),

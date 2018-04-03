@@ -193,26 +193,26 @@ let _ =
             () =>
               /* TODO test more render record */
               test(
-                "clear renderArray, cameraData",
+                "clear renderArray, cameraRecord",
                 () => {
                   open RenderType;
                   let state = state^;
                   /* let record = RenderTool.getRenderRecord(state);
                      record.renderArray = Some([|0|]);
-                     record.cameraData = Some(Obj.magic(1)); */
+                     record.cameraRecord = Some(Obj.magic(1)); */
                   let state = {
                     ...state,
                     renderRecord: {
                       ...RenderTool.getRenderRecord(state),
                       renderArray: Some([|0|]),
-                      cameraData: Some(Obj.magic(1))
+                      cameraRecord: Some(Obj.magic(1))
                     }
                   };
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
-                  let {renderArray, cameraData} =
+                  let {renderArray, cameraRecord} =
                     RenderTool.getRenderRecord(MainStateTool.getState());
-                  (renderArray, cameraData) |> expect == (None, None)
+                  (renderArray, cameraRecord) |> expect == (None, None)
                 }
               )
           );

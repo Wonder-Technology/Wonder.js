@@ -12,7 +12,7 @@ let _genereateShaderIndex = ({index} as record) => {
          open WonderLog;
          open Contract;
          open Operators;
-         let defaultShaderIndex = DefaultShaderIndexService.getDefaultShaderIndex();
+         let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
          test(
            Log.buildAssertMessage(
              ~expect={j|not equal default shader index:$defaultShaderIndex |j},

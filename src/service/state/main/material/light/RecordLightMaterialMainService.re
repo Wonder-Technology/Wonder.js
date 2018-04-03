@@ -20,22 +20,20 @@ let getSpecularColorsSize = () => 3;
 let getSpecularColorsLength = (count) => count * getSpecularColorsSize();
 
 let getSpecularColorsOffset = (count) =>
-  ShaderIndicesService.getShaderIndicesLength(count)
-  * Uint32Array._BYTES_PER_ELEMENT
-  + getDiffuseColorsLength(count)
-  * Float32Array._BYTES_PER_ELEMENT;
+  /* ShaderIndicesService.getShaderIndicesLength(count)
+   * Uint32Array._BYTES_PER_ELEMENT */
+  getDiffuseColorsOffset(count) + getDiffuseColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
 let getShininessSize = () => 1;
 
 let getShininessLength = (count) => count * getShininessSize();
 
 let getShininessOffset = (count) =>
-  ShaderIndicesService.getShaderIndicesLength(count)
-  * Uint32Array._BYTES_PER_ELEMENT
-  + getDiffuseColorsLength(count)
-  * Float32Array._BYTES_PER_ELEMENT
-  + getSpecularColorsLength(count)
-  * Float32Array._BYTES_PER_ELEMENT;
+  /* ShaderIndicesService.getShaderIndicesLength(count)
+   * Uint32Array._BYTES_PER_ELEMENT
+   + getDiffuseColorsLength(count)
+   * Float32Array._BYTES_PER_ELEMENT */
+  getSpecularColorsOffset(count) + getSpecularColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
 let getDiffuseColorIndex = (index) => index * getDiffuseColorsSize();
 
@@ -135,7 +133,7 @@ let create = ({settingRecord} as state) => {
   let lightMaterialDataBufferCount =
     BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
   /* let defaultShaderIndex = 0; */
-  let defaultShaderIndex = DefaultShaderIndexService.getDefaultShaderIndex() ;
+  let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultDiffuseColor = [|1., 1., 1.|];
   let defaultSpecularColor = [|1., 1., 1.|];
   let defaultShininess = 32.0;

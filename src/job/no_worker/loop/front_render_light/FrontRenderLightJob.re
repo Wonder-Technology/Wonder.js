@@ -7,6 +7,8 @@ let _getLightMaterialRenderArray = (renderArray, state: MainStateDataType.state)
          HasComponentGameObjectService.hasLightMaterialComponent(uid, state.gameObjectRecord)
      );
 
+     /* TODO finish! */
+/* 
 let _render = (gl, state: MainStateDataType.state) =>
   switch (state |> OperateRenderMainService.getRenderArray) {
   | None => state
@@ -38,10 +40,8 @@ let _render = (gl, state: MainStateDataType.state) =>
          ),
          state
        )
-  };
+  }; */
 
 let execJob = (flags, _, state) =>
-  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
-
-let execJob = (flags, _, state) =>
-  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
+  /* _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state); */
+  state;

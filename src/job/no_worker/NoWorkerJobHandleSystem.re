@@ -18,12 +18,13 @@ let _getInitJobHandles = () => [
 let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
   ("update_camera", UpdateCameraJob.execJob),
-  ("get_render_array", GetRenderArrayJob.execJob),
-  ("get_camera_data", GetCameraDataJob.execJob),
   ("clear_color", ClearColorJob.execJob),
   ("clear_buffer", ClearBufferJob.execJob),
   ("clear_last_send_component", ClearLastSendComponentJob.execJob),
+  ("get_camera_data", GetCameraDataJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataJob.execJob),
+  ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferJob.execJob),
+  ("create_light_render_object_buffer", CreateLightRenderObjectBufferJob.execJob),
   ("render_basic", RenderBasicJob.execJob),
   ("front_render_light", FrontRenderLightJob.execJob)
 ];

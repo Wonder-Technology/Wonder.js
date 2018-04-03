@@ -59,7 +59,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "set current camera record to state.renderRecord.cameraData",
+        "set current camera record to state.renderRecord.cameraRecord",
         () => {
           let _prepare = (state) => {
             let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
@@ -98,7 +98,7 @@ let _ =
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject2);
                   let state =
                     state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
-                  state.renderRecord.cameraData
+                  state.renderRecord.cameraRecord
                   |>
                   expect == Some({
                               vMatrix:
@@ -127,7 +127,7 @@ let _ =
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject3);
                   let state =
                     state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
-                  state.renderRecord.cameraData
+                  state.renderRecord.cameraRecord
                   |>
                   expect == Some({
                               vMatrix:

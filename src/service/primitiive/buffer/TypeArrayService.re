@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let getInt8_1 = (index: int, typeArray: Uint8Array.t) => Uint8Array.unsafe_get(typeArray, index);
+
 let getInt32_1 = (index: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_get(typeArray, index);
 
@@ -20,6 +22,11 @@ let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index + 1),
   Float32Array.unsafe_get(typeArray, index + 2)
 );
+
+let setInt8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
+  Uint8Array.unsafe_set(typeArray, index, value);
+  typeArray
+};
 
 let setInt32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
   Uint32Array.unsafe_set(typeArray, index, value);

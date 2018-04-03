@@ -4,13 +4,7 @@ open Gl;
 
 open MainStateDataType;
 
-open MainStateDataType;
-
-
-
 open SendGLSLDataMainService;
-
-
 
 let addUniformSendDataByType =
     (

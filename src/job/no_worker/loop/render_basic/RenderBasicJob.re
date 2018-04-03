@@ -8,22 +8,44 @@ let _getBasicMaterialRenderArray = (renderArray, state: MainStateDataType.state)
      );
 
 let _render = (gl, state: MainStateDataType.state) =>
-  switch (state |> OperateRenderMainService.getRenderArray) {
+  switch state.renderRecord.basicRenderObjectRecord {
   | None => state
-  | Some(renderArray) =>
-    state
-    |> _getBasicMaterialRenderArray(renderArray)
+  | Some({
+      count,
+      transformIndices,
+      materialIndices,
+      shaderIndices,
+      geometryIndices,
+      geometryTypes,
+      sourceInstanceIndices
+    }) =>
+    ArrayService.range(0, count - 1)
     |> ReduceStateMainService.reduceState(
          [@bs]
          (
-           (state, uid: int) =>
-             if (JudgeInstanceMainService.isSourceInstance(uid, state)) {
-               RenderBasicInstanceJobCommon.render(gl, uid, state)
+           (state, index) => {
+             let transformIndex =
+               BasicRenderObjectBufferService.getComponent(index, transformIndices);
+             let materialIndex =
+               BasicRenderObjectBufferService.getComponent(index, materialIndices);
+             let shaderIndex = BasicRenderObjectBufferService.getComponent(index, shaderIndices);
+             let geometryIndex =
+               BasicRenderObjectBufferService.getComponent(index, geometryIndices);
+             let geometryType = BasicRenderObjectBufferService.getGeometryType(index, geometryTypes);
+             let sourceInstance =
+               BasicRenderObjectBufferService.getComponent(index, sourceInstanceIndices);
+             if (BasicRenderObjectBufferService.hasSourceInstance(sourceInstance)) {
+               RenderBasicInstanceJobCommon.render(gl, (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType, sourceInstance), state)
              } else {
-               let (state, _, (geometryIndex, type_)) =
-                 [@bs] RenderBasicJobCommon.render(gl, uid, state);
+               let state =
+                 [@bs]
+                 RenderBasicJobCommon.render(
+                   gl,
+                   (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
+                   state
+                 );
                let getIndicesCountFunc =
-                 CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
+                 CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
                DrawGLSLMainService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
@@ -35,6 +57,7 @@ let _render = (gl, state: MainStateDataType.state) =>
                );
                state
              }
+           }
          ),
          state
        )

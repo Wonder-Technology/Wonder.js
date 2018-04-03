@@ -1,4 +1,4 @@
-open MainStateDataType;
+/* open MainStateDataType;
 
 let _fillMatrixTypeArr =
   [@bs]
@@ -35,4 +35,4 @@ let render = (gl, uid, state: MainStateDataType.state) =>
     (uid, 64 * (16 + 9) * 4, 112, 100),
     (FrontRenderLightJobCommon.render, _fillMatrixTypeArr),
     state
-  );
+  ); */

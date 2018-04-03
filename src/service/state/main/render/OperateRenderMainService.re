@@ -4,7 +4,7 @@ open MainStateDataType;
 
 open MainStateDataType;
 
-let _getCameraData = (state) => state.renderRecord.cameraData |> OptionService.unsafeGet;
+let _getCameraData = (state) => state.renderRecord.cameraRecord |> OptionService.unsafeGet;
 
 let getCameraVMatrixData = [@bs] ((state: MainStateDataType.state) => _getCameraData(state).vMatrix);
 
@@ -26,7 +26,7 @@ let setRenderArray = (renderArray, state: MainStateDataType.state) => {
   }
 };
 
-let setCameraData = (cameraData, state: MainStateDataType.state) => {
+let setCameraData = (cameraRecord, state: MainStateDataType.state) => {
   ...state,
-  renderRecord: {...state.renderRecord, cameraData}
+  renderRecord: {...state.renderRecord, cameraRecord}
 };

@@ -6,17 +6,27 @@ open SourceInstanceType;
 
 open InstanceBufferMainService;
 
-let render = (gl, uid, renderFunc, state: MainStateDataType.state) => {
-  let (state, shaderIndex, (geometryIndex, type_)) = [@bs] renderFunc(gl, uid, state);
+let render =
+    (
+      gl,
+      (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType, sourceInstance) as indexTuple,
+      renderFunc,
+      state: MainStateDataType.state
+    ) => {
+  let state =
+    [@bs]
+    renderFunc(
+      gl,
+      (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
+      state
+    );
   let uniformInstanceSendNoCachableData =
     state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(type_);
+  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(geometryIndex, state);
-  let sourceInstance =
-    GetComponentGameObjectService.unsafeGetSourceInstanceComponent(uid, state.gameObjectRecord);
   let objectInstanceArray =
     ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
       sourceInstance,

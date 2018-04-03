@@ -1,4 +1,4 @@
-open MainStateDataType;
+/* open MainStateDataType;
 
 let render =
   [@bs]
@@ -16,4 +16,4 @@ let render =
         state
       )
     }
-  );
+  ); */

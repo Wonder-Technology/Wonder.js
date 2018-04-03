@@ -73,10 +73,13 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "update_camera"
             },
             {
-                "name": "get_render_array"
+                "name": "get_camera_data"
             },
             {
-                "name": "get_camera_data"
+                "name": "create_basic_render_object_buffer"
+            },
+            {
+                "name": "create_light_render_object_buffer"
             },
             {
                 "name": "clear_color"
@@ -110,11 +113,14 @@ let buildNoWorkerLoopJobConfig = () => {|
         "name": "update_camera"
     },
     {
-        "name": "get_render_array"
-    },
-    {
         "name": "get_camera_data"
     },
+            {
+                "name": "create_basic_render_object_buffer"
+            },
+            {
+                "name": "create_light_render_object_buffer"
+            },
     {
         "name": "clear_color",
         "flags": [
