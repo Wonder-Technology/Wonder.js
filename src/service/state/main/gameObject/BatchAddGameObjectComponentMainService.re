@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open VboBufferType;
 
@@ -20,7 +20,7 @@ let _checkBatchAdd = (uidArr, componentArr) =>
         () => gameObjectCount == componentCount
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
 
 let _batchAddComponent =

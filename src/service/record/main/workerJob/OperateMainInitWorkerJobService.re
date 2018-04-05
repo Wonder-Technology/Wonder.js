@@ -91,7 +91,7 @@ let _findFrameJob = (jobs) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let jobName = _getFrameJobName();
   JobConfigService.unsafeFindFirst(

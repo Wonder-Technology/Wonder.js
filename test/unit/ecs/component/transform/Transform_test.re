@@ -66,7 +66,7 @@ let _ =
                "contract check",
                () => {
                  let _buildState = (index) =>
-                   MainStateDataType.{
+                   StateDataMainType.{
                      ...state^,
                      transformRecord: Some({...OptionTool.unsafeGet(state^.transformRecord), index})
                    };

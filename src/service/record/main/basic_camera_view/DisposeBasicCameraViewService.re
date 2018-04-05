@@ -18,7 +18,7 @@ let handleDisposeComponent = (cameraView, {disposedIndexArray} as record) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   _disposeData(
     cameraView,
@@ -47,7 +47,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       cameraViewArray
       |> WonderCommonlib.ArrayService.reduceOneParam(

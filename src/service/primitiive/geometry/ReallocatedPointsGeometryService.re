@@ -23,7 +23,7 @@ let buildInfo = (startIndex: int, endIndex: int) =>
            () => r.endIndex >= r.startIndex
          )
        },
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let getInfo = (infoArray, index) =>
@@ -40,7 +40,7 @@ let getInfo = (infoArray, index) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {

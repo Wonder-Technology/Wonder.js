@@ -89,7 +89,7 @@ let initWithJobConfig =
 };
 
 let openContractCheck = () =>
-  IsDebugMainService.setIsDebug(MainStateData.stateData, true) |> ignore;
+  IsDebugMainService.setIsDebug(StateDataMain.stateData, true) |> ignore;
 
 let closeContractCheck = () =>
-  IsDebugMainService.setIsDebug(MainStateData.stateData, false) |> ignore;
+  IsDebugMainService.setIsDebug(StateDataMain.stateData, false) |> ignore;

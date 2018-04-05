@@ -1,10 +1,10 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open RenderType;
 
 open Js.Typed_array;
 
-let _getLightMaterialRenderArray = (renderArray, state: MainStateDataType.state) =>
+let _getLightMaterialRenderArray = (renderArray, state: StateDataMainType.state) =>
   renderArray
   |> Js.Array.filter(
        (uid) =>

@@ -40,7 +40,7 @@ let _ =
               test(
                 "getOrCreateBuffer should use old one(created buffer previously) in pool",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, geometry1) = _prepare(state^);
                   /* let arrayBuffer1 = Obj.magic(20);
                      let arrayBuffer2 = Obj.magic(21);
@@ -97,7 +97,7 @@ let _ =
               test(
                 "getOrCreateBuffer should use old one(created buffer previously) in pool",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, (_, _, _, sourceInstance1, _)) =
                     _prepare(sandbox, state^);
                   let buffer1 = Obj.magic(0);

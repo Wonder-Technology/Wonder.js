@@ -22,12 +22,12 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-/* let exec = (state: MainStateDataType.state) =>
+/* let exec = (state: StateDataMainType.state) =>
    state
    |> BoxGeometryTool.initGeometrys
    |> AllMaterialTool.pregetGLSLData
    |> LightMaterialSystem.init([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)); */
-let exec = (state: MainStateDataType.state) => InitRenderJobTool.exec(state);
+let exec = (state: StateDataMainType.state) => InitRenderJobTool.exec(state);
 
 let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc, sandbox, state) => {
   open Sinon;

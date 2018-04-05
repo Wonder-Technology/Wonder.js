@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getMaterialRecord = (state) => RecordLightMaterialMainService.getRecord(state);
 
@@ -21,15 +21,15 @@ let getDefaultShininess = (state) => getMaterialRecord(state).defaultShininess;
 
 let initMaterials = InitLightMaterialMainService.init;
 
-let getShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
   ShaderIndexLightMaterialMainService.getShaderIndex(materialIndex, state);
 
-/* let hasShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+/* let hasShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
    ShaderIndexLightMaterialMainService.hasShaderIndex(materialIndex, state); */
-let setShaderIndex = (materialIndex: int, shaderIndex, state: MainStateDataType.state) =>
+let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.state) =>
   [@bs] ShaderIndexLightMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
-let dispose = (material, state: MainStateDataType.state) => {
+let dispose = (material, state: StateDataMainType.state) => {
   ...state,
   lightMaterialRecord:
     Some(DisposeLightMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))

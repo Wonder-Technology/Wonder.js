@@ -12,7 +12,7 @@ let unsafeFindFirst = (arr: array('a), targetValue, func) =>
            () => first |> assertNullableExist
          )
        },
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let findFirst = (arr: array('a), targetValue, func) => arr |> Js.Array.find(func);

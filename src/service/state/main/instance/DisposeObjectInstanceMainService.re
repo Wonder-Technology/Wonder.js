@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open SourceInstanceType;
 
@@ -26,7 +26,7 @@ let _unsafeGetSourceInstance = (objectInstance: objectInstance, {sourceInstanceM
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let _disposeData = (objectInstance: objectInstance, {objectInstanceRecord} as state) => {
@@ -66,7 +66,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let {disposedIndexArray} = objectInstanceRecord;
   let state =
@@ -146,7 +146,7 @@ let handleBatchDisposeComponent =
             }
           )
         },
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let {disposedIndexArray} = objectInstanceRecord;
       let objectInstanceRecord = {

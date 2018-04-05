@@ -1,6 +1,6 @@
 
 open ShaderChunkType;
-open MainStateDataType;
+open StateDataMainType;
 
 let _getGLSLChunkMap = ({chunkMap}) => chunkMap;
 

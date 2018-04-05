@@ -1,6 +1,6 @@
 open PerspectiveCameraProjectionAPI;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open PerspectiveCameraProjectionType;
 

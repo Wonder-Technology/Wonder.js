@@ -19,7 +19,7 @@ let disableVertexAttribArray = (gl, vertexAttribHistoryArray) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   vertexAttribHistoryArray
   |> Js.Array.forEachi(

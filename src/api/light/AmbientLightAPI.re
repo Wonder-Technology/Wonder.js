@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open AmbientLightType;
 
@@ -16,7 +16,7 @@ let createAmbientLight = (state) => {
   ({...state, ambientLightRecord}, index)
 };
 
-let unsafeGetAmbientLightGameObject = (light, state: MainStateDataType.state) => {
+let unsafeGetAmbientLightGameObject = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -30,7 +30,7 @@ let unsafeGetAmbientLightGameObject = (light, state: MainStateDataType.state) =>
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
@@ -41,7 +41,7 @@ let unsafeGetAmbientLightGameObject = (light, state: MainStateDataType.state) =>
   )
 };
 
-let getAmbientLightColor = (light, state: MainStateDataType.state) => {
+let getAmbientLightColor = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -55,7 +55,7 @@ let getAmbientLightColor = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getColor(
     MappedIndexService.getMappedIndex(
@@ -66,7 +66,7 @@ let getAmbientLightColor = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setAmbientLightColor = (light, color, state: MainStateDataType.state) => {
+let setAmbientLightColor = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -80,7 +80,7 @@ let setAmbientLightColor = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,

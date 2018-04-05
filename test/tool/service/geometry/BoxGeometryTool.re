@@ -4,7 +4,7 @@ open BoxGeometryType;
 
 open BoxGeometryAPI;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let getRecord = (state) => RecordBoxGeometryMainService.getRecord(state);
 
@@ -26,12 +26,12 @@ let buildBoxGeometryConfigDataJsObj =
   "depthSegment": depthSegment
 };
 
-let getIndicesCount = (index: int, state: MainStateDataType.state) =>
+let getIndicesCount = (index: int, state: StateDataMainType.state) =>
   IndicesBoxGeometryMainService.getIndicesCount(index, state);
 
 let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
 
-let dispose = (geometry, state: MainStateDataType.state) =>
+let dispose = (geometry, state: StateDataMainType.state) =>
   DisposeBoxGeometryMainService.handleDisposeComponent(geometry, state);
 
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
@@ -41,8 +41,8 @@ let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   state
 };
 
-let createStubComputeFuncData = (sandbox, geometry, state: MainStateDataType.state) => {
-  open MainStateDataType;
+let createStubComputeFuncData = (sandbox, geometry, state: StateDataMainType.state) => {
+  open StateDataMainType;
   open Sinon;
   let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord;
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
@@ -51,7 +51,7 @@ let createStubComputeFuncData = (sandbox, geometry, state: MainStateDataType.sta
 };
 
 let isGeometryDisposed = (geometry, state) =>
-  /* open MainStateDataType;
+  /* open StateDataMainType;
        let {disposedIndexArray} =
      state |> RecordBoxGeometryMainService.getRecord
        disposedIndexArray |> Js.Array.includes(geometry) */
@@ -61,7 +61,7 @@ let isGeometryDisposed = (geometry, state) =>
       state |> RecordBoxGeometryMainService.getRecord
     );
 
-let computeData = (geometry, state: MainStateDataType.state) =>
+let computeData = (geometry, state: StateDataMainType.state) =>
   CreateBoxGeometryService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let getDefaultIndicesArray = () => [|
@@ -257,7 +257,7 @@ let getDefaultNormals = () =>
     0.
   |]);
 
-let setDefaultConfigData = (geometry: geometry, state: MainStateDataType.state) =>
+let setDefaultConfigData = (geometry: geometry, state: StateDataMainType.state) =>
   state
   |> setBoxGeometryConfigData(
        geometry,
@@ -269,13 +269,13 @@ let setDefaultConfigData = (geometry: geometry, state: MainStateDataType.state) 
        )
      );
 
-let createBoxGeometry = (state: MainStateDataType.state) => {
+let createBoxGeometry = (state: StateDataMainType.state) => {
   let (state, geometry) = createBoxGeometry(state);
   let state = state |> setDefaultConfigData(geometry);
   (state, geometry)
 };
 
-let createGameObject = (state: MainStateDataType.state) => {
+let createGameObject = (state: StateDataMainType.state) => {
   let (state, geometry) = createBoxGeometry(state);
   let state = state |> setDefaultConfigData(geometry);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
@@ -284,23 +284,23 @@ let createGameObject = (state: MainStateDataType.state) => {
 };
 
 let setVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) =>
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
   VerticesBoxGeometryMainService.setVerticesByTypeArray(geometry, data, state);
 
 let setNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) =>
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
   NormalsBoxGeometryMainService.setNormalsByTypeArray(geometry, data, state);
 
 let setIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: MainStateDataType.state) =>
+    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) =>
   IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state);
 
 let getGroupCount = (geometry, state) =>
   GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
-let initGeometrys = (state: MainStateDataType.state) => InitBoxGeometryMainService.init(state);
+let initGeometrys = (state: StateDataMainType.state) => InitBoxGeometryMainService.init(state);
 
-let initGeometry = (geometry, state: MainStateDataType.state) =>
+let initGeometry = (geometry, state: StateDataMainType.state) =>
   InitBoxGeometryMainService.initGeometry(geometry, state);
 
 let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
@@ -324,6 +324,6 @@ let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
      

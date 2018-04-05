@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open SourceInstanceType;
 
@@ -18,7 +18,7 @@ let createSourceInstance = (state) => {
   ({...state, sourceInstanceRecord}, index)
 };
 
-let unsafeGetSourceInstanceGameObject = (sourceInstance, state: MainStateDataType.state) => {
+let unsafeGetSourceInstanceGameObject = (sourceInstance, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -32,12 +32,12 @@ let unsafeGetSourceInstanceGameObject = (sourceInstance, state: MainStateDataTyp
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(sourceInstance, state.sourceInstanceRecord)
 };
 
-let createObjectInstanceGameObject = (sourceInstance, state: MainStateDataType.state) => {
+let createObjectInstanceGameObject = (sourceInstance, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -51,12 +51,12 @@ let createObjectInstanceGameObject = (sourceInstance, state: MainStateDataType.s
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   createInstance(sourceInstance, state)
 };
 
-let getSourceInstanceObjectInstanceArray = (sourceInstance, state: MainStateDataType.state) => {
+let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -70,13 +70,13 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: MainStateData
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getObjectInstanceArray(sourceInstance, state.sourceInstanceRecord)
 };
 
 let markSourceInstanceModelMatrixIsStatic =
-    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: MainStateDataType.state) => {
+    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -90,7 +90,7 @@ let markSourceInstanceModelMatrixIsStatic =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,

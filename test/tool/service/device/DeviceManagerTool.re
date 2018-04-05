@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-let getDeviceManagerRecord = (state: MainStateDataType.state) => state.deviceManagerRecord;
+let getDeviceManagerRecord = (state: StateDataMainType.state) => state.deviceManagerRecord;
 
 let setSide = (gl, targetSide, record) => DeviceManagerService.setSide(gl, targetSide, record);
 

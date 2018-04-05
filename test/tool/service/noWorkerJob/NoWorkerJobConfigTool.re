@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open NoWorkerJobType;
 
@@ -257,7 +257,7 @@ let buildNoWorkerJobConfig =
 let create =
     (
       (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs),
-      state: MainStateDataType.state
+      state: StateDataMainType.state
     ) => {
   ...state,
   noWorkerJobRecord:

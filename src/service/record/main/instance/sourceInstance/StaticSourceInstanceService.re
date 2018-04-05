@@ -22,7 +22,7 @@ let isTransformStatic = (sourceInstance: sourceInstance, {isTransformStaticMap})
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let markIsSendTransformMatrixData =
@@ -47,5 +47,5 @@ let isSendTransformMatrixData = (sourceInstance: sourceInstance, {isSendTransfor
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );

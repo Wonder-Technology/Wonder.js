@@ -1,4 +1,4 @@
-let getMainInitJobStream = (stateData, state: MainStateDataType.state) =>
+let getMainInitJobStream = (stateData, state: StateDataMainType.state) =>
   OperateMainInitWorkerJobService.getMainInitJobStream(
     WorkerJobHandleSystem.createMainInitJobHandleMap(),
     stateData,
@@ -7,7 +7,7 @@ let getMainInitJobStream = (stateData, state: MainStateDataType.state) =>
   );
 
 let getRenderWorkerJobStreamArr =
-    (pipelineJobs, workerJobs, stateData: RenderWorkerStateDataType.renderWorkerStateData) =>
+    (pipelineJobs, workerJobs, stateData: StateDataRenderWorkerType.renderWorkerStateData) =>
   OperateRenderWorkerJobService.getRenderWorkerJobStreamArr(
     pipelineJobs,
     workerJobs,

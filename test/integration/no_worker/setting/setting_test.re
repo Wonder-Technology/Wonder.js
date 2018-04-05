@@ -32,7 +32,7 @@ let _ =
                 () => {
                   buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
                   SettingTool.createStateAndSetToStateData(~isDebug="true", ()) |> ignore;
-                  MainStateDataTool.getIsDebug(MainStateData.stateData) |> expect == true
+                  MainStateDataTool.getIsDebug(StateDataMain.stateData) |> expect == true
                 }
               )
           )

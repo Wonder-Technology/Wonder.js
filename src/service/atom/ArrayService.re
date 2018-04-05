@@ -15,7 +15,7 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
         () => lastIndex |> assertEqual(Int, Js.Array.length(arr) - 1)
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   WonderCommonlib.ArrayService.unsafeSet(
     arr,

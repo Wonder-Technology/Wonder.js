@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 let isPerspectiveCameraProjection = (cameraProjection) => {
   open Wonder_jest;
   open Expect;
@@ -7,7 +7,7 @@ let isPerspectiveCameraProjection = (cameraProjection) => {
 };
 
 
-let unsafeGetPMatrix = (cameraProjection, state: MainStateDataType.state) =>
+let unsafeGetPMatrix = (cameraProjection, state: StateDataMainType.state) =>
   PMatrixService.unsafeGetPMatrix(
     cameraProjection,
     state.perspectiveCameraProjectionRecord.pMatrixMap
@@ -15,16 +15,16 @@ let unsafeGetPMatrix = (cameraProjection, state: MainStateDataType.state) =>
 
 let getDirtyArray = (state) => state.perspectiveCameraProjectionRecord.dirtyArray;
 
-let init = (state: MainStateDataType.state) =>
+let init = (state: StateDataMainType.state) =>
   InitPerspectiveCameraProjectionService.init(state.perspectiveCameraProjectionRecord);
 
-let update = (state: MainStateDataType.state) => {
+let update = (state: StateDataMainType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     UpdatePerspectiveCameraProjectionService.update(state.perspectiveCameraProjectionRecord)
 };
 
-let updateCameraProjection = (cameraProjection, state: MainStateDataType.state) => {
+let updateCameraProjection = (cameraProjection, state: StateDataMainType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     UpdatePerspectiveCameraProjectionService.updateCameraProjection(

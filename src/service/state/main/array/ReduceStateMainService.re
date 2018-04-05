@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let reduceState = (func, state, arr) : state => {
   let mutableState = ref(state);

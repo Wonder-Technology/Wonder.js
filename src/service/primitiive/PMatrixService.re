@@ -12,7 +12,7 @@ let unsafeGetPMatrix = (index, pMatrixMap) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let setDefaultPMatrix = (index, pMatrixMap) =>

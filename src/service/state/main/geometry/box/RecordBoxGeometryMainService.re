@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open BoxGeometryType;
 

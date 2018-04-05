@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open Sinon;
 
@@ -128,7 +128,7 @@ let buildFakeGl =
   "compileShader": compileShader
 };
 
-let setFakeGl = (fakeGlObj, state: MainStateDataType.state) => {
+let setFakeGl = (fakeGlObj, state: StateDataMainType.state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord |> DeviceManagerService.setGl(Obj.magic(fakeGlObj))

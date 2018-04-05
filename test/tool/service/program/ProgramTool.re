@@ -1,11 +1,11 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getProgramRecord = (state) => state.programRecord;
 
-let getProgram = (shaderIndex: int, state: MainStateDataType.state) =>
+let getProgram = (shaderIndex: int, state: StateDataMainType.state) =>
   ProgramService.getProgram(shaderIndex, state.programRecord);
 
-let clearLastUsedProgram = (state: MainStateDataType.state) => {
+let clearLastUsedProgram = (state: StateDataMainType.state) => {
   ...state,
   programRecord: {...state.programRecord, lastUsedProgram: None}
 };

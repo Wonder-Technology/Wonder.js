@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open InitMaterialStateType;
+open StateInitMaterialType;
 
 let createInitMaterialState =
     (

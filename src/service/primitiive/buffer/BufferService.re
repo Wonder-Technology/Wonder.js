@@ -14,5 +14,5 @@ let checkNotExceedMaxCount = (maxCount, resultTuple) =>
            () => assertLte(Int, index, maxIndex)
          )
        },
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );

@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getState = (stateData) =>
   switch stateData.state {

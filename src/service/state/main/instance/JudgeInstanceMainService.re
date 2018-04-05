@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-let isSupportInstance = (state: MainStateDataType.state) =>
+let isSupportInstance = (state: StateDataMainType.state) =>
   JudgeInstanceService.isSupportInstance(
     OperateSettingService.unsafeGetGPU(state.settingRecord).useHardwareInstance,
     state.gpuDetectRecord

@@ -575,7 +575,7 @@ let _ =
                     "test box geometry component",
                     () => {
                       TestTool.closeContractCheck();
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
@@ -593,7 +593,7 @@ let _ =
                     "test custom geometry component",
                     () => {
                       TestTool.closeContractCheck();
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) =
                         CustomGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
@@ -618,7 +618,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -635,7 +635,7 @@ let _ =
                         "test dispose two",
                         () => {
                           TestTool.closeContractCheck();
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -656,7 +656,7 @@ let _ =
                         "test dispose three",
                         () => {
                           TestTool.closeContractCheck();
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -686,7 +686,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             DirectionLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -707,7 +707,7 @@ let _ =
                         "test dispose one",
                         () => {
                           TestTool.closeContractCheck();
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
@@ -798,7 +798,7 @@ let _ =
                       test(
                         "new transformMap should only has alive record",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -817,7 +817,7 @@ let _ =
                       test(
                         "new meshRendererMap should only has alive record",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -847,7 +847,7 @@ let _ =
                           test(
                             "new currentGeometryDataMap should only has alive record",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                               TestTool.closeContractCheck();
                               let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
@@ -886,7 +886,7 @@ let _ =
                           test(
                             "new currentGeometryDataMap should only has alive record",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                               TestTool.closeContractCheck();
                               let state = SettingTool.setMemory(state, ~maxDisposeCount=2, ());
@@ -919,7 +919,7 @@ let _ =
                           test(
                             "new basicMaterialMap should only has alive record",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 BasicMaterialTool.createGameObject(state);
@@ -944,7 +944,7 @@ let _ =
                           test(
                             "new lightMaterialMap should only has alive record",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                               let (state, gameObject1, material1) =
                                 LightMaterialTool.createGameObject(state);
@@ -972,7 +972,7 @@ let _ =
                         "test light map",
                         () => {
                           let _test = (createGameObjectFunc, getDataMapFunc, state) => {
-                            open MainStateDataType;
+                            open StateDataMainType;
                             let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                             let (state, gameObject1, light1) = createGameObjectFunc(state);
                             let (state, gameObject2, light2) = createGameObjectFunc(state);
@@ -991,7 +991,7 @@ let _ =
                           test(
                             "new ambientLightMap should only has alive record",
                             () =>
-                              MainStateDataType.(
+                              StateDataMainType.(
                                 _test(
                                   AmbientLightTool.createGameObject,
                                   ({ambientLightMap}) => ambientLightMap,
@@ -1002,7 +1002,7 @@ let _ =
                           test(
                             "new directionLightMap should only has alive record",
                             () =>
-                              MainStateDataType.(
+                              StateDataMainType.(
                                 _test(
                                   DirectionLightTool.createGameObject,
                                   ({directionLightMap}) => directionLightMap,
@@ -1013,7 +1013,7 @@ let _ =
                           test(
                             "new pointLightMap should only has alive record",
                             () =>
-                              MainStateDataType.(
+                              StateDataMainType.(
                                 _test(
                                   PointLightTool.createGameObject,
                                   ({pointLightMap}) => pointLightMap,
@@ -1026,7 +1026,7 @@ let _ =
                       test(
                         "new basicCameraViewMap should only has alive record",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1, _, basicCameraView1) =
                             CameraTool.createCameraGameObject(state);
@@ -1048,7 +1048,7 @@ let _ =
                       test(
                         "new sourceInstanceMap should only has alive record",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, gameObject1, _) =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
@@ -1066,7 +1066,7 @@ let _ =
                       test(
                         "new objectInstanceMap should only has alive record",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
                           let (state, _, _, objectInstanceGameObject1, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
@@ -1091,7 +1091,7 @@ let _ =
                       test(
                         "test reallocate component maps",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
@@ -1115,7 +1115,7 @@ let _ =
                   test(
                     "empty disposedUidMap",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
@@ -1135,7 +1135,7 @@ let _ =
                   test(
                     "update aliveUidArray",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
@@ -1255,7 +1255,7 @@ let _ =
                 () => {
                   let _test = ((createGameObjectFunc, isAliveFunc), state) => {
                     TestTool.closeContractCheck();
-                    open MainStateDataType;
+                    open StateDataMainType;
                     let (state, gameObject1, light1) = createGameObjectFunc(state^);
                     let (state, gameObject2, light2) = createGameObjectFunc(state);
                     let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
@@ -1288,7 +1288,7 @@ let _ =
                     "test box geometry component",
                     () => {
                       TestTool.closeContractCheck();
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
@@ -1306,7 +1306,7 @@ let _ =
                     "test custom geometry component",
                     () => {
                       TestTool.closeContractCheck();
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) =
                         CustomGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
@@ -1519,7 +1519,7 @@ let _ =
               test(
                 "if have dispose too many gameObjects, reallocate gameObject",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
                   let (state, gameObject1) = createGameObject(state);
                   let (state, gameObject2) = createGameObject(state);

@@ -1,4 +1,4 @@
-let exec = (state: MainStateDataType.state) =>
+let exec = (state: StateDataMainType.state) =>
   state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.prepare |> DirectorTool.init;
 
 

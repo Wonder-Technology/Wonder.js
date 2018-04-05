@@ -1,4 +1,4 @@
-let render = (gl, indexTuple, state: MainStateDataType.state) =>
+let render = (gl, indexTuple, state: StateDataMainType.state) =>
   if (JudgeInstanceMainService.isSupportInstance(state)) {
     FrontRenderLightHardwareInstanceJobCommon.render(gl, indexTuple, state)
   } else {

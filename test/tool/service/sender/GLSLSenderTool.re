@@ -1,14 +1,14 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getGLSLSenderRecord = (state) => state.glslSenderRecord;
 
-let disableVertexAttribArray = (state: MainStateDataType.state) =>
+let disableVertexAttribArray = (state: StateDataMainType.state) =>
   VertexAttribArrayService.disableVertexAttribArray(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     state
   );
 
-let clearLastSendGeometry = (state: MainStateDataType.state) => {
+let clearLastSendGeometry = (state: StateDataMainType.state) => {
   state.glslSenderRecord.lastSendGeometry = None;
   state
 };

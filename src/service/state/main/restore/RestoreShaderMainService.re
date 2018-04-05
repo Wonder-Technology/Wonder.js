@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open ShaderType;
 
@@ -44,7 +44,7 @@ let restore = (currentState, targetState) => {
           }
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let {shaderIndexMap: currentShaderIndexMap} = currentState.shaderRecord;
   let {shaderIndexMap: targetShaderIndexMap} as targetShaderData = targetState.shaderRecord;

@@ -1,6 +1,6 @@
 open BasicMaterialType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let getColor = (material, state) =>
   OperateTypeArrayBasicMaterialService.getColor(

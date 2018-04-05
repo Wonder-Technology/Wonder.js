@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let _isSupportSharedArrayBuffer = [%bs.raw
   {|
@@ -8,7 +8,7 @@ let _isSupportSharedArrayBuffer = [%bs.raw
     |}
 ];
 
-let detect = (state: MainStateDataType.state) => {
+let detect = (state: StateDataMainType.state) => {
   let isSupportSharedArrayBuffer = _isSupportSharedArrayBuffer();
   {
     ...state,
@@ -25,12 +25,12 @@ let detect = (state: MainStateDataType.state) => {
   }
 };
 
-let isSupportSharedArrayBuffer = (state: MainStateDataType.state) =>
+let isSupportSharedArrayBuffer = (state: StateDataMainType.state) =>
   state.workerDetectRecord.isSupportSharedArrayBuffer;
 
-let isSupportRenderWorkerAndSharedArrayBuffer = (state: MainStateDataType.state) =>
+let isSupportRenderWorkerAndSharedArrayBuffer = (state: StateDataMainType.state) =>
   state.workerDetectRecord.isSupportRenderWorkerAndSharedArrayBuffer;
 
-let isUseWorker = (state: MainStateDataType.state) =>
+let isUseWorker = (state: StateDataMainType.state) =>
   OperateSettingService.unsafeGetWorker(state.settingRecord).useWorker
   && isSupportRenderWorkerAndSharedArrayBuffer(state);

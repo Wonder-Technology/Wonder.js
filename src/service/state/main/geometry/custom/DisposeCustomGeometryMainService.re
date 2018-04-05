@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open CustomGeometryType;
 
@@ -77,7 +77,7 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   /* let {disposedIndexArray} as customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord; */
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
@@ -119,7 +119,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       /* let {disposedIndexMap} = state |> RecordCustomGeometryMainService.getRecord; */
       let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;

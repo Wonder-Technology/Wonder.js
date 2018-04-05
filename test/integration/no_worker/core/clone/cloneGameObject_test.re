@@ -34,7 +34,7 @@ let _ =
       test(
         "clone gameObject",
         () => {
-          open MainStateDataType;
+          open StateDataMainType;
           let (state, gameObject1) = createGameObject(state^);
           let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
           clonedGameObjectArr |> expect == [|[|1, 2|]|]
@@ -72,7 +72,7 @@ let _ =
               test(
                 "test clone specific count",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, meshRenderer1) =
                     MeshRendererTool.createGameObject(state^);
                   let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
@@ -89,7 +89,7 @@ let _ =
               test(
                 "add cloned gameObject to renderGameObjectArray",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, meshRenderer1) =
                     MeshRendererTool.createGameObject(state^);
                   let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
@@ -128,7 +128,7 @@ let _ =
                   test(
                     "test clone specific count",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                       let (state, _, clonedComponentArr) = _clone(gameObject1, state);
                       clonedComponentArr |> Js.Array.length |> expect == 2
@@ -140,7 +140,7 @@ let _ =
                       test(
                         "set color",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             AmbientLightTool.createGameObject(state^);
                           let color1 = [|1., 0., 1.|];
@@ -176,7 +176,7 @@ let _ =
                   test(
                     "test clone specific count",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, light1) =
                         DirectionLightTool.createGameObject(state^);
                       let (state, _, clonedComponentArr) = _clone(gameObject1, state);
@@ -189,7 +189,7 @@ let _ =
                       test(
                         "set color",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             DirectionLightTool.createGameObject(state^);
                           let color1 = [|1., 0., 1.|];
@@ -206,7 +206,7 @@ let _ =
                       test(
                         "set intensity",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             DirectionLightTool.createGameObject(state^);
                           let intensity1 = 2.;
@@ -250,7 +250,7 @@ let _ =
                   test(
                     "test clone specific count",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                       let (state, _, clonedComponentArr) = _clone(gameObject1, state);
                       clonedComponentArr |> Js.Array.length |> expect == 2
@@ -262,7 +262,7 @@ let _ =
                       test(
                         "set color",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let color1 = [|1., 0., 1.|];
@@ -278,7 +278,7 @@ let _ =
                       test(
                         "set intensity",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let intensity1 = 2.;
@@ -295,7 +295,7 @@ let _ =
                       test(
                         "set constant",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let constant1 = 2.;
@@ -312,7 +312,7 @@ let _ =
                       test(
                         "set linear",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let linear1 = 2.;
@@ -328,7 +328,7 @@ let _ =
                       test(
                         "set quadratic",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let quadratic1 = 2.;
@@ -345,7 +345,7 @@ let _ =
                       test(
                         "set range",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let (state, gameObject1, light1) =
                             PointLightTool.createGameObject(state^);
                           let range1 = 2.;
@@ -380,7 +380,7 @@ let _ =
                         (state, gameObject1, geometry1)
                       };
                       let _prepare = (state) => {
-                        open MainStateDataType;
+                        open StateDataMainType;
                         let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
                         CloneTool.cloneWithBoxGeometry(state, gameObject1, geometry1, 2)
                       };
@@ -410,7 +410,7 @@ let _ =
                         (state, gameObject1, geometry1)
                       };
                       let _prepare = (state) => {
-                        open MainStateDataType;
+                        open StateDataMainType;
                         let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
                         CloneTool.cloneWithCustomGeometry(state, gameObject1, geometry1, 2)
                       };
@@ -845,7 +845,7 @@ let _ =
             "test clone basicCameraView component",
             () => {
               let _prepare = (state) => {
-                open MainStateDataType;
+                open StateDataMainType;
                 let (state, _) = BasicCameraViewAPI.createBasicCameraView(state);
                 let (state, gameObject1, _, (basicCameraView1, _)) =
                   CameraTool.createCameraGameObject(state);
@@ -876,7 +876,7 @@ let _ =
             "test clone perspectiveCameraProjection component",
             () => {
               let _prepare = (state) => {
-                open MainStateDataType;
+                open StateDataMainType;
                 let (state, _) =
                   PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection(state);
                 let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
@@ -1027,7 +1027,7 @@ let _ =
               test(
                 "get all cloned gameObjects(include cloned children)",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
                   let state =
@@ -1053,7 +1053,7 @@ let _ =
                       unsafeGetGameObjectTransformComponent(gameObject1, state)
                     )
                   };
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, gameObject1, meshRenderer1, transform1) =
                     _createMeshRendererGameObject(state^);
                   let (state, gameObject2, meshRenderer2, transform2) =
@@ -1077,7 +1077,7 @@ let _ =
                      test(
                        "test clone specific count of geometrys",
                        () => {
-                         open MainStateDataType;
+                         open StateDataMainType;
                          let (state, gameObject1, geometry1) =
                            BoxGeometryTool.createGameObject(state^);
                          let transform1 = unsafeGetGameObjectTransformComponent(gameObject1, state);
@@ -1105,7 +1105,7 @@ let _ =
                      test(
                        "test clone specific count of materials",
                        () => {
-                         open MainStateDataType;
+                         open StateDataMainType;
                          let (state, gameObject1, material1) =
                            BasicMaterialTool.createGameObject(state^);
                          let state = state |> BasicMaterialTool.setShaderIndex(material1, 0);

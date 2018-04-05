@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let _handleByDisposeCount = (record, state) =>
   if (QueryCPUMemoryService.isDisposeTooMany(record.disposeCount, state.settingRecord)) {

@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(

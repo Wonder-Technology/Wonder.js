@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open LightMaterialType;
 
@@ -12,7 +12,7 @@ open DisposeLightMaterialService;
 
 let createLightMaterial = (state) => [@bs] create(state);
 
-let unsafeGetLightMaterialGameObject = (material, state: MainStateDataType.state) => {
+let unsafeGetLightMaterialGameObject = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -26,12 +26,12 @@ let unsafeGetLightMaterialGameObject = (material, state: MainStateDataType.state
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(material, RecordLightMaterialMainService.getRecord(state))
 };
 
-let getLightMaterialDiffuseColor = (material, state: MainStateDataType.state) => {
+let getLightMaterialDiffuseColor = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -45,12 +45,12 @@ let getLightMaterialDiffuseColor = (material, state: MainStateDataType.state) =>
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getDiffuseColor(material, state)
 };
 
-let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.state) => {
+let setLightMaterialDiffuseColor = (material, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -64,12 +64,12 @@ let setLightMaterialDiffuseColor = (material, color, state: MainStateDataType.st
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   setDiffuseColor(material, color, state)
 };
 
-let getLightMaterialSpecularColor = (material, state: MainStateDataType.state) => {
+let getLightMaterialSpecularColor = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -83,12 +83,12 @@ let getLightMaterialSpecularColor = (material, state: MainStateDataType.state) =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getSpecularColor(material, state)
 };
 
-let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.state) => {
+let setLightMaterialSpecularColor = (material, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -102,12 +102,12 @@ let setLightMaterialSpecularColor = (material, color, state: MainStateDataType.s
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   setSpecularColor(material, color, state)
 };
 
-let getLightMaterialShininess = (material, state: MainStateDataType.state) => {
+let getLightMaterialShininess = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -121,12 +121,12 @@ let getLightMaterialShininess = (material, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getShininess(material, state)
 };
 
-let setLightMaterialShininess = (material, shininess, state: MainStateDataType.state) => {
+let setLightMaterialShininess = (material, shininess, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -140,7 +140,7 @@ let setLightMaterialShininess = (material, shininess, state: MainStateDataType.s
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   setShininess(material, shininess, state)
 };

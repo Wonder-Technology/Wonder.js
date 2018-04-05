@@ -1,5 +1,5 @@
 /* TODO pass light material */
-open MainStateDataType;
+open StateDataMainType;
 
 open MaterialType;
 
@@ -19,7 +19,7 @@ open LightMaterialType;
      shader_libs
  };
 
- let _getShaderTuple = (materialIndex, state: MainStateDataType.state) => {
+ let _getShaderTuple = (materialIndex, state: StateDataMainType.state) => {
    let shaderRecord = RenderConfigMainService.getShaders(state);
    (materialIndex, _getShaderLibs(shaderRecord), shaderRecord)
  };
@@ -32,7 +32,7 @@ open LightMaterialType;
  let initMaterial =
    [@bs]
    (
-     (gl, materialIndex: int, state: MainStateDataType.state) =>
+     (gl, materialIndex: int, state: StateDataMainType.state) =>
        InitMaterialMainService.initMaterial(
          gl,
          _getShaderTuple(materialIndex, state),
@@ -41,14 +41,14 @@ open LightMaterialType;
        )
    );
 
- let initMaterials = (materialIndexArr, gl, state: MainStateDataType.state) =>
+ let initMaterials = (materialIndexArr, gl, state: StateDataMainType.state) =>
    materialIndexArr
    |> ReduceStateMainService.reduceState(
         [@bs] ((state, materialIndex: int) => [@bs] initMaterial(gl, materialIndex, state)),
         state
       );
 
- let handleInitComponent = (gl, index: int, state: MainStateDataType.state) =>
+ let handleInitComponent = (gl, index: int, state: StateDataMainType.state) =>
    InitMaterialMainService.handleInitComponent(
      gl,
      _getShaderTuple(index, state),
@@ -63,10 +63,10 @@ open LightMaterialType;
 
  */
 let initMaterial =
-  [@bs] ((gl: GlType.webgl1Context, materialIndex: int, state: MainStateDataType.state) => ());
+  [@bs] ((gl: GlType.webgl1Context, materialIndex: int, state: StateDataMainType.state) => ());
 
-let initMaterials = (materialIndexArr, gl, state: MainStateDataType.state) => ();
+let initMaterials = (materialIndexArr, gl, state: StateDataMainType.state) => ();
 
-let handleInitComponent = (gl, index: int, state: MainStateDataType.state) => ();
+let handleInitComponent = (gl, index: int, state: StateDataMainType.state) => ();
 
 let init = (gl, state) => ();

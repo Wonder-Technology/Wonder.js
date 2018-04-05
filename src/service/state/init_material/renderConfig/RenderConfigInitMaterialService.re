@@ -65,7 +65,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
   | _ =>
     WonderLog.Log.debugJson(
       WonderLog.Log.buildDebugJsonMessage(~description={j|static_branchs|j}, ~var=static_branchs),
-      IsDebugMainService.getIsDebug(MainStateData.stateData)
+      IsDebugMainService.getIsDebug(StateDataMain.stateData)
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -95,7 +95,7 @@ let _getMaterialShaderLibDataArrByType =
   | _ =>
     WonderLog.Log.debugJson(
       WonderLog.Log.buildDebugJsonMessage(~description={j|shaderLibs|j}, ~var=shaderLibs),
-      IsDebugMainService.getIsDebug(MainStateData.stateData)
+      IsDebugMainService.getIsDebug(StateDataMain.stateData)
     );
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

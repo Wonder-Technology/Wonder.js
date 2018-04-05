@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-let _render = (gl, state: MainStateDataType.state) =>
+let _render = (gl, state: StateDataMainType.state) =>
   switch (state |> OperateRenderMainService.getBasicRenderObjectRecord) {
   | None => state
   | Some({

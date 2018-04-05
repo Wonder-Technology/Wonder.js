@@ -2,7 +2,7 @@ open BoxGeometryType;
 
 open GeometryType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open DisposeComponentService;
 
@@ -54,7 +54,7 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
@@ -92,7 +92,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
       let (vboBufferRecord, boxGeometryRecord) =

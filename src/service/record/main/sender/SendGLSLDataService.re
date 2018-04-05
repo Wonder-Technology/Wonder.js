@@ -2,7 +2,7 @@ open GlType;
 
 open Gl;
 
-open GLSLSenderType;
+open GLSLSenderAllType;
 
 let getBufferSizeByType = (type_: string) =>
   switch type_ {
@@ -98,7 +98,7 @@ let _isNotCacheFloat = (shaderCacheMap, name: string, value: float) =>
 let sendFloat =
   [@bs]
   (
-    (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
+    (gl, shaderCacheMap: GLSLSenderAllType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
       if (_isNotCacheFloat(shaderCacheMap |> Obj.magic, name, value)) {
         uniform1f(pos, value, gl)
       } else {
@@ -111,7 +111,7 @@ let sendFloat3 =
   (
     (
       gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
+      shaderCacheMap: GLSLSenderAllType.shaderCacheMap,
       (name: string, pos: uniformLocation),
       [|x, y, z|]
     ) =>
@@ -127,7 +127,7 @@ let sendVec3 =
   (
     (
       gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
+      shaderCacheMap: GLSLSenderAllType.shaderCacheMap,
       (name: string, pos: uniformLocation),
       (x, y, z) as dataTuple
     ) =>

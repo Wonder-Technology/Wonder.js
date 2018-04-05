@@ -50,7 +50,7 @@ let setFloat3 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.
         () => len == 3
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 2) {
@@ -100,7 +100,7 @@ let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array
         () => len == 16
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   /* Float32Array.setArrayOffset(record, index, typeArray); */
   for (i in index to index + 15) {
@@ -130,7 +130,7 @@ let fillFloat32Array = (typeArray: Float32Array.t, dataArr: Js.Array.t(float), s
         () => actualLen <= range
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let dataArrIndex = ref(0);
   for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -161,7 +161,7 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
         () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
@@ -185,7 +185,7 @@ let fillUint16Array = (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), start
         () => actualLen <= range
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let dataArrIndex = ref(0);
   for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
@@ -215,7 +215,7 @@ let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
         () => sourceTypeArrLen + offset <= targetTypeArrLen
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };

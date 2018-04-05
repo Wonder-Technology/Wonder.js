@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open CustomGeometryType;
 
@@ -6,14 +6,14 @@ open CustomGeometryAPI;
 
 let getRecord = (state) => RecordCustomGeometryMainService.getRecord(state);
 
-let createGameObject = (state: MainStateDataType.state) => {
+let createGameObject = (state: StateDataMainType.state) => {
   let (state, geometry) = createCustomGeometry(state);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let state = state |> GameObjectAPI.addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry)
 };
 
-let createGameObjectAndSetPointData = (state: MainStateDataType.state) => {
+let createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
   open Js.Typed_array;
   let (state, geometry) = createCustomGeometry(state);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
@@ -100,5 +100,5 @@ let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );

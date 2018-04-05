@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open GameObjectMeshRendererService;
 
@@ -11,7 +11,7 @@ let createMeshRenderer = (state) => {
   ({...state, meshRendererRecord}, index)
 };
 
-let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: MainStateDataType.state) => {
+let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -25,7 +25,7 @@ let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: MainSt
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(meshRenderer, state.meshRendererRecord)
 };

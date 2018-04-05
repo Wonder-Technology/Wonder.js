@@ -1,4 +1,4 @@
-open RenderStateType;
+open StateRenderType;
 
 open Gl;
 

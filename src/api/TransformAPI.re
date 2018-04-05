@@ -17,7 +17,7 @@ let createTransform = CreateTransformMainService.create;
        CreateTransformMainService.create(state.typeArrayPoolRecord, state |> RecordTransformMainService.getRecord);
      ({...state, typeArrayPoolRecord, transformRecord}, index)
    }; */
-let unsafeGetTransformGameObject = (transform: transform, state: MainStateDataType.state) => {
+let unsafeGetTransformGameObject = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -31,12 +31,12 @@ let unsafeGetTransformGameObject = (transform: transform, state: MainStateDataTy
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(transform, state |> RecordTransformMainService.getRecord)
 };
 
-let unsafeGetTransformParent = (transform: transform, state: MainStateDataType.state) => {
+let unsafeGetTransformParent = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -50,13 +50,13 @@ let unsafeGetTransformParent = (transform: transform, state: MainStateDataType.s
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetParent(transform, state |> RecordTransformMainService.getRecord)
 };
 
 let _checkParentAndChildTransformShouldAlive =
-    (parent: Js.nullable(transform), child: transform, state: MainStateDataType.state) =>
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) =>
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -80,11 +80,11 @@ let _checkParentAndChildTransformShouldAlive =
         state |> RecordTransformMainService.getRecord
       )
     },
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
 
 let setTransformParent =
-    (parent: Js.nullable(transform), child: transform, state: MainStateDataType.state) => {
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
   {
     ...state,
@@ -94,7 +94,7 @@ let setTransformParent =
 };
 
 let setTransformParentKeepOrder =
-    (parent: Js.nullable(transform), child: transform, state: MainStateDataType.state) => {
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
   {
     ...state,
@@ -109,7 +109,7 @@ let setTransformParentKeepOrder =
   }
 };
 
-let unsafeGetTransformChildren = (transform: transform, state: MainStateDataType.state) => {
+let unsafeGetTransformChildren = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -123,18 +123,18 @@ let unsafeGetTransformChildren = (transform: transform, state: MainStateDataType
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetChildren(transform, state |> RecordTransformMainService.getRecord)
 };
 
-/* let getTransformLocalPositionTypeArray = (transform: transform, state: MainStateDataType.state) => {
+/* let getTransformLocalPositionTypeArray = (transform: transform, state: StateDataMainType.state) => {
      requireCheck(
        () => Contract.Operators.(AliveComponentService.checkComponentShouldAlive(transform, isAlive, state))
      );
      getLocalPositionTypeArray(transform, state)
    }; */
-let getTransformLocalPosition = (transform: transform, state: MainStateDataType.state) => {
+let getTransformLocalPosition = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -148,20 +148,20 @@ let getTransformLocalPosition = (transform: transform, state: MainStateDataType.
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getLocalPositionTuple(transform, RecordTransformMainService.getRecord(state).localPositions)
 };
 
 /* let setTransformLocalPositionByTypeArray =
-       (transform: transform, localPosition, state: MainStateDataType.state) => {
+       (transform: transform, localPosition, state: StateDataMainType.state) => {
      requireCheck(
        () => Contract.Operators.(AliveComponentService.checkComponentShouldAlive(transform, isAlive, state))
      );
      setLocalPositionByTypeArray(transform, localPosition, state)
    }; */
 let setTransformLocalPosition =
-    (transform: transform, localPosition, state: MainStateDataType.state) => {
+    (transform: transform, localPosition, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -175,7 +175,7 @@ let setTransformLocalPosition =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -190,13 +190,13 @@ let setTransformLocalPosition =
   }
 };
 
-/* let getTransformPositionTypeArray = (transform: transform, state: MainStateDataType.state) => {
+/* let getTransformPositionTypeArray = (transform: transform, state: StateDataMainType.state) => {
      requireCheck(
        () => Contract.Operators.(AliveComponentService.checkComponentShouldAlive(transform, isAlive, state))
      );
      updateAndGetPositionTypeArray(transform, state)
    }; */
-let getTransformPosition = (transform: transform, state: MainStateDataType.state) => {
+let getTransformPosition = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -210,7 +210,7 @@ let getTransformPosition = (transform: transform, state: MainStateDataType.state
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   updateAndGetPositionTuple(
     transform,
@@ -219,14 +219,14 @@ let getTransformPosition = (transform: transform, state: MainStateDataType.state
   )
 };
 
-/* let setTransformPositionByTypeArray = (transform: transform, position, state: MainStateDataType.state) => {
+/* let setTransformPositionByTypeArray = (transform: transform, position, state: StateDataMainType.state) => {
      requireCheck(
        () => Contract.Operators.(AliveComponentService.checkComponentShouldAlive(transform, isAlive, state))
      );
      setPositionByTypeArray(transform, position, state)
    }; */
 let setTransformPosition =
-    (transform: transform, position: position, state: MainStateDataType.state) => {
+    (transform: transform, position: position, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -240,7 +240,7 @@ let setTransformPosition =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,

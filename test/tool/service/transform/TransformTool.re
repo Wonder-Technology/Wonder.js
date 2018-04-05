@@ -1,10 +1,10 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open TransformType;
 
 open Js.Typed_array;
 
-let getTransformRecord = (state: MainStateDataType.state) =>
+let getTransformRecord = (state: StateDataMainType.state) =>
   state |> RecordTransformMainService.getRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
@@ -35,24 +35,24 @@ let isTransform = (transform: transform) => {
   expect(transform) >= 0
 };
 
-let getLocalToWorldMatrixTypeArray = (transform, state: MainStateDataType.state) =>
+let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) =>
   ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
     transform,
     state |> RecordTransformMainService.getRecord
   );
 
-let getDefaultLocalToWorldMatrix = (state: MainStateDataType.state) =>
+let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
 
-let getDefaultLocalToWorldMatrixTypeArray = (state: MainStateDataType.state) =>
+let getDefaultLocalToWorldMatrixTypeArray = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix |> Float32Array.make;
 
-let getDefaultLocalPosition = (state: MainStateDataType.state) =>
+let getDefaultLocalPosition = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalPosition;
 
-let getDefaultLocalPositionTuple = (state: MainStateDataType.state) => (0., 0., 0.);
+let getDefaultLocalPositionTuple = (state: StateDataMainType.state) => (0., 0., 0.);
 
-let getLocalToWorldMatrix = (transform, state: MainStateDataType.state) =>
+let getLocalToWorldMatrix = (transform, state: StateDataMainType.state) =>
   RecordTransformMainService.getLocalToWorldMatrix(
     transform,
     RecordTransformMainService.getRecord(state).localToWorldMatrices
@@ -64,7 +64,7 @@ let setLocalToWorldMatrix = (transform: transform, data, state) => {
   state
 };
 
-let getNormalMatrixTypeArray = (transform, state: MainStateDataType.state) => {
+let getNormalMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let (normalMatrix, _) =
     UpdateTransformService.updateAndGetNormalMatrixTypeArray(
       transform,

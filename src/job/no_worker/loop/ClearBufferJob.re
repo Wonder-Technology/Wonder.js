@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let _getBitFromFlags = (gl, (flag, flags), getBufferBitFunc, bit) =>
   Js.Array.includes(flag, flags) ?

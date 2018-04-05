@@ -1,4 +1,4 @@
-open InitMaterialStateType;
+open StateInitMaterialType;
 
 open MaterialInitMaterialType;
 
@@ -82,7 +82,7 @@ let init =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   ArrayService.range(0, materialRecord.index - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(

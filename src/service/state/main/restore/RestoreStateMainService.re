@@ -1,9 +1,9 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open StateDataMainService;
 
 let _getSharedData =
-    ({typeArrayPoolRecord, deviceManagerRecord} as currentState: MainStateDataType.state) => {
+    ({typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataMainType.state) => {
   gl: [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
   float32ArrayPoolMap: TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord),
   uint16ArrayPoolMap: TypeArrayPoolService.getUint16ArrayPoolMap(typeArrayPoolRecord)
@@ -12,8 +12,8 @@ let _getSharedData =
 let restore =
     (
       stateData: stateData,
-      currentState: MainStateDataType.state,
-      targetState: MainStateDataType.state
+      currentState: StateDataMainType.state,
+      targetState: StateDataMainType.state
     ) => {
   let intersectShaderIndexDataArray =
     IntersectShaderIndexMainService.getIntersectShaderIndexDataArray(currentState, targetState);

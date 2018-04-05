@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let _fillMatrixTypeArr =
   [@bs]
@@ -10,7 +10,7 @@ let _fillMatrixTypeArr =
     }
   );
 
-let render = (gl, indexTuple, state: MainStateDataType.state) =>
+let render = (gl, indexTuple, state: StateDataMainType.state) =>
   RenderHardwareInstanceJobUtils.render(
     gl,
     (indexTuple, 64 * 16 * 4, 64, 64),

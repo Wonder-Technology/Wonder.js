@@ -62,7 +62,7 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        WonderLog.Log.print(("record:", record)) |> ignore;
        StateRenderWorkerService.createState()
        |> InitGlRenderWorkerService.initGl(record)
-       |> StateRenderWorkerService.setState(RenderWorkerStateData.renderWorkerStateData)
+       |> StateRenderWorkerService.setState(StateDataRenderWorker.renderWorkerStateData)
        |> ignore
      | operateType =>
        WonderLog.Log.fatal(
@@ -84,7 +84,7 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
        WorkerJobService.getRenderWorkerJobStreamArr(
          e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
          e##data##jobs |> Js.Json.parseExn |> Obj.magic,
-         RenderWorkerStateData.renderWorkerStateData
+         StateDataRenderWorker.renderWorkerStateData
        )
        |> ArrayService.push(
             MostUtils.fromWorkerEvent("message", WorkerService.getSelf())

@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let execJob = (_, _, state) => {
   ...state,

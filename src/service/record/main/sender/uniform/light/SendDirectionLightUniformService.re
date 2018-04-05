@@ -23,7 +23,7 @@ let send =
             () => maxCount == 4
           )
         },
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       /* let {index} = directionLightRecord; */
       let lightGLSLDataStructureMemberNameArr = [|

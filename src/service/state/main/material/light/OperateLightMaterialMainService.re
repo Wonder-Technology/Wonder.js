@@ -2,7 +2,7 @@ open MaterialType;
 
 open LightMaterialType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let getDiffuseColor = (material, state) =>
   RecordLightMaterialMainService.getDiffuseColor(

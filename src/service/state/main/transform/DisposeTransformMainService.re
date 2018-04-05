@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open TransformType;
 
@@ -78,7 +78,7 @@ let handleDisposeComponent =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let transformRecord =
     _disposeData(
@@ -108,7 +108,7 @@ let handleBatchDisposeComponent =
       transformArray: array(int),
       isGameObjectDisposedMap: array(bool),
       maxTypeArrayPoolSize: int,
-      {settingRecord, transformRecord} as state: MainStateDataType.state
+      {settingRecord, transformRecord} as state: StateDataMainType.state
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -123,7 +123,7 @@ let handleBatchDisposeComponent =
               )
             )
           ),
-        IsDebugMainService.getIsDebug(MainStateData.stateData)
+        IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let {disposedIndexArray} as transformRecord = state |> RecordTransformMainService.getRecord;
       let transformRecord = {

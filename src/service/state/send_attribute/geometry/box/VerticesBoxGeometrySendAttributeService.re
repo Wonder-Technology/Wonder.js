@@ -1,4 +1,4 @@
-open SendAttributeStateType;
+open StateSendAttributeType;
 
 let getVertices =
   [@bs]

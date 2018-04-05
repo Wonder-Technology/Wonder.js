@@ -22,7 +22,7 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrice
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 /* let getNormalMatrixTypeArray = (transform: transform, localToWorldMatrices, normalMatrixCacheMap) => */
@@ -57,7 +57,7 @@ let getLocalPositionTypeArray = (transform: transform, localPositions) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
 
 let getLocalPositionTuple = (transform: transform, localPositions) => {
@@ -70,7 +70,7 @@ let setLocalPositionByTuple = (transform: transform, dataTuple, {localPositions}
   record |> markHierachyDirty(transform)
 };
 
-/* let setPositionByTypeArray = (transform: transform, position, record, state: MainStateDataType.state) =>
+/* let setPositionByTypeArray = (transform: transform, position, record, state: StateDataMainType.state) =>
    switch (getParent(transform, record)) {
    | None =>
      setLocalPositionByTypeArray(transform, position, record) |> ignore;

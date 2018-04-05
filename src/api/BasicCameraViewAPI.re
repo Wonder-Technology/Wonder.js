@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open BasicCameraViewType;
 
@@ -26,12 +26,12 @@ let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(cameraView, state.basicCameraViewRecord)
 };
 
-let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: MainStateDataType.state) => {
+let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -45,7 +45,7 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: MainStateDataTyp
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   VMatrixService.getWorldToCameraMatrix(
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(

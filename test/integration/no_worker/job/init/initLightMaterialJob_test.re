@@ -265,7 +265,7 @@ let _ =
                       describe(
                         "else, use normalMatrix_batch_instance shader lib",
                         () => {
-                          open MainStateDataType;
+                          open StateDataMainType;
                           let _setGPUConfigDataAllowBatchInstance = (state) =>
                             SettingTool.setGPU({useHardwareInstance: false}, state);
                           let _setGPUDetectDataAllowBatchInstance = (state) => {

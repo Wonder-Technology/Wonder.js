@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let isAlive = (uid: int, {gameObjectRecord}) => {
   let {transformMap, disposedUidMap} = gameObjectRecord;

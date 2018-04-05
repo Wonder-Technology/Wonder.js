@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open GeometryType;
 
@@ -15,7 +15,7 @@ let createBoxGeometry = (state) => {
 };
 
 let setBoxGeometryConfigData =
-    (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: MainStateDataType.state) => {
+    (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -29,7 +29,7 @@ let setBoxGeometryConfigData =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -44,10 +44,10 @@ let setBoxGeometryConfigData =
   }
 };
 
-let getBoxGeometryDrawMode = (state: MainStateDataType.state) =>
+let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
 
-let getBoxGeometryVertices = (geometry: int, state: MainStateDataType.state) => {
+let getBoxGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -61,12 +61,12 @@ let getBoxGeometryVertices = (geometry: int, state: MainStateDataType.state) => 
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] VerticesBoxGeometryMainService.getVertices(geometry, state)
 };
 
-let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
+let getBoxGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -80,12 +80,12 @@ let getBoxGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] NormalsBoxGeometryMainService.getNormals(geometry, state)
 };
 
-let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
+let getBoxGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -99,12 +99,12 @@ let getBoxGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] IndicesBoxGeometryMainService.getIndices(geometry, state)
 };
 
-let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataType.state) => {
+let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -118,7 +118,7 @@ let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataTy
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   ConfigDataBoxGeometryService.unsafeGetConfigData(
     geometry,
@@ -126,7 +126,7 @@ let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: MainStateDataTy
   )
 };
 
-let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: MainStateDataType.state) => {
+let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -140,7 +140,7 @@ let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: MainStateDataTy
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   GameObjectBoxGeometryService.unsafeGetGameObject(
     geometry,

@@ -1,8 +1,8 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getRecord = (state) => state.vboBufferRecord;
 
-let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryVertexBufferMap),
@@ -10,7 +10,7 @@ let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: MainSt
     state
   );
 
-let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryNormalBufferMap),
@@ -18,7 +18,7 @@ let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: MainSt
     state
   );
 
-let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: MainStateDataType.state) =>
+let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
   GetVboBufferMainService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryElementArrayBufferMap),
@@ -30,7 +30,7 @@ let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: MainS
   );
 
 let getOrCreateInstanceBuffer =
-    (sourceInstanceIndex: int, defaultCapacity, state: MainStateDataType.state) =>
+    (sourceInstanceIndex: int, defaultCapacity, state: StateDataMainType.state) =>
   InstanceBufferMainService.getOrCreateBuffer(
     (
       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
@@ -45,7 +45,7 @@ let getOrCreateInstanceBuffer =
   );
 
 let passBufferShouldExistCheckWhenDisposeBoxGeometry =
-    (geometryIndex, state: MainStateDataType.state) => {
+    (geometryIndex, state: StateDataMainType.state) => {
   open VboBufferType;
   let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} =
     state.vboBufferRecord;
@@ -60,7 +60,7 @@ let passBufferShouldExistCheckWhenDisposeBoxGeometry =
 };
 
 let passBufferShouldExistCheckWhenDisposeCustomGeometry =
-    (geometryIndex, state: MainStateDataType.state) => {
+    (geometryIndex, state: StateDataMainType.state) => {
   open VboBufferType;
   let {
     customGeometryVertexBufferMap,
@@ -79,7 +79,7 @@ let passBufferShouldExistCheckWhenDisposeCustomGeometry =
 };
 
 let passBufferShouldExistCheckWhenDisposeSourceInstance =
-    (sourceInstanceIndex, state: MainStateDataType.state) => {
+    (sourceInstanceIndex, state: StateDataMainType.state) => {
   open VboBufferType;
   let {matrixInstanceBufferMap} = state.vboBufferRecord;
   WonderCommonlib.SparseMapService.set(sourceInstanceIndex, Obj.magic(0), matrixInstanceBufferMap);

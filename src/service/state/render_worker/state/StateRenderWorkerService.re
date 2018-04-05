@@ -1,4 +1,4 @@
-open RenderWorkerStateDataType;
+open StateDataRenderWorkerType;
 
 let setState = (stateData, state) => {
   stateData.state = Some(state);

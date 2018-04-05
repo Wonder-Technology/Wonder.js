@@ -1,16 +1,16 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let buildInfo = ReallocatedPointsGeometryService.buildInfo;
 
-let getIndexType = (state: MainStateDataType.state) =>
+let getIndexType = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
   |> RenderGeometryService.getIndexType;
 
-let getIndexTypeSize = (state: MainStateDataType.state) =>
+let getIndexTypeSize = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
   |> RenderGeometryService.getIndexTypeSize;
 
-/* let hasIndices = (index: int, state: MainStateDataType.state) =>
+/* let hasIndices = (index: int, state: StateDataMainType.state) =>
    IndicesService.hasIndices(index, state.boxGeometryRecord.indicesMap); */
 let isGeometry = (geometry) => {
   open Wonder_jest;

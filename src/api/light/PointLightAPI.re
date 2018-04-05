@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open PointLightType;
 
@@ -15,7 +15,7 @@ let createPointLight = (state) => {
   ({...state, pointLightRecord}, index)
 };
 
-let unsafeGetPointLightGameObject = (light, state: MainStateDataType.state) => {
+let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -25,7 +25,7 @@ let unsafeGetPointLightGameObject = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
@@ -36,7 +36,7 @@ let unsafeGetPointLightGameObject = (light, state: MainStateDataType.state) => {
   )
 };
 
-let getPointLightColor = (light, state: MainStateDataType.state) => {
+let getPointLightColor = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -46,7 +46,7 @@ let getPointLightColor = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getColor(
     MappedIndexService.getMappedIndex(
@@ -57,7 +57,7 @@ let getPointLightColor = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightColor = (light, color, state: MainStateDataType.state) => {
+let setPointLightColor = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -67,7 +67,7 @@ let setPointLightColor = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -83,7 +83,7 @@ let setPointLightColor = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getPointLightIntensity = (light, state: MainStateDataType.state) => {
+let getPointLightIntensity = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -93,7 +93,7 @@ let getPointLightIntensity = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getIntensity(
     MappedIndexService.getMappedIndex(
@@ -104,7 +104,7 @@ let getPointLightIntensity = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightIntensity = (light, color, state: MainStateDataType.state) => {
+let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -114,7 +114,7 @@ let setPointLightIntensity = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -130,7 +130,7 @@ let setPointLightIntensity = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getPointLightConstant = (light, state: MainStateDataType.state) => {
+let getPointLightConstant = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -140,7 +140,7 @@ let getPointLightConstant = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getConstant(
     MappedIndexService.getMappedIndex(
@@ -151,7 +151,7 @@ let getPointLightConstant = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightConstant = (light, color, state: MainStateDataType.state) => {
+let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -161,7 +161,7 @@ let setPointLightConstant = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -177,7 +177,7 @@ let setPointLightConstant = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getPointLightLinear = (light, state: MainStateDataType.state) => {
+let getPointLightLinear = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -187,7 +187,7 @@ let getPointLightLinear = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getLinear(
     MappedIndexService.getMappedIndex(
@@ -198,7 +198,7 @@ let getPointLightLinear = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightLinear = (light, color, state: MainStateDataType.state) => {
+let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -208,7 +208,7 @@ let setPointLightLinear = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -224,7 +224,7 @@ let setPointLightLinear = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getPointLightQuadratic = (light, state: MainStateDataType.state) => {
+let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -234,7 +234,7 @@ let getPointLightQuadratic = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getQuadratic(
     MappedIndexService.getMappedIndex(
@@ -245,7 +245,7 @@ let getPointLightQuadratic = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightQuadratic = (light, color, state: MainStateDataType.state) => {
+let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -255,7 +255,7 @@ let setPointLightQuadratic = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -271,7 +271,7 @@ let setPointLightQuadratic = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getPointLightRange = (light, state: MainStateDataType.state) => {
+let getPointLightRange = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -281,7 +281,7 @@ let getPointLightRange = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getRange(
     MappedIndexService.getMappedIndex(
@@ -292,7 +292,7 @@ let getPointLightRange = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setPointLightRange = (light, color, state: MainStateDataType.state) => {
+let setPointLightRange = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -302,7 +302,7 @@ let setPointLightRange = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -318,7 +318,7 @@ let setPointLightRange = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let setPointLightRangeLevel = (light, level, state: MainStateDataType.state) => {
+let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -328,7 +328,7 @@ let setPointLightRangeLevel = (light, level, state: MainStateDataType.state) => 
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,

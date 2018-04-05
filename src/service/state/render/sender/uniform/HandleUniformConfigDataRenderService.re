@@ -66,7 +66,7 @@ let _setToUniformSendMap =
 
 let _readUniforms =
     (
-      (gl, program, uniformLocationMap, uniformCacheMap: GLSLSenderType.shaderCacheMap),
+      (gl, program, uniformLocationMap, uniformCacheMap: GLSLSenderAllType.shaderCacheMap),
       sendDataArrTuple,
       uniforms
     ) =>
@@ -190,7 +190,7 @@ let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
 
 let addUniformSendData =

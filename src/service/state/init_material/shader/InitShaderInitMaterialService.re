@@ -1,4 +1,4 @@
-open InitMaterialStateType;
+open StateInitMaterialType;
 
 open ShaderType;
 
@@ -21,7 +21,7 @@ let _genereateShaderIndex = ({index} as record) => {
            () => r <>= defaultShaderIndex
          )
        },
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      )
 };
 

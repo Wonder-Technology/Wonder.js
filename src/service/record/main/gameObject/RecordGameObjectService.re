@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let create = () => {
   uid: 0,

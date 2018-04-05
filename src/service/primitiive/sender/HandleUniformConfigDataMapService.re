@@ -14,5 +14,5 @@ let unsafeGetUniformSendData = (shaderIndex: int, map) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );

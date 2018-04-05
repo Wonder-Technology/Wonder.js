@@ -1,6 +1,6 @@
-open RenderWorkerStateDataType;
+open StateDataRenderWorkerType;
 
-open InitMaterialStateType;
+open StateInitMaterialType;
 
 /* let createInitMaterialState =
        (

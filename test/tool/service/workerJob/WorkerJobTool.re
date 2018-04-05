@@ -150,7 +150,7 @@ let buildWorkerJobConfig =
 let createWithRecord =
     (
       (setting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
-      state: MainStateDataType.state
+      state: StateDataMainType.state
     ) => {
   ...state,
   workerJobRecord:
@@ -166,7 +166,7 @@ let createWithRecord =
 let create =
     (
       (workerSetting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
-      state: MainStateDataType.state
+      state: StateDataMainType.state
     ) =>
   createWithRecord(
     (

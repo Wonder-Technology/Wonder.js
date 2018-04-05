@@ -1,4 +1,4 @@
-open RenderWorkerStateDataType;
+open StateDataRenderWorkerType;
 
 let createState = () => {
   renderConfigRecord: None,

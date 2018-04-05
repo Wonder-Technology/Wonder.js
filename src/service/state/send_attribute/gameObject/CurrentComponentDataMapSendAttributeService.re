@@ -26,7 +26,7 @@ let unsafeGetComponentData = (uid, currentComponentDataMap) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let hasComponent = (uid, currentComponentDataMap, targetType_) =>

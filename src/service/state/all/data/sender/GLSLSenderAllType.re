@@ -23,7 +23,7 @@ type attributeSendData = {
         webgl1Context,
         (attributeLocation, int),
         GlType.buffer,
-        SendAttributeStateType.sendAttributeState
+        StateSendAttributeType.sendAttributeState
       ) =>
       unit
     )
@@ -37,7 +37,7 @@ type instanceAttributeSendData = {
 
 type uniformRenderObjectSendModelData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, SendUniformStateType.sendUniformState) => Float32Array.t),
+  getDataFunc: [@bs] ((component, StateSendUniformType.sendUniformState) => Float32Array.t),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 };
 
@@ -45,14 +45,14 @@ type uniformRenderObjectSendMaterialData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, SendUniformStateType.sendUniformState) => array(float)),
+  getDataFunc: [@bs] ((component, StateSendUniformType.sendUniformState) => array(float)),
   sendDataFunc:
     [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
 };
 
 type uniformShaderSendNoCachableData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] (Float32Array.t => SendUniformStateType.sendUniformState),
+  getDataFunc: [@bs] (Float32Array.t => StateSendUniformType.sendUniformState),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 };
 
@@ -60,7 +60,7 @@ type uniformShaderSendCachableData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
-  getDataFunc: [@bs] (SendUniformStateType.sendUniformState => array(float)),
+  getDataFunc: [@bs] (StateSendUniformType.sendUniformState => array(float)),
   sendDataFunc:
     [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
 };
@@ -75,7 +75,7 @@ type uniformShaderSendCachableFunctionData = {
       (
         webgl1Context,
         (program, shaderCacheMap, GLSLLocationType.uniformLocationMapOfShader),
-        SendUniformStateType.sendUniformState
+        StateSendUniformType.sendUniformState
       ) =>
       unit
     )
@@ -83,7 +83,7 @@ type uniformShaderSendCachableFunctionData = {
 
 type uniformInstanceSendNoCachableData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, SendUniformStateType.sendUniformState) => Float32Array.t),
+  getDataFunc: [@bs] ((component, StateSendUniformType.sendUniformState) => Float32Array.t),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 };
 

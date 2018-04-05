@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-let deepCopyForRestore = (state: MainStateDataType.state) => {
+let deepCopyForRestore = (state: StateDataMainType.state) => {
   let state =
     state
     |> RecordTransformMainService.deepCopyForRestore

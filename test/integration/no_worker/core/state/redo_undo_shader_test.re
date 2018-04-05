@@ -12,7 +12,7 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(MainStateTool.createState());
       let _prepareGLSLSenderData = (state) => {
-        open MainStateDataType;
+        open StateDataMainType;
         let {attributeSendDataMap, vertexAttribHistoryArray} =
           state.glslSenderRecord;
         let shaderIndex1 = 0;
@@ -63,7 +63,7 @@ let _ =
               test(
                 "clear last send record",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
@@ -77,7 +77,7 @@ let _ =
               test(
                 "clear vertexAttribHistoryArray",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
@@ -259,8 +259,8 @@ let _ =
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
-                    open GLSLSenderType;
-                    open MainStateDataType;
+                    open GLSLSenderAllType;
+                    open StateDataMainType;
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
                     let shaderIndex3 = 2;
@@ -321,11 +321,11 @@ let _ =
                     )
                   };
                   let _prepareState2 = (state) => {
-                    open MainStateDataType;
+                    open StateDataMainType;
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
-                    open GLSLSenderType;
+                    open GLSLSenderAllType;
                     let shaderIndex1 = 3;
                     let shaderIndex2 = 4;
                     let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);
@@ -568,7 +568,7 @@ let _ =
                           test(
                             "get intersect map between current uniformShaderSendNoCachableDataMap and target nuiformShaderSendNoCachableDataMap whose value is the one in current niuformShaderSendNoCachableDataMap",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let (
                                 newState,
                                 (

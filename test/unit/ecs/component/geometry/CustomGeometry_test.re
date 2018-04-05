@@ -184,7 +184,7 @@ let _ =
                   test(
                     "remove from groupCountMap, gameObjectMap",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) = _prepare(state);
                       let {groupCountMap, gameObjectMap} = CustomGeometryTool.getRecord(state);
                       (
@@ -266,7 +266,7 @@ let _ =
                                     "type array should be packed",
                                     () => {
                                       open Js_typed_array;
-                                      open MainStateDataType;
+                                      open StateDataMainType;
                                       let (
                                         state,
                                         (gameObject1, gameObject2, gameObject3),
@@ -339,7 +339,7 @@ let _ =
                               test(
                                 "update startIndex, endIndex for packed type array",
                                 () => {
-                                  open MainStateDataType;
+                                  open StateDataMainType;
                                   let (
                                     state,
                                     (gameObject1, gameObject2, gameObject3),
@@ -382,7 +382,7 @@ let _ =
                           test(
                             "reset offset",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let (
                                 state,
                                 (gameObject1, gameObject2, gameObject3),
@@ -418,7 +418,7 @@ let _ =
                           test(
                             "clean disposedIndexMap",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let (
                                 state,
                                 (gameObject1, gameObject2, gameObject3),
@@ -442,7 +442,7 @@ let _ =
                           test(
                             "reset aliveIndexArray",
                             () => {
-                              open MainStateDataType;
+                              open StateDataMainType;
                               let (
                                 state,
                                 (gameObject1, gameObject2, gameObject3),
@@ -470,7 +470,7 @@ let _ =
                                   test(
                                     "use disposed index as new index",
                                     () => {
-                                      open MainStateDataType;
+                                      open StateDataMainType;
                                       let (
                                         state,
                                         (gameObject1, gameObject2, gameObject3),
@@ -508,7 +508,7 @@ let _ =
                               test(
                                 "else, increase record.index ",
                                 () => {
-                                  open MainStateDataType;
+                                  open StateDataMainType;
                                   let (
                                     state,
                                     (gameObject1, gameObject2, gameObject3),

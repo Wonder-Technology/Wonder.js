@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let create = ({gameObjectRecord} as state) => {
   let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(gameObjectRecord);

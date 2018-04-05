@@ -20,7 +20,7 @@ let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
 let addComponent = (uid: int, component: component, componentMap: array(int)) => {
@@ -39,7 +39,7 @@ let addComponent = (uid: int, component: component, componentMap: array(int)) =>
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   WonderCommonlib.SparseMapService.set(uid, component, componentMap) |> ignore
 };

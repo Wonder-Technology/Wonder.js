@@ -55,5 +55,5 @@ let computeElapseTime = (time: float, {startTime} as record) =>
              )
            )
          ),
-       IsDebugMainService.getIsDebug(MainStateData.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );

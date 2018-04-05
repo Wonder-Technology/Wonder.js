@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open MaterialType;
 
@@ -7,14 +7,14 @@ open BasicMaterialType;
 let _getData =
   [@bs]
   (
-    (sourceComponent, state: MainStateDataType.state) =>
+    (sourceComponent, state: StateDataMainType.state) =>
       OperateBasicMaterialMainService.getColor(sourceComponent, state)
   );
 
 let _setData =
   [@bs]
   (
-    (sourceComponent, color, state: MainStateDataType.state) =>
+    (sourceComponent, color, state: StateDataMainType.state) =>
       OperateBasicMaterialMainService.(state |> setColor(sourceComponent, color))
   );
 

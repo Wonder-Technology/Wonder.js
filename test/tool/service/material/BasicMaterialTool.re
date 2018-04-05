@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getMaterialRecord = (state) => RecordBasicMaterialMainService.getRecord(state);
 
@@ -17,15 +17,15 @@ let getDefaultColor = (state) => getMaterialRecord(state).defaultColor;
 
 let initMaterials = InitBasicMaterialMainService.init;
 
-let getShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
   ShaderIndexBasicMaterialMainService.getShaderIndex(materialIndex, state);
 
-/* let hasShaderIndex = (materialIndex: int, state: MainStateDataType.state) =>
+/* let hasShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
    ShaderIndexBasicMaterialMainService.hasShaderIndex(materialIndex, state); */
-let setShaderIndex = (materialIndex: int, shaderIndex, state: MainStateDataType.state) =>
+let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.state) =>
   [@bs] ShaderIndexBasicMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
-let dispose = (material, state: MainStateDataType.state) => {
+let dispose = (material, state: StateDataMainType.state) => {
   ...state,
   basicMaterialRecord:
     Some(DisposeBasicMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))

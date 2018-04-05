@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open GeometryType;
 
@@ -14,10 +14,10 @@ let createCustomGeometry = (state) => {
   ({...state, customGeometryRecord: Some(customGeometryRecord)}, index)
 };
 
-let getCustomGeometryDrawMode = (state: MainStateDataType.state) =>
+let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
 
-let getCustomGeometryVertices = (geometry: int, state: MainStateDataType.state) => {
+let getCustomGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -31,13 +31,13 @@ let getCustomGeometryVertices = (geometry: int, state: MainStateDataType.state) 
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] VerticesCustomGeometryMainService.getVertices(geometry, state)
 };
 
 let setCustomGeometryVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) => {
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -51,12 +51,12 @@ let setCustomGeometryVertices =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   VerticesCustomGeometryMainService.setVerticesByTypeArray(geometry, data, state)
 };
 
-let getCustomGeometryNormals = (geometry: int, state: MainStateDataType.state) => {
+let getCustomGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -70,13 +70,13 @@ let getCustomGeometryNormals = (geometry: int, state: MainStateDataType.state) =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] NormalsCustomGeometryMainService.getNormals(geometry, state)
 };
 
 let setCustomGeometryNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: MainStateDataType.state) => {
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -90,12 +90,12 @@ let setCustomGeometryNormals =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   NormalsCustomGeometryMainService.setNormalsByTypeArray(geometry, data, state)
 };
 
-let getCustomGeometryIndices = (geometry: int, state: MainStateDataType.state) => {
+let getCustomGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -109,13 +109,13 @@ let getCustomGeometryIndices = (geometry: int, state: MainStateDataType.state) =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] IndicesCustomGeometryMainService.getIndices(geometry, state)
 };
 
 let setCustomGeometryIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: MainStateDataType.state) => {
+    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -129,12 +129,12 @@ let setCustomGeometryIndices =
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   IndicesCustomGeometryMainService.setIndicesByTypeArray(geometry, data, state)
 };
 
-let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: MainStateDataType.state) => {
+let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -148,7 +148,7 @@ let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: MainStateDat
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   GameObjectCustomGeometryService.unsafeGetGameObject(
     geometry,

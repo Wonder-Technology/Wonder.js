@@ -1,3 +1,3 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getShaderRecord = (state) => state.shaderRecord;

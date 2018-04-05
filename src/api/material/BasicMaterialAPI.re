@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open BasicMaterialType;
 
@@ -12,7 +12,7 @@ open DisposeBasicMaterialService;
 
 let createBasicMaterial = (state) => [@bs] create(state);
 
-let unsafeGetBasicMaterialGameObject = (material, state: MainStateDataType.state) => {
+let unsafeGetBasicMaterialGameObject = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -26,12 +26,12 @@ let unsafeGetBasicMaterialGameObject = (material, state: MainStateDataType.state
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(material, RecordBasicMaterialMainService.getRecord(state))
 };
 
-let getBasicMaterialColor = (material, state: MainStateDataType.state) => {
+let getBasicMaterialColor = (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -45,12 +45,12 @@ let getBasicMaterialColor = (material, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getColor(material, state)
 };
 
-let setBasicMaterialColor = (material, color, state: MainStateDataType.state) => {
+let setBasicMaterialColor = (material, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -64,7 +64,7 @@ let setBasicMaterialColor = (material, color, state: MainStateDataType.state) =>
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   setColor(material, color, state)
 };

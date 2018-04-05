@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getGameTime = (state) => TimeControllerService.getGameTime(state.timeControllerRecord);
 

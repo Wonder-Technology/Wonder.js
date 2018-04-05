@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getPosition = (gameObject, {gameObjectRecord, globalTempRecord} as state) =>
   UpdateTransformService.updateAndGetPositionTuple(

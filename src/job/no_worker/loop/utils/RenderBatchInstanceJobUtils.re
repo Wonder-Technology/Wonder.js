@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open VboBufferType;
 
@@ -11,7 +11,7 @@ let render =
       gl,
       (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType, sourceInstance) as indexTuple,
       renderFunc,
-      state: MainStateDataType.state
+      state: StateDataMainType.state
     ) => {
   let state =
     [@bs]

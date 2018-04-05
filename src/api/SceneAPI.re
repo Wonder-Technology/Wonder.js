@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let getCurrentCameraGameObject = (state) =>
   CameraSceneMainService.getCurrentCameraGameObject(state.basicCameraViewRecord, state.sceneRecord);

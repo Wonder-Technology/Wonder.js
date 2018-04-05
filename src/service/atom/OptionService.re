@@ -11,7 +11,7 @@ let unsafeGet = (optionData) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   optionData |> Js.Option.getExn
 };

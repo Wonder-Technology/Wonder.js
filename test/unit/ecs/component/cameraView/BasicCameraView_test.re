@@ -1,6 +1,6 @@
 open BasicCameraViewAPI;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open BasicCameraViewType;
 

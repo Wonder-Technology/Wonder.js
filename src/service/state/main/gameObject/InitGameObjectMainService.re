@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 let initGameObject = (uid: int, {gameObjectRecord} as state) => {
   let boxGeometryType = CurrentComponentDataMapSendAttributeService.getBoxGeometryType();

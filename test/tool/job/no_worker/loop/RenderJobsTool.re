@@ -48,10 +48,10 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer)
 };
 
-let initSystemAndRender = (state: MainStateDataType.state) =>
+let initSystemAndRender = (state: StateDataMainType.state) =>
   state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.init;
 
-let passGl = (sandbox, state: MainStateDataType.state) =>
+let passGl = (sandbox, state: StateDataMainType.state) =>
   state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
 let buildConfigData = (~flags=None, ~shader=None, ()) => (flags, shader);

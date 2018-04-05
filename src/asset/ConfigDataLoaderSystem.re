@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open Js.Promise;
 
@@ -56,7 +56,7 @@ let _createFetchRenderConfigStreamArr = (dataDir, fetchFunc) => [|
   |> Obj.magic
 |];
 
-let _setSetting = (stateData, state: MainStateDataType.state, setting) => {
+let _setSetting = (stateData, state: StateDataMainType.state, setting) => {
   IsDebugMainService.setIsDebug(stateData, OperateSettingService.unsafeGetIsDebug(setting))
   |> ignore;
   {...state, settingRecord: OperateSettingService.setSetting(setting)}

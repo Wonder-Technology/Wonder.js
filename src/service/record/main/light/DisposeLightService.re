@@ -39,7 +39,7 @@ let handleDisposeComponent = (light, (isAliveFunc, handleDisposeFunc), record) =
           Operators.(DisposeComponentService.checkComponentShouldAlive(light, isAliveFunc, record))
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] handleDisposeFunc(light, record)
 };
@@ -58,7 +58,7 @@ let handleBatchDisposeComponent = (lightArray, (isAliveFunc, handleDisposeFunc),
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   lightArray
   |> WonderCommonlib.ArrayService.reduceOneParam(

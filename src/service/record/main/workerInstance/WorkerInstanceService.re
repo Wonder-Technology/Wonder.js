@@ -13,7 +13,7 @@ let unsafeGetRenderWorker = ({renderWorker}) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   renderWorker |> OptionService.unsafeGet
 };
@@ -42,7 +42,7 @@ let _getRenderWorkerFilePath = (workerFileDir: string) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   (workerFileDir |> _getValidFileDir) ++ "wd.render.worker.js"
 };

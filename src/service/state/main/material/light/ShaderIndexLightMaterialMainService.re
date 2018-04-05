@@ -1,6 +1,6 @@
 open MaterialType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open LightMaterialType;
 

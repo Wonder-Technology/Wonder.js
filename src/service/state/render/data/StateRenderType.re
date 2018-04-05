@@ -1,4 +1,4 @@
-open GLSLSenderType;
+open GLSLSenderAllType;
 
 open ProgramType;
 

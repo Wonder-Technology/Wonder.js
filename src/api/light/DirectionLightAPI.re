@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 open DirectionLightType;
 
@@ -16,7 +16,7 @@ let createDirectionLight = (state) => {
   ({...state, directionLightRecord}, index)
 };
 
-let unsafeGetDirectionLightGameObject = (light, state: MainStateDataType.state) => {
+let unsafeGetDirectionLightGameObject = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -30,7 +30,7 @@ let unsafeGetDirectionLightGameObject = (light, state: MainStateDataType.state) 
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
@@ -41,7 +41,7 @@ let unsafeGetDirectionLightGameObject = (light, state: MainStateDataType.state) 
   )
 };
 
-let getDirectionLightColor = (light, state: MainStateDataType.state) => {
+let getDirectionLightColor = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -55,7 +55,7 @@ let getDirectionLightColor = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getColor(
     MappedIndexService.getMappedIndex(
@@ -66,7 +66,7 @@ let getDirectionLightColor = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setDirectionLightColor = (light, color, state: MainStateDataType.state) => {
+let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -80,7 +80,7 @@ let setDirectionLightColor = (light, color, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,
@@ -96,7 +96,7 @@ let setDirectionLightColor = (light, color, state: MainStateDataType.state) => {
   }
 };
 
-let getDirectionLightIntensity = (light, state: MainStateDataType.state) => {
+let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -110,7 +110,7 @@ let getDirectionLightIntensity = (light, state: MainStateDataType.state) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   getIntensity(
     MappedIndexService.getMappedIndex(
@@ -121,7 +121,7 @@ let getDirectionLightIntensity = (light, state: MainStateDataType.state) => {
   )
 };
 
-let setDirectionLightIntensity = (light, color, state: MainStateDataType.state) => {
+let setDirectionLightIntensity = (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -135,7 +135,7 @@ let setDirectionLightIntensity = (light, color, state: MainStateDataType.state) 
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   {
     ...state,

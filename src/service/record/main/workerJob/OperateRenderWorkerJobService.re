@@ -13,7 +13,7 @@ let _unsafeGetWorkerJobConfig = (record) => {
           )
         )
       ),
-    IsDebugMainService.getIsDebug(MainStateData.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   record |> OptionService.unsafeGet
 };

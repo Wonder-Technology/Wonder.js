@@ -710,7 +710,7 @@ let _ =
                   test(
                     "remove from groupCountMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       let (state, gameObject1, geometry1) = _prepare(state);
                       let {
                         groupCountMap,

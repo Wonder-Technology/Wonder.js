@@ -1,3 +1,3 @@
-open RenderWorkerStateDataType;
+open StateDataRenderWorkerType;
 
 let renderWorkerStateData = {state: None};

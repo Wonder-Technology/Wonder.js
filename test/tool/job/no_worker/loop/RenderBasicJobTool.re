@@ -1,4 +1,4 @@
-open MainStateDataType;
+open StateDataMainType;
 
 let execJob = (configData, state) =>
   RenderBasicJob.execJob(

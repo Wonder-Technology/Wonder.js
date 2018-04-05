@@ -204,7 +204,7 @@ let _ =
         () => {
           let _testCopyTypeArraySingleValue =
               ((createGameObjectFunc, getDataFunc, setDataFunc, getTargetDataFunc), state) => {
-            open MainStateDataType;
+            open StateDataMainType;
             /* open SourceInstanceType; */
             let (state, gameObject1, component1) = createGameObjectFunc(state^);
             let (data1, data2) = getTargetDataFunc();
@@ -721,7 +721,7 @@ let _ =
                   test(
                     "copy verticesInfoArray",
                     () => {
-                      open MainStateDataType;
+                      open StateDataMainType;
                       open CustomGeometryAPI;
                       open GeometryType;
                       let (state, gameObject1, geometry1) =
@@ -789,7 +789,7 @@ let _ =
           /* test(
                "change copied state shouldn't affect source state",
                () => {
-                 open MainStateDataType;
+                 open StateDataMainType;
                  let (
                    state,
                    gameObject1,
@@ -924,7 +924,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      MainStateDataType.(
+                      StateDataMainType.(
                         AmbientLightType.(
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -976,7 +976,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      MainStateDataType.(
+                      StateDataMainType.(
                         DirectionLightType.(
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -1080,7 +1080,7 @@ let _ =
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
-                      MainStateDataType.(
+                      StateDataMainType.(
                         PointLightType.(
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
@@ -1103,7 +1103,7 @@ let _ =
               test(
                 "deep copy objectInstanceArrayMap, matrixFloat32ArrayMap",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
@@ -1148,7 +1148,7 @@ let _ =
               test(
                 "shadow copy matrixInstanceBufferCapacityMap, isTransformStaticMap, gameObjectMap, disposedIndexArray",
                 () =>
-                  MainStateDataType.(
+                  StateDataMainType.(
                     SourceInstanceType.(
                       MainStateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
@@ -1179,7 +1179,7 @@ let _ =
               test(
                 "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
-                  MainStateDataType.(
+                  StateDataMainType.(
                     MainStateTool.testShadowCopyArrayLikeMapData(
                       (state) => {
                         let {
@@ -1225,7 +1225,7 @@ let _ =
               test(
                 "shadow copy sourceInstanceMap, gameObjectMap, disposedIndexArray",
                 () =>
-                  MainStateDataType.(
+                  StateDataMainType.(
                     ObjectInstanceType.(
                       MainStateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
@@ -1433,7 +1433,7 @@ let _ =
                  test(
                    "add current state->boxGeometryRecord->verticesMap, normalsMap, indicesMap typeArr to pool",
                    () => {
-                     open MainStateDataType;
+                     open StateDataMainType;
                      open TypeArrayPoolType;
                      let (
                        state,
@@ -1550,7 +1550,7 @@ let _ =
               test(
                 "add current state->sourceInstanceRecord->matrixFloat32ArrayMap typeArr to pool",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;
@@ -1571,7 +1571,7 @@ let _ =
               test(
                 "mark is-not-send-modelMatrixData",
                 () => {
-                  open MainStateDataType;
+                  open StateDataMainType;
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;

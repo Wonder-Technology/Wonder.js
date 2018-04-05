@@ -562,7 +562,7 @@ let buildRenderConfig =
   shaderLibs
 );
 
-let create = ((shaders, shaderLibs), state: MainStateDataType.state) => {
+let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
   ...state,
   renderConfigRecord:
     Some({

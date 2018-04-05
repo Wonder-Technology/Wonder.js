@@ -1,6 +1,6 @@
-open MainStateDataType;
+open StateDataMainType;
 
-open MainStateDataType;
+open StateDataMainType;
 
 open ComponentType;
 
@@ -80,7 +80,7 @@ let cloneLightMaterialComponent =
       isShareMaterial: bool,
       sourceComponent: component,
       countRangeArr: array(int),
-      state: MainStateDataType.state
+      state: StateDataMainType.state
     ) =>
   CloneLightMaterialMainService.handleCloneComponent(
     sourceComponent,
