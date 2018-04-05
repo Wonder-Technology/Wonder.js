@@ -9,7 +9,7 @@ let execJob = (_, _, state) => {
          (state, shaderIndex) => {
            let program = ProgramService.unsafeGetProgram(shaderIndex, state.programRecord);
            state
-           |> UseProgramMainService.use(gl, program)
+           |> UseProgramRenderService.use(gl, program)
            |> HandleUniformShaderNoCachableService.unsafeGetUniformSendData(shaderIndex)
            |> ReduceStateMainService.reduceState(
                 [@bs]

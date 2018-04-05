@@ -30,7 +30,7 @@ let createState = () => {
   glslLocationRecord: RecordGLSLLocationService.create(),
   glslSenderRecord: RecordGLSLSenderAllService.create(),
   glslChunkRecord: ShaderChunkSystem.create(),
-  renderRecord: RecordRenderWorkerService.create(),
+  renderRecord: RecordRenderService.create(),
   timeControllerRecord: RecordTimeControllerService.create(),
   vboBufferRecord: RecordVboBufferService.create(),
   globalTempRecord: RecordGlobalTempService.create(),

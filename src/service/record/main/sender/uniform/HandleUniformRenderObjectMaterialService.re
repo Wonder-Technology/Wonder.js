@@ -4,6 +4,8 @@ open Gl;
 
 open SendGLSLDataService;
 
+open GLSLSenderAllType;
+
 let addUniformSendDataByType =
     (
       (shaderCacheMap, name, pos, type_),

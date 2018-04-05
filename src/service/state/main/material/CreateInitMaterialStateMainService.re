@@ -1,5 +1,3 @@
-open StateDataMainType;
-
 open StateInitMaterialType;
 
 let createInitMaterialState =
@@ -14,7 +12,7 @@ let createInitMaterialState =
         glslSenderRecord,
         glslLocationRecord,
         glslChunkRecord
-      } as state
+      } as state: StateDataMainType.state
     ) => {
   materialRecord: {index, disposedIndexArray, shaderIndices},
   directionLightRecord: {index: directionLightRecord.index},

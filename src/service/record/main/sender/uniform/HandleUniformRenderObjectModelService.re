@@ -4,6 +4,8 @@ open Gl;
 
 open SendGLSLDataService;
 
+open GLSLSenderAllType;
+
 let addUniformSendDataByType =
     (
       (pos, type_),

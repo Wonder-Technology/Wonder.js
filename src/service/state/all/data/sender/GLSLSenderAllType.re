@@ -8,9 +8,7 @@ open GlType;
 
 open Js.Typed_array;
 
-type shaderCacheMap = WonderCommonlib.HashMapService.t(array(float));
-
-type uniformCacheMap = array(shaderCacheMap);
+open GLSLSenderType;
 
 type attributeSendData = {
   pos: attributeLocation,
@@ -23,7 +21,8 @@ type attributeSendData = {
         webgl1Context,
         (attributeLocation, int),
         GlType.buffer,
-        StateSendAttributeType.sendAttributeState
+        /* StateSendAttributeType.sendAttributeState */
+        GLSLSenderType.vertexAttribHistoryArray
       ) =>
       unit
     )
@@ -98,7 +97,7 @@ type glslSenderRecord = {
   uniformShaderSendCachableFunctionDataMap: array(array(uniformShaderSendCachableFunctionData)),
   uniformInstanceSendNoCachableDataMap: array(array(uniformInstanceSendNoCachableData)),
   /* drawPointsFuncMap: array((webgl1Context => unit)), */
-  mutable vertexAttribHistoryArray: array(bool),
+  mutable vertexAttribHistoryArray,
   mutable lastSendMaterial: option(material),
   mutable lastSendGeometry: option((geometry, int))
 };

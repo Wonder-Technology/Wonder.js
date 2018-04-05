@@ -5,15 +5,20 @@ open GlType;
 let bindElementArrayBuffer =
   [@bs]
   (
-    (gl, (size: int, pos: attributeLocation), buffer) => {
+    (
+      gl,
+      (size: int, pos: attributeLocation),
+      buffer,
+      vertexAttribHistoryArray: GLSLSenderType.vertexAttribHistoryArray
+      /* sendAttributeState: StateSendAttributeType.sendAttributeState */
+    ) =>
       /* let {lastSendElementArrayBuffer} as record = state.glslSenderRecord; */
       /* switch lastSendElementArrayBuffer {
          | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
          | _ =>
            record.lastSendElementArrayBuffer = Some(buffer); */
-      bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+      bindBuffer(getElementArrayBuffer(gl), buffer, gl)
       /* } */
-    }
   );
 
 let drawElement = ((drawMode: int, type_: int, typeSize: int, indicesCount: int), gl) => {

@@ -7,18 +7,7 @@ let _initMaterialShader =
       gl,
       (materialIndex: int, isSourceInstance, isSupportInstance),
       (buildGLSLSourceFunc, setShaderIndexFunc, getShaderLibItemsFunc),
-      {
-        materialRecord,
-        directionLightIndex,
-        pointLightIndex,
-        renderConfigRecord,
-        shaderRecord,
-        programRecord,
-        glslRecord,
-        glslSenderRecord,
-        glslLocationRecord,
-        glslChunkRecord
-      } as state
+      {materialRecord, renderConfigRecord} as state
     ) =>
   ShaderIndicesService.hasShaderIndex(materialIndex, materialRecord.shaderIndices) ?
     () :
@@ -27,7 +16,7 @@ let _initMaterialShader =
       [@bs]
       setShaderIndexFunc(
         materialIndex,
-        InitShaderAllService.initMaterialShader(
+        InitShaderInitMaterialService.initMaterialShader(
           materialIndex,
           (
             gl,
@@ -43,8 +32,8 @@ let _initMaterialShader =
           ),
           buildGLSLSourceFunc,
           /* (
-               directionLightIndex,
-               pointLightIndex,
+               directionLightIn,ex
+               pointLightRecord,
                shaderRecord,
                programRecord,
                glslRecord,
@@ -94,16 +83,15 @@ let init =
              gl,
              (
                materialIndex,
-               isSourceInstanceMap
-               |> JudgeInstanceService.unsafeGetIsSourceInstance(materialIndex),
+               isSourceInstanceMap |> JudgeInstanceService.unsafeGetIsSourceInstance(materialIndex),
                isSupportInstance
              ),
              state
            )
        ),
        /* (
-            directionLightIndex,
-            pointLightIndex,
+            directionLightRecord,
+            pointLightRecord,
             shaderIndices,
             renderConfigRecord,
             shaderRecord,
