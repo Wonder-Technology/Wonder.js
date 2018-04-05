@@ -1,0 +1,1 @@
+type pointLightRecord = {index: int};

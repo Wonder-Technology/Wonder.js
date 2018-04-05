@@ -6,7 +6,7 @@ open TypeArrayService;
 
 open Js.Typed_array;
 
-let getVertices =
+/* let getVertices =
   [@bs]
   (
     (index, state) =>
@@ -14,10 +14,10 @@ let getVertices =
         index,
         RecordBoxGeometryMainService.getRecord(state).vertices
       )
-  );
+  ); */
 
 let setVertices = (index, data: array(float), state) => {
-  RecordBoxGeometryMainService.setVertices(
+  OperateTypeArrayBoxGeometryService.setVertices(
     index,
     data,
     RecordBoxGeometryMainService.getRecord(state).vertices
@@ -27,7 +27,7 @@ let setVertices = (index, data: array(float), state) => {
 };
 
 let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
-  RecordBoxGeometryMainService.setVerticesByTypeArray(
+  OperateTypeArrayBoxGeometryService.setVerticesByTypeArray(
     index,
     data,
     RecordBoxGeometryMainService.getRecord(state).vertices

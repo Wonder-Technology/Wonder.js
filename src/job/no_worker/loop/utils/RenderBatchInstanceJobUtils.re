@@ -21,11 +21,11 @@ let render =
       state
     );
   let uniformInstanceSendNoCachableData =
-    state |> HandleUniformInstanceNoCachableMainService.unsafeGetUniformSendData(shaderIndex);
+    state |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
+  let getIndicesCountFunc = CurrentComponentDataMapSendAttributeService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(geometryIndex, state);
   let objectInstanceArray =
     ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
@@ -61,7 +61,7 @@ let render =
                   ),
                   state
                 );
-           DrawGLSLMainService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
+           DrawGLSLService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
            |> ignore;
            state
          }

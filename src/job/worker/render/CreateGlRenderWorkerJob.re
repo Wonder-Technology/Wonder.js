@@ -3,7 +3,7 @@ open RenderWorkerStateDataType;
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderService.getState(stateData);
+      let state = StateRenderWorkerService.getState(stateData);
       let data = MessageService.getRecord(e);
       let gl =
         data##canvas

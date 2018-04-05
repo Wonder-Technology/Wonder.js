@@ -20,8 +20,8 @@ let _clone =
 
 let _cloneGeometryComponent =
     (uid, countRangeArr, clonedGameObjectArr: array(int), {gameObjectRecord} as state) => {
-  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
-  let customGeometryType = CurrentComponentDataMapService.getCustomGeometryType();
+  let boxGeometryType = CurrentComponentDataMapSendAttributeService.getBoxGeometryType();
+  let customGeometryType = CurrentComponentDataMapSendAttributeService.getCustomGeometryType();
   switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
   | Some((component, type_)) =>
     switch type_ {

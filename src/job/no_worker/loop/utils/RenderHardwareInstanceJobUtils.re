@@ -38,7 +38,7 @@ let _sendTransformMatrixDataBuffer =
     gl
   );
   [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1) |> ignore;
-  SendGLSLDataMainService.enableVertexAttribArray(
+  SendGLSLDataService.enableVertexAttribArray(
     gl,
     pos,
     state.glslSenderRecord.vertexAttribHistoryArray,
@@ -48,7 +48,7 @@ let _sendTransformMatrixDataBuffer =
 
 let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
-  |> HandleAttributeConfigDataMainService.unsafeGetInstanceAttributeSendData(shaderIndex)
+  |> HandleAttributeConfigDataRenderService.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceStatei(
        [@bs]
        (
@@ -257,8 +257,8 @@ let render =
         fillMatrixTypeArrFunc,
         state
       );
-  let getIndicesCountFunc = CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
-  DrawGLSLMainService.drawElementsInstancedANGLE(
+  let getIndicesCountFunc = CurrentComponentDataMapSendAttributeService.getGetIndicesCountFunc(geometryType);
+  DrawGLSLService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),
       RenderGeometryService.getIndexType(gl),

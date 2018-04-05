@@ -1,0 +1,1 @@
+type directionLightRecord = {index: int};

@@ -6,21 +6,11 @@ open BasicMaterialType;
 
 open Js.Typed_array;
 
+open BufferBasicMaterialService;
+
+open OperateTypeArrayBasicMaterialService;
+
 let getRecord = ({basicMaterialRecord}) => basicMaterialRecord |> OptionService.unsafeGet;
-
-let getColorsSize = () => 3;
-
-let getColorsLength = (count) => count * getColorsSize();
-
-let getColorsOffset = (count) =>
-  ShaderIndicesService.getShaderIndicesLength(count) * Uint32Array._BYTES_PER_ELEMENT;
-
-let getColorIndex = (index) => index * getColorsSize();
-
-let getColor = (index, typeArr) => TypeArrayService.getFloat3(getColorIndex(index), typeArr);
-
-let setColor = (index, data, typeArr) =>
-  TypeArrayService.setFloat3(getColorIndex(index), data, typeArr);
 
 let _setDefaultTypeArrData =
     (count: int, defaultShaderIndex, defaultColor, (buffer, shaderIndices, colors)) => (
@@ -48,18 +38,8 @@ let _initBufferData = (count, defaultShaderIndex, defaultColor) => {
       * Float32Array._BYTES_PER_ELEMENT
       * getColorsSize()
     );
-  let shaderIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=ShaderIndicesService.getShaderIndicesOffset(count),
-      ~length=ShaderIndicesService.getShaderIndicesLength(count)
-    );
-  let colors =
-    Float32Array.fromBufferRange(
-      buffer,
-      ~offset=getColorsOffset(count),
-      ~length=getColorsLength(count)
-    );
+  let (shaderIndices, colors) =
+    CreateTypeArrayBasicMaterialService.createTypeArrays(buffer, count);
   (buffer, shaderIndices, colors)
   |> _setDefaultTypeArrData(count, defaultShaderIndex, defaultColor)
 };
@@ -67,7 +47,7 @@ let _initBufferData = (count, defaultShaderIndex, defaultColor) => {
 let create = ({settingRecord} as state) => {
   let basicMaterialDataBufferCount =
     BufferSettingService.getBasicMaterialDataBufferCount(settingRecord);
-  let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex() ;
+  let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultColor = [|1., 1., 1.|];
   let (buffer, (shaderIndices, colors)) =
     _initBufferData(basicMaterialDataBufferCount, defaultShaderIndex, defaultColor);
@@ -83,7 +63,7 @@ let create = ({settingRecord} as state) => {
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
     });
-    state
+  state
 };
 
 let deepCopyForRestore = ({settingRecord} as state) => {

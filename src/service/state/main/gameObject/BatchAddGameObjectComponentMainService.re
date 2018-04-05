@@ -151,11 +151,11 @@ let _batchAddBoxGeometryComponentDataForClone =
   (
     ((currentGeometryDataMap, type_), component, uid) =>
       /* let component = Array.unsafe_get(componentArr, index); */
-      CurrentComponentDataMapService.addToMap(
+      CurrentComponentDataMapSendAttributeService.addToMap(
         uid,
         (
           component,
-          /* CurrentComponentDataMapService.getBoxGeometryType(), */
+          /* CurrentComponentDataMapSendAttributeService.getBoxGeometryType(), */
           type_
           /* bufferMapTuple,
              (
@@ -181,7 +181,7 @@ let batchAddBoxGeometryComponentForClone =
           componentArr,
           (
             gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapService.getBoxGeometryType()
+            CurrentComponentDataMapSendAttributeService.getBoxGeometryType()
             /* (
                  boxGeometryVertexBufferMap,
                  boxGeometryNormalBufferMap,
@@ -201,11 +201,11 @@ let _batchAddCustomGeometryComponentDataForClone =
   (
     ((currentGeometryDataMap, type_), component, uid) =>
       /* let component = Array.unsafe_get(componentArr, index); */
-      CurrentComponentDataMapService.addToMap(
+      CurrentComponentDataMapSendAttributeService.addToMap(
         uid,
         (
           component,
-          /* CurrentComponentDataMapService.getCustomGeometryType(), */
+          /* CurrentComponentDataMapSendAttributeService.getCustomGeometryType(), */
           type_
           /* bufferMapTuple,
              (
@@ -235,7 +235,7 @@ let batchAddCustomGeometryComponentForClone =
           componentArr,
           (
             gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapService.getCustomGeometryType()
+            CurrentComponentDataMapSendAttributeService.getCustomGeometryType()
             /* (
                  customGeometryVertexBufferMap,
                  customGeometryNormalBufferMap,

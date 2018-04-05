@@ -60,9 +60,9 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
      switch record##operateType {
      | INIT_GL =>
        WonderLog.Log.print(("record:", record)) |> ignore;
-       StateRenderService.createState()
-       |> InitGlService.initGl(record)
-       |> StateRenderService.setState(RenderWorkerStateData.renderWorkerStateData)
+       StateRenderWorkerService.createState()
+       |> InitGlRenderWorkerService.initGl(record)
+       |> StateRenderWorkerService.setState(RenderWorkerStateData.renderWorkerStateData)
        |> ignore
      | operateType =>
        WonderLog.Log.fatal(

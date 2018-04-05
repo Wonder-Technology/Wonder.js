@@ -1,59 +1,84 @@
-open MainStateDataType;
-
-open RenderConfigType;
-
 open MaterialType;
 
 open BasicMaterialType;
 
-let _getShaderLibs = ({material_shaders}) => {
-  let shaderName = "render_basic";
-  JobConfigService.unsafeFindFirst(
-    material_shaders,
-    shaderName,
-    ({name}: material_shader) => JobConfigService.filterTargetName(name, shaderName)
-  ).
-    shader_libs
-};
+let _getRecordTuple =
+    (
+      {
+        gameObjectRecord,
+        directionLightRecord,
+        pointLightRecord,
+        shaderRecord,
+        programRecord,
+        glslRecord,
+        glslSenderRecord,
+        glslLocationRecord,
+        glslChunkRecord
+      } as state
+    ) => (
+  directionLightRecord.index,
+  pointLightRecord.index,
+  shaderIndices,
+  RecordRenderConfigMainService.getRecord(state),
+  shaderRecord,
+  programRecord,
+  glslRecord,
+  glslSenderRecord,
+  glslLocationRecord,
+  glslChunkRecord
+);
 
-let _getShaderTuple = (materialIndex, state: MainStateDataType.state) => {
-  let shaderRecord = RenderConfigMainService.getShaders(state);
-  (materialIndex, _getShaderLibs(shaderRecord), shaderRecord)
-};
-
-let _getStateTuple = (state) => {
-  let {gameObjectMap, shaderIndices} = state |> RecordBasicMaterialMainService.getRecord;
-  (gameObjectMap, shaderIndices, state)
-};
-
-let initMaterial =
-  [@bs]
-  (
-    (gl, materialIndex: int, state: MainStateDataType.state) =>
-      InitMaterialMainService.initMaterial(
-        gl,
-        _getShaderTuple(materialIndex, state),
-        ShaderIndexBasicMaterialMainService.setShaderIndex,
-        _getStateTuple(state)
-      )
-  );
-
-let initMaterials = (materialIndexArr, gl, state: MainStateDataType.state) =>
+let initMaterials =
+    (
+      materialIndexArr,
+      gl,
+      {
+        gameObjectRecord,
+        directionLightRecord,
+        pointLightRecord,
+        shaderRecord,
+        programRecord,
+        glslRecord,
+        glslSenderRecord,
+        glslLocationRecord,
+        glslChunkRecord
+      } as state
+    ) => {
+  let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
   materialIndexArr
-  |> ReduceStateMainService.reduceState(
-       [@bs] ((state, materialIndex: int) => [@bs] initMaterial(gl, materialIndex, state)),
-       state
-     );
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (recordTuple, materialIndex: int) =>
+           [@bs]
+           InitBasicMaterialAllService.initMaterial(
+             gl,
+             (
+               materialIndex,
+               JudgeInstanceMainService.isSourceInstance(
+                 materialIndex,
+                 gameObjectMap,
+                 gameObjectRecord
+               ),
+               JudgeInstanceMainService.isSupportInstance(state)
+             ),
+             recordTuple
+           )
+       ),
+       _getRecordTuple(state)
+     )
+};
 
-let handleInitComponent = (gl, index: int, state: MainStateDataType.state) =>
-  InitMaterialMainService.handleInitComponent(
+let handleInitComponent = (gl, index: int, state) => {
+  let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
+  [@bs]
+  InitBasicMaterialAllService.initMaterial(
     gl,
-    _getShaderTuple(index, state),
-    ShaderIndexBasicMaterialMainService.setShaderIndex,
-    _getStateTuple(state)
-  );
-
-let init = (gl, state) => {
-  let {index, disposedIndexArray} = state |> RecordBasicMaterialMainService.getRecord;
-  InitMaterialMainService.init(gl, (index, disposedIndexArray), initMaterial, state)
+    (
+      materialIndex,
+      JudgeInstanceMainService.isSourceInstance(materialIndex, gameObjectMap, gameObjectRecord),
+      JudgeInstanceMainService.isSupportInstance(state)
+    ),
+    _getRecordTuple(state)
+  )
 };

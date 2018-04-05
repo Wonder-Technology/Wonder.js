@@ -3,7 +3,7 @@ open MainStateDataType;
 open MainStateDataType;
 
 let initGameObject = (uid: int, {gameObjectRecord} as state) => {
-  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
+  let boxGeometryType = CurrentComponentDataMapSendAttributeService.getBoxGeometryType();
   let state =
     switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
     | Some((component, type_)) =>

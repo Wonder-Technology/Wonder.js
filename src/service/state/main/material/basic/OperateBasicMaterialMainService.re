@@ -3,7 +3,7 @@ open BasicMaterialType;
 open MainStateDataType;
 
 let getColor = (material, state) =>
-  RecordBasicMaterialMainService.getColor(
+  OperateTypeArrayBasicMaterialService.getColor(
     material,
     RecordBasicMaterialMainService.getRecord(state).colors
   );
@@ -15,7 +15,7 @@ let setColor = (material, color: array(float), state) => {
     basicMaterialRecord:
       Some({
         ...basicMaterialRecord,
-        colors: RecordBasicMaterialMainService.setColor(material, color, colors)
+        colors: OperateTypeArrayBasicMaterialService.setColor(material, color, colors)
       })
   }
 };

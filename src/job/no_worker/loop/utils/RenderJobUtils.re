@@ -3,17 +3,17 @@ open MainStateDataType;
 open VboBufferType;
 
 let _directlySendAttributeData =
-    (gl, (shaderIndex, geometryIndex, geometryType), {vboBufferRecord} as state) => {
+    (gl, (shaderIndex, geometryIndex, geometryType), {vboBufferRecord, glslSenderRecord } as state) => {
   let (
     (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
     (getVerticesFunc, getNormalsFunc, getIndicesFunc)
   ) =
-    CurrentComponentDataMapService.getCurrentGeometryBufferMapAndGetPointsFuncs(
+    CurrentComponentDataMapSendAttributeService.getCurrentGeometryBufferMapAndGetPointsFuncs(
       geometryType,
       vboBufferRecord
     );
-  state
-  |> HandleAttributeConfigDataMainService.unsafeGetAttributeSendData(shaderIndex)
+  glslSenderRecord
+  |> HandleAttributeConfigDataRenderService.unsafeGetAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(
        [@bs]
        (
@@ -72,7 +72,7 @@ let _sendAttributeData = (gl, (shaderIndex, geometryIndex, geometryType) as inde
 
 let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state) =>
   state
-  |> HandleUniformRenderObjectModelMainService.unsafeGetUniformSendData(shaderIndex)
+  |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(
        [@bs]
        (
@@ -86,7 +86,7 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, state)
 
 let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, state) =>
   state
-  |> HandleUniformRenderObjectMaterialMainService.unsafeGetUniformSendData(shaderIndex)
+  |> HandleUniformRenderObjectMaterialService.unsafeGetUniformSendData(shaderIndex)
   |> ReduceStateMainService.reduceState(
        [@bs]
        (
@@ -106,19 +106,24 @@ let render =
     (
       gl,
       (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
-      {programRecord, gameObjectRecord} as state
+      /* {programRecord, gameObjectRecord} as state */
+      ( {programRecord, gameObjectRecord} as renderState,
+      
+      sendAttributeState,
+      sendUniformState
+      )
     ) => {
   /* let transformIndex: int =
        GetComponentGameObjectService.unsafeGetTransformComponent(uid, gameObjectRecord);
      let geometryData =
        GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, gameObjectRecord); */
   let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
-  let state =
-    state
+  let renderState =
+    renderState
     |> UseProgramMainService.use(gl, program)
     |> _sendAttributeData(gl, (shaderIndex, geometryIndex, geometryType))
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
-  let {lastSendMaterial} as record = state.glslSenderRecord;
+  let {lastSendMaterial} as record = renderState.glslSenderRecord;
   let state =
     switch lastSendMaterial {
     | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
@@ -126,5 +131,11 @@ let render =
       record.lastSendMaterial = Some(materialIndex);
       state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
     };
-  state
+  /* state */
+  (
+renderState,
+sendAttributeState,
+sendUniformState
+
+  )
 };

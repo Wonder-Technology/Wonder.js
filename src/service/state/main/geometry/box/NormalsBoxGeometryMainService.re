@@ -6,7 +6,7 @@ open TypeArrayService;
 
 open Js.Typed_array;
 
-let getNormals =
+/* let getNormals =
   [@bs]
   (
     (index, state) =>
@@ -14,10 +14,10 @@ let getNormals =
         index,
         RecordBoxGeometryMainService.getRecord(state).normals
       )
-  );
+  ); */
 
 let setNormals = (index, data: array(float), state) => {
-  RecordBoxGeometryMainService.setNormals(
+  OperateTypeArrayBoxGeometryService.setNormals(
     index,
     data,
     RecordBoxGeometryMainService.getRecord(state).normals
@@ -27,7 +27,7 @@ let setNormals = (index, data: array(float), state) => {
 };
 
 let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
-  RecordBoxGeometryMainService.setNormalsByTypeArray(
+  OperateTypeArrayBoxGeometryService.setNormalsByTypeArray(
     index,
     data,
     RecordBoxGeometryMainService.getRecord(state).normals

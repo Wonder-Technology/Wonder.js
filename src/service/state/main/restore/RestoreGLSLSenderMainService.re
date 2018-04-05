@@ -1,5 +1,7 @@
 open MainStateDataType;
 
+open GLSLSenderType;
+
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {
     attributeSendDataMap,

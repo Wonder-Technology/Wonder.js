@@ -1,5 +1,5 @@
 let getSendNoCachableDataByType = (type_) =>
-  SendGLSLDataMainService.(
+  SendGLSLDataService.(
     switch type_ {
     | "mat4" => sendMatrix4 |> Obj.magic
     | "mat3" => sendMatrix3 |> Obj.magic
@@ -17,7 +17,7 @@ let getSendNoCachableDataByType = (type_) =>
   );
 
 let getSendCachableDataByType = (type_) =>
-  SendGLSLDataMainService.(
+  SendGLSLDataService.(
     switch type_ {
     | "vec3" => sendVec3 |> Obj.magic
     | "float3" => sendFloat3 |> Obj.magic

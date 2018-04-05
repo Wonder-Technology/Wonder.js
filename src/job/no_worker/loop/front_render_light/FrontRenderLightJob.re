@@ -51,8 +51,8 @@ let _render = (gl, state: MainStateDataType.state) =>
                    state
                  );
                let getIndicesCountFunc =
-                 CurrentComponentDataMapService.getGetIndicesCountFunc(geometryType);
-               DrawGLSLMainService.drawElement(
+                 CurrentComponentDataMapSendAttributeService.getGetIndicesCountFunc(geometryType);
+               DrawGLSLService.drawElement(
                  (
                    RenderGeometryService.getDrawMode(gl),
                    RenderGeometryService.getIndexType(gl),

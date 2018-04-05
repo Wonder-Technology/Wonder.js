@@ -82,71 +82,7 @@ open ViewType;
 
 type colorRgba = (float, float, float, float);
 
-type attributeSendData = {
-  pos: attributeLocation,
-  size: int,
-  buffer: string,
-  sendFunc: [@bs] ((webgl1Context, (attributeLocation, int), GlType.buffer, state) => state)
-}
-and instanceAttributeSendData = {
-  pos: attributeLocation,
-  size: int,
-  getOffsetFunc: [@bs] (int => int)
-}
-and uniformRenderObjectSendModelData = {
-  pos: uniformLocation,
-  getDataFunc: [@bs] ((component, state) => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
-}
-and uniformRenderObjectSendMaterialData = {
-  shaderCacheMap,
-  name: string,
-  pos: uniformLocation,
-  getDataFunc: [@bs] ((component, state) => array(float)),
-  sendDataFunc:
-    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
-}
-and uniformShaderSendNoCachableData = {
-  pos: uniformLocation,
-  getDataFunc: [@bs] (state => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
-}
-and uniformShaderSendCachableData = {
-  shaderCacheMap,
-  name: string,
-  pos: uniformLocation,
-  getDataFunc: [@bs] (state => array(float)),
-  sendDataFunc:
-    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
-}
-and uniformShaderSendCachableFunctionData = {
-  program,
-  shaderCacheMap,
-  locationMap: uniformLocationMapOfShader,
-  sendCachableFunctionDataFunc:
-    [@bs] ((webgl1Context, (program, shaderCacheMap, uniformLocationMapOfShader), state) => state)
-}
-and uniformInstanceSendNoCachableData = {
-  pos: uniformLocation,
-  getDataFunc: [@bs] ((transform, state) => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
-}
-and glslSenderRecord = {
-  attributeSendDataMap: array(array(attributeSendData)),
-  instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
-  uniformCacheMap,
-  uniformRenderObjectSendModelDataMap: array(array(uniformRenderObjectSendModelData)),
-  uniformRenderObjectSendMaterialDataMap: array(array(uniformRenderObjectSendMaterialData)),
-  uniformShaderSendNoCachableDataMap: array(array(uniformShaderSendNoCachableData)),
-  uniformShaderSendCachableDataMap: array(array(uniformShaderSendCachableData)),
-  uniformShaderSendCachableFunctionDataMap: array(array(uniformShaderSendCachableFunctionData)),
-  uniformInstanceSendNoCachableDataMap: array(array(uniformInstanceSendNoCachableData)),
-  /* drawPointsFuncMap: array((webgl1Context => unit)), */
-  mutable vertexAttribHistoryArray: array(bool),
-  mutable lastSendMaterial: option(material),
-  mutable lastSendGeometry: option((geometry, int))
-}
-and jobRecord = {
+type jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, (float, state) => state))
 }
