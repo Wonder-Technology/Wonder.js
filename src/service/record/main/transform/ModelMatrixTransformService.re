@@ -8,9 +8,9 @@ open HierachyTransformService;
 
 open Matrix4Service;
 
-let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrices}) =>
-  RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices)
-  |> WonderLog.Contract.ensureCheck(
+let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorldMatrices) =>
+  RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices);
+  /* |> WonderLog.Contract.ensureCheck(
        (localToWorldMatrix) =>
          WonderLog.(
            Contract.(
@@ -23,17 +23,17 @@ let getLocalToWorldMatrixTypeArray = (transform: transform, {localToWorldMatrice
            )
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
+     ); */
 
 /* let getNormalMatrixTypeArray = (transform: transform, localToWorldMatrices, normalMatrixCacheMap) => */
 let getNormalMatrixTypeArray =
-    (transform: transform, {localToWorldMatrices, normalMatrixCacheMap} as record) =>
+    (transform: transform, localToWorldMatrices, normalMatrixCacheMap) =>
   switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
   | Some(normalMatrix) => (normalMatrix, normalMatrixCacheMap)
   | None =>
     let normalMatrix =
       Matrix4Service.invertTo3x3(
-        getLocalToWorldMatrixTypeArray(transform, record),
+        getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices),
         Matrix3Service.createIdentityMatrix3()
       )
       |> Matrix3Service.transposeSelf;
@@ -95,7 +95,7 @@ let setPositionByTuple =
     Vector3Service.transformMat4Tuple(
       position,
       invert(
-        getLocalToWorldMatrixTypeArray(parent, record),
+        getLocalToWorldMatrixTypeArray(parent, record.localToWorldMatrices),
         GlobalTempService.getFloat32Array1(globalTempRecord)
       )
     ),

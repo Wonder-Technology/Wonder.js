@@ -114,17 +114,17 @@ let _readUniforms =
                  sendDataArrTuple
                )
              | "ambientLight" =>
-               HandleLightUniformConfigDataService.addAmbientLightSendData(
+               HandleLightUniformConfigDataAllService.addAmbientLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )
              | "directionLight" =>
-               HandleLightUniformConfigDataService.addDirectionLightSendData(
+               HandleLightUniformConfigDataAllService.addDirectionLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )
              | "pointLight" =>
-               HandleLightUniformConfigDataService.addPointLightSendData(
+               HandleLightUniformConfigDataAllService.addPointLightSendData(
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple
                )

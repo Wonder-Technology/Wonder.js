@@ -6,58 +6,11 @@ open LightMaterialType;
 
 open Js.Typed_array;
 
+open BufferLightMaterialService;
+
+open OperateTypeArrayLightMaterialService;
+
 let getRecord = ({lightMaterialRecord}) => lightMaterialRecord |> OptionService.unsafeGet;
-
-let getDiffuseColorsSize = () => 3;
-
-let getDiffuseColorsLength = (count) => count * getDiffuseColorsSize();
-
-let getDiffuseColorsOffset = (count) =>
-  ShaderIndicesService.getShaderIndicesLength(count) * Uint32Array._BYTES_PER_ELEMENT;
-
-let getSpecularColorsSize = () => 3;
-
-let getSpecularColorsLength = (count) => count * getSpecularColorsSize();
-
-let getSpecularColorsOffset = (count) =>
-  /* ShaderIndicesService.getShaderIndicesLength(count)
-   * Uint32Array._BYTES_PER_ELEMENT */
-  getDiffuseColorsOffset(count) + getDiffuseColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
-
-let getShininessSize = () => 1;
-
-let getShininessLength = (count) => count * getShininessSize();
-
-let getShininessOffset = (count) =>
-  /* ShaderIndicesService.getShaderIndicesLength(count)
-   * Uint32Array._BYTES_PER_ELEMENT
-   + getDiffuseColorsLength(count)
-   * Float32Array._BYTES_PER_ELEMENT */
-  getSpecularColorsOffset(count) + getSpecularColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
-
-let getDiffuseColorIndex = (index) => index * getDiffuseColorsSize();
-
-let getSpecularColorIndex = (index) => index * getSpecularColorsSize();
-
-let getShininessIndex = (index) => index * getShininessSize();
-
-let getDiffuseColor = (index, typeArr) =>
-  TypeArrayService.getFloat3(getDiffuseColorIndex(index), typeArr);
-
-let setDiffuseColor = (index, data, typeArr) =>
-  TypeArrayService.setFloat3(getDiffuseColorIndex(index), data, typeArr);
-
-let getSpecularColor = (index, typeArr) =>
-  TypeArrayService.getFloat3(getSpecularColorIndex(index), typeArr);
-
-let setSpecularColor = (index, data, typeArr) =>
-  TypeArrayService.setFloat3(getSpecularColorIndex(index), data, typeArr);
-
-let getShininess = (index, typeArr) =>
-  TypeArrayService.getFloat1(getShininessIndex(index), typeArr);
-
-let setShininess = (index, data, typeArr) =>
-  TypeArrayService.setFloat1(getShininessIndex(index), data, typeArr);
 
 let _setDefaultTypeArrData =
     (

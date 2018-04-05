@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open CustomGeometryType;
+open CustomGeometryRenderType;
 
 open GeometryType;
 

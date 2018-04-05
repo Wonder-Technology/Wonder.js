@@ -6,15 +6,16 @@ open TypeArrayService;
 
 open Js.Typed_array;
 
-/* let getIndices =
-   [@bs]
-   (
-     (index, state) =>
-       RecordBoxGeometryMainService.getIndicesTypeArray(
-         index,
-         RecordBoxGeometryMainService.getRecord(state).indices
-       )
-   ); */
+let getIndices =
+  [@bs]
+  (
+    (index, state) =>
+      OperateTypeArrayBoxGeometryService.getIndicesTypeArray(
+        index,
+        RecordBoxGeometryMainService.getRecord(state).indices
+      )
+  );
+
 let setIndices = (index, data: array(int), state) => {
   OperateTypeArrayBoxGeometryService.setIndices(
     index,

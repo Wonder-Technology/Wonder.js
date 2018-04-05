@@ -1,1 +1,0 @@
-let getPosition = (index, positionArr) => Array.unsafe_get(positionArr, index);

@@ -12,7 +12,21 @@ open GLSLSenderType;
 
 open ProgramType;
 
-open GeometryRenderType;
+open BoxGeometryRenderType;
+
+open CustomGeometryRenderType;
+
+open BasicMaterialRenderType;
+
+open LightMaterialRenderType;
+
+open AmbientLightRenderType;
+
+open DirectionLightRenderType;
+
+open PointLightRenderType;
+
+open TransformRenderType;
 
 type attributeSendData = {
   pos: attributeLocation,
@@ -101,7 +115,13 @@ and glslSenderRecord = {
 and renderState = {
   glslSenderRecord,
   programRecord,
-  boxGeometryRecord: pointsRecord
-  /* customGeometryRecord:  pointsRecord */
-  /* vertexAttribHistoryArray: GLSLSenderType.vertexAttribHistoryArray */
+  boxGeometryRecord,
+  customGeometryRecord,
+  cameraRecord: RenderCameraType.renderCameraRecord,
+  basicMaterialRecord,
+  lightMaterialRecord,
+  ambientLightRecord,
+  directionLightRecord,
+  pointLightRecord,
+  transformRecord
 };

@@ -35,23 +35,23 @@ let _disposeData =
     diffuseColors:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        RecordLightMaterialMainService.getDiffuseColorIndex(material),
-        RecordLightMaterialMainService.getDiffuseColorsSize(),
+        BufferLightMaterialService.getDiffuseColorIndex(material),
+        BufferLightMaterialService.getDiffuseColorsSize(),
         defaultDiffuseColor,
         diffuseColors
       ),
     specularColors:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        RecordLightMaterialMainService.getSpecularColorIndex(material),
-        RecordLightMaterialMainService.getSpecularColorsSize(),
+        BufferLightMaterialService.getSpecularColorIndex(material),
+        BufferLightMaterialService.getSpecularColorsSize(),
         defaultSpecularColor,
         specularColors
       ),
     shininess:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32(
-        RecordLightMaterialMainService.getShininessIndex(material),
+        BufferLightMaterialService.getShininessIndex(material),
         defaultShininess,
         shininess
       ),

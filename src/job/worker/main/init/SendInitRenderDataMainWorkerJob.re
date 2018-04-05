@@ -71,6 +71,7 @@ let execJob = (flags, stateData) =>
                "normalsInfoArray": customGeometryRecord.normalsInfoArray,
                "indicesInfoArray": customGeometryRecord.indicesInfoArray
              },
+             /* TODO send positionMap */
              "directionLightData":{
                "index": directionLightRecord.index
              },

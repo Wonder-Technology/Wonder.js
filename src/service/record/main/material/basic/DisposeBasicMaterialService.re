@@ -24,8 +24,8 @@ let _disposeData =
     colors:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        RecordBasicMaterialMainService.getColorIndex(material),
-        RecordBasicMaterialMainService.getColorsSize(),
+        BufferBasicMaterialService.getColorIndex(material),
+        BufferBasicMaterialService.getColorsSize(),
         defaultColor,
         colors
       ),

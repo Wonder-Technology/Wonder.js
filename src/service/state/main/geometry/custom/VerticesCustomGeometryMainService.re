@@ -10,14 +10,14 @@ open TypeArrayService;
 
 open Js.Typed_array;
 
-/* let getVertices =
+let getVertices =
   [@bs]
   (
     (index, state) => {
       let {vertices, verticesInfoArray} = getRecord(state);
       getFloat32PointData(index, vertices, verticesInfoArray)
     }
-  ); */
+  );
 
 let setVertices = (index, data: array(float), state) => {
   let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);

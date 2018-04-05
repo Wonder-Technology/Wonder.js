@@ -12,14 +12,14 @@ open TypeArrayService;
 
 open Js.Typed_array;
 
-/* let getIndices =
+let getIndices =
   [@bs]
   (
     (index: int, state) => {
       let {indices, indicesInfoArray} = getRecord(state);
       getUint16PointData(index, indices, indicesInfoArray)
     }
-  ); */
+  );
 
 let setIndices = (index: int, data: array(int), state) => {
   let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);

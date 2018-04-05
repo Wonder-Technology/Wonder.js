@@ -17,7 +17,6 @@
 let addModelSendData =
     (
       (field, pos, name, type_, uniformCacheMap),
-      (getLocalToWorldMatrixTypeArrayFunc, getNormalMatrixTypeArrayFunc),
       sendDataArrTuple
     ) =>
   switch field {
@@ -25,27 +24,31 @@ let addModelSendData =
     HandleUniformRenderObjectModelService.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
-      /* _getModelMatrixNoCachableData */
-      getLocalToWorldMatrixTypeArrayFunc
+      GetTransformDataRenderService.getLocalToWorldMatrixTypeArray
     )
   | "normalMatrix" =>
     HandleUniformRenderObjectModelService.addUniformSendDataByType(
       (pos, type_),
       sendDataArrTuple,
-      /* _getNormalMatrixNoCachableData */
-      getNormalMatrixTypeArrayFunc
+      GetTransformDataRenderService.getNormalMatrixTypeArray
     )
   | "instance_mMatrix" =>
     HandleUniformInstanceNoCachableService.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      (getLocalToWorldMatrixTypeArrayFunc, SendGLSLDataService.sendMatrix4)
+      (
+        GetTransformDataRenderService.getLocalToWorldMatrixTypeArray,
+        SendGLSLDataService.sendMatrix4
+      )
     )
   | "instance_normalMatrix" =>
     HandleUniformInstanceNoCachableService.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      (getLocalToWorldMatrixTypeArrayFunc, SendGLSLDataService.sendMatrix3)
+      (
+        GetTransformDataRenderService.getLocalToWorldMatrixTypeArray,
+        SendGLSLDataService.sendMatrix3
+      )
     )
   | _ =>
     WonderLog.Log.fatal(

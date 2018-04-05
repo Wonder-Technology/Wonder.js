@@ -1,11 +1,3 @@
-open Js.Typed_array;
-
-type renderCameraRecord = {
-  vMatrix: Float32Array.t,
-  pMatrix: Float32Array.t,
-  position: (float, float, float)
-};
-
 type renderObjectRecord = {
   buffer: Js.Typed_array.array_buffer,
   count: int,
@@ -20,5 +12,5 @@ type renderObjectRecord = {
 type renderRecord = {
   basicRenderObjectRecord: option(renderObjectRecord),
   lightRenderObjectRecord: option(renderObjectRecord),
-  cameraRecord: option(renderCameraRecord)
+  cameraRecord: option(RenderCameraType.renderCameraRecord)
 };

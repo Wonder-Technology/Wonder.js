@@ -4,7 +4,7 @@ open GPUDetectType;
 
 open ShaderChunkSystem;
 
-let getPrecisionSource = ({gpuDetectRecord, glslChunkRecord}) => {
+let getPrecisionSource = (gpuDetectRecord, glslChunkRecord) => {
   let {precision} = gpuDetectRecord;
   switch (precision |> OptionService.unsafeGet) {
   | HIGHP => getChunk("highp_fragment", glslChunkRecord).top

@@ -1,5 +1,9 @@
 open PointLightGLSLDataStructureMemberType;
 
+open StateRenderType;
+
+open PointLightRenderType;
+
 let getLightGLSLDataStructureMemberNameArr = () => [|
   {
     position: "u_pointLights[0].position",
@@ -44,7 +48,6 @@ let _sendAttenuation =
       index,
       (gl, program, uniformCacheMap, uniformLocationMap),
       {constant, linear, quadratic, range},
-      (getConstantFunc, getLinearFunc, getQuadraticFunc, getRangeFunc),
       pointLightRecord
     ) => {
   [@bs]
@@ -52,14 +55,14 @@ let _sendAttenuation =
     gl,
     uniformCacheMap,
     (constant, GLSLLocationService.getUniformLocation(program, constant, uniformLocationMap, gl)),
-    getConstantFunc(index, pointLightRecord)
+    GetPointLightDataService.getConstant(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (linear, GLSLLocationService.getUniformLocation(program, linear, uniformLocationMap, gl)),
-    getLinearFunc(index, pointLightRecord)
+    GetPointLightDataService.getLiear(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
@@ -69,14 +72,14 @@ let _sendAttenuation =
       quadratic,
       GLSLLocationService.getUniformLocation(program, quadratic, uniformLocationMap, gl)
     ),
-    getQuadraticFunc(index, pointLightRecord)
+    GetPointLightDataService.getQuadratic(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (range, GLSLLocationService.getUniformLocation(program, range, uniformLocationMap, gl)),
-    getRangeFunc(index, pointLightRecord)
+    GetPointLightDataService.getRange(index, pointLightRecord)
   );
   pointLightRecord
 };
@@ -84,19 +87,7 @@ let _sendAttenuation =
 let send =
   [@bs]
   (
-    (
-      gl,
-      (program, uniformCacheMap, uniformLocationMap),
-      (
-        getColorFunc,
-        getIntensityFunc,
-        getConstantFunc,
-        getLinearFunc,
-        getQuadraticFunc,
-        getRangeFunc
-      ),
-      (index, positionArr, pointLightRecord)
-    ) => {
+    (gl, (program, uniformCacheMap, uniformLocationMap), {pointLightRecord}) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
@@ -114,7 +105,7 @@ let send =
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let lightGLSLDataStructureMemberNameArr = getLightGLSLDataStructureMemberNameArr();
-      /* let {index} = state.pointLightRecord; */
+      let {index, positionMap} as pointLightRecord = pointLightRecord;
       WonderCommonlib.ArrayService.range(0, index - 1)
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs]
@@ -134,8 +125,7 @@ let send =
                      gl
                    )
                  ),
-                 /* PositionPointLightMainService.getPosition(index, state) */
-                 GetLightPositionService.getPosition(index, positionArr)
+                 LightPositionService.getPosition(index, positionMap)
                );
                [@bs]
                SendGLSLDataService.sendFloat3(
@@ -145,7 +135,7 @@ let send =
                    color,
                    GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
-                 getColorFunc(index, pointLightRecord)
+                 GetPointLightDataService.getColor(index, pointLightRecord)
                );
                [@bs]
                SendGLSLDataService.sendFloat(
@@ -160,7 +150,7 @@ let send =
                      gl
                    )
                  ),
-                 getIntensityFunc(index, pointLightRecord)
+                 GetPointLightDataService.getIntensity(index, pointLightRecord)
                );
                _sendAttenuation(
                  index,
@@ -172,5 +162,6 @@ let send =
            ),
            pointLightRecord
          )
+      |> ignore
     }
   );
