@@ -4,7 +4,7 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferMainService;
+open InstanceBufferRenderService;
 
 let render =
     (
@@ -25,7 +25,7 @@ let render =
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let getIndicesCountFunc = CurrentComponentDataMapSendAttributeService.getGetIndicesCountFunc(geometryType);
+  let getIndicesCountFunc = CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(geometryIndex, state);
   let objectInstanceArray =
     ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(

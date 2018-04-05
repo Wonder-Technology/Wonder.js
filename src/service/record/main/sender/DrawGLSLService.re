@@ -9,8 +9,8 @@ let bindElementArrayBuffer =
       gl,
       (size: int, pos: attributeLocation),
       buffer,
-      vertexAttribHistoryArray: GLSLSenderType.vertexAttribHistoryArray
-      /* sendAttributeState: StateSendAttributeType.sendAttributeState */
+      /* vertexAttribHistoryArray: GLSLSenderType.vertexAttribHistoryArray */
+      renderState: StateRenderType.renderState
     ) =>
       /* let {lastSendElementArrayBuffer} as record = state.glslSenderRecord; */
       /* switch lastSendElementArrayBuffer {

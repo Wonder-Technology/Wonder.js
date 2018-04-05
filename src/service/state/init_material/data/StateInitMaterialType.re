@@ -8,7 +8,7 @@ open ProgramType;
 
 open GLSLType;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 open GLSLLocationType;
 

@@ -18,14 +18,14 @@ let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
 
 let batchGetGeometryComponentData = (uidArray: array(int), {gameObjectRecord}) => {
   let currentGeometryDataMap = gameObjectRecord.currentGeometryDataMap;
-  let boxGeometryType = CurrentComponentDataMapSendAttributeService.getBoxGeometryType();
-  let customGeometryType = CurrentComponentDataMapSendAttributeService.getCustomGeometryType();
+  let boxGeometryType = CurrentComponentDataMapRenderService.getBoxGeometryType();
+  let customGeometryType = CurrentComponentDataMapRenderService.getCustomGeometryType();
   uidArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((boxGeometryArr, customGeometryArr) as arrTuple, uid) =>
-           switch (currentGeometryDataMap |> CurrentComponentDataMapSendAttributeService.getComponentData(uid)) {
+           switch (currentGeometryDataMap |> CurrentComponentDataMapRenderService.getComponentData(uid)) {
            | None => arrTuple
            | Some((component, type_)) =>
              switch type_ {

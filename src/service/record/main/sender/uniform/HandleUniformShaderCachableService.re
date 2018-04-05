@@ -2,9 +2,7 @@ open GlType;
 
 open Gl;
 
-open SendGLSLDataService;
-
-open GLSLSenderAllType;
+open StateRenderType;
 
 let addUniformSendDataByType =
     (

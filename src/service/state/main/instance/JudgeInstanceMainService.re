@@ -6,12 +6,11 @@ let isSupportInstance = (state: StateDataMainType.state) =>
     state.gpuDetectRecord
   );
 
-/* let isSourceInstance = (uid, gameObjectRecord) =>
-   HasComponentGameObjectService.hasSourceInstanceComponent(uid, gameObjectRecord); */
 let isSourceIntance = (materialIndex, gameObjectMap, gameObjectRecord) =>
   gameObjectRecord
-  |> JudgeInstanceMainService.isSourceInstance(
-       GameObjectMapService.unsafeGetGameObject(materialIndex, gameObjectMap)
+  |> HasComponentGameObjectService.hasSourceInstanceComponent(
+       GameObjectMapService.unsafeGetGameObject(materialIndex, gameObjectMap),
+       gameObjectRecord
      );
 
 let buildMap = (index, gameObjectMap, gameObjectRecord) =>

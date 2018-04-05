@@ -58,7 +58,7 @@ let disposeBoxGeometryComponent =
   [@bs]
   (
     (uid: int, component: component, {settingRecord, gameObjectRecord} as state) =>
-      /* CurrentComponentDataMapSendAttributeService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+      /* CurrentComponentDataMapRenderService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
          |> ignore; */
       DisposeBoxGeometryMainService.handleDisposeComponent(component, state)
   );
@@ -68,7 +68,7 @@ let disposeCustomGeometryComponent =
   (
     (uid: int, component: component, {settingRecord, gameObjectRecord} as state) =>
       /* TODO refactor: move to handleDisposeComponent */
-      /* CurrentComponentDataMapSendAttributeService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+      /* CurrentComponentDataMapRenderService.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
          |> ignore; */
       DisposeCustomGeometryMainService.handleDisposeComponent(component, state)
   );

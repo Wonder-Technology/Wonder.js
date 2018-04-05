@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {

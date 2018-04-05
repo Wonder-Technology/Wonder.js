@@ -94,7 +94,7 @@ let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
                        uid,
                        gameObjectRecord
                      );
-                   type_ == CurrentComponentDataMapSendAttributeService.getCustomGeometryType()
+                   type_ == CurrentComponentDataMapRenderService.getCustomGeometryType()
                  }
                )
              )

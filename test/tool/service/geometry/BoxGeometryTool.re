@@ -318,7 +318,7 @@ let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
                        uid,
                        gameObjectRecord
                      );
-                   type_ == CurrentComponentDataMapSendAttributeService.getBoxGeometryType()
+                   type_ == CurrentComponentDataMapRenderService.getBoxGeometryType()
                  }
                )
              )

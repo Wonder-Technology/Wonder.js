@@ -2,13 +2,11 @@ open GlType;
 
 open Gl;
 
-open SendGLSLDataService;
-
 open DrawGLSLService;
 
 open RenderConfigType;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 let _addModelMatrixInstanceArrayBufferSendData =
     ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
@@ -40,9 +38,9 @@ let _addOtherArrayBufferSendData =
   sendDataArr
   |> ArrayService.push({
        pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
-       size: getBufferSizeByType(type_),
+       size: SendGLSLDataService.getBufferSizeByType(type_),
        buffer,
-       sendFunc: sendBuffer
+       sendFunc: SendGLSLDataAllService.sendBuffer
      }),
   instanceSendNoCachableDataArr
 );
@@ -144,7 +142,10 @@ let addAttributeSendData =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord |> GLSLLocationService.getAttributeLocationMap(shaderIndex)
     );
-  _readAttributeSendData(shaderLibDataArr, gl, program, attributeLocationMap)
-  |> _setToAttributeSendMap(shaderIndex, attributeLocationMap, glslSenderRecord)
-  |> GLSLLocationService.setAttributeLocationMap(shaderIndex, attributeLocationMap)
+  (
+    _readAttributeSendData(shaderLibDataArr, gl, program, attributeLocationMap)
+    |> _setToAttributeSendMap(shaderIndex, attributeLocationMap, glslSenderRecord),
+    glslLocationRecord
+    |> GLSLLocationService.setAttributeLocationMap(shaderIndex, attributeLocationMap)
+  )
 };

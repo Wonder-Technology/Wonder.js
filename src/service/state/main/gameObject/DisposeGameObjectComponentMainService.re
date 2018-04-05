@@ -30,8 +30,8 @@ let _disposeSourceInstanceComponent = (uid, batchDisposeFunc, state) =>
   };
 
 let _disposeGameObjectGeometryComponent = (uid, {gameObjectRecord} as state) => {
-  let boxGeometryType = CurrentComponentDataMapSendAttributeService.getBoxGeometryType();
-  let customGeometryType = CurrentComponentDataMapSendAttributeService.getCustomGeometryType();
+  let boxGeometryType = CurrentComponentDataMapRenderService.getBoxGeometryType();
+  let customGeometryType = CurrentComponentDataMapRenderService.getCustomGeometryType();
   switch ([@bs] GetComponentGameObjectService.getGeometryComponentData(uid, gameObjectRecord)) {
   | Some((component, type_)) =>
     switch type_ {

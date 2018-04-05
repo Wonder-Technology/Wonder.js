@@ -2,6 +2,8 @@ open GlType;
 
 open Gl;
 
+open StateRenderType;
+
 let getBufferSizeByType = (type_: string) =>
   switch type_ {
   /* | "vec2" => 2 */
@@ -27,21 +29,21 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
     } :
     ();
 
-let sendBuffer =
+/* let sendBuffer =
   [@bs]
   (
     (
       gl,
       (size: int, pos: attributeLocation),
       buffer: buffer,
-      /* {vertexAttribHistoryArray}: StateSendAttributeType.sendAttributeState */
-      vertexAttribHistoryArray
+      /* {vertexAttribHistoryArray}: StateRenderType.sendAttributeState */
+      {glslSenderRecord}
     ) => {
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-      enableVertexAttribArray(gl, pos, vertexAttribHistoryArray)
+      enableVertexAttribArray(gl, pos, glslSenderRecord.vertexAttribHistoryArray)
     }
-  );
+  ); */
 
 let sendMatrix3 =
   [@bs]
@@ -102,12 +104,7 @@ let _isNotCacheFloat = (shaderCacheMap, name: string, value: float) =>
 let sendFloat =
   [@bs]
   (
-    (
-      gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
-      (name: string, pos: uniformLocation),
-      value
-    ) =>
+    (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
       if (_isNotCacheFloat(shaderCacheMap |> Obj.magic, name, value)) {
         uniform1f(pos, value, gl)
       } else {

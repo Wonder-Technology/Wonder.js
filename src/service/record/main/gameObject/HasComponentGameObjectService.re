@@ -15,17 +15,17 @@ let hasTransformComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.transformMap);
 
 let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
-  CurrentComponentDataMapSendAttributeService.hasComponent(
+  CurrentComponentDataMapRenderService.hasComponent(
     uid,
     gameObjectRecord.currentGeometryDataMap,
-    CurrentComponentDataMapSendAttributeService.getBoxGeometryType()
+    CurrentComponentDataMapRenderService.getBoxGeometryType()
   );
 
 let hasCustomGeometryComponent = (uid: int, gameObjectRecord) : bool =>
-  CurrentComponentDataMapSendAttributeService.hasComponent(
+  CurrentComponentDataMapRenderService.hasComponent(
     uid,
     gameObjectRecord.currentGeometryDataMap,
-    CurrentComponentDataMapSendAttributeService.getCustomGeometryType()
+    CurrentComponentDataMapRenderService.getCustomGeometryType()
   );
 
 let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>

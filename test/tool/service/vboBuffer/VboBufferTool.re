@@ -3,27 +3,27 @@ open StateDataMainType;
 let getRecord = (state) => state.vboBufferRecord;
 
 let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
-  GetVboBufferMainService.getOrCreateBuffer(
+  GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryVertexBufferMap),
-    ([@bs] ArrayBufferMainService.createBuffer, [@bs] VerticesBoxGeometryMainService.getVertices),
+    ([@bs] ArrayBufferRenderService.createBuffer, [@bs] VerticesBoxGeometryMainService.getVertices),
     state
   );
 
 let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
-  GetVboBufferMainService.getOrCreateBuffer(
+  GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryNormalBufferMap),
-    ([@bs] ArrayBufferMainService.createBuffer, [@bs] NormalsBoxGeometryMainService.getNormals),
+    ([@bs] ArrayBufferRenderService.createBuffer, [@bs] NormalsBoxGeometryMainService.getNormals),
     state
   );
 
 let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
-  GetVboBufferMainService.getOrCreateBuffer(
+  GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryElementArrayBufferMap),
     (
-      [@bs] ElementArrayBufferMainService.createBuffer,
+      [@bs] ElementArrayBufferRenderService.createBuffer,
       [@bs] IndicesBoxGeometryMainService.getIndices
     ),
     state
@@ -31,7 +31,7 @@ let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: State
 
 let getOrCreateInstanceBuffer =
     (sourceInstanceIndex: int, defaultCapacity, state: StateDataMainType.state) =>
-  InstanceBufferMainService.getOrCreateBuffer(
+  InstanceBufferRenderService.getOrCreateBuffer(
     (
       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
       sourceInstanceIndex,

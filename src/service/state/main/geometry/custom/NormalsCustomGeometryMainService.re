@@ -9,7 +9,7 @@ open RecordCustomGeometryMainService;
 open TypeArrayService;
 
 open Js.Typed_array;
-
+/* 
 let getNormals =
   [@bs]
   (
@@ -17,7 +17,7 @@ let getNormals =
       let {normals, normalsInfoArray} = getRecord(state);
       getFloat32PointData(index, normals, normalsInfoArray)
     }
-  );
+  ); */
 
 let setNormals = (index: int, data: array(float), state) => {
   let {normalsInfoArray, normals, normalsOffset} as record = getRecord(state);

@@ -25,18 +25,18 @@ let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
 
 let unsafeGetGeometryComponentData = (uid, {currentGeometryDataMap}) =>
-  CurrentComponentDataMapSendAttributeService.unsafeGetComponentData(uid, currentGeometryDataMap);
+  CurrentComponentDataMapRenderService.unsafeGetComponentData(uid, currentGeometryDataMap);
 
 let getGeometryComponentData =
   [@bs]
   (
     (uid: int, {currentGeometryDataMap}) =>
-      currentGeometryDataMap |> CurrentComponentDataMapSendAttributeService.getComponentData(uid)
+      currentGeometryDataMap |> CurrentComponentDataMapRenderService.getComponentData(uid)
   );
 
 let unsafeGetGeometryComponent = (uid: int, {currentGeometryDataMap}) => {
   let (component, _) =
-    currentGeometryDataMap |> CurrentComponentDataMapSendAttributeService.unsafeGetComponentData(uid);
+    currentGeometryDataMap |> CurrentComponentDataMapRenderService.unsafeGetComponentData(uid);
   component
 };
 

@@ -4,7 +4,7 @@ open VboBufferType;
 
 open SourceInstanceType;
 
-open InstanceBufferMainService;
+open InstanceBufferRenderService;
 
 let _fillObjectInstanceData =
     (objectInstanceArray, matricesArrayForInstance, fillMatrixTypeArrFunc, stateOffsetTuple) => {
@@ -48,7 +48,7 @@ let _sendTransformMatrixDataBuffer =
 
 let _sendTransformMatrixDataBufferData = (glDataTuple, shaderIndex, stride, state) =>
   state
-  |> HandleAttributeConfigDataRenderService.unsafeGetInstanceAttributeSendData(shaderIndex)
+  |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(shaderIndex)
   |> ReduceStateMainService.reduceStatei(
        [@bs]
        (
@@ -87,13 +87,13 @@ let _sendTransformMatrixData =
       state
     ) => {
   let matrixInstanceBuffer =
-    InstanceBufferMainService.getOrCreateBuffer(
+    InstanceBufferRenderService.getOrCreateBuffer(
       (gl, sourceInstance, defaultCapacity),
       (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
       state
     );
   let matricesArrayForInstance =
-    InstanceBufferMainService.getOrCreateMatrixFloat32Array(
+    InstanceBufferRenderService.getOrCreateMatrixFloat32Array(
       sourceInstance,
       defaultCapacity,
       (matrixInstanceBufferCapacityMap, matrixFloat32ArrayMap),
@@ -134,9 +134,9 @@ let _sendStaticTransformMatrixData =
     ) =>
   StaticSourceInstanceService.isSendTransformMatrixData(sourceInstance, state.sourceInstanceRecord) ?
     {
-      InstanceBufferMainService.bind(
+      InstanceBufferRenderService.bind(
         gl,
-        InstanceBufferMainService.getOrCreateBuffer(
+        InstanceBufferRenderService.getOrCreateBuffer(
           (gl, sourceInstance, defaultCapacity),
           (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
           state
@@ -257,7 +257,7 @@ let render =
         fillMatrixTypeArrFunc,
         state
       );
-  let getIndicesCountFunc = CurrentComponentDataMapSendAttributeService.getGetIndicesCountFunc(geometryType);
+  let getIndicesCountFunc = CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   DrawGLSLService.drawElementsInstancedANGLE(
     (
       RenderGeometryService.getDrawMode(gl),

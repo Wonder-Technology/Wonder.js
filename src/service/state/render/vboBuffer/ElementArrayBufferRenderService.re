@@ -27,7 +27,7 @@ let getOrCreateBuffer =
       getDataFunc,
       state: StateDataMainType.state
     ) =>
-  GetVboBufferMainService.getOrCreateBuffer(
+  GetVboBufferRenderService.getOrCreateBuffer(
     gl,
     (geometryIndex, bufferMap),
     (createBuffer, getDataFunc),

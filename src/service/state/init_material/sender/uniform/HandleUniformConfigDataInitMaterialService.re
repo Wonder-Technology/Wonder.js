@@ -66,7 +66,7 @@ let _setToUniformSendMap =
 
 let _readUniforms =
     (
-      (gl, program, uniformLocationMap, uniformCacheMap: GLSLSenderAllType.shaderCacheMap),
+      (gl, program, uniformLocationMap, uniformCacheMap: StateRenderType.shaderCacheMap),
       sendDataArrTuple,
       uniforms
     ) =>
@@ -204,17 +204,20 @@ let addUniformSendData =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord |> GLSLLocationService.getUniformLocationMap(shaderIndex)
     );
-  _readUniformSendData(
-    shaderLibDataArr,
-    gl,
-    program,
-    (
-      uniformLocationMap,
-      HandleShaderConfigDataMapService.getOrCreateHashMap(
-        glslSenderRecord |> SendGLSLDataService.getCacheMap(shaderIndex)
+  (
+    _readUniformSendData(
+      shaderLibDataArr,
+      gl,
+      program,
+      (
+        uniformLocationMap,
+        HandleShaderConfigDataMapService.getOrCreateHashMap(
+          glslSenderRecord |> SendGLSLDataService.getCacheMap(shaderIndex)
+        )
       )
     )
+    |> _setToUniformSendMap(shaderIndex, glslSenderRecord),
+    glslLocationRecord
+    |> GLSLLocationService.setUniformLocationMap(shaderIndex, uniformLocationMap)
   )
-  |> _setToUniformSendMap(shaderIndex, glslSenderRecord);
-  glslLocationRecord |> GLSLLocationService.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };

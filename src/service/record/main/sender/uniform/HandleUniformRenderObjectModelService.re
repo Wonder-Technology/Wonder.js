@@ -2,9 +2,7 @@ open GlType;
 
 open Gl;
 
-open SendGLSLDataService;
-
-open GLSLSenderAllType;
+open StateRenderType;
 
 let addUniformSendDataByType =
     (
@@ -40,8 +38,8 @@ let setToUniformSendMap =
   |> WonderCommonlib.SparseMapService.set(shaderIndex, renderObjectSendModelDataArr)
   |> ignore;
 
-let unsafeGetUniformSendData = (shaderIndex: int, glslSenderRecord) =>
+let unsafeGetUniformSendData = (shaderIndex: int, {uniformRenderObjectSendModelDataMap}) =>
   HandleUniformConfigDataMapService.unsafeGetUniformSendData(
     shaderIndex,
-    glslSenderRecord.uniformRenderObjectSendModelDataMap
+    uniformRenderObjectSendModelDataMap
   );

@@ -48,9 +48,9 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
         vboBufferRecord.boxGeometryElementArrayBufferMap
       ),
       (
-        VerticesBoxGeometrySendAttributeService.getVertices,
-        VerticesBoxGeometrySendAttributeService.getNormals,
-        VerticesBoxGeometrySendAttributeService.getIndices
+        VerticesBoxGeometryRenderService.getVertices,
+        NormalsBoxGeometryRenderService.getNormals,
+        IndicesBoxGeometryRenderService.getIndices
       )
     )
   | _ => (
@@ -59,18 +59,16 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
         vboBufferRecord.customGeometryNormalBufferMap,
         vboBufferRecord.customGeometryElementArrayBufferMap
       ),
-      /* TODO fix custom geometry */
       (
-        VerticesCustomGeometryMainService.getVertices,
-        NormalsCustomGeometryMainService.getNormals,
-        IndicesCustomGeometryMainService.getIndices
+        VerticesCustomGeometryRenderService.getVertices,
+        NormalsCustomGeometryRenderService.getNormals,
+        IndicesCustomGeometryRenderService.getIndices
       )
     )
   };
 
 let getGetIndicesCountFunc = (type_) =>
   switch type_ {
-  | type_ when type_ === getBoxGeometryType() => IndicesBoxGeometrySendAttributeService.getIndicesCount
-  /* TODO fix custom geometry */
-  | _ => IndicesCustomGeometryMainService.getIndicesCount
+  | type_ when type_ === getBoxGeometryType() => IndicesBoxGeometryRenderService.getIndicesCount
+  | _ => IndicesCustomGeometryRenderService.getIndicesCount
   };

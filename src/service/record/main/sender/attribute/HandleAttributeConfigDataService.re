@@ -2,13 +2,11 @@ open GlType;
 
 open Gl;
 
-open SendGLSLDataService;
-
 open DrawGLSLService;
 
 open RenderConfigType;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 let unsafeGetAttributeSendData = (shaderIndex: int, glslSenderRecord) => {
   let {attributeSendDataMap} = glslSenderRecord;
@@ -33,8 +31,7 @@ let unsafeGetAttributeSendData = (shaderIndex: int, glslSenderRecord) => {
      )
 };
 
-let unsafeGetInstanceAttributeSendData = (shaderIndex: int, glslSenderRecord) => {
-  let {instanceAttributeSendDataMap} = glslSenderRecord;
+let unsafeGetInstanceAttributeSendData = (shaderIndex: int, {instanceAttributeSendDataMap}) => {
   instanceAttributeSendDataMap
   |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(

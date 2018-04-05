@@ -1,4 +1,4 @@
-open StateSendAttributeType;
+open StateRenderType;
 
 let getNormals =
   [@bs]

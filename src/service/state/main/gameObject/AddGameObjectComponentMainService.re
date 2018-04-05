@@ -79,11 +79,11 @@ let _addCurrentBoxGeometryComponentData =
       /* {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap}, */
       {currentGeometryDataMap}
     ) =>
-  CurrentComponentDataMapSendAttributeService.addToMap(
+  CurrentComponentDataMapRenderService.addToMap(
     uid,
     (
       component,
-      CurrentComponentDataMapSendAttributeService.getBoxGeometryType()
+      CurrentComponentDataMapRenderService.getBoxGeometryType()
       /* (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
       (
         VerticesBoxGeometryMainService.getVertices,
@@ -128,11 +128,11 @@ let _addCurrentCustomGeometryComponentData =
       }, */
       {currentGeometryDataMap}
     ) =>
-  CurrentComponentDataMapSendAttributeService.addToMap(
+  CurrentComponentDataMapRenderService.addToMap(
     uid,
     (
       component,
-      CurrentComponentDataMapSendAttributeService.getCustomGeometryType()
+      CurrentComponentDataMapRenderService.getCustomGeometryType()
       /* (
         customGeometryVertexBufferMap,
         customGeometryNormalBufferMap,

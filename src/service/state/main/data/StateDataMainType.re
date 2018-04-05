@@ -44,7 +44,7 @@ open ProgramType;
 
 open GLSLLocationType;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 open ShaderChunkType;
 

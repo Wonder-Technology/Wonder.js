@@ -259,7 +259,7 @@ let _ =
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
-                    open GLSLSenderAllType;
+                    open StateRenderType;
                     open StateDataMainType;
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
@@ -325,7 +325,7 @@ let _ =
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
-                    open GLSLSenderAllType;
+                    open StateRenderType;
                     let shaderIndex1 = 3;
                     let shaderIndex2 = 4;
                     let {shaderIndexMap} as record = ShaderTool.getShaderRecord(state);

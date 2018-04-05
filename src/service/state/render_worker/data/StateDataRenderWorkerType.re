@@ -8,7 +8,7 @@ open ComponentType;
 
 open Js.Typed_array;
 
-open GLSLSenderAllType;
+open StateRenderType;
 
 open GLSLLocationType;
 
