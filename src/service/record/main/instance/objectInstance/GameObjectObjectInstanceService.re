@@ -1,3 +1,5 @@
+open InstanceType;
+
 open ObjectInstanceType;
 
 let getGameObject = (objectInstance: objectInstance, {gameObjectMap}) =>

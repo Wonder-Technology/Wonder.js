@@ -6,7 +6,7 @@ open DisposeSourceInstanceMainService;
 
 open CreateObjectInstanceGameObjectMainService;
 
-open ObjectInstanceArraySourceInstanceService;
+open GetObjectInstanceArraySourceInstanceService;
 
 open StaticSourceInstanceService;
 

@@ -1,57 +1,18 @@
+open StateDataMainType;
+
 open MaterialType;
 
 open BasicMaterialType;
 
-let _getRecordTuple =
-    (
-      {
-        gameObjectRecord,
-        directionLightRecord,
-        pointLightRecord,
-        shaderRecord,
-        programRecord,
-        glslRecord,
-        glslSenderRecord,
-        glslLocationRecord,
-        glslChunkRecord
-      } as state
-    ) => (
-  directionLightRecord.index,
-  pointLightRecord.index,
-  shaderIndices,
-  RecordRenderConfigMainService.getRecord(state),
-  shaderRecord,
-  programRecord,
-  glslRecord,
-  glslSenderRecord,
-  glslLocationRecord,
-  glslChunkRecord
-);
-
-let initMaterials =
-    (
-      materialIndexArr,
-      gl,
-      {
-        gameObjectRecord,
-        directionLightRecord,
-        pointLightRecord,
-        shaderRecord,
-        programRecord,
-        glslRecord,
-        glslSenderRecord,
-        glslLocationRecord,
-        glslChunkRecord
-      } as state
-    ) => {
+let initMaterials = (materialIndexArr, gl, state) => {
   let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
   materialIndexArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (recordTuple, materialIndex: int) =>
+         (state, materialIndex: int) =>
            [@bs]
-           InitBasicMaterialAllService.initMaterial(
+           InitBasicMaterialInitMaterialService.initMaterial(
              gl,
              (
                materialIndex,
@@ -62,23 +23,23 @@ let initMaterials =
                ),
                JudgeInstanceMainService.isSupportInstance(state)
              ),
-             recordTuple
+             state
            )
        ),
-       _getRecordTuple(state)
+       CreateRenderStateMainService.createRenderState(state)
      )
 };
 
 let handleInitComponent = (gl, index: int, state) => {
   let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
   [@bs]
-  InitBasicMaterialAllService.initMaterial(
+  InitBasicMaterialInitMaterialService.initMaterial(
     gl,
     (
       materialIndex,
       JudgeInstanceMainService.isSourceInstance(materialIndex, gameObjectMap, gameObjectRecord),
       JudgeInstanceMainService.isSupportInstance(state)
     ),
-    _getRecordTuple(state)
+    CreateRenderStateMainService.createRenderState(state)
   )
 };

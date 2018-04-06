@@ -2,16 +2,12 @@ open DirectionLightGLSLDataStructureMemberType;
 
 open StateRenderType;
 
-open DirectionLightRenderType;
+open RenderDirectionLightType;
 
 let send =
   [@bs]
   (
-    (
-      gl,
-      (program, uniformCacheMap, uniformLocationMap),
-      {directionLightRecord}
-    ) => {
+    (gl, (program, uniformCacheMap, uniformLocationMap), {directionLightRecord}) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
@@ -81,7 +77,7 @@ let send =
                    color,
                    GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
-                 GetDirectionLightDataService.getColor(index, directionLightRecord)
+                 GetDataRenderDirectionLightService.getColor(index, directionLightRecord)
                );
                [@bs]
                SendGLSLDataService.sendFloat(
@@ -96,7 +92,7 @@ let send =
                      gl
                    )
                  ),
-                 GetDirectionLightDataService.getIntensity(index, directionLightRecord)
+                 GetDataRenderDirectionLightService.getIntensity(index, directionLightRecord)
                );
                directionLightRecord
              }

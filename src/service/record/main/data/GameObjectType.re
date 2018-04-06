@@ -10,9 +10,7 @@ open MeshRendererType;
 
 open MaterialType;
 
-open SourceInstanceType;
-
-open ObjectInstanceType;
+open InstanceType;
 
 type gameObject = int;
 

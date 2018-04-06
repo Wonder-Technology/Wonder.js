@@ -1,3 +1,5 @@
+open InstanceType;
+
 open SourceInstanceType;
 
 let getGameObject = (sourceInstance: sourceInstance, {gameObjectMap}) =>

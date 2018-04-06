@@ -4,12 +4,12 @@ open Gl;
 
 open Js.Typed_array;
 
-open VboBufferType;
+open StateRenderType;
 
 let createBuffer =
   [@bs]
   (
-    (gl, record: Float32Array.t, state) =>{
+    (gl, record: Float32Array.t, state) => {
       let buffer = PoolVboBufferService.getArrayBuffer(gl, state.vboBufferRecord);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       bufferFloat32Data(getArrayBuffer(gl), record, getStaticDraw(gl), gl);
@@ -18,13 +18,7 @@ let createBuffer =
     }
   );
 
-let getOrCreateBuffer =
-    (
-      gl,
-      (geometryIndex, bufferMap),
-      getDataFunc,
-      state
-    ) =>
+let getOrCreateBuffer = (gl, (geometryIndex, bufferMap), getDataFunc, state) =>
   GetVboBufferRenderService.getOrCreateBuffer(
     gl,
     (geometryIndex, bufferMap),

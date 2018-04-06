@@ -1,6 +1,6 @@
 open GPUDetectType;
 
-open BasicMaterialRenderWorkerType;
+open RenderWorkerBasicMaterialType;
 
 open GlType;
 

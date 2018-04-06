@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open InstanceType;
+
 open SourceInstanceType;
 
 open DisposeComponentService;
@@ -10,7 +12,7 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
 let _disposeObjectInstanceGameObject =
     (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, {sourceInstanceRecord} as state) => {
   let objectInstanceGameObjectArr =
-    ObjectInstanceArraySourceInstanceService.unsafeGetObjectInstanceArray(
+    GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(
       sourceInstance,
       sourceInstanceRecord.objectInstanceArrayMap
     )

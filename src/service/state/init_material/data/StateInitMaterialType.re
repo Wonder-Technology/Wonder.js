@@ -18,11 +18,11 @@ open GeometryType;
 
 open ShaderChunkType;
 
-open MaterialInitMaterialType;
+open InitMaterialMaterialType;
 
-open DirectionLightInitMaterialType;
+open InitMaterialDirectionLightType;
 
-open PointLightInitMaterialType;
+open InitMaterialPointLightType;
 
 type initMaterialState = {
   materialRecord,

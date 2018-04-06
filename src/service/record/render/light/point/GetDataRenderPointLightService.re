@@ -1,4 +1,4 @@
-open PointLightRenderType;
+open RenderPointLightType;
 
 let getColor = (mappedIndex, {colors}) => RecordPointLightService.getColor(mappedIndex, colors);
 

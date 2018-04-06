@@ -1,6 +1,6 @@
 open StateInitMaterialType;
 
-open MaterialInitMaterialType;
+open InitMaterialMaterialType;
 
 let _initMaterialShader =
     (

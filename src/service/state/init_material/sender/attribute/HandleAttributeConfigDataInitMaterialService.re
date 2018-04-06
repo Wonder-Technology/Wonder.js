@@ -2,8 +2,6 @@ open GlType;
 
 open Gl;
 
-open DrawGLSLService;
-
 open RenderConfigType;
 
 open StateRenderType;
@@ -46,7 +44,13 @@ let _addOtherArrayBufferSendData =
 );
 
 let _addElementBufferSendData = (buffer, (sendDataArr, instanceSendNoCachableDataArr)) => (
-  sendDataArr |> ArrayService.push({pos: 0, size: 0, buffer, sendFunc: bindElementArrayBuffer}),
+  sendDataArr
+  |> ArrayService.push({
+       pos: 0,
+       size: 0,
+       buffer,
+       sendFunc: DrawGLSLInitMaterialService.bindElementArrayBuffer
+     }),
   instanceSendNoCachableDataArr
 );
 

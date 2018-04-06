@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open CustomGeometryRenderType;
+open RenderCustomGeometryType;
 
 open ReallocatedPointsGeometryService;
 

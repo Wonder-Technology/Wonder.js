@@ -117,7 +117,7 @@ let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =
   top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
 
 let _execHandle = (name, recordTuple) => {
-  let handleFunc = HandleGLSLService.getHandle(name);
+  let handleFunc = HandleGLSLInitMaterialService.getHandle(name);
   handleFunc(recordTuple)
 };
 

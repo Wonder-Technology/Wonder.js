@@ -1,4 +1,4 @@
-open StateDataMainType;
+open StateRenderType;
 
 open VboBufferType;
 
@@ -189,7 +189,7 @@ let _prepareData =
     ) => {
   let extension = GPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
   let objectInstanceArray =
-    ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
+    GetObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
       sourceInstance,
       state.sourceInstanceRecord
     );
@@ -224,8 +224,9 @@ let render =
         strideForSend
       ),
       (renderFunc, fillMatrixTypeArrFunc),
-      state: StateDataMainType.state
+      state
     ) => {
+
   /* TODO optimize for static record:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */

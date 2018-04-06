@@ -12,21 +12,27 @@ open GLSLSenderType;
 
 open ProgramType;
 
-open BoxGeometryRenderType;
+open RenderBoxGeometryType;
 
-open CustomGeometryRenderType;
+open RenderCustomGeometryType;
 
-open BasicMaterialRenderType;
+open RenderBasicMaterialType;
 
-open LightMaterialRenderType;
+open RenderLightMaterialType;
 
-open AmbientLightRenderType;
+open RenderAmbientLightType;
 
-open DirectionLightRenderType;
+open RenderDirectionLightType;
 
-open PointLightRenderType;
+open RenderPointLightType;
 
-open TransformRenderType;
+open RenderTransformType;
+
+open VboBufferType;
+
+open TypeArrayPoolType;
+
+open RenderSourceInstanceType;
 
 type attributeSendData = {
   pos: attributeLocation,
@@ -43,7 +49,7 @@ type attributeSendData = {
         /* GLSLSenderType.vertexAttribHistoryArray */
         renderState
       ) =>
-      unit
+      renderState
     )
 }
 and instanceAttributeSendData = {
@@ -113,6 +119,8 @@ and glslSenderRecord = {
   mutable lastSendGeometry: option((geometry, int))
 }
 and renderState = {
+  vboBufferRecord,
+  typeArrayPoolRecord,
   glslSenderRecord,
   programRecord,
   boxGeometryRecord,
@@ -123,5 +131,6 @@ and renderState = {
   ambientLightRecord,
   directionLightRecord,
   pointLightRecord,
-  transformRecord
+  transformRecord,
+  sourceInstanceRecord
 };

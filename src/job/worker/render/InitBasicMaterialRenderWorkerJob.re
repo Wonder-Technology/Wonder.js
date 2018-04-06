@@ -1,6 +1,6 @@
 open StateDataRenderWorkerType;
 
-open BasicMaterialRenderWorkerType;
+open RenderWorkerBasicMaterialType;
 
 let _createTypeArrays = (buffer, count, state) => {
   let (shaderIndices, colors) =

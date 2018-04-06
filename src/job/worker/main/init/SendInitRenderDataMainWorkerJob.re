@@ -24,7 +24,10 @@ let execJob = (flags, stateData) =>
       let offscreen =
         CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(settingRecord))
         |> Worker.transferControlToOffscreen;
-      let { buffer, gpu } = settingRecord;
+      /* let { buffer, gpu } = settingRecord; */
+
+let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
+
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessageWithTransferData(
            {

@@ -1,8 +1,8 @@
 open ShaderChunkType;
 
 let execHandle = ((directionLightRecord, pointLightRecord)) => {
-  let directionLightCount = CountDirectionLightService.getLightCount(directionLightRecord);
-  let pointLightCount = CountPointLightService.getLightCount(pointLightRecord);
+  let directionLightCount = CountInitMaterialDirectionLightService.getLightCount(directionLightRecord);
+  let pointLightCount = CountInitMaterialPointLightService.getLightCount(pointLightRecord);
   {
     top: "",
     define: {j|#define DIRECTION_LIGHTS_COUNT $directionLightCount

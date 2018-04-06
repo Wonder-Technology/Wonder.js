@@ -1,3 +1,5 @@
+open InstanceType;
+
 open ObjectInstanceType;
 
 let handleAddComponent =

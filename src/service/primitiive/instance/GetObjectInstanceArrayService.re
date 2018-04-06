@@ -1,5 +1,3 @@
-open SourceInstanceType;
-
 let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
   objectInstanceArrayMap
   |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
@@ -20,6 +18,3 @@ let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
-
-let getObjectInstanceArray = (sourceInstance, {objectInstanceArrayMap}) =>
-  unsafeGetObjectInstanceArray(sourceInstance, objectInstanceArrayMap);

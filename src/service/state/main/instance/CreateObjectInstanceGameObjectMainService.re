@@ -4,7 +4,7 @@ open SourceInstanceType;
 
 let _addObjectInstnace = (sourceInstance, uid: int, objectInstanceArrayMap) => {
   objectInstanceArrayMap
-  |> ObjectInstanceArraySourceInstanceService.unsafeGetObjectInstanceArray(sourceInstance)
+  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(sourceInstance)
   |> ArrayService.push(uid)
   |> ignore;
   objectInstanceArrayMap

@@ -1,8 +1,8 @@
-open StateDataMainType;
+open StateRenderType;
 
 open VboBufferType;
 
-open SourceInstanceType;
+open RenderSourceInstanceType;
 
 open InstanceBufferRenderService;
 
@@ -11,7 +11,7 @@ let render =
       gl,
       (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType, sourceInstance) as indexTuple,
       renderFunc,
-      state: StateDataMainType.state
+      state
     ) => {
   let state =
     [@bs]
@@ -21,25 +21,27 @@ let render =
       state
     );
   let uniformInstanceSendNoCachableData =
-    state |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
+    state.glslSenderRecord
+    |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
-  let getIndicesCountFunc = CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
+  let getIndicesCountFunc =
+    CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(geometryIndex, state);
   let objectInstanceArray =
-    ObjectInstanceArraySourceInstanceService.getObjectInstanceArray(
+    GetObjectInstanceArrayRenderSourceInstanceService.getObjectInstanceArray(
       sourceInstance,
       state.sourceInstanceRecord
     );
   objectInstanceArray
-  |> ReduceStateMainService.reduceState(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (state, uid) => {
            let state =
              uniformInstanceSendNoCachableData
-             |> ReduceStateMainService.reduceState(
+             |> WonderCommonlib.ArrayService.reduceOneParam(
                   [@bs]
                   (
                     (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {

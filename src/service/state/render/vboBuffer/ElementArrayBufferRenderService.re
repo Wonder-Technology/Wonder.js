@@ -1,17 +1,15 @@
-open StateDataMainType;
-
 open GlType;
 
 open Gl;
 
 open Js.Typed_array;
 
-open VboBufferType;
+open StateRenderType;
 
 let createBuffer =
   [@bs]
   (
-    (gl, record: Uint16Array.t, state: StateDataMainType.state) => {
+    (gl, record: Uint16Array.t, state) => {
       let buffer = PoolVboBufferService.getElementArrayBuffer(gl, state.vboBufferRecord);
       bindBuffer(getElementArrayBuffer(gl), buffer, gl);
       bufferUint16Data(getElementArrayBuffer(gl), record, getStaticDraw(gl), gl);
@@ -25,7 +23,7 @@ let getOrCreateBuffer =
       gl,
       (geometryIndex, bufferMap),
       getDataFunc,
-      state: StateDataMainType.state
+      state
     ) =>
   GetVboBufferRenderService.getOrCreateBuffer(
     gl,

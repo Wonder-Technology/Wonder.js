@@ -5,7 +5,7 @@ open LightMaterialType;
 open StateDataMainType;
 
 let getDiffuseColor = (material, state) =>
-  RecordLightMaterialMainService.getDiffuseColor(
+  OperateTypeArrayLightMaterialService.getDiffuseColor(
     material,
     RecordLightMaterialMainService.getRecord(state).diffuseColors
   );
@@ -18,13 +18,13 @@ let setDiffuseColor = (material, color: array(float), state) => {
       Some({
         ...lightMaterialRecord,
         diffuseColors:
-          RecordLightMaterialMainService.setDiffuseColor(material, color, diffuseColors)
+          OperateTypeArrayLightMaterialService.setDiffuseColor(material, color, diffuseColors)
       })
   }
 };
 
 let getSpecularColor = (material, state) =>
-  RecordLightMaterialMainService.getSpecularColor(
+  OperateTypeArrayLightMaterialService.getSpecularColor(
     material,
     RecordLightMaterialMainService.getRecord(state).specularColors
   );
@@ -37,13 +37,13 @@ let setSpecularColor = (material, color: array(float), state) => {
       Some({
         ...lightMaterialRecord,
         specularColors:
-          RecordLightMaterialMainService.setSpecularColor(material, color, specularColors)
+          OperateTypeArrayLightMaterialService.setSpecularColor(material, color, specularColors)
       })
   }
 };
 
 let getShininess = (material, state) =>
-  RecordLightMaterialMainService.getShininess(
+  OperateTypeArrayLightMaterialService.getShininess(
     material,
     RecordLightMaterialMainService.getRecord(state).shininess
   );
@@ -55,7 +55,7 @@ let setShininess = (material, value, state) => {
     lightMaterialRecord:
       Some({
         ...lightMaterialRecord,
-        shininess: RecordLightMaterialMainService.setShininess(material, value, shininess)
+        shininess: OperateTypeArrayLightMaterialService.setShininess(material, value, shininess)
       })
   }
 };

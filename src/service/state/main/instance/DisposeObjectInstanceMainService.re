@@ -2,6 +2,8 @@ open StateDataMainType;
 
 open StateDataMainType;
 
+open InstanceType;
+
 open SourceInstanceType;
 
 open ObjectInstanceType;
@@ -45,7 +47,7 @@ let _disposeObjectInstance =
     (sourceInstance, objectInstanceUid: int, {sourceInstanceRecord} as state) => {
   let {objectInstanceArrayMap} = sourceInstanceRecord;
   objectInstanceArrayMap
-  |> ObjectInstanceArraySourceInstanceService.unsafeGetObjectInstanceArray(sourceInstance)
+  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(sourceInstance)
   |> removeFromArray(objectInstanceUid)
   |> ignore;
   state

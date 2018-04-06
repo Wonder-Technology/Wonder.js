@@ -3,11 +3,7 @@ open StateRenderType;
 open VboBufferType;
 
 let _directlySendAttributeData =
-    (
-      gl,
-      (shaderIndex, geometryIndex, geometryType),
-      {vboBufferRecord, glslSenderRecord } as state
-    ) => {
+    (gl, (shaderIndex, geometryIndex, geometryType), {vboBufferRecord, glslSenderRecord} as state) => {
   let (
     (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
     (getVerticesFunc, getNormalsFunc, getIndicesFunc)
@@ -63,23 +59,19 @@ let _directlySendAttributeData =
      )
 };
 
-let _sendAttributeData =
-    (
-      gl,
-      (shaderIndex, geometryIndex, geometryType) as indexTuple,
-    state  
-    ) => {
+let _sendAttributeData = (gl, (shaderIndex, geometryIndex, geometryType) as indexTuple, state) => {
   let {lastSendGeometry} as record = state.glslSenderRecord;
   switch lastSendGeometry {
   | Some((lastSendGeometryIndex, lastSendGeometryType))
-      when lastSendGeometryIndex === geometryIndex && lastSendGeometryType === geometryType => stateTuple
+      when lastSendGeometryIndex === geometryIndex && lastSendGeometryType === geometryType => state
   | _ =>
     record.lastSendGeometry = Some((geometryIndex, geometryType));
     _directlySendAttributeData(gl, indexTuple, state)
   }
 };
 
-let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, {glslSenderRecord} as state) =>
+let _sendUniformRenderObjectModelData =
+    (gl, shaderIndex, transformIndex, {glslSenderRecord} as state) =>
   glslSenderRecord
   |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(shaderIndex)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -93,10 +85,11 @@ let _sendUniformRenderObjectModelData = (gl, shaderIndex, transformIndex, {glslS
        state
      );
 
-let _sendUniformRenderObjectMaterialData = (gl, shaderIndex, materialIndex, {glslSenderRecord} as state) =>
+let _sendUniformRenderObjectMaterialData =
+    (gl, shaderIndex, materialIndex, {glslSenderRecord} as state) =>
   glslSenderRecord
   |> HandleUniformRenderObjectMaterialService.unsafeGetUniformSendData(shaderIndex)
-  |> ReduceStateMainService.reduceState(
+  |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (

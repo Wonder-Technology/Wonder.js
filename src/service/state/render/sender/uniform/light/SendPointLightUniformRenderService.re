@@ -2,7 +2,7 @@ open PointLightGLSLDataStructureMemberType;
 
 open StateRenderType;
 
-open PointLightRenderType;
+open RenderPointLightType;
 
 let getLightGLSLDataStructureMemberNameArr = () => [|
   {
@@ -55,14 +55,14 @@ let _sendAttenuation =
     gl,
     uniformCacheMap,
     (constant, GLSLLocationService.getUniformLocation(program, constant, uniformLocationMap, gl)),
-    GetPointLightDataService.getConstant(index, pointLightRecord)
+    GetDataRenderPointLightService.getConstant(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (linear, GLSLLocationService.getUniformLocation(program, linear, uniformLocationMap, gl)),
-    GetPointLightDataService.getLiear(index, pointLightRecord)
+    GetDataRenderPointLightService.getLiear(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
@@ -72,14 +72,14 @@ let _sendAttenuation =
       quadratic,
       GLSLLocationService.getUniformLocation(program, quadratic, uniformLocationMap, gl)
     ),
-    GetPointLightDataService.getQuadratic(index, pointLightRecord)
+    GetDataRenderPointLightService.getQuadratic(index, pointLightRecord)
   );
   [@bs]
   SendGLSLDataService.sendFloat(
     gl,
     uniformCacheMap,
     (range, GLSLLocationService.getUniformLocation(program, range, uniformLocationMap, gl)),
-    GetPointLightDataService.getRange(index, pointLightRecord)
+    GetDataRenderPointLightService.getRange(index, pointLightRecord)
   );
   pointLightRecord
 };
@@ -135,7 +135,7 @@ let send =
                    color,
                    GLSLLocationService.getUniformLocation(program, color, uniformLocationMap, gl)
                  ),
-                 GetPointLightDataService.getColor(index, pointLightRecord)
+                 GetDataRenderPointLightService.getColor(index, pointLightRecord)
                );
                [@bs]
                SendGLSLDataService.sendFloat(
@@ -150,7 +150,7 @@ let send =
                      gl
                    )
                  ),
-                 GetPointLightDataService.getIntensity(index, pointLightRecord)
+                 GetDataRenderPointLightService.getIntensity(index, pointLightRecord)
                );
                _sendAttenuation(
                  index,

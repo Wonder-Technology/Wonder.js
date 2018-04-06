@@ -9,8 +9,7 @@ let isSupportInstance = (state: StateDataMainType.state) =>
 let isSourceIntance = (materialIndex, gameObjectMap, gameObjectRecord) =>
   gameObjectRecord
   |> HasComponentGameObjectService.hasSourceInstanceComponent(
-       GameObjectMapService.unsafeGetGameObject(materialIndex, gameObjectMap),
-       gameObjectRecord
+       GameObjectMapService.unsafeGetGameObject(materialIndex, gameObjectMap)
      );
 
 let buildMap = (index, gameObjectMap, gameObjectRecord) =>

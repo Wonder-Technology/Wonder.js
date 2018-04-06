@@ -1,4 +1,4 @@
-open DirectionLightRenderType;
+open RenderDirectionLightType;
 
 let getColor = (mappedIndex, {colors}) =>
   RecordDirectionLightService.getColor(mappedIndex, colors);

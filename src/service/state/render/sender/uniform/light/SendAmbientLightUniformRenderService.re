@@ -18,7 +18,7 @@ let send =
                    name,
                    GLSLLocationService.getUniformLocation(program, name, uniformLocationMap, gl)
                  ),
-                 GetAmbientLightDataService.getColor(index, ambientLightRecord)
+                 GetDataRenderAmbientLightService.getColor(index, ambientLightRecord)
                );
                ambientLightRecord
              }

@@ -1,5 +1,7 @@
 open BoxGeometryType;
 
+open InstanceType;
+
 open SourceInstanceType;
 
 open VboBufferType;

@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open TransformRenderType;
+open RenderTransformType;
 
 let getLocalToWorldMatrixTypeArray =
   [@bs]

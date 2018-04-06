@@ -1,10 +1,12 @@
-open SourceInstanceType;
+open ComponentType;
 
-type objectInstance = int;
+open InstanceType;
+
+open SourceInstanceType;
 
 type objectInstanceRecord = {
   index: int,
   sourceInstanceMap: array(sourceInstance),
   disposedIndexArray: array(objectInstance),
-  gameObjectMap: array(int)
+  gameObjectMap
 };

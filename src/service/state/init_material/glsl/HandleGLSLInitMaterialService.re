@@ -1,6 +1,6 @@
 let getHandle = (name) =>
   switch name {
-  | "defineLightCount" => DefineLightCountService.execHandle
+  | "defineLightCount" => DefineLightCountInitMaterialService.execHandle
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
