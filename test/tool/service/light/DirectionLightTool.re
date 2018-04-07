@@ -29,5 +29,5 @@ let getMappedIndex = (index, state) =>
 
 let getLightCount = (state) =>
   CountInitMaterialDirectionLightService.getLightCount(
-    CreateInitMaterialStateMainService.createInitMaterialState(state).directionLightRecord
+    InitMaterialStateTool.createState(state).directionLightRecord
   );

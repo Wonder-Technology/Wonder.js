@@ -46,5 +46,5 @@ let getMappedIndex = (index, state) =>
 
 let getLightCount = (state) =>
   CountInitMaterialPointLightService.getLightCount(
-    CreateInitMaterialStateMainService.createInitMaterialState(state).pointLightRecord
+    InitMaterialStateTool.createState(state).pointLightRecord
   );

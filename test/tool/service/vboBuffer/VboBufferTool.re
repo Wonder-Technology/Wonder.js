@@ -3,7 +3,7 @@ open StateDataMainType;
 let getRecord = (state) => state.vboBufferRecord;
 
 let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
-  let state = CreateRenderStateMainService.createRenderState(state);
+  let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryVertexBufferMap),
@@ -16,7 +16,7 @@ let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateD
 };
 
 let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
-  let state = CreateRenderStateMainService.createRenderState(state);
+  let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryNormalBufferMap),
@@ -29,7 +29,7 @@ let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateD
 };
 
 let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
-  let state = CreateRenderStateMainService.createRenderState(state);
+  let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryElementArrayBufferMap),
@@ -43,7 +43,7 @@ let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: State
 
 let getOrCreateInstanceBuffer =
     (sourceInstanceIndex: int, defaultCapacity, state: StateDataMainType.state) => {
-  let state = CreateRenderStateMainService.createRenderState(state);
+  let state = RenderStateTool.createState(state);
   InstanceBufferRenderService.getOrCreateBuffer(
     (
       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),

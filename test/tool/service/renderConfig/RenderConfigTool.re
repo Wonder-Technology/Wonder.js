@@ -2,6 +2,8 @@ open RenderConfigType;
 
 open ParseRenderConfigService;
 
+open StateDataMainType;
+
 let buildRenderConfig =
     (
       ~shaders={|
@@ -582,3 +584,7 @@ let getShaderLibs = (state) =>
   );
 
 let getMaterialShaderLibRecordArr = GetDataRenderConfigService.getMaterialShaderLibDataArr;
+
+let isRenderConfigRecordExist = (state) => state.renderConfigRecord |> Js.Option.isSome;
+
+let setRenderConfig = (renderConfig, state) => {...state, renderConfigRecord: Some(renderConfig)};

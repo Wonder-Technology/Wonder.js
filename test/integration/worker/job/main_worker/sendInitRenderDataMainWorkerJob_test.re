@@ -23,6 +23,19 @@ let _ =
       describe(
         "send data to render worker",
         () => {
+          let _buildInitRenderData = () => {
+            "operateType": "INIT_RENDER",
+            "canvas": Sinon.matchAny,
+            "contextConfig": Sinon.matchAny,
+            "bufferData": Sinon.matchAny,
+            "renderConfigData": Sinon.matchAny,
+            "transformData": Sinon.matchAny,
+            "basicMaterialData": Sinon.matchAny,
+            "boxGeometryData": Sinon.matchAny,
+            "customGeometryData": Sinon.matchAny,
+            "directionLightData": Sinon.matchAny,
+            "pointLightData": Sinon.matchAny
+          };
           testPromise(
             "test send data",
             () =>
@@ -33,13 +46,7 @@ let _ =
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> expect
-                     |> toCalledWith([|
-                          {
-                            "operateType": "INIT_RENDER",
-                            "canvas": Sinon.matchAny,
-                            "contextConfig": Sinon.matchAny
-                          }
-                        |])
+                     |> toCalledWith([|_buildInitRenderData()|])
                  )
           );
           testPromise(
@@ -51,11 +58,7 @@ let _ =
                    (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
-                     |> withOneArg({
-                          "operateType": "INIT_RENDER",
-                          "canvas": Sinon.matchAny,
-                          "contextConfig": Sinon.matchAny
-                        })
+                     |> withOneArg(_buildInitRenderData())
                      |> expect
                      |> toCalledAfter(
                           postMessageToRenderWorker
