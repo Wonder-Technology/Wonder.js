@@ -26,8 +26,8 @@ let buildBoxGeometryConfigDataJsObj =
   "depthSegment": depthSegment
 };
 
-let getIndicesCount = (index: int, state: StateDataMainType.state) =>
-  IndicesBoxGeometryMainService.getIndicesCount(index, state);
+let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
+  GetBoxGeometryIndicesRenderService.getIndicesCount(index, state);
 
 let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
 
@@ -326,4 +326,3 @@ let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
-     

@@ -29,11 +29,11 @@ let _ =
                   TestTool.closeContractCheck();
                   expect(
                     () =>
-                      state^
-                      |> RenderConfigTool.getMaterialShaderLibRecordArr(
-                           0,
-                           (1 |> Obj.magic, [|{type_: Some("type1"), name: ""}|], 1 |> Obj.magic)
-                         )
+                      RenderConfigTool.getMaterialShaderLibRecordArr(
+                        Obj.magic(0),
+                        Obj.magic(0),
+                        (1 |> Obj.magic, [|{type_: Some("type1"), name: ""}|], 1 |> Obj.magic)
+                      )
                   )
                   |> toThrowMessage("unknown type_")
                 }
@@ -44,15 +44,15 @@ let _ =
                   TestTool.closeContractCheck();
                   expect(
                     () =>
-                      state^
-                      |> RenderConfigTool.getMaterialShaderLibRecordArr(
-                           0,
-                           (
-                             1 |> Obj.magic,
-                             [|{type_: Some("static_branch"), name: "name1"}|],
-                             1 |> Obj.magic
-                           )
-                         )
+                      RenderConfigTool.getMaterialShaderLibRecordArr(
+                        Obj.magic(0),
+                        Obj.magic(0),
+                        (
+                          1 |> Obj.magic,
+                          [|{type_: Some("static_branch"), name: "name1"}|],
+                          1 |> Obj.magic
+                        )
+                      )
                   )
                   |> toThrowMessage("unknown name")
                 }

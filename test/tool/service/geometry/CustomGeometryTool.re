@@ -77,7 +77,8 @@ let isGeometryDisposed = (geometry, state) =>
       state |> RecordCustomGeometryMainService.getRecord
     );
 
-let getIndicesCount = IndicesCustomGeometryMainService.getIndicesCount;
+let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
+  GetCustomGeometryIndicesRenderService.getIndicesCount(index, state);
 
 let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
   GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)

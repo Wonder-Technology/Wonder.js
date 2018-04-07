@@ -2,35 +2,48 @@ open StateDataMainType;
 
 let getRecord = (state) => state.vboBufferRecord;
 
-let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
+let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
+  let state = CreateRenderStateMainService.createRenderState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryVertexBufferMap),
-    ([@bs] ArrayBufferRenderService.createBuffer, [@bs] VerticesBoxGeometryMainService.getVertices),
+    (
+      [@bs] ArrayBufferRenderService.createBuffer,
+      [@bs] GetBoxGeometryVerticesRenderService.getVertices
+    ),
     state
-  );
+  )
+};
 
-let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
+let getOrCreateBoxGeometryNormalArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
+  let state = CreateRenderStateMainService.createRenderState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryNormalBufferMap),
-    ([@bs] ArrayBufferRenderService.createBuffer, [@bs] NormalsBoxGeometryMainService.getNormals),
+    (
+      [@bs] ArrayBufferRenderService.createBuffer,
+      [@bs] GetBoxGeometryNormalsRenderService.getNormals
+    ),
     state
-  );
+  )
+};
 
-let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) =>
+let getOrCreateBoxGeometryElementArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
+  let state = CreateRenderStateMainService.createRenderState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.boxGeometryElementArrayBufferMap),
     (
       [@bs] ElementArrayBufferRenderService.createBuffer,
-      [@bs] IndicesBoxGeometryMainService.getIndices
+      [@bs] GetBoxGeometryIndicesRenderService.getIndices
     ),
     state
-  );
+  )
+};
 
 let getOrCreateInstanceBuffer =
-    (sourceInstanceIndex: int, defaultCapacity, state: StateDataMainType.state) =>
+    (sourceInstanceIndex: int, defaultCapacity, state: StateDataMainType.state) => {
+  let state = CreateRenderStateMainService.createRenderState(state);
   InstanceBufferRenderService.getOrCreateBuffer(
     (
       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
@@ -42,7 +55,8 @@ let getOrCreateInstanceBuffer =
       state.vboBufferRecord.matrixInstanceBufferMap
     ),
     state
-  );
+  )
+};
 
 let passBufferShouldExistCheckWhenDisposeBoxGeometry =
     (geometryIndex, state: StateDataMainType.state) => {

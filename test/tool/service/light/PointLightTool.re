@@ -44,4 +44,7 @@ let getDefaultRange = RecordPointLightService.getDefaultRange;
 let getMappedIndex = (index, state) =>
   state |> IndexPointLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);
 
-let getLightCount = (state) => CountInitMaterialPointLightService.getLightCount(state.pointLightRecord);
+let getLightCount = (state) =>
+  CountInitMaterialPointLightService.getLightCount(
+    CreateInitMaterialStateMainService.createInitMaterialState(state).pointLightRecord
+  );

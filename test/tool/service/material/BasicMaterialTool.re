@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open BasicMaterialType;
+
 let getMaterialRecord = (state) => RecordBasicMaterialMainService.getRecord(state);
 
 let createGameObject = (state) => {
@@ -15,7 +17,23 @@ let getDefaultShaderIndex = (state) => getMaterialRecord(state).defaultShaderInd
 
 let getDefaultColor = (state) => getMaterialRecord(state).defaultColor;
 
-let initMaterials = InitBasicMaterialMainService.init;
+let initMaterials = (gl, {gameObjectRecord} as state) => {
+  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  InitBasicMaterialInitMaterialService.init(
+    gl,
+    (
+      JudgeInstanceMainService.buildMap(
+        basicMaterialRecord.index,
+        RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
+        gameObjectRecord
+      ),
+      JudgeInstanceMainService.isSupportInstance(state)
+    ),
+    CreateInitMaterialStateMainService.createInitMaterialState(state)
+  )
+  |> ignore;
+  state
+};
 
 let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
   ShaderIndexBasicMaterialMainService.getShaderIndex(materialIndex, state);
@@ -31,13 +49,25 @@ let dispose = (material, state: StateDataMainType.state) => {
     Some(DisposeBasicMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))
 };
 
-let initMaterial = (materialIndex, state) =>
+let initMaterial = (materialIndex, state) => {
+  let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
   [@bs]
-  InitBasicMaterialMainService.initMaterial(
+  InitBasicMaterialInitMaterialService.initMaterial(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    materialIndex,
-    state
-  );
+    (
+      materialIndex,
+      JudgeInstanceMainService.isSourceInstance(
+        materialIndex,
+        gameObjectMap,
+        state.gameObjectRecord
+      ),
+      JudgeInstanceMainService.isSupportInstance(state)
+    ),
+    CreateInitMaterialStateMainService.createInitMaterialState(state)
+  )
+  |> ignore;
+  state
+};
 
 let isMaterialDisposed = (material, state) => {
   open BasicMaterialType;

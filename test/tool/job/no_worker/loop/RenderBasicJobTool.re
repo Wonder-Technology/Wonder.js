@@ -3,7 +3,7 @@ open StateDataMainType;
 let execJob = (configData, state) =>
   RenderBasicJob.execJob(
     configData,
-    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+    Obj.magic(1),
     state
   );
 

@@ -13,7 +13,7 @@ let _ =
       let state = ref(MainStateTool.createState());
       let _prepareGLSLSenderData = (state) => {
         open StateDataMainType;
-        let {attributeSendDataMap, vertexAttribHistoryArray} =
+        let {attributeSendDataMap, vertexAttribHistoryArray}: StateRenderType.glslSenderRecord =
           state.glslSenderRecord;
         let shaderIndex1 = 0;
         let data1 = Obj.magic(0);
@@ -63,13 +63,12 @@ let _ =
               test(
                 "clear last send record",
                 () => {
-                  open StateDataMainType;
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(MainStateTool.createNewCompleteState(sandbox));
                   let newState = MainStateTool.restore(currentState, state);
-                  let {lastSendMaterial, lastSendGeometry} =
+                  let {lastSendMaterial, lastSendGeometry}: StateRenderType.glslSenderRecord =
                     newState |> GLSLSenderTool.getGLSLSenderRecord;
                   (lastSendMaterial, lastSendGeometry) |> expect == (None, None)
                 }
@@ -83,7 +82,8 @@ let _ =
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(MainStateTool.createNewCompleteState(sandbox));
                   let newState = MainStateTool.restore(currentState, state);
-                  let {vertexAttribHistoryArray} = newState |> GLSLSenderTool.getGLSLSenderRecord;
+                  let {vertexAttribHistoryArray}: StateRenderType.glslSenderRecord =
+                    newState |> GLSLSenderTool.getGLSLSenderRecord;
                   vertexAttribHistoryArray |> expect == WonderCommonlib.ArrayService.createEmpty()
                 }
               )
@@ -259,7 +259,6 @@ let _ =
                     open ShaderType;
                     open GLSLLocationType;
                     open ProgramType;
-                    open StateRenderType;
                     open StateDataMainType;
                     let shaderIndex1 = 0;
                     let shaderIndex2 = 1;
@@ -293,7 +292,7 @@ let _ =
                     |> WonderCommonlib.SparseMapService.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapService.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
-                    let {uniformShaderSendNoCachableDataMap} =
+                    let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
                       state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(121);
                     let uniformShaderSendNoCachableData2 = Obj.magic(122);
@@ -356,7 +355,7 @@ let _ =
                     |> WonderCommonlib.SparseMapService.set(shaderIndex1, uniformLocationData1)
                     |> WonderCommonlib.SparseMapService.set(shaderIndex2, uniformLocationData2)
                     |> ignore;
-                    let {uniformShaderSendNoCachableDataMap} =
+                    let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
                       state.glslSenderRecord;
                     let uniformShaderSendNoCachableData1 = Obj.magic(10221);
                     let uniformShaderSendNoCachableData2 = Obj.magic(10222);
@@ -568,7 +567,6 @@ let _ =
                           test(
                             "get intersect map between current uniformShaderSendNoCachableDataMap and target nuiformShaderSendNoCachableDataMap whose value is the one in current niuformShaderSendNoCachableDataMap",
                             () => {
-                              open StateDataMainType;
                               let (
                                 newState,
                                 (
@@ -593,7 +591,7 @@ let _ =
                                 )
                               ) =
                                 _prepare(state^);
-                              let {uniformShaderSendNoCachableDataMap} =
+                              let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
                                 newState |> GLSLSenderTool.getGLSLSenderRecord;
                               (
                                 uniformShaderSendNoCachableDataMap |> SparseMapService.length,

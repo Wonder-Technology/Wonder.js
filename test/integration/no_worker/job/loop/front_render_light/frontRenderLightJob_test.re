@@ -395,8 +395,7 @@ let _ =
             let (state, gameObject, _, material, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
             let (state, _, light) = AmbientLightTool.createGameObject(state);
-            let (state, _, cameraTransform, _) =
-              CameraTool.createCameraGameObject(state);
+            let (state, _, cameraTransform, _) = CameraTool.createCameraGameObject(state);
             (state, gameObject, material, light, cameraTransform)
           };
           describe(
@@ -468,7 +467,8 @@ let _ =
                 sandbox,
                 "u_pMatrix",
                 (gameObjectTransform, cameraTransform, basicCameraView, state) => state,
-                PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera(),
+                PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera
+                  (),
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
                   (_prepareSendUinformData) =>
@@ -604,8 +604,10 @@ let _ =
                           let color2 = [|0., 1., 0.5|];
                           let color3 = [|0., 0., 1.|];
                           let state = state |> AmbientLightAPI.setAmbientLightColor(light, color1);
-                          let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
-                          let state = state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
+                          let state =
+                            state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
+                          let state =
+                            state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
                           let state = state |> GameObjectAPI.disposeGameObject(lightGameObject1);
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
@@ -833,7 +835,10 @@ let _ =
                                   let intensity = 2.;
                                   let state =
                                     state
-                                    |> DirectionLightAPI.setDirectionLightIntensity(light, intensity);
+                                    |> DirectionLightAPI.setDirectionLightIntensity(
+                                         light,
+                                         intensity
+                                       );
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(
                                       sandbox,
@@ -1005,7 +1010,8 @@ let _ =
                                   let (state, lightGameObject, material, light, cameraTransform) =
                                     _prepareOne(sandbox, state^);
                                   let color = [|1., 0., 0.|];
-                                  let state = state |> PointLightAPI.setPointLightColor(light, color);
+                                  let state =
+                                    state |> PointLightAPI.setPointLightColor(light, color);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].color"|], state);
                                   let state =
@@ -1129,7 +1135,8 @@ let _ =
                                   let (state, lightGameObject, material, light, cameraTransform) =
                                     _prepareOne(sandbox, state^);
                                   let range = 2.;
-                                  let state = state |> PointLightAPI.setPointLightRange(light, range);
+                                  let state =
+                                    state |> PointLightAPI.setPointLightRange(light, range);
                                   let (state, posArr, (uniform1f, uniform3f)) =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].range"|], state);
                                   let state =
@@ -1170,12 +1177,7 @@ let _ =
                   GLSLSenderTool.JudgeSendUniformData.testSendVector3(
                     sandbox,
                     "u_diffuse",
-                    (
-                      _,
-                      (gameObjectTransform, material),
-                      (cameraTransform, basicCameraView),
-                      state
-                    ) =>
+                    (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
                       state
                       |> LightMaterialAPI.setLightMaterialDiffuseColor(material, [|1., 0., 0.5|]),
                     [1., 0., 0.5],
@@ -1185,12 +1187,7 @@ let _ =
                   GLSLSenderTool.JudgeSendUniformData.testSendVector3(
                     sandbox,
                     "u_specular",
-                    (
-                      _,
-                      (gameObjectTransform, material),
-                      (cameraTransform, basicCameraView),
-                      state
-                    ) =>
+                    (_, (gameObjectTransform, material), (cameraTransform, basicCameraView), state) =>
                       state
                       |> LightMaterialAPI.setLightMaterialSpecularColor(material, [|1., 0., 0.5|]),
                     [1., 0., 0.5],
@@ -1286,7 +1283,10 @@ let _ =
                           );
                         let state =
                           state
-                          |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                          |> TransformAPI.setTransformLocalPosition(
+                               gameObjectTransform,
+                               (1., 2., 3.)
+                             );
                         let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos = 0;
                         let getUniformLocation =
@@ -1343,9 +1343,17 @@ let _ =
                   drawElements
                   |> withFourArgs(
                        triangles,
-                       BoxGeometryTool.getIndicesCount(geometry, state),
-                       GeometryTool.getIndexType(state),
-                       GeometryTool.getIndexTypeSize(state) * 0
+                       BoxGeometryTool.getIndicesCount(
+                         geometry,
+                         CreateRenderStateMainService.createRenderState(state)
+                       ),
+                       GeometryTool.getIndexType(
+                         CreateRenderStateMainService.createRenderState(state)
+                       ),
+                       GeometryTool.getIndexTypeSize(
+                         CreateRenderStateMainService.createRenderState(state)
+                       )
+                       * 0
                      )
                   |> expect
                   |> toCalledOnce

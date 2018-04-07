@@ -151,9 +151,17 @@ let testDrawElements = (sandbox, prepareFunc, getIndicesCountFunc, state) =>
               drawElements
               |> withFourArgs(
                    triangles,
-                   getIndicesCountFunc(geometry, state),
-                   GeometryTool.getIndexType(state),
-                   GeometryTool.getIndexTypeSize(state) * 0
+                   getIndicesCountFunc(
+                     geometry,
+                     CreateRenderStateMainService.createRenderState(state)
+                   ),
+                   GeometryTool.getIndexType(
+                     CreateRenderStateMainService.createRenderState(state)
+                   ),
+                   GeometryTool.getIndexTypeSize(
+                     CreateRenderStateMainService.createRenderState(state)
+                   )
+                   * 0
                  )
               |> expect
               |> toCalledThrice

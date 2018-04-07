@@ -4,6 +4,11 @@
     {
       "dir": "src",
       "subdirs": true
+    },
+    {
+      "dir": "test",
+      "subdirs": true,
+      "type": "dev"
     }
   ],
   "bs-dev-dependencies": [
@@ -21,7 +26,8 @@
     "wonder-commonlib"
   ],
   "package-specs": [
-    "es6-global", "commonjs"
+    "es6-global",
+    "commonjs"
   ],
   "namespace": true,
   "warnings": {

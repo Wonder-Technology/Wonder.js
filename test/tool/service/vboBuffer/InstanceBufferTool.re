@@ -4,11 +4,13 @@ let getDefaultCapacity = () => 1;
 
 let getOrCreateBuffer = (sourceInstance, defaultCapacity, state) => {
   open VboBufferType;
-  open SourceInstanceType;
+  open RenderSourceInstanceType;
+  /* open StateRenderType; */
+  let state = CreateRenderStateMainService.createRenderState(state);
   let {matrixInstanceBufferMap} = state.vboBufferRecord;
   let {matrixInstanceBufferCapacityMap} = state.sourceInstanceRecord;
   InstanceBufferRenderService.getOrCreateBuffer(
-    ([@bs] GlTool.unsafeGetGl(state), sourceInstance, defaultCapacity),
+    ([@bs] GlTool.unsafeGetGlFromRenderState(state), sourceInstance, defaultCapacity),
     (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap),
     state
   )

@@ -3,21 +3,18 @@ open StateDataMainType;
 open BasicMaterialType;
 
 let execJob = (flags, {gameObjectRecord} as state) => {
-  let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
+  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   InitBasicMaterialInitMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (
       JudgeInstanceMainService.buildMap(
-        index,
+        basicMaterialRecord.index,
         RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
         gameObjectRecord
       ),
       JudgeInstanceMainService.isSupportInstance(state)
     ),
-    CreateInitMaterialStateMainService.createInitMaterialState(
-      (index, disposedIndexArray, shaderIndices),
-      state
-    )
+    CreateInitMaterialStateMainService.createInitMaterialState(state)
   )
   |> ignore;
   state

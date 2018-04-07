@@ -781,9 +781,9 @@ let _ =
                   drawElements
                   |> withFourArgs(
                        triangles,
-                       BoxGeometryTool.getIndicesCount(geometry, state),
-                       GeometryTool.getIndexType(state),
-                       GeometryTool.getIndexTypeSize(state) * 0
+                       BoxGeometryTool.getIndicesCount(geometry, CreateRenderStateMainService.createRenderState(state)),
+                                          GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
+                       GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                      )
                   |> expect
                   |> toCalledOnce
@@ -819,16 +819,16 @@ let _ =
                          |> withFourArgs(
                               triangles,
                               BoxGeometryTool.getIndicesCount(geometry1, state),
-                              GeometryTool.getIndexType(state),
-                              GeometryTool.getIndexTypeSize(state) * 0
+                                                 GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
+                              GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                             )
                             |> getCallCount,
                            drawElements
                          |> withFourArgs(
                               triangles,
                               BoxGeometryTool.getIndicesCount(geometry2, state),
-                              GeometryTool.getIndexType(state),
-                              GeometryTool.getIndexTypeSize(state) * 0
+                                                 GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
+                              GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                             )
                             |> getCallCount
                          ) |> expect == (1, 1)

@@ -41,6 +41,7 @@ let _ =
         "gpu config",
         () => {
           open SettingType;
+          open SettingGPUType;
           let _buildExpectedGPUConfig = (~useHardwareInstance=Js.true_, ()) => {
             useHardwareInstance: Js.to_bool(useHardwareInstance)
           };
@@ -79,6 +80,6 @@ let _ =
               )
           )
         }
-      );
+      )
     }
   );
