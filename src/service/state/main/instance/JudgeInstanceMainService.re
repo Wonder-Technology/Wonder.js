@@ -6,7 +6,7 @@ let isSupportInstance = (state: StateDataMainType.state) =>
     state.gpuDetectRecord
   );
 
-let isSourceIntance = (materialIndex, gameObjectMap, gameObjectRecord) =>
+let isSourceInstance = (materialIndex, gameObjectMap, gameObjectRecord) =>
   gameObjectRecord
   |> HasComponentGameObjectService.hasSourceInstanceComponent(
        GameObjectMapService.unsafeGetGameObject(materialIndex, gameObjectMap)
@@ -21,7 +21,7 @@ let buildMap = (index, gameObjectMap, gameObjectRecord) =>
            map
            |> WonderCommonlib.SparseMapService.set(
                 materialIndex,
-                isSourceIntance(materialIndex, gameObjectMap, gameObjectRecord)
+                isSourceInstance(materialIndex, gameObjectMap, gameObjectRecord)
               )
        ),
        WonderCommonlib.SparseMapService.createEmpty()

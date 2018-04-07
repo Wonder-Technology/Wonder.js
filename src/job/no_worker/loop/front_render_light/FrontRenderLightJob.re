@@ -13,7 +13,7 @@ let _render = (gl, state: StateDataMainType.state) =>
       sourceInstanceIndices
     }) =>
     ArrayService.range(0, count - 1)
-    |> ReduceStateMainService.reduceState(
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
            (state, index) => {
@@ -65,8 +65,10 @@ let _render = (gl, state: StateDataMainType.state) =>
              }
            }
          ),
-         state
+         CreateRenderStateMainService.createRenderState(state)
        )
+    |> ignore;
+    state
   };
 
 let execJob = (flags, _, state) =>

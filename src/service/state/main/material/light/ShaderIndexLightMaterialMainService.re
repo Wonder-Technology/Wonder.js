@@ -11,11 +11,10 @@ let getShaderIndex = (materialIndex: int, state) =>
   );
 
 /* let hasShaderIndex = (materialIndex: int, state) =>
-  ShaderIndicesService.hasShaderIndex(
-    materialIndex,
-    RecordLightMaterialMainService.getRecord(state).shaderIndices
-  ); */
-
+   ShaderIndicesService.hasShaderIndex(
+     materialIndex,
+     RecordLightMaterialMainService.getRecord(state).shaderIndices
+   ); */
 let setShaderIndex =
   [@bs]
   (
@@ -27,7 +26,7 @@ let setShaderIndex =
           Some({
             ...record,
             shaderIndices:
-              ShaderIndicesService.setShaderIndex(materialIndex, shaderIndex, shaderIndices)
+              [@bs] ShaderIndicesService.setShaderIndex(materialIndex, shaderIndex, shaderIndices)
           })
       }
     }

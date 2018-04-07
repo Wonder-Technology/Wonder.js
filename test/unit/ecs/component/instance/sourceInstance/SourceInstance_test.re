@@ -73,7 +73,7 @@ let _ =
                          sourceInstance
                        );
                   let {
-                    objectInstanceArrayMap,
+                    objectInstanceTransformArrayMap,
                     matrixFloat32ArrayMap,
                     matrixInstanceBufferCapacityMap,
                     isTransformStaticMap,
@@ -82,7 +82,7 @@ let _ =
                   } =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
-                    objectInstanceArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    objectInstanceTransformArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixInstanceBufferCapacityMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),

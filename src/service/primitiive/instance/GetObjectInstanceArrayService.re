@@ -1,17 +1,17 @@
-let unsafeGetObjectInstanceArray = (sourceInstance, objectInstanceArrayMap) =>
-  objectInstanceArrayMap
+let unsafeGetObjectInstanceTransformArray = (sourceInstance, objectInstanceTransformArrayMap) =>
+  objectInstanceTransformArrayMap
   |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
   |> WonderLog.Contract.ensureCheck(
-       (objectInstanceArray) =>
+       (objectInstanceTransformArray) =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
                  Log.buildAssertMessage(
-                   ~expect={j|objectInstanceArray of sourceInstance:$sourceInstance exist|j},
+                   ~expect={j|objectInstanceTransformArray of sourceInstance:$sourceInstance exist|j},
                    ~actual={j|not|j}
                  ),
-                 () => objectInstanceArray |> assertNullableExist
+                 () => objectInstanceTransformArray |> assertNullableExist
                )
              )
            )

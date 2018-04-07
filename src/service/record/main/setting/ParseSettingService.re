@@ -1,5 +1,7 @@
 open SettingType;
 
+open SettingGPUType;
+
 let convertToRecord = (setting) => {
   open Json;
   open Decode;
@@ -25,13 +27,13 @@ let convertToRecord = (setting) => {
            field(
              "buffer",
              (json) => {
-               boxGeometryPointDataBufferCount: json |> field("boxGeometryPointDataBufferCount", int),
-               customGeometryPointDataBufferCount: json |> field("customGeometryPointDataBufferCount", int),
+               boxGeometryPointDataBufferCount:
+                 json |> field("boxGeometryPointDataBufferCount", int),
+               customGeometryPointDataBufferCount:
+                 json |> field("customGeometryPointDataBufferCount", int),
                transformDataBufferCount: json |> field("transformDataBufferCount", int),
-               basicMaterialDataBufferCount:
-                 json |> field("basicMaterialDataBufferCount", int),
-               lightMaterialDataBufferCount:
-                 json |> field("lightMaterialDataBufferCount", int)
+               basicMaterialDataBufferCount: json |> field("basicMaterialDataBufferCount", int),
+               lightMaterialDataBufferCount: json |> field("lightMaterialDataBufferCount", int)
              }
            )
          ),

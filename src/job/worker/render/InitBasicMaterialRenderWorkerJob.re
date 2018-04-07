@@ -22,36 +22,24 @@ let execJob = (_, e, stateData) =>
       /* let (shaderIndices, colors) =
            CreateTypeArrayBasicMaterialService.createTypeArrays(buffer, count);
          state.basicMaterialRecord = Some({shaderIndices, colors}); */
-      let {index, disposedIndexArray, shaderIndices} =
-        RecordBasicMaterialRenderWorkerService.getRecord(state);
+      /* let {index, disposedIndexArray, shaderIndices} =
+         RecordBasicMaterialRenderWorkerService.getRecord(state); */
+      let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
       let isSourceInstanceMap = basicMaterialData##isSourceInstanceMap;
       InitBasicMaterialInitMaterialService.init(
-        gl,
+        [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
         (
           isSourceInstanceMap,
           /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
           false
         ),
-        /* RecordMaterialRenderWorkerService.buildInitMaterialRecord((
-             basicMaterialData##index,
-             basicMaterialData##disposedIndexArray,
-             basicMaterialRecord.shaderIndices,
-             directionLightData##index,
-             pointLightData##index,
-             RecordRenderConfigRenderWorkerService.getRecord(state),
-             shaderRecord,
-             programRecord,
-             glslRecord,
-             glslSenderRecord,
-             glslLocationRecord,
-             glslChunkRecord
-           )) */
-        CreateInitMaterialAllStateRenderWorkerService.createInitMaterialState(
-          (index, disposedIndexArray, shaderIndices),
+        CreateInitMaterialStateRenderWorkerService.createInitMaterialState(
+          (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
           (directionLightData, pointLightData),
           state
         )
-      );
+      )
+      |> ignore;
       e
     }
   );

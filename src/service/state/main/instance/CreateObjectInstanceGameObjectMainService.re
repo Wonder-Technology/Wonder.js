@@ -2,27 +2,28 @@ open StateDataMainType;
 
 open SourceInstanceType;
 
-let _addObjectInstnace = (sourceInstance, uid: int, objectInstanceArrayMap) => {
-  objectInstanceArrayMap
-  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(sourceInstance)
-  |> ArrayService.push(uid)
+let _addObjectInstnaceTransform = (sourceInstance, transform, objectInstanceTransformArrayMap) => {
+  objectInstanceTransformArrayMap
+  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceTransformArray(sourceInstance)
+  |> ArrayService.push(transform)
   |> ignore;
-  objectInstanceArrayMap
+  objectInstanceTransformArrayMap
 };
 
 /* TODO init objectInstance gameObjects when init? */
 let createInstance = (sourceInstance, {sourceInstanceRecord, gameObjectRecord} as state) => {
   let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(gameObjectRecord);
-  let {objectInstanceArrayMap} = sourceInstanceRecord;
+  let (state, transform) = CreateTransformMainService.create(state);
+  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
   let state = {
     ...state,
     gameObjectRecord,
     sourceInstanceRecord: {
       ...sourceInstanceRecord,
-      objectInstanceArrayMap: objectInstanceArrayMap |> _addObjectInstnace(sourceInstance, uid)
+      objectInstanceTransformArrayMap:
+        objectInstanceTransformArrayMap |> _addObjectInstnaceTransform(sourceInstance, transform)
     }
   };
-  let (state, transform) = CreateTransformMainService.create(state);
   let (objectInstanceRecord, objectInstance) =
     CreateObjectInstanceService.create(sourceInstance, uid, state.objectInstanceRecord);
   let state = {...state, objectInstanceRecord};

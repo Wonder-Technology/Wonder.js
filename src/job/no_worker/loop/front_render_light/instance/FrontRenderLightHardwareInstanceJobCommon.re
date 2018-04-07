@@ -1,4 +1,4 @@
-open StateDataMainType;
+open StateRenderType;
 
 let _fillMatrixTypeArr =
   [@bs]
@@ -6,12 +6,8 @@ let _fillMatrixTypeArr =
     (transform, matricesArrayForInstance, (state, offset) as tuple) => {
       RenderHardwareInstanceJobUtils.fillMatrixTypeArr(transform, matricesArrayForInstance, tuple)
       |> ignore;
-      let (normalMatrix, _) =
-        UpdateTransformService.updateAndGetNormalMatrixTypeArray(
-          transform,
-          state.globalTempRecord,
-          state |> RecordTransformMainService.getRecord
-        );
+      let normalMatrix =
+        [@bs] GetTransformDataRenderService.getNormalMatrixTypeArray(transform, state);
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (matricesArrayForInstance, offset + 16),
         (normalMatrix, 0),
@@ -22,7 +18,7 @@ let _fillMatrixTypeArr =
     }
   );
 
-let render = (gl, indexTuple, state: StateDataMainType.state) =>
+let render = (gl, indexTuple, state) =>
   RenderHardwareInstanceJobUtils.render(
     gl,
     (indexTuple, 64 * (16 + 9) * 4, 112, 100),

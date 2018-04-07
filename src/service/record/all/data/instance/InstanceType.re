@@ -1,6 +1,6 @@
 type sourceInstance = int;
 
-type objectInstanceArrayMap = array(array(int));
+type objectInstanceTransformArrayMap = array(array(int));
 
 type matrixInstanceBufferCapacityMap = array(int);
 

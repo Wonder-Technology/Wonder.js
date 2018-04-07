@@ -10,12 +10,7 @@ let execJob = (flags, stateData) =>
       let {
             settingRecord,
             workerInstanceRecord,
-            renderConfigRecord,
             gameObjectRecord,
-            transformRecord,
-            basicMaterialRecord,
-            boxGeometryRecord,
-            customGeometryRecord,
             directionLightRecord,
             pointLightRecord
           } as state =
@@ -25,9 +20,12 @@ let execJob = (flags, stateData) =>
         CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(settingRecord))
         |> Worker.transferControlToOffscreen;
       /* let { buffer, gpu } = settingRecord; */
-
-let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
-
+      let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
+      let renderConfigRecord = RecordRenderConfigMainService.getRecord(state);
+      let transformRecord = RecordTransformMainService.getRecord(state);
+      let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+      let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
+      let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessageWithTransferData(
            {
@@ -36,20 +34,23 @@ let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
              "contextConfig": OperateSettingService.unsafeGetContext(settingRecord),
              "bufferData": {
                "boxGeometryPointDataBufferCount": buffer.boxGeometryPointDataBufferCount,
-               "customGeometryPointDataBufferCount":
-                 buffer.customGeometryPointDataBufferCount,
+               "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
                "transformDataBufferCount": buffer.transformDataBufferCount,
                "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount
                /* "lightMaterialDataBufferCount": int */
              },
              /* "gpuData":{
-"useHardwareInstance":  gpu.useHardwareInstance
-             }, */
+                "useHardwareInstance":  gpu.useHardwareInstance
+                             }, */
              "renderConfigData": {
                "shaders":
-                 RenderConfigMainService.getShaders(state) |> Obj.magic |> Js.Json.stringify,
+                 GetDataRenderConfigService.getShaders(renderConfigRecord)
+                 |> Obj.magic
+                 |> Js.Json.stringify,
                "shaderLibs":
-                 RenderConfigMainService.getShaderLibs(state) |> Obj.magic |> Js.Json.stringify
+                 GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
+                 |> Obj.magic
+                 |> Js.Json.stringify
              },
              /* TODO remove index? */
              "transformData": {"buffer": transformRecord.buffer, "index": transformRecord.index},
@@ -58,7 +59,7 @@ let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
                "index": basicMaterialRecord.index,
                "disposedIndexArray": basicMaterialRecord.disposedIndexArray,
                "isSourceInstanceMap":
-                 JudgeInstanceMainService .buildMap(
+                 JudgeInstanceMainService.buildMap(
                    basicMaterialRecord.index,
                    RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
                    gameObjectRecord
@@ -75,12 +76,8 @@ let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
                "indicesInfoArray": customGeometryRecord.indicesInfoArray
              },
              /* TODO send positionMap */
-             "directionLightData":{
-               "index": directionLightRecord.index
-             },
-             "pointLightData":{
-               "index": pointLightRecord.index
-             }
+             "directionLightData": {"index": directionLightRecord.index},
+             "pointLightData": {"index": pointLightRecord.index}
            },
            [|offscreen|]
          );

@@ -21,7 +21,7 @@ let initMaterial =
         dataTuple,
         (
           BuildShaderSourceInitMaterialService.buildGLSLSource,
-          ShaderIndexService.setShaderIndex,
+          ShaderIndicesService.setShaderIndex,
           _getShaderLibItems
         ),
         state

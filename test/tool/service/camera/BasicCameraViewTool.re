@@ -13,7 +13,7 @@ let getWorldToCameraMatrix = (transform, state: StateDataMainType.state) =>
   );
 
 let getPosition = (transform, state: StateDataMainType.state) =>
-  UpdateTransformService.updateAndGetPositionTuple(
+  UpdateTransformMainService.updateAndGetPositionTuple(
     transform,
     state.globalTempRecord,
     state |> RecordTransformMainService.getRecord

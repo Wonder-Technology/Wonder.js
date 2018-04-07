@@ -1,12 +1,14 @@
 open StateDataMainType;
 
+open InstanceType;
+
 open SourceInstanceType;
 
 open DisposeSourceInstanceMainService;
 
 open CreateObjectInstanceGameObjectMainService;
 
-open GetObjectInstanceArraySourceInstanceService;
+open GetObjectInstanceArrayMainService;
 
 open StaticSourceInstanceService;
 
@@ -72,7 +74,11 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataMain
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  getObjectInstanceArray(sourceInstance, state.sourceInstanceRecord)
+  getObjectInstanceArray(
+    sourceInstance,
+    state.sourceInstanceRecord,
+    RecordTransformMainService.getRecord(state)
+  )
 };
 
 let markSourceInstanceModelMatrixIsStatic =

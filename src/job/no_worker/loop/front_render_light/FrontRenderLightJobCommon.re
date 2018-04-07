@@ -1,7 +1,8 @@
-open StateDataMainType;
+open StateRenderType;
 
 let render =
   [@bs]
   (
-    (gl, indexTuple, state: StateDataMainType.state) => RenderJobUtils.render(gl, indexTuple, state)
+    (gl, indexTuple, state) =>
+      RenderJobUtils.render(gl, indexTuple, state)
   );

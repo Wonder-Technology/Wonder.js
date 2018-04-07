@@ -66,7 +66,7 @@ let setLocalToWorldMatrix = (transform: transform, data, state) => {
 
 let getNormalMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let (normalMatrix, _) =
-    UpdateTransformService.updateAndGetNormalMatrixTypeArray(
+    UpdateTransformMainService.updateAndGetNormalMatrixTypeArray(
       transform,
       state.globalTempRecord,
       state |> RecordTransformMainService.getRecord
@@ -97,7 +97,7 @@ let getTransformLocalPositionTypeArray = (transform, state) =>
 
 /* let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray; */
 let getTransformPositionTypeArray = (transform, state) =>
-  UpdateTransformService.updateAndGetPositionTypeArray(
+  UpdateTransformMainService.updateAndGetPositionTypeArray(
     transform,
     state.globalTempRecord,
     state |> RecordTransformMainService.getRecord

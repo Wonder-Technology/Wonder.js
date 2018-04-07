@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open RenderType;
+open RenderCameraType;
 
 let _getCameraData =
     (
@@ -42,7 +42,7 @@ let _getCameraData =
     Some({
       vMatrix:
         VMatrixService.getWorldToCameraMatrix(
-          UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(
+          UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
             transform,
             globalTempRecord,
             transformRecord
@@ -57,7 +57,7 @@ let _getCameraData =
           perspectiveCameraProjectionRecord.pMatrixMap
         ),
       position:
-        UpdateTransformService.updateAndGetPositionTuple(
+        UpdateTransformMainService.updateAndGetPositionTuple(
           transform,
           globalTempRecord,
           transformRecord

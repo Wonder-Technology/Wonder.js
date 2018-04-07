@@ -67,7 +67,7 @@ let initMaterialShader =
       buildGLSLSourceFunc(
         materialIndex,
         shaderLibDataArr,
-        (glslRecord, glslChunkRecord, directionLightRecord, pointLightRecord)
+        (directionLightRecord, pointLightRecord, glslRecord, glslChunkRecord)
       );
     let program =
       gl

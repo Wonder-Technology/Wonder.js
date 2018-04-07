@@ -1,2 +1,2 @@
-let render = (gl, indexTuple, state: StateDataMainType.state) =>
+let render = (gl, indexTuple, state) =>
   RenderBatchInstanceJobUtils.render(gl, indexTuple, RenderBasicJobCommon.render, state);

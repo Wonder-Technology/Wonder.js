@@ -29,35 +29,20 @@ let render =
   let getIndicesCountFunc =
     CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(geometryIndex, state);
-  let objectInstanceArray =
-    GetObjectInstanceArrayRenderSourceInstanceService.getObjectInstanceArray(
-      sourceInstance,
-      state.sourceInstanceRecord
-    );
-  objectInstanceArray
+  let objectInstanceTransformArray =
+    GetObjectInstanceArrayRenderService.getObjectInstanceTransformArray(sourceInstance, state.sourceInstanceRecord);
+  objectInstanceTransformArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (state, uid) => {
+         (state, transform) => {
            let state =
              uniformInstanceSendNoCachableData
              |> WonderCommonlib.ArrayService.reduceOneParam(
                   [@bs]
                   (
                     (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {
-                      [@bs]
-                      sendDataFunc(
-                        gl,
-                        pos,
-                        [@bs]
-                        getDataFunc(
-                          GetComponentGameObjectService.unsafeGetTransformComponent(
-                            uid,
-                            state.gameObjectRecord
-                          ),
-                          state
-                        )
-                      );
+                      [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(transform, state));
                       state
                     }
                   ),

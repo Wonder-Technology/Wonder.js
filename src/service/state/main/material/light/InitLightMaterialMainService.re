@@ -63,10 +63,10 @@ open LightMaterialType;
 
  */
 let initMaterial =
-  [@bs] ((gl: GlType.webgl1Context, materialIndex: int, state: StateDataMainType.state) => ());
+  [@bs] ((gl: GlType.webgl1Context, materialIndex: int, state: StateDataMainType.state) => state);
 
-let initMaterials = (materialIndexArr, gl, state: StateDataMainType.state) => ();
+let initMaterials = (materialIndexArr, gl, state: StateDataMainType.state) => state;
 
-let handleInitComponent = (gl, index: int, state: StateDataMainType.state) => ();
+let handleInitComponent = (gl, index: int, state: StateDataMainType.state) => state;
 
-let init = (gl, state) => ();
+let init = (gl, state) => state;

@@ -2,14 +2,14 @@ open IndexComponentService;
 
 open SourceInstanceType;
 
-let create = ({index, objectInstanceArrayMap, disposedIndexArray} as record) => {
+let create = ({index, objectInstanceTransformArrayMap, disposedIndexArray} as record) => {
   let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);
-  objectInstanceArrayMap
+  objectInstanceTransformArrayMap
   |> WonderCommonlib.SparseMapService.set(index, WonderCommonlib.ArrayService.createEmpty())
   |> ignore;
   let record =
     record
     |> StaticSourceInstanceService.markModelMatrixIsStatic(index, true)
     |> StaticSourceInstanceService.markIsSendTransformMatrixData(index, false);
-  ({...record, index: newIndex, disposedIndexArray, objectInstanceArrayMap}, index)
+  ({...record, index: newIndex, disposedIndexArray, objectInstanceTransformArrayMap}, index)
 };

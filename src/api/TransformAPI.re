@@ -8,7 +8,7 @@ open HierachyTransformService;
 
 open ModelMatrixTransformService;
 
-open UpdateTransformService;
+open UpdateTransformMainService;
 
 let createTransform = CreateTransformMainService.create;
 

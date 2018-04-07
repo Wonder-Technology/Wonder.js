@@ -3,7 +3,7 @@ open SourceInstanceType;
 let create = () => {
   index: 0,
   gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-  objectInstanceArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
+  objectInstanceTransformArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
   matrixFloat32ArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
   matrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapService.createEmpty(),
   isTransformStaticMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -15,7 +15,7 @@ let deepCopyForRestore =
     (
       {
         index,
-        objectInstanceArrayMap,
+        objectInstanceTransformArrayMap,
         matrixFloat32ArrayMap,
         matrixInstanceBufferCapacityMap,
         isTransformStaticMap,
@@ -25,7 +25,7 @@ let deepCopyForRestore =
       }
     ) => {
   index,
-  objectInstanceArrayMap: objectInstanceArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
+  objectInstanceTransformArrayMap: objectInstanceTransformArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
   matrixFloat32ArrayMap: matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
   matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> SparseMapService.copy,
   isTransformStaticMap: isTransformStaticMap |> SparseMapService.copy,

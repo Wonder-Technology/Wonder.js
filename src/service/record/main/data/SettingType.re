@@ -21,8 +21,6 @@ type buffer = {
   lightMaterialDataBufferCount: int
 };
 
-type gpu = {useHardwareInstance: bool};
-
 type worker = {useWorker: bool};
 
 type settingRecord = {
@@ -31,6 +29,6 @@ type settingRecord = {
   buffer: option(buffer),
   isDebug: option(bool),
   context: option(context),
-  gpu: option(gpu),
+  gpu: option(SettingGPUType.gpu),
   worker: option(worker)
 };

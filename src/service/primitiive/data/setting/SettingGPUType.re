@@ -1,0 +1,1 @@
+type gpu = {useHardwareInstance: bool};

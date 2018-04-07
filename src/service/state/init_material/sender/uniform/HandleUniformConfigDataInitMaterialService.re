@@ -2,6 +2,8 @@ open GlType;
 
 open Gl;
 
+open StateRenderType;
+
 open SendGLSLDataService;
 
 open RenderConfigType;
@@ -66,7 +68,7 @@ let _setToUniformSendMap =
 
 let _readUniforms =
     (
-      (gl, program, uniformLocationMap, uniformCacheMap: StateRenderType.shaderCacheMap),
+      (gl, program, uniformLocationMap, uniformCacheMap),
       sendDataArrTuple,
       uniforms
     ) =>
@@ -212,7 +214,7 @@ let addUniformSendData =
       (
         uniformLocationMap,
         HandleShaderConfigDataMapService.getOrCreateHashMap(
-          glslSenderRecord |> SendGLSLDataService.getCacheMap(shaderIndex)
+          glslSenderRecord.uniformCacheMap |> SendGLSLDataService.getCacheMap(shaderIndex)
         )
       )
     )

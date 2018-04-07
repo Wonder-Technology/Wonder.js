@@ -20,7 +20,7 @@ let _setDefaultTypeArrData =
        [@bs]
        (
          ((shaderIndices, colors), index) => (
-           ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
+           [@bs] ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
            setColor(index, defaultColor, colors)
          )
        ),

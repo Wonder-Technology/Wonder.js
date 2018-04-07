@@ -11,10 +11,12 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
 
 let _disposeObjectInstanceGameObject =
     (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, {sourceInstanceRecord} as state) => {
+  let transformRecord = RecordTransformMainService.getRecord(state);
   let objectInstanceGameObjectArr =
-    GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(
+    GetObjectInstanceArrayMainService.getObjectInstanceArray(
       sourceInstance,
-      sourceInstanceRecord.objectInstanceArrayMap
+      sourceInstanceRecord,
+      transformRecord
     )
     |> Js.Array.copy;
   batchDisposeGameObjectFunc(objectInstanceGameObjectArr, state)
@@ -30,7 +32,7 @@ let _disposeData =
     }
     |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
   let {
-        objectInstanceArrayMap,
+        objectInstanceTransformArrayMap,
         matrixFloat32ArrayMap,
         matrixInstanceBufferCapacityMap,
         isTransformStaticMap,
@@ -52,7 +54,8 @@ let _disposeData =
     ...state,
     sourceInstanceRecord: {
       ...record,
-      objectInstanceArrayMap: objectInstanceArrayMap |> disposeSparseMapData(sourceInstance),
+      objectInstanceTransformArrayMap:
+        objectInstanceTransformArrayMap |> disposeSparseMapData(sourceInstance),
       matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
       matrixInstanceBufferCapacityMap:
         matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),

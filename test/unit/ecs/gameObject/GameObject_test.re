@@ -1390,7 +1390,7 @@ let _ =
                         }
                       );
                       test(
-                        "remove from sourceInstance->objectInstanceArrayMap",
+                        "remove from sourceInstance->objectInstanceTransformArrayMap",
                         () => {
                           open SourceInstanceType;
                           let (
@@ -1402,9 +1402,9 @@ let _ =
                           ) =
                             ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state^);
                           let state = state |> batchDisposeGameObject(objectInstanceGameObjectArr);
-                          let {objectInstanceArrayMap} =
+                          let {objectInstanceTransformArrayMap} =
                             SourceInstanceTool.getSourceInstanceRecord(state);
-                          objectInstanceArrayMap
+                          objectInstanceTransformArrayMap
                           |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
                           |> expect == [||]
                         }
@@ -1467,12 +1467,12 @@ let _ =
                                  state
                                );
                           let state = state |> batchDisposeGameObject(gameObjectArr);
-                          let {objectInstanceArrayMap} =
+                          let {objectInstanceTransformArrayMap} =
                             SourceInstanceTool.getSourceInstanceRecord(state);
                           (
-                            objectInstanceArrayMap
+                            objectInstanceTransformArrayMap
                             |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
-                            objectInstanceArrayMap
+                            objectInstanceTransformArrayMap
                             |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
                           )
                           |> expect == (false, false)

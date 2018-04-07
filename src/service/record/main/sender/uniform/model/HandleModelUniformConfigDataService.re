@@ -2,7 +2,7 @@
      [@bs]
      (
        (transform, getLocalToWorldMatrixTypeArrayFunc, state) =>
-         /* UpdateTransformService.updateAndGetLocalToWorldMatrixTypeArray(transform, globalTempRecord, transformRecord) */
+         /* UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(transform, globalTempRecord, transformRecord) */
          getLocalToWorldMatrixTypeArrayFunc(transform, state)
      );
 

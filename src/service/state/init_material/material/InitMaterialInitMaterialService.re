@@ -10,9 +10,9 @@ let _initMaterialShader =
       {materialRecord, renderConfigRecord} as state
     ) =>
   ShaderIndicesService.hasShaderIndex(materialIndex, materialRecord.shaderIndices) ?
-    () :
+    state :
     {
-      let shaders = RenderConfigInitMaterialService.getShaders(renderConfigRecord);
+      let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
       [@bs]
       setShaderIndexFunc(
         materialIndex,
@@ -20,13 +20,13 @@ let _initMaterialShader =
           materialIndex,
           (
             gl,
-            RenderConfigInitMaterialService.getMaterialShaderLibDataArr(
+            GetDataRenderConfigService.getMaterialShaderLibDataArr(
               isSourceInstance,
               isSupportInstance,
               (
                 shaders,
                 getShaderLibItemsFunc(shaders),
-                RenderConfigInitMaterialService.getShaderLibs(renderConfigRecord)
+                GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
               )
             )
           ),
@@ -46,7 +46,7 @@ let _initMaterialShader =
         materialRecord.shaderIndices
       )
       |> ignore;
-      ()
+      state
     };
 
 let initMaterial = (gl, dataTuple, funcTuple, state) =>

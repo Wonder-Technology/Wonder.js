@@ -34,6 +34,16 @@ open TypeArrayPoolType;
 
 open RenderSourceInstanceType;
 
+open GPUDetectType;
+
+open GlobalTempType;
+
+open DeviceManagerType;
+
+open RenderShaderType;
+
+open RenderSettingType;
+
 type attributeSendData = {
   pos: attributeLocation,
   size: int,
@@ -72,7 +82,7 @@ and uniformRenderObjectSendMaterialData = {
 }
 and uniformShaderSendNoCachableData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] (renderState => renderState),
+  getDataFunc: [@bs] (renderState => Float32Array.t),
   sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
 }
 and uniformShaderSendCachableData = {
@@ -86,7 +96,7 @@ and uniformShaderSendCachableData = {
 and uniformShaderSendCachableFunctionData = {
   program,
   shaderCacheMap,
-  locationMap: renderState,
+  locationMap: GLSLLocationType.uniformLocationMapOfShader,
   sendCachableFunctionDataFunc:
     [@bs]
     (
@@ -132,5 +142,10 @@ and renderState = {
   directionLightRecord,
   pointLightRecord,
   transformRecord,
-  sourceInstanceRecord
+  sourceInstanceRecord,
+  gpuDetectRecord,
+  globalTempRecord,
+  deviceManagerRecord,
+  shaderRecord,
+  settingRecord
 };

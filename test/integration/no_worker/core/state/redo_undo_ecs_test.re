@@ -1101,13 +1101,13 @@ let _ =
             "deep copy sourceInstance record",
             () => {
               test(
-                "deep copy objectInstanceArrayMap, matrixFloat32ArrayMap",
+                "deep copy objectInstanceTransformArrayMap, matrixFloat32ArrayMap",
                 () => {
                   open StateDataMainType;
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let {objectInstanceArrayMap, matrixFloat32ArrayMap} =
+                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   let originMatrixFloat32Array = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap
@@ -1117,27 +1117,27 @@ let _ =
                      )
                   |> ignore;
                   let originObjectInstanceArray = [|20|];
-                  objectInstanceArrayMap
+                  objectInstanceTransformArrayMap
                   |> WonderCommonlib.SparseMapService.set(
                        sourceInstance1,
                        originObjectInstanceArray
                      )
                   |> ignore;
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let {objectInstanceArrayMap, matrixFloat32ArrayMap} =
+                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceRecord(copiedState);
                   let objectInstanceArray =
-                    objectInstanceArrayMap
+                    objectInstanceTransformArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   objectInstanceArray |> Js.Array.push(100) |> ignore;
                   let matrixFloat32Array =
                     matrixFloat32ArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   Float32Array.unsafe_set(matrixFloat32Array, 0, 1000.) |> ignore;
-                  let {objectInstanceArrayMap, matrixFloat32ArrayMap} =
+                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
-                    objectInstanceArrayMap
+                    objectInstanceTransformArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1),
                     matrixFloat32ArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1)

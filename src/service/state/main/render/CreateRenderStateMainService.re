@@ -14,60 +14,115 @@ open DirectionLightType;
 
 open PointLightType;
 
+open RenderSourceInstanceType;
+
+open DeviceManagerType;
+
+open RenderShaderType;
+
+open RenderSettingType;
+
 let createRenderState =
     (
-      {glslSenderRecord, programRecord, ambientLightRecord, direcitionLightRecord, pointLightRecord} as state: StateDataMainType.state
+      {
+        settingRecord,
+        gpuDetectRecord,
+        glslSenderRecord,
+        programRecord,
+        ambientLightRecord,
+        directionLightRecord,
+        pointLightRecord,
+        sourceInstanceRecord,
+        vboBufferRecord,
+        typeArrayPoolRecord,
+        globalTempRecord,
+        deviceManagerRecord,
+        shaderRecord
+      } as state: StateDataMainType.state
     ) => {
   let {localToWorldMatrices, localPositions, normalMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state);
-  let {vertices, normals, indices, verticesInfoArray, normalsInfoArray, indicesInfoArray} =
-    RecordCustomGeometryMainService.getRecord(state);
-  let {colors} = RecordBasicMaterialMainService.getRecord(state);
-  let {index, colors} = ambientLightRecord;
-  let {index, colors, intensities} = directionLightRecord;
-  let {index, colors, intensities, constants, linears, quadratics, ranges} = pointLightRecord;
+  /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
+  let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
+  /* let {vertices, normals, indices, verticesInfoArray, normalsInfoArray, indicesInfoArray} = */
+  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
+  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  /* let {index, colors} = ambientLightRecord;
+     let {index, colors, intensities} = directionLightRecord;
+     let {index, colors, intensities, constants, linears, quadratics, ranges} = pointLightRecord; */
+  /* let {
+       objectInstanceTransformArrayMap,
+       matrixInstanceBufferCapacityMap,
+       matrixFloat32ArrayMap,
+       isTransformStaticMap,
+       isSendTransformMatrixDataMap
+     } = sourceInstanceRecord; */
   {
     glslSenderRecord,
     programRecord,
-    boxGeometryRecord: {vertices, normals, indices},
+    boxGeometryRecord: {
+      vertices: boxGeometryRecord.vertices,
+      normals: boxGeometryRecord.normals,
+      indices: boxGeometryRecord.indices
+    },
     customGeometryRecord: {
-      vertices,
-      normals,
-      indices,
-      verticesInfoArray,
-      normalsInfoArray,
-      indicesInfoArray
+      vertices: customGeometryRecord.vertices,
+      normals: customGeometryRecord.normals,
+      indices: customGeometryRecord.indices,
+      verticesInfoArray: customGeometryRecord.verticesInfoArray,
+      normalsInfoArray: customGeometryRecord.normalsInfoArray,
+      indicesInfoArray: customGeometryRecord.indicesInfoArray
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
-    basicMaterialRecord: {colors: colors},
-    ambientLightRecord: {index, colors},
+    basicMaterialRecord: {colors: basicMaterialRecord.colors},
+    lightMaterialRecord: {
+      diffuseColors: lightMaterialRecord.diffuseColors,
+      specularColors: lightMaterialRecord.specularColors,
+      shininess: lightMaterialRecord.shininess
+    },
+    ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
-      index,
-      colors,
-      intensities,
+      index: directionLightRecord.index,
+      colors: directionLightRecord.colors,
+      intensities: directionLightRecord.intensities,
       positionMap:
         PositionLightMainService.buildPositionMap(
-          index,
+          directionLightRecord.index,
           PositionDirectionLightMainService.getPosition,
           state
         )
     },
     pointLightRecord: {
-      index,
-      colors,
-      intensities,
-      constants,
-      linears,
-      quadratics,
-      ranges,
+      index: pointLightRecord.index,
+      colors: pointLightRecord.colors,
+      intensities: pointLightRecord.intensities,
+      constants: pointLightRecord.constants,
+      linears: pointLightRecord.linears,
+      quadratics: pointLightRecord.quadratics,
+      ranges: pointLightRecord.ranges,
       positionMap:
         PositionLightMainService.buildPositionMap(
-          index,
+          pointLightRecord.index,
           PositionPointLightMainService.getPosition,
           state
         )
     },
-    transformRecord: {localToWorldMatrices, localPositions, normalMatrixCacheMap}
+    vboBufferRecord,
+    typeArrayPoolRecord,
+    transformRecord: {localToWorldMatrices, localPositions, normalMatrixCacheMap},
+    sourceInstanceRecord: {
+      objectInstanceTransformArrayMap: sourceInstanceRecord.objectInstanceTransformArrayMap,
+      matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
+      matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
+      isTransformStaticMap: sourceInstanceRecord.isTransformStaticMap,
+      isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
+    },
+    gpuDetectRecord,
+    globalTempRecord,
+    deviceManagerRecord,
+    shaderRecord: {index: shaderRecord.index},
+    settingRecord: {gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord))}
   }
 };

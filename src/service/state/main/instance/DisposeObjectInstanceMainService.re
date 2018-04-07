@@ -44,11 +44,11 @@ let _disposeData = (objectInstance: objectInstance, {objectInstanceRecord} as st
 };
 
 let _disposeObjectInstance =
-    (sourceInstance, objectInstanceUid: int, {sourceInstanceRecord} as state) => {
-  let {objectInstanceArrayMap} = sourceInstanceRecord;
-  objectInstanceArrayMap
-  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceArray(sourceInstance)
-  |> removeFromArray(objectInstanceUid)
+    (sourceInstance, objectInstanceTransform, {sourceInstanceRecord} as state) => {
+  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
+  objectInstanceTransformArrayMap
+  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceTransformArray(sourceInstance)
+  |> removeFromArray(objectInstanceTransform)
   |> ignore;
   state
 };
@@ -97,8 +97,8 @@ let handleDisposeComponent =
 
 let _batchDisposeObjectInstance =
     (sourceInstance, isUidDisposedMap, disposedUidArr, {sourceInstanceRecord} as state) => {
-  let {objectInstanceArrayMap} = sourceInstanceRecord;
-  objectInstanceArrayMap
+  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
+  objectInstanceTransformArrayMap
   |> WonderCommonlib.SparseMapService.set(
        sourceInstance,
        batchRemoveFromArray(isUidDisposedMap, disposedUidArr)

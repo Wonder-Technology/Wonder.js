@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-open StateRenderType;
-
 let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
   let {
     attributeSendDataMap,
@@ -14,7 +12,7 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
     uniformShaderSendCachableFunctionDataMap,
     uniformInstanceSendNoCachableDataMap
     /* drawPointsFuncMap */
-  } =
+  }: StateRenderType.glslSenderRecord =
     currentState.glslSenderRecord;
   {
     ...targetState,
