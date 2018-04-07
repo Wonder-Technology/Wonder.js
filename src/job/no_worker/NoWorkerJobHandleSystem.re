@@ -17,6 +17,7 @@ let _getInitJobHandles = () => [
 
 let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
+  ("update_transform", UpdateTransformJob.execJob),
   ("update_camera", UpdateCameraJob.execJob),
   ("clear_color", ClearColorJob.execJob),
   ("clear_buffer", ClearBufferJob.execJob),

@@ -476,8 +476,11 @@ let _ =
           GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_mMatrix",
-            (gameObjectTransform, cameraTransform, _, state) =>
-              state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
+            (gameObjectTransform, cameraTransform, _, state) => {
+              let state =
+                state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+              state
+            },
             Js.Typed_array.Float32Array.make([|
               1.,
               0.,
@@ -781,9 +784,17 @@ let _ =
                   drawElements
                   |> withFourArgs(
                        triangles,
-                       BoxGeometryTool.getIndicesCount(geometry, CreateRenderStateMainService.createRenderState(state)),
-                                          GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
-                       GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
+                       BoxGeometryTool.getIndicesCount(
+                         geometry,
+                         CreateRenderStateMainService.createRenderState(state)
+                       ),
+                       GeometryTool.getIndexType(
+                         CreateRenderStateMainService.createRenderState(state)
+                       ),
+                       GeometryTool.getIndexTypeSize(
+                         CreateRenderStateMainService.createRenderState(state)
+                       )
+                       * 0
                      )
                   |> expect
                   |> toCalledOnce

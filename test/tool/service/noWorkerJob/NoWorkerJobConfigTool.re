@@ -70,6 +70,9 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "tick"
             },
             {
+                "name": "update_transform"
+            },
+            {
                 "name": "update_camera"
             },
             {
@@ -100,6 +103,7 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "front_render_light"
             }
         ]
+
     }
 ]
         |};
@@ -108,6 +112,9 @@ let buildNoWorkerLoopJobConfig = () => {|
 [
     {
         "name": "tick"
+    },
+    {
+        "name": "update_transform"
     },
     {
         "name": "update_camera"

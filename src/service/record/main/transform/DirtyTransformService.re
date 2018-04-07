@@ -7,7 +7,7 @@ let mark = (transform: transform, isDirty, {dirtyMap} as record) => {
 
 let isDirty = (transform: transform, {dirtyMap} as record) =>
   dirtyMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(transform)
+  |> WonderCommonlib.SparseMapService.unsafeGet(transform) === true
   |> WonderLog.Contract.ensureCheck(
        (isDirty) =>
          WonderLog.(
@@ -16,7 +16,7 @@ let isDirty = (transform: transform, {dirtyMap} as record) =>
                test(
                  Log.buildAssertMessage(~expect={j|return bool|j}, ~actual={j|not|j}),
                  () => {
-                   isDirty |> assertNullableExist;
+                   /* isDirty |> assertNullableExist; */
                    isDirty |> assertIsBool
                  }
                )

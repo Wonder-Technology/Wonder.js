@@ -1,7 +1,7 @@
 open Wonder_jest;
 
 describe(
-  "IndicesBoxGeometryMainService",
+  "GetBoxGeometryIndicesRenderService",
   () => {
     open Expect;
     open Expect.Operators;
@@ -23,7 +23,13 @@ describe(
           () => {
             let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
             let state = state |> BoxGeometryTool.initGeometrys;
-            IndicesBoxGeometryTool.getIndicesCount(geometry, CreateRenderStateMainService.createRenderState(state)) |> expect == 36
+            BoxGeometryTool.getIndicesCount(
+              geometry,
+              CreateRenderStateMainService.createRenderState(
+                state |> RenderRecordTool.setCameraRecord(Obj.magic(1))
+              )
+            )
+            |> expect == 36
           }
         )
     )

@@ -51,7 +51,7 @@ let _ =
                       ()
                     }
                   )
-                  |> toThrowMessage("expect not dispose any material before init, but actual do")
+                  |> toThrowMessage("expect component's gameObject exist, but actual not")
                 }
               )
           )

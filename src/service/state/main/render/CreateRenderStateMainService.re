@@ -76,6 +76,7 @@ let createRenderState =
       indicesInfoArray: customGeometryRecord.indicesInfoArray
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
+    /* cameraRecord: Obj.magic(1), */
     basicMaterialRecord: {colors: basicMaterialRecord.colors},
     lightMaterialRecord: {
       diffuseColors: lightMaterialRecord.diffuseColors,

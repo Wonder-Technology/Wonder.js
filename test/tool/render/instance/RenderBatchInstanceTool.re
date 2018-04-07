@@ -4,7 +4,8 @@ let testProgram = (sandbox, prepareFunc, state) => {
   open Expect.Operators;
   open Sinon;
   let _prepareForUseProgram = (sandbox, state) => {
-    let (state, _, _, _) = FrontRenderLightBatchInstanceTool.prepare(sandbox, 1, state);
+    /* let (state, _, _, _) = FrontRenderLightBatchInstanceTool.prepare(sandbox, 1, state); */
+    let (state, _, _, _) = RenderBasicBatchInstanceTool.prepare(sandbox, 1, state);
     let program = Obj.magic(1);
     let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> onCall(0) |> returns(program);
     let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
