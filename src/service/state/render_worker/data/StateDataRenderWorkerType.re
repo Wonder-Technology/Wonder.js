@@ -2,6 +2,8 @@ open GPUDetectType;
 
 open RenderWorkerBasicMaterialType;
 
+open RenderWorkerTransformType;
+
 open GlType;
 
 open ComponentType;
@@ -28,7 +30,8 @@ type renderWorkerState = {
   mutable glslSenderRecord,
   mutable glslLocationRecord,
   mutable glslChunkRecord,
-  mutable basicMaterialRecord: option(basicMaterialRecord)
+  mutable basicMaterialRecord: option(basicMaterialRecord),
+  mutable transformRecord: option(transformRecord)
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

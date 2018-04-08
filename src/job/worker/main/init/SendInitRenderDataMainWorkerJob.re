@@ -52,8 +52,7 @@ let execJob = (flags, stateData) =>
                  |> Obj.magic
                  |> Js.Json.stringify
              },
-             /* TODO remove index? */
-             "transformData": {"buffer": transformRecord.buffer, "index": transformRecord.index},
+             "transformData": {"buffer": transformRecord.buffer},
              "basicMaterialData": {
                "buffer": basicMaterialRecord.buffer,
                "index": basicMaterialRecord.index,

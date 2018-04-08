@@ -4,27 +4,9 @@ open TransformType;
 
 open Js.Typed_array;
 
+open BufferTransformService;
+
 let getRecord = ({transformRecord}) => transformRecord |> OptionService.unsafeGet;
-
-let getLocalToWorldMatricesSize = () => 16;
-
-let getLocalToWorldMatricesLength = (count) => count * getLocalToWorldMatricesSize();
-
-let getLocalToWorldMatricesOffset = (count) => 0;
-
-let getLocalPositionsSize = () => 3;
-
-let getLocalPositionsLength = (count) => count * getLocalPositionsSize();
-
-let getLocalPositionsOffset = (count) =>
-  getLocalToWorldMatricesLength(count) * Float32Array._BYTES_PER_ELEMENT;
-
-/* let getDefaultLocalToWorldMatrix = ({defaultLocalToWorldMatrix}) => defaultLocalToWorldMatrix;
-
-   let getDefaultLocalPosition = ({defaultLocalPosition}) => defaultLocalPosition; */
-let getLocalToWorldMatrixIndex = (index) => index * getLocalToWorldMatricesSize();
-
-let getLocalPositionIndex = (index) => index * getLocalPositionsSize();
 
 let getLocalToWorldMatrixTypeArray = (index, typeArr) =>
   TypeArrayService.getFloat16TypeArray(getLocalToWorldMatrixIndex(index), typeArr);
@@ -75,18 +57,8 @@ let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) =
       * Float32Array._BYTES_PER_ELEMENT
       * (getLocalPositionsSize() + getLocalToWorldMatricesSize())
     );
-  let localToWorldMatrices =
-    Float32Array.fromBufferRange(
-      buffer,
-      ~offset=getLocalToWorldMatricesOffset(count),
-      ~length=getLocalToWorldMatricesLength(count)
-    );
-  let localPositions =
-    Float32Array.fromBufferRange(
-      buffer,
-      ~offset=getLocalPositionsOffset(count),
-      ~length=getLocalPositionsLength(count)
-    );
+  let (localToWorldMatrices, localPositions) =
+    CreateTypeArrayTransformService.createTypeArrays(buffer, count);
   (buffer, localToWorldMatrices, localPositions)
   |> _setDefaultTypeArrData(count, defaultLocalToWorldMatrix, defaultLocalPosition)
 };

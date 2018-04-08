@@ -43,16 +43,16 @@ let _disposeData =
     localToWorldMatrices:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        RecordTransformMainService.getLocalToWorldMatrixIndex(transform),
-        RecordTransformMainService.getLocalToWorldMatricesSize(),
+        BufferTransformService.getLocalToWorldMatrixIndex(transform),
+        BufferTransformService.getLocalToWorldMatricesSize(),
         defaultLocalToWorldMatrix,
         localToWorldMatrices
       ),
     localPositions:
       [@bs]
       DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        RecordTransformMainService.getLocalPositionIndex(transform),
-        RecordTransformMainService.getLocalPositionsSize(),
+        BufferTransformService.getLocalPositionIndex(transform),
+        BufferTransformService.getLocalPositionsSize(),
         defaultLocalPosition,
         localPositions
       ),
@@ -141,6 +141,6 @@ let handleBatchDisposeComponent =
              ((transformRecord, transform) => _disposeData(transform, dataTuple, transformRecord)),
              transformRecord
            );
-      {...state, transformRecord:Some(transformRecord)}
+      {...state, transformRecord: Some(transformRecord)}
     }
   );
