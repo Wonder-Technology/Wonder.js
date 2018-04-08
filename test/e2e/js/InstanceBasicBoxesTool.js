@@ -14,12 +14,12 @@ var InstanceBasicBoxesTool = (function () {
 
             let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
-            let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
+            let objectInstanceTransforArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
 
 
 
-            for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
-                let objectInstance = objectInstanceArray[i];
+            for (let i = 0, len = objectInstanceTransforArray.length; i < len; i++) {
+                let objectInstance = objectInstanceTransforArray[i];
 
                 var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
 
@@ -206,12 +206,12 @@ var InstanceBasicBoxesTool = (function () {
 
                 let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
-                let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
+                let objectInstanceTransforArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
 
 
 
-                for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
-                    let objectInstance = objectInstanceArray[i];
+                for (let i = 0, len = objectInstanceTransforArray.length; i < len; i++) {
+                    let objectInstance = objectInstanceTransforArray[i];
 
                     var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
 

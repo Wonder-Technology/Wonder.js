@@ -3,6 +3,9 @@
         "name": "tick"
     },
     {
+        "name": "update_transform"
+    },
+    {
         "name": "update_camera"
     },
     {

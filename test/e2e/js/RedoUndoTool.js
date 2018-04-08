@@ -3,30 +3,11 @@ var RedoUndoTool = (function () {
         redoUndoShader: function (count, state) {
             var index = 1;
 
-
-
-            var state = wd.addNoWorkerLoopJob("updateJob1", "", function (elapsed, state) {
-                console.log("updateJob1", elapsed);
-                return state
-            }, state);
-
             var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
                 if (index == 1) {
                     index += 1;
 
                     window.copyState1 = wd.deepCopyForRestore(state);
-
-                    // var [state, sourceInstanceBox, objectInstanceBoxes] = createBoxesByInstance(2, state);
-
-
-
-
-                    // var [state, objectInstanceBoxes] = setPosition(objectInstanceBoxes, state);
-
-
-                    // state = initGameObject(sourceInstanceBox, state);
-
-
 
                     var record = BasicBoxesTool.createBoxesByClone(count, state);
                     var state = record[0];
