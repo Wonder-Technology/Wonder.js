@@ -276,7 +276,7 @@ let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 
-let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceObjectInstanceArray;
+let getSourceInstanceObjectInstanceTransformArray = SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray;
 
 let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
 
@@ -498,7 +498,7 @@ let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 
-let getSourceInstanceObjectInstanceArray = SourceInstanceAPI.getSourceInstanceObjectInstanceArray;
+let getSourceInstanceObjectInstanceTransformArray = SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray;
 
 let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameObject;
 

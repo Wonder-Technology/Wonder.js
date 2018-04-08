@@ -58,7 +58,8 @@ let createObjectInstanceGameObject = (sourceInstance, state: StateDataMainType.s
   createInstance(sourceInstance, state)
 };
 
-let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataMainType.state) => {
+let getSourceInstanceObjectInstanceTransformArray =
+    (sourceInstance, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -74,11 +75,7 @@ let getSourceInstanceObjectInstanceArray = (sourceInstance, state: StateDataMain
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  getObjectInstanceArray(
-    sourceInstance,
-    state.sourceInstanceRecord,
-    RecordTransformMainService.getRecord(state)
-  )
+  getObjectInstanceTransformArray(sourceInstance, state.sourceInstanceRecord)
 };
 
 let markSourceInstanceModelMatrixIsStatic =

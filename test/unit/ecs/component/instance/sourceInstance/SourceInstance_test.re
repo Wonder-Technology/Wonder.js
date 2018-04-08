@@ -17,15 +17,25 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "getSourceInstanceObjectInstanceArray",
+        "getSourceInstanceObjectInstanceTransformArray",
         () =>
           test(
-            "get objectInstanceArray",
+            "get objectInstance transform array",
             () => {
+              let (state, _) = TransformAPI.createTransform(state^);
               let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
-                ObjectInstanceTool.createObjectInstanceGameObject(state^);
-              SourceInstanceAPI.getSourceInstanceObjectInstanceArray(sourceInstance, state)
-              |> expect == [|objectInstanceGameObject|]
+                ObjectInstanceTool.createObjectInstanceGameObject(state);
+              SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
+                sourceInstance,
+                state
+              )
+              |>
+              expect == [|
+                          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                            objectInstanceGameObject,
+                            state
+                          )
+                        |]
             }
           )
       );
@@ -82,7 +92,8 @@ let _ =
                   } =
                     SourceInstanceTool.getSourceInstanceRecord(state);
                   (
-                    objectInstanceTransformArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
+                    objectInstanceTransformArrayMap
+                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixInstanceBufferCapacityMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),
