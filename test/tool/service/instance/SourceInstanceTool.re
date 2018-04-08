@@ -29,10 +29,3 @@ let getSourceInstanceRecord = (state) => state.sourceInstanceRecord;
 
 let getGameObject = (sourceInstance, state) =>
   state.sourceInstanceRecord |> GameObjectSourceInstanceService.getGameObject(sourceInstance);
-
-let getSourceInstanceObjectInstanceArray = (sourceInstance, state) =>
-  GetObjectInstanceArrayMainService.getObjectInstanceArray(
-    sourceInstance,
-    state.sourceInstanceRecord,
-    RecordTransformMainService.getRecord(state)
-  );

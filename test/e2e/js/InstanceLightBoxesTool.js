@@ -14,14 +14,13 @@ var InstanceLightBoxesTool = (function () {
 
             let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
-            let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
+
+            let objectInstanceTransformArray = wd.getSourceInstanceObjectInstanceTransformArray(sourceInstance, state);
 
 
 
-            for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
-                let objectInstance = objectInstanceArray[i];
-
-                var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
+            for (let i = 0, len = objectInstanceTransformArray.length; i < len; i++) {
+                let transform = objectInstanceTransformArray[i];
 
 
                 var pos = wd.getTransformPosition(transform, state);
@@ -186,14 +185,12 @@ var InstanceLightBoxesTool = (function () {
 
                 let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
-                let objectInstanceArray = wd.getSourceInstanceObjectInstanceArray(sourceInstance, state);
+                let objectInstanceTransformArray = wd.getSourceInstanceObjectInstanceTransformArray(sourceInstance, state);
 
 
 
-                for (let i = 0, len = objectInstanceArray.length; i < len; i++) {
-                    let objectInstance = objectInstanceArray[i];
-
-                    var transform = wd.unsafeGetGameObjectTransformComponent(objectInstance, state);
+                for (let i = 0, len = objectInstanceTransformArray.length; i < len; i++) {
+                    let transform = objectInstanceTransformArray[i];
 
 
                     var localPos = wd.getTransformLocalPosition(transform, state);
