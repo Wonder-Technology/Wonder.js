@@ -20,24 +20,8 @@ let _initBufferData = (count) => {
         * getIndexSize()
       )
     );
-  let vertices =
-    Float32Array.fromBufferRange(
-      buffer,
-      ~offset=getVerticesOffset(count),
-      ~length=getVertexLength(count)
-    );
-  let normals =
-    Float32Array.fromBufferRange(
-      buffer,
-      ~offset=getNormalsOffset(count),
-      ~length=getVertexLength(count)
-    );
-  let indices =
-    Uint16Array.fromBufferRange(
-      buffer,
-      ~offset=getIndicesOffset(count),
-      ~length=getIndicesLength(count)
-    );
+  let (vertices, normals, indices) =
+    CreateTypeArrayBoxGeometryService.createTypeArrays(buffer, count);
   (buffer, vertices, normals, indices)
 };
 
@@ -53,7 +37,6 @@ let create = ({settingRecord} as state) => {
       normals,
       indices,
       configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
-      computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       isInitMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -71,7 +54,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     indices,
     configDataMap,
     isInitMap,
-    computeDataFuncMap,
     groupCountMap,
     gameObjectMap,
     disposedIndexArray
@@ -104,7 +86,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
             getIndicesOffset(geometryDataBufferCount),
             getIndicesLength(geometryDataBufferCount)
           ),
-        computeDataFuncMap: computeDataFuncMap |> SparseMapService.copy,
         configDataMap: configDataMap |> SparseMapService.copy,
         isInitMap: isInitMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,

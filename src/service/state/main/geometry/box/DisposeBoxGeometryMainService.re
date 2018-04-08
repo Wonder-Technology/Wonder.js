@@ -14,14 +14,7 @@ let _disposeData =
       geometry,
       (
         vboBufferRecord,
-        {
-          disposedIndexArray,
-          computeDataFuncMap,
-          configDataMap,
-          gameObjectMap,
-          isInitMap,
-          groupCountMap
-        } as boxGeometryRecord
+        {disposedIndexArray, configDataMap, gameObjectMap, isInitMap, groupCountMap} as boxGeometryRecord
       )
     ) => {
   let vboBufferRecord =
@@ -31,7 +24,6 @@ let _disposeData =
     {
       ...boxGeometryRecord,
       disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-      computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
       configDataMap: configDataMap |> disposeSparseMapData(geometry),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
       isInitMap: isInitMap |> disposeSparseMapData(geometry),
@@ -59,7 +51,8 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
   switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
   | false =>
-    let vboBufferRecord = PoolVboBufferService.addBoxGeometryBufferToPool(geometry, vboBufferRecord);
+    let vboBufferRecord =
+      PoolVboBufferService.addBoxGeometryBufferToPool(geometry, vboBufferRecord);
     let (vboBufferRecord, boxGeometryRecord) =
       _disposeData(geometry, (vboBufferRecord, boxGeometryRecord));
     {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}

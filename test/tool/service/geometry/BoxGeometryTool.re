@@ -41,14 +41,14 @@ let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   state
 };
 
-let createStubComputeFuncData = (sandbox, geometry, state: StateDataMainType.state) => {
+/* let createStubComputeFuncData = (sandbox, geometry, state: StateDataMainType.state) => {
   open StateDataMainType;
   open Sinon;
-  let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord;
-  let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
-  computeDataFuncMap |> WonderCommonlib.SparseMapService.set(geometry, computeDataFunc);
+  /* let {computeDataFuncMap} = state |> RecordBoxGeometryMainService.getRecord;
+  let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox); */
+  /* computeDataFuncMap |> WonderCommonlib.SparseMapService.set(geometry, computeDataFunc); */
   (state, computeDataFunc)
-};
+}; */
 
 let isGeometryDisposed = (geometry, state) =>
   /* open StateDataMainType;
@@ -62,7 +62,7 @@ let isGeometryDisposed = (geometry, state) =>
     );
 
 let computeData = (geometry, state: StateDataMainType.state) =>
-  CreateBoxGeometryService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);
+  InitBoxGeometryMainService._computeData(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let getDefaultIndicesArray = () => [|
   0,

@@ -708,7 +708,7 @@ let _ =
                     (state, gameObject1, geometry1)
                   };
                   test(
-                    "remove from groupCountMap, configDataMap, isInitMap, computeDataFuncMap, gameObjectMap",
+                    "remove from groupCountMap, configDataMap, isInitMap, gameObjectMap",
                     () => {
                       open StateDataMainType;
                       let (state, gameObject1, geometry1) = _prepare(state);
@@ -716,7 +716,6 @@ let _ =
                         groupCountMap,
                         configDataMap,
                         isInitMap,
-                        computeDataFuncMap,
                         gameObjectMap
                       } =
                         RecordBoxGeometryMainService.getRecord(state);
@@ -724,10 +723,9 @@ let _ =
                         groupCountMap |> WonderCommonlib.SparseMapService.has(geometry1),
                         configDataMap |> WonderCommonlib.SparseMapService.has(geometry1),
                         isInitMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        computeDataFuncMap |> WonderCommonlib.SparseMapService.has(geometry1),
                         gameObjectMap |> WonderCommonlib.SparseMapService.has(geometry1)
                       )
-                      |> expect == (false, false, false, false, false)
+                      |> expect == (false, false, false, false)
                     }
                   );
                   test(
