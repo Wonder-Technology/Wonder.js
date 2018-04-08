@@ -38,6 +38,7 @@ module.exports = {
   scopeOverrides: {
     refactor: [
       { name: "duplication" },
+      { name: "dead-code" },
       { name: "shader" },
       { name: "code-climate" },
       { name: "e2e-test" }
