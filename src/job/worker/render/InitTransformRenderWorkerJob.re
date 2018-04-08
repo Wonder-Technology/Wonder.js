@@ -22,7 +22,10 @@ let execJob = (_, e, stateData) =>
       let transformData = data##transformData;
       let buffer = transformData##buffer;
       let count = data##bufferData##transformDataBufferCount;
-      state |> _createTypeArrays(buffer, count) |> ignore;
+      state
+      |> _createTypeArrays(buffer, count)
+      |> StateRenderWorkerService.setState(stateData)
+      |> ignore;
       e
     }
   );

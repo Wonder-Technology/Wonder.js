@@ -112,7 +112,7 @@ let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   |> map((json) => ParseWorkerJobService.convertMainInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathService.join([|dataDir, "worker/job/main/main_looop_jobs.json"|]),
+    PathService.join([|dataDir, "worker/job/main/main_loop_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertMainLoopJobsToRecord(json))

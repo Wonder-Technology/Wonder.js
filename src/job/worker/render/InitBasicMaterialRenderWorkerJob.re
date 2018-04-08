@@ -42,6 +42,7 @@ let execJob = (_, e, stateData) =>
       state
       |> _createTypeArrays(buffer, count)
       |> _initMaterials(basicMaterialData, data)
+      |> StateRenderWorkerService.setState(stateData)
       |> ignore;
       e
     }

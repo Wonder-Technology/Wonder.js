@@ -1,0 +1,28 @@
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "loop",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "send_draw_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "loop"
+                    },
+                    {
+                        "name": "get_finish_draw_data"
+                    }
+                ]
+            }
+        ]
+    }
+]

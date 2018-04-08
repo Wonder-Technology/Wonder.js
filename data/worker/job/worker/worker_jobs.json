@@ -12,6 +12,9 @@
         ]
     },
     {
+        "name": "get_renderConfig_data"
+    },
+    {
         "name": "create_gl"
     },
     {
@@ -19,6 +22,12 @@
     },
     {
         "name": "init_boxGeometry"
+    },
+    {
+        "name": "preget_glslData"
+    },
+    {
+        "name": "init_state"
     },
     {
         "name": "init_basic_material"

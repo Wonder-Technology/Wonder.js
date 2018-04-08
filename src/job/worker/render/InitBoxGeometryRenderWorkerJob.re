@@ -33,7 +33,11 @@ let execJob = (_, e, stateData) =>
       let boxGeometryData = data##boxGeometryData;
       let buffer = boxGeometryData##buffer;
       let count = data##bufferData##boxGeometryDataBufferCount;
-      state |> _createTypeArrays(buffer, count) |> _initBoxGeometrys(boxGeometryData) |> ignore;
+      state
+      |> _createTypeArrays(buffer, count)
+      |> _initBoxGeometrys(boxGeometryData)
+      |> StateRenderWorkerService.setState(stateData)
+      |> ignore;
       e
     }
   );

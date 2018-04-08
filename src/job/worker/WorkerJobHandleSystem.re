@@ -16,7 +16,10 @@ let _getMainLoopJobHandles = () => [
 let _getWorkerJobHandles = () => [
   ("send_finish_send_job_data", SendFinishSendJobDataRenderWorkerJob.execJob),
   ("get_init_render_data", GetInitRenderDataRenderWorkerJob.execJob),
+  ("get_renderConfig_data", GetRenderConfigDataRenderWorkerJob.execJob),
   ("create_gl", CreateGlRenderWorkerJob.execJob),
+  ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
+  ("init_state", InitStateRenderWorkerJob.execJob),
   ("init_transform", InitTransformRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
   ("init_boxGeometry", InitBoxGeometryRenderWorkerJob.execJob),
