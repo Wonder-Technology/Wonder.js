@@ -575,16 +575,12 @@ let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
 
 let getShaders = (state) =>
   GetDataRenderConfigService.getShaders(
-    CreateInitMaterialStateMainService.createInitMaterialState(state).renderConfigRecord
+    InitMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
   );
 
 let getShaderLibs = (state) =>
   GetDataRenderConfigService.getShaderLibs(
-    CreateInitMaterialStateMainService.createInitMaterialState(state).renderConfigRecord
+    InitMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
   );
 
 let getMaterialShaderLibRecordArr = GetDataRenderConfigService.getMaterialShaderLibDataArr;
-
-let isRenderConfigRecordExist = (state) => state.renderConfigRecord |> Js.Option.isSome;
-
-let setRenderConfig = (renderConfig, state) => {...state, renderConfigRecord: Some(renderConfig)};

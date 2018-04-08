@@ -1,15 +1,17 @@
 let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
-   TestTool.initWithJobConfigWithoutBuildFakeDom(
-     ~sandbox,
-     ~noWorkerJobRecord,
-     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
-     ()
-   );
+  TestTool.initWithJobConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~noWorkerJobRecord,
+    /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
+    ()
+  );
+
 let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfig(~sandbox, ~noWorkerJobRecord, ());
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObjectAPI; open GameObjectAPI;
+  open GameObjectAPI;
+  open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
   open Sinon;

@@ -4,6 +4,7 @@ open BasicMaterialType;
 
 let createInitMaterialState =
     (
+      (index, disposedIndexArray, shaderIndices),
       {
         directionLightRecord,
         pointLightRecord,
@@ -15,7 +16,7 @@ let createInitMaterialState =
         glslChunkRecord
       } as state: StateDataMainType.state
     ) => {
-  let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
+  /* let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state); */
   {
     materialRecord: {index, disposedIndexArray, shaderIndices},
     directionLightRecord: {index: directionLightRecord.index},

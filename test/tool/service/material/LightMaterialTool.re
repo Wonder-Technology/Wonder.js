@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open LightMaterialType;
+
 let getMaterialRecord = (state) => RecordLightMaterialMainService.getRecord(state);
 
 let createGameObject = (state) => {
@@ -19,7 +21,26 @@ let getDefaultSpecularColor = (state) => getMaterialRecord(state).defaultSpecula
 
 let getDefaultShininess = (state) => getMaterialRecord(state).defaultShininess;
 
-let initMaterials = InitLightMaterialMainService.init;
+let initMaterials = (gl, {gameObjectRecord} as state) => {
+  let {index, disposedIndexArray, shaderIndices} = RecordLightMaterialMainService.getRecord(state);
+  InitLightMaterialInitMaterialService.init(
+    gl,
+    (
+      JudgeInstanceMainService.buildMap(
+        index,
+        RecordLightMaterialMainService.getRecord(state).gameObjectMap,
+        gameObjectRecord
+      ),
+      JudgeInstanceMainService.isSupportInstance(state)
+    ),
+    CreateInitMaterialStateMainService.createInitMaterialState(
+      (index, disposedIndexArray, shaderIndices),
+      state
+    )
+  )
+  |> ignore;
+  state
+};
 
 let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
   ShaderIndexLightMaterialMainService.getShaderIndex(materialIndex, state);
@@ -36,8 +57,7 @@ let dispose = (material, state: StateDataMainType.state) => {
 };
 
 let initMaterial = (materialIndex, state) =>
-  [@bs]
-  InitLightMaterialMainService.initMaterial(
+  InitLightMaterialMainService.handleInitComponent(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     materialIndex,
     state

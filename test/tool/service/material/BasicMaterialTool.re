@@ -18,18 +18,21 @@ let getDefaultShaderIndex = (state) => getMaterialRecord(state).defaultShaderInd
 let getDefaultColor = (state) => getMaterialRecord(state).defaultColor;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
-  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
   InitBasicMaterialInitMaterialService.init(
     gl,
     (
       JudgeInstanceMainService.buildMap(
-        basicMaterialRecord.index,
+        index,
         RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
         gameObjectRecord
       ),
       JudgeInstanceMainService.isSupportInstance(state)
     ),
-    CreateInitMaterialStateMainService.createInitMaterialState(state)
+    CreateInitMaterialStateMainService.createInitMaterialState(
+      (index, disposedIndexArray, shaderIndices),
+      state
+    )
   )
   |> ignore;
   state
@@ -49,25 +52,33 @@ let dispose = (material, state: StateDataMainType.state) => {
     Some(DisposeBasicMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))
 };
 
-let initMaterial = (materialIndex, state) => {
-  let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
-  [@bs]
-  InitBasicMaterialInitMaterialService.initMaterial(
+let initMaterial = (materialIndex, state) =>
+  /* let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
+     [@bs]
+     InitBasicMaterialInitMaterialService.initMaterial(
+       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+       (
+         materialIndex,
+         JudgeInstanceMainService.isSourceInstance(
+           materialIndex,
+           gameObjectMap,
+           state.gameObjectRecord
+         ),
+         JudgeInstanceMainService.isSupportInstance(state)
+       ),
+
+       CreateInitMaterialStateMainService.createInitMaterialState(
+         (index, disposedIndexArray, shaderIndices),
+         state
+       )
+     )
+     |> ignore;
+     state */
+  InitBasicMaterialMainService.handleInitComponent(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      materialIndex,
-      JudgeInstanceMainService.isSourceInstance(
-        materialIndex,
-        gameObjectMap,
-        state.gameObjectRecord
-      ),
-      JudgeInstanceMainService.isSupportInstance(state)
-    ),
-    CreateInitMaterialStateMainService.createInitMaterialState(state)
-  )
-  |> ignore;
-  state
-};
+    materialIndex,
+    state
+  );
 
 let isMaterialDisposed = (material, state) => {
   open BasicMaterialType;

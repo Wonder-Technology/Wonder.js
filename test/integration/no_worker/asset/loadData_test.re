@@ -6,7 +6,7 @@ open RenderConfigType;
 
 let _ =
   describe(
-    "test load record",
+    "test load data",
     () => {
       open Expect;
       open Expect.Operators;
@@ -136,6 +136,7 @@ let _ =
                                              name: "default",
                                              jobs: [|
                                                {name: "tick"},
+                                               {name: "update_transform"},
                                                {name: "update_camera"},
                                                {name: "get_camera_data"},
                                                {name: "create_basic_render_object_buffer"},
@@ -165,6 +166,7 @@ let _ =
                                          |],
                                          [|
                                            {name: "tick", flags: None},
+                                           {name: "update_transform", flags: None},
                                            {name: "update_camera", flags: None},
                                            {name: "get_camera_data", flags: None},
                                            {

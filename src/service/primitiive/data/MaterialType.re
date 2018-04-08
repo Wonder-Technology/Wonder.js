@@ -1,4 +1,3 @@
-
 type material = int;
 
 type shaderIndexMap = array(int);
