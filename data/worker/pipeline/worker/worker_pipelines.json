@@ -14,6 +14,9 @@
                         "name": "create_gl"
                     },
                     {
+                        "name": "init_basic_material"
+                    },
+                    {
                         "name": "send_finish_init_render_data"
                     }
                 ]
