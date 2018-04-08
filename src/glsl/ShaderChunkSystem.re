@@ -1,35 +1,37 @@
 
-open ShaderChunkType;
-open StateDataMainType;
+  open ShaderChunkType;
 
-let _getGLSLChunkMap = ({chunkMap}) => chunkMap;
+  open StateDataMainType;
 
-let getChunk = (name: string, glslChunkRecord) =>
-  glslChunkRecord |> _getGLSLChunkMap |> WonderCommonlib.HashMapService.get(name) |> Js.Option.getExn;
+  let _getGLSLChunkMap = ({chunkMap}) => chunkMap;
 
-let _buildChunk =
-    (
-      (top: string,
-      define: string),
-      varDeclare: string,
-      (funcDeclare: string,
-      funcDefine: string),
-      body: string
-    ) => {
-  top,
-  define,
-  varDeclare,
-  funcDeclare,
-  funcDefine,
-  body
-};
+  let getChunk = (name: string, glslChunkRecord) =>
+    glslChunkRecord
+    |> _getGLSLChunkMap
+    |> WonderCommonlib.HashMapService.get(name)
+    |> Js.Option.getExn;
 
-let create = () =>
+  let _buildChunk =
+      (
+        (top: string, define: string),
+        varDeclare: string,
+        (funcDeclare: string, funcDefine: string),
+        body: string
+      ) => {
+    top,
+    define,
+    varDeclare,
+    funcDeclare,
+    funcDefine,
+    body
+  };
 
-  WonderCommonlib.HashMapService.{
-    chunkMap:
-      createEmpty()
-      
+  let create = () =>
+  
+    WonderCommonlib.HashMapService.{
+      chunkMap:
+        createEmpty()
+        
 |> set("webgl1_frontLight_vertex", _buildChunk(({|
 
 |},{|
@@ -819,4 +821,5 @@ vec4 totalColor = vec4(u_color, 1.0);
 gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 |}))
 
-  };
+    };
+  
