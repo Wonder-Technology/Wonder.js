@@ -48,6 +48,45 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
   ]
     |};
 
+
+
+let buildMainLoopPipelinesConfig= () => {|
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "loop",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "send_draw_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "loop"
+                    },
+                    {
+                        "name": "get_finish_draw_data"
+                    }
+                ]
+            }
+        ]
+    }
+]
+    |};
+
+
+
+
+
+
+
 let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 [
     {
@@ -77,16 +116,61 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 ]
     |};
 
+
+let buildMainLoopJobConfig= () => {|
+[
+    {
+        "name": "tick"
+    },
+    {
+        "name": "update_transform"
+    },
+    {
+        "name": "update_camera"
+    },
+    {
+        "name": "get_camera_data"
+    },
+    {
+        "name": "create_basic_render_object_buffer"
+    },
+    {
+        "name": "create_light_render_object_buffer"
+    },
+    {
+        "name": "send_draw_data",
+        "flags": [
+            "DRAW"
+        ]
+    },
+    {
+        "name": "get_finish_draw_data",
+        "flags": [
+            "FINISH_DRAW_RENDER"
+        ]
+    }
+]
+    |};
+
+
+
+
+
+
+
+
 let buildWorkerJobConfig =
     (
       ~workerSetting={|
     {
     "worker_file_dir": "./dist/",
     "main_init_pipeline": "default",
+    "main_loop_pipeline": "default",
     "worker_pipeline": "default"
 }
 |},
       ~mainInitPipelines=buildMainInitPipelinesConfigWithoutCreateWorkerInstance(),
+      ~mainLoopPipelines=buildMainLoopPipelinesConfig(),
       ~workerPipelines={|
 [
     {
@@ -106,6 +190,14 @@ let buildWorkerJobConfig =
                     {
                         "name": "send_finish_init_render_data"
                     }
+                ],
+                [
+                    {
+                        "name": "get_draw_data"
+                    },
+                    {
+                        "name": "send_finish_draw_data"
+                    }
                 ]
             ]
         }
@@ -113,6 +205,7 @@ let buildWorkerJobConfig =
 ]
 |},
       ~mainInitJobs=buildMainInitJobConfigWithoutCreateWorkerInstance(),
+      ~mainLoopJobs=buildMainLoopJobConfig(),
       ~workerJobs={|
 [
     {
@@ -128,28 +221,67 @@ let buildWorkerJobConfig =
         ]
     },
     {
-        "name": "init_gl"
+        "name": "create_gl"
+    },
+    {
+        "name": "init_transform"
+    },
+    {
+        "name": "init_boxGeometry"
+    },
+    {
+        "name": "init_basic_material"
     },
     {
         "name": "send_finish_init_render_data",
         "flags": [
             "FINISH_INIT_RENDER"
         ]
+    },
+    {
+        "name": "get_draw_data",
+        "flags": [
+            "DRAW"
+        ]
+    },
+    {
+        "name": "clear_color"
+    },
+    {
+        "name": "clear_buffer"
+    },
+    {
+        "name": "clear_last_send_component"
+    },
+    {
+        "name": "send_uniform_shader_data"
+    },
+    {
+        "name": "render_basic"
+    },
+    {
+        "name": "send_finish_draw_data",
+        "flags": [
+            "FINISH_DRAW_RENDER"
+        ]
     }
 ]
+
         |},
       ()
     ) => (
   workerSetting,
   mainInitPipelines,
+  mainLoopPipelines,
   workerPipelines,
   mainInitJobs,
+  mainLoopJobs,
   workerJobs
 );
 
 let create =
     (
-      (workerSetting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
+      (workerSetting, mainInitPipelines, mainLoopPipelines, workerPipelines, mainInitJobs, mainLoopJobs, workerJobs),
       state: StateDataMainType.state
     ) => {
   ...state,
@@ -157,8 +289,10 @@ let create =
     Some({
       setting: convertSettingToRecord(workerSetting |> Js.Json.parseExn),
       mainInitPipelines: convertMainInitPipelinesToRecord(mainInitPipelines |> Js.Json.parseExn),
+      mainLoopPipelines: convertMainLoopPipelinesToRecord(mainLoopPipelines |> Js.Json.parseExn),
       workerPipelines: convertWorkerPipelinesToRecord(workerPipelines |> Js.Json.parseExn),
       mainInitJobs: convertMainInitJobsToRecord(mainInitJobs |> Js.Json.parseExn),
+      mainLoopJobs: convertMainLoopJobsToRecord(mainLoopJobs |> Js.Json.parseExn),
       workerJobs: convertWorkerJobsToRecord(workerJobs |> Js.Json.parseExn)
     })
 };

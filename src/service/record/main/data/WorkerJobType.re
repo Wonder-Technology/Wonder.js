@@ -1,6 +1,7 @@
 type setting = {
   workerFileDir: string,
   mainInitPipeline: string,
+  mainLoopPipeline: string,
   workerPipeline: string
 };
 
@@ -12,6 +13,8 @@ type job = {
 };
 
 type mainInitJobs = array(job);
+
+type mainLoopJobs = array(job);
 
 type workerJobs = array(job);
 
@@ -42,6 +45,21 @@ type mainInitPipeline = {
 
 type mainInitPipelines = array(mainInitPipeline);
 
+type mainLoopPipelineSubJob = {name: string};
+
+type mainLoopPipelineJob = {
+  name: string,
+  link: string,
+  jobs: array(mainLoopPipelineSubJob)
+};
+
+type mainLoopPipeline = {
+  name: string,
+  jobs: array(mainLoopPipelineJob)
+};
+
+type mainLoopPipelines = array(mainLoopPipeline);
+
 type workerPipelineWorkerJob = {name: string};
 
 type workerPipelineJobs = {render: array(array(workerPipelineWorkerJob))};
@@ -56,7 +74,9 @@ type workerPipelines = array(workerPipeline);
 type workerJobRecord = {
   setting,
   mainInitPipelines,
+  mainLoopPipelines,
   workerPipelines,
   mainInitJobs,
+  mainLoopJobs,
   workerJobs
 };

@@ -12,31 +12,36 @@ let rec _createWorkerLoopStream = () =>
   |> Most.flatMap(
        (time) => {
          WonderLog.Log.log({j|time: $time|j});
-         Most.mergeArray([|
-           MostUtils.callFunc(
-             () => {
-               let state = StateDataMainService.getState(StateDataMain.stateData);
-               WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
-               |> WorkerService.postMessage({"operateType": "loop"})
-             }
-           ),
-           MostUtils.fromWorkerEvent(
-             "message",
-             StateDataMainService.getState(StateDataMain.stateData).workerInstanceRecord
-             |> WorkerInstanceService.unsafeGetRenderWorker
-           )
-           |> Most.filter(
-                (e) => e##data##operateType === "finish_loop" |> Js.Boolean.to_js_boolean
+         WorkerJobService.getMainLoopJobStream(
+           StateDataMain.stateData,
+           StateDataMainService.getState(StateDataMain.stateData)
+         )
+         |> Most.map((e) => ())
+         /* Most.mergeArray([|
+              MostUtils.callFunc(
+                () => {
+                  let state = StateDataMainService.getState(StateDataMain.stateData);
+                  WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
+                  |> WorkerService.postMessage({"operateType": "loop"})
+                }
+              ),
+              MostUtils.fromWorkerEvent(
+                "message",
+                StateDataMainService.getState(StateDataMain.stateData).workerInstanceRecord
+                |> WorkerInstanceService.unsafeGetRenderWorker
               )
-           |> Most.take(1)
-           |> Most.map((e) => ())
-           |> Most.tap(
-                (e) =>
-                  WonderLog.Log.log(
-                    {j|**in main worker** get message from other worker: finish_loop|j}
-                  )
-              )
-         |])
+              |> Most.filter(
+                   (e) => e##data##operateType === "finish_loop" |> Js.Boolean.to_js_boolean
+                 )
+              |> Most.take(1)
+              |> Most.map((e) => ())
+              |> Most.tap(
+                   (e) =>
+                     WonderLog.Log.log(
+                       {j|**in main worker** get message from other worker: finish_loop|j}
+                     )
+                 )
+            |]) */
        }
      )
   |> Most.continueWith(() => _createWorkerLoopStream());

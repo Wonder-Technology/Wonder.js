@@ -7,6 +7,7 @@ let convertSettingToRecord = (setting) => {
   {
     workerFileDir: json |> field("worker_file_dir", string),
     mainInitPipeline: json |> field("main_init_pipeline", string),
+    mainLoopPipeline: json |> field("main_loop_pipeline", string),
     workerPipeline: json |> field("worker_pipeline", string)
   }
 };
@@ -47,6 +48,48 @@ let convertMainInitPipelinesToRecord = (pipelines) =>
                            )
                     )
              }: mainInitPipeline
+           )
+         )
+    )
+  );
+
+/* TODO duplicate? */
+let convertMainLoopPipelinesToRecord = (pipelines) =>
+  Json.(
+    Decode.(
+      pipelines
+      |> array(
+           fun (json) => (
+             {
+               name: json |> field("name", string),
+               jobs:
+                 json
+                 |> field(
+                      "jobs",
+                      (json) =>
+                        json
+                        |> array(
+                             fun (json) => (
+                               {
+                                 name: json |> field("name", string),
+                                 link: json |> field("link", string),
+                                 jobs:
+                                   json
+                                   |> field(
+                                        "jobs",
+                                        (json) =>
+                                          json
+                                          |> array(
+                                               fun (json) => (
+                                                 {name: json |> field("name", string)}: mainLoopPipelineSubJob
+                                               )
+                                             )
+                                      )
+                               }: mainLoopPipelineJob
+                             )
+                           )
+                    )
+             }: mainLoopPipeline
            )
          )
     )
@@ -104,5 +147,7 @@ let _convertJobsToRecord = (jobs) =>
   );
 
 let convertMainInitJobsToRecord = (jobs) => _convertJobsToRecord(jobs);
+
+let convertMainLoopJobsToRecord = (jobs) => _convertJobsToRecord(jobs);
 
 let convertWorkerJobsToRecord = (jobs) => _convertJobsToRecord(jobs);

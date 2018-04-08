@@ -100,10 +100,22 @@ let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   |> map((json) => ParseWorkerJobService.convertMainInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
+    PathService.join([|dataDir, "worker/pipeline/main/main_loop_pipelines.json"|]),
+    fetchFunc
+  )
+  |> map((json) => ParseWorkerJobService.convertMainLoopPipelinesToRecord(json))
+  |> Obj.magic,
+  FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/job/main/main_init_jobs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseWorkerJobService.convertMainInitJobsToRecord(json))
+  |> Obj.magic,
+  FetchCommon.createFetchJsonStream(
+    PathService.join([|dataDir, "worker/job/main/main_looop_jobs.json"|]),
+    fetchFunc
+  )
+  |> map((json) => ParseWorkerJobService.convertMainLoopJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/pipeline/worker/worker_pipelines.json"|]),

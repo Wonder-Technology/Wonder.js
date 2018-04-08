@@ -25,7 +25,15 @@ let _ =
               let state =
                 state
                 |> WorkerJobTool.createWithRecord((
-                     {workerFileDir, mainInitPipeline: "", workerPipeline: ""} |> Obj.magic,
+                     {
+                       workerFileDir,
+                       mainInitPipeline: "",
+                       mainLoopPipeline: "",
+                       workerPipeline: ""
+                     }
+                     |> Obj.magic,
+                     Obj.magic(1),
+                     Obj.magic(1),
                      Obj.magic(1),
                      Obj.magic(1),
                      Obj.magic(1),
@@ -47,4 +55,4 @@ let _ =
           )
       )
     }
-  );
+  )

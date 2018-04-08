@@ -1,3 +1,4 @@
+/* TODO duplicate with OperateMainInitWorkerJobService */
 open WorkerJobType;
 
 let _getExecutableJob = (jobs, jobItemName) =>
@@ -11,8 +12,8 @@ let _buildStreamArr =
     (
       (
         jobHandleMap,
-        pipelineJobs: array(mainInitPipelineJob),
-        pipelineSubJobs: array(mainInitPipelineSubJob),
+        pipelineJobs: array(mainLoopPipelineJob),
+        pipelineSubJobs: array(mainLoopPipelineSubJob),
         stateData,
         jobs
       ),
@@ -23,7 +24,7 @@ let _buildStreamArr =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (streamArr, {name: subJobName}: mainInitPipelineSubJob) =>
+         (streamArr, {name: subJobName}: mainLoopPipelineSubJob) =>
            streamArr
            |> ArrayService.push(
                 switch (
@@ -50,26 +51,20 @@ let _buildStreamArr =
 
 let rec _find =
         (
-          (
-            {link, jobs: pipelineSubJobs}: mainInitPipelineJob,
-            pipelineJobs,
-            jobHandleMap,
-            mainInitJobs,
-            stateData
-          ),
+          ({link, jobs: pipelineSubJobs} : mainLoopPipelineJob, pipelineJobs, jobHandleMap, mainLoopJobs, stateData),
           getJobHandleFunc
         ) =>
   switch link {
   | "merge" =>
     _buildStreamArr(
-      (jobHandleMap, pipelineJobs, pipelineSubJobs, stateData, mainInitJobs),
+      (jobHandleMap, pipelineJobs, pipelineSubJobs, stateData, mainLoopJobs),
       _find,
       getJobHandleFunc
     )
     |> Most.mergeArray
   | "concat" =>
     _buildStreamArr(
-      (jobHandleMap, pipelineJobs, pipelineSubJobs, stateData, mainInitJobs),
+      (jobHandleMap, pipelineJobs, pipelineSubJobs, stateData, mainLoopJobs),
       _find,
       getJobHandleFunc
     )
@@ -89,7 +84,7 @@ let _findFrameJob = (jobs) => {
               () =>
                 jobs
                 |> Js.Array.filter(
-                     ({name}: mainInitPipelineJob) =>
+                     ({name}: mainLoopPipelineJob) =>
                        JobConfigService.filterTargetName(name, _getFrameJobName())
                    )
                 |> Js.Array.length == 1
@@ -103,17 +98,17 @@ let _findFrameJob = (jobs) => {
   JobConfigService.unsafeFindFirst(
     jobs,
     jobName,
-    ({name}: mainInitPipelineJob) => JobConfigService.filterTargetName(name, jobName)
+    ({name}: mainLoopPipelineJob) => JobConfigService.filterTargetName(name, jobName)
   )
 };
 
-let getMainInitJobStream = (jobHandleMap, stateData, record, getJobHandleFunc) => {
-  let {setting, mainInitPipelines, mainInitJobs} = record |> OptionService.unsafeGet;
-  let {jobs}: mainInitPipeline =
+let getMainLoopJobStream = (jobHandleMap, stateData, record, getJobHandleFunc) => {
+  let {setting, mainLoopPipelines, mainLoopJobs} = record |> OptionService.unsafeGet;
+  let {jobs}: mainLoopPipeline =
     JobConfigService.unsafeFindFirst(
-      mainInitPipelines,
-      setting.mainInitPipeline,
-      ({name}) => JobConfigService.filterTargetName(name, setting.mainInitPipeline)
+      mainLoopPipelines,
+      setting.mainLoopPipeline,
+      ({name}) => JobConfigService.filterTargetName(name, setting.mainLoopPipeline)
     );
-  _find((_findFrameJob(jobs), jobs, jobHandleMap, mainInitJobs, stateData), getJobHandleFunc)
+  _find((_findFrameJob(jobs), jobs, jobHandleMap, mainLoopJobs, stateData), getJobHandleFunc)
 };

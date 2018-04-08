@@ -48,6 +48,37 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
   ]
     |};
 
+let buildMainLoopPipelinesConfig= () => {|
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "loop",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "send_draw_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "loop"
+                    },
+                    {
+                        "name": "get_finish_draw_data"
+                    }
+                ]
+            }
+        ]
+    }
+]
+    |};
+
 let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 [
     {
@@ -77,16 +108,53 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 ]
     |};
 
+let buildMainLoopJobConfig = () => {|
+[
+    {
+        "name": "tick"
+    },
+    {
+        "name": "update_transform"
+    },
+    {
+        "name": "update_camera"
+    },
+    {
+        "name": "get_camera_data"
+    },
+    {
+        "name": "create_basic_render_object_buffer"
+    },
+    {
+        "name": "create_light_render_object_buffer"
+    },
+    {
+        "name": "send_draw_data",
+        "flags": [
+            "DRAW"
+        ]
+    },
+    {
+        "name": "get_finish_draw_data",
+        "flags": [
+            "FINISH_DRAW_RENDER"
+        ]
+    }
+]
+    |};
+
 let buildWorkerJobConfig =
     (
       ~workerSetting={|
     {
     "worker_file_dir": "./dist/",
     "main_init_pipeline": "default",
+    "main_loop_pipeline": "default",
     "worker_pipeline": "default"
 }
 |},
       ~mainInitPipelines=buildMainInitPipelinesConfigWithoutCreateWorkerInstance(),
+      ~mainLoopPipelines=buildMainLoopPipelinesConfig(),
       ~workerPipelines={|
 [
     {
@@ -113,6 +181,7 @@ let buildWorkerJobConfig =
 ]
 |},
       ~mainInitJobs=buildMainInitJobConfigWithoutCreateWorkerInstance(),
+      ~mainLoopJobs=buildMainLoopJobConfig(),
       ~workerJobs={|
 [
     {
@@ -142,43 +211,72 @@ let buildWorkerJobConfig =
     ) => (
   workerSetting,
   mainInitPipelines,
+  mainLoopPipelines,
   workerPipelines,
   mainInitJobs,
+  mainLoopJobs,
   workerJobs
 );
 
 let createWithRecord =
     (
-      (setting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
+      (
+        setting,
+        main_init_pipelines,
+        main_loop_pipelines,
+        main_init_jobs,
+        main_loop_jobs,
+        worker_pipelines,
+        worker_jobs
+      ),
       state: StateDataMainType.state
     ) => {
   ...state,
   workerJobRecord:
     RecordWorkerJobService.create((
       setting,
-      mainInitPipelines,
-      workerPipelines,
-      mainInitJobs,
-      workerJobs
+      main_init_pipelines,
+      main_loop_pipelines,
+      main_init_jobs,
+      main_loop_jobs,
+      worker_pipelines,
+      worker_jobs
     ))
 };
 
 let create =
     (
-      (workerSetting, mainInitPipelines, workerPipelines, mainInitJobs, workerJobs),
+      (
+        workerSetting,
+        mainInitPipelines,
+        mainLoopPipelines,
+        workerPipelines,
+        mainInitJobs,
+        mainLoopJobs,
+        workerJobs
+      ),
       state: StateDataMainType.state
     ) =>
   createWithRecord(
     (
       convertSettingToRecord(workerSetting |> Js.Json.parseExn),
       convertMainInitPipelinesToRecord(mainInitPipelines |> Js.Json.parseExn),
+      convertMainLoopPipelinesToRecord(mainLoopPipelines |> Js.Json.parseExn),
       convertMainInitJobsToRecord(mainInitJobs |> Js.Json.parseExn),
+      convertMainLoopJobsToRecord(mainLoopJobs |> Js.Json.parseExn),
       convertWorkerPipelinesToRecord(workerPipelines |> Js.Json.parseExn),
       convertWorkerJobsToRecord(workerJobs |> Js.Json.parseExn)
     ),
     state
   );
 
+let getRenderWorkerPipelineJobs = OperateRenderWorkerJobService._getRenderWorkerPipelineJobs;
+
+let convertWorkerPipelinesToRecord = ParseWorkerJobService.convertWorkerPipelinesToRecord;
+
+let convertWorkerJobsToRecord = ParseWorkerJobService.convertWorkerJobsToRecord;
+
+let getRenderWorkerJobStreamArr = WorkerJobService.getRenderWorkerJobStreamArr;
 let getRenderWorkerPipelineJobs = OperateRenderWorkerJobService._getRenderWorkerPipelineJobs;
 
 let convertWorkerPipelinesToRecord = ParseWorkerJobService.convertWorkerPipelinesToRecord;

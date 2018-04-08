@@ -25,6 +25,14 @@
                     {
                         "name": "send_finish_init_render_data"
                     }
+                ],
+                [
+                    {
+                        "name": "get_draw_data"
+                    },
+                    {
+                        "name": "send_finish_draw_data"
+                    }
                 ]
             ]
         }

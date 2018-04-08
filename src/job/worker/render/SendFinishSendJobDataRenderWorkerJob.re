@@ -1,9 +1,1 @@
-let execJob = (flags, e, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      WorkerService.getSelf()
-      |> WorkerService.postMessage({"operateType": JobConfigUtils.getOperateType(flags)})
-      |> ignore;
-      e
-    }
-  );
+let execJob = (flags, e, stateData) => SendWorkerDataJobUtils.execJob(flags, e, stateData);

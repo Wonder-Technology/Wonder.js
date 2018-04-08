@@ -86,7 +86,7 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
          e##data##jobs |> Js.Json.parseExn |> Obj.magic,
          StateDataRenderWorker.renderWorkerStateData
        )
-       |> ArrayService.push(
+       /* |> ArrayService.push(
             MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
             |> Most.filter((e) => e##data##operateType === "loop" |> Js.Boolean.to_js_boolean)
             |> Most.map((e) => Some(e))
@@ -104,7 +104,7 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
                      }
                    )
                )
-          )
+          ) */
        |> Most.mergeArray
    )
 |> Most.drain;
