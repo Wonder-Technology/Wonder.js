@@ -110,5 +110,3 @@ let handleBatchDisposeComponent =
       {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
     }
   );
-
-let isNotDisposed = ({disposedIndexArray}) => disposedIndexArray |> Js.Array.length === 0;

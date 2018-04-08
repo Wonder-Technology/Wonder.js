@@ -14,6 +14,7 @@ let _getWorkerJobHandles = () => [
   ("create_gl", CreateGlRenderWorkerJob.execJob),
   ("init_transform", InitTransformRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
+  ("init_boxGeometry", InitBoxGeometryRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob)
 ];
 

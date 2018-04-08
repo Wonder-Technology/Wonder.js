@@ -4,6 +4,8 @@ open RenderWorkerBasicMaterialType;
 
 open RenderWorkerTransformType;
 
+open RenderWorkerBoxGeometryType;
+
 open GlType;
 
 open ComponentType;
@@ -31,7 +33,8 @@ type renderWorkerState = {
   mutable glslLocationRecord,
   mutable glslChunkRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
-  mutable transformRecord: option(transformRecord)
+  mutable transformRecord: option(transformRecord),
+  mutable boxGeometryRecord: option(boxGeometryRecord)
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};
