@@ -1,1 +1,4 @@
-let commit = (gl) => Gl.commit(gl);
+let commit = (gl) => {
+  WonderLog.Log.print("commit gl") |> ignore;
+  Gl.commit(gl)
+};

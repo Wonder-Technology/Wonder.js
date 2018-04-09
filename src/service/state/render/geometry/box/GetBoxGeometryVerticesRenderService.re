@@ -3,6 +3,10 @@ open StateRenderType;
 let getVertices =
   [@bs]
   (
-    (index, {boxGeometryRecord}) =>
-      OperateTypeArrayBoxGeometryService.getVerticesTypeArray(index, boxGeometryRecord.vertices)
+    (index, {boxGeometryRecord}) => {
+      let vertices =
+        OperateTypeArrayBoxGeometryService.getVerticesTypeArray(index, boxGeometryRecord.vertices);
+      WonderLog.Log.print(("vertices: ", vertices)) |> ignore;
+      vertices
+    }
   );

@@ -15,9 +15,6 @@
         "name": "create_basic_render_object_buffer"
     },
     {
-        "name": "create_light_render_object_buffer"
-    },
-    {
         "name": "send_draw_data",
         "flags": [
             "DRAW"

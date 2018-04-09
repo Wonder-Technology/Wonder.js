@@ -3,8 +3,12 @@ open StateRenderType;
 let getIndices =
   [@bs]
   (
-    (index, {boxGeometryRecord}) =>
-      OperateTypeArrayBoxGeometryService.getIndicesTypeArray(index, boxGeometryRecord.indices)
+    (index, {boxGeometryRecord}) => {
+      let indices =
+        OperateTypeArrayBoxGeometryService.getIndicesTypeArray(index, boxGeometryRecord.indices);
+      WonderLog.Log.print(("indices: ", indices)) |> ignore;
+      indices
+    }
   );
 
 let getIndicesCount = (index, state) => BufferBoxGeometryService.getIndicesCount();

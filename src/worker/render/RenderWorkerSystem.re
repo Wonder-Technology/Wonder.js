@@ -59,7 +59,6 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
      let record = e##data;
      switch record##operateType {
      | INIT_GL =>
-       WonderLog.Log.print(("record:", record)) |> ignore;
        StateRenderWorkerService.createState()
        |> InitGlRenderWorkerService.initGl(record)
        |> StateRenderWorkerService.setState(StateDataRenderWorker.renderWorkerStateData)

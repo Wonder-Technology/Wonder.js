@@ -30,33 +30,36 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
     ();
 
 /* let sendBuffer =
-  [@bs]
-  (
-    (
-      gl,
-      (size: int, pos: attributeLocation),
-      buffer: buffer,
-      /* {vertexAttribHistoryArray}: StateRenderType.sendAttributeState */
-      {glslSenderRecord}
-    ) => {
-      bindBuffer(getArrayBuffer(gl), buffer, gl);
-      vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-      enableVertexAttribArray(gl, pos, glslSenderRecord.vertexAttribHistoryArray)
-    }
-  ); */
-
+   [@bs]
+   (
+     (
+       gl,
+       (size: int, pos: attributeLocation),
+       buffer: buffer,
+       /* {vertexAttribHistoryArray}: StateRenderType.sendAttributeState */
+       {glslSenderRecord}
+     ) => {
+       bindBuffer(getArrayBuffer(gl), buffer, gl);
+       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
+       enableVertexAttribArray(gl, pos, glslSenderRecord.vertexAttribHistoryArray)
+     }
+   ); */
 let sendMatrix3 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) => {
+      WonderLog.Log.print(("send matrix3: ", data)) |> ignore;
       uniformMatrix3fv(pos, Js.false_, data, gl)
+    }
   );
 
 let sendMatrix4 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) => {
+      WonderLog.Log.print(("send matrix4: ", data)) |> ignore;
       uniformMatrix4fv(pos, Js.false_, data, gl)
+    }
   );
 
 let _getCache = (shaderCacheMap, name: string) =>
@@ -106,6 +109,7 @@ let sendFloat =
   (
     (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
       if (_isNotCacheFloat(shaderCacheMap |> Obj.magic, name, value)) {
+        WonderLog.Log.print(("send float1: ", name, value)) |> ignore;
         uniform1f(pos, value, gl)
       } else {
         ()
@@ -122,6 +126,7 @@ let sendFloat3 =
       [|x, y, z|]
     ) =>
       if (_isNotCacheVector3(shaderCacheMap, name, (x, y, z))) {
+        WonderLog.Log.print(("send float3: ", name, (x, y, z))) |> ignore;
         uniform3f(pos, x, y, z, gl)
       } else {
         ()
@@ -138,6 +143,7 @@ let sendVec3 =
       (x, y, z) as dataTuple
     ) =>
       if (_isNotCacheVector3(shaderCacheMap, name, dataTuple)) {
+        WonderLog.Log.print(( "send vec3: ", name, dataTuple )) |> ignore;
         uniform3f(pos, x, y, z, gl)
       } else {
         ()

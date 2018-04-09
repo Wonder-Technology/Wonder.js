@@ -32,11 +32,8 @@ let execJob = (_, e, stateData) =>
       let data = MessageService.getRecord(e);
       let boxGeometryData = data##boxGeometryData;
       let buffer = boxGeometryData##buffer;
-      let count = data##bufferData##boxGeometryDataBufferCount;
-      state
-      |> _createTypeArrays(buffer, count)
-      |> _initBoxGeometrys(boxGeometryData)
-      |> ignore;
+      let count = data##bufferData##boxGeometryPointDataBufferCount;
+      state |> _createTypeArrays(buffer, count) |> _initBoxGeometrys(boxGeometryData) |> ignore;
       e
     }
   );

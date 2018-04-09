@@ -5,8 +5,8 @@ open StateDataMainType;
 let unsafeGetCameraRecord = (state) => state.renderRecord.cameraRecord |> OptionService.unsafeGet;
 
 let setCameraRecord = (cameraRecord, state: StateDataMainType.state) => {
-  ...state,
-  renderRecord: {...state.renderRecord, cameraRecord}
+  state.renderRecord.cameraRecord = cameraRecord;
+  state
 };
 
 let getBasicRenderObjectRecord = (state) => state.renderRecord.basicRenderObjectRecord;
