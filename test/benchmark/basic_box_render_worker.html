@@ -48,7 +48,7 @@
             //     },
             //     complete: () => {
             //         console.log("complete");
-            //         initSample(wd.getState());
+            //         initSample(wd.unsafeGetState());
             //     }
             // });
 
@@ -57,7 +57,7 @@
 
 
             AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                return initSample(wd.getState());
+                return initSample(wd.unsafeGetState());
             });
 
             function initSample(state) {
@@ -101,7 +101,7 @@
 
 
                 // setTimeout(() => {
-                //     var state = wd.getState();
+                //     var state = wd.unsafeGetState();
 
                 //     var state = wd.disposeGameObject(box, state);
 
@@ -111,7 +111,7 @@
 
 
                 // setTimeout(() => {
-                //     var state = wd.getState();
+                //     var state = wd.unsafeGetState();
 
                 //     var state = wd.disposeGameObject(box2, state);
 
@@ -123,7 +123,7 @@
 
 
                 // setTimeout(() => {
-                //     var state = wd.getState();
+                //     var state = wd.unsafeGetState();
 
 
                 //     var data = BasicBoxesTool.createBox(state);

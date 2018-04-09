@@ -3,7 +3,7 @@ open StateDataMainType;
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateDataMainService.getState(stateData);
+      let state = StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
       WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
       |> WorkerService.postMessage({

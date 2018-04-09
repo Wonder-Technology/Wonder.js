@@ -36,7 +36,7 @@ let renderTestData = {
                     ReplaceFetchTool.replaceFetchForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
                     function initSample(state) {
@@ -72,7 +72,7 @@ let renderTestData = {
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
 
@@ -109,7 +109,7 @@ let renderTestData = {
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
 
@@ -158,7 +158,7 @@ let renderTestData = {
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
 
@@ -202,7 +202,7 @@ let renderTestData = {
                     ReplaceFetchTool.replaceFetchForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
                     function initSample(state) {
@@ -248,7 +248,7 @@ let renderTestData = {
                     ReplaceFetchTool.replaceFetchForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
                     function initSample(state) {
@@ -304,7 +304,7 @@ let renderTestData = {
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-                        return initSample(wd.getState());
+                        return initSample(wd.unsafeGetState());
                     });
 
 

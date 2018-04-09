@@ -34,7 +34,7 @@ let _initMaterials = (basicMaterialData, data, state) => {
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderWorkerService.getState(stateData);
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let basicMaterialData = data##basicMaterialData;
       let buffer = basicMaterialData##buffer;
@@ -42,7 +42,6 @@ let execJob = (_, e, stateData) =>
       state
       |> _createTypeArrays(buffer, count)
       |> _initMaterials(basicMaterialData, data)
-      |> StateRenderWorkerService.setState(stateData)
       |> ignore;
       e
     }

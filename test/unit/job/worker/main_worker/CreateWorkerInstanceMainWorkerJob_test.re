@@ -21,7 +21,7 @@ let _ =
             "create render worker",
             () => {
               let workerFileDir = "./worker/";
-              let state = MainStateTool.getState();
+              let state = MainStateTool.createState();
               let state =
                 state
                 |> WorkerJobTool.createWithRecord((
@@ -45,7 +45,7 @@ let _ =
               |> Most.drain
               |> then_(
                    () => {
-                     let state = MainStateTool.getState();
+                     let state = MainStateTool.unsafeGetState();
                      Obj.magic(WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state))##path
                      |> expect == {j|$(workerFileDir)wd.render.worker.js|j}
                      |> resolve

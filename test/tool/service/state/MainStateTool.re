@@ -4,7 +4,7 @@ let restore = StateAPI.restoreState;
 
 let getStateData = () => StateAPI.getStateData();
 
-let getState = () => StateDataMainService.getState(getStateData());
+let unsafeGetState = () => StateDataMainService.unsafeGetState(getStateData());
 
 let setState = (state) => StateDataMainService.setState(getStateData(), state);
 

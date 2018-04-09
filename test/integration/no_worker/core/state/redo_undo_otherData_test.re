@@ -208,7 +208,7 @@ let _ =
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
                   let {basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord} =
-                    RenderTool.getRenderRecord(MainStateTool.getState());
+                    RenderTool.getRenderRecord(MainStateTool.unsafeGetState());
                   (basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord) |> expect == (None, None, None)
                 }
               )
@@ -225,7 +225,7 @@ let _ =
                   let record = currentState.globalTempRecord;
                   record.float32Array1 = Float32Array.make([|2.|]);
                   let _ = MainStateTool.restore(currentState, state);
-                  let {float32Array1} = MainStateTool.getState().globalTempRecord;
+                  let {float32Array1} = MainStateTool.unsafeGetState().globalTempRecord;
                   float32Array1 |> expect == record.float32Array1
                 }
               )
@@ -283,7 +283,7 @@ let _ =
                     _prepareVboBufferData(MainStateTool.createNewCompleteState(sandbox));
                   let _ = MainStateTool.restore(currentState, state);
                   let {vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool} =
-                    MainStateTool.getState() |> VboBufferTool.getVboBufferRecord;
+                    MainStateTool.unsafeGetState() |> VboBufferTool.getVboBufferRecord;
                   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>
                   expect == (

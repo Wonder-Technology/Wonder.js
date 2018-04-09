@@ -8,6 +8,18 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
       "name": "default",
       "jobs": [
         {
+          "name": "begin_init",
+          "link": "merge",
+          "jobs": [
+            {
+              "name": "init"
+            },
+            {
+              "name": "get_finish_init_render_data"
+            }
+          ]
+        },
+        {
           "name": "init",
           "link": "concat",
           "jobs": [
@@ -33,13 +45,10 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
         },
         {
           "name": "frame",
-          "link": "merge",
+          "link": "concat",
           "jobs": [
             {
-              "name": "init"
-            },
-            {
-              "name": "get_finish_init_render_data"
+              "name": "begin_init"
             }
           ]
         }

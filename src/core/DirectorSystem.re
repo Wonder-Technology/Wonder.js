@@ -14,20 +14,20 @@ let rec _createWorkerLoopStream = () =>
          WonderLog.Log.log({j|time: $time|j});
          WorkerJobService.getMainLoopJobStream(
            StateDataMain.stateData,
-           StateDataMainService.getState(StateDataMain.stateData)
+           StateDataMainService.unsafeGetState(StateDataMain.stateData)
          )
          |> Most.map((e) => ())
          /* Most.mergeArray([|
               MostUtils.callFunc(
                 () => {
-                  let state = StateDataMainService.getState(StateDataMain.stateData);
+                  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
                   WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
                   |> WorkerService.postMessage({"operateType": "loop"})
                 }
               ),
               MostUtils.fromWorkerEvent(
                 "message",
-                StateDataMainService.getState(StateDataMain.stateData).workerInstanceRecord
+                StateDataMainService.unsafeGetState(StateDataMain.stateData).workerInstanceRecord
                 |> WorkerInstanceService.unsafeGetRenderWorker
               )
               |> Most.filter(
@@ -83,10 +83,12 @@ let start = (state: StateDataMainType.state) =>
    */
   /* state |> init(StateDataMain.stateData) |> ignore; */
   WorkerDetectMainService.isUseWorker(state) ?
-    state
-    |> StateDataMainService.setState(StateDataMain.stateData)
-    |> _workerInit(StateDataMain.stateData)
-    |> Most.concat(_createWorkerLoopStream())
-    |> Most.drain
-    |> ignore :
+    {
+      state
+      |> StateDataMainService.setState(StateDataMain.stateData)
+      |> _workerInit(StateDataMain.stateData)
+      |> Most.concat(_createWorkerLoopStream())
+      |> Most.drain
+      |> ignore
+    } :
     state |> _noWorkerInit |> _noWorkerLoop(0.) |> ignore;

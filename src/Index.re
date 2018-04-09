@@ -294,7 +294,7 @@ let createState = StateAPI.createState;
 
 let getStateFromData = StateAPI.getStateFromData;
 
-let getState = StateAPI.getState;
+let unsafeGetState = StateAPI.unsafeGetState;
 
 let createStateData = StateAPI.createStateData;
 
@@ -516,7 +516,7 @@ let createState = StateAPI.createState;
 
 let getStateFromData = StateAPI.getStateFromData;
 
-let getState = StateAPI.getState;
+let unsafeGetState = StateAPI.unsafeGetState;
 
 let createStateData = StateAPI.createStateData;
 

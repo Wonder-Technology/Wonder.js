@@ -3,7 +3,7 @@ open StateDataRenderWorkerType;
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderWorkerService.getState(stateData);
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let gl =
         data##canvas
@@ -12,7 +12,6 @@ let execJob = (_, e, stateData) =>
            );
       WonderLog.Log.logVar(("gl: ", gl));
       state.deviceManagerRecord = state.deviceManagerRecord |> DeviceManagerService.setGl(gl);
-      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

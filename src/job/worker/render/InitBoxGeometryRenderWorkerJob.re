@@ -28,7 +28,7 @@ let _initBoxGeometrys = (boxGeometryData, state) => {
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderWorkerService.getState(stateData);
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let boxGeometryData = data##boxGeometryData;
       let buffer = boxGeometryData##buffer;
@@ -36,7 +36,6 @@ let execJob = (_, e, stateData) =>
       state
       |> _createTypeArrays(buffer, count)
       |> _initBoxGeometrys(boxGeometryData)
-      |> StateRenderWorkerService.setState(stateData)
       |> ignore;
       e
     }

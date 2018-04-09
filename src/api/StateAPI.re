@@ -7,9 +7,9 @@ let getStateData = () => StateDataMain.stateData;
 
 let createStateData = () => CreateStateDataMainService.createStateData();
 
-let getState = () => StateDataMainService.getState(getStateData());
+let unsafeGetState = () => StateDataMainService.unsafeGetState(getStateData());
 
-let getStateFromData = (stateData) => StateDataMainService.getState(stateData);
+let getStateFromData = (stateData) => StateDataMainService.unsafeGetState(stateData);
 
 let createState = () => CreateStateMainService.createState();
 

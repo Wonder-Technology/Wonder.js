@@ -5,9 +5,9 @@ let setState = (stateData, state) => {
   state
 };
 
-/* let getState = (stateData) => OptionService.unsafeGet(stateData.state); */
-let getState = (stateData) =>
-  switch stateData.state {
+let unsafeGetState = (stateData) =>
+stateData.state |> OptionService.unsafeGet;
+  /* switch stateData.state {
   | None => CreateStateRenderWorkerService.createState()
   | Some(state) => state
-  };
+  }; */

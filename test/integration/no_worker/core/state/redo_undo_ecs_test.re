@@ -1333,7 +1333,7 @@ let _ =
             let currentState = MainStateTool.createNewCompleteStateWithRenderConfig(sandbox);
             let (currentState, _, _, _, _, _, _) = prepareDataFunc(ref(currentState));
             let _ = MainStateTool.restore(currentState, state);
-            MainStateTool.getState() |> getDataFunc |> expect == (state |> getDataFunc)
+            MainStateTool.unsafeGetState() |> getDataFunc |> expect == (state |> getDataFunc)
           };
           describe(
             "restore meshRenderer record to target state",
@@ -1369,7 +1369,7 @@ let _ =
                 () => {
                   let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
                   let currentState = MainStateTool.restore(currentState, state);
-                  MainStateTool.getState() |> expect == currentState
+                  MainStateTool.unsafeGetState() |> expect == currentState
                 }
               );
               test(
@@ -1414,7 +1414,7 @@ let _ =
                      let currentState =
                        TransformAPI.setTransformLocalPosition(transform4, pos4, currentState);
                      let _ = MainStateTool.restore(currentState, state);
-                     let {float32ArrayPoolMap} = MainStateTool.getState().typeArrayPoolRecord;
+                     let {float32ArrayPoolMap} = MainStateTool.unsafeGetState().typeArrayPoolRecord;
                      (
                        float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(16),
                        float32ArrayPoolMap |> WonderCommonlib.SparseMapService.unsafeGet(3)
@@ -1452,7 +1452,7 @@ let _ =
                      let currentState = GeometryTool.initGeometry(geometry4, currentState);
                      let _ = MainStateTool.restore(currentState, state);
                      let {float32ArrayPoolMap, uint16ArrayPoolMap} =
-                       MainStateTool.getState().typeArrayPoolRecord;
+                       MainStateTool.unsafeGetState().typeArrayPoolRecord;
                      (
                        float32ArrayPoolMap
                        |> WonderCommonlib.SparseMapService.unsafeGet(
@@ -1562,7 +1562,7 @@ let _ =
                   matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.set(index, typeArr);
                   let _ = MainStateTool.restore(currentState, state);
                   let {float32ArrayPoolMap}: typeArrayPoolRecord =
-                    MainStateTool.getState().typeArrayPoolRecord;
+                    MainStateTool.unsafeGetState().typeArrayPoolRecord;
                   float32ArrayPoolMap
                   |> WonderCommonlib.SparseMapService.unsafeGet(typeArr |> Float32Array.length)
                   |> expect == [|typeArr|]
@@ -1584,7 +1584,7 @@ let _ =
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
                   let {isSendTransformMatrixDataMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(MainStateTool.getState());
+                    SourceInstanceTool.getSourceInstanceRecord(MainStateTool.unsafeGetState());
                   isSendTransformMatrixDataMap |> expect == [|false, false|]
                 }
               )

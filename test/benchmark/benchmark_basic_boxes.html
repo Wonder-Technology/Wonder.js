@@ -35,7 +35,7 @@
 
         window.onload = function () {
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                return initSample(wd.getState());
+                return initSample(wd.unsafeGetState());
             });
 
             function initSample(state) {

@@ -3,12 +3,21 @@
       "name": "default",
       "jobs": [
         {
+          "name": "begin_init",
+          "link": "merge",
+          "jobs": [
+            {
+              "name": "init"
+            },
+            {
+              "name": "get_finish_init_render_data"
+            }
+          ]
+        },
+        {
           "name": "init",
           "link": "concat",
           "jobs": [
-            {
-              "name": "create_worker_instance"
-            },
             {
               "name": "transfer_job_data"
             },
@@ -31,13 +40,13 @@
         },
         {
           "name": "frame",
-          "link": "merge",
+          "link": "concat",
           "jobs": [
             {
-              "name": "init"
+              "name": "create_worker_instance"
             },
             {
-              "name": "get_finish_init_render_data"
+              "name": "begin_init"
             }
           ]
         }

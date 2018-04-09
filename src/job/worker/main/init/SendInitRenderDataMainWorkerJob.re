@@ -14,7 +14,7 @@ let execJob = (flags, stateData) =>
             directionLightRecord,
             pointLightRecord
           } as state =
-        StateDataMainService.getState(stateData);
+        StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
       let offscreen =
         CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(settingRecord))

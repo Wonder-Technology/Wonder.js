@@ -156,15 +156,19 @@ let _createRecordWithState = (state) =>
   |> RecordBoxGeometryMainService.create
   |> RecordCustomGeometryMainService.create;
 
+let _createAndSetState = (stateData) =>
+  StateDataMainService.setState(stateData, CreateStateMainService.createState()) |> ignore;
+
 let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   let settingFilePath = Array.unsafe_get(jsonPathArr, 0);
   let dataDir = Array.unsafe_get(jsonPathArr, 1);
+  _createAndSetState(stateData);
   /* TODO perf: use mergeArray instead of concatArray */
   FetchCommon.createFetchJsonStream(settingFilePath, fetchFunc)
   |> flatMap(
        (json) =>
          ParseSettingService.convertToRecord(json)
-         |> _setSetting(stateData, StateDataMainService.getState(stateData))
+         |> _setSetting(stateData, StateDataMainService.unsafeGetState(stateData))
          |> _createRecordWithState
          |> WorkerDetectMainService.detect
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)

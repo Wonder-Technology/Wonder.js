@@ -76,35 +76,26 @@ let onerrorHandler = (msg: string, fileName: string, lineno: int) =>
        )
      }
    }; */
+let _createAndSetWorkerState = () =>
+  StateRenderWorkerService.setState(
+    StateDataRenderWorker.renderWorkerStateData,
+    CreateStateRenderWorkerService.createState()
+  )
+  |> ignore;
+
 /* TODO refactor: extract function */
 MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
 |> Most.filter((e) => e##data##operateType === "SEND_JOB_DATA" |> Js.Boolean.to_js_boolean)
 |> Most.concatMap(
      (e) =>
-       WorkerJobService.getRenderWorkerJobStreamArr(
-         e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
-         e##data##jobs |> Js.Json.parseExn |> Obj.magic,
-         StateDataRenderWorker.renderWorkerStateData
-       )
-       /* |> ArrayService.push(
-            MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
-            |> Most.filter((e) => e##data##operateType === "loop" |> Js.Boolean.to_js_boolean)
-            |> Most.map((e) => Some(e))
-            |> Most.tap(
-                 (e) =>
-                   WonderLog.Log.log({j|--in other worker-- get message from main worker: loop|j})
-               )
-            |> Most.concatMap(
-                 (e) =>
-                   MostUtils.callFunc(
-                     () => {
-                       WorkerService.getSelf()
-                       |> WorkerService.postMessage({"operateType": "finish_loop"});
-                       e
-                     }
-                   )
-               )
-          ) */
+       {
+         _createAndSetWorkerState();
+         WorkerJobService.getRenderWorkerJobStreamArr(
+           e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
+           e##data##jobs |> Js.Json.parseExn |> Obj.magic,
+           StateDataRenderWorker.renderWorkerStateData
+         )
+       }
        |> Most.mergeArray
    )
 |> Most.drain;

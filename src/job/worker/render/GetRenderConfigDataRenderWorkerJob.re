@@ -1,7 +1,7 @@
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderWorkerService.getState(stateData);
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let renderConfigData = data##renderConfigData;
       state.renderConfigRecord =

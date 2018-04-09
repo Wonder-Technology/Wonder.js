@@ -11,13 +11,13 @@ let setFakeWorkers = (state) =>
   }
   |> MainStateTool.setState;
 
-let prepare = () => setFakeWorkers(MainStateTool.getState());
+let prepare = () => setFakeWorkers(MainStateTool.unsafeGetState());
 
 let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   open Js.Promise;
   let worker = getWorkerFunc(state);
   let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
-  MainStateTool.getState()
+  MainStateTool.unsafeGetState()
   |> WorkerJobToolWorker.getMainInitJobStream(MainStateTool.getStateData())
   |> Most.forEach(
        (record) =>

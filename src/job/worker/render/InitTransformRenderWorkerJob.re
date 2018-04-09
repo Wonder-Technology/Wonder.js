@@ -17,14 +17,13 @@ let _createTypeArrays = (buffer, count, state) => {
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      let state = StateRenderWorkerService.getState(stateData);
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let transformData = data##transformData;
       let buffer = transformData##buffer;
       let count = data##bufferData##transformDataBufferCount;
       state
       |> _createTypeArrays(buffer, count)
-      |> StateRenderWorkerService.setState(stateData)
       |> ignore;
       e
     }
