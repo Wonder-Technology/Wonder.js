@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open GameObjectType;
+
 open ComponentMapService;
 
 let getBasicCameraViewComponent =

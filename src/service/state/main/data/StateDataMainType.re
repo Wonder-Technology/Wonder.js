@@ -4,6 +4,8 @@ open ComponentType;
 
 open TransformType;
 
+open GameObjectType;
+
 open BoxGeometryType;
 
 open CustomGeometryType;
@@ -85,38 +87,6 @@ type colorRgba = (float, float, float, float);
 type jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, state => state))
-}
-and gameObjectCurrentGeometryDataMap =
-  array(
-    (
-      geometry,
-      int
-      /* (array(GlType.buffer), array(GlType.buffer), array(GlType.buffer)),
-         (
-           [@bs] ((int, state) => Float32Array.t),
-           [@bs] ((int, state) => Float32Array.t),
-           [@bs] ((int, state) => Uint16Array.t),
-           (int, state) => int
-         ) */
-    )
-  )
-and gameObjectRecord = {
-  mutable uid: int,
-  mutable disposeCount: int,
-  mutable disposedUidMap: gameObjectDisposedUidMap,
-  mutable aliveUidArray: gameObjectAliveUidArray,
-  mutable currentGeometryDataMap: gameObjectCurrentGeometryDataMap,
-  mutable transformMap: gameObjectTransformMap,
-  mutable basicCameraViewMap: gameObjectCameraViewMap,
-  mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
-  mutable meshRendererMap: gameObjectMeshRendererMap,
-  mutable basicMaterialMap: gameObjectMaterialMap,
-  mutable lightMaterialMap: gameObjectMaterialMap,
-  mutable sourceInstanceMap: gameObjectSourceInstanceMap,
-  mutable objectInstanceMap: gameObjectObjectInstanceMap,
-  mutable ambientLightMap: gameObjectLightMap,
-  mutable directionLightMap: gameObjectLightMap,
-  mutable pointLightMap: gameObjectLightMap
 }
 and state = {
   settingRecord,

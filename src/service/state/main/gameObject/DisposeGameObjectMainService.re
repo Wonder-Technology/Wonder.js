@@ -1,14 +1,13 @@
 open StateDataMainType;
 
-open StateDataMainType;
+open GameObjectType;
 
 let _handleByDisposeCount = (record, state) =>
   if (QueryCPUMemoryService.isDisposeTooMany(record.disposeCount, state.settingRecord)) {
     record.disposeCount = 0;
     {
       ...state,
-      gameObjectRecord:
-        ReallocateGameObjectCPUMemoryService.reAllocate(state.gameObjectRecord)
+      gameObjectRecord: ReallocateGameObjectCPUMemoryService.reAllocate(state.gameObjectRecord)
     }
   } else {
     state

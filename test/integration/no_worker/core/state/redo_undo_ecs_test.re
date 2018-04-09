@@ -1180,41 +1180,43 @@ let _ =
                 "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   StateDataMainType.(
-                    MainStateTool.testShadowCopyArrayLikeMapData(
-                      (state) => {
-                        let {
-                          disposedUidMap,
-                          aliveUidArray,
-                          transformMap,
-                          basicCameraViewMap,
-                          currentGeometryDataMap,
-                          meshRendererMap,
-                          basicMaterialMap,
-                          lightMaterialMap,
-                          ambientLightMap,
-                          directionLightMap,
-                          pointLightMap,
-                          sourceInstanceMap,
-                          objectInstanceMap
-                        } =
-                          GameObjectTool.getGameObjectRecord(state);
-                        [|
-                          disposedUidMap |> Obj.magic,
-                          aliveUidArray |> Obj.magic,
-                          transformMap |> Obj.magic,
-                          basicCameraViewMap |> Obj.magic,
-                          currentGeometryDataMap |> Obj.magic,
-                          meshRendererMap |> Obj.magic,
-                          basicMaterialMap |> Obj.magic,
-                          lightMaterialMap |> Obj.magic,
-                          ambientLightMap |> Obj.magic,
-                          directionLightMap |> Obj.magic,
-                          pointLightMap |> Obj.magic,
-                          sourceInstanceMap |> Obj.magic,
-                          objectInstanceMap |> Obj.magic
-                        |]
-                      },
-                      state^
+                    GameObjectType.(
+                      MainStateTool.testShadowCopyArrayLikeMapData(
+                        (state) => {
+                          let {
+                            disposedUidMap,
+                            aliveUidArray,
+                            transformMap,
+                            basicCameraViewMap,
+                            currentGeometryDataMap,
+                            meshRendererMap,
+                            basicMaterialMap,
+                            lightMaterialMap,
+                            ambientLightMap,
+                            directionLightMap,
+                            pointLightMap,
+                            sourceInstanceMap,
+                            objectInstanceMap
+                          } =
+                            GameObjectTool.getGameObjectRecord(state);
+                          [|
+                            disposedUidMap |> Obj.magic,
+                            aliveUidArray |> Obj.magic,
+                            transformMap |> Obj.magic,
+                            basicCameraViewMap |> Obj.magic,
+                            currentGeometryDataMap |> Obj.magic,
+                            meshRendererMap |> Obj.magic,
+                            basicMaterialMap |> Obj.magic,
+                            lightMaterialMap |> Obj.magic,
+                            ambientLightMap |> Obj.magic,
+                            directionLightMap |> Obj.magic,
+                            pointLightMap |> Obj.magic,
+                            sourceInstanceMap |> Obj.magic,
+                            objectInstanceMap |> Obj.magic
+                          |]
+                        },
+                        state^
+                      )
                     )
                   )
               )

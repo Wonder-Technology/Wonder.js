@@ -1,4 +1,4 @@
-open StateDataMainType;
+open GameObjectType;
 
 let _setNewDataToState =
     (
