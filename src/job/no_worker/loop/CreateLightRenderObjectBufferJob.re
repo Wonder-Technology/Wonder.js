@@ -11,7 +11,7 @@ let _getLightMaterialRenderArray = (renderArray, state: StateDataMainType.state)
          HasComponentGameObjectService.hasLightMaterialComponent(uid, state.gameObjectRecord)
      );
 
-let execJob = (_, _, {gameObjectRecord, meshRendererRecord} as state) => {
+let execJob = (_, {gameObjectRecord, meshRendererRecord} as state) => {
   ...state,
   renderRecord: {
     ...state.renderRecord,

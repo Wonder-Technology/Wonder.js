@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open TransformType;
 
-let execJob = (_, _, {globalTempRecord} as state) => {
+let execJob = (_, {globalTempRecord} as state) => {
   let {index} as transformRecord = RecordTransformMainService.getRecord(state);
   {
     ...state,

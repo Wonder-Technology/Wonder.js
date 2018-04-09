@@ -1,6 +1,6 @@
 open StateRenderType;
 
-let execJob = (_, _, state: StateDataMainType.state) => {
+let execJob = (_, state: StateDataMainType.state) => {
   let renderState = CreateRenderStateMainService.createRenderState(state);
   let gl = [@bs] DeviceManagerService.unsafeGetGl(renderState.deviceManagerRecord);
   ShaderIndexRenderShaderService.getAllShaderIndexArray(renderState.shaderRecord)

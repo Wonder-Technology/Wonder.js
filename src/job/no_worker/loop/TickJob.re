@@ -1,6 +1,8 @@
 open StateDataMainType;
 
-let execJob = (flags, elapsed, state) => {
+let execJob = (flags, state) => {
   ...state,
-  timeControllerRecord: state.timeControllerRecord |> TimeControllerService.tick(elapsed)
+  timeControllerRecord:
+    state.timeControllerRecord
+    |> TimeControllerService.tick(TimeControllerService.getElapsed(state.timeControllerRecord))
 };

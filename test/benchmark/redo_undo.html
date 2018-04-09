@@ -59,7 +59,7 @@
                     isUndo = false,
                     isUndo2 = false;
 
-                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                var state = ScheduleTool.scheduleLoop(function (state) {
                     if (elapsed < 500 || isDispose) {
                         return state;
                     }
@@ -80,7 +80,7 @@
 
 
 
-                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                var state = ScheduleTool.scheduleLoop(function (state) {
                     if (elapsed < 1000 || isAdd) {
                         return state;
                     }
@@ -106,7 +106,7 @@
 
 
 
-                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                var state = ScheduleTool.scheduleLoop(function (state) {
                     if (elapsed < 1500 || isUndo) {
                         return state;
                     }
@@ -123,7 +123,7 @@
 
 
 
-                var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+                var state = ScheduleTool.scheduleLoop(function (state) {
                     if (elapsed < 2000 || isUndo2) {
                         return state;
                     }

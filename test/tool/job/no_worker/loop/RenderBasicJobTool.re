@@ -3,7 +3,6 @@ open StateDataMainType;
 let execJob = (configData, state) =>
   RenderBasicJob.execJob(
     configData,
-    Obj.magic(1),
     state
   );
 

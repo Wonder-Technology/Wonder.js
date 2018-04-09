@@ -84,7 +84,7 @@ type colorRgba = (float, float, float, float);
 
 type jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
-  noWorkerLoopJobList: list((string, (float, state) => state))
+  noWorkerLoopJobList: list((string, state => state))
 }
 and gameObjectCurrentGeometryDataMap =
   array(
@@ -149,7 +149,7 @@ and state = {
   glslSenderRecord,
   glslChunkRecord,
   renderRecord,
-  timeControllerRecord,
+  mutable timeControllerRecord,
   vboBufferRecord,
   globalTempRecord,
   typeArrayPoolRecord,

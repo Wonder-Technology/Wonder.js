@@ -1,3 +1,5 @@
+open StateDataMainType;
+
 let _workerInit = (stateData, state: StateDataMainType.state) =>
   WorkerJobService.getMainInitJobStream(stateData, state);
 
@@ -6,16 +8,21 @@ let _noWorkerInit = (state: StateDataMainType.state) =>
 
 let init = _noWorkerInit;
 
+let _computeElapseTime = (time, state) => {
+  state.timeControllerRecord =
+    state.timeControllerRecord |> TimeControllerService.computeElapseTime(time);
+  state
+};
+
 /* TODO unit test */
 let rec _createWorkerLoopStream = () =>
   MostAnimationFrame.nextAnimationFrame()
   |> Most.flatMap(
        (time) => {
          WonderLog.Log.log({j|time: $time|j});
-         WorkerJobService.getMainLoopJobStream(
-           StateDataMain.stateData,
-           StateDataMainService.unsafeGetState(StateDataMain.stateData)
-         )
+         let state =
+           _computeElapseTime(time, StateDataMainService.unsafeGetState(StateDataMain.stateData));
+         WorkerJobService.getMainLoopJobStream(StateDataMain.stateData, state)
          |> Most.map((e) => ())
          /* Most.mergeArray([|
               MostUtils.callFunc(
@@ -47,12 +54,7 @@ let rec _createWorkerLoopStream = () =>
   |> Most.continueWith(() => _createWorkerLoopStream());
 
 let _run = (time: float, state: StateDataMainType.state) =>
-  {
-    ...state,
-    timeControllerRecord:
-      state.timeControllerRecord |> TimeControllerService.computeElapseTime(time)
-  }
-  |> NoWorkerJobService.execNoWorkerLoopJobs;
+  _computeElapseTime(time, state) |> NoWorkerJobService.execNoWorkerLoopJobs;
 
 let loopBody = (time: float, state: StateDataMainType.state) => state |> _run(time);
 
@@ -83,12 +85,10 @@ let start = (state: StateDataMainType.state) =>
    */
   /* state |> init(StateDataMain.stateData) |> ignore; */
   WorkerDetectMainService.isUseWorker(state) ?
-    {
-      state
-      |> StateDataMainService.setState(StateDataMain.stateData)
-      |> _workerInit(StateDataMain.stateData)
-      |> Most.concat(_createWorkerLoopStream())
-      |> Most.drain
-      |> ignore
-    } :
+    state
+    |> StateDataMainService.setState(StateDataMain.stateData)
+    |> _workerInit(StateDataMain.stateData)
+    |> Most.concat(_createWorkerLoopStream())
+    |> Most.drain
+    |> ignore :
     state |> _noWorkerInit |> _noWorkerLoop(0.) |> ignore;

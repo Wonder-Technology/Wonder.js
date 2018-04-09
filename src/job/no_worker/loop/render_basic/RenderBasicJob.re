@@ -71,5 +71,5 @@ let _render = (gl, state: StateDataMainType.state) =>
     state
   };
 
-let execJob = (flags, _, state) =>
+let execJob = (flags, state) =>
   _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);

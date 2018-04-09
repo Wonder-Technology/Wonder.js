@@ -32,7 +32,7 @@ let execNoWorkerLoopJobs = (state: StateDataMainType.state) : state =>
   |> _getNoWorkerLoopJobList
   |> List.fold_left(
        (state, (_, handleFunc)) =>
-         handleFunc(TimeControllerService.getElapsed(state.timeControllerRecord), state),
+         handleFunc(state),
        state
      );
 

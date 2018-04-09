@@ -3,7 +3,7 @@ var RedoUndoTool = (function () {
         redoUndoShader: function (count, state) {
             var index = 1;
 
-            var state = ScheduleTool.scheduleLoop(function (elapsed, state) {
+            var state = ScheduleTool.scheduleLoop(function (state) {
                 if (index == 1) {
                     index += 1;
 

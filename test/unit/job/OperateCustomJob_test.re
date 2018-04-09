@@ -211,8 +211,14 @@ let _ =
                                 |> JobAPI.addNoWorkerLoopJob(
                                      "customJob",
                                      "tick",
-                                     (elapsed, state) => {
-                                       customData |> ArrayService.push(elapsed) |> ignore;
+                                     (state) => {
+                                       customData
+                                       |> ArrayService.push(
+                                            TimeControllerService.getElapsed(
+                                              state.timeControllerRecord
+                                            )
+                                          )
+                                       |> ignore;
                                        state
                                      }
                                    );
@@ -240,8 +246,12 @@ let _ =
                         |> JobAPI.addNoWorkerLoopJob(
                              "customJob",
                              "tick",
-                             (elapsed, state) => {
-                               customData |> ArrayService.push(elapsed) |> ignore;
+                             (state) => {
+                               customData
+                               |> ArrayService.push(
+                                    TimeControllerService.getElapsed(state.timeControllerRecord)
+                                  )
+                               |> ignore;
                                state
                              }
                            )

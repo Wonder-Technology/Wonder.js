@@ -27,7 +27,7 @@ let _getBit = (gl, flags) =>
   | Some(bit) => bit
   };
 
-let execJob = (flags, _, state) => {
+let execJob = (flags, state) => {
   let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
   {
     ...state,

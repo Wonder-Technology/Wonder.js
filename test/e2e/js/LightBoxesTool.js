@@ -121,7 +121,7 @@ var LightBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 return _setData(boxes, state)
             }, state)
         },
@@ -135,7 +135,7 @@ var LightBoxesTool = (function () {
                 state = wd.setTransformParent(boxes[i - 1], box, state)
             }
 
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 var box = boxes[i];
                 state = wd.setTransformParent(boxes[_getRandomParentIndex(10)], box, state);
 
@@ -146,7 +146,7 @@ var LightBoxesTool = (function () {
             window.sourceBox = boxes[0];
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 // for(var i = 0, len = window.boxes.length; i < len; i++){
                 //     var box = window.boxes[i];
                 //     state = disposeGameObject(box, state);

@@ -206,14 +206,14 @@ var InstanceLightBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 return _setData(boxes, state)
             }, state)
         },
         createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 // for (let i = 0, len = window.boxes.length; i < len; i++) {
                 //     let box = window.boxes[i];
                 //     state = disposeGameObject(box, state);
@@ -250,7 +250,7 @@ var InstanceLightBoxesTool = (function () {
         createAndDisposeObjectInstanceGameObjects: function (boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (elapsed, state) {
+            return ScheduleTool.scheduleLoop(function (state) {
                 for (let i = 0, len = window.boxes.length; i < len; i++) {
                     let box = window.boxes[i];
                     state = wd.disposeGameObject(box, state);

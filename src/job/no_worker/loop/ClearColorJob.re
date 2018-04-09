@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open RenderConfigType;
 
-let execJob = (flags, _, state) => {
+let execJob = (flags, state) => {
   ...state,
   deviceManagerRecord:
     DeviceManagerService.clearColor(

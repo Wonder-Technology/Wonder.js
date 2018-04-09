@@ -65,5 +65,5 @@ let _getCameraData =
     })
   };
 
-let execJob = (_, _, state) =>
+let execJob = (_, state) =>
   OperateRenderMainService.setCameraRecord(_getCameraData(state), state);
