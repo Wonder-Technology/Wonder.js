@@ -28,10 +28,16 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
 let _initBufferData = () => {
   open Js.Typed_array;
   let count = getBufferMaxCount();
-  let buffer = ArrayBuffer.make(count * Float32Array._BYTES_PER_ELEMENT * getColorsSize());
+  let buffer =
+    Worker.newSharedArrayBuffer(count * Float32Array._BYTES_PER_ELEMENT * getColorsSize());
   let offset = ref(0);
   let typeArrayLength = count * getColorsSize();
-  let colors = Float32Array.fromBufferRange(buffer, ~offset=offset^, ~length=typeArrayLength);
+  let colors =
+    Float32Array.fromBufferRange(
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
+      ~offset=offset^,
+      ~length=typeArrayLength
+    );
   offset := typeArrayLength * Float32Array._BYTES_PER_ELEMENT;
   (buffer, colors) |> _setDefaultTypeArrData(count)
 };
@@ -48,11 +54,11 @@ let create = () => {
 };
 
 let deepCopyForRestore = ({index, buffer, colors, gameObjectMap, mappedIndexMap}) => {
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   {
     index,
     buffer: copiedBuffer,
-    colors: CopyTypeArrayService.copyFloat32TypeArrayFromBuffer(copiedBuffer),
+    colors: CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBuffer(copiedBuffer),
     mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
     gameObjectMap: gameObjectMap |> SparseMapService.copy
   }

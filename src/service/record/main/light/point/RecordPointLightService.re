@@ -140,7 +140,7 @@ let getRangesLength = () => getBufferMaxCount() * getRangesSize();
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * Float32Array._BYTES_PER_ELEMENT
       * (
@@ -153,29 +153,41 @@ let _initBufferData = () => {
       )
     );
   let colors =
-    Float32Array.fromBufferRange(buffer, ~offset=getColorsOffset(), ~length=getColorsLength());
+    Float32Array.fromBufferRange(
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
+      ~offset=getColorsOffset(),
+      ~length=getColorsLength()
+    );
   let intensities =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getIntensitiesOffset(),
       ~length=getIntensitiesLength()
     );
   let constants =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getConstantsOffset(),
       ~length=getConstantsLength()
     );
   let linears =
-    Float32Array.fromBufferRange(buffer, ~offset=getLinearsOffset(), ~length=getLinearsLength());
+    Float32Array.fromBufferRange(
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
+      ~offset=getLinearsOffset(),
+      ~length=getLinearsLength()
+    );
   let quadratics =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getQuadraticsOffset(),
       ~length=getQuadraticsLength()
     );
   let ranges =
-    Float32Array.fromBufferRange(buffer, ~offset=getRangesOffset(), ~length=getRangesLength());
+    Float32Array.fromBufferRange(
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
+      ~offset=getRangesOffset(),
+      ~length=getRangesLength()
+    );
   (buffer, colors, intensities, constants, linears, quadratics, ranges)
   |> _setDefaultTypeArrData(count)
 };
@@ -211,42 +223,42 @@ let deepCopyForRestore =
         mappedIndexMap
       }
     ) => {
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   {
     index,
     buffer: copiedBuffer,
     colors:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getColorsOffset(),
         getColorsLength()
       ),
     intensities:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getIntensitiesOffset(),
         getIntensitiesLength()
       ),
     constants:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getConstantsOffset(),
         getConstantsLength()
       ),
     linears:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getLinearsOffset(),
         getLinearsLength()
       ),
     quadratics:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getQuadraticsOffset(),
         getQuadraticsLength()
       ),
     ranges:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getRangesOffset(),
         getRangesLength()

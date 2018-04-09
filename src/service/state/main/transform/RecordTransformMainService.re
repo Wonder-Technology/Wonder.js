@@ -52,7 +52,7 @@ let _setDefaultTypeArrData =
 
 let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) => {
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * Float32Array._BYTES_PER_ELEMENT
       * (getLocalPositionsSize() + getLocalToWorldMatricesSize())
@@ -120,7 +120,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     disposedIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   let transformDataBufferCount = BufferSettingService.getTransformDataBufferCount(settingRecord);
   {
     ...state,
@@ -129,13 +129,13 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         index,
         buffer: copiedBuffer,
         localToWorldMatrices:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getLocalToWorldMatricesOffset(transformDataBufferCount),
             getLocalToWorldMatricesLength(transformDataBufferCount)
           ),
         localPositions:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getLocalPositionsOffset(transformDataBufferCount),
             getLocalPositionsLength(transformDataBufferCount)

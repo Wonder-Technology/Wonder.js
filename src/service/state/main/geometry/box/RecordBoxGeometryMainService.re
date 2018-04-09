@@ -10,7 +10,7 @@ let getRecord = ({boxGeometryRecord}) => boxGeometryRecord |> OptionService.unsa
 
 let _initBufferData = (count) => {
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * (
         Float32Array._BYTES_PER_ELEMENT
@@ -59,7 +59,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     disposedIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   let geometryDataBufferCount =
     BufferSettingService.getBoxGeometryPointDataBufferCount(settingRecord);
   {
@@ -69,19 +69,19 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         index,
         buffer: copiedBuffer,
         vertices:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getVerticesOffset(geometryDataBufferCount),
             getVertexLength(geometryDataBufferCount)
           ),
         normals:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getNormalsOffset(geometryDataBufferCount),
             getVertexLength(geometryDataBufferCount)
           ),
         indices:
-          CopyTypeArrayService.copyUint16TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyUint16TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getIndicesOffset(geometryDataBufferCount),
             getIndicesLength(geometryDataBufferCount)

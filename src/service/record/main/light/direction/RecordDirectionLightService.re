@@ -58,14 +58,18 @@ let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count * Float32Array._BYTES_PER_ELEMENT * (getColorsSize() + getIntensitiesSize())
     );
   let colors =
-    Float32Array.fromBufferRange(buffer, ~offset=getColorsOffset(), ~length=getColorsLength());
+    Float32Array.fromBufferRange(
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
+      ~offset=getColorsOffset(),
+      ~length=getColorsLength()
+    );
   let intensities =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getIntensitiesOffset(),
       ~length=getIntensitiesLength()
     );
@@ -85,18 +89,18 @@ let create = () => {
 };
 
 let deepCopyForRestore = ({index, buffer, colors, intensities, gameObjectMap, mappedIndexMap}) => {
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   {
     index,
     buffer: copiedBuffer,
     colors:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getColorsOffset(),
         getColorsLength()
       ),
     intensities:
-      CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+      CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
         copiedBuffer,
         getIntensitiesOffset(),
         getIntensitiesLength()

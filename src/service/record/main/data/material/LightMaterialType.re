@@ -4,7 +4,7 @@ open MaterialType;
 
 type lightMaterialRecord = {
   index: int,
-  buffer: Js.Typed_array.array_buffer,
+  buffer: WorkerType.sharedArrayBuffer,
   shaderIndices: Js.Typed_array.Uint32Array.t,
   diffuseColors: Js.Typed_array.Float32Array.t,
   specularColors: Js.Typed_array.Float32Array.t,

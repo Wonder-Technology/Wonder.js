@@ -4,17 +4,17 @@ open BufferBoxGeometryService;
 
 let createTypeArrays = (buffer, count) => (
   Float32Array.fromBufferRange(
-    buffer,
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getVerticesOffset(count),
     ~length=getVertexLength(count)
   ),
   Float32Array.fromBufferRange(
-    buffer,
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getNormalsOffset(count),
     ~length=getVertexLength(count)
   ),
   Uint16Array.fromBufferRange(
-    buffer,
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getIndicesOffset(count),
     ~length=getIndicesLength(count)
   )

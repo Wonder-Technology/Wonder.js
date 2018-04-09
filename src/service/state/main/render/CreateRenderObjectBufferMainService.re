@@ -14,7 +14,7 @@ let create =
     ) => {
   let count = renderArray |> Js.Array.length;
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * (
         Uint32Array._BYTES_PER_ELEMENT

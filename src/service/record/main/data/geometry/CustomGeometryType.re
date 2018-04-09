@@ -6,7 +6,7 @@ open Js.Typed_array;
 
 type customGeometryRecord = {
   index: int,
-  buffer: Js.Typed_array.array_buffer,
+  buffer: WorkerType.sharedArrayBuffer,
   vertices: Js.Typed_array.Float32Array.t,
   normals: Js.Typed_array.Float32Array.t,
   indices: Js.Typed_array.Uint16Array.t,

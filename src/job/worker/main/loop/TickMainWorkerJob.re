@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open BasicMaterialType;
+
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {

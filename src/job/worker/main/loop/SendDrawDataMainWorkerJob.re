@@ -21,7 +21,6 @@ let execJob = (flags, stateData) =>
       let basicRenderObjectRecord =
         OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
       let {vMatrix, pMatrix, position} = OperateRenderMainService.unsafeGetCameraRecord(state);
-      WonderLog.Log.log({j|send draw data in main worker|j});
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessage({
            "operateType": operateType,

@@ -12,7 +12,7 @@ type transformDirtyMap = array(bool);
 
 type transformRecord = {
   mutable index: int,
-  buffer: Js.Typed_array.array_buffer,
+  buffer: WorkerType.sharedArrayBuffer,
   localToWorldMatrices: Js.Typed_array.Float32Array.t,
   localPositions: Js.Typed_array.Float32Array.t,
   defaultLocalToWorldMatrix: array(float),

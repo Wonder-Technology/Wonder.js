@@ -28,14 +28,27 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
            Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
      );
 
-let copyArrayBuffer = (buffer) => buffer |> Js.Typed_array.ArrayBuffer.sliceFrom(0);
+let copySharedArrayBuffer = (buffer) =>
+  Worker.sharedArrayBufferToArrayBuffer(buffer)
+  |> Js.Typed_array.ArrayBuffer.sliceFrom(0)
+  |> Worker.arrayBufferToSharedArrayBuffer;
 
-let copyFloat32TypeArrayFromBuffer = (buffer) => Js.Typed_array.Float32Array.fromBuffer(buffer);
+let copyFloat32TypeArrayFromSharedArrayBuffer = (buffer) =>
+  Js.Typed_array.Float32Array.fromBuffer(Worker.sharedArrayBufferToArrayBuffer(buffer));
 
-let copyFloat32TypeArrayFromBufferRange = (buffer, offset, length) =>
-  Js.Typed_array.Float32Array.fromBufferRange(buffer, ~offset, ~length);
+let copyFloat32TypeArrayFromSharedArrayBufferRange = (buffer, offset, length) =>
+  Js.Typed_array.Float32Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset,
+    ~length
+  );
 
-let copyUint16TypeArrayFromBufferRange = (buffer, offset, length) =>
-  Js.Typed_array.Uint16Array.fromBufferRange(buffer, ~offset, ~length);
+let copyUint16TypeArrayFromSharedArrayBufferRange = (buffer, offset, length) =>
+  Js.Typed_array.Uint16Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset,
+    ~length
+  );
 
-let copyUint8TypeArrayFromBuffer = (buffer) => Js.Typed_array.Uint8Array.fromBuffer(buffer);
+let copyUint8TypeArrayFromSharedArrayBuffer = (buffer) =>
+  Js.Typed_array.Uint8Array.fromBuffer(Worker.sharedArrayBufferToArrayBuffer(buffer));

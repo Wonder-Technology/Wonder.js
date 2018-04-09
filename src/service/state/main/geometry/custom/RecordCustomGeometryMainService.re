@@ -24,7 +24,7 @@ let getIndicesOffset = (count) =>
 
 let _initBufferData = (count) => {
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * (
         Float32Array._BYTES_PER_ELEMENT
@@ -38,19 +38,19 @@ let _initBufferData = (count) => {
      _createTypeArrays(buffer, count) */
   let vertices =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getVerticesOffset(count),
       ~length=getVertexLength(count)
     );
   let normals =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getNormalsOffset(count),
       ~length=getVertexLength(count)
     );
   let indices =
     Uint16Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getIndicesOffset(count),
       ~length=getIndicesLength(count)
     );
@@ -111,7 +111,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     aliveIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   let geometryDataBufferCount =
     BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
   {
@@ -121,19 +121,19 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         index,
         buffer: copiedBuffer,
         vertices:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getVerticesOffset(geometryDataBufferCount),
             getVertexLength(geometryDataBufferCount)
           ),
         normals:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getNormalsOffset(geometryDataBufferCount),
             getVertexLength(geometryDataBufferCount)
           ),
         indices:
-          CopyTypeArrayService.copyUint16TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyUint16TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getIndicesOffset(geometryDataBufferCount),
             getIndicesLength(geometryDataBufferCount)

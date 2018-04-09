@@ -40,7 +40,7 @@ let _setDefaultTypeArrData =
 let _initBufferData =
     (count, defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness) => {
   let buffer =
-    ArrayBuffer.make(
+    Worker.newSharedArrayBuffer(
       count
       * Uint32Array._BYTES_PER_ELEMENT
       * ShaderIndicesService.getShaderIndicesSize()
@@ -50,25 +50,25 @@ let _initBufferData =
     );
   let shaderIndices =
     Uint32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=ShaderIndicesService.getShaderIndicesOffset(count),
       ~length=ShaderIndicesService.getShaderIndicesLength(count)
     );
   let diffuseColors =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getDiffuseColorsOffset(count),
       ~length=getDiffuseColorsLength(count)
     );
   let specularColors =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getSpecularColorsOffset(count),
       ~length=getSpecularColorsLength(count)
     );
   let shininess =
     Float32Array.fromBufferRange(
-      buffer,
+      Worker.sharedArrayBufferToArrayBuffer(buffer),
       ~offset=getShininessOffset(count),
       ~length=getShininessLength(count)
     );
@@ -134,7 +134,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     disposedIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copyArrayBuffer(buffer);
+  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
   let lightMaterialDataBufferCount =
     BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
   {
@@ -145,19 +145,19 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         buffer: copiedBuffer,
         shaderIndices,
         diffuseColors:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getDiffuseColorsOffset(lightMaterialDataBufferCount),
             getDiffuseColorsLength(lightMaterialDataBufferCount)
           ),
         specularColors:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getSpecularColorsOffset(lightMaterialDataBufferCount),
             getSpecularColorsLength(lightMaterialDataBufferCount)
           ),
         shininess:
-          CopyTypeArrayService.copyFloat32TypeArrayFromBufferRange(
+          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
             copiedBuffer,
             getShininessOffset(lightMaterialDataBufferCount),
             getShininessLength(lightMaterialDataBufferCount)
