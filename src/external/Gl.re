@@ -54,7 +54,11 @@ open Js.Typed_array;
 
 [@bs.send.pipe : webgl1Context] external cullFace : int => unit = "";
 
-[@bs.send] external getWebgl1Context : ('canvas, [@bs.as "webgl"] _, ContextType.contextConfigJsObj) => webgl1Context =
+[@bs.send] external commit : webgl1Context => unit = "";
+
+[@bs.send]
+external getWebgl1Context :
+  ('canvas, [@bs.as "webgl"] _, ContextType.contextConfigJsObj) => webgl1Context =
   "getContext";
 
 [@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";

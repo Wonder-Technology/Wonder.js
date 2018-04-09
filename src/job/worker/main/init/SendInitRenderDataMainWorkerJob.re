@@ -19,7 +19,7 @@ let execJob = (flags, stateData) =>
       let offscreen =
         CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(settingRecord))
         |> Worker.transferControlToOffscreen;
-      /* let { buffer, gpu } = settingRecord; */
+      let gpu = OperateSettingService.unsafeGetGPU(settingRecord);
       let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
       let renderConfigRecord = RecordRenderConfigMainService.getRecord(state);
       let transformRecord = RecordTransformMainService.getRecord(state);
@@ -39,9 +39,7 @@ let execJob = (flags, stateData) =>
                "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount
                /* "lightMaterialDataBufferCount": int */
              },
-             /* "gpuData":{
-                "useHardwareInstance":  gpu.useHardwareInstance
-                             }, */
+             "gpuData": {"useHardwareInstance": gpu.useHardwareInstance},
              "renderConfigData": {
                "shaders":
                  GetDataRenderConfigService.getShaders(renderConfigRecord)

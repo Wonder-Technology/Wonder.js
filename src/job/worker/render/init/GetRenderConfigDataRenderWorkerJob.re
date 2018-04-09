@@ -9,7 +9,6 @@ let execJob = (_, e, stateData) =>
           renderConfigData##shaders |> Js.Json.parseExn |> Obj.magic,
           renderConfigData##shaderLibs |> Js.Json.parseExn |> Obj.magic
         ));
-      StateRenderWorkerService.setState(stateData, state) |> ignore;
       e
     }
   );

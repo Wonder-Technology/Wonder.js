@@ -1,6 +1,7 @@
 open StateDataRenderWorkerType;
 
 let createState = () => {
+  settingRecord: RecordRenderWorkerSettingService.create(),
   renderConfigRecord: None,
   basicMaterialRecord: None,
   transformRecord: None,
@@ -12,5 +13,9 @@ let createState = () => {
   glslLocationRecord: RecordGLSLLocationService.create(),
   glslSenderRecord: RecordGLSLSenderAllService.create(),
   glslChunkRecord: ShaderChunkSystem.create(),
-  deviceManagerRecord: RecordDeviceManagerService.create()
+  deviceManagerRecord: RecordDeviceManagerService.create(),
+  renderRecord: RecordRenderWorkerRenderService.create(),
+  typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
+  globalTempRecord: RecordGlobalTempService.create(),
+  vboBufferRecord: RecordVboBufferService.create()
 };

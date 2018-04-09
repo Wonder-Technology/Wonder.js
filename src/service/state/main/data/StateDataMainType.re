@@ -133,7 +133,7 @@ and state = {
   mutable transformRecord: option(transformRecord),
   sceneRecord,
   basicCameraViewRecord,
-  perspectiveCameraProjectionRecord,
+  mutable perspectiveCameraProjectionRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
   ambientLightRecord,

@@ -28,6 +28,7 @@ let _ =
             "canvas": Sinon.matchAny,
             "contextConfig": Sinon.matchAny,
             "bufferData": Sinon.matchAny,
+            "gpuData": Sinon.matchAny,
             "renderConfigData": Sinon.matchAny,
             "transformData": Sinon.matchAny,
             "basicMaterialData": Sinon.matchAny,

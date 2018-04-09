@@ -23,42 +23,15 @@ let create =
         * getGeometryTypeSize()
       )
     );
-  let transformIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=getTransformIndicesOffset(count),
-      ~length=getTransformIndicesLength(count)
-    );
-  let materialIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=getMaterialIndicesOffset(count),
-      ~length=getMaterialIndicesLength(count)
-    );
-  let shaderIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=getShaderIndicesOffset(count),
-      ~length=getShaderIndicesLength(count)
-    );
-  let geometryIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=getGeometryIndicesOffset(count),
-      ~length=getGeometryIndicesLength(count)
-    );
-  let sourceInstanceIndices =
-    Uint32Array.fromBufferRange(
-      buffer,
-      ~offset=getSourceInstanceIndicesOffset(count),
-      ~length=getSourceInstanceIndicesLength(count)
-    );
-  let geometryTypes =
-    Uint8Array.fromBufferRange(
-      buffer,
-      ~offset=getGeometryTypesOffset(count),
-      ~length=getGeometryTypesLength(count)
-    );
+  /* let (
+       transformIndices,
+       materialIndices,
+       shaderIndices,
+       geometryIndices,
+       sourceInstanceIndices,
+       geometryTypes
+     ) =
+       CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count); */
   let defaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance();
   let (
     transformIndices,
@@ -107,14 +80,15 @@ let create =
              )
            }
          ),
-         (
-           transformIndices,
-           materialIndices,
-           shaderIndices,
-           geometryIndices,
-           sourceInstanceIndices,
-           geometryTypes
-         )
+         /* (
+              transformIndices,
+              materialIndices,
+              shaderIndices,
+              geometryIndices,
+              sourceInstanceIndices,
+              geometryTypes
+            ) */
+         CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count)
        );
   Some({
     buffer,

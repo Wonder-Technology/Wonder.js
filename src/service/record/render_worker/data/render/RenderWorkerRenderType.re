@@ -1,5 +1,5 @@
 type renderObjectRecord = {
-  buffer: Js.Typed_array.array_buffer,
+  /* renderArray: array(int), */
   count: int,
   transformIndices: Js.Typed_array.Uint32Array.t,
   materialIndices: Js.Typed_array.Uint32Array.t,
@@ -11,6 +11,5 @@ type renderObjectRecord = {
 
 type renderRecord = {
   mutable basicRenderObjectRecord: option(renderObjectRecord),
-  mutable lightRenderObjectRecord: option(renderObjectRecord),
-  cameraRecord: option(RenderCameraType.renderCameraRecord)
+  mutable cameraRecord: option(RenderCameraType.renderCameraRecord)
 };

@@ -15,7 +15,13 @@
         "name": "get_renderConfig_data"
     },
     {
+        "name": "get_setting_data"
+    },
+    {
         "name": "create_gl"
+    },
+    {
+        "name": "preget_glslData"
     },
     {
         "name": "init_transform"
@@ -45,13 +51,27 @@
         ]
     },
     {
-        "name": "clear_color"
+        "name": "clear_color",
+        "flags": [
+            "#000000"
+        ]
     },
     {
-        "name": "clear_buffer"
+        "name": "clear_buffer",
+        "flags": [
+            "COLOR_BUFFER",
+            "DEPTH_BUFFER",
+            "STENCIL_BUFFER"
+        ]
     },
     {
         "name": "clear_last_send_component"
+    },
+    {
+        "name": "create_basic_render_object_typeArray"
+    },
+    {
+        "name": "get_camera_data"
     },
     {
         "name": "send_uniform_shader_data"

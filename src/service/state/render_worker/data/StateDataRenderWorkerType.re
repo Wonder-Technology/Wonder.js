@@ -1,10 +1,14 @@
 open GPUDetectType;
 
+open RenderWorkerSettingType;
+
 open RenderWorkerBasicMaterialType;
 
 open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
+
+open RenderWorkerRenderType;
 
 open GlType;
 
@@ -22,7 +26,14 @@ open GeometryType;
 
 open ShaderChunkType;
 
+open VboBufferType;
+
+open TypeArrayPoolType;
+
+open GlobalTempType;
+
 type renderWorkerState = {
+  mutable settingRecord,
   mutable renderConfigRecord: option(RenderConfigType.renderConfigRecord),
   mutable gpuDetectRecord,
   mutable deviceManagerRecord: DeviceManagerType.deviceManagerRecord,
@@ -34,7 +45,11 @@ type renderWorkerState = {
   mutable glslChunkRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable transformRecord: option(transformRecord),
-  mutable boxGeometryRecord: option(boxGeometryRecord)
+  mutable boxGeometryRecord: option(boxGeometryRecord),
+  mutable renderRecord,
+  mutable typeArrayPoolRecord,
+  mutable vboBufferRecord,
+  mutable globalTempRecord
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};
