@@ -47,6 +47,22 @@ let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state)
   matrix
 };
 
+let getLocalToWorldMatrixTypeArrayByVisitTypeArray = (transform, state: StateDataMainType.state) => {
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    RecordTransformMainService.getRecord(state);
+  RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices)
+};
+
+let update = (transform, {globalTempRecord} as state) => {
+  UpdateTransformMainService.update(
+    transform,
+    globalTempRecord,
+    RecordTransformMainService.getRecord(state)
+  )
+  |> ignore;
+  state
+};
+
 let updateAndGetLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let (matrix, _) =
     UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(

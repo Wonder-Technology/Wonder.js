@@ -687,15 +687,38 @@ let _ =
                       |> Js.Typed_array.Float32Array.copy;
                     (state, transform1, mat1)
                   };
-                  test(
+                  describe(
                     "invalid after change local position",
                     () => {
-                      let (state, transform1, mat1) = _prepare(state);
-                      let pos2 = (2., 2., 3.);
-                      let state = state |> setTransformLocalPosition(transform1, pos2);
-                      let mat2 =
-                        TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
-                      mat1 |> expect |> not_ |> toEqual(mat2)
+                      test(
+                        "test by updateAndGetLocalToWorldMatrixTypeArray",
+                        () => {
+                          let (state, transform1, mat1) = _prepare(state);
+                          let pos2 = (2., 2., 3.);
+                          let state = state |> setTransformLocalPosition(transform1, pos2);
+                          let mat2 =
+                            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                              transform1,
+                              state
+                            );
+                          mat1 |> expect |> not_ |> toEqual(mat2)
+                        }
+                      );
+                      test(
+                        "test type array",
+                        () => {
+                          let (state, transform1, mat1) = _prepare(state);
+                          let pos2 = (2., 2., 3.);
+                          let state = state |> setTransformLocalPosition(transform1, pos2);
+                          let state = TransformTool.update(transform1, state);
+                          let mat2 =
+                            TransformTool.getLocalToWorldMatrixTypeArrayByVisitTypeArray(
+                              transform1,
+                              state
+                            );
+                          mat1 |> expect |> not_ |> toEqual(mat2)
+                        }
+                      )
                     }
                   );
                   test(
