@@ -15,8 +15,13 @@ let getIndices =
     }
   );
 
-let getIndicesCount = (index, {customGeometryRecord}) => {
-  let {indicesInfoArray} = customGeometryRecord;
-  let {startIndex, endIndex} = ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
-  endIndex - startIndex
-};
+let getIndicesCount =
+  [@bs]
+  (
+    (index, {customGeometryRecord}) => {
+      let {indicesInfoArray} = customGeometryRecord;
+      let {startIndex, endIndex} =
+        ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
+      endIndex - startIndex
+    }
+  );

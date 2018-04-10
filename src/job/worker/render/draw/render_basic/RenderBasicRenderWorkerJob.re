@@ -59,7 +59,7 @@ let _render = (gl, state) =>
                  RenderGeometryService.getDrawMode(gl),
                  RenderGeometryService.getIndexType(gl),
                  RenderGeometryService.getIndexTypeSize(gl),
-                 getIndicesCountFunc(geometryIndex, state)
+                 [@bs] getIndicesCountFunc(geometryIndex, state)
                ),
                gl
              );

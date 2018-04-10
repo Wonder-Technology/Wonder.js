@@ -11,4 +11,5 @@ let getIndices =
     }
   );
 
-let getIndicesCount = (index, state) => BufferBoxGeometryService.getIndicesCount();
+let getIndicesCount =
+  [@bs] ((index: int, state: renderState) => BufferBoxGeometryService.getIndicesCount());

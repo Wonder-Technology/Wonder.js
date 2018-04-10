@@ -28,9 +28,12 @@ let render =
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
   let getIndicesCountFunc =
     CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
-  let indicesCount = getIndicesCountFunc(geometryIndex, state);
+  let indicesCount = [@bs] getIndicesCountFunc(geometryIndex, state);
   let objectInstanceTransformArray =
-    GetObjectInstanceArrayRenderService.getObjectInstanceTransformArray(sourceInstance, state.sourceInstanceRecord);
+    GetObjectInstanceArrayRenderService.getObjectInstanceTransformArray(
+      sourceInstance,
+      state.sourceInstanceRecord
+    );
   objectInstanceTransformArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]

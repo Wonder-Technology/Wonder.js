@@ -27,7 +27,7 @@ let buildBoxGeometryConfigDataJsObj =
 };
 
 let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
-  GetBoxGeometryIndicesRenderService.getIndicesCount(index, state);
+  [@bs] GetBoxGeometryIndicesRenderService.getIndicesCount(index, state);
 
 let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
 

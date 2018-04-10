@@ -39,7 +39,7 @@ let initMaterials = (gl, {gameObjectRecord} as state) => {
 };
 
 let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
-  ShaderIndexBasicMaterialMainService.getShaderIndex(materialIndex, state);
+  [@bs] ShaderIndexBasicMaterialMainService.getShaderIndex(materialIndex, state);
 
 /* let hasShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
    ShaderIndexBasicMaterialMainService.hasShaderIndex(materialIndex, state); */

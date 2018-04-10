@@ -4,10 +4,14 @@ open StateDataMainType;
 
 open LightMaterialType;
 
-let getShaderIndex = (materialIndex: int, state) =>
-  ShaderIndicesService.getShaderIndex(
-    materialIndex,
-    RecordLightMaterialMainService.getRecord(state).shaderIndices
+let getShaderIndex =
+  [@bs]
+  (
+    (materialIndex: int, state) =>
+      ShaderIndicesService.getShaderIndex(
+        materialIndex,
+        RecordLightMaterialMainService.getRecord(state).shaderIndices
+      )
   );
 
 /* let hasShaderIndex = (materialIndex: int, state) =>

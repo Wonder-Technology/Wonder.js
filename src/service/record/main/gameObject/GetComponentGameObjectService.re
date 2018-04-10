@@ -48,11 +48,11 @@ let getBasicMaterialComponent =
 let getLightMaterialComponent =
   [@bs] ((uid: int, {lightMaterialMap}) => lightMaterialMap |> getComponent(uid));
 
-let unsafeGetBasicMaterialComponent = (uid: int, {basicMaterialMap}) =>
-  basicMaterialMap |> unsafeGetComponent(uid);
+let unsafeGetBasicMaterialComponent =
+  [@bs] ((uid: int, {basicMaterialMap}) => basicMaterialMap |> unsafeGetComponent(uid));
 
-let unsafeGetLightMaterialComponent = (uid: int, {lightMaterialMap}) =>
-  lightMaterialMap |> unsafeGetComponent(uid);
+let unsafeGetLightMaterialComponent =
+  [@bs] ((uid: int, {lightMaterialMap}) => lightMaterialMap |> unsafeGetComponent(uid));
 
 let getMeshRendererComponent =
   [@bs] ((uid: int, {meshRendererMap}) => meshRendererMap |> getComponent(uid));

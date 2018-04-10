@@ -225,7 +225,7 @@ let unsafeGetGameObjectBasicMaterialComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  unsafeGetBasicMaterialComponent(gameObject, state.gameObjectRecord)
+  [@bs] unsafeGetBasicMaterialComponent(gameObject, state.gameObjectRecord)
 };
 
 let hasGameObjectBasicMaterialComponent = (gameObject: gameObject, state: StateDataMainType.state) => {
@@ -260,7 +260,7 @@ let unsafeGetGameObjectLightMaterialComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  unsafeGetLightMaterialComponent(gameObject, state.gameObjectRecord)
+  [@bs] unsafeGetLightMaterialComponent(gameObject, state.gameObjectRecord)
 };
 
 let hasGameObjectLightMaterialComponent = (gameObject: gameObject, state: StateDataMainType.state) => {

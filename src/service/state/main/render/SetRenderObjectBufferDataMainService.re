@@ -45,7 +45,7 @@ let setData =
              uid,
              index
            ) => {
-             let materialIndex = unsafeGetMaterialComponentFunc(uid, gameObjectRecord);
+             let materialIndex = [@bs] unsafeGetMaterialComponentFunc(uid, gameObjectRecord);
              let (geometryIndex, type_) =
                GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, gameObjectRecord);
              (
@@ -55,7 +55,7 @@ let setData =
                  transformIndices
                ),
                setComponent(index, materialIndex, materialIndices),
-               setComponent(index, getShaderIndexFunc(materialIndex, state), shaderIndices),
+               setComponent(index, [@bs] getShaderIndexFunc(materialIndex, state), shaderIndices),
                setComponent(index, geometryIndex, geometryIndices),
                switch (
                  [@bs]
