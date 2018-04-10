@@ -33,7 +33,6 @@ let execJob = (flags, stateData) =>
              "canvas": offscreen,
              "contextConfig": OperateSettingService.unsafeGetContext(settingRecord),
              "bufferData": {
-               "boxGeometryPointDataBufferCount": buffer.boxGeometryPointDataBufferCount,
                "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
                "transformDataBufferCount": buffer.transformDataBufferCount,
                "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount

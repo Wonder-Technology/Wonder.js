@@ -80,7 +80,6 @@ let buildSetting = (isDebug, canvasId, buffer, context, useHardwareInstance, use
 
 let buildBufferConfigStr =
     (
-      ~boxGeometryPointDataBufferCount=300,
       ~customGeometryPointDataBufferCount=300,
       ~transformDataBufferCount=50,
       ~basicMaterialDataBufferCount=50,
@@ -88,7 +87,6 @@ let buildBufferConfigStr =
       ()
     ) => {j|
        {
-            "boxGeometryPointDataBufferCount": $boxGeometryPointDataBufferCount,
             "customGeometryPointDataBufferCount": $customGeometryPointDataBufferCount,
   "transformDataBufferCount": $transformDataBufferCount,
   "basicMaterialDataBufferCount": $basicMaterialDataBufferCount,
@@ -137,7 +135,6 @@ let setMemory = (state: StateDataMainType.state, ~maxDisposeCount=1000, ()) => {
 let setBufferSize =
     (
       state: StateDataMainType.state,
-      ~boxGeometryPointDataBufferCount=100,
       ~customGeometryPointDataBufferCount=100,
       ~transformDataBufferCount=100,
       ~basicMaterialDataBufferCount=100,
@@ -150,7 +147,6 @@ let setBufferSize =
     buffer:
       Some({
         ...BufferSettingService.unsafeGetBuffer(state.settingRecord),
-        boxGeometryPointDataBufferCount,
         customGeometryPointDataBufferCount
       })
   }
@@ -167,4 +163,3 @@ let setGPU = (config, state) => {
   ...state,
   settingRecord: {...state.settingRecord, gpu: Some(config)}
 };
-/* let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)}; */

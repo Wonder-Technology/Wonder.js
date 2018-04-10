@@ -12,7 +12,6 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
     switch buffer {
     | None =>
       Some({
-        boxGeometryPointDataBufferCount: 1000 * 1000,
         customGeometryPointDataBufferCount: 1000 * 1000,
         transformDataBufferCount: 10 * 1000,
         basicMaterialDataBufferCount: 10 * 1000,

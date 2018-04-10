@@ -14,7 +14,6 @@ type memory = {
 };
 
 type buffer = {
-  boxGeometryPointDataBufferCount: int,
   customGeometryPointDataBufferCount: int,
   transformDataBufferCount: int,
   basicMaterialDataBufferCount: int,
