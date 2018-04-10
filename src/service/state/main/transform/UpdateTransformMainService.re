@@ -8,8 +8,8 @@ open ModelMatrixTransformService;
 
 open DirtyTransformService;
 
-let _clearCache = (record) => {
-  record.normalMatrixCacheMap = WonderCommonlib.SparseMapService.createEmpty();
+let _clearCache = (transform, {normalMatrixCacheMap} as record) => {
+  normalMatrixCacheMap |> Obj.magic |> WonderCommonlib.SparseMapService.deleteVal(transform) |> ignore;
   record
 };
 
@@ -18,7 +18,7 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
   | false => transformRecord
   | true =>
     /* TODO perf: translation not clear normalMatrixCacheMap, only rotation/scale clear */
-    let transformRecord = mark(transform, false, transformRecord) |> _clearCache;
+    let transformRecord = mark(transform, false, transformRecord) |> _clearCache(transform);
     switch (getParent(transform, transformRecord)) {
     | Some(parent) =>
       let transformRecord = transformRecord |> update(parent, globalTempRecord);
