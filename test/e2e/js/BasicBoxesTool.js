@@ -49,11 +49,11 @@ var BasicBoxesTool = (function () {
             var state = record[0];
             var geometry = record[1];
 
-            state = wd.setBoxGeometryConfigData(geometry, {
-                width: 5,
-                height: 5,
-                depth: 5
-            }, state);
+            // state = wd.setBoxGeometryConfigData(geometry, {
+            //     width: 5,
+            //     height: 5,
+            //     depth: 5
+            // }, state);
 
 
 

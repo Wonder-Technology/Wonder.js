@@ -66,11 +66,11 @@ var LightTool = (function () {
 
             var [state, geometry] = wd.createBoxGeometry(state);
 
-            state = wd.setBoxGeometryConfigData(geometry, {
-                width: 2,
-                height: 2,
-                depth: 2
-            }, state);
+            // state = wd.setBoxGeometryConfigData(geometry, {
+            //     width: 2,
+            //     height: 2,
+            //     depth: 2
+            // }, state);
 
 
 

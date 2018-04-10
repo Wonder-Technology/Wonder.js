@@ -62,13 +62,6 @@ let execJob = (flags, stateData) =>
                    gameObjectRecord
                  )
              },
-             "boxGeometryData": {
-               "buffer": boxGeometryRecord.buffer,
-               "index": boxGeometryRecord.index,
-               "configDataMap": boxGeometryRecord.configDataMap,
-               "isInitMap": boxGeometryRecord.isInitMap,
-               "disposedIndexArray": boxGeometryRecord.disposedIndexArray
-             },
              "customGeometryData": {
                "buffer": customGeometryRecord.buffer,
                "verticesInfoArray": customGeometryRecord.verticesInfoArray,

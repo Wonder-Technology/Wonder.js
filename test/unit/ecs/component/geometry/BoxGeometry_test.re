@@ -35,596 +35,23 @@ let _ =
             }
           )
       );
-      describe(
-        "setConfigData",
-        () => {
-          test(
-            "test set config record",
-            () => {
-              let (state, geometry) = createBoxGeometry(state^);
-              let state =
-                state
-                |> setBoxGeometryConfigData(
-                     geometry,
-                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
-                       ~width=Js.Nullable.return(10.),
-                       ~height=Js.Nullable.return(20.),
-                       ~depth=Js.Nullable.return(30.),
-                       ~widthSegment=Js.Nullable.return(2.),
-                       ~heightSegment=Js.Nullable.return(3.),
-                       ~depthSegment=Js.Nullable.return(4.),
-                       ()
-                     )
-                   );
-              state
-              |> unsafeGetBoxGeometryConfigData(geometry)
-              |>
-              expect == Js.Dict.fromList([
-                          ("width", 10.),
-                          ("height", 20.),
-                          ("depth", 30.),
-                          ("widthSegment", 2.),
-                          ("heightSegment", 3.),
-                          ("depthSegment", 4.)
-                        ])
-            }
-          );
-          test(
-            "if not pass full record, use default record",
-            () => {
-              let (state, geometry) = createBoxGeometry(state^);
-              let state =
-                state
-                |> setBoxGeometryConfigData(
-                     geometry,
-                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
-                       ~height=Js.Nullable.return(20.),
-                       ()
-                     )
-                   );
-              state
-              |> unsafeGetBoxGeometryConfigData(geometry)
-              |>
-              expect == Js.Dict.fromList([
-                          ("width", 10.),
-                          ("height", 20.),
-                          ("depth", 10.),
-                          ("widthSegment", 1.),
-                          ("heightSegment", 1.),
-                          ("depthSegment", 1.)
-                        ])
-            }
-          )
-        }
-      );
-      describe(
-        "test compute record",
+      test(
+        "test vertices",
         () =>
-          test(
-            "test with 2 segments",
-            () => {
-              let (state, geometry) = createBoxGeometry(state^);
-              let state =
-                state
-                |> setBoxGeometryConfigData(
-                     geometry,
-                     BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
-                       ~width=Js.Nullable.return(10.),
-                       ~height=Js.Nullable.return(20.),
-                       ~depth=Js.Nullable.return(30.),
-                       ~widthSegment=Js.Nullable.return(2.),
-                       ~heightSegment=Js.Nullable.return(2.),
-                       ~depthSegment=Js.Nullable.return(2.),
-                       ()
-                     )
-                   );
-              let {vertices, normals, indices}: geometryComputeData =
-                state |> BoxGeometryTool.computeData(geometry);
-              (vertices, normals, indices)
-              |>
-              expect == (
-                          [|
-                            (-10.),
-                            (-20.),
-                            30.,
-                            (-10.),
-                            0.,
-                            30.,
-                            (-10.),
-                            20.,
-                            30.,
-                            0.,
-                            (-20.),
-                            30.,
-                            0.,
-                            0.,
-                            30.,
-                            0.,
-                            20.,
-                            30.,
-                            10.,
-                            (-20.),
-                            30.,
-                            10.,
-                            0.,
-                            30.,
-                            10.,
-                            20.,
-                            30.,
-                            10.,
-                            (-20.),
-                            (-30.),
-                            10.,
-                            0.,
-                            (-30.),
-                            10.,
-                            20.,
-                            (-30.),
-                            0.,
-                            (-20.),
-                            (-30.),
-                            0.,
-                            0.,
-                            (-30.),
-                            0.,
-                            20.,
-                            (-30.),
-                            (-10.),
-                            (-20.),
-                            (-30.),
-                            (-10.),
-                            0.,
-                            (-30.),
-                            (-10.),
-                            20.,
-                            (-30.),
-                            (-10.),
-                            20.,
-                            30.,
-                            (-10.),
-                            20.,
-                            0.,
-                            (-10.),
-                            20.,
-                            (-30.),
-                            0.,
-                            20.,
-                            30.,
-                            0.,
-                            20.,
-                            0.,
-                            0.,
-                            20.,
-                            (-30.),
-                            10.,
-                            20.,
-                            30.,
-                            10.,
-                            20.,
-                            0.,
-                            10.,
-                            20.,
-                            (-30.),
-                            10.,
-                            (-20.),
-                            30.,
-                            10.,
-                            (-20.),
-                            0.,
-                            10.,
-                            (-20.),
-                            (-30.),
-                            0.,
-                            (-20.),
-                            30.,
-                            0.,
-                            (-20.),
-                            0.,
-                            0.,
-                            (-20.),
-                            (-30.),
-                            (-10.),
-                            (-20.),
-                            30.,
-                            (-10.),
-                            (-20.),
-                            0.,
-                            (-10.),
-                            (-20.),
-                            (-30.),
-                            10.,
-                            (-20.),
-                            30.,
-                            10.,
-                            0.,
-                            30.,
-                            10.,
-                            20.,
-                            30.,
-                            10.,
-                            (-20.),
-                            0.,
-                            10.,
-                            0.,
-                            0.,
-                            10.,
-                            20.,
-                            0.,
-                            10.,
-                            (-20.),
-                            (-30.),
-                            10.,
-                            0.,
-                            (-30.),
-                            10.,
-                            20.,
-                            (-30.),
-                            (-10.),
-                            (-20.),
-                            (-30.),
-                            (-10.),
-                            0.,
-                            (-30.),
-                            (-10.),
-                            20.,
-                            (-30.),
-                            (-10.),
-                            (-20.),
-                            0.,
-                            (-10.),
-                            0.,
-                            0.,
-                            (-10.),
-                            20.,
-                            0.,
-                            (-10.),
-                            (-20.),
-                            30.,
-                            (-10.),
-                            0.,
-                            30.,
-                            (-10.),
-                            20.,
-                            30.
-                          |],
-                          [|
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            1.,
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.,
-                            (-1.),
-                            0.,
-                            0.
-                          |],
-                          [|
-                            0,
-                            3,
-                            1,
-                            3,
-                            4,
-                            1,
-                            1,
-                            4,
-                            2,
-                            4,
-                            5,
-                            2,
-                            3,
-                            6,
-                            4,
-                            6,
-                            7,
-                            4,
-                            4,
-                            7,
-                            5,
-                            7,
-                            8,
-                            5,
-                            9,
-                            12,
-                            10,
-                            12,
-                            13,
-                            10,
-                            10,
-                            13,
-                            11,
-                            13,
-                            14,
-                            11,
-                            12,
-                            15,
-                            13,
-                            15,
-                            16,
-                            13,
-                            13,
-                            16,
-                            14,
-                            16,
-                            17,
-                            14,
-                            18,
-                            21,
-                            19,
-                            21,
-                            22,
-                            19,
-                            19,
-                            22,
-                            20,
-                            22,
-                            23,
-                            20,
-                            21,
-                            24,
-                            22,
-                            24,
-                            25,
-                            22,
-                            22,
-                            25,
-                            23,
-                            25,
-                            26,
-                            23,
-                            27,
-                            30,
-                            28,
-                            30,
-                            31,
-                            28,
-                            28,
-                            31,
-                            29,
-                            31,
-                            32,
-                            29,
-                            30,
-                            33,
-                            31,
-                            33,
-                            34,
-                            31,
-                            31,
-                            34,
-                            32,
-                            34,
-                            35,
-                            32,
-                            36,
-                            39,
-                            37,
-                            39,
-                            40,
-                            37,
-                            37,
-                            40,
-                            38,
-                            40,
-                            41,
-                            38,
-                            39,
-                            42,
-                            40,
-                            42,
-                            43,
-                            40,
-                            40,
-                            43,
-                            41,
-                            43,
-                            44,
-                            41,
-                            45,
-                            48,
-                            46,
-                            48,
-                            49,
-                            46,
-                            46,
-                            49,
-                            47,
-                            49,
-                            50,
-                            47,
-                            48,
-                            51,
-                            49,
-                            51,
-                            52,
-                            49,
-                            49,
-                            52,
-                            50,
-                            52,
-                            53,
-                            50
-                          |]
-                        )
-            }
-          )
+          BoxGeometryAPI.getBoxGeometryVertices(state^)
+          |> expect == BoxGeometryTool.getDefaultVertices()
       );
-      describe(
-        "contract check: is alive",
+      test(
+        "test normals",
         () =>
-          describe(
-            "if geometry is disposed",
-            () => {
-              let _testSetFunc = (setFunc) => {
-                open GameObjectAPI;
-                let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                let state = state |> BoxGeometryTool.initGeometrys;
-                TestTool.closeContractCheck();
-                let state =
-                  state
-                  |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
-                TestTool.openContractCheck();
-                expect(() => setFunc(geometry, Obj.magic(0), state))
-                |> toThrowMessage("expect component alive, but actual not")
-              };
-              test(
-                "setBoxGeometryConfigData should error",
-                () => _testSetFunc(setBoxGeometryConfigData)
-              )
-            }
-          )
+          BoxGeometryAPI.getBoxGeometryNormals(state^)
+          |> expect == BoxGeometryTool.getDefaultNormals()
+      );
+      test(
+        "test indices",
+        () =>
+          BoxGeometryAPI.getBoxGeometryIndices(state^)
+          |> expect == BoxGeometryTool.getDefaultIndices()
       );
       describe(
         "getDrawMode",
@@ -698,7 +125,7 @@ let _ =
                         geometry1,
                         state
                       );
-                    let state = state |> BoxGeometryTool.initGeometrys;
+                    /*let state = state |> BoxGeometryTool.initGeometrys;*/
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
@@ -708,24 +135,17 @@ let _ =
                     (state, gameObject1, geometry1)
                   };
                   test(
-                    "remove from groupCountMap, configDataMap, isInitMap, gameObjectMap",
+                    "remove from groupCountMap, gameObjectMap",
                     () => {
                       open StateDataMainType;
                       let (state, gameObject1, geometry1) = _prepare(state);
-                      let {
-                        groupCountMap,
-                        configDataMap,
-                        isInitMap,
-                        gameObjectMap
-                      } =
+                      let {groupCountMap, gameObjectMap} =
                         RecordBoxGeometryMainService.getRecord(state);
                       (
                         groupCountMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        configDataMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        isInitMap |> WonderCommonlib.SparseMapService.has(geometry1),
                         gameObjectMap |> WonderCommonlib.SparseMapService.has(geometry1)
                       )
-                      |> expect == (false, false, false, false)
+                      |> expect == (false, false)
                     }
                   );
                   test(
@@ -733,12 +153,19 @@ let _ =
                     () => {
                       open VboBufferType;
                       let (state, gameObject1, geometry1) = _prepare(state);
-                      let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} =
+                      let {
+                        boxGeometryVertexBufferMap,
+                        boxGeometryNormalBufferMap,
+                        boxGeometryElementArrayBufferMap
+                      } =
                         VboBufferTool.getVboBufferRecord(state);
                       (
-                        boxGeometryVertexBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        boxGeometryNormalBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        boxGeometryElementArrayBufferMap |> WonderCommonlib.SparseMapService.has(geometry1)
+                        boxGeometryVertexBufferMap
+                        |> WonderCommonlib.SparseMapService.has(geometry1),
+                        boxGeometryNormalBufferMap
+                        |> WonderCommonlib.SparseMapService.has(geometry1),
+                        boxGeometryElementArrayBufferMap
+                        |> WonderCommonlib.SparseMapService.has(geometry1)
                       )
                       |> expect == (false, false, false)
                     }
@@ -756,7 +183,10 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
+                      geometry1,
+                      state
+                    );
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -770,7 +200,10 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
+                      geometry1,
+                      state
+                    );
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -778,161 +211,6 @@ let _ =
                   let (state, geometry3) = createBoxGeometry(state);
                   (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
                 }
-              );
-              describe(
-                "fix bug",
-                () =>
-                  test(
-                    "new one after init should has its own geometry point data",
-                    () => {
-                      let (state, gameObject1, geometry1) =
-                        BoxGeometryTool.createGameObject(state^);
-                      let state = state |> GameObjectAPI.initGameObject(gameObject1);
-                      let state =
-                        VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
-                          geometry1,
-                          state
-                        );
-                      let state =
-                        state
-                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-                             gameObject1,
-                             geometry1
-                           );
-                      let (state, geometry2) = createBoxGeometry(state);
-                      let state =
-                        state
-                        |> setBoxGeometryConfigData(
-                             geometry2,
-                             BoxGeometryTool.buildBoxGeometryConfigDataJsObj(
-                               ~width=Js.Nullable.return(20.),
-                               ~height=Js.Nullable.return(30.),
-                               ~depth=Js.Nullable.return(40.),
-                               ()
-                             )
-                           );
-                      let state = state |> BoxGeometryTool.initGeometry(geometry2);
-                      (
-                        getBoxGeometryVertices(geometry2, state),
-                        getBoxGeometryIndices(geometry2, state)
-                      )
-                      |>
-                      expect == (
-                                  Float32Array.make([|
-                                    (-20.),
-                                    (-30.),
-                                    40.,
-                                    (-20.),
-                                    30.,
-                                    40.,
-                                    20.,
-                                    (-30.),
-                                    40.,
-                                    20.,
-                                    30.,
-                                    40.,
-                                    20.,
-                                    (-30.),
-                                    (-40.),
-                                    20.,
-                                    30.,
-                                    (-40.),
-                                    (-20.),
-                                    (-30.),
-                                    (-40.),
-                                    (-20.),
-                                    30.,
-                                    (-40.),
-                                    (-20.),
-                                    30.,
-                                    40.,
-                                    (-20.),
-                                    30.,
-                                    (-40.),
-                                    20.,
-                                    30.,
-                                    40.,
-                                    20.,
-                                    30.,
-                                    (-40.),
-                                    20.,
-                                    (-30.),
-                                    40.,
-                                    20.,
-                                    (-30.),
-                                    (-40.),
-                                    (-20.),
-                                    (-30.),
-                                    40.,
-                                    (-20.),
-                                    (-30.),
-                                    (-40.),
-                                    20.,
-                                    (-30.),
-                                    40.,
-                                    20.,
-                                    30.,
-                                    40.,
-                                    20.,
-                                    (-30.),
-                                    (-40.),
-                                    20.,
-                                    30.,
-                                    (-40.),
-                                    (-20.),
-                                    (-30.),
-                                    (-40.),
-                                    (-20.),
-                                    30.,
-                                    (-40.),
-                                    (-20.),
-                                    (-30.),
-                                    40.,
-                                    (-20.),
-                                    30.,
-                                    40.
-                                  |]),
-                                  Uint16Array.make([|
-                                    0,
-                                    2,
-                                    1,
-                                    2,
-                                    3,
-                                    1,
-                                    4,
-                                    6,
-                                    5,
-                                    6,
-                                    7,
-                                    5,
-                                    8,
-                                    10,
-                                    9,
-                                    10,
-                                    11,
-                                    9,
-                                    12,
-                                    14,
-                                    13,
-                                    14,
-                                    15,
-                                    13,
-                                    16,
-                                    18,
-                                    17,
-                                    18,
-                                    19,
-                                    17,
-                                    20,
-                                    22,
-                                    21,
-                                    22,
-                                    23,
-                                    21
-                                  |])
-                                )
-                    }
-                  )
               )
             }
           );
@@ -945,7 +223,10 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
+                      geometry1,
+                      state
+                    );
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
@@ -979,9 +260,12 @@ let _ =
                     open GameObjectAPI;
                     open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                    let state = state |> BoxGeometryTool.initGeometrys;
+                    /*let state = state |> BoxGeometryTool.initGeometrys;*/
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
+                        geometry,
+                        state
+                      );
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
@@ -992,31 +276,18 @@ let _ =
                     open GameObjectAPI;
                     open GameObjectAPI;
                     let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                    let state = state |> BoxGeometryTool.initGeometrys;
+                    /*let state = state |> BoxGeometryTool.initGeometrys;*/
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
+                        geometry,
+                        state
+                      );
                     let state =
                       state
                       |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                     expect(() => setFunc(geometry, Obj.magic(0), state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };
-                  test(
-                    "getBoxGeometryVertices should error",
-                    () => _testGetFunc(getBoxGeometryVertices)
-                  );
-                  test(
-                    "getBoxGeometryNormals should error",
-                    () => _testGetFunc(getBoxGeometryNormals)
-                  );
-                  test(
-                    "getBoxGeometryIndices should error",
-                    () => _testGetFunc(getBoxGeometryIndices)
-                  );
-                  test(
-                    "unsafeGetBoxGeometryConfigData should error",
-                    () => _testGetFunc(unsafeGetBoxGeometryConfigData)
-                  );
                   test(
                     "unsafeGetBoxGeometryGameObject should error",
                     () => _testGetFunc(unsafeGetBoxGeometryGameObject)

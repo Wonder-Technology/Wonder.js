@@ -29,7 +29,6 @@ let _getWorkerJobHandles = () => [
   ("init_state", InitStateRenderWorkerJob.execJob),
   ("init_transform", InitTransformRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
-  ("init_boxGeometry", InitBoxGeometryRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
   ("get_draw_data", GetDrawDataRenderWorkerJob.execJob),
   ("clear_color", ClearColorRenderWorkerJob.execJob),

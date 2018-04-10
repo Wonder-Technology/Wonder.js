@@ -7,7 +7,6 @@ let _getInitJobHandles = () => [
   ("set_viewport", SetViewportJob.execJob),
   ("detect_gl", DetectGlJob.execJob),
   ("init_camera", InitCameraJob.execJob),
-  ("init_boxGeometry", InitBoxGeometryJob.execJob),
   ("start_time", StartTimeJob.execJob),
   ("preget_glslData", PregetGLSLDataJob.execJob),
   ("init_state", InitStateJob.execJob),

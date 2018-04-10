@@ -126,8 +126,6 @@ let createGameObject = GameObjectAPI.createGameObject;
 
 let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
 
-let unsafeGetBoxGeometryConfigData = BoxGeometryAPI.unsafeGetBoxGeometryConfigData;
-
 let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
 
 let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
@@ -135,8 +133,6 @@ let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
 let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
 
 let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
-
-let setBoxGeometryConfigData = BoxGeometryAPI.setBoxGeometryConfigData;
 
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 

@@ -32,7 +32,6 @@ let _ =
             "renderConfigData": Sinon.matchAny,
             "transformData": Sinon.matchAny,
             "basicMaterialData": Sinon.matchAny,
-            "boxGeometryData": Sinon.matchAny,
             "customGeometryData": Sinon.matchAny,
             "directionLightData": Sinon.matchAny,
             "pointLightData": Sinon.matchAny

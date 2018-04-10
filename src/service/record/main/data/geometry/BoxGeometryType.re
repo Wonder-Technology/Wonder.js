@@ -16,13 +16,10 @@ type boxGeometryConfigDataJsObj = {
 
 type boxGeometryRecord = {
   index: int,
-  buffer: WorkerType.sharedArrayBuffer,
   vertices: Js.Typed_array.Float32Array.t,
   normals: Js.Typed_array.Float32Array.t,
   indices: Js.Typed_array.Uint16Array.t,
-  configDataMap: geometryConfigDataMap,
   gameObjectMap,
-  isInitMap: geometryIsInitMap,
   groupCountMap: geometryGroupCountMap,
   mutable disposedIndexArray: array(geometry)
 };

@@ -174,25 +174,23 @@ let batchAddBoxGeometryComponentForClone =
   /* let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord; */
   ...state,
   boxGeometryRecord:
-    Some(
-      _batchAddSharableGeometryComponent(
+    _batchAddSharableGeometryComponent(
+      (
+        uidArr,
+        componentArr,
         (
-          uidArr,
-          componentArr,
-          (
-            gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapRenderService.getBoxGeometryType()
-            /* (
-                 boxGeometryVertexBufferMap,
-                 boxGeometryNormalBufferMap,
-                 boxGeometryElementArrayBufferMap
-               ) */
-          )
-        ),
-        GroupBoxGeometryService.increaseGroupCount,
-        _batchAddBoxGeometryComponentDataForClone,
-        state |> RecordBoxGeometryMainService.getRecord
-      )
+          gameObjectRecord.currentGeometryDataMap,
+          CurrentComponentDataMapRenderService.getBoxGeometryType()
+          /* (
+               boxGeometryVertexBufferMap,
+               boxGeometryNormalBufferMap,
+               boxGeometryElementArrayBufferMap
+             ) */
+        )
+      ),
+      GroupBoxGeometryService.increaseGroupCount,
+      _batchAddBoxGeometryComponentDataForClone,
+      state |> RecordBoxGeometryMainService.getRecord
     )
 };
 

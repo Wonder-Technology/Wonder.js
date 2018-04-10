@@ -580,7 +580,7 @@ let _ =
                         BoxGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
                         BoxGeometryTool.createGameObject(state);
-                      let state = state |> BoxGeometryTool.initGeometrys;
+                      /*let state = state |> BoxGeometryTool.initGeometrys;*/
                       let state = state |> disposeGameObject(gameObject1);
                       (
                         BoxGeometryTool.isGeometryDisposed(geometry1, state),
@@ -857,7 +857,7 @@ let _ =
                                 BoxGeometryTool.createGameObject(state);
                               let (state, gameObject3, geometry3) =
                                 BoxGeometryTool.createGameObject(state);
-                              let state = state |> BoxGeometryTool.initGeometrys;
+                              /*let state = state |> BoxGeometryTool.initGeometrys;*/
                               let {currentGeometryDataMap as oldCurrentGeometryDataMap} =
                                 GameObjectTool.getGameObjectRecord(state);
                               let state = state |> disposeGameObject(gameObject1);
@@ -896,7 +896,7 @@ let _ =
                                 BoxGeometryTool.createGameObject(state);
                               let (state, gameObject3, geometry3) =
                                 BoxGeometryTool.createGameObject(state);
-                              let state = state |> BoxGeometryTool.initGeometrys;
+                              /*let state = state |> BoxGeometryTool.initGeometrys;*/
                               let state = state |> disposeGameObject(gameObject1);
                               let state = state |> disposeGameObject(gameObject2);
                               let {currentGeometryDataMap} =
@@ -1293,7 +1293,7 @@ let _ =
                         BoxGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
                         BoxGeometryTool.createGameObject(state);
-                      let state = state |> BoxGeometryTool.initGeometrys;
+                      /*let state = state |> BoxGeometryTool.initGeometrys;*/
                       let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                       (
                         BoxGeometryTool.isGeometryDisposed(geometry1, state),
@@ -1589,18 +1589,6 @@ let _ =
                   getCallCount(attachShader) |> expect == 2
                 }
               );
-              test(
-                "init box geometry component",
-                () => {
-                  let (state, gameObject) = createGameObject(state^);
-                  let (state, geometry) = BoxGeometryAPI.createBoxGeometry(state);
-                  let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
-                  let state = state |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-                  let state = state |> initGameObject(gameObject);
-                  BoxGeometryAPI.getBoxGeometryVertices(geometry, state)
-                  |> expect == BoxGeometryTool.getDefaultVertices()
-                }
-              )
             }
           )
       );

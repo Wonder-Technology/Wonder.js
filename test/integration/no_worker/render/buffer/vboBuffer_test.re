@@ -34,7 +34,7 @@ let _ =
               let _prepare = (state) => {
                 let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ());
                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
-                let state = state |> BoxGeometryTool.initGeometrys;
+                /*let state = state |> BoxGeometryTool.initGeometrys;*/
                 (state, gameObject1, geometry1)
               };
               test(

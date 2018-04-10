@@ -227,9 +227,6 @@ let buildWorkerJobConfig =
         "name": "init_transform"
     },
     {
-        "name": "init_boxGeometry"
-    },
-    {
         "name": "init_basic_material"
     },
     {

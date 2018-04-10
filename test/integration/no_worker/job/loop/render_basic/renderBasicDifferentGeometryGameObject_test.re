@@ -102,7 +102,7 @@ let _ =
                         state
                         |> RenderJobsTool.initSystemAndRender
                         |> DirectorTool.runWithDefaultTime;
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(boxGeometry, state);
+                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
                       (
                         bufferData
                         |> withThreeArgs(array_buffer, vertices, static_draw)
@@ -160,7 +160,7 @@ let _ =
                         state
                         |> RenderJobsTool.initSystemAndRender
                         |> DirectorTool.runWithDefaultTime;
-                      let indices = BoxGeometryAPI.getBoxGeometryIndices(boxGeometry, state);
+                      let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
                       (
                         bufferData
                         |> withThreeArgs(element_array_buffer, indices, static_draw)

@@ -60,11 +60,11 @@ let isGeometryDisposed = (geometry, state) =>
       state |> RecordBoxGeometryMainService.getRecord
     );
 
-let computeData = (geometry, state: StateDataMainType.state) =>
+/* let computeData = (geometry, state: StateDataMainType.state) =>
   InitBoxGeometryInitBoxGeometryService._computeData(
     geometry,
     CreateInitBoxGeometryStateMainService.createInitBoxGeometryState(state).boxGeometryRecord
-  );
+  ); */
 
 let getDefaultIndicesArray = () => [|
   0,
@@ -109,78 +109,78 @@ let getDefaultIndices = () => Js.Typed_array.Uint16Array.make(getDefaultIndicesA
 
 let getDefaultVertices = () =>
   Js.Typed_array.Float32Array.make([|
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    10.,
-    10.,
-    10.,
-    (-10.),
-    10.,
-    10.,
-    10.,
-    10.,
-    10.,
-    (-10.),
-    (-10.),
-    10.,
-    10.,
-    (-10.),
-    (-10.),
-    (-10.),
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    (-10.),
-    10.,
-    10.,
-    (-10.),
-    10.,
-    (-10.),
-    10.,
-    10.,
-    10.,
-    10.,
-    10.,
-    (-10.),
-    10.,
-    (-10.),
-    10.,
-    10.,
-    (-10.),
-    (-10.),
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    10.,
-    10.,
-    10.,
-    10.,
-    10.,
-    (-10.),
-    (-10.),
-    10.,
-    10.,
-    (-10.),
-    (-10.),
-    (-10.),
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    (-10.),
-    (-10.),
-    10.,
-    (-10.),
-    10.,
-    10.
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    5.,
+    5.,
+    5.,
+    (-5.),
+    5.,
+    5.,
+    5.,
+    5.,
+    5.,
+    (-5.),
+    (-5.),
+    5.,
+    5.,
+    (-5.),
+    (-5.),
+    (-5.),
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    (-5.),
+    5.,
+    5.,
+    (-5.),
+    5.,
+    (-5.),
+    5.,
+    5.,
+    5.,
+    5.,
+    5.,
+    (-5.),
+    5.,
+    (-5.),
+    5.,
+    5.,
+    (-5.),
+    (-5.),
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    5.,
+    5.,
+    5.,
+    5.,
+    5.,
+    (-5.),
+    (-5.),
+    5.,
+    5.,
+    (-5.),
+    (-5.),
+    (-5.),
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    (-5.),
+    (-5.),
+    5.,
+    (-5.),
+    5.,
+    5.
   |]);
 
 let getDefaultNormals = () =>
@@ -259,33 +259,21 @@ let getDefaultNormals = () =>
     0.
   |]);
 
-let setDefaultConfigData = (geometry: geometry, state: StateDataMainType.state) =>
-  state
-  |> setBoxGeometryConfigData(
-       geometry,
-       buildBoxGeometryConfigDataJsObj(
-         ~width=Js.Nullable.return(10.),
-         ~height=Js.Nullable.return(10.),
-         ~depth=Js.Nullable.return(10.),
-         ()
-       )
-     );
-
 let createBoxGeometry = (state: StateDataMainType.state) => {
   let (state, geometry) = createBoxGeometry(state);
-  let state = state |> setDefaultConfigData(geometry);
+  /* let state = state |> setDefaultConfigData(geometry); */
   (state, geometry)
 };
 
 let createGameObject = (state: StateDataMainType.state) => {
   let (state, geometry) = createBoxGeometry(state);
-  let state = state |> setDefaultConfigData(geometry);
+  /* let state = state |> setDefaultConfigData(geometry); */
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let state = state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry)
 };
 
-let setVertices =
+/* let setVertices =
     (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
   VerticesBoxGeometryMainService.setVerticesByTypeArray(geometry, data, state);
 
@@ -295,27 +283,10 @@ let setNormals =
 
 let setIndices =
     (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) =>
-  IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state);
+  IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state); */
 
 let getGroupCount = (geometry, state) =>
   GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
-
-let initGeometrys = (state: StateDataMainType.state) => {
-  InitBoxGeometryInitBoxGeometryService.init(
-    CreateInitBoxGeometryStateMainService.createInitBoxGeometryState(state)
-  )
-  |> ignore;
-  state
-};
-
-let initGeometry = (geometry, state: StateDataMainType.state) => {
-  InitBoxGeometryInitBoxGeometryService.initGeometry(
-    geometry,
-    CreateInitBoxGeometryStateMainService.createInitBoxGeometryState(state)
-  )
-  |> ignore;
-  state
-};
 
 let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
   GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)

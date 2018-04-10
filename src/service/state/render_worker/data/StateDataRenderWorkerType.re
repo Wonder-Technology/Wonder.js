@@ -45,7 +45,7 @@ type renderWorkerState = {
   mutable glslChunkRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable transformRecord: option(transformRecord),
-  mutable boxGeometryRecord: option(boxGeometryRecord),
+  mutable boxGeometryRecord,
   mutable renderRecord,
   mutable typeArrayPoolRecord,
   mutable vboBufferRecord,

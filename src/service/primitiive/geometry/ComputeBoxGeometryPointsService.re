@@ -1,29 +1,3 @@
-open StateInitBoxGeometryType;
-
-open GeometryType;
-
-open InitBoxGeometryBoxGeometryType;
-
-let _isInit = (index: int, isInitMap) =>
-  switch (isInitMap |> WonderCommonlib.SparseMapService.get(index)) {
-  | None => false
-  | Some(bool) => bool
-  };
-
-let _markIsInit = (index: int, isInit: bool, {isInitMap} as boxGeometryRecord) => {
-  isInitMap |> WonderCommonlib.SparseMapService.set(index, isInit) |> ignore;
-  boxGeometryRecord
-};
-
-let _getConfig = (configDataMap) => (
-  WonderCommonlib.HashMapService.unsafeGet("width", configDataMap),
-  WonderCommonlib.HashMapService.unsafeGet("height", configDataMap),
-  WonderCommonlib.HashMapService.unsafeGet("depth", configDataMap),
-  WonderCommonlib.HashMapService.unsafeGet("widthSegment", configDataMap) |> int_of_float,
-  WonderCommonlib.HashMapService.unsafeGet("heightSegment", configDataMap) |> int_of_float,
-  WonderCommonlib.HashMapService.unsafeGet("depthSegment", configDataMap) |> int_of_float
-);
-
 let _buildFaceData = (width, height, depth) => (
   [|
     /* front */
@@ -146,9 +120,17 @@ let _buildAllFaceDirectionDataTupleArr = (widthSegment, heightSegment, depthSegm
   (5, depthSegment, heightSegment)
 |];
 
-let _generateAllFaces = (configDataMap) => {
-  let (width, height, depth, widthSegment, heightSegment, depthSegment) =
-    _getConfig(configDataMap);
+let generateAllFaces =
+    (
+      (
+        width: float,
+        height: float,
+        depth: float,
+        widthSegment: int,
+        heightSegment: int,
+        depthSegment: int
+      )
+    ) => {
   let faceDataTuple = _buildFaceData(width, height, depth);
   _buildAllFaceDirectionDataTupleArr(widthSegment, heightSegment, depthSegment)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -162,81 +144,5 @@ let _generateAllFaces = (configDataMap) => {
          WonderCommonlib.ArrayService.createEmpty(),
          WonderCommonlib.ArrayService.createEmpty()
        )
-     )
-};
-
-let _computeData = (index: int, record) =>
-  switch (ConfigDataInitBoxGeometryBoxGeometryService.getConfigData(index, record)) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_computeData",
-        ~description={j|configData should exist|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j|geometry: $index|j}
-      )
-    )
-  | Some(configDataMap) =>
-    let (vertices, normals, indices) = _generateAllFaces(configDataMap);
-    {vertices, normals, indices}
-  };
-
-let initGeometry = (index: int, {boxGeometryRecord} as state) => {
-  let {isInitMap} = boxGeometryRecord;
-  if (_isInit(index, isInitMap)) {
-    state
-  } else {
-    let {vertices, normals, indices}: geometryComputeData = _computeData(index, boxGeometryRecord);
-    {
-      ...state,
-      boxGeometryRecord:
-        boxGeometryRecord
-        |> SetVerticesInitBoxGeometryBoxGeometryService.setVertices(index, vertices)
-        |> SetNormalsInitBoxGeometryBoxGeometryService.setNormals(index, normals)
-        |> SetIndicesInitBoxGeometryBoxGeometryService.setIndices(index, indices)
-        |> _markIsInit(index, true)
-    }
-  }
-};
-
-let init = ({boxGeometryRecord} as state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|not dispose any geometry before init|j},
-                ~actual={j|not|j}
-              ),
-              () =>
-                DisposeInitBoxGeometryBoxGeometryService.isNotDisposed(boxGeometryRecord)
-                |> assertTrue
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  let {index} = boxGeometryRecord;
-  /* {
-       ...state,
-       boxGeometryRecord:
-         ArrayService.range(0, index - 1)
-         |> WonderCommonlib.ArrayService.reduceOneParam(
-              [@bs]
-              (
-                (boxGeometryRecord, geometryIndex: int) =>
-                  initGeometry(geometryIndex, boxGeometryRecord)
-              ),
-              boxGeometryRecord
-            )
-     } */
-  ArrayService.range(0, index - 1)
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((state, geometryIndex: int) => initGeometry(geometryIndex, state)),
-       state
      )
 };

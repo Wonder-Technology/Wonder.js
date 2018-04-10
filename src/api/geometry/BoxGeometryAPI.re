@@ -11,120 +11,20 @@ open RenderGeometryService;
 let createBoxGeometry = (state) => {
   let (boxGeometryRecord, index) =
     CreateBoxGeometryService.create(state |> RecordBoxGeometryMainService.getRecord);
-  ({...state, boxGeometryRecord: Some(boxGeometryRecord)}, index)
-};
-
-let setBoxGeometryConfigData =
-    (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              state |> RecordBoxGeometryMainService.getRecord
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  {
-    ...state,
-    boxGeometryRecord:
-      Some(
-        ConfigDataBoxGeometryService.setConfigData(
-          geometry,
-          configData,
-          RecordBoxGeometryMainService.getRecord(state)
-        )
-      )
-  }
+  ({...state, boxGeometryRecord}, index)
 };
 
 let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
 
-let getBoxGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  [@bs] VerticesBoxGeometryMainService.getVertices(geometry, state)
-};
+let getBoxGeometryVertices = (state: StateDataMainType.state) =>
+  [@bs] GetBoxGeometryVerticesMainService.getVertices(state);
 
-let getBoxGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  [@bs] NormalsBoxGeometryMainService.getNormals(geometry, state)
-};
+let getBoxGeometryNormals = (state: StateDataMainType.state) =>
+  [@bs] GetBoxGeometryNormalsMainService.getNormals(state);
 
-let getBoxGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  [@bs] IndicesBoxGeometryMainService.getIndices(geometry, state)
-};
-
-let unsafeGetBoxGeometryConfigData = (geometry: geometry, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            AliveComponentService.checkComponentShouldAlive(
-              geometry,
-              isAlive,
-              RecordBoxGeometryMainService.getRecord(state)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  ConfigDataBoxGeometryService.unsafeGetConfigData(
-    geometry,
-    RecordBoxGeometryMainService.getRecord(state)
-  )
-};
+let getBoxGeometryIndices = (state: StateDataMainType.state) =>
+  [@bs] GetBoxGeometryIndicesMainService.getIndices(state);
 
 let unsafeGetBoxGeometryGameObject = (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

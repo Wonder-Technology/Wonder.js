@@ -302,7 +302,7 @@ let _ =
           describe(
             "deep copy geometry record",
             () => {
-              describe(
+              /* describe(
                 "deep copy box geometry record",
                 () => {
                   test(
@@ -720,7 +720,7 @@ let _ =
                       )
                   )
                 }
-              );
+              ); */
               describe(
                 "deep copy custom geometry record",
                 () => {

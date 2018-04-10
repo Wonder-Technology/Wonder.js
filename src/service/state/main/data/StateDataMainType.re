@@ -109,7 +109,7 @@ and state = {
   ambientLightRecord,
   directionLightRecord,
   pointLightRecord,
-  mutable boxGeometryRecord: option(boxGeometryRecord),
+  mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
   meshRendererRecord,
   shaderRecord,

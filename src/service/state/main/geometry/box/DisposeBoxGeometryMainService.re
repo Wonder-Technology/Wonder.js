@@ -12,10 +12,7 @@ let isAlive = (geometry, {disposedIndexArray}) =>
 let _disposeData =
     (
       geometry,
-      (
-        vboBufferRecord,
-        {disposedIndexArray, configDataMap, gameObjectMap, isInitMap, groupCountMap} as boxGeometryRecord
-      )
+      (vboBufferRecord, {disposedIndexArray, gameObjectMap, groupCountMap} as boxGeometryRecord)
     ) => {
   let vboBufferRecord =
     DisposeVboBufferService.disposeBoxGeometryBufferData(geometry, vboBufferRecord);
@@ -24,15 +21,13 @@ let _disposeData =
     {
       ...boxGeometryRecord,
       disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-      configDataMap: configDataMap |> disposeSparseMapData(geometry),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
-      isInitMap: isInitMap |> disposeSparseMapData(geometry),
       groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
     }
   )
 };
 
-let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecord} as state) => {
+let handleDisposeComponent = (geometry: geometry, {vboBufferRecord} as state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -55,11 +50,10 @@ let handleDisposeComponent = (geometry: geometry, {settingRecord, vboBufferRecor
       PoolVboBufferService.addBoxGeometryBufferToPool(geometry, vboBufferRecord);
     let (vboBufferRecord, boxGeometryRecord) =
       _disposeData(geometry, (vboBufferRecord, boxGeometryRecord));
-    {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
+    {...state, vboBufferRecord, boxGeometryRecord}
   | true => {
       ...state,
-      boxGeometryRecord:
-        Some(GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord))
+      boxGeometryRecord: GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
     }
   }
 };
@@ -70,7 +64,7 @@ let handleBatchDisposeComponent =
     (
       geometryArray: array(geometry),
       isGameObjectDisposedMap: array(bool),
-      {settingRecord, vboBufferRecord} as state
+      {vboBufferRecord} as state
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -107,6 +101,6 @@ let handleBatchDisposeComponent =
              ),
              (vboBufferRecord, boxGeometryRecord)
            );
-      {...state, vboBufferRecord, boxGeometryRecord: Some(boxGeometryRecord)}
+      {...state, vboBufferRecord, boxGeometryRecord}
     }
   );

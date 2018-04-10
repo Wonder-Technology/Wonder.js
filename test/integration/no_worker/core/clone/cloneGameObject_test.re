@@ -1086,7 +1086,7 @@ let _ =
                          let transform2 = unsafeGetGameObjectTransformComponent(gameObject2, state);
                          let state =
                            state |> setTransformParent(Js.Nullable.return(transform1), transform2);
-                         let state = state |> BoxGeometryTool.initGeometrys;
+                         /*let state = state |> BoxGeometryTool.initGeometrys;*/
                          let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                          clonedGameObjectArr
                          |> CloneTool.getFlattenClonedGameObjectArr
