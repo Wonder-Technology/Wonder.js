@@ -5,11 +5,15 @@ open RenderTransformType;
 let getLocalToWorldMatrixTypeArray =
   [@bs]
   (
-    (transform, {transformRecord}) =>
-      ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-        transform,
-        transformRecord.localToWorldMatrices
-      )
+    (transform, {transformRecord}) => {
+      let (localToWorldMatrix, _) =
+        ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+          transform,
+          transformRecord.localToWorldMatrices,
+          transformRecord.localToWorldMatrixCacheMap
+        );
+      localToWorldMatrix
+    }
   );
 
 let getNormalMatrixTypeArray =
@@ -20,7 +24,7 @@ let getNormalMatrixTypeArray =
         ModelMatrixTransformService.getNormalMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
-          transformRecord.normalMatrixCacheMap
+          (transformRecord.localToWorldMatrixCacheMap, transformRecord.normalMatrixCacheMap)
         );
       normalMatrix
     }

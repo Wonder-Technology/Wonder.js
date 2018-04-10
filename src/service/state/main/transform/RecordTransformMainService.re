@@ -98,6 +98,7 @@ let create = ({settingRecord} as state) => {
       childMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
+      localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
     });
@@ -112,6 +113,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     localPositions,
     defaultLocalToWorldMatrix,
     defaultLocalPosition,
+    localToWorldMatrixCacheMap,
     normalMatrixCacheMap,
     parentMap,
     childMap,
@@ -142,6 +144,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           ),
         defaultLocalToWorldMatrix,
         defaultLocalPosition,
+        localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
         normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
         parentMap: parentMap |> SparseMapService.copy,
         childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,

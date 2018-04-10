@@ -35,7 +35,7 @@ let createRenderState =
         shaderRecord
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
-  let {localToWorldMatrices, localPositions, normalMatrixCacheMap} =
+  let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} =
     RecordTransformRenderWorkerService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryRenderWorkerService.getRecord(state);
   /* let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state); */
@@ -70,7 +70,12 @@ let createRenderState =
     pointLightRecord: Obj.magic(1),
     vboBufferRecord,
     typeArrayPoolRecord,
-    transformRecord: {localToWorldMatrices, localPositions, normalMatrixCacheMap},
+    transformRecord: {
+      localToWorldMatrices,
+      localPositions,
+      localToWorldMatrixCacheMap,
+      normalMatrixCacheMap
+    },
     sourceInstanceRecord: Obj.magic(1),
     gpuDetectRecord,
     globalTempRecord,

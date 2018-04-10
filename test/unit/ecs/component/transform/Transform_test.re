@@ -654,73 +654,218 @@ let _ =
             }
           )
       );
-      /* describe(
-           "getLocalToWorldMatrixTypeArray",
-           () =>
-             describe(
-               "test cache",
-               () => {
-                 test(
-                   "cache record after first get",
-                   () => {
-                     open GameObjectAPI; open GameObjectAPI;
+      describe(
+        "getLocalToWorldMatrixTypeArray",
+        () =>
+          describe(
+            "test cache",
+            () => {
+              test(
+                "cache data after first get",
+                () => {
+                  open GameObjectAPI;
+                  let (state, transform1) = createTransform(state^);
+                  let pos1 = (1., 2., 3.);
+                  let state = state |> setTransformLocalPosition(transform1, pos1);
+                  let mat1 =
+                    TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
+                  let mat2 =
+                    TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
+                  mat1 |> expect == mat2
+                }
+              );
+              describe(
+                "test cache invalid",
+                () => {
+                  let _prepare = (state) => {
+                    open GameObjectAPI;
+                    let (state, transform1) = createTransform(state^);
+                    let pos1 = (1., 2., 3.);
+                    let state = state |> setTransformLocalPosition(transform1, pos1);
+                    let mat1 =
+                      TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state)
+                      |> Js.Typed_array.Float32Array.copy;
+                    (state, transform1, mat1)
+                  };
+                  test(
+                    "invalid after change local position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformLocalPosition(transform1, pos2);
+                      let mat2 =
+                        TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  );
+                  test(
+                    "invalid after change position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformPosition(transform1, pos2);
+                      let mat2 =
+                        TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  );
+                  test(
+                    "test get position after change local position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformLocalPosition(transform1, pos2);
+                      let _ = state |> getTransformPosition(transform1);
+                      let mat2 =
+                        TransformTool.updateAndGetLocalToWorldMatrixTypeArray(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  );
+                  describe(
+                    "test with parent",
+                    () => {
+                      let _prepare = (state) => {
+                        open GameObjectAPI;
+                        let (state, parent) = createTransform(state^);
+                        let (state, child) = createTransform(state);
+                        let state = setTransformParent(Js.Nullable.return(parent), child, state);
+                        let pos1 = (1., 2., 3.);
+                        let state = state |> setTransformLocalPosition(parent, pos1);
+                        let pos2 = (0., 10., 3.);
+                        let state = state |> setTransformLocalPosition(child, pos2);
+                        let parentMat1 =
+                          TransformTool.updateAndGetLocalToWorldMatrixTypeArray(parent, state)
+                          |> Js.Typed_array.Float32Array.copy;
+                        let childMat1 =
+                          TransformTool.updateAndGetLocalToWorldMatrixTypeArray(child, state)
+                          |> Js.Typed_array.Float32Array.copy;
+                        (state, (parent, child), (parentMat1, childMat1))
+                      };
+                      test(
+                        "invalid after change local position",
+                        () => {
+                          let (state, (parent, child), (parentMat1, childMat1)) = _prepare(state);
+                          let pos2 = (2., 2., 3.);
+                          let state = state |> setTransformLocalPosition(child, pos2);
+                          let childMat2 =
+                            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(child, state);
+                          childMat2 |> expect |> not_ |> toEqual(childMat1)
+                        }
+                      )
+                    }
+                  )
+                }
+              )
+            }
+          )
+      );
+      /*
+       TODO test with set rotation/scale
+       describe(
+         "getNormalMatrixTypeArray",
+         () =>
+           describe(
+             "test cache",
+             () => {
+               test(
+                 "cache data after first get",
+                 () => {
+                   open GameObjectAPI;
+                   let (state, transform1) = createTransform(state^);
+                   let pos1 = (1., 2., 3.);
+                   let state = state |> setTransformLocalPosition(transform1, pos1);
+                   let mat1 =
+                     TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state);
+                   let mat2 =
+                     TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state);
+                   mat1 |> expect == mat2
+                 }
+               );
+               describe(
+                 "test cache invalid",
+                 () => {
+                   let _prepare = (state) => {
+                     open GameObjectAPI;
                      let (state, transform1) = createTransform(state^);
                      let pos1 = (1., 2., 3.);
                      let state = state |> setTransformLocalPosition(transform1, pos1);
-                     let mat1 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
-                     let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
-                     mat1 |> expect == mat2
-                   }
-                 );
-                 describe(
-                   "test cache invalid",
-                   () => {
-                     let _prepare = (state) => {
-                       open GameObjectAPI; open GameObjectAPI;
-                       let (state, transform1) = createTransform(state^);
-                       let pos1 = (1., 2., 3.);
-                       let state = state |> setTransformLocalPosition(transform1, pos1);
-                       let mat1 =
-                         TransformTool.getLocalToWorldMatrixTypeArray(transform1, state)
-                         |> Js.Typed_array.Float32Array.copy;
-                       (state, transform1, mat1)
-                     };
-                     test(
-                       "invalid after change local position",
-                       () => {
-                         let (state, transform1, mat1) = _prepare(state);
-                         let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformLocalPosition(transform1, pos2);
-                         let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
-                         mat1 |> expect |> not_ |> toEqual(mat2)
-                       }
-                     );
-                     test(
-                       "invalid after change position",
-                       () => {
-                         let (state, transform1, mat1) = _prepare(state);
-                         let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformPosition(transform1, pos2);
-                         let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
-                         mat1 |> expect |> not_ |> toEqual(mat2)
-                       }
-                     );
-                     test(
-                       "test get position after change local position",
-                       () => {
-                         let (state, transform1, mat1) = _prepare(state);
-                         let pos2 = (2., 2., 3.);
-                         let state = state |> setTransformLocalPosition(transform1, pos2);
-                         let _ = state |> getTransformPosition(transform1);
-                         let mat2 = TransformTool.getLocalToWorldMatrixTypeArray(transform1, state);
-                         mat1 |> expect |> not_ |> toEqual(mat2)
-                       }
-                     )
-                   }
-                 )
-               }
-             )
-         ); */
+                     let mat1 =
+                       TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state)
+                       |> Js.Typed_array.Float32Array.copy;
+                     (state, transform1, mat1)
+                   };
+                   test(
+                     "invalid after change local position",
+                     () => {
+                       let (state, transform1, mat1) = _prepare(state);
+                       let pos2 = (2., 2., 3.);
+                       let state = state |> setTransformLocalPosition(transform1, pos2);
+                       let mat2 =
+                         TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state);
+                       mat1 |> expect |> not_ |> toEqual(mat2)
+                     }
+                   );
+                   test(
+                     "invalid after change position",
+                     () => {
+                       let (state, transform1, mat1) = _prepare(state);
+                       let pos2 = (2., 2., 3.);
+                       let state = state |> setTransformPosition(transform1, pos2);
+                       let mat2 =
+                         TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state);
+                       mat1 |> expect |> not_ |> toEqual(mat2)
+                     }
+                   );
+                   test(
+                     "test get position after change local position",
+                     () => {
+                       let (state, transform1, mat1) = _prepare(state);
+                       let pos2 = (2., 2., 3.);
+                       let state = state |> setTransformLocalPosition(transform1, pos2);
+                       let _ = state |> getTransformPosition(transform1);
+                       let mat2 =
+                         TransformTool.updateAndGetNormalMatrixTypeArray(transform1, state);
+                       mat1 |> expect |> not_ |> toEqual(mat2)
+                     }
+                   );
+                   /* describe(
+                     "test with parent",
+                     () => {
+                       let _prepare = (state) => {
+                         open GameObjectAPI;
+                         let (state, parent) = createTransform(state^);
+                         let (state, child) = createTransform(state);
+                         let state = setTransformParent(Js.Nullable.return(parent), child, state);
+                         let pos1 = (1., 2., 3.);
+                         let state = state |> setTransformLocalPosition(parent, pos1);
+                         let pos2 = (0., 10., 3.);
+                         let state = state |> setTransformLocalPosition(child, pos2);
+                         let parentMat1 =
+                           TransformTool.updateAndGetLocalToWorldMatrixTypeArray(parent, state)
+                           |> Js.Typed_array.Float32Array.copy;
+                         let childMat1 =
+                           TransformTool.updateAndGetLocalToWorldMatrixTypeArray(child, state)
+                           |> Js.Typed_array.Float32Array.copy;
+                         (state, (parent, child), (parentMat1, childMat1))
+                       };
+                       test(
+                         "invalid after change local position",
+                         () => {
+                           let (state, (parent, child), (parentMat1, childMat1)) = _prepare(state);
+                           let pos2 = (2., 2., 3.);
+                           let state = state |> setTransformLocalPosition(child, pos2);
+                           let childMat2 =
+                             TransformTool.updateAndGetLocalToWorldMatrixTypeArray(child, state);
+                           childMat2 |> expect |> not_ |> toEqual(childMat1)
+                         }
+                       )
+                     }
+                   ) */
+                 }
+               )
+             }
+           )
+       ); */
       describe(
         "dispose component",
         () => {
@@ -1166,7 +1311,6 @@ let _ =
           test(
             "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
             () => {
-              open GameObjectAPI;
               open GameObjectAPI;
               let (state, transform1) = createTransform(state^);
               let (state, transform2) = createTransform(state);

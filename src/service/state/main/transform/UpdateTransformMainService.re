@@ -8,8 +8,15 @@ open ModelMatrixTransformService;
 
 open DirtyTransformService;
 
-let _clearCache = (transform, {normalMatrixCacheMap} as record) => {
-  normalMatrixCacheMap |> Obj.magic |> WonderCommonlib.SparseMapService.deleteVal(transform) |> ignore;
+let _clearCache = (transform, {localToWorldMatrixCacheMap, normalMatrixCacheMap} as record) => {
+  /* localToWorldMatrixCacheMap
+     |> Obj.magic
+     |> WonderCommonlib.SparseMapService.deleteVal(transform)
+     |> ignore; */
+  normalMatrixCacheMap
+  |> Obj.magic
+  |> WonderCommonlib.SparseMapService.deleteVal(transform)
+  |> ignore;
   record
 };
 
@@ -22,36 +29,49 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
     switch (getParent(transform, transformRecord)) {
     | Some(parent) =>
       let transformRecord = transformRecord |> update(parent, globalTempRecord);
+      let (parentLocalToWorldMatrix, _) =
+        getLocalToWorldMatrixTypeArray(
+          parent,
+          transformRecord.localToWorldMatrices,
+          transformRecord.localToWorldMatrixCacheMap
+        );
+      let (childLocalToWorldMatrix, _) =
+        getLocalToWorldMatrixTypeArray(
+          transform,
+          transformRecord.localToWorldMatrices,
+          transformRecord.localToWorldMatrixCacheMap
+        );
       multiply(
-        getLocalToWorldMatrixTypeArray(parent, transformRecord.localToWorldMatrices),
+        parentLocalToWorldMatrix,
         fromTranslation(
           getLocalPositionTypeArray(transform, localPositions),
           GlobalTempService.getFloat32Array1(globalTempRecord)
         ),
-        getLocalToWorldMatrixTypeArray(transform, transformRecord.localToWorldMatrices)
+        childLocalToWorldMatrix
       )
       |> ignore;
       transformRecord
     | None =>
-      fromTranslation(
-        getLocalPositionTypeArray(transform, localPositions),
-        getLocalToWorldMatrixTypeArray(transform, transformRecord.localToWorldMatrices)
-      )
+      let (localToWorldMatrix, _) =
+        getLocalToWorldMatrixTypeArray(
+          transform,
+          transformRecord.localToWorldMatrices,
+          transformRecord.localToWorldMatrixCacheMap
+        );
+      fromTranslation(getLocalPositionTypeArray(transform, localPositions), localToWorldMatrix)
       |> ignore;
       transformRecord
     }
   };
 
-let _updateAndGetPosition = (transform: transform, getTranslationFunc, globalTempRecord, record) =>
-  Js.Typed_array.(
-    [@bs]
-    getTranslationFunc(
-      getLocalToWorldMatrixTypeArray(
-        transform,
-        update(transform, globalTempRecord, record).localToWorldMatrices
-      )
-    )
-  );
+let _updateAndGetPosition = (transform: transform, getTranslationFunc, globalTempRecord, record) => {
+  open Js.Typed_array;
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  let (localToWorldMatrix, _) =
+    getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap);
+  [@bs] getTranslationFunc(localToWorldMatrix)
+};
 
 let updateAndGetPositionTypeArray = (transform: transform, globalTempRecord, record) =>
   _updateAndGetPosition(
@@ -66,12 +86,21 @@ let updateAndGetPositionTuple = (transform: transform, globalTempRecord, record)
 
 let updateAndGetLocalToWorldMatrixTypeArray = (transform: transform, globalTempRecord, record) => {
   let record = update(transform, globalTempRecord, record);
-  record.localToWorldMatrices |> getLocalToWorldMatrixTypeArray(transform)
+  getLocalToWorldMatrixTypeArray(
+    transform,
+    record.localToWorldMatrices,
+    record.localToWorldMatrixCacheMap
+  )
 };
 
 let updateAndGetNormalMatrixTypeArray = (transform: transform, globalTempRecord, record) => {
-  let {localToWorldMatrices, normalMatrixCacheMap} = update(transform, globalTempRecord, record);
-  getNormalMatrixTypeArray(transform, localToWorldMatrices, normalMatrixCacheMap)
+  let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  getNormalMatrixTypeArray(
+    transform,
+    localToWorldMatrices,
+    (localToWorldMatrixCacheMap, normalMatrixCacheMap)
+  )
 };
 
 let updateAndSetPositionByTuple =

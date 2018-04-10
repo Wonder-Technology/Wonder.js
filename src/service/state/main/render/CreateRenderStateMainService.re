@@ -40,7 +40,7 @@ let createRenderState =
         shaderRecord
       } as state: StateDataMainType.state
     ) => {
-  let {localToWorldMatrices, localPositions, normalMatrixCacheMap} =
+  let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
   /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
@@ -112,7 +112,12 @@ let createRenderState =
     },
     vboBufferRecord,
     typeArrayPoolRecord,
-    transformRecord: {localToWorldMatrices, localPositions, normalMatrixCacheMap},
+    transformRecord: {
+      localToWorldMatrices,
+      localPositions,
+      localToWorldMatrixCacheMap,
+      normalMatrixCacheMap
+    },
     sourceInstanceRecord: {
       objectInstanceTransformArrayMap: sourceInstanceRecord.objectInstanceTransformArrayMap,
       matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,

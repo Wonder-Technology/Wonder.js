@@ -35,11 +35,27 @@ let isTransform = (transform: transform) => {
   expect(transform) >= 0
 };
 
-let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) =>
-  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-    transform,
-    RecordTransformMainService.getRecord(state).localToWorldMatrices
-  );
+let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    RecordTransformMainService.getRecord(state);
+  let (matrix, _) =
+    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap
+    );
+  matrix
+};
+
+let updateAndGetLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
+  let (matrix, _) =
+    UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
+      transform,
+      state.globalTempRecord,
+      RecordTransformMainService.getRecord(state)
+    );
+  matrix
+};
 
 let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
@@ -64,7 +80,7 @@ let setLocalToWorldMatrix = (transform: transform, data, state) => {
   state
 };
 
-let getNormalMatrixTypeArray = (transform, state: StateDataMainType.state) => {
+let updateAndGetNormalMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let (normalMatrix, _) =
     UpdateTransformMainService.updateAndGetNormalMatrixTypeArray(
       transform,

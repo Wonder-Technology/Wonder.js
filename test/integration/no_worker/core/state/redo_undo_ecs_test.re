@@ -271,7 +271,7 @@ let _ =
                 }
               );
               test(
-                "clean normalMatrixCacheMap",
+                "clean localToWorldMatrixCacheMap, normalMatrixCacheMap",
                 () => {
                   open TransformType;
                   let (
@@ -284,11 +284,17 @@ let _ =
                     transform3
                   ) =
                     _prepareTransformMatrixData(state);
-                  let _ = TransformTool.getNormalMatrixTypeArray(transform2, state);
+                  let _ = TransformTool.updateAndGetNormalMatrixTypeArray(transform2, state);
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let (copiedState, transform4) = TransformAPI.createTransform(copiedState);
-                  TransformTool.getTransformRecord(copiedState).normalMatrixCacheMap
-                  |> expect == WonderCommonlib.SparseMapService.createEmpty()
+                  let {localToWorldMatrixCacheMap, normalMatrixCacheMap} =
+                    TransformTool.getTransformRecord(copiedState);
+                  (localToWorldMatrixCacheMap, normalMatrixCacheMap)
+                  |>
+                  expect == (
+                              WonderCommonlib.SparseMapService.createEmpty(),
+                              WonderCommonlib.SparseMapService.createEmpty()
+                            )
                 }
               )
             }

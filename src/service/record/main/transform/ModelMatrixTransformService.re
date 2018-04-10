@@ -8,65 +8,63 @@ open HierachyTransformService;
 
 open Matrix4Service;
 
-let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorldMatrices) =>
-  RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices);
-  /* |> WonderLog.Contract.ensureCheck(
-       (localToWorldMatrix) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|localToWorldMatrix exist|j}, ~actual={j|not|j}),
-                 () => localToWorldMatrix |> assertNullableExist
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     ); */
-
-/* let getNormalMatrixTypeArray = (transform: transform, localToWorldMatrices, normalMatrixCacheMap) => */
-let getNormalMatrixTypeArray =
-    (transform: transform, localToWorldMatrices, normalMatrixCacheMap) =>
-  switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
-  | Some(normalMatrix) => (normalMatrix, normalMatrixCacheMap)
+let getLocalToWorldMatrixTypeArray =
+    (transform: transform, localToWorldMatrices, localToWorldMatrixCacheMap) =>
+  switch (localToWorldMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
+  | Some(matrix) => (matrix, localToWorldMatrixCacheMap)
   | None =>
-    let normalMatrix =
-      Matrix4Service.invertTo3x3(
-        getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices),
-        Matrix3Service.createIdentityMatrix3()
-      )
+    let matrix =
+      RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices);
+    (matrix, WonderCommonlib.SparseMapService.set(transform, matrix, localToWorldMatrixCacheMap))
+  };
+
+/* TODO duplicate with getLocalToWorldMatrixTypeArray */
+let getNormalMatrixTypeArray =
+    (
+      transform: transform,
+      localToWorldMatrices,
+      (localToWorldMatrixCacheMap, normalMatrixCacheMap)
+    ) =>
+  switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
+  | Some(matrix) => (matrix, (localToWorldMatrixCacheMap, normalMatrixCacheMap))
+  | None =>
+    let (matrix, localToWorldMatrixCacheMap) =
+      getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap);
+    let matrix =
+      Matrix4Service.invertTo3x3(matrix, Matrix3Service.createIdentityMatrix3())
       |> Matrix3Service.transposeSelf;
     (
-      normalMatrix,
-      WonderCommonlib.SparseMapService.set(transform, normalMatrix, normalMatrixCacheMap)
+      matrix,
+      (
+        localToWorldMatrixCacheMap,
+        WonderCommonlib.SparseMapService.set(transform, matrix, normalMatrixCacheMap)
+      )
     )
   };
 
 let getLocalPositionTypeArray = (transform: transform, localPositions) =>
   RecordTransformMainService.getLocalPositionTypeArray(transform, localPositions);
-  /* |> WonderLog.Contract.ensureCheck(
-       (localPosition) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|localPosition exist|j}, ~actual={j|not|j}),
-                 () => localPosition |> assertNullableExist
-               )
+
+/* |> WonderLog.Contract.ensureCheck(
+     (localPosition) =>
+       WonderLog.(
+         Contract.(
+           Operators.(
+             test(
+               Log.buildAssertMessage(~expect={j|localPosition exist|j}, ~actual={j|not|j}),
+               () => localPosition |> assertNullableExist
              )
            )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     ); */
-
-let getLocalPositionTuple = (transform: transform, localPositions) => {
-   RecordTransformMainService.getLocalPositionTuple(transform, localPositions);
-  
-};
+         )
+       ),
+     IsDebugMainService.getIsDebug(StateDataMain.stateData)
+   ); */
+let getLocalPositionTuple = (transform: transform, localPositions) =>
+  RecordTransformMainService.getLocalPositionTuple(transform, localPositions);
 
 let setLocalPositionByTuple = (transform: transform, dataTuple, {localPositions} as record) => {
-  RecordTransformMainService.setLocalPositionByTuple(transform, dataTuple, localPositions) |> ignore;
+  RecordTransformMainService.setLocalPositionByTuple(transform, dataTuple, localPositions)
+  |> ignore;
   record |> markHierachyDirty(transform)
 };
 
@@ -89,15 +87,24 @@ let setLocalPositionByTuple = (transform: transform, dataTuple, {localPositions}
      record
    }; */
 let setPositionByTuple =
-    (transform: transform, parent, position: position, (globalTempRecord, record)) =>
+    (
+      transform: transform,
+      parent,
+      position: position,
+      (globalTempRecord, {localToWorldMatrices, localToWorldMatrixCacheMap} as record)
+    ) => {
+  let (localToWorldMatrix, _) =
+    getLocalToWorldMatrixTypeArray(
+      parent,
+      record.localToWorldMatrices,
+      localToWorldMatrixCacheMap
+    );
   setLocalPositionByTuple(
     transform,
     Vector3Service.transformMat4Tuple(
       position,
-      invert(
-        getLocalToWorldMatrixTypeArray(parent, record.localToWorldMatrices),
-        GlobalTempService.getFloat32Array1(globalTempRecord)
-      )
+      invert(localToWorldMatrix, GlobalTempService.getFloat32Array1(globalTempRecord))
     ),
     record
-  );
+  )
+};

@@ -9,6 +9,7 @@ let _createTypeArrays = (buffer, count, state) => {
     Some({
       localToWorldMatrices,
       localPositions,
+      localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty()
     });
   state
@@ -22,9 +23,7 @@ let execJob = (_, e, stateData) =>
       let transformData = data##transformData;
       let buffer = transformData##buffer;
       let count = data##bufferData##transformDataBufferCount;
-      state
-      |> _createTypeArrays(buffer, count)
-      |> ignore;
+      state |> _createTypeArrays(buffer, count) |> ignore;
       e
     }
   );

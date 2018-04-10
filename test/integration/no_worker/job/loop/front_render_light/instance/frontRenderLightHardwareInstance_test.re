@@ -316,7 +316,7 @@ let _ =
                                );
                                TypeArrayService.fillFloat32ArrayWithOffset(
                                  record,
-                                 TransformTool.getNormalMatrixTypeArray(transform, state),
+                                 TransformTool.updateAndGetNormalMatrixTypeArray(transform, state),
                                  offset + 16
                                );
                                offset + 16 + 9

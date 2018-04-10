@@ -21,6 +21,7 @@ type transformRecord = {
   childMap: transformChildMap,
   gameObjectMap,
   dirtyMap: transformDirtyMap,
+  mutable localToWorldMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
   mutable normalMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
   disposedIndexArray: array(transform)
 };

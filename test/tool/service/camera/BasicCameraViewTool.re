@@ -1,5 +1,7 @@
 open BasicCameraViewType;
 
+open TransformType;
+
 let isBasicCameraView = (basicCameraView) => {
   open Wonder_jest;
   open Expect;
@@ -7,13 +9,17 @@ let isBasicCameraView = (basicCameraView) => {
   expect(basicCameraView) >= 0
 };
 
-let getWorldToCameraMatrix = (transform, state: StateDataMainType.state) =>
-  VMatrixService.getWorldToCameraMatrix(
+let getWorldToCameraMatrix = (transform, state: StateDataMainType.state) => {
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    RecordTransformMainService.getRecord(state);
+  let (localToWorldMatrix, _) =
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
       transform,
-      RecordTransformMainService.getRecord(state).localToWorldMatrices
-    )
-  );
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap
+    );
+  VMatrixService.getWorldToCameraMatrix(localToWorldMatrix)
+};
 
 let getPosition = (transform, state: StateDataMainType.state) =>
   UpdateTransformMainService.updateAndGetPositionTuple(

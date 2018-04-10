@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open TransformType;
+
 open BasicCameraViewType;
 
 open DisposeBasicCameraViewService;
@@ -47,13 +49,16 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataMainTyp
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  VMatrixService.getWorldToCameraMatrix(
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    RecordTransformMainService.getRecord(state);
+  let (localToWorldMatrix, _) =
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
       GetComponentGameObjectService.unsafeGetTransformComponent(
         unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
         state.gameObjectRecord
       ),
-      RecordTransformMainService.getRecord(state).localToWorldMatrices
-    )
-  )
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap
+    );
+  VMatrixService.getWorldToCameraMatrix(localToWorldMatrix)
 };
