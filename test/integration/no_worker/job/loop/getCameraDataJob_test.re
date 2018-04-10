@@ -98,7 +98,7 @@ let _ =
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject2);
                   let state =
                     state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
-                  state.renderRecord.cameraRecord
+                  RenderTool.getCameraRecord(state)
                   |>
                   expect == Some({
                               vMatrix:
@@ -127,7 +127,7 @@ let _ =
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject3);
                   let state =
                     state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
-                  state.renderRecord.cameraRecord
+                  RenderTool.getCameraRecord(state)
                   |>
                   expect == Some({
                               vMatrix:

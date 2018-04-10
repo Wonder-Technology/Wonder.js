@@ -1,6 +1,9 @@
 open StateDataMainType;
 
-let getRenderRecord = (state) => state.renderRecord;
+let getRenderRecord = (state) => RecordRenderMainService.getRecord(state);
 
 /* let unsafeGetRenderArrayFromState = (state) =>
-  state |> OperateRenderMainService.getRenderArray |> OptionTool.unsafeGet; */
+   state |> OperateRenderMainService.getRenderArray |> OptionTool.unsafeGet; */
+let unsafeGetCameraRecord = (state) => OperateRenderMainService.unsafeGetCameraRecord(state);
+
+let getCameraRecord = (state) => RecordRenderMainService.getRecord(state).cameraRecord;

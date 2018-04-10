@@ -6,7 +6,7 @@ let getIndices =
     (index, {boxGeometryRecord}) => {
       let indices =
         OperateTypeArrayBoxGeometryService.getIndicesTypeArray(index, boxGeometryRecord.indices);
-      WonderLog.Log.print(("indices: ", indices)) |> ignore;
+      /* WonderLog.Log.print(("indices: ", indices)) |> ignore; */
       indices
     }
   );

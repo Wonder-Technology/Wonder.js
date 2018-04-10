@@ -17,9 +17,9 @@ let execJob = (_, stateData) =>
     () => {
       let {gameObjectRecord, meshRendererRecord} as state =
         StateDataMainService.unsafeGetState(stateData);
-      state.renderRecord.basicRenderObjectRecord =
+      RecordRenderMainService.getRecord(state).basicRenderObjectRecord =
         state
-        |> CreateRenderObjectBufferMainService.create(
+        |> SetRenderObjectBufferDataMainService.setData(
              state
              |> _getBasicMaterialRenderArray(
                   meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
@@ -27,7 +27,10 @@ let execJob = (_, stateData) =>
              (
                GetComponentGameObjectService.unsafeGetBasicMaterialComponent,
                ShaderIndexBasicMaterialMainService.getShaderIndex
-             )
+             ),
+             state
+             |> RecordRenderMainService.getRecord
+             |> RecordBasicRenderObjectMainService.getRecord
            );
       None
     }

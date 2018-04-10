@@ -34,3 +34,32 @@ let createTypeArrays = (buffer, count) => (
     ~length=getGeometryTypesLength(count)
   )
 );
+
+let setDefaultTypeArrData = (count: int, typeArrTuple) => {
+  let defaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance();
+  WonderCommonlib.ArrayService.range(0, count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (
+           (
+             transformIndices,
+             materialIndices,
+             shaderIndices,
+             geometryIndices,
+             sourceInstanceIndices,
+             geometryTypes
+           ),
+           index
+         ) => (
+           transformIndices,
+           materialIndices,
+           shaderIndices,
+           geometryIndices,
+           setComponent(index, defaultSourceInstance, sourceInstanceIndices),
+           geometryTypes
+         )
+       ),
+       typeArrTuple
+     )
+};

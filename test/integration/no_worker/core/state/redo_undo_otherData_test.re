@@ -4,7 +4,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "test redo,undo other record",
+    "test redo,undo other data",
     () => {
       open Expect;
       open Expect.Operators;
@@ -190,28 +190,51 @@ let _ =
         () => {
           describe(
             "restore render record to target state",
-            () =>
+            () => {
               test(
-                "clear basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord",
+                "clear cameraRecord",
                 () => {
                   open RenderType;
                   let state = state^;
                   let state = {
                     ...state,
-                    renderRecord: {
-                      ...RenderTool.getRenderRecord(state),
-                      basicRenderObjectRecord: Some(Obj.magic(10)),
-                      lightRenderObjectRecord: Some(Obj.magic(11)),
-                      cameraRecord: Some(Obj.magic(1))
-                    }
+                    renderRecord:
+                      Some({
+                        ...RenderTool.getRenderRecord(state),
+                        cameraRecord: Some(Obj.magic(1))
+                      })
                   };
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
-                  let {basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord} =
+                  let {cameraRecord} = RenderTool.getRenderRecord(MainStateTool.unsafeGetState());
+                  cameraRecord |> expect == None
+                }
+              );
+              test(
+                "basicRenderObjectRecord, lightRenderObjectRecord use targetState's corresponding record",
+                () => {
+                  open RenderType;
+                  let state = state^;
+                  let targetBasicRenderObjectRecord = Some(Obj.magic(10));
+                  let targetLightRenderObjectRecord = Some(Obj.magic(11));
+                  let state = {
+                    ...state,
+                    renderRecord:
+                      Some({
+                        ...RenderTool.getRenderRecord(state),
+                        basicRenderObjectRecord: targetBasicRenderObjectRecord,
+                        lightRenderObjectRecord: targetLightRenderObjectRecord
+                      })
+                  };
+                  let _ =
+                    MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
+                  let {basicRenderObjectRecord, lightRenderObjectRecord} =
                     RenderTool.getRenderRecord(MainStateTool.unsafeGetState());
-                  (basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord) |> expect == (None, None, None)
+                  (basicRenderObjectRecord, lightRenderObjectRecord)
+                  |> expect == (targetBasicRenderObjectRecord, targetLightRenderObjectRecord)
                 }
               )
+            }
           );
           describe(
             "restore global temp record to target state",

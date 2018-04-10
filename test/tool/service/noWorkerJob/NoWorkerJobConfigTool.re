@@ -103,7 +103,6 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "front_render_light"
             }
         ]
-
     }
 ]
         |};

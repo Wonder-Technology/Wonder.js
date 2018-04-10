@@ -1,6 +1,12 @@
 open StateDataMainType;
 
+open RenderType;
+
 let restore = (currentState, targetState) => {
-  ...targetState,
-  renderRecord: {basicRenderObjectRecord: None, lightRenderObjectRecord: None, cameraRecord: None}
+  let {basicRenderObjectRecord, lightRenderObjectRecord} =
+    RecordRenderMainService.getRecord(targetState);
+  {
+    ...targetState,
+    renderRecord: Some({basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord: None})
+  }
 };

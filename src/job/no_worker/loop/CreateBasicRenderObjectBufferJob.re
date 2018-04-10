@@ -13,19 +13,23 @@ let _getBasicMaterialRenderArray = (renderArray, state: StateDataMainType.state)
 
 let execJob = (_, {gameObjectRecord, meshRendererRecord} as state) => {
   ...state,
-  renderRecord: {
-    ...state.renderRecord,
-    basicRenderObjectRecord:
-      state
-      |> CreateRenderObjectBufferMainService.create(
-           state
-           |> _getBasicMaterialRenderArray(
-                meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
-              ),
-           (
-             GetComponentGameObjectService.unsafeGetBasicMaterialComponent,
-             ShaderIndexBasicMaterialMainService.getShaderIndex
+  renderRecord:
+    Some({
+      ...RecordRenderMainService.getRecord(state),
+      basicRenderObjectRecord:
+        state
+        |> SetRenderObjectBufferDataMainService.setData(
+             state
+             |> _getBasicMaterialRenderArray(
+                  meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
+                ),
+             (
+               GetComponentGameObjectService.unsafeGetBasicMaterialComponent,
+               ShaderIndexBasicMaterialMainService.getShaderIndex
+             ),
+             state
+             |> RecordRenderMainService.getRecord
+             |> RecordBasicRenderObjectMainService.getRecord
            )
-         )
-  }
+    })
 };

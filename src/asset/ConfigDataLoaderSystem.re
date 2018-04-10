@@ -154,7 +154,8 @@ let _createRecordWithState = (state) =>
   |> RecordBasicMaterialMainService.create
   |> RecordLightMaterialMainService.create
   |> RecordBoxGeometryMainService.create
-  |> RecordCustomGeometryMainService.create;
+  |> RecordCustomGeometryMainService.create
+  |> RecordRenderMainService.create;
 
 let _createAndSetState = (stateData) =>
   StateDataMainService.setState(stateData, CreateStateMainService.createState()) |> ignore;

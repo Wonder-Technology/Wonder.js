@@ -118,7 +118,7 @@ and state = {
   glslLocationRecord,
   glslSenderRecord,
   glslChunkRecord,
-  renderRecord,
+  mutable renderRecord: option(renderRecord),
   mutable timeControllerRecord,
   vboBufferRecord,
   globalTempRecord,

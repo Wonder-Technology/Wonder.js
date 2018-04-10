@@ -6,33 +6,21 @@ open RenderObjectBufferTypeArrayService;
 
 open Js.Typed_array;
 
-let create =
+let setData =
     (
       renderArray,
       (unsafeGetMaterialComponentFunc, getShaderIndexFunc),
+      {
+        transformIndices,
+        materialIndices,
+        shaderIndices,
+        geometryIndices,
+        sourceInstanceIndices,
+        geometryTypes
+      } as renderObjectRecord,
       {gameObjectRecord} as state
     ) => {
   let count = renderArray |> Js.Array.length;
-  let buffer =
-    Worker.newSharedArrayBuffer(
-      count
-      * (
-        Uint32Array._BYTES_PER_ELEMENT
-        * (getComponentSize() * 5)
-        + Uint8Array._BYTES_PER_ELEMENT
-        * getGeometryTypeSize()
-      )
-    );
-  /* let (
-       transformIndices,
-       materialIndices,
-       shaderIndices,
-       geometryIndices,
-       sourceInstanceIndices,
-       geometryTypes
-     ) =
-       CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count); */
-  let defaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance();
   let (
     transformIndices,
     materialIndices,
@@ -73,25 +61,24 @@ let create =
                  [@bs]
                  GetComponentGameObjectService.getSourceInstanceComponent(uid, gameObjectRecord)
                ) {
-               | None => setComponent(index, defaultSourceInstance, sourceInstanceIndices)
+               | None => sourceInstanceIndices
                | Some(sourceInstance) => setComponent(index, sourceInstance, sourceInstanceIndices)
                },
                TypeArrayService.setInt8_1(index, type_, geometryTypes)
              )
            }
          ),
-         /* (
-              transformIndices,
-              materialIndices,
-              shaderIndices,
-              geometryIndices,
-              sourceInstanceIndices,
-              geometryTypes
-            ) */
-         CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count)
+         (
+           transformIndices,
+           materialIndices,
+           shaderIndices,
+           geometryIndices,
+           sourceInstanceIndices,
+           geometryTypes
+         )
        );
   Some({
-    buffer,
+    ...renderObjectRecord,
     count,
     transformIndices,
     materialIndices,

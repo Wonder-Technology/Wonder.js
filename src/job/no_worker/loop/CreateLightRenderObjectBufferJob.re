@@ -13,19 +13,23 @@ let _getLightMaterialRenderArray = (renderArray, state: StateDataMainType.state)
 
 let execJob = (_, {gameObjectRecord, meshRendererRecord} as state) => {
   ...state,
-  renderRecord: {
-    ...state.renderRecord,
-    lightRenderObjectRecord:
-      state
-      |> CreateRenderObjectBufferMainService.create(
-           state
-           |> _getLightMaterialRenderArray(
-                meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
-              ),
-           (
-             GetComponentGameObjectService.unsafeGetLightMaterialComponent,
-             ShaderIndexLightMaterialMainService.getShaderIndex
+  renderRecord:
+    Some({
+      ...RecordRenderMainService.getRecord(state),
+      lightRenderObjectRecord:
+        state
+        |> SetRenderObjectBufferDataMainService.setData(
+             state
+             |> _getLightMaterialRenderArray(
+                  meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
+                ),
+             (
+               GetComponentGameObjectService.unsafeGetLightMaterialComponent,
+               ShaderIndexLightMaterialMainService.getShaderIndex
+             ),
+             state
+             |> RecordRenderMainService.getRecord
+             |> RecordLightRenderObjectMainService.getRecord
            )
-         )
-  }
+    })
 };
