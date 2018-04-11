@@ -86,27 +86,19 @@ let _checkParentAndChildTransformShouldAlive =
 let setTransformParent =
     (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
-  {
-    ...state,
-    transformRecord:
-      Some(setParent(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord))
-  }
+  state.transformRecord =
+    Some(setParent(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord));
+  state
 };
 
 let setTransformParentKeepOrder =
     (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
-  {
-    ...state,
-    transformRecord:
-      Some(
-        setParentKeepOrder(
-          Js.toOption(parent),
-          child,
-          state |> RecordTransformMainService.getRecord
-        )
-      )
-  }
+  state.transformRecord =
+    Some(
+      setParentKeepOrder(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord)
+    );
+  state
 };
 
 let unsafeGetTransformChildren = (transform: transform, state: StateDataMainType.state) => {
@@ -177,17 +169,15 @@ let setTransformLocalPosition =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  {
-    ...state,
-    transformRecord:
-      Some(
-        setLocalPositionByTuple(
-          transform,
-          localPosition,
-          state |> RecordTransformMainService.getRecord
-        )
+  state.transformRecord =
+    Some(
+      setLocalPositionByTuple(
+        transform,
+        localPosition,
+        state |> RecordTransformMainService.getRecord
       )
-  }
+    );
+  state
 };
 
 /* let getTransformPositionTypeArray = (transform: transform, state: StateDataMainType.state) => {
@@ -242,16 +232,14 @@ let setTransformPosition =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  {
-    ...state,
-    transformRecord:
-      Some(
-        updateAndSetPositionByTuple(
-          transform,
-          position,
-          state.globalTempRecord,
-          state |> RecordTransformMainService.getRecord
-        )
+  state.transformRecord =
+    Some(
+      updateAndSetPositionByTuple(
+        transform,
+        position,
+        state.globalTempRecord,
+        state |> RecordTransformMainService.getRecord
       )
-  }
+    );
+  state
 };
