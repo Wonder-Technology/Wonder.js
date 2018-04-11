@@ -49,19 +49,11 @@ var BasicBoxesTool = (function () {
             var state = record[0];
             var geometry = record[1];
 
-            // state = wd.setBoxGeometryConfigData(geometry, {
-            //     width: 5,
-            //     height: 5,
-            //     depth: 5
-            // }, state);
-
-
 
 
             state = wd.addGameObjectBoxGeometryComponent(obj, geometry, state);
 
             return [state, obj];
-
         },
         createBoxesByClone: function (count, state) {
             var boxes = [];
@@ -91,7 +83,16 @@ var BasicBoxesTool = (function () {
             var boxes = [];
 
             for (var i = 0; i < count; i++) {
-                var [state, box] = wd.createBox(state);
+                var record = BasicBoxesTool.createBox(state);
+                var state = record[0];
+                var box = record[1];
+
+                var basicMaterial = wd.unsafeGetGameObjectBasicMaterialComponent(box, state);
+
+                var state = wd.setBasicMaterialColor(basicMaterial,
+                    [Math.random(), Math.random(), Math.random()],
+                    state
+                );
 
 
                 boxes.push(box);

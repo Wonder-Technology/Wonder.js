@@ -17,9 +17,9 @@ let renderTestData = {
       "./test/e2e/js/InstanceLightBoxesTool.js",
       "./test/e2e/js/RedoUndoTool.js",
       "./test/e2e/js/RandomTool.js",
-      "./test/e2e/render/js/CustomGeometryTool.js",
-      "./test/e2e/render/js/BasicMaterialTool.js",
-      "./test/e2e/render/js/LightMaterialTool.js",
+      "./test/e2e/js/CustomGeometryTool.js",
+      "./test/e2e/js/BasicMaterialTool.js",
+      "./test/e2e/js/LightMaterialTool.js",
       "./dist/wd.js"
     ],
     replaceForDebug: (htmlStr) =>
@@ -206,7 +206,7 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var data = CustomGeometryTool.createTriangle(state);
+                        var data = CustomGeometryTool.createTriangle(1, state);
                         
 
                         var state = data[0];
@@ -252,7 +252,7 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var data = CustomGeometryTool.createTriangle(state);
+                        var data = CustomGeometryTool.createTriangle(1, state);
                         
 
                         var state = data[0];

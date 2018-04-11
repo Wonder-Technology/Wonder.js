@@ -86,10 +86,20 @@ var LightBoxesTool = (function () {
             var boxes = [];
 
             for (var i = 0; i < count; i++) {
-                var [state, box] = wd.createBox(state);
+                var record = LightBoxesTool.createBox(state);
+                var state = record[0];
+                var box = record[1];
+
+                var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(box, state);
+
+                var state = wd.setLightMaterialDiffuseColor(lightMaterial,
+                    [Math.random(), Math.random(), Math.random()],
+                    state
+                );
 
 
                 boxes.push(box);
+
             }
 
             return [state, boxes];
