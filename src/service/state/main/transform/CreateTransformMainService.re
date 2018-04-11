@@ -66,28 +66,31 @@ let _initDataWhenCreate =
            RecordTransformMainService.setLocalPosition(index, defaultLocalPosition, localPositions) */
     };
 
-let createWithoutMarkNotDirty = ({settingRecord} as state) => {
-  let {index, disposedIndexArray} as transformRecord =
-    state |> RecordTransformMainService.getRecord;
+let createWithoutMarkNotDirtyWithRecord =
+    (settingRecord, {index, disposedIndexArray} as transformRecord) => {
   let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);
   transformRecord.index = newIndex;
   let transformRecord = _initDataWhenCreate(index, transformRecord);
-  ({...state, transformRecord: Some({...transformRecord, disposedIndexArray})}, index)
+  transformRecord.disposedIndexArray = disposedIndexArray;
+  (transformRecord, index)
   |> BufferService.checkNotExceedMaxCount(
        BufferSettingService.getTransformDataBufferCount(settingRecord)
      )
 };
 
+let createWithoutMarkNotDirty = ({settingRecord} as state) => {
+  let (transformRecord, index) =
+    createWithoutMarkNotDirtyWithRecord(
+      settingRecord,
+      state |> RecordTransformMainService.getRecord
+    );
+  state.transformRecord = Some(transformRecord);
+  (state, index)
+};
+
 let create = (state) => {
   let (state, index) = createWithoutMarkNotDirty(state);
-  (
-    {
-      ...state,
-      transformRecord:
-        Some(
-          state |> RecordTransformMainService.getRecord |> DirtyTransformService.mark(index, true)
-        )
-    },
-    index
-  )
+  state.transformRecord =
+    Some(state |> RecordTransformMainService.getRecord |> DirtyTransformService.mark(index, true));
+  (state, index)
 };

@@ -38,29 +38,27 @@ let _disposeData =
       } as transformRecord
     ) => {
   let transformRecord = _disposeFromParentAndChildMap(transform, isKeepOrder, transformRecord);
-  {
-    ...transformRecord,
-    localToWorldMatrices:
-      [@bs]
-      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        BufferTransformService.getLocalToWorldMatrixIndex(transform),
-        BufferTransformService.getLocalToWorldMatricesSize(),
-        defaultLocalToWorldMatrix,
-        localToWorldMatrices
-      ),
-    localPositions:
-      [@bs]
-      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
-        BufferTransformService.getLocalPositionIndex(transform),
-        BufferTransformService.getLocalPositionsSize(),
-        defaultLocalPosition,
-        localPositions
-      ),
-    parentMap: parentMap |> disposeSparseMapData(transform),
-    childMap: childMap |> disposeSparseMapData(transform),
-    dirtyMap: dirtyMap |> disposeSparseMapData(transform),
-    gameObjectMap: gameObjectMap |> disposeSparseMapData(transform)
-  }
+  transformRecord.localToWorldMatrices =
+    [@bs]
+    DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+      BufferTransformService.getLocalToWorldMatrixIndex(transform),
+      BufferTransformService.getLocalToWorldMatricesSize(),
+      defaultLocalToWorldMatrix,
+      localToWorldMatrices
+    );
+  transformRecord.localPositions =
+    [@bs]
+    DisposeTypeArrayService.deleteAndResetFloat32TypeArr(
+      BufferTransformService.getLocalPositionIndex(transform),
+      BufferTransformService.getLocalPositionsSize(),
+      defaultLocalPosition,
+      localPositions
+    );
+  transformRecord.parentMap = parentMap |> disposeSparseMapData(transform);
+  transformRecord.childMap = childMap |> disposeSparseMapData(transform);
+  transformRecord.dirtyMap = dirtyMap |> disposeSparseMapData(transform);
+  transformRecord.gameObjectMap = gameObjectMap |> disposeSparseMapData(transform);
+  transformRecord
 };
 
 let handleDisposeComponent =
@@ -91,14 +89,12 @@ let handleDisposeComponent =
       state |> RecordTransformMainService.getRecord
     );
   let {disposedIndexArray} = transformRecord;
-  {
-    ...state,
-    transformRecord:
-      Some({
-        ...transformRecord,
-        disposedIndexArray: disposedIndexArray |> ArrayService.push(transform)
-      })
-  }
+  state.transformRecord =
+    Some({
+      ...transformRecord,
+      disposedIndexArray: disposedIndexArray |> ArrayService.push(transform)
+    });
+  state
 };
 
 let handleBatchDisposeComponent =
@@ -126,10 +122,11 @@ let handleBatchDisposeComponent =
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let {disposedIndexArray} as transformRecord = state |> RecordTransformMainService.getRecord;
-      let transformRecord = {
-        ...transformRecord,
-        disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
-      };
+      transformRecord.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
+      /* let transformRecord = {
+           ...transformRecord,
+           disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
+         }; */
       let transformDataBufferCount =
         BufferSettingService.getTransformDataBufferCount(settingRecord);
       let dataTuple = (transformDataBufferCount, maxTypeArrayPoolSize, false);
@@ -141,6 +138,7 @@ let handleBatchDisposeComponent =
              ((transformRecord, transform) => _disposeData(transform, dataTuple, transformRecord)),
              transformRecord
            );
-      {...state, transformRecord: Some(transformRecord)}
+      state.transformRecord = Some(transformRecord);
+      state
     }
   );

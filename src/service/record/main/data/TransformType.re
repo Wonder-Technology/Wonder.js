@@ -13,17 +13,17 @@ type transformDirtyMap = array(bool);
 type transformRecord = {
   mutable index: int,
   buffer: WorkerType.sharedArrayBuffer,
-  localToWorldMatrices: Js.Typed_array.Float32Array.t,
-  localPositions: Js.Typed_array.Float32Array.t,
+  mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
+  mutable localPositions: Js.Typed_array.Float32Array.t,
   defaultLocalToWorldMatrix: array(float),
   defaultLocalPosition: array(float),
-  parentMap: transformParentMap,
-  childMap: transformChildMap,
-  gameObjectMap,
-  dirtyMap: transformDirtyMap,
+  mutable parentMap: transformParentMap,
+  mutable childMap: transformChildMap,
+  mutable gameObjectMap,
+  mutable dirtyMap: transformDirtyMap,
   mutable localToWorldMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
   mutable normalMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
-  disposedIndexArray: array(transform)
+  mutable disposedIndexArray: array(transform)
 };
 
 external transformToJsUndefine : transform => Js.undefined(transform) = "%identity";

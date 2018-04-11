@@ -3,7 +3,11 @@ open StateDataMainType;
 open TransformType;
 
 let handleCloneComponent =
-    (sourceComponent: transform, countRangeArr: array(int), {typeArrayPoolRecord} as state) => {
+    (
+      sourceComponent: transform,
+      countRangeArr: array(int),
+      {settingRecord, typeArrayPoolRecord} as state
+    ) => {
   let componentArr = [||];
   let transformRecord = state |> RecordTransformMainService.getRecord;
   let localPosition =
@@ -11,40 +15,28 @@ let handleCloneComponent =
       sourceComponent,
       transformRecord.localPositions
     );
-  let (state, componentArr) =
+  let (transformRecord, componentArr) =
     countRangeArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
-           ((state, componentArr), _) => {
-             let (state, index) = CreateTransformMainService.createWithoutMarkNotDirty(state);
+           ((transformRecord, componentArr), _) => {
+             let (transformRecord, index) =
+               CreateTransformMainService.createWithoutMarkNotDirtyWithRecord(
+                 settingRecord,
+                 transformRecord
+               );
              (
-               {
-                 ...state,
-                 transformRecord:
-                   Some(
-                     state
-                     |> RecordTransformMainService.getRecord
-                     |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
-                     |> DirtyTransformService.mark(index, true)
-                   )
-               },
+               transformRecord
+               |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
+               |> DirtyTransformService.mark(index, true),
                componentArr |> ArrayService.push(index)
              )
            }
          ),
-         (state, [||])
+         (transformRecord, [||])
        );
-  (
-    {
-      ...state,
-      transformRecord:
-        Some(
-          state
-          |> RecordTransformMainService.getRecord
-          |> DirtyTransformService.mark(sourceComponent, true)
-        )
-    },
-    componentArr
-  )
+  state.transformRecord =
+    Some(transformRecord |> DirtyTransformService.mark(sourceComponent, true));
+  (state, componentArr)
 };
