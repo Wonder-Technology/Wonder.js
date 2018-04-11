@@ -53,7 +53,7 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
         GetBoxGeometryIndicesRenderService.getIndices
       )
     )
-  | _ => (
+  | type_ when type_ === getCustomGeometryType() => (
       (
         vboBufferRecord.customGeometryVertexBufferMap,
         vboBufferRecord.customGeometryNormalBufferMap,
@@ -63,6 +63,16 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
         GetCustomGeometryVerticesRenderService.getVertices,
         GetCustomGeometryNormalsRenderService.getNormals,
         GetCustomGeometryIndicesRenderService.getIndices
+      )
+    )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getCurrentGeometryBufferMapAndGetPointsFuncs",
+        ~description={j|unknown type_: $type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
       )
     )
   };
