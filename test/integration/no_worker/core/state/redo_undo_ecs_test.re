@@ -288,7 +288,7 @@ let _ =
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let (copiedState, transform4) = TransformAPI.createTransform(copiedState);
                   let {localToWorldMatrixCacheMap, normalMatrixCacheMap} =
-                    TransformTool.getTransformRecord(copiedState);
+                    TransformTool.getRecord(copiedState);
                   (localToWorldMatrixCacheMap, normalMatrixCacheMap)
                   |>
                   expect == (
@@ -935,7 +935,7 @@ let _ =
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
                               let {mappedIndexMap, gameObjectMap} =
-                                AmbientLightTool.getLightRecord(state);
+                                AmbientLightTool.getRecord(state);
                               [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
                             },
                             state^
@@ -987,7 +987,7 @@ let _ =
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
                               let {mappedIndexMap, gameObjectMap} =
-                                DirectionLightTool.getLightRecord(state);
+                                DirectionLightTool.getRecord(state);
                               [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
                             },
                             state^
@@ -1091,7 +1091,7 @@ let _ =
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
                               let {mappedIndexMap, gameObjectMap} =
-                                PointLightTool.getLightRecord(state);
+                                PointLightTool.getRecord(state);
                               [|mappedIndexMap |> Obj.magic, gameObjectMap |> Obj.magic|]
                             },
                             state^
@@ -1486,7 +1486,7 @@ let _ =
                   _testRestoreStateEqualTargetState(
                     state,
                     _prepareBasicMaterialData,
-                    BasicMaterialTool.getMaterialRecord
+                    BasicMaterialTool.getRecord
                   )
               );
               test(
@@ -1495,7 +1495,7 @@ let _ =
                   _testRestoreStateEqualTargetState(
                     state,
                     _prepareLightMaterialData,
-                    LightMaterialTool.getMaterialRecord
+                    LightMaterialTool.getRecord
                   )
               )
             }
@@ -1529,7 +1529,7 @@ let _ =
                   _testRestoreStateEqualTargetState(
                     state,
                     _prepareLightData(AmbientLightTool.createGameObject),
-                    AmbientLightTool.getLightRecord
+                    AmbientLightTool.getRecord
                   )
               );
               test(
@@ -1538,7 +1538,7 @@ let _ =
                   _testRestoreStateEqualTargetState(
                     state,
                     _prepareLightData(DirectionLightTool.createGameObject),
-                    DirectionLightTool.getLightRecord
+                    DirectionLightTool.getRecord
                   )
               );
               test(
@@ -1547,7 +1547,7 @@ let _ =
                   _testRestoreStateEqualTargetState(
                     state,
                     _prepareLightData(PointLightTool.createGameObject),
-                    PointLightTool.getLightRecord
+                    PointLightTool.getRecord
                   )
               )
             }

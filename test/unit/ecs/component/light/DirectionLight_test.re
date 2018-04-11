@@ -162,7 +162,7 @@ let _ =
                   let state =
                     state
                     |> GameObjectAPI.disposeGameObjectDirectionLightComponent(gameObject1, light1);
-                  let {gameObjectMap} = DirectionLightTool.getLightRecord(state);
+                  let {gameObjectMap} = DirectionLightTool.getRecord(state);
                   gameObjectMap |> WonderCommonlib.SparseMapService.has(light1) |> expect == false
                 }
               );

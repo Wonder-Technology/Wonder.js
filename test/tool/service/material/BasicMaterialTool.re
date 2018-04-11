@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open BasicMaterialType;
 
-let getMaterialRecord = (state) => RecordBasicMaterialMainService.getRecord(state);
+let getRecord = (state) => RecordBasicMaterialMainService.getRecord(state);
 
 let createGameObject = (state) => {
   open BasicMaterialAPI;
@@ -13,9 +13,9 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
-let getDefaultShaderIndex = (state) => getMaterialRecord(state).defaultShaderIndex;
+let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
 
-let getDefaultColor = (state) => getMaterialRecord(state).defaultColor;
+let getDefaultColor = (state) => getRecord(state).defaultColor;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
   let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
@@ -49,7 +49,7 @@ let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.
 let dispose = (material, state: StateDataMainType.state) => {
   ...state,
   basicMaterialRecord:
-    Some(DisposeBasicMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))
+    Some(DisposeBasicMaterialService.handleDisposeComponent(material, getRecord(state)))
 };
 
 let initMaterial = (materialIndex, state) =>
@@ -82,9 +82,9 @@ let initMaterial = (materialIndex, state) =>
 
 let isMaterialDisposed = (material, state) => {
   open BasicMaterialType;
-  let {disposedIndexArray} = getMaterialRecord(state);
+  let {disposedIndexArray} = getRecord(state);
   disposedIndexArray |> Js.Array.includes(material)
 };
 
 let getGroupCount = (material, state) =>
-  GroupBasicMaterialService.getGroupCount(material, getMaterialRecord(state));
+  GroupBasicMaterialService.getGroupCount(material, getRecord(state));

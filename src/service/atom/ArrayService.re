@@ -26,20 +26,6 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
 };
 
 let range = (a: int, b: int) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(~expect={j|b:$b should >= a:$a|j}, ~actual={j|not|j}),
-              () => b >= a
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
   let result = WonderCommonlib.ArrayService.createEmpty();
   for (i in a to b) {
     Js.Array.push(i, result) |> ignore

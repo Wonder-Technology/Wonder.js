@@ -4,7 +4,7 @@ open TransformType;
 
 open Js.Typed_array;
 
-let getTransformRecord = (state: StateDataMainType.state) =>
+let getRecord = (state: StateDataMainType.state) =>
   state |> RecordTransformMainService.getRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
@@ -106,12 +106,12 @@ let dispose = (transform, state) => {
 };
 
 let isDisposed = (transform, state) =>
-  ! DisposeTransformMainService.isAlive(transform, getTransformRecord(state));
+  ! DisposeTransformMainService.isAlive(transform, getRecord(state));
 
 let isDirty = (transform, state) =>
   DirtyTransformService.isDirty(transform, state |> RecordTransformMainService.getRecord);
 
-/* let {localToWorldMatrixMap} = getTransformRecord(state);
+/* let {localToWorldMatrixMap} = getRecord(state);
    ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform)) */
 let getTransformLocalPositionTypeArray = (transform, state) =>
   ModelMatrixTransformService.getLocalPositionTypeArray(

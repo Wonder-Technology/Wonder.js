@@ -176,7 +176,7 @@ let _ =
                          gameObject1,
                          material1
                        );
-                  let {gameObjectMap} = LightMaterialTool.getMaterialRecord(state);
+                  let {gameObjectMap} = LightMaterialTool.getRecord(state);
                   gameObjectMap
                   |> WonderCommonlib.SparseMapService.has(material1)
                   |> expect == false

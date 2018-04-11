@@ -9,7 +9,7 @@ let createGameObject = (state) => {
   (state, gameObject, light)
 };
 
-let getLightRecord = (state) => state.pointLightRecord;
+let getRecord = (state) => state.pointLightRecord;
 
 let isAlive = (light, state) => DisposePointLightService.isAlive(light, state.pointLightRecord);
 

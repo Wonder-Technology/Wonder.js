@@ -9,11 +9,10 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "boxGeometryPointDataBufferCount": 2000000,
         "customGeometryPointDataBufferCount": 2000000,
-        "transformDataBufferCount": 30000,
-        "basicMaterialDataBufferCount": 30000,
-        "lightMaterialDataBufferCount": 30000
+        "transformDataBufferCount": 300000,
+        "basicMaterialDataBufferCount": 300000,
+        "lightMaterialDataBufferCount": 300000
     },
     "gpu": {
         "use_hardware_instance": true

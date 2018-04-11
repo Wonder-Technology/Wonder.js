@@ -33,6 +33,10 @@ let _copyAllArrayBuffers = ({settingRecord} as state) => {
     (
       DirectionLightArrayBuffer,
       BufferDirectionLightService.createBuffer(BufferDirectionLightService.getBufferMaxCount())
+    ),
+    (
+      PointLightArrayBuffer,
+      BufferPointLightService.createBuffer(BufferPointLightService.getBufferMaxCount())
     )
   ]
 };
@@ -61,7 +65,7 @@ let _getMapKey = (arrayBufferType) =>
 let _addArrayBuffer = (poolMap, type_, arrayBuffer) => {
   let key = _getMapKey(type_);
   switch (poolMap |> WonderCommonlib.HashMapService.get(key)) {
-  | None => poolMap |> WonderCommonlib.HashMapService.set(key, [])
+  | None => poolMap |> WonderCommonlib.HashMapService.set(key, [arrayBuffer])
   | Some(list) => poolMap |> WonderCommonlib.HashMapService.set(key, [arrayBuffer, ...list])
   }
 };
@@ -78,18 +82,32 @@ let _addCopiedArrayBuffersToPool = (copiedArrayBufferList, {arrayBufferPoolRecor
   }
 };
 
-let copyAllArrayBuffersToPool = (count, {arrayBufferPoolRecord} as state) =>
+let copyAllArrayBuffersToPool = (count, {arrayBufferPoolRecord} as state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(~expect={j|count >= 1|j}, ~actual={j|is $count|j}),
+              () => count >= 1
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
   ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs] ((state, _) => state |> _addCopiedArrayBuffersToPool(_copyAllArrayBuffers(state))),
        state
-     );
+     )
+};
 
 let copyArrayBuffer = (buffer, type_, {arrayBufferPoolRecord} as state) => {
   let key = _getMapKey(type_);
   switch (arrayBufferPoolRecord.poolMap |> WonderCommonlib.HashMapService.get(key)) {
-  | None =>
-    (state, CopyTypeArrayService.copySharedArrayBuffer(buffer))
+  | None => (state, CopyTypeArrayService.copySharedArrayBuffer(buffer))
   | Some(list) =>
     switch (list |> List.length) {
     | 0 => (state, CopyTypeArrayService.copySharedArrayBuffer(buffer))

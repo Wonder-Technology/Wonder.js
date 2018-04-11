@@ -59,7 +59,7 @@ let _ =
             "create a new transform which is just index(int)",
             () => {
               let (state, transform) = createTransform(state^);
-              (TransformTool.getTransformRecord(state).index, transform) |> expect == (1, 0)
+              (TransformTool.getRecord(state).index, transform) |> expect == (1, 0)
             }
           );
           /* describe(
@@ -93,7 +93,7 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  TransformTool.getTransformRecord(state)
+                  TransformTool.getRecord(state)
                   |> ((record) => expect(record.index) == 1)
                 }
               )
@@ -326,7 +326,7 @@ let _ =
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
                   let pos4 = (7., 3., 4.);
-                  let record = TransformTool.getTransformRecord(state);
+                  let record = TransformTool.getRecord(state);
                   let state =
                     state
                     |> TransformAPI.setTransformLocalPosition(transform1, pos1)
@@ -628,12 +628,12 @@ let _ =
                  let (state, _, _, _) = _prepareOne();
                  let len1 =
                    state
-                   |> TransformTool.getTransformRecord
+                   |> TransformTool.getRecord
                    |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  let state = state |> TransformTool.update;
                  let len2 =
                    state
-                   |> TransformTool.getTransformRecord
+                   |> TransformTool.getRecord
                    |> ((transformRecord) => Js.Array.length(transformRecord.dirtyArray));
                  (len1, len2) |> expect == (1, 0)
                }
@@ -1051,7 +1051,7 @@ let _ =
                          false
                        );
                   let {parentMap, childMap, dirtyMap, gameObjectMap} =
-                    TransformTool.getTransformRecord(state);
+                    TransformTool.getRecord(state);
                   (
                     parentMap |> WonderCommonlib.SparseMapService.has(transform1),
                     childMap |> WonderCommonlib.SparseMapService.has(transform1),

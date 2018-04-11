@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open LightMaterialType;
 
-let getMaterialRecord = (state) => RecordLightMaterialMainService.getRecord(state);
+let getRecord = (state) => RecordLightMaterialMainService.getRecord(state);
 
 let createGameObject = (state) => {
   open LightMaterialAPI;
@@ -13,13 +13,13 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
-let getDefaultShaderIndex = (state) => getMaterialRecord(state).defaultShaderIndex;
+let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
 
-let getDefaultDiffuseColor = (state) => getMaterialRecord(state).defaultDiffuseColor;
+let getDefaultDiffuseColor = (state) => getRecord(state).defaultDiffuseColor;
 
-let getDefaultSpecularColor = (state) => getMaterialRecord(state).defaultSpecularColor;
+let getDefaultSpecularColor = (state) => getRecord(state).defaultSpecularColor;
 
-let getDefaultShininess = (state) => getMaterialRecord(state).defaultShininess;
+let getDefaultShininess = (state) => getRecord(state).defaultShininess;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
   let {index, disposedIndexArray, shaderIndices} = RecordLightMaterialMainService.getRecord(state);
@@ -53,7 +53,7 @@ let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.
 let dispose = (material, state: StateDataMainType.state) => {
   ...state,
   lightMaterialRecord:
-    Some(DisposeLightMaterialService.handleDisposeComponent(material, getMaterialRecord(state)))
+    Some(DisposeLightMaterialService.handleDisposeComponent(material, getRecord(state)))
 };
 
 let initMaterial = (materialIndex, state) =>
@@ -65,9 +65,9 @@ let initMaterial = (materialIndex, state) =>
 
 let isMaterialDisposed = (material, state) => {
   open LightMaterialType;
-  let {disposedIndexArray} = getMaterialRecord(state);
+  let {disposedIndexArray} = getRecord(state);
   disposedIndexArray |> Js.Array.includes(material)
 };
 
 let getGroupCount = (material, state) =>
-  GroupLightMaterialService.getGroupCount(material, getMaterialRecord(state));
+  GroupLightMaterialService.getGroupCount(material, getRecord(state));

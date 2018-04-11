@@ -541,7 +541,7 @@ let _ =
                       let (state, gameObject2, material2) =
                         BasicMaterialTool.createGameObject(state);
                       let state = state |> disposeGameObject(gameObject1);
-                      let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialRecord;
+                      let {disposedIndexArray} = state |> BasicMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
                         disposedIndexArray |> Js.Array.includes(material2)
@@ -558,7 +558,7 @@ let _ =
                       let (state, gameObject2, material2) =
                         LightMaterialTool.createGameObject(state);
                       let state = state |> disposeGameObject(gameObject1);
-                      let {disposedIndexArray} = state |> LightMaterialTool.getMaterialRecord;
+                      let {disposedIndexArray} = state |> LightMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
                         disposedIndexArray |> Js.Array.includes(material2)
@@ -1223,7 +1223,7 @@ let _ =
                       let (state, gameObject2, material2) =
                         BasicMaterialTool.createGameObject(state);
                       let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      let {disposedIndexArray} = state |> BasicMaterialTool.getMaterialRecord;
+                      let {disposedIndexArray} = state |> BasicMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
                         disposedIndexArray |> Js.Array.includes(material2)
@@ -1240,7 +1240,7 @@ let _ =
                       let (state, gameObject2, material2) =
                         LightMaterialTool.createGameObject(state);
                       let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      let {disposedIndexArray} = state |> LightMaterialTool.getMaterialRecord;
+                      let {disposedIndexArray} = state |> LightMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
                         disposedIndexArray |> Js.Array.includes(material2)

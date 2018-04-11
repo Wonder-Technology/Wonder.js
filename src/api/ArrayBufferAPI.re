@@ -1,3 +1,2 @@
-let copyAllArrayBuffersToPool = (count, state) => {
-CopyArrayBufferPoolMainService.copyAllArrayBuffersToPool(count, state)
-};
+let copyAllArrayBuffersToPool = (count, state) =>
+  CopyArrayBufferPoolMainService.copyAllArrayBuffersToPool(count, state);
