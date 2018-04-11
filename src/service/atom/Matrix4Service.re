@@ -20,7 +20,7 @@ let createIdentityMatrix4 = () =>
     1.
   |]);
 
-let fromTranslation = (positionTypeArr: Float32Array.t, resultFloat32Arr) => {
+let fromTranslation = ((x, y, z), resultFloat32Arr) => {
   Float32Array.unsafe_set(resultFloat32Arr, 0, 1.);
   Float32Array.unsafe_set(resultFloat32Arr, 1, 0.);
   Float32Array.unsafe_set(resultFloat32Arr, 2, 0.);
@@ -33,9 +33,9 @@ let fromTranslation = (positionTypeArr: Float32Array.t, resultFloat32Arr) => {
   Float32Array.unsafe_set(resultFloat32Arr, 9, 0.);
   Float32Array.unsafe_set(resultFloat32Arr, 10, 1.);
   Float32Array.unsafe_set(resultFloat32Arr, 11, 0.);
-  Float32Array.unsafe_set(resultFloat32Arr, 12, Float32Array.unsafe_get(positionTypeArr, 0));
-  Float32Array.unsafe_set(resultFloat32Arr, 13, Float32Array.unsafe_get(positionTypeArr, 1));
-  Float32Array.unsafe_set(resultFloat32Arr, 14, Float32Array.unsafe_get(positionTypeArr, 2));
+  Float32Array.unsafe_set(resultFloat32Arr, 12, x);
+  Float32Array.unsafe_set(resultFloat32Arr, 13, y);
+  Float32Array.unsafe_set(resultFloat32Arr, 14, z);
   Float32Array.unsafe_set(resultFloat32Arr, 15, 1.);
   resultFloat32Arr
 };

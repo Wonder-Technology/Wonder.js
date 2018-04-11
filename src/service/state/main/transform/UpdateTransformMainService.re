@@ -44,7 +44,7 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
       multiply(
         parentLocalToWorldMatrix,
         fromTranslation(
-          getLocalPositionTypeArray(transform, localPositions),
+          getLocalPositionTuple(transform, localPositions),
           GlobalTempService.getFloat32Array1(globalTempRecord)
         ),
         childLocalToWorldMatrix
@@ -58,7 +58,7 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
           transformRecord.localToWorldMatrices,
           transformRecord.localToWorldMatrixCacheMap
         );
-      fromTranslation(getLocalPositionTypeArray(transform, localPositions), localToWorldMatrix)
+      fromTranslation(getLocalPositionTuple(transform, localPositions), localToWorldMatrix)
       |> ignore;
       transformRecord
     }
