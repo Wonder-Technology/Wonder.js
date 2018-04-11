@@ -106,21 +106,7 @@ var LightBoxesTool = (function () {
         },
 
         setPosition: function (boxes, state) {
-            var playgroundSize = 500;
-
-            for (var i = 0, len = boxes.length; i < len; i++) {
-                var box = boxes[i];
-
-
-                var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
-
-
-                var localPos = wd.getTransformLocalPosition(transform, state);
-
-                state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-            }
-
-            return [state, boxes];
+            return PositionTool.setPosition(boxes, state);
         },
 
 

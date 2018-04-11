@@ -18,6 +18,7 @@ let performanceTestData = {
       "./test/e2e/js/ScheduleTool.js",
       "./test/e2e/js/BasicBoxesTool.js",
       "./test/e2e/js/LightBoxesTool.js",
+      "./test/e2e/js/PositionTool.js",
       "./test/e2e/js/LightTool.js",
       "./test/e2e/js/CameraTool.js",
       "./test/e2e/js/CustomGeometryTool.js",
@@ -266,6 +267,161 @@ let performanceTestData = {
 
 
                                                   var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
+
+
+
+
+                              var n2 = performance.now();
+
+                                                  var state = wd.initDirector(state);
+
+
+
+
+                              var n3 = performance.now();
+                                                  var state = wd.loopBody(100.0, state);
+
+
+
+
+                              var n4 = performance.now();
+
+
+
+                                                  var state = wd.loopBody(200.0, state);
+
+
+
+
+                              var n5 = performance.now();
+
+
+
+                     return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
+                     }
+
+                     |},
+          errorRate: 10
+        },
+        {
+          name: "create_dispose_1k_cloned_boxes",
+          bodyFuncStr: {|
+                              ReplaceFetchTool.replaceFetchForTest();
+
+
+
+
+
+                              return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                  return initSample(wd.unsafeGetState());
+                              });
+
+
+
+
+                                              function initSample(state) {
+                              var n1 = performance.now();
+
+                                                  var data = BasicBoxesTool.createBoxesByClone(1, state);
+
+                                                  var state = data[0];
+                                                  var boxes = data[1];
+
+                                                  var data = BasicBoxesTool.setPosition(boxes, state);
+                                                  var state = data[0];
+                                                  var boxes = data[1];
+
+                                                  var data = BasicBoxesTool.createCamera(state);
+
+
+
+                                                  var state = data[0];
+
+
+                                                  var state = BasicBoxesTool.createAndDisposeClonedGameObjects(1000, boxes, state);
+
+
+
+
+                              var n2 = performance.now();
+
+                                                  var state = wd.initDirector(state);
+
+
+
+
+                              var n3 = performance.now();
+                                                  var state = wd.loopBody(100.0, state);
+
+
+
+
+                              var n4 = performance.now();
+
+
+
+                                                  var state = wd.loopBody(200.0, state);
+
+
+
+
+                              var n5 = performance.now();
+
+
+
+                     return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
+                     }
+
+                     |},
+          errorRate: 10
+        }
+      ]
+    },
+    {
+      name: "basic_triangles",
+      caseList: [
+        {
+          name: "create_dispose_1k_triangles",
+          bodyFuncStr: {|
+                              ReplaceFetchTool.replaceFetchForTest();
+
+
+
+
+
+                              return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                  return initSample(wd.unsafeGetState());
+                              });
+
+
+
+
+                                              function initSample(state) {
+        var n1 = performance.now();
+
+        var data = CustomGeometryTool.createBasicTriangleByClone(1, 10, state);
+
+        var state = data[0];
+        var boxes = data[1];
+
+        var data = PositionTool.setPosition(boxes, state);
+        var state = data[0];
+        var boxes = data[1];
+
+        var data = BasicBoxesTool.createCamera(state);
+
+
+
+        var state = data[0];
+
+
+        var state = CustomGeometryTool.createAndDisposeGameObjects(1000, boxes, state);
+
+
+
+
+
+
 
 
 
@@ -1157,7 +1313,7 @@ let performanceTestData = {
         var state = data[0];
         var boxes = data[1];
 
-        var data = BasicBoxesTool.setPosition(boxes, state);
+        var data = PositionTool.setPosition(boxes, state);
         var state = data[0];
         var boxes = data[1];
 

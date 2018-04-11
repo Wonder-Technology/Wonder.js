@@ -10,6 +10,7 @@ let renderTestData = {
       "./test/e2e/js/ReplaceFetchTool.js",
       "./test/e2e/js/ScheduleTool.js",
       "./test/e2e/js/BasicBoxesTool.js",
+      "./test/e2e/js/PositionTool.js",
       "./test/e2e/js/LightBoxesTool.js",
       "./test/e2e/js/LightTool.js",
       "./test/e2e/js/CameraTool.js",

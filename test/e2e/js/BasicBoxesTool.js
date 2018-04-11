@@ -102,21 +102,7 @@ var BasicBoxesTool = (function () {
         },
 
         setPosition: function (boxes, state) {
-            var playgroundSize = 500;
-
-            for (var i = 0, len = boxes.length; i < len; i++) {
-                var box = boxes[i];
-
-
-                var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
-
-
-                var localPos = wd.getTransformLocalPosition(transform, state);
-
-                state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-            }
-
-            return [state, boxes];
+            return PositionTool.setPosition(boxes, state);
         },
 
 
@@ -142,7 +128,7 @@ var BasicBoxesTool = (function () {
                 return _setData(boxes, state);
             }, state)
         },
-        createAndDisposeGameObjects: function (count, boxes, state) {
+        createAndDisposeClonedGameObjects: function (count, boxes, state) {
             window.sourceBox = boxes[0];
             window.boxes = [];
 
@@ -153,8 +139,6 @@ var BasicBoxesTool = (function () {
                 // }
 
                 var state = wd.batchDisposeGameObject(window.boxes, state);
-
-                // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
 
                 var record = wd.cloneGameObject(window.sourceBox, count, true, state);
                 var state = record[0];
@@ -168,6 +152,40 @@ var BasicBoxesTool = (function () {
                     }, []);
                 };
                 newBoxes = flatten(newBoxes);
+
+
+
+
+                //  var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
+                //  var state = record[0];
+                //  var newBoxes = record[1];
+
+
+                var record = BasicBoxesTool.setPosition(newBoxes, state);
+                var state = record[0];
+                var newBoxes = record[1];
+
+                window.boxes = newBoxes;
+
+
+                for (var i = 0, len = newBoxes.length; i < len; i++) {
+                    var box = newBoxes[i];
+                    state = wd.initGameObject(box, state);
+                }
+
+                return state;
+
+            }, state)
+        },
+        createAndDisposeGameObjects: function (count, boxes, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleLoop(function (state) {
+                var state = wd.batchDisposeGameObject(window.boxes, state);
+
+                var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
+                var state = record[0];
+                var newBoxes = record[1];
 
 
                 var record = BasicBoxesTool.setPosition(newBoxes, state);
