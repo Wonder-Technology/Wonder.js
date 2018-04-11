@@ -29,13 +29,13 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
     switch (getParent(transform, transformRecord)) {
     | Some(parent) =>
       let transformRecord = transformRecord |> update(parent, globalTempRecord);
-      let (parentLocalToWorldMatrix, _) =
+      let parentLocalToWorldMatrix =
         getLocalToWorldMatrixTypeArray(
           parent,
           transformRecord.localToWorldMatrices,
           transformRecord.localToWorldMatrixCacheMap
         );
-      let (childLocalToWorldMatrix, _) =
+      let childLocalToWorldMatrix =
         getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
@@ -52,7 +52,7 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
       |> ignore;
       transformRecord
     | None =>
-      let (localToWorldMatrix, _) =
+      let localToWorldMatrix =
         getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
@@ -68,7 +68,7 @@ let _updateAndGetPosition = (transform: transform, getTranslationFunc, globalTem
   open Js.Typed_array;
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     update(transform, globalTempRecord, record);
-  let (localToWorldMatrix, _) =
+  let localToWorldMatrix =
     getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap);
   [@bs] getTranslationFunc(localToWorldMatrix)
 };

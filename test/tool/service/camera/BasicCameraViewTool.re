@@ -12,13 +12,12 @@ let isBasicCameraView = (basicCameraView) => {
 let getWorldToCameraMatrix = (transform, state: StateDataMainType.state) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  let (localToWorldMatrix, _) =
-    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-      transform,
-      localToWorldMatrices,
-      localToWorldMatrixCacheMap
-    );
-  VMatrixService.getWorldToCameraMatrix(localToWorldMatrix)
+  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+    transform,
+    localToWorldMatrices,
+    localToWorldMatrixCacheMap
+  )
+  |> VMatrixService.getWorldToCameraMatrix
 };
 
 let getPosition = (transform, state: StateDataMainType.state) =>

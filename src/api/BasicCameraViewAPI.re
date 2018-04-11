@@ -51,14 +51,13 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataMainTyp
   );
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  let (localToWorldMatrix, _) =
-    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-      GetComponentGameObjectService.unsafeGetTransformComponent(
-        unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
-        state.gameObjectRecord
-      ),
-      localToWorldMatrices,
-      localToWorldMatrixCacheMap
-    );
-  VMatrixService.getWorldToCameraMatrix(localToWorldMatrix)
+  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+    GetComponentGameObjectService.unsafeGetTransformComponent(
+      unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
+      state.gameObjectRecord
+    ),
+    localToWorldMatrices,
+    localToWorldMatrixCacheMap
+  )
+  |> VMatrixService.getWorldToCameraMatrix
 };

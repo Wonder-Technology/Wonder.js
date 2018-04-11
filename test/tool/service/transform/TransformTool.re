@@ -38,13 +38,11 @@ let isTransform = (transform: transform) => {
 let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  let (matrix, _) =
-    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-      transform,
-      localToWorldMatrices,
-      localToWorldMatrixCacheMap
-    );
-  matrix
+  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+    transform,
+    localToWorldMatrices,
+    localToWorldMatrixCacheMap
+  )
 };
 
 let getLocalToWorldMatrixTypeArrayByVisitTypeArray = (transform, state: StateDataMainType.state) => {
@@ -63,15 +61,12 @@ let update = (transform, {globalTempRecord} as state) => {
   state
 };
 
-let updateAndGetLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
-  let (matrix, _) =
-    UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
-      transform,
-      state.globalTempRecord,
-      RecordTransformMainService.getRecord(state)
-    );
-  matrix
-};
+let updateAndGetLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) =>
+  UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
+    transform,
+    state.globalTempRecord,
+    RecordTransformMainService.getRecord(state)
+  );
 
 let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
@@ -96,15 +91,12 @@ let setLocalToWorldMatrix = (transform: transform, data, state) => {
   state
 };
 
-let updateAndGetNormalMatrixTypeArray = (transform, state: StateDataMainType.state) => {
-  let (normalMatrix, _) =
-    UpdateTransformMainService.updateAndGetNormalMatrixTypeArray(
-      transform,
-      state.globalTempRecord,
-      state |> RecordTransformMainService.getRecord
-    );
-  normalMatrix
-};
+let updateAndGetNormalMatrixTypeArray = (transform, state: StateDataMainType.state) =>
+  UpdateTransformMainService.updateAndGetNormalMatrixTypeArray(
+    transform,
+    state.globalTempRecord,
+    state |> RecordTransformMainService.getRecord
+  );
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();

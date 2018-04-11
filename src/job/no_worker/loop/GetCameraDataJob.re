@@ -39,14 +39,15 @@ let _getCameraData =
              CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state)) :
              CacheType.Cache
        }) */
-    let (cameraToWorldMatrix, _) =
-      UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
-        transform,
-        globalTempRecord,
-        transformRecord
-      );
     Some({
-      vMatrix: VMatrixService.getWorldToCameraMatrix(cameraToWorldMatrix),
+      vMatrix:
+        VMatrixService.getWorldToCameraMatrix(
+          UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
+            transform,
+            globalTempRecord,
+            transformRecord
+          )
+        ),
       pMatrix:
         PMatrixService.unsafeGetPMatrix(
           GetComponentGameObjectService.unsafeGetPerspectiveCameraProjectionComponent(

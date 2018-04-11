@@ -40,7 +40,7 @@ let _getCameraData =
              CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state)) :
              CacheType.Cache
        }) */
-    let (cameraToWorldMatrix, _) =
+    let cameraToWorldMatrix =
       UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
         transform,
         globalTempRecord,

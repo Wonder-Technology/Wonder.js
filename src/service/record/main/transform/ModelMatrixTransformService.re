@@ -11,11 +11,12 @@ open Matrix4Service;
 let getLocalToWorldMatrixTypeArray =
     (transform: transform, localToWorldMatrices, localToWorldMatrixCacheMap) =>
   switch (localToWorldMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
-  | Some(matrix) => (matrix, localToWorldMatrixCacheMap)
+  | Some(matrix) => matrix
   | None =>
     let matrix =
       RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices);
-    (matrix, WonderCommonlib.SparseMapService.set(transform, matrix, localToWorldMatrixCacheMap))
+    WonderCommonlib.SparseMapService.set(transform, matrix, localToWorldMatrixCacheMap) |> ignore;
+    matrix
   };
 
 /* TODO duplicate with getLocalToWorldMatrixTypeArray */
@@ -26,20 +27,13 @@ let getNormalMatrixTypeArray =
       (localToWorldMatrixCacheMap, normalMatrixCacheMap)
     ) =>
   switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
-  | Some(matrix) => (matrix, (localToWorldMatrixCacheMap, normalMatrixCacheMap))
+  | Some(matrix) => matrix
   | None =>
-    let (matrix, localToWorldMatrixCacheMap) =
-      getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap);
-    let matrix =
-      Matrix4Service.invertTo3x3(matrix, Matrix3Service.createIdentityMatrix3())
-      |> Matrix3Service.transposeSelf;
-    (
-      matrix,
-      (
-        localToWorldMatrixCacheMap,
-        WonderCommonlib.SparseMapService.set(transform, matrix, normalMatrixCacheMap)
-      )
+    Matrix4Service.invertTo3x3(
+      getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap),
+      Matrix3Service.createIdentityMatrix3()
     )
+    |> Matrix3Service.transposeSelf
   };
 
 let getLocalPositionTypeArray = (transform: transform, localPositions) =>
@@ -93,7 +87,7 @@ let setPositionByTuple =
       position: position,
       (globalTempRecord, {localToWorldMatrices, localToWorldMatrixCacheMap} as record)
     ) => {
-  let (localToWorldMatrix, _) =
+  let localToWorldMatrix =
     getLocalToWorldMatrixTypeArray(
       parent,
       record.localToWorldMatrices,
