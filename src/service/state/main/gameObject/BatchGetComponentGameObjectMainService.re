@@ -36,7 +36,7 @@ let batchGetGeometryComponentData = (uidArray: array(int), {gameObjectRecord}) =
              | _ =>
                WonderLog.Log.fatal(
                  WonderLog.Log.buildFatalMessage(
-                   ~title="unknonw type_",
+                   ~title="unknown type_",
                    ~description={j||j},
                    ~reason="",
                    ~solution={j||j},

@@ -20,6 +20,7 @@ let execJob = (_, e, stateData) =>
           basicRenderData##buffer,
           basicRenderData##count
         );
+
       state.renderRecord.basicRenderObjectRecord =
         Some({
           /* renderArray: basicRenderData##renderArray, */

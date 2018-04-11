@@ -45,7 +45,7 @@ let _directlySendAttributeData =
                WonderLog.Log.fatal(
                  WonderLog.Log.buildFatalMessage(
                    ~title="_sendAttributeData",
-                   ~description={j|unknonw buffer: $buffer|j},
+                   ~description={j|unknown buffer: $buffer|j},
                    ~reason="",
                    ~solution={j||j},
                    ~params={j||j}
