@@ -104,6 +104,17 @@ let copyAllArrayBuffersToPool = (count, {arrayBufferPoolRecord} as state) => {
      )
 };
 
+let _copyArrayBufferData = (sourceBuffer, targetBuffer) => {
+  open Js.Typed_array;
+  let targetView = Uint8Array.fromBuffer(targetBuffer |> Worker.sharedArrayBufferToArrayBuffer);
+  TypeArrayService.setUint8Array(
+    Uint8Array.fromBuffer(sourceBuffer |> Worker.sharedArrayBufferToArrayBuffer),
+    targetView
+  )
+  |> Uint8Array.buffer
+  |> Worker.arrayBufferToSharedArrayBuffer
+};
+
 let copyArrayBuffer = (buffer, type_, {arrayBufferPoolRecord} as state) => {
   let key = _getMapKey(type_);
   switch (arrayBufferPoolRecord.poolMap |> WonderCommonlib.HashMapService.get(key)) {
@@ -120,7 +131,7 @@ let copyArrayBuffer = (buffer, type_, {arrayBufferPoolRecord} as state) => {
               |> WonderCommonlib.HashMapService.set(key, list |> List.tl)
           }
         },
-        list |> List.hd
+        _copyArrayBufferData(buffer, list |> List.hd)
       )
     }
   }

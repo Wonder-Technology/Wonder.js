@@ -37,3 +37,12 @@ let createArrayBuffer = (byteLength) => Worker.newSharedArrayBuffer(byteLength);
 
 let copyArrayBuffer = (buffer, type_, state) =>
   CopyArrayBufferPoolMainService.copyArrayBuffer(buffer, type_, state);
+
+let createSourceTransformArrayBuffer = (count, state) =>
+  RecordTransformMainService._initBufferData(
+    count,
+    TransformTool.getDefaultLocalToWorldMatrix(state),
+    TransformTool.getDefaultLocalPosition(state)
+  );
+
+let createTransformTypeArray = CreateTypeArrayTransformService.createTypeArrays;

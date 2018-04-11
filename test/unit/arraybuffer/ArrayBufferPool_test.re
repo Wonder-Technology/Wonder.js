@@ -2,6 +2,8 @@ open Wonder_jest;
 
 open ArrayBufferPoolType;
 
+open Js.Typed_array;
+
 let _ =
   describe(
     "ArrayBuffer Pool",
@@ -89,18 +91,62 @@ let _ =
       describe(
         "copyArrayBuffer",
         () => {
-          test(
-            "if poolMap has buffer, get it out of map",
+          describe(
+            "if poolMap has buffer",
             () => {
-              let state = ArrayBufferAPI.copyAllArrayBuffersToPool(1, state^);
-              let buffer = ArrayBufferPoolTool.createArrayBuffer(100);
-              let (state, copiedBuffer) =
-                ArrayBufferPoolTool.copyArrayBuffer(buffer, TransformArrayBuffer, state);
-              (
-                ArrayBufferPoolTool.isBufferEqual(copiedBuffer, buffer),
-                ArrayBufferPoolTool.getBufferList(TransformArrayBuffer, state) |> List.length
+              test(
+                "get it out of map",
+                () => {
+                  let state = ArrayBufferAPI.copyAllArrayBuffersToPool(1, state^);
+                  let buffer = ArrayBufferPoolTool.createArrayBuffer(100);
+                  let (state, copiedBuffer) =
+                    ArrayBufferPoolTool.copyArrayBuffer(buffer, TransformArrayBuffer, state);
+                  (
+                    ArrayBufferPoolTool.isBufferEqual(copiedBuffer, buffer),
+                    ArrayBufferPoolTool.getBufferList(TransformArrayBuffer, state) |> List.length
+                  )
+                  |> expect == (false, 0)
+                }
+              );
+              describe(
+                "copy source buffer data to copied buffer",
+                () => {
+                  let _prepare = (state) => {
+                    let state = ArrayBufferAPI.copyAllArrayBuffersToPool(1, state);
+                    let count = 2;
+                    let (buffer, (localToWorldMatrices, localPositions)) =
+                      ArrayBufferPoolTool.createSourceTransformArrayBuffer(count, state);
+                    let (state, copiedBuffer) =
+                      ArrayBufferPoolTool.copyArrayBuffer(buffer, TransformArrayBuffer, state);
+                    (
+                      (localToWorldMatrices, localPositions),
+                      ArrayBufferPoolTool.createTransformTypeArray(copiedBuffer, count)
+                    )
+                  };
+                  test(
+                    "test1",
+                    () => {
+                      let (
+                        (localToWorldMatrices, localPositions),
+                        (copiedLocalToWorldMatrices, copiedLocalPositions)
+                      ) =
+                        _prepare(state^);
+                      localToWorldMatrices |> expect == copiedLocalToWorldMatrices
+                    }
+                  );
+                  test(
+                    "test2",
+                    () => {
+                      let (
+                        (localToWorldMatrices, localPositions),
+                        (copiedLocalToWorldMatrices, copiedLocalPositions)
+                      ) =
+                        _prepare(state^);
+                      localPositions |> expect == copiedLocalPositions
+                    }
+                  )
+                }
               )
-              |> expect == (false, 0)
             }
           );
           test(
