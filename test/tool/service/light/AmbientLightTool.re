@@ -17,7 +17,7 @@ let isAlive = (light, state) =>
 let getColor = (light, state) =>
   OperateAmbientLightService.getColor(light, state.ambientLightRecord);
 
-let getDefaultColor = RecordAmbientLightService.getDefaultColor;
+let getDefaultColor = RecordAmbientLightMainService.getDefaultColor;
 
 let getMappedIndex = (index, state) =>
   state |> IndexAmbientLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);

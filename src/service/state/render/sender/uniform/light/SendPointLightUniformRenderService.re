@@ -93,7 +93,7 @@ let send =
           open WonderLog;
           open Contract;
           open Operators;
-          let maxCount = RecordPointLightService.getBufferMaxCount();
+          let maxCount = BufferPointLightService.getBufferMaxCount();
           test(
             Log.buildAssertMessage(
               ~expect={j|max buffer count === 4|j},

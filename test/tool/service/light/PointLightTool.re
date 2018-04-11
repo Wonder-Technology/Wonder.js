@@ -29,17 +29,17 @@ let getQuadratic = (light, state) =>
 
 let getRange = (light, state) => OperatePointLightService.getRange(light, state.pointLightRecord);
 
-let getDefaultColor = RecordPointLightService.getDefaultColor;
+let getDefaultColor = RecordPointLightMainService.getDefaultColor;
 
-let getDefaultIntensity = RecordPointLightService.getDefaultIntensity;
+let getDefaultIntensity = RecordPointLightMainService.getDefaultIntensity;
 
-let getDefaultConstant = RecordPointLightService.getDefaultConstant;
+let getDefaultConstant = RecordPointLightMainService.getDefaultConstant;
 
-let getDefaultLinear = RecordPointLightService.getDefaultLinear;
+let getDefaultLinear = RecordPointLightMainService.getDefaultLinear;
 
-let getDefaultQuadratic = RecordPointLightService.getDefaultQuadratic;
+let getDefaultQuadratic = RecordPointLightMainService.getDefaultQuadratic;
 
-let getDefaultRange = RecordPointLightService.getDefaultRange;
+let getDefaultRange = RecordPointLightMainService.getDefaultRange;
 
 let getMappedIndex = (index, state) =>
   state |> IndexPointLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);

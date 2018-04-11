@@ -13,7 +13,7 @@ let send =
           open WonderLog;
           open Contract;
           open Operators;
-          let maxCount = RecordDirectionLightService.getBufferMaxCount();
+          let maxCount = BufferDirectionLightService.getBufferMaxCount();
           test(
             Log.buildAssertMessage(
               ~expect={j|max buffer count === 4|j},

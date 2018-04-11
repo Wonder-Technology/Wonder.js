@@ -12,5 +12,5 @@ let create =
         },
         index
       )
-      |> BufferService.checkNotExceedMaxCount(RecordPointLightService.getBufferMaxCount())
+      |> BufferService.checkNotExceedMaxCount(BufferPointLightService.getBufferMaxCount())
   );

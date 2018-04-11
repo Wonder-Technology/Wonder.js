@@ -28,8 +28,8 @@ let _disposeData =
                (mappedSourceIndex, lastComponentIndex),
                (
                  mappedIndexMap,
-                 RecordDirectionLightService.getColorsSize(),
-                 RecordDirectionLightService.getDefaultColor()
+                 BufferDirectionLightService .getColorsSize(),
+                 RecordDirectionLightMainService.getDefaultColor()
                ),
                DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
              ),
@@ -39,8 +39,8 @@ let _disposeData =
                (mappedSourceIndex, lastComponentIndex),
                (
                  mappedIndexMap,
-                 RecordDirectionLightService.getIntensitiesSize(),
-                 RecordDirectionLightService.getDefaultIntensity()
+                 BufferDirectionLightService.getIntensitiesSize(),
+                 RecordDirectionLightMainService.getDefaultIntensity()
                ),
                DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
              ),

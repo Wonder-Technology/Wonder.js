@@ -82,6 +82,8 @@ open WorkerDetectType;
 
 open ViewType;
 
+open ArrayBufferPoolType;
+
 type colorRgba = (float, float, float, float);
 
 type jobRecord = {
@@ -124,7 +126,8 @@ and state = {
   globalTempRecord,
   typeArrayPoolRecord,
   mutable workerInstanceRecord,
-  workerDetectRecord
+  workerDetectRecord,
+  arrayBufferPoolRecord
 };
 
 type sharedDataForRestoreState = {

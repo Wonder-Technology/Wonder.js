@@ -5,7 +5,7 @@ let getLightCount = (count, maxCount) =>
          open WonderLog;
          open Contract;
          open Operators;
-         let maxCount = RecordDirectionLightService.getBufferMaxCount();
+         let maxCount = BufferDirectionLightService.getBufferMaxCount();
          test(
            Log.buildAssertMessage(
              ~expect={j|light count: $count <= max buffer count: $maxCount|j},

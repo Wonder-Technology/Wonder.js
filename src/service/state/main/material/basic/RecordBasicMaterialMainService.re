@@ -29,15 +29,7 @@ let _setDefaultTypeArrData =
 );
 
 let _initBufferData = (count, defaultShaderIndex, defaultColor) => {
-  let buffer =
-    Worker.newSharedArrayBuffer(
-      count
-      * Uint32Array._BYTES_PER_ELEMENT
-      * ShaderIndicesService.getShaderIndicesSize()
-      + count
-      * Float32Array._BYTES_PER_ELEMENT
-      * getColorsSize()
-    );
+  let buffer = createBuffer(count);
   let (shaderIndices, colors) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(buffer, count);
   (buffer, shaderIndices, colors)
@@ -79,7 +71,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     disposedIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
+  let (state, copiedBuffer) =
+    CopyArrayBufferPoolMainService.copyArrayBuffer(
+      buffer,
+      ArrayBufferPoolType.BasicMaterialArrayBuffer,
+      state
+    );
   let basicMaterialDataBufferCount =
     BufferSettingService.getBasicMaterialDataBufferCount(settingRecord);
   {

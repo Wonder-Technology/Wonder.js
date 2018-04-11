@@ -4,38 +4,12 @@ open CustomGeometryType;
 
 open Js.Typed_array;
 
+open BufferCustomGeometryService;
+
 let getRecord = ({customGeometryRecord}) => customGeometryRecord |> OptionService.unsafeGet;
 
-let getVertexSize = () => 3;
-
-let getVertexLength = (count) => count * getVertexSize();
-
-let getVerticesOffset = (count) => 0;
-
-let getNormalsOffset = (count) =>
-  getVerticesOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
-
-let getIndexSize = () => 1;
-
-let getIndicesLength = (count) => count * getIndexSize();
-
-let getIndicesOffset = (count) =>
-  getNormalsOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
-
 let _initBufferData = (count) => {
-  let buffer =
-    Worker.newSharedArrayBuffer(
-      count
-      * (
-        Float32Array._BYTES_PER_ELEMENT
-        * getVertexSize()
-        * 2
-        + Uint16Array._BYTES_PER_ELEMENT
-        * getIndexSize()
-      )
-    );
-  /* let count = _getBufferCount(state);
-     _createTypeArrays(buffer, count) */
+  let buffer = createBuffer(count);
   let vertices =
     Float32Array.fromBufferRange(
       Worker.sharedArrayBufferToArrayBuffer(buffer),
@@ -101,9 +75,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     normalsOffset,
     indicesOffset,
     disposeCount,
-    /* configDataMap, */
-    /* isInitMap, */
-    /* computeDataFuncMap, */
     groupCountMap,
     gameObjectMap,
     disposedIndexArray,
@@ -111,7 +82,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     aliveIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
+  let (state, copiedBuffer) =
+    CopyArrayBufferPoolMainService.copyArrayBuffer(
+      buffer,
+      ArrayBufferPoolType.CustomGeometryArrayBuffer,
+      state
+    );
   let geometryDataBufferCount =
     BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
   {

@@ -32,3 +32,13 @@ let getDiffuseColorIndex = (index) => index * getDiffuseColorsSize();
 let getSpecularColorIndex = (index) => index * getSpecularColorsSize();
 
 let getShininessIndex = (index) => index * getShininessSize();
+
+let createBuffer = (count) =>
+  Worker.newSharedArrayBuffer(
+    count
+    * Uint32Array._BYTES_PER_ELEMENT
+    * ShaderIndicesService.getShaderIndicesSize()
+    + count
+    * Float32Array._BYTES_PER_ELEMENT
+    * (getDiffuseColorsSize() + getSpecularColorsSize() + getShininessSize())
+  );

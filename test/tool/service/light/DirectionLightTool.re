@@ -20,9 +20,9 @@ let getColor = (light, state) =>
 let getIntensity = (light, state) =>
   OperateDirectionLightService.getIntensity(light, state.directionLightRecord);
 
-let getDefaultColor = RecordDirectionLightService.getDefaultColor;
+let getDefaultColor = RecordDirectionLightMainService.getDefaultColor;
 
-let getDefaultIntensity = RecordDirectionLightService.getDefaultIntensity;
+let getDefaultIntensity = RecordDirectionLightMainService.getDefaultIntensity;
 
 let getMappedIndex = (index, state) =>
   state |> IndexDirectionLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);

@@ -1,49 +1,49 @@
 open PointLightType;
 
-let getColor = (mappedIndex, {colors}) => RecordPointLightService.getColor(mappedIndex, colors);
+let getColor = (mappedIndex, {colors}) => RecordPointLightMainService.getColor(mappedIndex, colors);
 
 let setColor = (mappedIndex, color: array(float), {colors} as record) => {
   ...record,
-  colors: RecordPointLightService.setColor(mappedIndex, color, colors)
+  colors: RecordPointLightMainService.setColor(mappedIndex, color, colors)
 };
 
 let getIntensity = (mappedIndex, {intensities}) =>
-  RecordPointLightService.getIntensity(mappedIndex, intensities);
+  RecordPointLightMainService.getIntensity(mappedIndex, intensities);
 
 let setIntensity = (mappedIndex, intensity, {intensities} as record) => {
   ...record,
-  intensities: RecordPointLightService.setIntensity(mappedIndex, intensity, intensities)
+  intensities: RecordPointLightMainService.setIntensity(mappedIndex, intensity, intensities)
 };
 
 let getConstant = (mappedIndex, {constants}) =>
-  RecordPointLightService.getConstant(mappedIndex, constants);
+  RecordPointLightMainService.getConstant(mappedIndex, constants);
 
 let setConstant = (mappedIndex, constant, {constants} as record) => {
   ...record,
-  constants: RecordPointLightService.setIntensity(mappedIndex, constant, constants)
+  constants: RecordPointLightMainService.setIntensity(mappedIndex, constant, constants)
 };
 
 let getLinear = (mappedIndex, {linears}) =>
-  RecordPointLightService.getLinear(mappedIndex, linears);
+  RecordPointLightMainService.getLinear(mappedIndex, linears);
 
 let setLinear = (mappedIndex, linear, {linears} as record) => {
   ...record,
-  linears: RecordPointLightService.setLinear(mappedIndex, linear, linears)
+  linears: RecordPointLightMainService.setLinear(mappedIndex, linear, linears)
 };
 
 let getQuadratic = (mappedIndex, {quadratics}) =>
-  RecordPointLightService.getQuadratic(mappedIndex, quadratics);
+  RecordPointLightMainService.getQuadratic(mappedIndex, quadratics);
 
 let setQuadratic = (mappedIndex, quadratic, {quadratics} as record) => {
   ...record,
-  quadratics: RecordPointLightService.setQuadratic(mappedIndex, quadratic, quadratics)
+  quadratics: RecordPointLightMainService.setQuadratic(mappedIndex, quadratic, quadratics)
 };
 
-let getRange = (mappedIndex, {ranges}) => RecordPointLightService.getRange(mappedIndex, ranges);
+let getRange = (mappedIndex, {ranges}) => RecordPointLightMainService.getRange(mappedIndex, ranges);
 
 let setRange = (mappedIndex, range, {ranges} as record) => {
   ...record,
-  ranges: RecordPointLightService.setRange(mappedIndex, range, ranges)
+  ranges: RecordPointLightMainService.setRange(mappedIndex, range, ranges)
 };
 
 /* let setRangeLevel = (mappedIndex, level, {linears, quadratics, ranges} as record) =>

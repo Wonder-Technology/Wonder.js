@@ -1,4 +1,4 @@
 open InitMaterialPointLightType;
 
 let getLightCount = ({index}) =>
-  CountLightService.getLightCount(index, RecordPointLightService.getBufferMaxCount());
+  CountLightService.getLightCount(index, BufferPointLightService.getBufferMaxCount());

@@ -39,15 +39,7 @@ let _setDefaultTypeArrData =
 
 let _initBufferData =
     (count, defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness) => {
-  let buffer =
-    Worker.newSharedArrayBuffer(
-      count
-      * Uint32Array._BYTES_PER_ELEMENT
-      * ShaderIndicesService.getShaderIndicesSize()
-      + count
-      * Float32Array._BYTES_PER_ELEMENT
-      * (getDiffuseColorsSize() + getSpecularColorsSize() + getShininessSize())
-    );
+  let buffer = createBuffer(count);
   let shaderIndices =
     Uint32Array.fromBufferRange(
       Worker.sharedArrayBufferToArrayBuffer(buffer),
@@ -134,7 +126,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
     disposedIndexArray
   } =
     state |> getRecord;
-  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
+  let (state, copiedBuffer) =
+    CopyArrayBufferPoolMainService.copyArrayBuffer(
+      buffer,
+      ArrayBufferPoolType.LightMaterialArrayBuffer,
+      state
+    );
   let lightMaterialDataBufferCount =
     BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
   {

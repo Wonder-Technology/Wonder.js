@@ -18,9 +18,9 @@ let createState = () => {
   perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
   basicMaterialRecord: None,
   lightMaterialRecord: None,
-  ambientLightRecord: RecordAmbientLightService.create(),
-  directionLightRecord: RecordDirectionLightService.create(),
-  pointLightRecord: RecordPointLightService.create(),
+  ambientLightRecord: RecordAmbientLightMainService.create(),
+  directionLightRecord: RecordDirectionLightMainService.create(),
+  pointLightRecord: RecordPointLightMainService.create(),
   boxGeometryRecord: RecordBoxGeometryMainService.create(),
   customGeometryRecord: None,
   meshRendererRecord: RecordMeshRendererService.create(),
@@ -36,5 +36,6 @@ let createState = () => {
   globalTempRecord: RecordGlobalTempService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceRecord: RecordWorkerInstanceService.create(),
-  workerDetectRecord: RecordWorkerDetectService.create()
+  workerDetectRecord: RecordWorkerDetectService.create(),
+  arrayBufferPoolRecord: RecordArrayBufferPoolService.create()
 };

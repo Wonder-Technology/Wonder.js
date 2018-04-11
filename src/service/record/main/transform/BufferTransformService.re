@@ -16,3 +16,10 @@ let getLocalPositionsOffset = (count) =>
 let getLocalToWorldMatrixIndex = (index) => index * getLocalToWorldMatricesSize();
 
 let getLocalPositionIndex = (index) => index * getLocalPositionsSize();
+
+let createBuffer = (count) =>
+  Worker.newSharedArrayBuffer(
+    count
+    * Float32Array._BYTES_PER_ELEMENT
+    * (getLocalPositionsSize() + getLocalToWorldMatricesSize())
+  );

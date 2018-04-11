@@ -1,15 +1,13 @@
+open StateDataMainType;
+
 open AmbientLightType;
 
-let getBufferMaxCount = () => 3;
+open BufferAmbientLightService;
 
-let getColorsSize = () => 3;
-
-let _getColorIndex = (index) => index * getColorsSize();
-
-let getColor = (index, typeArr) => TypeArrayService.getFloat3(_getColorIndex(index), typeArr);
+let getColor = (index, typeArr) => TypeArrayService.getFloat3(getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
-  TypeArrayService.setFloat3(_getColorIndex(index), color, typeArr);
+  TypeArrayService.setFloat3(getColorIndex(index), color, typeArr);
 
 let getDefaultColor = () => [|1., 1., 1.|];
 
@@ -28,8 +26,7 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
 let _initBufferData = () => {
   open Js.Typed_array;
   let count = getBufferMaxCount();
-  let buffer =
-    Worker.newSharedArrayBuffer(count * Float32Array._BYTES_PER_ELEMENT * getColorsSize());
+  let buffer = createBuffer(count);
   let offset = ref(0);
   let typeArrayLength = count * getColorsSize();
   let colors =
@@ -53,13 +50,22 @@ let create = () => {
   }
 };
 
-let deepCopyForRestore = ({index, buffer, colors, gameObjectMap, mappedIndexMap}) => {
-  let copiedBuffer = CopyTypeArrayService.copySharedArrayBuffer(buffer);
+let deepCopyForRestore = ({ambientLightRecord} as state) => {
+  let {index, buffer, colors, gameObjectMap, mappedIndexMap} = ambientLightRecord;
+  let (state, copiedBuffer) =
+    CopyArrayBufferPoolMainService.copyArrayBuffer(
+      buffer,
+      ArrayBufferPoolType.AmbientLightArrayBuffer,
+      state
+    );
   {
-    index,
-    buffer: copiedBuffer,
-    colors: CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBuffer(copiedBuffer),
-    mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
-    gameObjectMap: gameObjectMap |> SparseMapService.copy
+    ...state,
+    ambientLightRecord: {
+      index,
+      buffer: copiedBuffer,
+      colors: CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBuffer(copiedBuffer),
+      mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
+      gameObjectMap: gameObjectMap |> SparseMapService.copy
+    }
   }
 };

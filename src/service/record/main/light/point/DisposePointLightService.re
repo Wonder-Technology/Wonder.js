@@ -39,8 +39,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getColorsSize(),
-             RecordPointLightService.getDefaultColor()
+             BufferPointLightService .getColorsSize(),
+             RecordPointLightMainService.getDefaultColor()
            ),
            DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
          ),
@@ -50,8 +50,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getIntensitiesSize(),
-             RecordPointLightService.getDefaultIntensity()
+             BufferPointLightService.getIntensitiesSize(),
+             RecordPointLightMainService.getDefaultIntensity()
            ),
            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
@@ -61,8 +61,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getConstantsSize(),
-             RecordPointLightService.getDefaultConstant()
+             BufferPointLightService.getConstantsSize(),
+             RecordPointLightMainService.getDefaultConstant()
            ),
            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
@@ -72,8 +72,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getLinearsSize(),
-             RecordPointLightService.getDefaultLinear()
+             BufferPointLightService.getLinearsSize(),
+             RecordPointLightMainService.getDefaultLinear()
            ),
            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
@@ -83,8 +83,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getQuadraticsSize(),
-             RecordPointLightService.getDefaultQuadratic()
+             BufferPointLightService.getQuadraticsSize(),
+             RecordPointLightMainService.getDefaultQuadratic()
            ),
            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
@@ -94,8 +94,8 @@ let _disposeData =
            (mappedSourceIndex, lastComponentIndex),
            (
              mappedIndexMap,
-             RecordPointLightService.getRangesSize(),
-             RecordPointLightService.getDefaultRange()
+             BufferPointLightService.getRangesSize(),
+             RecordPointLightMainService.getDefaultRange()
            ),
            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
          ),
