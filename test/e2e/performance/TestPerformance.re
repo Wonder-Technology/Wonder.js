@@ -30,4 +30,15 @@ let generateReport = (reportFilePath, failList) => {
   Tester.generateReport(reportFilePath, failList, performanceTestData)
 };
 
+let generateAllCasesReport = (reportFilePath) => {
+  GenerateReport.removeFile(
+    Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report/report.html"|])
+  );
+  GenerateDebug.removeFiles(
+    Node.Path.join([|Node.Process.cwd(), "./test/e2e/performance/report"|]),
+    None
+  );
+  Tester.generateAllCasesReport(reportFilePath, performanceTestData)
+};
+
 let runTest = (browserArr) => Tester.runTest(browserArr, performanceTestData);
