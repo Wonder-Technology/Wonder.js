@@ -18,7 +18,7 @@ let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELE
 
 let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
 
-let createBuffer = (count) =>
-  Worker.newSharedArrayBuffer(
-    count * Float32Array._BYTES_PER_ELEMENT * (getColorsSize() + getIntensitiesSize())
-  );
+let getTotalByteLength = (count) =>
+  count * Float32Array._BYTES_PER_ELEMENT * (getColorsSize() + getIntensitiesSize());
+
+let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

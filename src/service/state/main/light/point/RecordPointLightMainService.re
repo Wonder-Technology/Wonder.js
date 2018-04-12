@@ -169,52 +169,15 @@ let deepCopyForRestore = ({pointLightRecord} as state) => {
     gameObjectMap,
     mappedIndexMap
   } = pointLightRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.PointLightArrayBuffer,
-      state
-    );
   {
     ...state,
     pointLightRecord: {
+      ...pointLightRecord,
       index,
-      buffer: copiedBuffer,
-      colors:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getColorsOffset(),
-          getColorsLength()
-        ),
-      intensities:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getIntensitiesOffset(),
-          getIntensitiesLength()
-        ),
-      constants:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getConstantsOffset(),
-          getConstantsLength()
-        ),
-      linears:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getLinearsOffset(),
-          getLinearsLength()
-        ),
-      quadratics:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getQuadraticsOffset(),
-          getQuadraticsLength()
-        ),
-      ranges:
-        CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-          copiedBuffer,
-          getRangesOffset(),
-          getRangesLength()
+      buffer:
+        CopyArrayBufferService.copyArrayBuffer(
+          buffer,
+          BufferPointLightService.getTotalByteLength(index)
         ),
       mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
       gameObjectMap: gameObjectMap |> SparseMapService.copy

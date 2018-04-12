@@ -34,5 +34,11 @@ let restore =
   |> RestoreBasicMaterialMainService.restore(gl, currentState)
   |> RestoreLightMaterialMainService.restore(gl, currentState)
   |> RestoreRenderMainService.restore(currentState)
+  |> RestoreTransformMainService.restore(currentState)
+  |> RestoreCustomGeometryMainService.restore(currentState)
+  |> RestoreAmbientLightMainService.restore(currentState)
+  |> RestoreDirectionLightMainService.restore(currentState)
+  |> RestorePointLightMainService.restore(currentState)
   |> setState(stateData)
+  /* targetState */
 };

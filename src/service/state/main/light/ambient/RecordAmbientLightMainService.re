@@ -52,18 +52,16 @@ let create = () => {
 
 let deepCopyForRestore = ({ambientLightRecord} as state) => {
   let {index, buffer, colors, gameObjectMap, mappedIndexMap} = ambientLightRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.AmbientLightArrayBuffer,
-      state
-    );
   {
     ...state,
     ambientLightRecord: {
+      ...ambientLightRecord,
       index,
-      buffer: copiedBuffer,
-      colors: CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBuffer(copiedBuffer),
+      buffer:
+        CopyArrayBufferService.copyArrayBuffer(
+          buffer,
+          BufferAmbientLightService.getTotalByteLength(index)
+        ),
       mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
       gameObjectMap: gameObjectMap |> SparseMapService.copy
     }

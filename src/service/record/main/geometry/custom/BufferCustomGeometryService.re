@@ -16,14 +16,14 @@ let getIndicesLength = (count) => count * getIndexSize();
 let getIndicesOffset = (count) =>
   getNormalsOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
-let createBuffer = (count) =>
-  Worker.newSharedArrayBuffer(
-    count
-    * (
-      Float32Array._BYTES_PER_ELEMENT
-      * getVertexSize()
-      * 2
-      + Uint16Array._BYTES_PER_ELEMENT
-      * getIndexSize()
-    )
+let getTotalByteLength = (count) =>
+  count
+  * (
+    Float32Array._BYTES_PER_ELEMENT
+    * getVertexSize()
+    * 2
+    + Uint16Array._BYTES_PER_ELEMENT
+    * getIndexSize()
   );
+
+let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

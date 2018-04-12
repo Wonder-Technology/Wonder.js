@@ -61,58 +61,34 @@ let create = ({settingRecord} as state) => {
   state
 };
 
-let deepCopyForRestore = ({settingRecord} as state) => {
+let deepCopyForRestore = (state) => {
   let {
-    index,
-    buffer,
-    vertices,
-    normals,
-    indices,
-    verticesInfoArray,
-    normalsInfoArray,
-    indicesInfoArray,
-    verticesOffset,
-    normalsOffset,
-    indicesOffset,
-    disposeCount,
-    groupCountMap,
-    gameObjectMap,
-    disposedIndexArray,
-    disposedIndexMap,
-    aliveIndexArray
-  } =
+        index,
+        buffer,
+        verticesInfoArray,
+        normalsInfoArray,
+        indicesInfoArray,
+        verticesOffset,
+        normalsOffset,
+        indicesOffset,
+        disposeCount,
+        groupCountMap,
+        gameObjectMap,
+        disposedIndexArray,
+        disposedIndexMap,
+        aliveIndexArray
+      } as record =
     state |> getRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.CustomGeometryArrayBuffer,
-      state
-    );
-  let geometryDataBufferCount =
-    BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
   {
     ...state,
     customGeometryRecord:
       Some({
+        ...record,
         index,
-        buffer: copiedBuffer,
-        vertices:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getVerticesOffset(geometryDataBufferCount),
-            getVertexLength(geometryDataBufferCount)
-          ),
-        normals:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getNormalsOffset(geometryDataBufferCount),
-            getVertexLength(geometryDataBufferCount)
-          ),
-        indices:
-          CopyTypeArrayService.copyUint16TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getIndicesOffset(geometryDataBufferCount),
-            getIndicesLength(geometryDataBufferCount)
+        buffer:
+          CopyArrayBufferService.copyArrayBuffer(
+            buffer,
+            BufferCustomGeometryService.getTotalByteLength(index)
           ),
         verticesInfoArray: verticesInfoArray |> SparseMapService.copy,
         normalsInfoArray: normalsInfoArray |> SparseMapService.copy,
@@ -121,9 +97,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         normalsOffset,
         indicesOffset,
         disposeCount,
-        /* computeDataFuncMap: computeDataFuncMap |> SparseMapService.copy,
-           configDataMap: configDataMap |> SparseMapService.copy, */
-        /* isInitMap: isInitMap |> SparseMapService.copy, */
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,

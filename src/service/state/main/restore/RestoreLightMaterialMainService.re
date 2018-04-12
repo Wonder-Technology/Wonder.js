@@ -17,12 +17,21 @@ let _resetShaderIndices = (state) => {
 };
 
 let restore = (gl, currentState, targetState) => {
-  let newState = _resetShaderIndices(targetState);
-  newState
-  |> InitLightMaterialMainService.initMaterials(
-       AliveMaterialService.getAllAliveMaterials(
-         RecordLightMaterialMainService.getRecord(newState).gameObjectMap
-       ),
-       gl
-     )
+  let targetState = _resetShaderIndices(targetState);
+  let targetState =
+    targetState
+    |> InitLightMaterialMainService.initMaterials(
+         AliveMaterialService.getAllAliveMaterials(
+           RecordLightMaterialMainService.getRecord(targetState).gameObjectMap
+         ),
+         gl
+       );
+  let currentLightMaterialRecord = RecordLightMaterialMainService.getRecord(currentState);
+  let targetLightMaterialRecord = RecordLightMaterialMainService.getRecord(targetState);
+  let newBuffer =
+    CopyArrayBufferService.copyArrayBufferData(
+      targetLightMaterialRecord.buffer,
+      currentLightMaterialRecord.buffer
+    );
+  {...targetState, lightMaterialRecord: Some({...targetLightMaterialRecord, buffer: newBuffer})}
 };

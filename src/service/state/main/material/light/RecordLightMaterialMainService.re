@@ -109,55 +109,33 @@ let create = ({settingRecord} as state) => {
   state
 };
 
-let deepCopyForRestore = ({settingRecord} as state) => {
+let deepCopyForRestore = (state) => {
   let {
-    index,
-    buffer,
-    shaderIndices,
-    diffuseColors,
-    specularColors,
-    shininess,
-    defaultShaderIndex,
-    defaultDiffuseColor,
-    defaultSpecularColor,
-    defaultShininess,
-    groupCountMap,
-    gameObjectMap,
-    disposedIndexArray
-  } =
+        index,
+        buffer,
+        shaderIndices,
+        diffuseColors,
+        specularColors,
+        shininess,
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShininess,
+        groupCountMap,
+        gameObjectMap,
+        disposedIndexArray
+      } as record =
     state |> getRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.LightMaterialArrayBuffer,
-      state
-    );
-  let lightMaterialDataBufferCount =
-    BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
   {
     ...state,
     lightMaterialRecord:
       Some({
+        ...record,
         index,
-        buffer: copiedBuffer,
-        shaderIndices,
-        diffuseColors:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getDiffuseColorsOffset(lightMaterialDataBufferCount),
-            getDiffuseColorsLength(lightMaterialDataBufferCount)
-          ),
-        specularColors:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getSpecularColorsOffset(lightMaterialDataBufferCount),
-            getSpecularColorsLength(lightMaterialDataBufferCount)
-          ),
-        shininess:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getShininessOffset(lightMaterialDataBufferCount),
-            getShininessLength(lightMaterialDataBufferCount)
+        buffer:
+          CopyArrayBufferService.copyArrayBuffer(
+            buffer,
+            BufferLightMaterialService.getTotalByteLength(index)
           ),
         defaultShaderIndex,
         defaultDiffuseColor,

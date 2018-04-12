@@ -9,12 +9,12 @@ let getColorsOffset = (count) =>
 
 let getColorIndex = (index) => index * getColorsSize();
 
-let createBuffer = (count) =>
-  Worker.newSharedArrayBuffer(
-    count
-    * Uint32Array._BYTES_PER_ELEMENT
-    * ShaderIndicesService.getShaderIndicesSize()
-    + count
-    * Float32Array._BYTES_PER_ELEMENT
-    * getColorsSize()
-  );
+let getTotalByteLength = (count) =>
+  count
+  * Uint32Array._BYTES_PER_ELEMENT
+  * ShaderIndicesService.getShaderIndicesSize()
+  + count
+  * Float32Array._BYTES_PER_ELEMENT
+  * getColorsSize();
+
+let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

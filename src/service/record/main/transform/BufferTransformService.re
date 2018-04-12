@@ -17,9 +17,9 @@ let getLocalToWorldMatrixIndex = (index) => index * getLocalToWorldMatricesSize(
 
 let getLocalPositionIndex = (index) => index * getLocalPositionsSize();
 
-let createBuffer = (count) =>
-  Worker.newSharedArrayBuffer(
-    count
-    * Float32Array._BYTES_PER_ELEMENT
-    * (getLocalPositionsSize() + getLocalToWorldMatricesSize())
-  );
+let getTotalByteLength = (count) =>
+  count
+  * Float32Array._BYTES_PER_ELEMENT
+  * (getLocalPositionsSize() + getLocalToWorldMatricesSize());
+
+let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

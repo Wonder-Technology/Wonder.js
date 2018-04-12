@@ -100,47 +100,32 @@ let create = ({settingRecord} as state) => {
   state
 };
 
-let deepCopyForRestore = ({settingRecord} as state) => {
+let deepCopyForRestore = (state) => {
   let {
-    index,
-    buffer,
-    localToWorldMatrices,
-    localPositions,
-    defaultLocalToWorldMatrix,
-    defaultLocalPosition,
-    localToWorldMatrixCacheMap,
-    normalMatrixCacheMap,
-    parentMap,
-    childMap,
-    dirtyMap,
-    gameObjectMap,
-    disposedIndexArray
-  } =
+        index,
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        defaultLocalToWorldMatrix,
+        defaultLocalPosition,
+        localToWorldMatrixCacheMap,
+        normalMatrixCacheMap,
+        parentMap,
+        childMap,
+        dirtyMap,
+        gameObjectMap,
+        disposedIndexArray
+      } as record =
     state |> getRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.TransformArrayBuffer,
-      state
-    );
-  let transformDataBufferCount = BufferSettingService.getTransformDataBufferCount(settingRecord);
   {
     ...state,
     transformRecord:
       Some({
-        index,
-        buffer: copiedBuffer,
-        localToWorldMatrices:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getLocalToWorldMatricesOffset(transformDataBufferCount),
-            getLocalToWorldMatricesLength(transformDataBufferCount)
-          ),
-        localPositions:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getLocalPositionsOffset(transformDataBufferCount),
-            getLocalPositionsLength(transformDataBufferCount)
+        ...record,
+        buffer:
+          CopyArrayBufferService.copyArrayBuffer(
+            buffer,
+            BufferTransformService.getTotalByteLength(index)
           ),
         defaultLocalToWorldMatrix,
         defaultLocalPosition,

@@ -28,11 +28,6 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
            Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
      );
 
-let copySharedArrayBuffer = (buffer) =>
-  Worker.sharedArrayBufferToArrayBuffer(buffer)
-  |> Js.Typed_array.ArrayBuffer.sliceFrom(0)
-  |> Worker.arrayBufferToSharedArrayBuffer;
-
 let copyFloat32TypeArrayFromSharedArrayBuffer = (buffer) =>
   Js.Typed_array.Float32Array.fromBuffer(Worker.sharedArrayBufferToArrayBuffer(buffer));
 

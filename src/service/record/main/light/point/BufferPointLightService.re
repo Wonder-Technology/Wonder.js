@@ -44,16 +44,16 @@ let getRangesOffset = () =>
 
 let getRangesLength = () => getBufferMaxCount() * getRangesSize();
 
-let createBuffer = (count) =>
-  Worker.newSharedArrayBuffer(
-    count
-    * Float32Array._BYTES_PER_ELEMENT
-    * (
-      getColorsSize()
-      + getIntensitiesSize()
-      + getConstantsSize()
-      + getLinearsSize()
-      + getQuadraticsSize()
-      + getRangesSize()
-    )
+let getTotalByteLength = (count) =>
+  count
+  * Float32Array._BYTES_PER_ELEMENT
+  * (
+    getColorsSize()
+    + getIntensitiesSize()
+    + getConstantsSize()
+    + getLinearsSize()
+    + getQuadraticsSize()
+    + getRangesSize()
   );
+
+let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

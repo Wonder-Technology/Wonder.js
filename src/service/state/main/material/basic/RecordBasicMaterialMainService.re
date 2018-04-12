@@ -58,39 +58,29 @@ let create = ({settingRecord} as state) => {
   state
 };
 
-let deepCopyForRestore = ({settingRecord} as state) => {
+let deepCopyForRestore = (state) => {
   let {
-    index,
-    buffer,
-    shaderIndices,
-    colors,
-    defaultShaderIndex,
-    defaultColor,
-    groupCountMap,
-    gameObjectMap,
-    disposedIndexArray
-  } =
+        index,
+        buffer,
+        shaderIndices,
+        colors,
+        defaultShaderIndex,
+        defaultColor,
+        groupCountMap,
+        gameObjectMap,
+        disposedIndexArray
+      } as record =
     state |> getRecord;
-  let (state, copiedBuffer) =
-    CopyArrayBufferPoolMainService.copyArrayBuffer(
-      buffer,
-      ArrayBufferPoolType.BasicMaterialArrayBuffer,
-      state
-    );
-  let basicMaterialDataBufferCount =
-    BufferSettingService.getBasicMaterialDataBufferCount(settingRecord);
   {
     ...state,
     basicMaterialRecord:
       Some({
+        ...record,
         index,
-        buffer: copiedBuffer,
-        shaderIndices,
-        colors:
-          CopyTypeArrayService.copyFloat32TypeArrayFromSharedArrayBufferRange(
-            copiedBuffer,
-            getColorsOffset(basicMaterialDataBufferCount),
-            getColorsLength(basicMaterialDataBufferCount)
+        buffer:
+          CopyArrayBufferService.copyArrayBuffer(
+            buffer,
+            BufferBasicMaterialService.getTotalByteLength(index)
           ),
         defaultShaderIndex,
         defaultColor,
