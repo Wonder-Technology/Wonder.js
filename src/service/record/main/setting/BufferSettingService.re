@@ -11,4 +11,4 @@ let getBasicMaterialDataBufferCount = (record) =>
   (record |> unsafeGetBuffer).basicMaterialDataBufferCount;
 
 let getLightMaterialDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).basicMaterialDataBufferCount;
+  (record |> unsafeGetBuffer).lightMaterialDataBufferCount;

@@ -31,7 +31,8 @@ module.exports = {
     { name: "geometry" },
     { name: "light" },
     { name: "gameObject" },
-    { name: "microservice" }
+    { name: "microservice" },
+    { name: "arraybuffer" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
