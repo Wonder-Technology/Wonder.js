@@ -25,3 +25,5 @@ test/e2e/render/screenshot
 test/e2e/performance/benchmark
 
 .bsb.lock
+
+yarn.lock
