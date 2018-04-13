@@ -1,0 +1,29 @@
+[
+    {
+        "name": "tick"
+    },
+    {
+        "name": "update_transform"
+    },
+    {
+        "name": "update_camera"
+    },
+    {
+        "name": "get_camera_data"
+    },
+    {
+        "name": "create_basic_render_object_buffer"
+    },
+    {
+        "name": "send_draw_data",
+        "flags": [
+            "DRAW"
+        ]
+    },
+    {
+        "name": "get_finish_draw_data",
+        "flags": [
+            "FINISH_DRAW_RENDER"
+        ]
+    }
+]

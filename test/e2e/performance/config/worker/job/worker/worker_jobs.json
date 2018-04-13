@@ -1,0 +1,85 @@
+[
+    {
+        "name": "send_finish_send_job_data",
+        "flags": [
+            "FINISH_SEND_JOB_DATA"
+        ]
+    },
+    {
+        "name": "get_init_render_data",
+        "flags": [
+            "INIT_RENDER"
+        ]
+    },
+    {
+        "name": "get_renderConfig_data"
+    },
+    {
+        "name": "get_setting_data"
+    },
+    {
+        "name": "create_gl"
+    },
+    {
+        "name": "preget_glslData"
+    },
+    {
+        "name": "init_transform"
+    },
+    {
+        "name": "preget_glslData"
+    },
+    {
+        "name": "init_state"
+    },
+    {
+        "name": "init_basic_material"
+    },
+    {
+        "name": "send_finish_init_render_data",
+        "flags": [
+            "FINISH_INIT_RENDER"
+        ]
+    },
+    {
+        "name": "get_draw_data",
+        "flags": [
+            "DRAW"
+        ]
+    },
+    {
+        "name": "clear_color",
+        "flags": [
+            "#000000"
+        ]
+    },
+    {
+        "name": "clear_buffer",
+        "flags": [
+            "COLOR_BUFFER",
+            "DEPTH_BUFFER",
+            "STENCIL_BUFFER"
+        ]
+    },
+    {
+        "name": "clear_last_send_component"
+    },
+    {
+        "name": "create_basic_render_object_typeArray"
+    },
+    {
+        "name": "get_camera_data"
+    },
+    {
+        "name": "send_uniform_shader_data"
+    },
+    {
+        "name": "render_basic"
+    },
+    {
+        "name": "send_finish_draw_data",
+        "flags": [
+            "FINISH_DRAW_RENDER"
+        ]
+    }
+]

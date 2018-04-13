@@ -18,12 +18,10 @@ let execJob = (_, e, stateData) =>
       ) =
         CreateTypeArrayRenderObjectService.createTypeArrays(
           basicRenderData##buffer,
-          basicRenderData##count
+          basicRenderData##bufferCount
         );
-
       state.renderRecord.basicRenderObjectRecord =
         Some({
-          /* renderArray: basicRenderData##renderArray, */
           count: basicRenderData##count,
           transformIndices,
           materialIndices,

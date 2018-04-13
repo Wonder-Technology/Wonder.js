@@ -1,0 +1,6 @@
+{
+    "worker_file_dir": "../../../../dist/",
+    "main_init_pipeline": "default",
+    "main_loop_pipeline": "default",
+    "worker_pipeline": "default"
+}

@@ -2,7 +2,9 @@ open Js.Typed_array;
 
 open RenderObjectBufferTypeArrayService;
 
-let createTypeArrays = (buffer, count) => (
+let createTypeArrays = (buffer, count) => { 
+  
+  (
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getTransformIndicesOffset(count),
@@ -33,7 +35,7 @@ let createTypeArrays = (buffer, count) => (
     ~offset=getGeometryTypesOffset(count),
     ~length=getGeometryTypesLength(count)
   )
-);
+) };
 
 let setDefaultTypeArrData = (count: int, typeArrTuple) => {
   let defaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance();

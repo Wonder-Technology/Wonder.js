@@ -1,0 +1,1 @@
+let unsafeGetBasicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord;

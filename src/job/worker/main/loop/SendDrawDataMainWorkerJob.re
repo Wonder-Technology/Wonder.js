@@ -15,7 +15,7 @@ let _getBasicMaterialRenderArray = (renderArray, state: StateDataMainType.state)
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
-      let {workerInstanceRecord, meshRendererRecord} as state =
+      let {workerInstanceRecord, meshRendererRecord, settingRecord} as state =
         StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
       let basicRenderObjectRecord =
@@ -28,12 +28,8 @@ let execJob = (flags, stateData) =>
              "camera": {vMatrix, pMatrix, position},
              "basic": {
                "buffer": basicRenderObjectRecord.buffer,
-               "count": basicRenderObjectRecord.count
-               /* "renderArray":
-                 state
-                 |> _getBasicMaterialRenderArray(
-                      meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
-                    ) */
+               "count": basicRenderObjectRecord.count,
+               "bufferCount": BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
              }
            }
          });

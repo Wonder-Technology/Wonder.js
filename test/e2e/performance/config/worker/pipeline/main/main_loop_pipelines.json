@@ -1,0 +1,44 @@
+
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "loop",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "tick"
+                    },
+                    {
+                        "name": "update_transform"
+                    },
+                    {
+                        "name": "update_camera"
+                    },
+                    {
+                        "name": "get_camera_data"
+                    },
+                    {
+                        "name": "create_basic_render_object_buffer"
+                    },
+                    {
+                        "name": "send_draw_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "loop"
+                    },
+                    {
+                        "name": "get_finish_draw_data"
+                    }
+                ]
+            }
+        ]
+    }
+]

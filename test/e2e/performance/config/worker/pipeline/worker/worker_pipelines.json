@@ -1,0 +1,70 @@
+[
+    {
+        "name": "default",
+        "jobs": {
+            "render": [
+                [
+                    {
+                        "name": "send_finish_send_job_data"
+                    },
+                    {
+                        "name": "get_init_render_data"
+                    },
+                    {
+                        "name": "get_renderConfig_data"
+                    },
+                    {
+                        "name": "get_setting_data"
+                    },
+                    {
+                        "name": "create_gl"
+                    },
+                    {
+                        "name": "init_transform"
+                    },
+                    {
+                        "name": "preget_glslData"
+                    },
+                    {
+                        "name": "init_state"
+                    },
+                    {
+                        "name": "init_basic_material"
+                    },
+                    {
+                        "name": "send_finish_init_render_data"
+                    }
+                ],
+                [
+                    {
+                        "name": "get_draw_data"
+                    },
+                    {
+                        "name": "clear_color"
+                    },
+                    {
+                        "name": "clear_buffer"
+                    },
+                    {
+                        "name": "clear_last_send_component"
+                    },
+                    {
+                        "name": "create_basic_render_object_typeArray"
+                    },
+                    {
+                        "name": "get_camera_data"
+                    },
+                    {
+                        "name": "send_uniform_shader_data"
+                    },
+                    {
+                        "name": "render_basic"
+                    },
+                    {
+                        "name": "send_finish_draw_data"
+                    }
+                ]
+            ]
+        }
+    }
+]
