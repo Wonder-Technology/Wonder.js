@@ -12,61 +12,19 @@ let _render = (gl, state: StateDataMainType.state) =>
       geometryTypes,
       sourceInstanceIndices
     }) =>
-    ArrayService.range(0, count - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (state, index) => {
-             let transformIndex =
-               RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
-             let materialIndex =
-               RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
-             let shaderIndex =
-               RenderObjectBufferTypeArrayService.getComponent(index, shaderIndices);
-             let geometryIndex =
-               RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
-             let geometryType =
-               RenderObjectBufferTypeArrayService.getGeometryType(index, geometryTypes);
-             let sourceInstance =
-               RenderObjectBufferTypeArrayService.getComponent(index, sourceInstanceIndices);
-             if (RenderObjectBufferTypeArrayService.hasSourceInstance(sourceInstance)) {
-               RenderBasicInstanceJobCommon.render(
-                 gl,
-                 (
-                   transformIndex,
-                   materialIndex,
-                   shaderIndex,
-                   geometryIndex,
-                   geometryType,
-                   sourceInstance
-                 ),
-                 state
-               )
-             } else {
-               let state =
-                 [@bs]
-                 RenderBasicJobCommon.render(
-                   gl,
-                   (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
-                   state
-                 );
-               let getIndicesCountFunc =
-                 CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
-               DrawGLSLService.drawElement(
-                 (
-                   RenderGeometryService.getDrawMode(gl),
-                   RenderGeometryService.getIndexType(gl),
-                   RenderGeometryService.getIndexTypeSize(gl),
-                   [@bs] getIndicesCountFunc(geometryIndex, state)
-                 ),
-                 gl
-               );
-               state
-             }
-           }
-         ),
-         CreateRenderStateMainService.createRenderState(state)
-       )
+    RenderBasicJobUtils.render(
+      gl,
+      (
+        count,
+        transformIndices,
+        materialIndices,
+        shaderIndices,
+        geometryIndices,
+        geometryTypes,
+        sourceInstanceIndices
+      ),
+      CreateRenderStateMainService.createRenderState(state)
+    )
     |> ignore;
     state
   };

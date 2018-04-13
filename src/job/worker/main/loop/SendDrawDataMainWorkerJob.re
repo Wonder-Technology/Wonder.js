@@ -4,14 +4,6 @@ open RenderType;
 
 open RenderCameraType;
 
-/* TODO duplicate with CreateBasicRenderObjectBufferMainWorkerJob */
-let _getBasicMaterialRenderArray = (renderArray, state: StateDataMainType.state) =>
-  renderArray
-  |> Js.Array.filter(
-       (uid) =>
-         HasComponentGameObjectService.hasBasicMaterialComponent(uid, state.gameObjectRecord)
-     );
-
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
