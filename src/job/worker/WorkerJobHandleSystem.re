@@ -15,6 +15,7 @@ let _getMainLoopJobHandles = () => [
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
   ("send_draw_data", SendDrawDataMainWorkerJob.execJob),
+  ("copy_transform", CopyTransformMainWorkerJob.execJob),
   ("get_finish_draw_data", GetFinishDrawDataMainWorkerJob.execJob)
 ];
 
@@ -23,6 +24,7 @@ let _getWorkerJobHandles = () => [
   ("get_init_render_data", GetInitRenderDataRenderWorkerJob.execJob),
   ("get_renderConfig_data", GetRenderConfigDataRenderWorkerJob.execJob),
   ("get_setting_data", GetSettingDataRenderWorkerJob.execJob),
+  ("get_workerDetect_data", GetWorkerDetectDataRenderWorkerJob.execJob),
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
   ("create_gl", CreateGlRenderWorkerJob.execJob),
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),

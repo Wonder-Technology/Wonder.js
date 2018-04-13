@@ -240,16 +240,16 @@ let _ =
             "restore global temp record to target state",
             () =>
               test(
-                "use current record->float32Array1",
+                "use current record->float16Array1",
                 () => {
                   open GlobalTempType;
                   let state = state^;
                   let currentState = MainStateTool.createNewCompleteState(sandbox);
                   let record = currentState.globalTempRecord;
-                  record.float32Array1 = Float32Array.make([|2.|]);
+                  record.float16Array1 = Float32Array.make([|2.|]);
                   let _ = MainStateTool.restore(currentState, state);
-                  let {float32Array1} = MainStateTool.unsafeGetState().globalTempRecord;
-                  float32Array1 |> expect == record.float32Array1
+                  let {float16Array1} = MainStateTool.unsafeGetState().globalTempRecord;
+                  float16Array1 |> expect == record.float16Array1
                 }
               )
           );

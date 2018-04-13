@@ -12,6 +12,8 @@ open RenderWorkerBoxGeometryType;
 
 open RenderWorkerRenderType;
 
+open RenderWorkerWorkerDetectType;
+
 open DeviceManagerType;
 
 open ShaderType;
@@ -35,11 +37,12 @@ let createRenderState =
         shaderRecord
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
-  let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} =
+  let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformRenderWorkerService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryRenderWorkerService.getRecord(state);
   /* let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
+  let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
   /* let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state); */
   /* let {index, colors} = ambientLightRecord;
      let {index, colors, intensities} = directionLightRecord;
@@ -80,6 +83,7 @@ let createRenderState =
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {index: shaderRecord.index}
+    shaderRecord: {index: shaderRecord.index},
+    workerDetectRecord: {isUseWorker: workerDetectRecord.isUseWorker}
   }
 };

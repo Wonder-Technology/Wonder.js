@@ -28,6 +28,8 @@ open RenderPointLightType;
 
 open RenderTransformType;
 
+open RenderWorkerDetectType;
+
 open VboBufferType;
 
 open TypeArrayPoolType;
@@ -147,5 +149,6 @@ and renderState = {
   globalTempRecord,
   deviceManagerRecord,
   shaderRecord,
-  settingRecord
+  settingRecord,
+  workerDetectRecord
 };

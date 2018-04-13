@@ -17,5 +17,6 @@ let createState = () => {
   renderRecord: RecordRenderWorkerRenderService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   globalTempRecord: RecordGlobalTempService.create(),
-  vboBufferRecord: RecordVboBufferService.create()
+  vboBufferRecord: RecordVboBufferService.create(),
+  workerDetectRecord: None
 };

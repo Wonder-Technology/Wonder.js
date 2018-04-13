@@ -542,7 +542,7 @@ let _ =
                   "test two gameObjects",
                   () =>
                     test(
-                      "if only set first one's transform, second one's sended u_mMatrix record shouldn't be affect",
+                      "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
                       () => {
                         let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
                           _prepareSendUinformData(

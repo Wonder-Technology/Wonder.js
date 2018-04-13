@@ -95,6 +95,30 @@ let buildBufferConfigStr =
        }
         |j};
 
+
+
+let setToStateData =
+    (
+      state,
+      isDebug,
+      canvasId,
+      context,
+      useHardwareInstance,
+      useWorker,
+      buffer
+    ) => {
+  let stateData = MainStateTool.getStateData();
+  ParseSettingService.convertToRecord(
+    buildSetting(isDebug, canvasId, buffer, context, useHardwareInstance, useWorker)
+    |> Js.Json.parseExn
+  )
+  |> ConfigDataLoaderSystem._setSetting(stateData, state)
+  |> ConfigDataLoaderSystem._createRecordWithState
+  |> MainStateTool.setState
+};
+
+
+
 let createStateAndSetToStateData =
     (
       ~isDebug="true",
@@ -114,14 +138,18 @@ let createStateAndSetToStateData =
       ~buffer=buildBufferConfigStr(),
       ()
     ) => {
-  let stateData = MainStateTool.getStateData();
-  ParseSettingService.convertToRecord(
-    buildSetting(isDebug, canvasId, buffer, context, useHardwareInstance, useWorker)
-    |> Js.Json.parseExn
-  )
-  |> ConfigDataLoaderSystem._setSetting(stateData, CreateStateMainService.createState())
-  |> ConfigDataLoaderSystem._createRecordWithState
-  |> MainStateTool.setState
+
+setToStateData(
+      CreateStateMainService.createState(),
+      isDebug,
+      canvasId,
+      context,
+      useHardwareInstance,
+      useWorker,
+      buffer
+
+
+)
 };
 
 let setMemory = (state: StateDataMainType.state, ~maxDisposeCount=1000, ()) => {

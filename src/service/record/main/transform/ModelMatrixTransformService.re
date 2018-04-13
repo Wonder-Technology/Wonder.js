@@ -36,6 +36,19 @@ let getNormalMatrixTypeArray =
     |> Matrix3Service.transposeSelf
   };
 
+/* TODO duplicate with getNormalMatrixTypeArray */
+let getNormalMatrixTypeArrayToTarget =
+    (transform: transform, localToWorldMatrices, localToWorldTargetTypeArr, normalTargetTypeArr) =>
+  Matrix4Service.invertTo3x3(
+    RecordTransformMainService.getLocalToWorldMatrixTypeArrayToTarget(
+      transform,
+      localToWorldMatrices,
+      localToWorldTargetTypeArr
+    ),
+    normalTargetTypeArr
+  )
+  |> Matrix3Service.transposeSelf;
+
 let getLocalPositionTypeArray = (transform: transform, localPositions) =>
   RecordTransformMainService.getLocalPositionTypeArray(transform, localPositions);
 

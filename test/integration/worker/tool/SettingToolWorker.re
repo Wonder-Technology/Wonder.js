@@ -37,3 +37,33 @@ let buildFakeCanvasForNotPassCanvasId = (sandbox) => {
   |> returns([body])
   |> ignore
 };
+
+let createStateAndSetToStateData =
+    (
+      ~state=CreateStateMainService.createState(),
+      ~isDebug="true",
+      ~canvasId=None,
+      ~context={|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": false,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
+      ~useHardwareInstance="false",
+      ~useWorker="false",
+      ~buffer=SettingTool.buildBufferConfigStr(),
+      ()
+    ) =>
+  SettingTool.setToStateData(
+    state,
+    isDebug,
+    canvasId,
+    context,
+    useHardwareInstance,
+    useWorker,
+    buffer
+  );

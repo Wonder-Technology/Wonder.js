@@ -1,3 +1,5 @@
+open WorkerDetectType;
+
 let initWithJobConfig =
     (
       ~sandbox,
@@ -17,10 +19,26 @@ let initWithJobConfig =
       ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
-    ) => {
-  SettingTool.createStateAndSetToStateData(~isDebug, ~canvasId, ~context, ~useHardwareInstance, ())
+    ) =>
+  SettingToolWorker.createStateAndSetToStateData(
+    ~state={
+      let state = CreateStateMainService.createState();
+      {
+        ...state,
+        workerDetectRecord: {
+          ...state.workerDetectRecord,
+          isSupportRenderWorkerAndSharedArrayBuffer: true
+        }
+      }
+    },
+    ~isDebug,
+    ~useWorker="true",
+    ~canvasId,
+    ~context,
+    ~useHardwareInstance,
+    ()
+  )
   |> WorkerJobTool.create(workerJobRecord)
   |> RenderConfigTool.create(renderConfigRecord)
   |> MainStateTool.setState
   |> ignore;
-};

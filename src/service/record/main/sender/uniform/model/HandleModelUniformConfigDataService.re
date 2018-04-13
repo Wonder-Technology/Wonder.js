@@ -14,11 +14,7 @@
          normalMatrix
        }
      ); */
-let addModelSendData =
-    (
-      (field, pos, name, type_, uniformCacheMap),
-      sendDataArrTuple
-    ) =>
+let addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "mMatrix" =>
     HandleUniformRenderObjectModelService.addUniformSendDataByType(

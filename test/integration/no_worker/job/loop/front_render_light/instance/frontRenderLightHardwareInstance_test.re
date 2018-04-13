@@ -257,7 +257,7 @@ let _ =
             }
           );
           describe(
-            "send modelMatrix and normalMatrix record",
+            "send modelMatrix and normalMatrix data",
             () => {
               describe(
                 "send sourceInstance gameObject's and objectInstanceGameObject gameObjects' model matrices and normal matrices",
@@ -272,7 +272,7 @@ let _ =
                     (state, gameObject, sourceInstance, objectInstanceGameObject)
                   };
                   test(
-                    "buffer sub record",
+                    "buffer sub data",
                     () => {
                       let (state, gameObject, sourceInstance, objectInstanceGameObject) =
                         _prepare(sandbox, state^);
@@ -300,7 +300,7 @@ let _ =
                         state
                         |> RenderJobsTool.initSystemAndRender
                         |> DirectorTool.runWithDefaultTime;
-                      let record = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
+                      let data = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
                       let transformArr = [|sourceTransform, objectTransform|];
                       ArrayService.range(0, 1)
                       |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -309,12 +309,12 @@ let _ =
                              (offset, index) => {
                                let transform = transformArr[index];
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
                                  offset
                                );
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  TransformTool.updateAndGetNormalMatrixTypeArray(transform, state),
                                  offset + 16
                                );
@@ -330,7 +330,7 @@ let _ =
                            (
                              (offset, index) => {
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
                                    0.,
@@ -352,7 +352,7 @@ let _ =
                                  offset
                                );
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
                                    0.,
@@ -373,7 +373,7 @@ let _ =
                          )
                       |> ignore;
                       bufferSubData
-                      |> withThreeArgs(array_buffer, 0, record)
+                      |> withThreeArgs(array_buffer, 0, data)
                       |> expect
                       |> toCalledOnce
                     }
@@ -381,7 +381,7 @@ let _ =
                 }
               );
               describe(
-                "handle instance record position",
+                "handle instance data position",
                 () => {
                   let _prepare = (sandbox, state) => {
                     let (

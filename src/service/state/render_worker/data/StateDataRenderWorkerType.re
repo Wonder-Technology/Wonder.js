@@ -10,6 +10,8 @@ open RenderWorkerBoxGeometryType;
 
 open RenderWorkerRenderType;
 
+open RenderWorkerWorkerDetectType;
+
 open GlType;
 
 open ComponentType;
@@ -49,7 +51,8 @@ type renderWorkerState = {
   mutable renderRecord,
   mutable typeArrayPoolRecord,
   mutable vboBufferRecord,
-  mutable globalTempRecord
+  mutable globalTempRecord,
+  mutable workerDetectRecord: option(workerDetectRecord)
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

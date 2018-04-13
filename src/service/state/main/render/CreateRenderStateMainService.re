@@ -40,7 +40,14 @@ let createRenderState =
         shaderRecord
       } as state: StateDataMainType.state
     ) => {
-  let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} =
+  let {
+        localToWorldMatrices,
+        localPositions,
+        /* copiedLocalToWorldMatrices,
+           copiedLocalPositions, */
+        localToWorldMatrixCacheMap,
+        normalMatrixCacheMap
+      } as transformRecord =
     RecordTransformMainService.getRecord(state);
   /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
@@ -59,6 +66,17 @@ let createRenderState =
        isTransformStaticMap,
        isSendTransformMatrixDataMap
      } = sourceInstanceRecord; */
+  let isUseWorker = WorkerDetectMainService.isUseWorker(state);
+  let renderStateTransformRecord: RenderTransformType.transformRecord =
+    isUseWorker ?
+      {
+        localToWorldMatrices:
+          transformRecord |> CopyTransformService.unsafeGetCopiedLocalToWorldMatrices,
+        localPositions: transformRecord |> CopyTransformService.unsafeGetCopiedLocalPositions,
+        localToWorldMatrixCacheMap,
+        normalMatrixCacheMap
+      } :
+      {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap};
   {
     glslSenderRecord,
     programRecord,
@@ -112,12 +130,7 @@ let createRenderState =
     },
     vboBufferRecord,
     typeArrayPoolRecord,
-    transformRecord: {
-      localToWorldMatrices,
-      localPositions,
-      localToWorldMatrixCacheMap,
-      normalMatrixCacheMap
-    },
+    transformRecord: renderStateTransformRecord,
     sourceInstanceRecord: {
       objectInstanceTransformArrayMap: sourceInstanceRecord.objectInstanceTransformArrayMap,
       matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
@@ -129,6 +142,7 @@ let createRenderState =
     globalTempRecord,
     deviceManagerRecord,
     shaderRecord: {index: shaderRecord.index},
-    settingRecord: {gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord))}
+    settingRecord: {gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord))},
+    workerDetectRecord: {isUseWorker: isUseWorker}
   }
 };

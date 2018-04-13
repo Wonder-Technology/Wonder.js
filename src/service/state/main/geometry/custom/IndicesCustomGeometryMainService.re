@@ -42,7 +42,7 @@ let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
       indicesInfoArray,
       indicesOffset,
       Uint16Array.length(data),
-      fillUint16ArrWithOffset(indices, data)
+      fillUint16ArrayWithOffset(indices, data)
     );
   state
 };

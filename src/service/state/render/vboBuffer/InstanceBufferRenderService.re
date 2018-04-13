@@ -107,9 +107,9 @@ let setCapacityAndUpdateBufferTypeArray =
   }
 };
 
-let updateData = (gl, record: Float32Array.t, buffer) => {
+let updateData = (gl, data: Float32Array.t, buffer) => {
   bindBuffer(getArrayBuffer(gl), buffer, gl);
-  gl |> bufferSubFloat32Data(getArrayBuffer(gl), 0, record);
+  gl |> bufferSubFloat32Data(getArrayBuffer(gl), 0, data);
   buffer
 };
 

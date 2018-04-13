@@ -18,6 +18,9 @@
         "name": "get_setting_data"
     },
     {
+        "name": "get_workerDetect_data"
+    },
+    {
         "name": "create_gl"
     },
     {
@@ -25,9 +28,6 @@
     },
     {
         "name": "init_transform"
-    },
-    {
-        "name": "init_boxGeometry"
     },
     {
         "name": "preget_glslData"

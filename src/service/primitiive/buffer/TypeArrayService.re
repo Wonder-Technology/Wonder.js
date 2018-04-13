@@ -88,6 +88,14 @@ let getFloat16 = (index: int, typeArray: Float32Array.t) => [|
 let getFloat16TypeArray = (index: int, typeArray: Float32Array.t) =>
   Float32Array.subarray(~start=index, ~end_=index + 16, typeArray);
 
+let getFloat16TypeArrayToTarget =
+    (index: int, sourceTypeArr: Float32Array.t, targetTypeArr: Float32Array.t) => {
+  for (i in index to index + 15) {
+    Float32Array.unsafe_set(targetTypeArr, i, Float32Array.unsafe_get(sourceTypeArr, i))
+  };
+  targetTypeArr
+};
+
 let setFloat16 = (index: int, record: Js.Array.t(float), typeArray: Float32Array.t) => {
   WonderLog.Contract.requireCheck(
     () => {
@@ -166,7 +174,7 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
   targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-let getFloat32ArrSubarray = (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
+let getFloat32ArraySubarray = (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
 
 let fillUint16Array = (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
@@ -195,7 +203,7 @@ let fillUint16Array = (typeArray: Uint16Array.t, dataArr: Js.Array.t(int), start
   typeArray
 };
 
-let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
+let fillUint16ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -220,7 +228,7 @@ let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-let getUint16ArrSubarray = (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
+let getUint16ArraySubarray = (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
   Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
 
 let _setFloat32ArrayWithFloat32Array =
@@ -245,32 +253,32 @@ let _setUint16ArrayWithUint16Array =
       )
   );
 
-let _fillTypeArrayWithTypeArray =
+let _fillTypeArrayWithTypeArr =
     (
       (targetTypeArr, targetStartIndex),
       (sourceTypeArr, sourceStartIndex),
       endIndex,
-      _setTypeArrayWithTypeArray
+      _setTypeArrWithTypeArr
     ) => {
   let typeArrIndex = ref(targetStartIndex);
   for (i in sourceStartIndex to endIndex - 1) {
-    [@bs] _setTypeArrayWithTypeArray(targetTypeArr, sourceTypeArr, typeArrIndex^, i);
+    [@bs] _setTypeArrWithTypeArr(targetTypeArr, sourceTypeArr, typeArrIndex^, i);
     typeArrIndex := succ(typeArrIndex^)
   };
   typeArrIndex^
 };
 
 let fillUint16ArrayWithUint16Array = (targetData, sourceData, endIndex) =>
-  _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setUint16ArrayWithUint16Array);
+  _fillTypeArrayWithTypeArr(targetData, sourceData, endIndex, _setUint16ArrayWithUint16Array);
 
 let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
-  _fillTypeArrayWithTypeArray(targetData, sourceData, endIndex, _setFloat32ArrayWithFloat32Array);
+  _fillTypeArrayWithTypeArr(targetData, sourceData, endIndex, _setFloat32ArrayWithFloat32Array);
 
 let makeFloat32Array = [@bs] ((record) => Float32Array.make(record));
 
 let makeUint16Array = [@bs] ((record) => Uint16Array.make(record));
 
-let setUint8Array = (sourceTypeArray, targetTypeArr) => {
-  targetTypeArr |> Uint8Array.setArray(sourceTypeArray |> TypeArray.uint8ToArrayUint8Elt);
+let setUint8Array = (sourceTypeArr, targetTypeArr) => {
+  targetTypeArr |> Uint8Array.setArray(sourceTypeArr |> TypeArray.uint8ToArrayUint8Elt);
   targetTypeArr
 };

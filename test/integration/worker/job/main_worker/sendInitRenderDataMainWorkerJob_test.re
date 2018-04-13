@@ -30,6 +30,7 @@ let _ =
             "bufferData": Sinon.matchAny,
             "gpuData": Sinon.matchAny,
             "renderConfigData": Sinon.matchAny,
+            "workerDetectData": Sinon.matchAny,
             "transformData": Sinon.matchAny,
             "basicMaterialData": Sinon.matchAny,
             "customGeometryData": Sinon.matchAny,

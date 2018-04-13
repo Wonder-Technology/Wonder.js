@@ -15,6 +15,11 @@ type transformRecord = {
   buffer: WorkerType.sharedArrayBuffer,
   mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
   mutable localPositions: Js.Typed_array.Float32Array.t,
+
+  copiedBuffer: option(WorkerType.sharedArrayBuffer),
+  mutable copiedLocalToWorldMatrices: option(Js.Typed_array.Float32Array.t),
+  mutable copiedLocalPositions: option(Js.Typed_array.Float32Array.t),
+
   defaultLocalToWorldMatrix: array(float),
   defaultLocalPosition: array(float),
   mutable parentMap: transformParentMap,

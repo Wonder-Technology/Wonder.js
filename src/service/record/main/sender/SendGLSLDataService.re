@@ -57,7 +57,7 @@ let sendMatrix4 =
   [@bs]
   (
     (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) => {
-      /*WonderLog.Log.print(("send matrix4: ", data)) |> ignore;*/
+      /* WonderLog.Log.print(("send matrix4: ", data |> Js.Typed_array.Float32Array.sliceFrom(0))) |> ignore; */
       uniformMatrix4fv(pos, Js.false_, data, gl)
     }
   );

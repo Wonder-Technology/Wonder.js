@@ -17,6 +17,9 @@
                         "name": "get_setting_data"
                     },
                     {
+                        "name": "get_workerDetect_data"
+                    },
+                    {
                         "name": "create_gl"
                     },
                     {

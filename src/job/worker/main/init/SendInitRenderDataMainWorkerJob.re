@@ -39,6 +39,7 @@ let execJob = (flags, stateData) =>
                /* "lightMaterialDataBufferCount": int */
              },
              "gpuData": {"useHardwareInstance": gpu.useHardwareInstance},
+             "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
              "renderConfigData": {
                "shaders":
                  GetDataRenderConfigService.getShaders(renderConfigRecord)
@@ -49,7 +50,9 @@ let execJob = (flags, stateData) =>
                  |> Obj.magic
                  |> Js.Json.stringify
              },
-             "transformData": {"buffer": transformRecord.buffer},
+             "transformData": {
+               "buffer": transformRecord |> CopyTransformService.unsafeGetCopiedBuffer
+             },
              "basicMaterialData": {
                "buffer": basicMaterialRecord.buffer,
                "index": basicMaterialRecord.index,

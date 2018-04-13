@@ -22,7 +22,19 @@
                         "name": "create_basic_render_object_buffer"
                     },
                     {
+                        "name": "copy_arraybuffer"
+                    },
+                    {
                         "name": "send_draw_data"
+                    }
+                ]
+            },
+            {
+                "name": "copy_arraybuffer",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "copy_transform"
                     }
                 ]
             },
