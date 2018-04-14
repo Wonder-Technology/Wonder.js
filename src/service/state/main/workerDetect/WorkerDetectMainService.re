@@ -19,8 +19,9 @@ let detect = (state: StateDataMainType.state) => {
           false :
           DetectService.hasProperty(
             "transferControlToOffscreen",
-            DomService.buildDom("<canvas></canvas>")
+            DomService.buildCanvas() |> Obj.magic
           )
+          |> Js.to_bool
     }
   }
 };

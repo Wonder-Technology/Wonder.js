@@ -169,8 +169,8 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
        (json) =>
          ParseSettingService.convertToRecord(json)
          |> _setSetting(stateData, StateDataMainService.unsafeGetState(stateData))
-         |> _createRecordWithState
          |> WorkerDetectMainService.detect
+         |> _createRecordWithState
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(
               (state) => state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)

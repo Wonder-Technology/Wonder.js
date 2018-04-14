@@ -6,7 +6,7 @@ open RenderConfigType;
 
 let _ =
   describe(
-    "test load data",
+    "test load no worker data",
     () => {
       open Expect;
       open Expect.Operators;
