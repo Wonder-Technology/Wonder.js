@@ -1,5 +1,3 @@
-open StateDataMainType;
-
 open Sinon;
 
 let buildFakeGl =
@@ -129,8 +127,8 @@ let buildFakeGl =
   "compileShader": compileShader,
   "commit": commit
 };
-/*
- let setFakeGl = (fakeGlObj, state: StateDataMainType.state) => {
+/* 
+ let setFakeGl = (fakeGlObj, state) => {
    ...state,
    deviceManagerRecord:
      state.deviceManagerRecord |> DeviceManagerService.setGl(Obj.magic(fakeGlObj))

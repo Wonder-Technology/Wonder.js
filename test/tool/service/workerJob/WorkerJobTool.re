@@ -57,6 +57,53 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
   ]
     |};
 
+
+let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
+[
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "begin_init",
+          "link": "merge",
+          "jobs": [
+            {
+              "name": "init"
+            }
+          ]
+        },
+        {
+          "name": "init",
+          "link": "concat",
+          "jobs": [
+          ]
+        },
+        {
+          "name": "transfer_job_data",
+          "link": "merge",
+          "jobs": [
+          ]
+        },
+        {
+          "name": "frame",
+          "link": "concat",
+          "jobs": [
+            {
+              "name": "begin_init"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+    |};
+
+
+
+
+
+
+
 let buildMainLoopPipelinesConfig= () => {|
 [
     {
@@ -87,6 +134,66 @@ let buildMainLoopPipelinesConfig= () => {|
     }
 ]
     |};
+
+
+
+
+
+let buildMainLoopPipelinesConfigWithoutMessage= () => {|
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "loop",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "tick"
+                    },
+                    {
+                        "name": "update_transform"
+                    },
+                    {
+                        "name": "update_camera"
+                    },
+                    {
+                        "name": "get_camera_data"
+                    },
+                    {
+                        "name": "create_basic_render_object_buffer"
+                    },
+                    {
+                        "name": "copy_arraybuffer"
+                    }
+                ]
+            },
+            {
+                "name": "copy_arraybuffer",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "copy_transform"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "loop"
+                    }
+                ]
+            }
+        ]
+    }
+]
+    |};
+
+
+
+
 
 let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 [

@@ -74,6 +74,16 @@ let rec _find =
       getJobHandleFunc
     )
     |> MostUtils.concatArray
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_find",
+        ~description={j|invalid link: $link|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
   };
 
 let _getFrameJobName = () => "frame";

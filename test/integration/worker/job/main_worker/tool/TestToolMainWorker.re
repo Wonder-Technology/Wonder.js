@@ -42,5 +42,4 @@ let initWithJobConfig =
   )
   |> WorkerJobTool.create(workerJobRecord)
   |> RenderConfigTool.create(renderConfigRecord)
-  |> MainStateTool.setState
-  |> ignore;
+  |> MainStateTool.setState;

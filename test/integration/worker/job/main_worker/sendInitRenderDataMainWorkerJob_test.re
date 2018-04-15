@@ -16,7 +16,7 @@ let _ =
             ~sandbox,
             ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
             ()
-          )
+          ) |> ignore;
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
