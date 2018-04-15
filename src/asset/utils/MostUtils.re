@@ -16,18 +16,29 @@ let _isFromEventStream = [%bs.raw
 ];
 
 let concatArray = (streamArr) =>
-  streamArr
-  |> Js.Array.sliceFrom(1)
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (stream1, stream2) =>
-           _isFromEventStream(stream1) === Js.true_ ?
-             /* stream1|> concatMap((e) => stream2) : stream1 |> concat(stream2) */
-             stream1 |> concat(stream2) : stream1 |> concat(stream2)
-       ),
-       streamArr[0]
-     );
+  switch (Js.Array.length(streamArr)) {
+  | 0 => Most.just(Obj.magic(1))
+  | _ =>
+    streamArr
+    |> Js.Array.sliceFrom(1)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         [@bs]
+         (
+           (stream1, stream2) =>
+             /* TODO refactor:
+
+                  stream1 |> concat(stream2) : stream1 |> concat(stream2)
+
+                  duplicate!
+
+                */
+             _isFromEventStream(stream1) === Js.true_ ?
+               /* stream1|> concatMap((e) => stream2) : stream1 |> concat(stream2) */
+               stream1 |> concat(stream2) : stream1 |> concat(stream2)
+         ),
+         streamArr[0]
+       )
+  };
 
 /* TODO check first stream and only first should be fromEvent stream */
 /* TODO check stream count >=2 */

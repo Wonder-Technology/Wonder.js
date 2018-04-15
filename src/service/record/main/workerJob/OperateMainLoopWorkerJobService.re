@@ -51,7 +51,13 @@ let _buildStreamArr =
 
 let rec _find =
         (
-          ({link, jobs: pipelineSubJobs} : mainLoopPipelineJob, pipelineJobs, jobHandleMap, mainLoopJobs, stateData),
+          (
+            {link, jobs: pipelineSubJobs}: mainLoopPipelineJob,
+            pipelineJobs,
+            jobHandleMap,
+            mainLoopJobs,
+            stateData
+          ),
           getJobHandleFunc
         ) =>
   switch link {

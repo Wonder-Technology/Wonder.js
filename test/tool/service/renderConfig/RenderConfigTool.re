@@ -573,6 +573,8 @@ let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
     })
 };
 
+let getRecord = (state) => RecordRenderConfigMainService.getRecord(state);
+
 let getShaders = (state) =>
   GetDataRenderConfigService.getShaders(
     InitMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord

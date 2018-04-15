@@ -135,7 +135,7 @@ let buildMainLoopJobConfig = () => {|
         "name": "create_basic_render_object_buffer"
     },
     {
-        "name": "create_light_render_object_buffer"
+        "name": "copy_transform"
     },
     {
         "name": "send_draw_data",

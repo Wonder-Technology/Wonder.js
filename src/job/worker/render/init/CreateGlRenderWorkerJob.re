@@ -10,7 +10,7 @@ let execJob = (_, e, stateData) =>
         |> GlService.createGl(
              ContextConfigSettingService.convertContextConfigDataToJsObj(data##contextConfig)
            );
-      WonderLog.Log.logVar(("gl: ", gl));
+      /* WonderLog.Log.logVar(("gl: ", gl)); */
       state.deviceManagerRecord = state.deviceManagerRecord |> DeviceManagerService.setGl(gl);
       e
     }

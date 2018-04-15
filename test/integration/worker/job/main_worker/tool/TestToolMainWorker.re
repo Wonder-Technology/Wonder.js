@@ -18,6 +18,7 @@ let initWithJobConfig =
                |},
       ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
+      ~buffer=SettingTool.buildBufferConfigStr(),
       ()
     ) =>
   SettingToolWorker.createStateAndSetToStateData(
@@ -31,6 +32,7 @@ let initWithJobConfig =
         }
       }
     },
+    ~buffer,
     ~isDebug,
     ~useWorker="true",
     ~canvasId,
