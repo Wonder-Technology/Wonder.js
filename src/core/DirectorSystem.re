@@ -1,7 +1,11 @@
 open StateDataMainType;
 
 let _workerInit = (stateData, state: StateDataMainType.state) =>
-  WorkerJobService.getMainInitJobStream(stateData, state);
+  WorkerJobService.getMainInitJobStream(
+    stateData,
+    (WorkerJobHandleSystem.createMainInitJobHandleMap, WorkerJobHandleSystem.getMainInitJobHandle),
+    state
+  );
 
 let _noWorkerInit = (state: StateDataMainType.state) =>
   state |> NoWorkerJobService.execNoWorkerInitJobs;
@@ -22,7 +26,14 @@ let rec _createWorkerLoopStream = () =>
          /* WonderLog.Log.log({j|time: $time|j}); */
          let state =
            _computeElapseTime(time, StateDataMainService.unsafeGetState(StateDataMain.stateData));
-         WorkerJobService.getMainLoopJobStream(StateDataMain.stateData, state)
+         WorkerJobService.getMainLoopJobStream(
+           StateDataMain.stateData,
+           (
+             WorkerJobHandleSystem.createMainLoopJobHandleMap,
+             WorkerJobHandleSystem.getMainLoopJobHandle
+           ),
+           state
+         )
          |> Most.map((e) => ())
          /* Most.mergeArray([|
               MostUtils.callFunc(

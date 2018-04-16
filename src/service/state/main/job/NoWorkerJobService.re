@@ -30,13 +30,10 @@ let execNoWorkerInitJobs = (state: StateDataMainType.state) : state =>
 let execNoWorkerLoopJobs = (state: StateDataMainType.state) : state =>
   state
   |> _getNoWorkerLoopJobList
-  |> List.fold_left(
-       (state, (_, handleFunc)) =>
-         handleFunc(state),
-       state
-     );
+  |> List.fold_left((state, (_, handleFunc)) => handleFunc(state), state);
 
-let init = (state: StateDataMainType.state) => {
+let init =
+    ((createInitJobHandleMapFunc, createLoopJobHandleMapFunc), state: StateDataMainType.state) => {
   ...state,
   jobRecord: {
     ...state.jobRecord,
@@ -47,7 +44,7 @@ let init = (state: StateDataMainType.state) => {
           OperateNoWorkerJobService.getInitPipelines(state.noWorkerJobRecord),
           OperateNoWorkerJobService.getInitJobs(state.noWorkerJobRecord)
         ),
-        NoWorkerJobHandleSystem.createInitJobHandleMap(),
+        createInitJobHandleMapFunc(),
         state
       ),
     noWorkerLoopJobList:
@@ -57,7 +54,7 @@ let init = (state: StateDataMainType.state) => {
           OperateNoWorkerJobService.getLoopPipelines(state.noWorkerJobRecord),
           OperateNoWorkerJobService.getLoopJobs(state.noWorkerJobRecord)
         ),
-        NoWorkerJobHandleSystem.createLoopJobHandleMap(),
+        createLoopJobHandleMapFunc(),
         state
       )
   }

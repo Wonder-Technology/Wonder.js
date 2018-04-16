@@ -18,7 +18,13 @@ let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   let worker = getWorkerFunc(state);
   let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
   MainStateTool.unsafeGetState()
-  |> WorkerJobToolWorker.getMainInitJobStream(MainStateTool.getStateData())
+  |> WorkerJobToolWorker.getMainInitJobStream(
+       MainStateTool.getStateData(),
+       (
+         WorkerJobHandleSystem.createMainInitJobHandleMap,
+         WorkerJobHandleSystem.getMainInitJobHandle
+       )
+     )
   |> Most.forEach(
        (record) =>
          switch record {

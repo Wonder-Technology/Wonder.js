@@ -70,7 +70,10 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     |> then_(
          (recordArr) =>
            {...state, noWorkerJobRecord: RecordNoWorkerJobService.create(recordArr |> Obj.magic)}
-           |> NoWorkerJobService.init
+           |> NoWorkerJobService.init((
+                NoWorkerJobHandleSystem.createInitJobHandleMap,
+                NoWorkerJobHandleSystem.createLoopJobHandleMap
+              ))
            |> resolve
        )
   );

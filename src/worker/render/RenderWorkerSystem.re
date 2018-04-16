@@ -92,6 +92,10 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
          WorkerJobService.getRenderWorkerJobStreamArr(
            e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
            e##data##jobs |> Js.Json.parseExn |> Obj.magic,
+           (
+             WorkerJobHandleSystem.createWorkerJobHandleMap,
+             WorkerJobHandleSystem.getWorkerJobHandle
+           ),
            StateDataRenderWorker.renderWorkerStateData
          )
        }

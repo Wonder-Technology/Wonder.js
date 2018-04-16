@@ -51,7 +51,10 @@ let _ =
                           ),
                         ()
                       )
-                      |> NoWorkerJobTool.init
+                      |> NoWorkerJobTool.init((
+                           NoWorkerJobHandleSystem.createInitJobHandleMap,
+                           NoWorkerJobHandleSystem.createLoopJobHandleMap
+                         ))
                   )
                   |> toThrowMessage("can't find job handle function whose job name is customJob")
               )

@@ -68,6 +68,10 @@ let _ =
                 |> WorkerJobTool.getRenderWorkerPipelineJobs("default")
                 |> Obj.magic,
                 _buildWorkerJobs(),
+                (
+                  WorkerJobHandleSystem.createWorkerJobHandleMap,
+                  WorkerJobHandleSystem.getWorkerJobHandle
+                ),
                 RenderWorkerStateTool.getStateData()
               )
               |> Most.mergeArray
@@ -119,6 +123,10 @@ let _ =
                 |> WorkerJobTool.getRenderWorkerPipelineJobs("default")
                 |> Obj.magic,
                 _buildWorkerJobs(),
+                (
+                  WorkerJobHandleSystem.createWorkerJobHandleMap,
+                  WorkerJobHandleSystem.getWorkerJobHandle
+                ),
                 RenderWorkerStateTool.getStateData()
               )
               |> Most.mergeArray

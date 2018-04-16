@@ -1,25 +1,32 @@
-let getMainInitJobStream = (stateData, state: StateDataMainType.state) =>
+let getMainInitJobStream =
+    (stateData, (createJobHandleMapFunc, getJobHandleFunc), state: StateDataMainType.state) =>
   OperateMainInitWorkerJobService.getMainInitJobStream(
-    WorkerJobHandleSystem.createMainInitJobHandleMap(),
+    createJobHandleMapFunc(),
     stateData,
     state.workerJobRecord,
-    WorkerJobHandleSystem.getMainInitJobHandle
+    getJobHandleFunc
   );
 
-let getMainLoopJobStream = (stateData, state: StateDataMainType.state) =>
+let getMainLoopJobStream =
+    (stateData, (createJobHandleMapFunc, getJobHandleFunc), state: StateDataMainType.state) =>
   OperateMainLoopWorkerJobService.getMainLoopJobStream(
-    WorkerJobHandleSystem.createMainLoopJobHandleMap(),
+    createJobHandleMapFunc(),
     stateData,
     state.workerJobRecord,
-    WorkerJobHandleSystem.getMainLoopJobHandle
+    getJobHandleFunc
   );
 
 let getRenderWorkerJobStreamArr =
-    (pipelineJobs, workerJobs, stateData: StateDataRenderWorkerType.renderWorkerStateData) =>
+    (
+      pipelineJobs,
+      workerJobs,
+      (createJobHandleMapFunc, getJobHandleFunc),
+      stateData: StateDataRenderWorkerType.renderWorkerStateData
+    ) =>
   OperateRenderWorkerJobService.getRenderWorkerJobStreamArr(
     pipelineJobs,
     workerJobs,
-    WorkerJobHandleSystem.createWorkerJobHandleMap(),
+    createJobHandleMapFunc(),
     stateData,
-    WorkerJobHandleSystem.getWorkerJobHandle
+    getJobHandleFunc
   );

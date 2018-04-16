@@ -76,7 +76,11 @@ let _ =
                   let _prepare = (state) => {
                     let (state, _, _, _) =
                       InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-                    state |> NoWorkerJobTool.init
+                    state
+                    |> NoWorkerJobTool.init((
+                         NoWorkerJobHandleSystem.createInitJobHandleMap,
+                         NoWorkerJobHandleSystem.createLoopJobHandleMap
+                       ))
                   };
                   describe(
                     "addNoWorkerInitJob",
@@ -190,7 +194,11 @@ let _ =
             () => {
               let _prepare = (state) => {
                 let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-                state |> NoWorkerJobTool.init
+                state
+                |> NoWorkerJobTool.init((
+                     NoWorkerJobHandleSystem.createInitJobHandleMap,
+                     NoWorkerJobHandleSystem.createLoopJobHandleMap
+                   ))
               };
               describe(
                 "addNoWorkerLoopJob",

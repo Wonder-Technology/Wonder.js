@@ -61,7 +61,10 @@ let initWithJobConfigWithoutBuildFakeDom =
     ()
   )
   |> NoWorkerJobConfigTool.create(noWorkerJobRecord)
-  |> NoWorkerJobTool.init
+  |> NoWorkerJobTool.init((
+       NoWorkerJobHandleSystem.createInitJobHandleMap,
+       NoWorkerJobHandleSystem.createLoopJobHandleMap
+     ))
   |> RenderConfigTool.create(renderConfigRecord);
 
 let initWithJobConfig =
