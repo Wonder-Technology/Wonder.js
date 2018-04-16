@@ -12,7 +12,7 @@ let prepareForUseProgram = (sandbox, prepareFunc, state) => {
   let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
-    |> FakeGlTool.setFakeGl(
+    |> FakeGlToolWorker.setFakeGl(
          FakeGlToolWorker.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
        );
   let state = MainStateTool.setState(state);

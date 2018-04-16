@@ -90,8 +90,8 @@ let getFloat16TypeArray = (index: int, typeArray: Float32Array.t) =>
 
 let getFloat16TypeArrayToTarget =
     (index: int, sourceTypeArr: Float32Array.t, targetTypeArr: Float32Array.t) => {
-  for (i in index to index + 15) {
-    Float32Array.unsafe_set(targetTypeArr, i, Float32Array.unsafe_get(sourceTypeArr, i))
+  for (i in 0 to 15) {
+    Float32Array.unsafe_set(targetTypeArr, i, Float32Array.unsafe_get(sourceTypeArr, i + index))
   };
   targetTypeArr
 };

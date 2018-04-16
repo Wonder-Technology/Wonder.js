@@ -459,8 +459,8 @@ let _ =
                 |]),
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
-                  (_prepareSendUniformData) =>
-                    testSendShaderUniformMatrix4DataOnlyOnce("u_vMatrix", _prepareSendUniformData),
+                  (prepareSendUniformData) =>
+                    testSendShaderUniformMatrix4DataOnlyOnce("u_vMatrix", prepareSendUniformData),
                 ()
               );
               GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
@@ -471,8 +471,8 @@ let _ =
                   (),
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
-                  (_prepareSendUniformData) =>
-                    testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", _prepareSendUniformData),
+                  (prepareSendUniformData) =>
+                    testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", prepareSendUniformData),
                 ()
               );
               GLSLSenderTool.JudgeSendUniformData.testSendVector3(
@@ -483,8 +483,8 @@ let _ =
                 [10., 2., 3.],
                 ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
                 ~testFunc=
-                  (_prepareSendUniformData) =>
-                    testSendShaderUniformVec3DataOnlyOnce("u_cameraPos", _prepareSendUniformData),
+                  (prepareSendUniformData) =>
+                    testSendShaderUniformVec3DataOnlyOnce("u_cameraPos", prepareSendUniformData),
                 ()
               );
               /* describe(
@@ -1232,12 +1232,12 @@ let _ =
             Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUniformData) => {
+              (prepareSendUniformData) => {
                 test(
                   "send per each gameObject",
                   () => {
                     let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                      _prepareSendUniformData(
+                      prepareSendUniformData(
                         sandbox,
                         FrontRenderLightJobTool.prepareGameObject,
                         state^
@@ -1276,7 +1276,7 @@ let _ =
                       "test in different loops",
                       () => {
                         let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                          _prepareSendUniformData(
+                          prepareSendUniformData(
                             sandbox,
                             FrontRenderLightJobTool.prepareGameObject,
                             state^

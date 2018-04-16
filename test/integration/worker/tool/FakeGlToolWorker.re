@@ -127,9 +127,6 @@ let buildFakeGl =
   "compileShader": compileShader,
   "commit": commit
 };
-/* 
- let setFakeGl = (fakeGlObj, state) => {
-   ...state,
-   deviceManagerRecord:
-     state.deviceManagerRecord |> DeviceManagerService.setGl(Obj.magic(fakeGlObj))
- }; */
+
+let setFakeGl = (fakeGlObj, state) =>
+  FakeGlTool.setFakeGl(fakeGlObj, state) |> MainStateTool.setState;

@@ -501,12 +501,12 @@ let _ =
             |]),
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUniformData) => {
+              (prepareSendUniformData) => {
                 test(
                   "if not do any transform operation, should still send identity matrix value on the first send",
                   () => {
                     let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                      _prepareSendUniformData(
+                      prepareSendUniformData(
                         sandbox,
                         RenderBasicJobTool.prepareGameObject,
                         state^
@@ -545,7 +545,7 @@ let _ =
                       "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
                       () => {
                         let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                          _prepareSendUniformData(
+                          prepareSendUniformData(
                             sandbox,
                             RenderBasicJobTool.prepareGameObject,
                             state^
@@ -616,8 +616,8 @@ let _ =
             |]),
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUniformData) =>
-                testSendShaderUniformMatrix4DataOnlyOnce("u_vMatrix", _prepareSendUniformData),
+              (prepareSendUniformData) =>
+                testSendShaderUniformMatrix4DataOnlyOnce("u_vMatrix", prepareSendUniformData),
             ()
           );
           GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
@@ -627,8 +627,8 @@ let _ =
             PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera(),
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUniformData) =>
-                testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", _prepareSendUniformData),
+              (prepareSendUniformData) =>
+                testSendShaderUniformMatrix4DataOnlyOnce("u_pMatrix", prepareSendUniformData),
             ()
           );
           GLSLSenderTool.JudgeSendUniformData.testSendVector3(
@@ -639,7 +639,7 @@ let _ =
             [0., 1., 0.20000000298023224],
             ~prepareGameObjectFunc=RenderBasicJobTool.prepareGameObject,
             ~testFunc=
-              (_prepareSendUniformData) =>
+              (prepareSendUniformData) =>
                 describe(
                   "test two gameObjects",
                   () =>
@@ -648,7 +648,7 @@ let _ =
                       () => {
                         let name = "u_color";
                         let (state, _, (_, material1), _, _) =
-                          _prepareSendUniformData(
+                          prepareSendUniformData(
                             sandbox,
                             RenderBasicJobTool.prepareGameObject,
                             state^

@@ -4,8 +4,7 @@ open TransformType;
 
 open Js.Typed_array;
 
-let getRecord = (state: StateDataMainType.state) =>
-  state |> RecordTransformMainService.getRecord;
+let getRecord = (state: StateDataMainType.state) => state |> RecordTransformMainService.getRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
 
@@ -129,3 +128,18 @@ let getTransformPositionTypeArray = (transform, state) =>
 
 /* let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray; */
 let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);
+
+let createBuffer = BufferTransformService.createBuffer;
+
+let createTypeArrays = CreateTypeArrayTransformService.createTypeArrays;
+
+let setDefaultTypeArrData = (count: int, state, (localToWorldMatrices, localPositions)) => {
+  let (_, (localToWorldMatrices, localPositions)) =
+    RecordTransformMainService._setDefaultTypeArrData(
+      count,
+      getDefaultLocalToWorldMatrix(state),
+      getDefaultLocalPosition(state),
+      (Obj.magic(1), localToWorldMatrices, localPositions)
+    );
+  (localToWorldMatrices, localPositions)
+};

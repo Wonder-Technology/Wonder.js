@@ -6,15 +6,16 @@ let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
       let state = StateDataMainService.unsafeGetState(stateData);
-      let {buffer, index} as transformRecord = RecordTransformMainService.getRecord(state);
+      let {buffer, index, localToWorldMatrices} as transformRecord =
+        RecordTransformMainService.getRecord(state);
       state.transformRecord =
         Some({
           ...transformRecord,
           copiedBuffer:
             Some(
-              CopyArrayBufferService.copyArrayBuffer(
+              CopyArrayBufferService.copyArrayBufferData(
                 buffer,
-                BufferTransformService.getTotalByteLength(index)
+                CopyTransformService.unsafeGetCopiedBuffer(transformRecord)
               )
             )
         });

@@ -17,7 +17,7 @@ let clearLastSendGeometry = (state: StateDataMainType.state) => {
 };
 
 module JudgeSendUniformData = {
-  let _prepareSendUniformData = (sandbox, prepareGameObjectFunc, state) => {
+  let prepareSendUniformData = (sandbox, prepareGameObjectFunc, state) => {
     let (state, gameObject, _, material, _) = prepareGameObjectFunc(sandbox, state);
     let (state, _, cameraTransform, basicCameraView) = CameraTool.createCameraGameObject(state);
     (
@@ -35,7 +35,7 @@ module JudgeSendUniformData = {
         setFunc,
         targetData,
         ~prepareGameObjectFunc,
-        ~testFunc=(_prepareSendUniformData) => (),
+        ~testFunc=(prepareSendUniformData) => (),
         ()
       ) =>
     Wonder_jest.(
@@ -58,7 +58,7 @@ module JudgeSendUniformData = {
                   "test send",
                   () => {
                     let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                      _prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
+                      prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
                     let state =
                       setFunc(gameObjectTransform, cameraTransform, basicCameraView, state);
                     let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
@@ -88,7 +88,7 @@ module JudgeSendUniformData = {
                     |> toCalledWith([|pos, Obj.magic(Js.false_), Obj.magic(targetData)|])
                   }
                 );
-                testFunc(_prepareSendUniformData)
+                testFunc(prepareSendUniformData)
               }
             )
           )
@@ -102,7 +102,7 @@ module JudgeSendUniformData = {
         setFunc,
         targetData,
         ~prepareGameObjectFunc,
-        ~testFunc=(_prepareSendUniformData) => (),
+        ~testFunc=(prepareSendUniformData) => (),
         ()
       ) =>
     Wonder_jest.(
@@ -125,7 +125,7 @@ module JudgeSendUniformData = {
                   "test send",
                   () => {
                     let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
-                      _prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
+                      prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
                     let state =
                       setFunc(gameObjectTransform, cameraTransform, basicCameraView, state);
                     let uniformMatrix3fv = createEmptyStubWithJsObjSandbox(sandbox);
@@ -155,7 +155,7 @@ module JudgeSendUniformData = {
                     |> toCalledWith([|pos, Obj.magic(Js.false_), Obj.magic(targetData)|])
                   }
                 );
-                testFunc(_prepareSendUniformData)
+                testFunc(prepareSendUniformData)
               }
             )
           )
@@ -169,7 +169,7 @@ module JudgeSendUniformData = {
         setFunc,
         targetData,
         ~prepareGameObjectFunc=RenderJobsTool.prepareGameObject,
-        ~testFunc=(_prepareSendUniformData) => (),
+        ~testFunc=(prepareSendUniformData) => (),
         ()
       ) =>
     Wonder_jest.(
@@ -188,7 +188,7 @@ module JudgeSendUniformData = {
                     cameraTransform,
                     basicCameraView
                   ) =
-                    _prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
+                    prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
@@ -228,7 +228,7 @@ module JudgeSendUniformData = {
                        )
                   }
                 );
-                testFunc(_prepareSendUniformData)
+                testFunc(prepareSendUniformData)
               }
             )
           )
@@ -242,7 +242,7 @@ module JudgeSendUniformData = {
         setFunc,
         targetData,
         ~prepareGameObjectFunc=RenderJobsTool.prepareGameObject,
-        ~testFunc=(_prepareSendUniformData) => (),
+        ~testFunc=(prepareSendUniformData) => (),
         ()
       ) =>
     Wonder_jest.(
@@ -261,7 +261,7 @@ module JudgeSendUniformData = {
                     cameraTransform,
                     basicCameraView
                   ) =
-                    _prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
+                    prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
@@ -312,7 +312,7 @@ module JudgeSendUniformData = {
                        |> expect == [pos, ...targetData |> Obj.magic] */
                   }
                 );
-                testFunc(_prepareSendUniformData)
+                testFunc(prepareSendUniformData)
               }
             )
           )
@@ -326,7 +326,7 @@ module JudgeSendUniformData = {
         setFunc,
         targetData,
         ~prepareGameObjectFunc=RenderJobsTool.prepareGameObject,
-        ~testFunc=(_prepareSendUniformData) => (),
+        ~testFunc=(prepareSendUniformData) => (),
         ()
       ) =>
     Wonder_jest.(
@@ -345,7 +345,7 @@ module JudgeSendUniformData = {
                     cameraTransform,
                     basicCameraView
                   ) =
-                    _prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
+                    prepareSendUniformData(sandbox, prepareGameObjectFunc, state^);
                   let state =
                     setFunc(
                       gameObject,
@@ -393,7 +393,7 @@ module JudgeSendUniformData = {
                          ([|pos |> Obj.magic, targetData|])
                   }
                 );
-                testFunc(_prepareSendUniformData)
+                testFunc(prepareSendUniformData)
               }
             )
           )
