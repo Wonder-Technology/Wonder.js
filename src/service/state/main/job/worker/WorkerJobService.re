@@ -16,8 +16,8 @@ let getMainLoopJobStream =
   OperateMainLoopWorkerJobService.getMainLoopJobStream(
     createJobHandleMapFunc(),
     stateData,
-    state.workerJobRecord,
-    getJobHandleFunc
+    getJobHandleFunc,
+    state
   );
 
 let getRenderWorkerJobStreamArr =
@@ -72,6 +72,50 @@ let removeWorkerMainInitJob = (targetJobName: string, state) =>
         ...state.jobRecord,
         workerCustomMainInitTargetJobMap:
           state.jobRecord.workerCustomMainInitTargetJobMap
+          |> Obj.magic
+          |> WonderCommonlib.HashMapService.deleteVal(sourceJobName)
+          |> Obj.magic
+      }
+    }
+  };
+
+let addWorkerMainLoopJob =
+    ((targetJobName: string, sourceJobName: string), action, targetHandleFunc, state) => {
+  ...state,
+  jobRecord: {
+    ...state.jobRecord,
+    workerCustomMainLoopTargetJobMap:
+      state.jobRecord.workerCustomMainLoopTargetJobMap
+      |> WonderCommonlib.HashMapService.set(
+           sourceJobName,
+           (targetJobName, action, targetHandleFunc)
+         ),
+    workerCustomMainLoopSourceJobMap:
+      state.jobRecord.workerCustomMainLoopSourceJobMap
+      |> WonderCommonlib.HashMapService.set(targetJobName, sourceJobName)
+  }
+};
+
+let removeWorkerMainLoopJob = (targetJobName: string, state) =>
+  switch (
+    state.jobRecord.workerCustomMainLoopSourceJobMap
+    |> WonderCommonlib.HashMapService.get(targetJobName)
+  ) {
+  | None => {
+      ...state,
+      jobRecord: {
+        ...state.jobRecord,
+        workerCustomMainLoopRemovedDefaultJobMap:
+          state.jobRecord.workerCustomMainLoopRemovedDefaultJobMap
+          |> WonderCommonlib.HashMapService.set(targetJobName, true)
+      }
+    }
+  | Some(sourceJobName) => {
+      ...state,
+      jobRecord: {
+        ...state.jobRecord,
+        workerCustomMainLoopTargetJobMap:
+          state.jobRecord.workerCustomMainLoopTargetJobMap
           |> Obj.magic
           |> WonderCommonlib.HashMapService.deleteVal(sourceJobName)
           |> Obj.magic

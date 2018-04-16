@@ -28,3 +28,20 @@ let addWorkerMainInitJob =
 
 let removeWorkerMainInitJob = (targetJobName: string, state: StateDataMainType.state) =>
   WorkerJobService.removeWorkerMainInitJob(targetJobName, state);
+
+let addWorkerMainLoopJob =
+    (
+      (targetJobName: string, afterJobName: string),
+      action,
+      targetHandleFunc,
+      state: StateDataMainType.state
+    ) =>
+  WorkerJobService.addWorkerMainLoopJob(
+    (targetJobName, afterJobName),
+    action,
+    targetHandleFunc,
+    state
+  );
+
+let removeWorkerMainLoopJob = (targetJobName: string, state: StateDataMainType.state) =>
+  WorkerJobService.removeWorkerMainLoopJob(targetJobName, state);

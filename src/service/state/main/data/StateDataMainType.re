@@ -95,7 +95,11 @@ and jobRecord = {
   workerCustomMainInitTargetJobMap:
     WonderCommonlib.HashMapService.t((string, JobType.workerCustomJobAction, stateData => unit)),
   workerCustomMainInitSourceJobMap: WonderCommonlib.HashMapService.t(string),
-  workerCustomMainInitRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool)
+  workerCustomMainInitRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool),
+  workerCustomMainLoopTargetJobMap:
+    WonderCommonlib.HashMapService.t((string, JobType.workerCustomJobAction, stateData => unit)),
+  workerCustomMainLoopSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainLoopRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool)
 }
 and state = {
   settingRecord,
