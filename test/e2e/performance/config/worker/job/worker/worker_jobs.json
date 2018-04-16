@@ -45,7 +45,7 @@
         ]
     },
     {
-        "name": "get_draw_data",
+        "name": "get_render_data",
         "flags": [
             "DRAW"
         ]
@@ -80,7 +80,7 @@
         "name": "render_basic"
     },
     {
-        "name": "send_finish_draw_data",
+        "name": "send_finish_render_data",
         "flags": [
             "FINISH_DRAW_RENDER"
         ]

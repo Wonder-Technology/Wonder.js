@@ -71,7 +71,7 @@ let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state)
            let {vMatrix, pMatrix, position}: RenderCameraType.renderCameraRecord =
              OperateRenderMainService.unsafeGetCameraRecord(state);
            let drawData = {
-             "data": SendDrawDataMainWorkerJob._buildData("", MainStateTool.getStateData())
+             "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
            };
            [|
              CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
@@ -91,7 +91,7 @@ let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state)
                  let {vMatrix, pMatrix, position}: RenderCameraType.renderCameraRecord =
                    OperateRenderMainService.unsafeGetCameraRecord(state);
                  let drawData = {
-                   "data": SendDrawDataMainWorkerJob._buildData("", MainStateTool.getStateData())
+                   "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
                  };
                  [|
                    CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),

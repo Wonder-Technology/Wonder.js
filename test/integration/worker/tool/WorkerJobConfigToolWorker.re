@@ -60,7 +60,7 @@ let buildMainLoopPipelinesConfig= () => {|
                 "link": "concat",
                 "jobs": [
                     {
-                        "name": "send_draw_data"
+                        "name": "send_render_data"
                     }
                 ]
             },
@@ -72,7 +72,7 @@ let buildMainLoopPipelinesConfig= () => {|
                         "name": "loop"
                     },
                     {
-                        "name": "get_finish_draw_data"
+                        "name": "get_finish_render_data"
                     }
                 ]
             }
@@ -138,13 +138,13 @@ let buildMainLoopJobConfig= () => {|
         "name": "create_light_render_object_buffer"
     },
     {
-        "name": "send_draw_data",
+        "name": "send_render_data",
         "flags": [
             "DRAW"
         ]
     },
     {
-        "name": "get_finish_draw_data",
+        "name": "get_finish_render_data",
         "flags": [
             "FINISH_DRAW_RENDER"
         ]
@@ -193,10 +193,10 @@ let buildWorkerJobConfig =
                 ],
                 [
                     {
-                        "name": "get_draw_data"
+                        "name": "get_render_data"
                     },
                     {
-                        "name": "send_finish_draw_data"
+                        "name": "send_finish_render_data"
                     }
                 ]
             ]
@@ -236,7 +236,7 @@ let buildWorkerJobConfig =
         ]
     },
     {
-        "name": "get_draw_data",
+        "name": "get_render_data",
         "flags": [
             "DRAW"
         ]
@@ -257,7 +257,7 @@ let buildWorkerJobConfig =
         "name": "render_basic"
     },
     {
-        "name": "send_finish_draw_data",
+        "name": "send_finish_render_data",
         "flags": [
             "FINISH_DRAW_RENDER"
         ]

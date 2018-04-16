@@ -114,7 +114,7 @@ let buildMainLoopPipelinesConfig= () => {|
                 "link": "concat",
                 "jobs": [
                     {
-                        "name": "send_draw_data"
+                        "name": "send_render_data"
                     }
                 ]
             },
@@ -126,7 +126,7 @@ let buildMainLoopPipelinesConfig= () => {|
                         "name": "loop"
                     },
                     {
-                        "name": "get_finish_draw_data"
+                        "name": "get_finish_render_data"
                     }
                 ]
             }
@@ -245,13 +245,13 @@ let buildMainLoopJobConfig = () => {|
         "name": "copy_transform"
     },
     {
-        "name": "send_draw_data",
+        "name": "send_render_data",
         "flags": [
             "DRAW"
         ]
     },
     {
-        "name": "get_finish_draw_data",
+        "name": "get_finish_render_data",
         "flags": [
             "FINISH_DRAW_RENDER"
         ]

@@ -18,13 +18,13 @@
         "name": "copy_transform"
     },
     {
-        "name": "send_draw_data",
+        "name": "send_render_data",
         "flags": [
             "DRAW"
         ]
     },
     {
-        "name": "get_finish_draw_data",
+        "name": "get_finish_render_data",
         "flags": [
             "FINISH_DRAW_RENDER"
         ]

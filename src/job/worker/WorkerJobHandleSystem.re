@@ -14,9 +14,9 @@ let _getMainLoopJobHandles = () => [
   ("update_camera", UpdateCameraMainWorkerJob.execJob),
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
-  ("send_draw_data", SendDrawDataMainWorkerJob.execJob),
+  ("send_render_data", SendRenderDataMainWorkerJob.execJob),
   ("copy_transform", CopyTransformMainWorkerJob.execJob),
-  ("get_finish_draw_data", GetFinishDrawDataMainWorkerJob.execJob)
+  ("get_finish_render_data", GetFinishRenderDataMainWorkerJob.execJob)
 ];
 
 let _getWorkerJobHandles = () => [
@@ -32,7 +32,7 @@ let _getWorkerJobHandles = () => [
   ("init_transform", InitTransformRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
-  ("get_draw_data", GetDrawDataRenderWorkerJob.execJob),
+  ("get_render_data", GetRenderDataRenderWorkerJob.execJob),
   ("clear_color", ClearColorRenderWorkerJob.execJob),
   ("clear_buffer", ClearBufferRenderWorkerJob.execJob),
   ("clear_last_send_component", ClearLastSendComponentRenderWorkerJob.execJob),
@@ -43,7 +43,7 @@ let _getWorkerJobHandles = () => [
   ("get_camera_data", GetCameraDataRenderWorkerJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),
-  ("send_finish_draw_data", SendFinishDrawDataRenderWorkerJob.execJob)
+  ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob)
 ];
 
 let createMainInitJobHandleMap = () =>

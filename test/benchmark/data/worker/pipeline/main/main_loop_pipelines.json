@@ -22,7 +22,7 @@
                         "name": "create_basic_render_object_buffer"
                     },
                     {
-                        "name": "send_draw_data"
+                        "name": "send_render_data"
                     }
                 ]
             },
@@ -34,7 +34,7 @@
                         "name": "loop"
                     },
                     {
-                        "name": "get_finish_draw_data"
+                        "name": "get_finish_render_data"
                     }
                 ]
             }

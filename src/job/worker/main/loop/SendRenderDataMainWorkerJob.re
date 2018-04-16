@@ -6,7 +6,6 @@ open RenderCameraType;
 
 let _buildData = (operateType, stateData) => {
   let {settingRecord} as state = StateDataMainService.unsafeGetState(stateData);
-  /* let operateType = JobConfigUtils.getOperateType(flags); */
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let {vMatrix, pMatrix, position} = OperateRenderMainService.unsafeGetCameraRecord(state);
   {
