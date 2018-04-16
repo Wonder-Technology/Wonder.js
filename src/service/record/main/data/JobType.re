@@ -1,0 +1,3 @@
+type workerCustomJobAction =
+  | BEFORE
+  | AFTER;

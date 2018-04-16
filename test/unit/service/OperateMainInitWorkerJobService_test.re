@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "OperateMainInitWorkerJobService",
+    "OperateMainInitWorkerJobMainService",
     () => {
       open Expect;
       open Expect.Operators;
@@ -26,7 +26,7 @@ let _ =
                   WorkerJobType.(
                     expect(
                       () =>
-                        OperateMainInitWorkerJobService._findFrameJob([|
+                        OperateMainInitWorkerJobMainService._findFrameJob([|
                           {name: "frame", link: Obj.magic(1), jobs: Obj.magic(1)},
                           {name: "frame", link: Obj.magic(1), jobs: Obj.magic(1)}
                         |])

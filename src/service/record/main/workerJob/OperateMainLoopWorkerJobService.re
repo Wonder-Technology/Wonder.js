@@ -1,4 +1,4 @@
-/* TODO duplicate with OperateMainInitWorkerJobService */
+/* TODO duplicate with OperateMainInitWorkerJobMainService */
 open WorkerJobType;
 
 let _getExecutableJob = (jobs, jobItemName) =>

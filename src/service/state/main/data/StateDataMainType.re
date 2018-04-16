@@ -82,11 +82,20 @@ open WorkerDetectType;
 
 open ViewType;
 
+/* TODO move out or remove? */
 type colorRgba = (float, float, float, float);
 
-type jobRecord = {
+type stateData = {
+  mutable state: option(state),
+  mutable isDebug: bool
+}
+and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
-  noWorkerLoopJobList: list((string, state => state))
+  noWorkerLoopJobList: list((string, state => state)),
+  workerCustomMainInitTargetJobMap:
+    WonderCommonlib.HashMapService.t((string, JobType.workerCustomJobAction, stateData => unit)),
+  workerCustomMainInitSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainInitRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool)
 }
 and state = {
   settingRecord,
@@ -131,9 +140,4 @@ type sharedDataForRestoreState = {
   gl: webgl1Context,
   float32ArrayPoolMap,
   uint16ArrayPoolMap
-};
-
-type stateData = {
-  mutable state: option(state),
-  mutable isDebug: bool
 };
