@@ -2,11 +2,13 @@ open StateRenderType;
 
 let execJob = (renderState) => {
   let gl = [@bs] DeviceManagerService.unsafeGetGl(renderState.deviceManagerRecord);
+           WonderLog.Log.print("send shader") |> ignore;
   ShaderIndexRenderShaderService.getAllShaderIndexArray(renderState.shaderRecord)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (renderState: StateRenderType.renderState, shaderIndex) => {
+           WonderLog.Log.print("use") |> ignore;
            let program = ProgramService.unsafeGetProgram(shaderIndex, renderState.programRecord);
            let {glslSenderRecord} as renderState =
              renderState |> UseProgramRenderService.use(gl, program);

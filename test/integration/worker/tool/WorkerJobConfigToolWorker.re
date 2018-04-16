@@ -146,7 +146,7 @@ let buildMainLoopJobConfig= () => {|
     {
         "name": "get_finish_render_data",
         "flags": [
-            "FINISH_DRAW_RENDER"
+            "FINISH_RENDER"
         ]
     }
 ]
@@ -259,7 +259,7 @@ let buildWorkerJobConfig =
     {
         "name": "send_finish_render_data",
         "flags": [
-            "FINISH_DRAW_RENDER"
+            "FINISH_RENDER"
         ]
     }
 ]

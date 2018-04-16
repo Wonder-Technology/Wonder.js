@@ -1,7 +1,9 @@
 open StateRenderType;
 
-let getCameraVMatrixData = [@bs] ((state) => state.cameraRecord.vMatrix);
+let unsafeGetCameraRecord = (state) => state.cameraRecord |> OptionService.unsafeGet;
 
-let getCameraPMatrixData = [@bs] ((state) => state.cameraRecord.pMatrix);
+let getCameraVMatrixData = [@bs] ((state) => unsafeGetCameraRecord(state).vMatrix);
 
-let getCameraPositionData = [@bs] ((state) => state.cameraRecord.position);
+let getCameraPMatrixData = [@bs] ((state) => unsafeGetCameraRecord(state).pMatrix);
+
+let getCameraPositionData = [@bs] ((state) => unsafeGetCameraRecord(state).position);

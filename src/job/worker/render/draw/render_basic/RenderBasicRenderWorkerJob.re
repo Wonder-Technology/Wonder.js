@@ -12,6 +12,7 @@ let _render = (gl, state) =>
       geometryTypes,
       sourceInstanceIndices
     }) =>
+    WonderLog.Log.print(("count: ", count)) |> ignore;
     RenderBasicJobUtils.render(
       gl,
       (
@@ -33,9 +34,13 @@ let execJob = (flags, e, stateData) =>
   MostUtils.callFunc(
     () => {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
-      let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-      _render(gl, state) |> ignore;
-      CommitGlService.commit(gl);
-      e
+      switch (IsRenderUtils.isRender(MessageService.getRecord(e))) {
+      | false => e
+      | true =>
+        let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
+        _render(gl, state) |> ignore;
+        CommitGlService.commit(gl);
+        e
+      }
     }
   );

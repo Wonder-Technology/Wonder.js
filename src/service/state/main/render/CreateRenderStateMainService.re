@@ -93,8 +93,7 @@ let createRenderState =
       normalsInfoArray: customGeometryRecord.normalsInfoArray,
       indicesInfoArray: customGeometryRecord.indicesInfoArray
     },
-    cameraRecord: OperateRenderMainService.unsafeGetCameraRecord(state),
-    /* cameraRecord: Obj.magic(1), */
+    cameraRecord: OperateRenderMainService.getCameraRecord(state),
     basicMaterialRecord: {colors: basicMaterialRecord.colors},
     lightMaterialRecord: {
       diffuseColors: lightMaterialRecord.diffuseColors,

@@ -137,7 +137,7 @@ and renderState = {
   programRecord,
   boxGeometryRecord,
   customGeometryRecord,
-  cameraRecord: RenderCameraType.renderCameraRecord,
+  cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
   lightMaterialRecord,
   ambientLightRecord,

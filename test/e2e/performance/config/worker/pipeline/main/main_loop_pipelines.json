@@ -7,6 +7,9 @@
                 "link": "concat",
                 "jobs": [
                     {
+                        "name": "send_render_data"
+                    },
+                    {
                         "name": "tick"
                     },
                     {
@@ -23,9 +26,6 @@
                     },
                     {
                         "name": "copy_arraybuffer"
-                    },
-                    {
-                        "name": "send_render_data"
                     }
                 ]
             },

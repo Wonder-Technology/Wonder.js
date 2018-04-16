@@ -2,6 +2,8 @@ open RenderWorkerRenderType;
 
 open StateDataRenderWorkerType;
 
-let unsafeGetCameraRecord = (state) => state.renderRecord.cameraRecord |> OptionService.unsafeGet;
+let getCameraRecord = (state) => state.renderRecord.cameraRecord;
+
+let unsafeGetCameraRecord = (state) => getCameraRecord(state) |> OptionService.unsafeGet;
 
 let getBasicRenderObjectRecord = (state) => state.renderRecord.basicRenderObjectRecord;

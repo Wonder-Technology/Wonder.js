@@ -7,13 +7,17 @@ let execJob = (_, e, stateData) =>
     () => {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
-      let cameraData = data##renderData##camera;
-      state.renderRecord.cameraRecord =
-        Some({
-          vMatrix: cameraData##vMatrix,
-          pMatrix: cameraData##pMatrix,
-          position: cameraData##position
-        });
+      state.renderRecord.cameraRecord = (
+        switch (data##renderData##camera |> Js.Nullable.to_opt) {
+        | None => None
+        | Some(cameraData) =>
+          Some({
+            vMatrix: cameraData##vMatrix,
+            pMatrix: cameraData##pMatrix,
+            position: cameraData##position
+          })
+        }
+      );
       e
     }
   );

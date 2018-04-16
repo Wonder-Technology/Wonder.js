@@ -45,6 +45,7 @@ let _ =
                        Some({
                          "data": {
                            "renderData": {
+                             "isRender": Js.true_,
                              "basic": {
                                "buffer": buffer,
                                "count": count,

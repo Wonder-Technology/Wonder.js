@@ -79,7 +79,7 @@
     {
         "name": "send_finish_render_data",
         "flags": [
-            "FINISH_DRAW_RENDER"
+            "FINISH_RENDER"
         ]
     }
 ]

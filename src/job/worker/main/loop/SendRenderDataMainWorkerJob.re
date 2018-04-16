@@ -7,11 +7,21 @@ open RenderCameraType;
 let _buildData = (operateType, stateData) => {
   let {settingRecord} as state = StateDataMainService.unsafeGetState(stateData);
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
-  let {vMatrix, pMatrix, position} = OperateRenderMainService.unsafeGetCameraRecord(state);
+  let cameraData = OperateRenderMainService.getCameraRecord(state);
+  let isRender = cameraData |> Js.Option.isSome;
+  let (isRender, cameraData) =
+    switch (OperateRenderMainService.getCameraRecord(state)) {
+    | None => (Js.false_, Js.Nullable.empty)
+    | Some({vMatrix, pMatrix, position}) => (
+        Js.true_,
+        Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
+      )
+    };
   {
     "operateType": operateType,
     "renderData": {
-      "camera": {vMatrix, pMatrix, position},
+      "isRender": isRender,
+      "camera": cameraData,
       "basic": {
         "buffer": basicRenderObjectRecord.buffer,
         "count": basicRenderObjectRecord.count,

@@ -57,7 +57,6 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
   ]
     |};
 
-
 let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
 [
     {
@@ -98,13 +97,7 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
   ]
     |};
 
-
-
-
-
-
-
-let buildMainLoopPipelinesConfig= () => {|
+let buildMainLoopPipelinesConfig = () => {|
 [
     {
         "name": "default",
@@ -135,11 +128,7 @@ let buildMainLoopPipelinesConfig= () => {|
 ]
     |};
 
-
-
-
-
-let buildMainLoopPipelinesConfigWithoutMessage= () => {|
+let buildMainLoopPipelinesConfigWithoutMessage = () => {|
 [
     {
         "name": "default",
@@ -190,10 +179,6 @@ let buildMainLoopPipelinesConfigWithoutMessage= () => {|
     }
 ]
     |};
-
-
-
-
 
 let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 [
@@ -253,7 +238,7 @@ let buildMainLoopJobConfig = () => {|
     {
         "name": "get_finish_render_data",
         "flags": [
-            "FINISH_DRAW_RENDER"
+            "FINISH_RENDER"
         ]
     }
 ]
@@ -386,13 +371,6 @@ let create =
     state
   );
 
-let getRenderWorkerPipelineJobs = OperateRenderWorkerJobService._getRenderWorkerPipelineJobs;
-
-let convertWorkerPipelinesToRecord = ParseWorkerJobService.convertWorkerPipelinesToRecord;
-
-let convertWorkerJobsToRecord = ParseWorkerJobService.convertWorkerJobsToRecord;
-
-let getRenderWorkerJobStreamArr = WorkerJobService.getRenderWorkerJobStreamArr;
 let getRenderWorkerPipelineJobs = OperateRenderWorkerJobService._getRenderWorkerPipelineJobs;
 
 let convertWorkerPipelinesToRecord = ParseWorkerJobService.convertWorkerPipelinesToRecord;

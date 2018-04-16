@@ -65,8 +65,8 @@ let init = (completeFunc, state) => {
      )
 };
 
-let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
-  state
+let execMainLoopJobs = (completeFunc) =>
+  MainStateTool.unsafeGetState()
   |> WorkerJobToolWorker.getMainLoopJobStream(
        MainStateTool.getStateData(),
        (
@@ -75,44 +75,31 @@ let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state)
        )
      )
   |> Most.drain
-  |> then_(
-       (_) => {
-         beforeExecRenderRenderWorkerJobsFunc(state);
-         let state = MainStateTool.unsafeGetState();
-         let {vMatrix, pMatrix, position}: RenderCameraType.renderCameraRecord =
-           OperateRenderMainService.unsafeGetCameraRecord(state);
-         let drawData = {
-           "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
-         };
-         [|
-           CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
-           GetCameraDataRenderWorkerJob.execJob(None),
-           RenderBasicRenderWorkerJob.execJob(None)
-         |]
-         |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
-         |> Most.drain
-         |> then_(() => completeFunc(MainStateTool.unsafeGetState()))
-       }
-     ) /* beforeExecRenderRenderWorkerJobsFunc(state)
-          |> Most.drain
-          |> then_(
-               (_) => {
-                 let state = MainStateTool.unsafeGetState();
-                 let {vMatrix, pMatrix, position}: RenderCameraType.renderCameraRecord =
-                   OperateRenderMainService.unsafeGetCameraRecord(state);
-                 let drawData = {
-                   "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
-                 };
-                 [|
-                   CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
-                   GetCameraDataRenderWorkerJob.execJob(None),
-                   RenderBasicRenderWorkerJob.execJob(None)
-                 |]
-                 |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
-                 |> Most.drain
-                 |> then_(() => completeFunc(MainStateTool.unsafeGetState()))
-               }
-             ) */;
+  |> then_(() => completeFunc(MainStateTool.unsafeGetState()));
+
+let render = (completeFunc) => {
+  let state = MainStateTool.unsafeGetState();
+  let drawData = {
+    "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
+  };
+  [|
+    CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
+    GetCameraDataRenderWorkerJob.execJob(None),
+    SendUniformShaderDataRenderWorkerJob.execJob(None),
+    RenderBasicRenderWorkerJob.execJob(None)
+  |]
+  |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
+  |> Most.drain
+  |> then_(() => completeFunc(MainStateTool.unsafeGetState()))
+};
+
+let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+  execMainLoopJobs(
+    (state) => {
+      beforeExecRenderRenderWorkerJobsFunc(state);
+      render(completeFunc)
+    }
+  );
 
 let initAndLoop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
   init((state) => loop(~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc, ()), state);
