@@ -23,7 +23,8 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "test operate custom job",
-        () =>
+        () =>{
+
           describe(
             "test operate main init job",
             () => {
@@ -235,6 +236,7 @@ let _ =
               )
             }
           )
+        }
       )
     }
   );
