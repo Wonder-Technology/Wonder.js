@@ -13,9 +13,10 @@ let execJob = (flags, stateData) =>
           ...transformRecord,
           copiedBuffer:
             Some(
-              CopyArrayBufferService.copyArrayBufferData(
+              CopyArrayBufferService.copyArrayBufferSpecificData(
                 buffer,
-                CopyTransformService.unsafeGetCopiedBuffer(transformRecord)
+                CopyTransformService.unsafeGetCopiedBuffer(transformRecord),
+                BufferTransformService.getTotalByteLength(index)
               )
             )
         });

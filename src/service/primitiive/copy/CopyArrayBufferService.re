@@ -10,6 +10,27 @@ let copyArrayBufferData = (sourceBuffer, targetBuffer) => {
   |> Worker.arrayBufferToSharedArrayBuffer
 };
 
+let copyArrayBufferSpecificData = (sourceBuffer, targetBuffer, totalByteLength) => {
+  let offset = 0;
+  let length = totalByteLength / 1;
+  let targetView =
+    Uint8Array.fromBufferRange(
+      targetBuffer |> Worker.sharedArrayBufferToArrayBuffer,
+      ~offset,
+      ~length
+    );
+  TypeArrayService.setUint8Array(
+    Uint8Array.fromBufferRange(
+      sourceBuffer |> Worker.sharedArrayBufferToArrayBuffer,
+      ~offset,
+      ~length
+    ),
+    targetView
+  )
+  |> Uint8Array.buffer
+  |> Worker.arrayBufferToSharedArrayBuffer
+};
+
 let copyArrayBuffer = (buffer, totalByteLength) =>
   buffer
   |> Worker.sharedArrayBufferToArrayBuffer
