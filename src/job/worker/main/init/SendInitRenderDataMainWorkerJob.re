@@ -40,7 +40,6 @@ let _buildData = (operateType, canvas, stateData) => {
         |> Obj.magic
         |> Js.Json.stringify
     },
-    /* TODO fix and test! */
     "transformData": {"buffer": transformRecord |> CopyTransformService.unsafeGetCopiedBuffer},
     "basicMaterialData": {
       "buffer": basicMaterialRecord.buffer,

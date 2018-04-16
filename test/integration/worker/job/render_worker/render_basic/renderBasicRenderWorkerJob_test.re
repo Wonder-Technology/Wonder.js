@@ -17,7 +17,12 @@ let _ =
           state :=
             TestToolMainWorker.initWithJobConfig(
               ~sandbox,
-              ~buffer=SettingTool.buildBufferConfigStr(~transformDataBufferCount=5,~basicMaterialDataBufferCount=5, ()),
+              ~buffer=
+                SettingTool.buildBufferConfigStr(
+                  ~transformDataBufferCount=5,
+                  ~basicMaterialDataBufferCount=5,
+                  ()
+                ),
               ()
             )
         }
@@ -38,8 +43,10 @@ let _ =
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
               RenderJobsRenderWorkerTool.initAndLoop(
-                (state) => useProgram |> expect |> toCalledWith([|program|]) |> resolve,
-                state
+                ~completeFunc=
+                  (state) => useProgram |> expect |> toCalledWith([|program|]) |> resolve,
+                ~state,
+                ()
               )
             }
           )
@@ -80,36 +87,38 @@ let _ =
                        );
                   let state = MainStateTool.setState(state);
                   RenderJobsRenderWorkerTool.initAndLoop(
-                    (state) =>
-                      uniformMatrix4fv
-                      |> withOneArg(pos)
-                      |> expect
-                      |> toCalledWith([|
-                           pos,
-                           Obj.magic(Js.false_),
-                           Obj.magic(
-                             Js.Typed_array.Float32Array.make([|
-                               1.,
-                               0.,
-                               0.,
-                               0.,
-                               0.,
-                               1.,
-                               0.,
-                               0.,
-                               0.,
-                               0.,
-                               1.,
-                               0.,
-                               1.,
-                               2.,
-                               3.,
-                               1.
-                             |])
-                           )
-                         |])
-                      |> resolve,
-                    state
+                    ~completeFunc=
+                      (state) =>
+                        uniformMatrix4fv
+                        |> withOneArg(pos)
+                        |> expect
+                        |> toCalledWith([|
+                             pos,
+                             Obj.magic(Js.false_),
+                             Obj.magic(
+                               Js.Typed_array.Float32Array.make([|
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 1.,
+                                 2.,
+                                 3.,
+                                 1.
+                               |])
+                             )
+                           |])
+                        |> resolve,
+                    ~state,
+                    ()
                   )
                 }
               );
@@ -149,20 +158,22 @@ let _ =
                            );
                       let state = MainStateTool.setState(state);
                       RenderJobsRenderWorkerTool.initAndLoop(
-                        (state) =>
-                          uniformMatrix4fv
-                          |> withOneArg(pos)
-                          |> getCall(1)
-                          |> expect
-                          |> toCalledWith([|
-                               pos,
-                               Obj.magic(Js.false_),
-                               Obj.magic(
-                                 TransformTool.getDefaultLocalToWorldMatrixTypeArray(state)
-                               )
-                             |])
-                          |> resolve,
-                        state
+                        ~completeFunc=
+                          (state) =>
+                            uniformMatrix4fv
+                            |> withOneArg(pos)
+                            |> getCall(1)
+                            |> expect
+                            |> toCalledWith([|
+                                 pos,
+                                 Obj.magic(Js.false_),
+                                 Obj.magic(
+                                   TransformTool.getDefaultLocalToWorldMatrixTypeArray(state)
+                                 )
+                               |])
+                            |> resolve,
+                        ~state,
+                        ()
                       )
                     }
                   )
