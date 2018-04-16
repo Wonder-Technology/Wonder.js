@@ -44,7 +44,7 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
-                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let state = state |> RenderJobsTool.init;
                   let state = state |> DirectorTool.runWithDefaultTime;
                   let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                   let (state, gameObject2, _, material2, _) =
@@ -81,7 +81,7 @@ let _ =
                          ()
                        )
                      );
-                let state = state |> RenderJobsTool.initSystemAndRender;
+                let state = state |> RenderJobsTool.init;
                 (state, bindBuffer, element_array_buffer)
               };
               test(

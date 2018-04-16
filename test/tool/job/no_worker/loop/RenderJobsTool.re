@@ -48,7 +48,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer)
 };
 
-let initSystemAndRender = (state: StateDataMainType.state) =>
+let init = (state: StateDataMainType.state) =>
   state |> PregetGLSLDataTool.preparePrecision |> DirectorTool.init;
 
 let passGl = (sandbox, state: StateDataMainType.state) =>
@@ -84,7 +84,7 @@ let testSendShaderUniformDataOnlyOnce =
               let pos = 0;
               let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
               let state = setFakeGlFunc(uniformDataStub, getUniformLocation, state);
-              let state = state |> initSystemAndRender |> DirectorTool.runWithDefaultTime;
+              let state = state |> init |> DirectorTool.runWithDefaultTime;
               uniformDataStub |> withOneArg(pos) |> getCallCount |> expect == 1
             }
           )

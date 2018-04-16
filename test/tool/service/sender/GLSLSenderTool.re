@@ -77,7 +77,7 @@ module JudgeSendUniformData = {
                          );
                     let state =
                       state
-                      |> RenderJobsTool.initSystemAndRender
+                      |> RenderJobsTool.init
                       |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
@@ -144,7 +144,7 @@ module JudgeSendUniformData = {
                          );
                     let state =
                       state
-                      |> RenderJobsTool.initSystemAndRender
+                      |> RenderJobsTool.init
                       |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
@@ -206,7 +206,7 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
@@ -279,7 +279,7 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
@@ -363,7 +363,7 @@ module JudgeSendUniformData = {
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform1f, ~getUniformLocation, ())
                        );
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform1f)
                 };
                 beforeEach(

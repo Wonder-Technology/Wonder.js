@@ -45,7 +45,7 @@ let prepareForTestVertexAttribPointer = (sandbox, prepareFunc, state) => {
     |> FakeGlTool.setFakeGl(
          FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ~getAttribLocation, ())
        );
-  let state = state |> RenderJobsTool.initSystemAndRender;
+  let state = state |> RenderJobsTool.init;
   let state = state |> DirectorTool.runWithDefaultTime;
   (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer)
 };

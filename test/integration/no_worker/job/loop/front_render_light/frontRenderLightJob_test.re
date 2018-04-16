@@ -33,7 +33,7 @@ let _ =
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
               let state =
-                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               useProgram |> expect |> toCalledWith([|program|])
             }
           );
@@ -41,7 +41,7 @@ let _ =
             "if the program is already used, not use again",
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
-              let state = state |> RenderJobsTool.initSystemAndRender;
+              let state = state |> RenderJobsTool.init;
               let state = state |> DirectorTool.runWithDefaultTime;
               let state = state |> DirectorTool.runWithDefaultTime;
               useProgram |> getCallCount |> expect == 1
@@ -76,7 +76,7 @@ let _ =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 3
                 }
               );
@@ -103,7 +103,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let vertices = BoxGeometryAPI.getBoxGeometryVertices( state);
                       bufferData
@@ -136,7 +136,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       (
                         calledBefore(bindBuffer |> withTwoArgs(array_buffer, buffer), bufferData),
@@ -173,7 +173,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let normals = BoxGeometryAPI.getBoxGeometryNormals( state);
                       bufferData
@@ -206,7 +206,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let indices = BoxGeometryAPI.getBoxGeometryIndices( state);
                       bufferData
@@ -239,7 +239,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       (
                         calledBefore(
@@ -288,7 +288,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer |> getCallCount |> expect == 2 * 1
                     }
@@ -306,7 +306,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer |> getCallCount |> expect == 4 * 2
@@ -339,7 +339,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
@@ -376,7 +376,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
@@ -518,7 +518,7 @@ let _ =
                               );
                          let state =
                            state
-                           |> RenderJobsTool.initSystemAndRender
+                           |> RenderJobsTool.init
 
                            |> DirectorTool.runWithDefaultTime;
                          uniform3f
@@ -562,7 +562,7 @@ let _ =
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
-                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.init
                             |> DirectorTool.runWithDefaultTime;
                           uniform3f
                           |> expect
@@ -584,7 +584,7 @@ let _ =
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
-                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.init
                             |> DirectorTool.runWithDefaultTime;
                           uniform3f |> withOneArg(pos) |> getCallCount |> expect == 1
                         }
@@ -612,7 +612,7 @@ let _ =
                           let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
                           let state =
                             state
-                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.init
                             |> DirectorTool.runWithDefaultTime;
                           let stub = uniform3f |> withOneArg(pos);
                           (
@@ -714,7 +714,7 @@ let _ =
                                     );
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform3f
                                   |> expect
@@ -780,7 +780,7 @@ let _ =
                                     );
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   (
                                     uniform3f |> withOneArg(posArr[0]) |> getCall(0) |> getArgs,
@@ -814,7 +814,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_directionLights[0].color"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform3f
                                   |> expect
@@ -847,7 +847,7 @@ let _ =
                                     );
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -983,7 +983,7 @@ let _ =
                                     );
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   (
                                     uniform3f |> withOneArg(posArr[0]) |> getCall(0) |> getArgs,
@@ -1016,7 +1016,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].color"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform3f
                                   |> expect
@@ -1041,7 +1041,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].intensity"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -1066,7 +1066,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].constant"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -1091,7 +1091,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].linear"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -1116,7 +1116,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].quadratic"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -1141,7 +1141,7 @@ let _ =
                                     _setFakeGl(sandbox, [|"u_pointLights[0].range"|], state);
                                   let state =
                                     state
-                                    |> RenderJobsTool.initSystemAndRender
+                                    |> RenderJobsTool.init
                                     |> DirectorTool.runWithDefaultTime;
                                   uniform1f
                                   |> expect
@@ -1263,7 +1263,7 @@ let _ =
                          );
                     let state =
                       state
-                      |> RenderJobsTool.initSystemAndRender
+                      |> RenderJobsTool.init
                       |> DirectorTool.runWithDefaultTime;
                     uniformMatrix3fv |> expect |> toCalledTwice
                   }
@@ -1303,7 +1303,7 @@ let _ =
                              );
                         let state =
                           state
-                          |> RenderJobsTool.initSystemAndRender
+                          |> RenderJobsTool.init
                           |> DirectorTool.runWithDefaultTime;
                         let state = state |> DirectorTool.runWithDefaultTime;
                         uniformMatrix3fv |> expect |> toCalledTwice
@@ -1338,7 +1338,7 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~triangles, ~drawElements, ())
                        );
-                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let state = state |> RenderJobsTool.init;
                   let state = state |> DirectorTool.runWithDefaultTime;
                   drawElements
                   |> withFourArgs(

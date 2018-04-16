@@ -17,7 +17,7 @@ let testProgram = (sandbox, prepareFunc, state) => {
     "create program and use program only once",
     () => {
       let (state, program, createProgram, useProgram) = _prepareForUseProgram(sandbox, state^);
-      let state = state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
       createProgram |> getCallCount |> expect == 1
     }
   );
@@ -25,7 +25,7 @@ let testProgram = (sandbox, prepareFunc, state) => {
     "only use sourceInstance's gameObject's program",
     () => {
       let (state, program, createProgram, useProgram) = _prepareForUseProgram(sandbox, state^);
-      let state = state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
       useProgram |> expect |> toCalledWith([|program|])
     }
   )
@@ -56,7 +56,7 @@ let testAttachBufferToAttribute = (sandbox, (name, callIndex, size), prepareFunc
                      )
                    );
               let state =
-                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               vertexAttribPointer
               |> getCall(callIndex)
               |> expect
@@ -90,7 +90,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
                      FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
                    );
               let state =
-                state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           )
@@ -115,7 +115,7 @@ let testDrawElementsInstancedANGLE = (sandbox, prepareFunc, getIndicesCountFunc,
               let triangles = 1;
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~triangles, ()));
-              let state = state |> RenderJobsTool.initSystemAndRender;
+              let state = state |> RenderJobsTool.init;
               let state = state |> DirectorTool.runWithDefaultTime;
               drawElementsInstancedANGLE
               |> expect

@@ -91,7 +91,7 @@ let _ =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 4
                 }
               );
@@ -105,7 +105,7 @@ let _ =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   let state = state |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 4
                 }
@@ -169,7 +169,7 @@ let _ =
                                );
                           let state =
                             state
-                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.init
                             |> DirectorTool.runWithDefaultTime;
                           deleteBuffer |> expect |> toCalledWith([|buffer1|])
                         }
@@ -193,7 +193,7 @@ let _ =
                                );
                           let state =
                             state
-                            |> RenderJobsTool.initSystemAndRender
+                            |> RenderJobsTool.init
                             |> DirectorTool.runWithDefaultTime;
                           bindBuffer
                           |> withTwoArgs(Sinon.matchAny, buffer1)
@@ -218,7 +218,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       createBuffer |> getCallCount |> expect == 5
                     }
@@ -244,7 +244,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       bufferData
                       |> withThreeArgs(array_buffer, 12800, dynamic_draw)
@@ -298,7 +298,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let data = Js.Typed_array.Float32Array.fromLength(64 * (16 + 9));
                       let transformArr = [|sourceTransform, objectTransform|];
@@ -431,7 +431,7 @@ let _ =
                                ()
                              )
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       (
                         enableVertexAttribArray |> withOneArg(pos1) |> getCallCount,
@@ -463,7 +463,7 @@ let _ =
                                  ()
                                )
                              );
-                        let state = state |> RenderJobsTool.initSystemAndRender;
+                        let state = state |> RenderJobsTool.init;
                         let state = state |> DirectorTool.runWithDefaultTime;
                         (float, positionTuple, vertexAttribPointer)
                       };
@@ -591,7 +591,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ())
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       (
                         vertexAttribDivisorANGLE |> withTwoArgs(pos1, 1) |> getCallCount,
@@ -638,7 +638,7 @@ let _ =
                           |> FakeGlTool.setFakeGl(
                                FakeGlTool.buildFakeGl(~sandbox, ~bufferSubData, ())
                              );
-                        let state = state |> RenderJobsTool.initSystemAndRender;
+                        let state = state |> RenderJobsTool.init;
                         (state, sourceInstance, bufferSubData)
                       };
                       describe(

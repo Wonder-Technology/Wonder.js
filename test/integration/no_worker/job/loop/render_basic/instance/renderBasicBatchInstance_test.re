@@ -78,7 +78,7 @@ let _ =
                          )
                        );
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
                 }
               )

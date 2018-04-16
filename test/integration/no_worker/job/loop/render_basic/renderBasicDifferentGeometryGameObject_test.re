@@ -72,7 +72,7 @@ let _ =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 4
                 }
               );
@@ -100,7 +100,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
                       (
@@ -127,7 +127,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       bindBuffer |> withOneArg(array_buffer) |> getCallCount |> expect == 3 * 2
                     }
@@ -158,7 +158,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
                       (
@@ -190,7 +190,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> RenderJobsTool.initSystemAndRender
+                        |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
                       bindBuffer
                       |> withOneArg(element_array_buffer)
@@ -238,7 +238,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
+                      let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer |> getCallCount |> expect == 1 * 1
                     }
@@ -257,7 +257,7 @@ let _ =
                             |> FakeGlTool.setFakeGl(
                                  FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                                );
-                          let state = state |> RenderJobsTool.initSystemAndRender;
+                          let state = state |> RenderJobsTool.init;
                           let state = state |> DirectorTool.runWithDefaultTime;
                           vertexAttribPointer |> getCallCount |> expect == 2 * 1
                         }
@@ -276,7 +276,7 @@ let _ =
                             |> FakeGlTool.setFakeGl(
                                  FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                                );
-                          let state = state |> RenderJobsTool.initSystemAndRender;
+                          let state = state |> RenderJobsTool.init;
                           let state = state |> DirectorTool.runWithDefaultTime;
                           vertexAttribPointer |> getCallCount |> expect == 2 * 1
                         }
@@ -294,7 +294,7 @@ let _ =
                             |> FakeGlTool.setFakeGl(
                                  FakeGlTool.buildFakeGl(~sandbox, ~float, ~vertexAttribPointer, ())
                                );
-                          let state = state |> RenderJobsTool.initSystemAndRender;
+                          let state = state |> RenderJobsTool.init;
                           let state = state |> DirectorTool.runWithDefaultTime;
                           vertexAttribPointer |> getCallCount |> expect == 3 * 1
                         }

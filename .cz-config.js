@@ -39,6 +39,7 @@ module.exports = {
   scopeOverrides: {
     refactor: [
       { name: "duplication" },
+      { name: "rename" },
       { name: "dead-code" },
       { name: "type" },
       { name: "shader" },

@@ -97,7 +97,7 @@ let _ =
                     _prepare(state);
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject2);
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   RenderTool.getCameraRecord(state)
                   |>
                   expect == Some({
@@ -126,7 +126,7 @@ let _ =
                     _prepare(state);
                   let state = state |> SceneAPI.setCurrentCameraGameObject(gameObject3);
                   let state =
-                    state |> RenderJobsTool.initSystemAndRender |> DirectorTool.runWithDefaultTime;
+                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   RenderTool.getCameraRecord(state)
                   |>
                   expect == Some({
