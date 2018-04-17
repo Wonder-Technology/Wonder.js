@@ -13,7 +13,7 @@ let getMainInitJobStream =
 
 let getMainLoopJobStream =
     (stateData, (createJobHandleMapFunc, getJobHandleFunc), state: StateDataMainType.state) =>
-  OperateMainLoopWorkerJobService.getMainLoopJobStream(
+  OperateMainLoopWorkerJobMainService.getMainLoopJobStream(
     createJobHandleMapFunc(),
     stateData,
     getJobHandleFunc,

@@ -1,53 +1,8 @@
-/* TODO duplicate with OperateMainInitWorkerJobMainService */
 open StateDataMainType;
 
 open WorkerJobType;
 
 open JobType;
-
-let _getExecutableJob = (jobs, jobItemName) =>
-  JobConfigService.unsafeFindFirst(
-    jobs,
-    jobItemName,
-    ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, jobItemName)
-  );
-
-let rec _findAllCustomJobHandles = (subJobName, workerCustomMainLoopTargetJobMap, handleList) =>
-  switch (workerCustomMainLoopTargetJobMap |> WonderCommonlib.HashMapService.get(subJobName)) {
-  | None => handleList
-  | Some((customJobName, action, handleFunc)) =>
-    (
-      switch action {
-      | BEFORE => [handleFunc, ...handleList]
-      | AFTER => handleList @ [handleFunc]
-      }
-    )
-    |> _findAllCustomJobHandles(customJobName, workerCustomMainLoopTargetJobMap)
-  };
-
-let _buildCustomStreamArr = (customJobHandleList, stateData) =>
-  customJobHandleList
-  |> List.fold_left(
-       (streamArr, customHandle) =>
-         streamArr
-         |> ArrayService.push(
-              MostUtils.callFunc(
-                () => {
-                  customHandle(stateData);
-                  None
-                }
-              )
-            ),
-       [||]
-     );
-
-let _AddCustomJobHandleToStreamArr = (subJobName, state, stateData, streamArr) =>
-  switch (
-    _findAllCustomJobHandles(subJobName, state.jobRecord.workerCustomMainLoopTargetJobMap, [])
-  ) {
-  | list when list |> List.length === 0 => streamArr
-  | list => streamArr |> Js.Array.concat(_buildCustomStreamArr(list, stateData))
-  };
 
 let _buildStreamArr =
     (
@@ -82,11 +37,15 @@ let _buildStreamArr =
              )
            ) {
            | None =>
-             let {flags} = _getExecutableJob(jobs, subJobName);
+             let {flags} = OperateMainWorkerJobMainService.getExecutableJob(jobs, subJobName);
              let handleFunc = getJobHandleFunc(subJobName, jobHandleMap);
              streamArr
              |> ArrayService.push(handleFunc(flags, stateData))
-             |> _AddCustomJobHandleToStreamArr(subJobName, state, stateData)
+             |> OperateMainWorkerJobMainService.addCustomJobHandleToStreamArr(
+                  subJobName,
+                  state.jobRecord.workerCustomMainLoopTargetJobMap,
+                  stateData
+                )
            | Some(jobRecord) =>
              streamArr
              |> ArrayService.push(
@@ -96,7 +55,11 @@ let _buildStreamArr =
                     state
                   )
                 )
-             |> _AddCustomJobHandleToStreamArr(subJobName, state, stateData)
+             |> OperateMainWorkerJobMainService.addCustomJobHandleToStreamArr(
+                  subJobName,
+                  state.jobRecord.workerCustomMainLoopTargetJobMap,
+                  stateData
+                )
            }
        ),
        [||]
