@@ -2,7 +2,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "WorkerJobService",
+    "WorkerJobMainService",
     () => {
       open Expect;
       open Expect.Operators;
@@ -13,7 +13,6 @@ let _ =
       describe(
         "getRenderWorkerJobStreamArr",
         () => {
-          /* TODO use tool instead of service (all) */
           let _buildWorkerJobs = () =>
             {|
                  [
