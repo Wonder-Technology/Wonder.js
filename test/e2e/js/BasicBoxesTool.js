@@ -113,6 +113,16 @@ var BasicBoxesTool = (function () {
         },
 
 
+        setWorkerData: function (boxes, state) {
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = wd.unsafeGetState();
+
+                _setData(boxes, state);
+            }, state)
+        },
+
+
+
 
         setParent: function (boxes, state) {
             for (var i = 1, len = 10; i < len; i++) {

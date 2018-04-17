@@ -154,6 +154,14 @@ let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
+let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
+
+let addWorkerMainLoopJob = JobAPI.addWorkerMainLoopJob;
+
+let removeWorkerMainInitJob = JobAPI.removeWorkerMainInitJob;
+
+let addWorkerMainInitJob = JobAPI.addWorkerMainInitJob;
+
 let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
 let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
@@ -449,6 +457,14 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
+
+let addWorkerMainLoopJob = JobAPI.addWorkerMainLoopJob;
+
+let removeWorkerMainInitJob = JobAPI.removeWorkerMainInitJob;
+
+let addWorkerMainInitJob = JobAPI.addWorkerMainInitJob;
 
 let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
 
