@@ -89,7 +89,7 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
      (e) =>
        {
          _createAndSetWorkerState();
-         WorkerJobService.getRenderWorkerJobStreamArr(
+         WorkerJobMainService.getRenderWorkerJobStreamArr(
            e##data##pipelineJobs |> Js.Json.parseExn |> Obj.magic,
            e##data##jobs |> Js.Json.parseExn |> Obj.magic,
            (

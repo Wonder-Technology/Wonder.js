@@ -1,12 +1,12 @@
-let init = NoWorkerJobService.init;
+let init = NoWorkerJobMainService.init;
 
-let execInitJobs = NoWorkerJobService.execNoWorkerInitJobs;
+let execInitJobs = NoWorkerJobMainService.execNoWorkerInitJobs;
 
-let execLoopJobs = NoWorkerJobService.execNoWorkerLoopJobs;
+let execLoopJobs = NoWorkerJobMainService.execNoWorkerLoopJobs;
 
-let getNoWorkerInitJobList = NoWorkerJobService._getNoWorkerInitJobList;
+let getNoWorkerInitJobList = NoWorkerJobMainService._getNoWorkerInitJobList;
 
-let getNoWorkerLoopJobList = NoWorkerJobService._getNoWorkerLoopJobList;
+let getNoWorkerLoopJobList = NoWorkerJobMainService._getNoWorkerLoopJobList;
 
 let isJobExistInJobList = (targetName, jobList) =>
   jobList |> List.exists(((name, _)) => name === targetName);

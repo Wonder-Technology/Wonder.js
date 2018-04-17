@@ -377,4 +377,4 @@ let convertWorkerPipelinesToRecord = ParseWorkerJobService.convertWorkerPipeline
 
 let convertWorkerJobsToRecord = ParseWorkerJobService.convertWorkerJobsToRecord;
 
-let getRenderWorkerJobStreamArr = WorkerJobService.getRenderWorkerJobStreamArr;
+let getRenderWorkerJobStreamArr = WorkerJobMainService.getRenderWorkerJobStreamArr;

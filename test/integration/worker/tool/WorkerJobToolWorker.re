@@ -1,17 +1,17 @@
-let getMainInitJobStream = WorkerJobService.getMainInitJobStream;
+let getMainInitJobStream = WorkerJobMainService.getMainInitJobStream;
 
 
-let getMainLoopJobStream = WorkerJobService.getMainLoopJobStream;
+let getMainLoopJobStream = WorkerJobMainService.getMainLoopJobStream;
 
-let getRenderWorkerJobStreamArr = WorkerJobService.getRenderWorkerJobStreamArr;
-/* let init = WorkerJobService.init; */
-/* let execInitJobs = WorkerJobService.execWorkerInitJobs;
+let getRenderWorkerJobStreamArr = WorkerJobMainService.getRenderWorkerJobStreamArr;
+/* let init = WorkerJobMainService.init; */
+/* let execInitJobs = WorkerJobMainService.execWorkerInitJobs;
 
-   let execLoopJobs = WorkerJobService.execWorkerLoopJobs;
+   let execLoopJobs = WorkerJobMainService.execWorkerLoopJobs;
 
-   let getWorkerInitJobList = WorkerJobService._getWorkerInitJobList;
+   let getWorkerInitJobList = WorkerJobMainService._getWorkerInitJobList;
 
-   let getWorkerLoopJobList = WorkerJobService._getWorkerLoopJobList;
+   let getWorkerLoopJobList = WorkerJobMainService._getWorkerLoopJobList;
 
    let isJobExistInJobList = (targetName, jobList) =>
      jobList |> List.exists(((name, _)) => name === targetName); */
