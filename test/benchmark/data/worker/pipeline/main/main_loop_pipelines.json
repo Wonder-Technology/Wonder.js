@@ -7,6 +7,9 @@
                 "link": "concat",
                 "jobs": [
                     {
+                        "name": "send_render_data"
+                    },
+                    {
                         "name": "tick"
                     },
                     {
@@ -22,12 +25,27 @@
                         "name": "create_basic_render_object_buffer"
                     },
                     {
-                        "name": "send_render_data"
+                        "name": "copy_arraybuffer"
                     }
                 ]
             },
             {
-                "name": "frame",
+                "name": "copy_arraybuffer",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "copy_transform"
+                    }
+                ]
+            },
+            {
+                "name": "sync",
+                "link": "concat",
+                "jobs": [
+                ]
+            },
+            {
+                "name": "begin_loop",
                 "link": "merge",
                 "jobs": [
                     {
@@ -35,6 +53,18 @@
                     },
                     {
                         "name": "get_finish_render_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "begin_loop"
+                    },
+                    {
+                        "name": "sync"
                     }
                 ]
             }

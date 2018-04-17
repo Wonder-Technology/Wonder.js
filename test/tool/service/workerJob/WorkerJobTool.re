@@ -167,11 +167,29 @@ let buildMainLoopPipelinesConfigWithoutMessage = () => {|
                 ]
             },
             {
-                "name": "frame",
+                "name": "sync",
+                "link": "concat",
+                "jobs": [
+                ]
+            },
+            {
+                "name": "begin_loop",
                 "link": "merge",
                 "jobs": [
                     {
                         "name": "loop"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "begin_loop"
+                    },
+                    {
+                        "name": "sync"
                     }
                 ]
             }
