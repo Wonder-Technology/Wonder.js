@@ -49,9 +49,6 @@ let _disposeData =
     }
   );
 
-let handleDisposeComponent = (light, record) =>
-  DisposeLightService.handleDisposeComponent(light, (isAlive, _disposeData), record);
-
 let handleBatchDisposeComponent =
   [@bs]
   (

@@ -49,7 +49,7 @@ let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.
 let dispose = (material, state: StateDataMainType.state) => {
   ...state,
   basicMaterialRecord:
-    Some(DisposeBasicMaterialService.handleDisposeComponent(material, getRecord(state)))
+    Some(DisposeBasicMaterialTool.handleDisposeComponent(material, getRecord(state)))
 };
 
 let initMaterial = (materialIndex, state) =>

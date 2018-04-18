@@ -2,6 +2,160 @@ open StateDataMainType;
 
 open ComponentType;
 
+let disposeBasicCameraViewComponent =
+  [@bs]
+  (
+    (component: component, {basicCameraViewRecord} as state) => {
+      ...state,
+      basicCameraViewRecord:
+        DisposeBasicCameraViewTool.handleDisposeComponent(component, basicCameraViewRecord)
+    }
+  );
+
+let disposePerspectiveCameraProjectionComponent =
+  [@bs]
+  (
+    (component: component, {perspectiveCameraProjectionRecord} as state) => {
+      ...state,
+      perspectiveCameraProjectionRecord:
+        DisposePerspectiveCameraProjectionTool.handleDisposeComponent(
+          component,
+          perspectiveCameraProjectionRecord
+        )
+    }
+  );
+
+let disposeMeshRendererComponent =
+  [@bs]
+  (
+    (uid: int, component: component, {meshRendererRecord} as state) => {
+      ...state,
+      meshRendererRecord:
+        DisposeMeshRendererTool.handleDisposeComponent(component, uid, meshRendererRecord)
+    }
+  );
+
+let disposeTransformComponent =
+  [@bs]
+  (
+    (component: component, isKeepOrder, {settingRecord} as state) =>
+      DisposeTransformTool.handleDisposeComponent(
+        component,
+        MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
+        isKeepOrder,
+        state
+      )
+  );
+
+let disposeBoxGeometryComponent =
+  [@bs]
+  (
+    (component: component, {settingRecord, gameObjectRecord} as state) =>
+      DisposeBoxGeometryTool.handleDisposeComponent(component, state)
+  );
+
+let disposeCustomGeometryComponent =
+  [@bs]
+  (
+    (component: component, {settingRecord, gameObjectRecord} as state) =>
+      /* TODO refactor: move to handleDisposeComponent */
+      /* CurrentComponentDataMapRenderTool.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
+         |> ignore; */
+      DisposeCustomGeometryTool.handleDisposeComponent(component, state)
+  );
+
+let disposePerspectiveCameraProjectionComponent =
+  [@bs]
+  (
+    (component: component, {perspectiveCameraProjectionRecord} as state) => {
+      ...state,
+      perspectiveCameraProjectionRecord:
+        DisposePerspectiveCameraProjectionTool.handleDisposeComponent(
+          component,
+          perspectiveCameraProjectionRecord
+        )
+    }
+  );
+
+let disposeBasicMaterialComponent =
+  [@bs]
+  (
+    (component: component, state) => {
+      ...state,
+      basicMaterialRecord:
+        Some(
+          DisposeBasicMaterialTool.handleDisposeComponent(
+            component,
+            RecordBasicMaterialMainService.getRecord(state)
+          )
+        )
+    }
+  );
+
+let disposeLightMaterialComponent =
+  [@bs]
+  (
+    (component: component, state) => {
+      ...state,
+      lightMaterialRecord:
+        Some(
+          DisposeLightMaterialTool.handleDisposeComponent(
+            component,
+            RecordLightMaterialMainService.getRecord(state)
+          )
+        )
+    }
+  );
+
+let disposeAmbientLightComponent =
+  [@bs]
+  (
+    (component: component, {ambientLightRecord} as state) => {
+      ...state,
+      ambientLightRecord:
+        DisposeAmbientLightTool.handleDisposeComponent(component, ambientLightRecord)
+    }
+  );
+
+let disposeDirectionLightComponent =
+  [@bs]
+  (
+    (component: component, {directionLightRecord} as state) => {
+      ...state,
+      directionLightRecord:
+        DisposeDirectionLightTool.handleDisposeComponent(component, directionLightRecord)
+    }
+  );
+
+let disposePointLightComponent =
+  [@bs]
+  (
+    (component: component, {pointLightRecord} as state) => {
+      ...state,
+      pointLightRecord: DisposePointLightTool.handleDisposeComponent(component, pointLightRecord)
+    }
+  );
+
+let disposeSourceInstanceComponent = (component: component, batchDisposeGameObjectFunc, state) =>
+  [@bs]
+  DisposeSourceInstanceTool.handleDisposeComponent(component, batchDisposeGameObjectFunc, state);
+
+/* let disposeObjectInstanceComponent =
+   [@bs]
+   (
+     (uid: int, component: component, {objectInstanceRecord} as state) => {
+       ...state,
+       objectInstanceRecord:
+         DisposeObjectInstanceTool.handleDisposeComponent(component, objectInstanceRecord)
+     }
+   ); */
+let disposeObjectInstanceComponent =
+  [@bs]
+  (
+    (component: component, state) =>
+      DisposeObjectInstanceTool.handleDisposeComponent(component, state)
+  );
+
 let deferDisposeBasicCameraViewComponent =
   [@bs]
   (
@@ -310,21 +464,6 @@ let batchDisposeSourceInstanceComponent =
     state
   );
 
-/* let batchDisposeObjectInstanceComponent =
-     (uidMap, {objectInstanceRecord} as state, componentArray: array(component)) =>
-   switch (componentArray |> Js.Array.length) {
-   | 0 => state
-   | _ => {
-       ...state,
-       objectInstanceRecord:
-         ComponentMapService.batchDisposeComponent(
-           uidMap,
-           objectInstanceRecord,
-           DisposeObjectInstanceMainService.handleBatchDisposeComponent,
-           componentArray
-         )
-     }
-   }; */
 let batchDisposeObjectInstanceComponent =
     (state: StateDataMainType.state, componentArray: array(component)) =>
   switch (componentArray |> Js.Array.length) {

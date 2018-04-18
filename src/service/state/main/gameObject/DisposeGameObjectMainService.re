@@ -41,7 +41,6 @@ let deferBatchDisposeKeepOrder = (uidArray: array(int), state) => {
   }
 };
 
-/* TODO test */
 let clearDeferDisposeData = (state) => {
   ...state,
   gameObjectRecord: {
@@ -65,16 +64,6 @@ let clearDeferDisposeData = (state) => {
   }
 };
 
-let _dispose = (uid: int, disposeFunc, state) => {
-  let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
-  record.disposeCount = succ(disposeCount);
-  disposedUidMap |> WonderCommonlib.SparseMapService.set(uid, true) |> ignore;
-  disposeFunc(uid, batchDispose, state) |> _handleByDisposeCount(record)
-};
-
-let dispose = (uid: int, state) =>
-  _dispose(uid, DisposeGameObjectComponentMainService.dispose, state);
-
 let deferDispose = (uid: int, state) => {
   ...state,
   gameObjectRecord: {
@@ -82,9 +71,6 @@ let deferDispose = (uid: int, state) => {
     disposedUidArray: state.gameObjectRecord.disposedUidArray |> ArrayService.push(uid)
   }
 };
-
-let disposeKeepOrder = (uid: int, state) =>
-  _dispose(uid, DisposeGameObjectComponentMainService.disposeKeepOrder, state);
 
 let deferDisposeKeepOrder = (uid: int, state) => {
   ...state,
