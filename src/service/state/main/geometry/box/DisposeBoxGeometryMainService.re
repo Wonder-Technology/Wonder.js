@@ -63,7 +63,6 @@ let handleBatchDisposeComponent =
   (
     (
       geometryArray: array(geometry),
-      isGameObjectDisposedMap: array(bool),
       {vboBufferRecord} as state
     ) => {
       WonderLog.Contract.requireCheck(

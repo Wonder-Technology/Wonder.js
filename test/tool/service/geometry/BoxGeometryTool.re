@@ -36,7 +36,7 @@ let dispose = (geometry, state: StateDataMainType.state) =>
 
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
-  let state = state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+  let state = state |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
   TestTool.openContractCheck();
   state
 };

@@ -107,7 +107,7 @@ let _ =
                         |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject3, geometry1);
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
                              gameObject1,
                              geometry1
                            );
@@ -128,7 +128,7 @@ let _ =
                     /*let state = state |> BoxGeometryTool.initGeometrys;*/
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
                            gameObject1,
                            geometry1
                          );
@@ -189,7 +189,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   geometry2 |> expect == geometry1
                 }
@@ -206,7 +206,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   let (state, geometry3) = createBoxGeometry(state);
                   (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
@@ -229,12 +229,12 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   expect(
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
                              gameObject1,
                              geometry1
                            );
@@ -268,7 +268,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                     expect(() => getFunc(geometry, state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };
@@ -284,7 +284,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
                     expect(() => setFunc(geometry, Obj.magic(0), state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };

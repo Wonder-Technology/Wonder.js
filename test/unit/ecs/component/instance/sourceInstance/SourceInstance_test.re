@@ -78,7 +78,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject,
                          sourceInstance
                        );
@@ -113,7 +113,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject,
                          sourceInstance
                        );
@@ -155,7 +155,7 @@ let _ =
                             );
                           let state =
                             state
-                            |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                            |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                                  gameObject,
                                  sourceInstance
                                );
@@ -183,7 +183,7 @@ let _ =
                           let objectInstance1 = objectInstanceArr[0];
                           let objectInstance2 = objectInstanceArr[1];
                           state
-                          |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                          |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                                gameObject,
                                sourceInstance
                              );
@@ -210,7 +210,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -227,7 +227,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -252,7 +252,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
@@ -260,7 +260,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                        |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                              gameObject1,
                              sourceInstance1
                            );

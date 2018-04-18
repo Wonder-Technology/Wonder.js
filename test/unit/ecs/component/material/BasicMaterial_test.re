@@ -141,7 +141,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                        |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
                              gameObject1,
                              material1
                            );
@@ -160,7 +160,7 @@ let _ =
                         BasicMaterialTool.createGameObject(state^);
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                        |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
                              gameObject1,
                              material1
                            );
@@ -185,7 +185,7 @@ let _ =
                           valueTuple,
                           defaultValue,
                           (
-                            GameObjectAPI.disposeGameObjectBasicMaterialComponent,
+                            GameObjectTool.disposeGameObjectBasicMaterialComponent,
                             createGameObjectFunc,
                             getValueFunc,
                             setValueFunc
@@ -247,7 +247,7 @@ let _ =
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                    |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
                          gameObject1,
                          material1
                        );
@@ -263,7 +263,7 @@ let _ =
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                    |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
                          gameObject1,
                          material1
                        );
@@ -278,7 +278,7 @@ let _ =
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                    |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
                          gameObject1,
                          material1
                        );
@@ -305,7 +305,7 @@ let _ =
                 let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
                 let state =
                   state
-                  |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(gameObject, material);
+                  |> GameObjectTool.disposeGameObjectBasicMaterialComponent(gameObject, material);
                 expect(() => getFunc(material, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };

@@ -1045,7 +1045,7 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectTransformComponent(
+                    |> GameObjectTool.disposeGameObjectTransformComponent(
                          gameObject1,
                          transform1,
                          false
@@ -1112,7 +1112,7 @@ let _ =
                         let state = state |> TransformTool.setLocalToWorldMatrix(transform2, mat2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectTransformComponent(
+                          |> GameObjectTool.disposeGameObjectTransformComponent(
                                gameObject1,
                                transform1,
                                false
@@ -1154,7 +1154,7 @@ let _ =
                           state |> TransformAPI.setTransformLocalPosition(transform2, pos2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectTransformComponent(
+                          |> GameObjectTool.disposeGameObjectTransformComponent(
                                gameObject1,
                                transform1,
                                false
@@ -1261,7 +1261,7 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectTransformComponent(
+                    |> GameObjectTool.disposeGameObjectTransformComponent(
                          gameObject1,
                          transform1,
                          false
@@ -1270,7 +1270,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectTransformComponent(
+                        |> GameObjectTool.disposeGameObjectTransformComponent(
                              gameObject1,
                              transform1,
                              false

@@ -172,7 +172,7 @@ let _ =
                   let (state, gameObject1, material1) = LightMaterialTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                    |> GameObjectTool.disposeGameObjectLightMaterialComponent(
                          gameObject1,
                          material1
                        );
@@ -197,7 +197,7 @@ let _ =
                       valueTuple,
                       defaultValue,
                       (
-                        GameObjectAPI.disposeGameObjectLightMaterialComponent,
+                        GameObjectTool.disposeGameObjectLightMaterialComponent,
                         createGameObjectFunc,
                         getValueFunc,
                         setValueFunc
@@ -295,7 +295,7 @@ let _ =
                     |> GameObjectAPI.addGameObjectLightMaterialComponent(gameObject2, material1);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                    |> GameObjectTool.disposeGameObjectLightMaterialComponent(
                          gameObject1,
                          material1
                        );
@@ -319,7 +319,7 @@ let _ =
                 let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
                 let state =
                   state
-                  |> GameObjectAPI.disposeGameObjectLightMaterialComponent(gameObject, material);
+                  |> GameObjectTool.disposeGameObjectLightMaterialComponent(gameObject, material);
                 expect(() => getFunc(material, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };

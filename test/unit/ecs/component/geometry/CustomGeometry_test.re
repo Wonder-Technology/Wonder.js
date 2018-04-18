@@ -154,7 +154,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                              gameObject1,
                              geometry1
                            );
@@ -175,7 +175,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                            gameObject1,
                            geometry1
                          );
@@ -239,7 +239,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                              gameObject1,
                                              geometry1
                                            );
@@ -278,7 +278,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                              gameObject2,
                                              geometry2
                                            );
@@ -351,7 +351,7 @@ let _ =
                                     _prepare(state^);
                                   let state =
                                     state
-                                    |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                    |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                          gameObject1,
                                          geometry1
                                        );
@@ -394,13 +394,13 @@ let _ =
                                 _prepare(state^);
                               let state =
                                 state
-                                |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                      gameObject1,
                                      geometry1
                                    );
                               let state =
                                 state
-                                |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                      gameObject3,
                                      geometry3
                                    );
@@ -430,7 +430,7 @@ let _ =
                                 _prepare(state^);
                               let state =
                                 state
-                                |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                      gameObject1,
                                      geometry1
                                    );
@@ -482,7 +482,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                              gameObject2,
                                              geometry2
                                            );
@@ -492,7 +492,7 @@ let _ =
                                         state |> GameObjectAPI.initGameObject(gameObject4);
                                       let state =
                                         state
-                                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                                              gameObject4,
                                              geometry4
                                            );
@@ -545,7 +545,7 @@ let _ =
                     VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry1, state);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                    |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                          gameObject1,
                          geometry1
                        );
@@ -553,7 +553,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                              gameObject1,
                              geometry1
                            );
@@ -584,7 +584,7 @@ let _ =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry, state);
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                            gameObject,
                            geometry
                          );
@@ -600,7 +600,7 @@ let _ =
                       VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry, state);
                     let state =
                       state
-                      |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
                            gameObject,
                            geometry
                          );

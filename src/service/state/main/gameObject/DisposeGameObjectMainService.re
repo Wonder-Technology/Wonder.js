@@ -33,11 +33,27 @@ let deferBatchDispose = (uidArray: array(int), state) => {
   }
 };
 
+/* TODO test */
 let clearDeferDisposeData = (state) => {
   ...state,
   gameObjectRecord: {
     ...state.gameObjectRecord,
-    disposedUidArray: WonderCommonlib.ArrayService.createEmpty()
+    disposedUidArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedUidArrayForKeepOrder: WonderCommonlib.ArrayService.createEmpty(),
+    disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedPerspectiveCameraProjectionArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedBoxGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedCustomGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedAmbientLightArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedPointLightArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedMeshRendererComponentArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedMeshRendererUidArray: WonderCommonlib.ArrayService.createEmpty()
   }
 };
 

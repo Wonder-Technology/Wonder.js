@@ -49,7 +49,7 @@ let _ =
                     MeshRendererTool.createGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -69,7 +69,7 @@ let _ =
                         _prepareTwo(state^);
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -82,7 +82,7 @@ let _ =
                       let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -100,7 +100,7 @@ let _ =
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
               let state =
                 state
-                |> GameObjectAPI.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
+                |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
               state
               |> MeshRendererAPI.unsafeGetMeshRendererGameObject(meshRenderer2)
               |> expect == gameObject2
@@ -116,7 +116,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -131,7 +131,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                          gameObject2,
                          meshRenderer2
                        );
@@ -152,7 +152,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
@@ -160,7 +160,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                        |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                              gameObject1,
                              meshRenderer1
                            );
@@ -185,7 +185,7 @@ let _ =
                   let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                    |> GameObjectTool.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );

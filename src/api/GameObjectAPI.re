@@ -85,7 +85,7 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposePerspectiveCameraProjectionComponent(gameObject, component, state)
+  [@bs] deferDisposePerspectiveCameraProjectionComponent(component, state)
 };
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent =
@@ -121,7 +121,9 @@ let disposeGameObjectTransformComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeTransformComponent(gameObject, component, isKeepOrder, state)
+  isKeepOrder ?
+    [@bs] deferDisposeTransformComponentForKeepOrder(component, state) :
+    [@bs] deferDisposeTransformComponent(component, state)
 };
 
 let unsafeGetGameObjectTransformComponent =
@@ -164,7 +166,7 @@ let disposeGameObjectBoxGeometryComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeBoxGeometryComponent(gameObject, component, state)
+  [@bs] deferDisposeBoxGeometryComponent(component, state)
 };
 
 let hasGameObjectBoxGeometryComponent = (gameObject: gameObject, state: StateDataMainType.state) => {
@@ -190,7 +192,7 @@ let disposeGameObjectCustomGeometryComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeCustomGeometryComponent(gameObject, component, state)
+  [@bs] deferDisposeCustomGeometryComponent(component, state)
 };
 
 let hasGameObjectCustomGeometryComponent = (gameObject: gameObject, state: StateDataMainType.state) => {
@@ -216,7 +218,7 @@ let disposeGameObjectBasicMaterialComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeBasicMaterialComponent(gameObject, component, state)
+  [@bs] deferDisposeBasicMaterialComponent(component, state)
 };
 
 let unsafeGetGameObjectBasicMaterialComponent =
@@ -251,7 +253,7 @@ let disposeGameObjectLightMaterialComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeLightMaterialComponent(gameObject, component, state)
+  [@bs] deferDisposeLightMaterialComponent(component, state)
 };
 
 let unsafeGetGameObjectLightMaterialComponent =
@@ -286,7 +288,7 @@ let disposeGameObjectMeshRendererComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeMeshRendererComponent(gameObject, component, state)
+  [@bs] deferDisposeMeshRendererComponent(gameObject, component, state)
 };
 
 let unsafeGetGameObjectMeshRendererComponent =
@@ -321,7 +323,7 @@ let disposeGameObjectAmbientLightComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeAmbientLightComponent(gameObject, component, state)
+  [@bs] deferDisposeAmbientLightComponent(component, state)
 };
 
 let unsafeGetGameObjectAmbientLightComponent =
@@ -356,7 +358,7 @@ let disposeGameObjectDirectionLightComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeDirectionLightComponent(gameObject, component, state)
+  [@bs] deferDisposeDirectionLightComponent(component, state)
 };
 
 let unsafeGetGameObjectDirectionLightComponent =
@@ -391,7 +393,7 @@ let disposeGameObjectPointLightComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposePointLightComponent(gameObject, component, state)
+  [@bs] deferDisposePointLightComponent(component, state)
 };
 
 let unsafeGetGameObjectPointLightComponent =
@@ -443,12 +445,7 @@ let disposeGameObjectSourceInstanceComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  disposeSourceInstanceComponent(
-    gameObject,
-    component,
-    DisposeGameObjectMainService.batchDispose,
-    state
-  )
+  [@bs] deferDisposeSourceInstanceComponent(component, state)
 };
 
 let addGameObjectObjectInstanceComponent =
@@ -475,7 +472,7 @@ let disposeGameObjectObjectInstanceComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeObjectInstanceComponent(gameObject, component, state)
+  [@bs] deferDisposeObjectInstanceComponent(component, state)
 };
 
 let isGameObjectAlive = (gameObject: gameObject, state: StateDataMainType.state) =>

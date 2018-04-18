@@ -16,7 +16,7 @@ let _ =
         let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
         let (state, gameObject3, meshRenderer3) = MeshRendererTool.createGameObject(state);
         let state =
-          state |> GameObjectAPI.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
+          state |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
         (state, gameObject1, gameObject2, gameObject3, meshRenderer1, meshRenderer2, meshRenderer3)
       };
       let _prepareTransformMatrixData = (state) => {
@@ -33,7 +33,7 @@ let _ =
         let state = TransformAPI.setTransformLocalPosition(transform3, pos3, state);
         let state =
           state
-          |> GameObjectAPI.disposeGameObjectTransformComponent(gameObject3, transform3, false);
+          |> GameObjectTool.disposeGameObjectTransformComponent(gameObject3, transform3, false);
         (state, gameObject1, gameObject2, gameObject3, transform1, transform2, transform3)
       };
       let _prepareBasicCameraViewData = (state) => {
@@ -80,7 +80,7 @@ let _ =
         let state = state |> PerspectiveCameraProjectionTool.update;
         let state =
           state
-          |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+          |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                gameObject3,
                perspectiveCameraProjection3
              );

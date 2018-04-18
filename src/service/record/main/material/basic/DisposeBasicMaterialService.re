@@ -61,7 +61,6 @@ let handleBatchDisposeComponent =
   (
     (
       materialArray: array(material),
-      isGameObjectDisposedMap: array(bool),
       {disposedIndexArray} as record
     ) => {
       WonderLog.Contract.requireCheck(

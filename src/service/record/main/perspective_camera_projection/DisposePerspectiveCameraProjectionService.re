@@ -41,7 +41,6 @@ let handleBatchDisposeComponent =
   (
     (
       cameraProjectionArray: array(ComponentType.component),
-      isGameObjectDisposedMap: array(bool),
       {disposedIndexArray} as record
     ) => {
       WonderLog.Contract.requireCheck(

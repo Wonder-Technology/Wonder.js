@@ -70,7 +70,7 @@ let _ =
                   ) =
                     VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry1, state);
                   let state =
-                    state |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    state |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GameObjectAPI.initGameObject(gameObject2);
                   let (
@@ -122,7 +122,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );

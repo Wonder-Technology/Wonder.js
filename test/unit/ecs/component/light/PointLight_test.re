@@ -249,7 +249,7 @@ let _ =
                   open PointLightType;
                   let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                    state |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                   PointLightTool.isAlive(light1, state) |> expect == false
                 }
               );
@@ -259,7 +259,7 @@ let _ =
                   open PointLightType;
                   let (state, gameObject1, light1) = PointLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                    state |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                   let {gameObjectMap} = PointLightTool.getRecord(state);
                   gameObjectMap |> WonderCommonlib.SparseMapService.has(light1) |> expect == false
                 }
@@ -279,7 +279,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightColor(light2, color2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (color1, color2), (light1, light2))
                       };
                       test(
@@ -310,7 +310,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightIntensity(light2, intensity2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -349,7 +349,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightConstant(light2, constant2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -388,7 +388,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightLinear(light2, linear2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (linear1, linear2), (light1, light2))
                       };
                       test(
@@ -423,7 +423,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightQuadratic(light2, quadratic2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (
                           state,
                           (gameObject1, gameObject2),
@@ -463,7 +463,7 @@ let _ =
                         let state = state |> PointLightAPI.setPointLightRange(light2, range2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (range1, range2), (light1, light2))
                       };
                       test(
@@ -499,7 +499,7 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectPointLightComponent(gameObject, light);
                 let state =
-                  state |> GameObjectAPI.disposeGameObjectPointLightComponent(gameObject, light);
+                  state |> GameObjectTool.disposeGameObjectPointLightComponent(gameObject, light);
                 expect(() => getFunc(light, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };

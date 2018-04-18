@@ -112,7 +112,6 @@ let handleBatchDisposeComponent =
   (
     (
       sourceInstanceArray: array(sourceInstance),
-      gameSourceUidMap: array(bool),
       batchDisposeGameObjectFunc,
       {vboBufferRecord, sourceInstanceRecord} as state
     ) => {

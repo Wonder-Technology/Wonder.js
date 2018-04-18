@@ -121,7 +121,7 @@ let _ =
                   open AmbientLightType;
                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                    state |> GameObjectTool.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                   AmbientLightTool.isAlive(light1, state) |> expect == false
                 }
               );
@@ -131,7 +131,7 @@ let _ =
                   open AmbientLightType;
                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
                   let state =
-                    state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                    state |> GameObjectTool.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                   let {gameObjectMap} = AmbientLightTool.getRecord(state);
                   gameObjectMap |> WonderCommonlib.SparseMapService.has(light1) |> expect == false
                 }
@@ -153,7 +153,7 @@ let _ =
                         let state = state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
                         let state =
                           state
-                          |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject1, light1);
+                          |> GameObjectTool.disposeGameObjectAmbientLightComponent(gameObject1, light1);
                         (state, (gameObject1, gameObject2), (color1, color2), (light1, light2))
                       };
                       test(
@@ -223,13 +223,13 @@ let _ =
                           let state = state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
                           let state =
                             state
-                            |> GameObjectAPI.disposeGameObjectAmbientLightComponent(
+                            |> GameObjectTool.disposeGameObjectAmbientLightComponent(
                                  gameObject1,
                                  light1
                                );
                           let state =
                             state
-                            |> GameObjectAPI.disposeGameObjectAmbientLightComponent(
+                            |> GameObjectTool.disposeGameObjectAmbientLightComponent(
                                  gameObject3,
                                  light3
                                );
@@ -254,7 +254,7 @@ let _ =
                 let (state, gameObject) = state |> createGameObject;
                 let state = state |> addGameObjectAmbientLightComponent(gameObject, light);
                 let state =
-                  state |> GameObjectAPI.disposeGameObjectAmbientLightComponent(gameObject, light);
+                  state |> GameObjectTool.disposeGameObjectAmbientLightComponent(gameObject, light);
                 expect(() => getFunc(light, state))
                 |> toThrowMessage("expect component alive, but actual not")
               };

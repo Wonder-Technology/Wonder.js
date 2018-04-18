@@ -102,7 +102,6 @@ let handleBatchDisposeComponent =
   (
     (
       transformArray: array(int),
-      isGameObjectDisposedMap: array(bool),
       maxTypeArrayPoolSize: int,
       {settingRecord, transformRecord} as state: StateDataMainType.state
     ) => {

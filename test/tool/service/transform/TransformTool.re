@@ -99,7 +99,7 @@ let updateAndGetNormalMatrixTypeArray = (transform, state: StateDataMainType.sta
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();
-  let state = GameObjectAPI.disposeGameObjectTransformComponent(0, transform, false, state);
+  let state = GameObjectTool.disposeGameObjectTransformComponent(0, transform, false, state);
   TestTool.openContractCheck();
   state
 };

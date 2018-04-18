@@ -112,7 +112,6 @@ let handleBatchDisposeComponent =
   (
     (
       objectInstanceArray: array(objectInstance),
-      isGameObjectDisposedMap: array(bool),
       {objectInstanceRecord} as state
     ) => {
       WonderLog.Contract.requireCheck(

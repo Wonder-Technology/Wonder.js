@@ -105,7 +105,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -128,7 +128,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -148,7 +148,7 @@ let _ =
                     CameraTool.createCameraGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -181,7 +181,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -203,7 +203,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -233,7 +233,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                    |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                          gameObject1,
                          perspectiveCameraProjection1
                        );
@@ -241,7 +241,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                        |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                              gameObject1,
                              perspectiveCameraProjection1
                            );
@@ -267,7 +267,7 @@ let _ =
                   CameraTool.createCameraGameObject(state^);
                 let state =
                   state
-                  |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                  |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                        gameObject,
                        cameraProjection
                      );
@@ -279,7 +279,7 @@ let _ =
                   CameraTool.createCameraGameObject(state^);
                 let state =
                   state
-                  |> GameObjectAPI.disposeGameObjectPerspectiveCameraProjectionComponent(
+                  |> GameObjectTool.disposeGameObjectPerspectiveCameraProjectionComponent(
                        gameObject,
                        cameraProjection
                      );

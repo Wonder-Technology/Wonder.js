@@ -124,6 +124,6 @@ let handleDisposeComponent = (light, record) =>
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (lightArray, isGameObjectDisposedMap: array(bool), record) =>
+    (lightArray, record) =>
       DisposeLightService.handleBatchDisposeComponent(lightArray, (isAlive, _disposeData), record)
   );

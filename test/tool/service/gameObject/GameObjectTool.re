@@ -24,3 +24,61 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
 let disposeGameObjectBasicCameraViewComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
   [@bs] DisposeComponentGameObjectMainService.disposeBasicCameraViewComponent(component, state);
+
+let disposeGameObjectPerspectiveCameraProjectionComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs]
+  DisposeComponentGameObjectMainService.disposePerspectiveCameraProjectionComponent(
+    component,
+    state
+  );
+
+let disposeGameObjectTransformComponent =
+    (gameObject: gameObject, component: component, isKeepOrder, state: StateDataMainType.state) =>
+  [@bs]
+  DisposeComponentGameObjectMainService.disposeTransformComponent(component, isKeepOrder, state);
+
+let disposeGameObjectBoxGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeBoxGeometryComponent(component, state);
+
+let disposeGameObjectCustomGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeCustomGeometryComponent(component, state);
+
+let disposeGameObjectBasicMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeBasicMaterialComponent(component, state);
+
+let disposeGameObjectLightMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeLightMaterialComponent(component, state);
+
+let disposeGameObjectMeshRendererComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs]
+  DisposeComponentGameObjectMainService.disposeMeshRendererComponent(gameObject, component, state);
+
+let disposeGameObjectAmbientLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeAmbientLightComponent(component, state);
+
+let disposeGameObjectDirectionLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeDirectionLightComponent(component, state);
+
+let disposeGameObjectPointLightComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposePointLightComponent(component, state);
+
+let disposeGameObjectSourceInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  DisposeComponentGameObjectMainService.disposeSourceInstanceComponent(
+    component,
+    DisposeGameObjectMainService.batchDispose,
+    state
+  );
+
+let disposeGameObjectObjectInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
+  [@bs] DisposeComponentGameObjectMainService.disposeObjectInstanceComponent(component, state);

@@ -30,7 +30,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject,
                          objectInstance
                        );
@@ -52,7 +52,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject,
                          objectInstance
                        );
@@ -82,7 +82,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -105,7 +105,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -130,7 +130,7 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject1,
                          objectInstance1
                        );
@@ -138,7 +138,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                        |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                              gameObject1,
                              objectInstance1
                            );
