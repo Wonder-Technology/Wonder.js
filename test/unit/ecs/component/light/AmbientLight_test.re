@@ -55,7 +55,7 @@ let _ =
                       let (state, gameObject1, _) = AmbientLightTool.createGameObject(state^);
                       let (state, gameObject2, _) = AmbientLightTool.createGameObject(state);
                       let (state, gameObject3, _) = AmbientLightTool.createGameObject(state);
-                      let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                       expect(
                         () => {
                           let (state, light) = createAmbientLight(state);

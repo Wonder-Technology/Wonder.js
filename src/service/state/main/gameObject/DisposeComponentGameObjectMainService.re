@@ -12,10 +12,22 @@ open ComponentType;
 let disposeBasicCameraViewComponent =
   [@bs]
   (
-    (uid: int, component: component, {basicCameraViewRecord} as state) => {
+    (component: component, {basicCameraViewRecord} as state) => {
       ...state,
       basicCameraViewRecord:
         DisposeBasicCameraViewService.handleDisposeComponent(component, basicCameraViewRecord)
+    }
+  );
+
+let deferDisposeBasicCameraViewComponent =
+  [@bs]
+  (
+    (component: component, state) => {
+      ...state,
+      gameObjectRecord: {
+        ...state.gameObjectRecord,
+        disposedBasicCameraViewArray: state.gameObjectRecord.disposedBasicCameraViewArray |> ArrayService.push(component)
+      }
     }
   );
 
@@ -172,11 +184,10 @@ let disposeObjectInstanceComponent =
   );
 
 let batchDisposeBasicCameraViewComponent =
-    (uidMap, {basicCameraViewRecord} as state, componentArray: array(component)) => {
+    ({basicCameraViewRecord} as state, componentArray: array(component)) => {
   ...state,
   basicCameraViewRecord:
     ComponentMapService.batchDisposeComponent(
-      uidMap,
       basicCameraViewRecord,
       DisposeBasicCameraViewService.handleBatchDisposeComponent,
       componentArray
@@ -187,7 +198,7 @@ let batchDisposePerspectiveCameraProjectionComponent =
     (uidMap, {perspectiveCameraProjectionRecord} as state, componentArray: array(component)) => {
   ...state,
   perspectiveCameraProjectionRecord:
-    ComponentMapService.batchDisposeComponent(
+    ComponentMapService.batchDisposeComponentWithUidMap(
       uidMap,
       perspectiveCameraProjectionRecord,
       DisposePerspectiveCameraProjectionService.handleBatchDisposeComponent,
@@ -199,7 +210,7 @@ let batchDisposeMeshRendererComponent =
     (uidMap, {meshRendererRecord} as state, componentArray: array(component)) => {
   ...state,
   meshRendererRecord:
-    ComponentMapService.batchDisposeComponent(
+    ComponentMapService.batchDisposeComponentWithUidMap(
       uidMap,
       meshRendererRecord,
       DisposeMeshRendererService.handleBatchDisposeComponent,
@@ -230,7 +241,7 @@ let batchDisposeBasicMaterialComponent = (uidMap, state, componentArray: array(c
   ...state,
   basicMaterialRecord:
     Some(
-      ComponentMapService.batchDisposeComponent(
+      ComponentMapService.batchDisposeComponentWithUidMap(
         uidMap,
         RecordBasicMaterialMainService.getRecord(state),
         DisposeBasicMaterialService.handleBatchDisposeComponent,
@@ -243,7 +254,7 @@ let batchDisposeLightMaterialComponent = (uidMap, state, componentArray: array(c
   ...state,
   lightMaterialRecord:
     Some(
-      ComponentMapService.batchDisposeComponent(
+      ComponentMapService.batchDisposeComponentWithUidMap(
         uidMap,
         RecordLightMaterialMainService.getRecord(state),
         DisposeLightMaterialService.handleBatchDisposeComponent,
@@ -256,7 +267,7 @@ let batchDisposeAmbientLightComponent =
     (uidMap, {ambientLightRecord} as state, componentArray: array(component)) => {
   ...state,
   ambientLightRecord:
-    ComponentMapService.batchDisposeComponent(
+    ComponentMapService.batchDisposeComponentWithUidMap(
       uidMap,
       ambientLightRecord,
       DisposeAmbientLightService.handleBatchDisposeComponent,
@@ -268,7 +279,7 @@ let batchDisposeDirectionLightComponent =
     (uidMap, {directionLightRecord} as state, componentArray: array(component)) => {
   ...state,
   directionLightRecord:
-    ComponentMapService.batchDisposeComponent(
+    ComponentMapService.batchDisposeComponentWithUidMap(
       uidMap,
       directionLightRecord,
       DisposeDirectionLightService.handleBatchDisposeComponent,
@@ -280,7 +291,7 @@ let batchDisposePointLightComponent =
     (uidMap, {pointLightRecord} as state, componentArray: array(component)) => {
   ...state,
   pointLightRecord:
-    ComponentMapService.batchDisposeComponent(
+    ComponentMapService.batchDisposeComponentWithUidMap(
       uidMap,
       pointLightRecord,
       DisposePointLightService.handleBatchDisposeComponent,
@@ -310,7 +321,7 @@ let batchDisposeSourceInstanceComponent =
    | _ => {
        ...state,
        objectInstanceRecord:
-         ComponentMapService.batchDisposeComponent(
+         ComponentMapService.batchDisposeComponentWithUidMap(
            uidMap,
            objectInstanceRecord,
            DisposeObjectInstanceMainService.handleBatchDisposeComponent,

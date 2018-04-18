@@ -452,11 +452,11 @@ let _ =
                                 (indices1, indices2, indices3)
                               ) =
                                 _prepare(state^);
-                              let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                               let (state, gameObject4, geometry4) =
                                 CustomGeometryTool.createGameObject(state);
                               let state = state |> GameObjectAPI.initGameObject(gameObject4);
-                              let state = state |> GameObjectAPI.disposeGameObject(gameObject4);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject4);
                               let {aliveIndexArray} = state |> CustomGeometryTool.getRecord;
                               aliveIndexArray |> expect == [|geometry2, geometry3|]
                             }

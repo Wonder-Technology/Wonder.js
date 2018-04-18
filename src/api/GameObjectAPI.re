@@ -49,7 +49,7 @@ let disposeGameObjectBasicCameraViewComponent =
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  [@bs] disposeBasicCameraViewComponent(gameObject, component, state)
+  [@bs] deferDisposeBasicCameraViewComponent(component, state)
 };
 
 let unsafeGetGameObjectBasicCameraViewComponent =

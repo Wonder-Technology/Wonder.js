@@ -8,11 +8,17 @@ open BatchGetComponentGameObjectMainService;
 
 let _dispose = (uid, (getComponentFunc, disposeComponentFunc), {gameObjectRecord} as state) =>
   switch ([@bs] getComponentFunc(uid, gameObjectRecord)) {
+  | Some(component) => [@bs] disposeComponentFunc(component, state)
+  | None => state
+  };
+
+let _disposeWithUid = (uid, (getComponentFunc, disposeComponentFunc), {gameObjectRecord} as state) =>
+  switch ([@bs] getComponentFunc(uid, gameObjectRecord)) {
   | Some(component) => [@bs] disposeComponentFunc(uid, component, state)
   | None => state
   };
 
-let _disposeWithData =
+let _disposeWithUidAndData =
     (uid, data, (getComponentFunc, disposeComponentFunc), {gameObjectRecord} as state) =>
   switch ([@bs] getComponentFunc(uid, gameObjectRecord)) {
   | Some(component) => [@bs] disposeComponentFunc(uid, component, data, state)
@@ -47,7 +53,7 @@ let _disposeGameObjectGeometryComponent = (uid, {gameObjectRecord} as state) => 
 let _disposeGameObjectComponents =
     (uid, batchDisposeFunc, isKeepOrder, {gameObjectRecord} as state) =>
   state
-  |> _disposeWithData(
+  |> _disposeWithUidAndData(
        uid,
        isKeepOrder,
        (
@@ -63,49 +69,49 @@ let _disposeGameObjectComponents =
          DisposeComponentGameObjectMainService.disposeBasicCameraViewComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getPerspectiveCameraProjectionComponent,
          DisposeComponentGameObjectMainService.disposePerspectiveCameraProjectionComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getMeshRendererComponent,
          DisposeComponentGameObjectMainService.disposeMeshRendererComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getBasicMaterialComponent,
          DisposeComponentGameObjectMainService.disposeBasicMaterialComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getLightMaterialComponent,
          DisposeComponentGameObjectMainService.disposeLightMaterialComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getAmbientLightComponent,
          DisposeComponentGameObjectMainService.disposeAmbientLightComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getDirectionLightComponent,
          DisposeComponentGameObjectMainService.disposeDirectionLightComponent
        )
      )
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getPointLightComponent,
@@ -113,7 +119,7 @@ let _disposeGameObjectComponents =
        )
      )
   |> _disposeSourceInstanceComponent(uid, batchDisposeFunc)
-  |> _dispose(
+  |> _disposeWithUid(
        uid,
        (
          GetComponentGameObjectService.getObjectInstanceComponent,
@@ -153,10 +159,7 @@ let batchDispose =
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(
-         disposedUidMap,
-         state
-       );
+    |> DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(state);
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPerspectiveCameraProjectionComponent(

@@ -52,7 +52,7 @@ let _ =
         /* let state = state |> BasicCameraViewTool.update; */
         let state =
           state
-          |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(gameObject3, basicCameraView3);
+          |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(gameObject3, basicCameraView3);
         (
           state,
           gameObject1,

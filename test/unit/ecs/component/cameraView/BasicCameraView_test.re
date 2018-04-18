@@ -80,7 +80,7 @@ let _ =
                     CameraTool.createCameraGameObject(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(
+                    |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
                          gameObject1,
                          basicCameraView1
                        );
@@ -101,7 +101,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(
+                    |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
                          gameObject1,
                          basicCameraView1
                        );
@@ -117,7 +117,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(
+                    |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
                          gameObject1,
                          basicCameraView1
                        );
@@ -141,7 +141,7 @@ let _ =
                     _prepareTwo(state^);
                   let state =
                     state
-                    |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(
+                    |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
                          gameObject1,
                          basicCameraView1
                        );
@@ -149,7 +149,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectAPI.disposeGameObjectBasicCameraViewComponent(
+                        |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
                              gameObject1,
                              basicCameraView1
                            );

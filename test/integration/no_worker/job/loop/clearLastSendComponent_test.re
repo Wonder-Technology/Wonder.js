@@ -46,7 +46,7 @@ let _ =
                        );
                   let state = state |> RenderJobsTool.init;
                   let state = state |> DirectorTool.runWithDefaultTime;
-                  let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   let (state, gameObject2, _, material2, _) =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
                   let state = state |> GameObjectAPI.initGameObject(gameObject2);
@@ -91,7 +91,7 @@ let _ =
                   let (state, bindBuffer, element_array_buffer) =
                     _prepareForElementArrayBuffer(state);
                   let state = state |> DirectorTool.runWithDefaultTime;
-                  let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   let (state, gameObject2, geometry2, _, _) =
                     RenderBasicJobTool.prepareGameObject(sandbox, state);
                   let state = state |> GameObjectAPI.initGameObject(gameObject2);

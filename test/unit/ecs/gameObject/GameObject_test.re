@@ -469,7 +469,7 @@ let _ =
                 () => {
                   let (state, gameObject) = createGameObject(state^);
                   /* isGameObjectAlive(gameObject, state) */
-                  let state = state |> disposeGameObject(gameObject);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject);
                   state |> isGameObjectAlive(gameObject) |> expect == false
                 }
               );
@@ -481,9 +481,9 @@ let _ =
                   let (state, gameObject2) = createGameObject(state);
                   let (state, gameObject3) = createGameObject(state);
                   let (state, gameObject4) = createGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
-                  let state = state |> disposeGameObject(gameObject2);
-                  let state = state |> disposeGameObject(gameObject3);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject3);
                   (
                     isGameObjectAlive(gameObject1, state),
                     isGameObjectAlive(gameObject2, state),
@@ -514,7 +514,7 @@ let _ =
                     state
                     |> TransformAPI.setTransformLocalPosition(transform1, pos1)
                     |> TransformAPI.setTransformLocalPosition(transform2, pos2);
-                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   state |> TransformAPI.getTransformPosition(transform2) |> expect == pos2
                 }
               );
@@ -525,7 +525,7 @@ let _ =
                     MeshRendererTool.createGameObject(state^);
                   let (state, gameObject2, meshRenderer2) =
                     MeshRendererTool.createGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
                 }
               );
@@ -540,7 +540,7 @@ let _ =
                         BasicMaterialTool.createGameObject(state^);
                       let (state, gameObject2, material2) =
                         BasicMaterialTool.createGameObject(state);
-                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                       let {disposedIndexArray} = state |> BasicMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
@@ -557,7 +557,7 @@ let _ =
                         LightMaterialTool.createGameObject(state^);
                       let (state, gameObject2, material2) =
                         LightMaterialTool.createGameObject(state);
-                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                       let {disposedIndexArray} = state |> LightMaterialTool.getRecord;
                       (
                         disposedIndexArray |> Js.Array.includes(material1),
@@ -581,7 +581,7 @@ let _ =
                       let (state, gameObject2, geometry2) =
                         BoxGeometryTool.createGameObject(state);
                       /*let state = state |> BoxGeometryTool.initGeometrys;*/
-                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                       (
                         BoxGeometryTool.isGeometryDisposed(geometry1, state),
                         BoxGeometryTool.isGeometryDisposed(geometry2, state)
@@ -598,7 +598,7 @@ let _ =
                         CustomGeometryTool.createGameObject(state^);
                       let (state, gameObject2, geometry2) =
                         CustomGeometryTool.createGameObject(state);
-                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                       (
                         CustomGeometryTool.isGeometryDisposed(geometry1, state),
                         CustomGeometryTool.isGeometryDisposed(geometry2, state)
@@ -623,7 +623,7 @@ let _ =
                             AmbientLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
                             AmbientLightTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           (
                             AmbientLightTool.isAlive(light1, state),
                             AmbientLightTool.isAlive(light2, state)
@@ -642,8 +642,8 @@ let _ =
                             AmbientLightTool.createGameObject(state);
                           let (state, gameObject3, light3) =
                             AmbientLightTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject3);
-                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject3);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           (
                             AmbientLightTool.isAlive(light1, state),
                             AmbientLightTool.isAlive(light2, state),
@@ -665,9 +665,9 @@ let _ =
                             AmbientLightTool.createGameObject(state);
                           let (state, gameObject4, light4) =
                             AmbientLightTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
-                          let state = state |> disposeGameObject(gameObject3);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject3);
                           (
                             AmbientLightTool.isAlive(light1, state),
                             AmbientLightTool.isAlive(light2, state),
@@ -691,7 +691,7 @@ let _ =
                             DirectionLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
                             DirectionLightTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           (
                             DirectionLightTool.isAlive(light1, state),
                             DirectionLightTool.isAlive(light2, state)
@@ -712,7 +712,7 @@ let _ =
                             PointLightTool.createGameObject(state^);
                           let (state, gameObject2, light2) =
                             PointLightTool.createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           (
                             PointLightTool.isAlive(light1, state),
                             PointLightTool.isAlive(light2, state)
@@ -731,7 +731,7 @@ let _ =
                     CameraTool.createCameraGameObject(state^);
                   let (state, gameObject2, _, (basicCameraView2, _)) =
                     CameraTool.createCameraGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   let {disposedIndexArray} = state.basicCameraViewRecord;
                   (
                     disposedIndexArray |> Js.Array.includes(basicCameraView1),
@@ -748,7 +748,7 @@ let _ =
                     CameraTool.createCameraGameObject(state^);
                   let (state, gameObject2, _, (_, perspectiveCameraProjection2)) =
                     CameraTool.createCameraGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                   let {disposedIndexArray} = state.perspectiveCameraProjectionRecord;
                   (
                     disposedIndexArray |> Js.Array.includes(perspectiveCameraProjection1),
@@ -768,7 +768,7 @@ let _ =
                     |> VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
                          sourceInstance
                        );
-                  let state = state |> disposeGameObject(gameObject);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject);
                   let {disposedIndexArray} = state |> SourceInstanceTool.getSourceInstanceRecord;
                   disposedIndexArray |> expect == [|sourceInstance|]
                 }
@@ -779,7 +779,7 @@ let _ =
                   open ObjectInstanceType;
                   let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
                     ObjectInstanceTool.createObjectInstanceGameObject(state^);
-                  let state = state |> disposeGameObject(objectInstanceGameObject);
+                  let state = state |> GameObjectTool.disposeGameObject(objectInstanceGameObject);
                   let {disposedIndexArray} = state |> ObjectInstanceTool.getObjectInstanceRecord;
                   disposedIndexArray |> expect == [|objectInstance|]
                 }
@@ -803,8 +803,8 @@ let _ =
                           let (state, gameObject1) = createGameObject(state);
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                           let {transformMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -830,8 +830,8 @@ let _ =
                             |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
                             |> addGameObjectMeshRendererComponent(gameObject2, meshRenderer2)
                             |> addGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                           let {meshRendererMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             meshRendererMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -860,8 +860,8 @@ let _ =
                               /*let state = state |> BoxGeometryTool.initGeometrys;*/
                               let {currentGeometryDataMap as oldCurrentGeometryDataMap} =
                                 GameObjectTool.getGameObjectRecord(state);
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                               let {currentGeometryDataMap} =
                                 GameObjectTool.getGameObjectRecord(state);
                               (
@@ -897,8 +897,8 @@ let _ =
                               let (state, gameObject3, geometry3) =
                                 BoxGeometryTool.createGameObject(state);
                               /*let state = state |> BoxGeometryTool.initGeometrys;*/
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                               let {currentGeometryDataMap} =
                                 GameObjectTool.getGameObjectRecord(state);
                               (
@@ -927,8 +927,8 @@ let _ =
                                 BasicMaterialTool.createGameObject(state);
                               let (state, gameObject3, material3) =
                                 BasicMaterialTool.createGameObject(state);
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                               let {basicMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
                                 basicMaterialMap
@@ -952,8 +952,8 @@ let _ =
                                 LightMaterialTool.createGameObject(state);
                               let (state, gameObject3, material3) =
                                 LightMaterialTool.createGameObject(state);
-                              let state = state |> disposeGameObject(gameObject1);
-                              let state = state |> disposeGameObject(gameObject2);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                              let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                               let {lightMaterialMap} = GameObjectTool.getGameObjectRecord(state);
                               (
                                 lightMaterialMap
@@ -977,8 +977,8 @@ let _ =
                             let (state, gameObject1, light1) = createGameObjectFunc(state);
                             let (state, gameObject2, light2) = createGameObjectFunc(state);
                             let (state, gameObject3, light3) = createGameObjectFunc(state);
-                            let state = state |> disposeGameObject(gameObject1);
-                            let state = state |> disposeGameObject(gameObject2);
+                            let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                            let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                             let lightMap =
                               getDataMapFunc(GameObjectTool.getGameObjectRecord(state));
                             (
@@ -1034,8 +1034,8 @@ let _ =
                             CameraTool.createCameraGameObject(state);
                           let (state, gameObject3, _, basicCameraView3) =
                             CameraTool.createCameraGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                           let {basicCameraViewMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             basicCameraViewMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -1054,7 +1054,7 @@ let _ =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
                           let (state, gameObject2, _) =
                             SourceInstanceTool.createSourceInstanceGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           let {sourceInstanceMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             sourceInstanceMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -1072,7 +1072,7 @@ let _ =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
                           let (state, _, _, objectInstanceGameObject2, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
-                          let state = state |> disposeGameObject(objectInstanceGameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(objectInstanceGameObject1);
                           let {objectInstanceMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             objectInstanceMap
@@ -1097,10 +1097,10 @@ let _ =
                           let (state, gameObject2) = createGameObject(state);
                           let (state, gameObject3) = createGameObject(state);
                           let (state, gameObject4) = createGameObject(state);
-                          let state = state |> disposeGameObject(gameObject1);
-                          let state = state |> disposeGameObject(gameObject2);
-                          let state = state |> disposeGameObject(gameObject3);
-                          let state = state |> disposeGameObject(gameObject4);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject3);
+                          let state = state |> GameObjectTool.disposeGameObject(gameObject4);
                           let {transformMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -1120,9 +1120,9 @@ let _ =
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
                       let (state, gameObject3) = createGameObject(state);
-                      let state = state |> disposeGameObject(gameObject1);
-                      let state = state |> disposeGameObject(gameObject2);
-                      let state = state |> disposeGameObject(gameObject3);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject3);
                       let {disposedUidMap} = GameObjectTool.getGameObjectRecord(state);
                       (
                         disposedUidMap |> WonderCommonlib.SparseMapService.has(gameObject1),
@@ -1140,9 +1140,9 @@ let _ =
                       let (state, gameObject1) = createGameObject(state);
                       let (state, gameObject2) = createGameObject(state);
                       let (state, gameObject3) = createGameObject(state);
-                      let state = state |> disposeGameObject(gameObject1);
-                      let state = state |> disposeGameObject(gameObject2);
-                      let state = state |> disposeGameObject(gameObject3);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject3);
                       let {aliveUidArray} = GameObjectTool.getGameObjectRecord(state);
                       aliveUidArray |> expect == [|gameObject3|]
                     }
@@ -1167,7 +1167,7 @@ let _ =
                 |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra1)
                 |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra2)
                 |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra3);
-              let state = state |> disposeGameObjectKeepOrder(child1);
+              let state = state |> GameObjectTool.disposeGameObjectKeepOrder(child1);
               TransformAPI.unsafeGetTransformChildren(tra, state) |> expect == [|tra2, tra3|]
             }
           )
@@ -1620,18 +1620,18 @@ let _ =
               let _getErrorMsg = () => "expect gameObject alive, but actual not";
               let _testTwoParamFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
-                let state = state |> disposeGameObject(gameObject);
+                let state = state |> GameObjectTool.disposeGameObject(gameObject);
                 expect(() => func(gameObject, state)) |> toThrowMessage(_getErrorMsg())
               };
               let _testThreeParmFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
-                let state = state |> disposeGameObject(gameObject);
+                let state = state |> GameObjectTool.disposeGameObject(gameObject);
                 expect(() => func(Obj.magic(gameObject), Obj.magic(1), state))
                 |> toThrowMessage(_getErrorMsg())
               };
               let _testFourParmFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
-                let state = state |> disposeGameObject(gameObject);
+                let state = state |> GameObjectTool.disposeGameObject(gameObject);
                 expect(() => func(Obj.magic(gameObject), Obj.magic(1), Obj.magic(2), state))
                 |> toThrowMessage(_getErrorMsg())
               };
@@ -1668,7 +1668,7 @@ let _ =
                 "batchDisposeGameObject should error",
                 () => {
                   let (state, gameObject) = createGameObject(state^);
-                  let state = state |> disposeGameObject(gameObject);
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject);
                   expect(() => GameObjectAPI.batchDisposeGameObject([|gameObject|], state))
                   |> toThrowMessage(_getErrorMsg())
                 }

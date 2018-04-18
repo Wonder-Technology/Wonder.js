@@ -25,7 +25,7 @@ let _ =
           let state = GameObjectAPI.initGameObject(boxGameObject, state);
           let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
           let copiedState = StateAPI.deepCopyForRestore(state);
-          let state = GameObjectAPI.disposeGameObject(boxGameObject, state);
+          let state = GameObjectTool.disposeGameObject(boxGameObject, state);
           let (state, boxGameObject2, _) = BoxGeometryTool.createGameObject(state);
           let state = GameObjectAPI.initGameObject(boxGameObject2, state);
           BoxGeometryAPI.getBoxGeometryVertices(copiedState)
