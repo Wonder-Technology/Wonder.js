@@ -135,6 +135,7 @@ let _ =
                                              name: "default",
                                              jobs: [|
                                                {name: "tick"},
+                                               {name: "dispose"},
                                                {name: "update_transform"},
                                                {name: "update_camera"},
                                                {name: "get_camera_data"},
@@ -145,8 +146,7 @@ let _ =
                                                {name: "clear_last_send_component"},
                                                {name: "send_uniform_shader_data"},
                                                {name: "render_basic"},
-                                               {name: "front_render_light"},
-                                               {name: "dispose"}
+                                               {name: "front_render_light"}
                                              |]
                                            }
                                          |],
