@@ -16,7 +16,8 @@ let _ =
         let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
         let (state, gameObject3, meshRenderer3) = MeshRendererTool.createGameObject(state);
         let state =
-          state |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
+          state
+          |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
         (state, gameObject1, gameObject2, gameObject3, meshRenderer1, meshRenderer2, meshRenderer3)
       };
       let _prepareTransformMatrixData = (state) => {
@@ -52,7 +53,10 @@ let _ =
         /* let state = state |> BasicCameraViewTool.update; */
         let state =
           state
-          |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(gameObject3, basicCameraView3);
+          |> GameObjectTool.disposeGameObjectBasicCameraViewComponent(
+               gameObject3,
+               basicCameraView3
+             );
         (
           state,
           gameObject1,
@@ -1178,7 +1182,7 @@ let _ =
             "deep copy gameObject record",
             () =>
               test(
-                "shadow copy disposedUidMap, aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+                "shadow copy disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
                 () =>
                   StateDataMainType.(
                     GameObjectType.(
@@ -1186,6 +1190,23 @@ let _ =
                         (state) => {
                           let {
                             disposedUidMap,
+                            disposedUidArray,
+                            disposedUidArrayForKeepOrder,
+                            disposedBasicCameraViewArray,
+                            disposedTransformArray,
+                            disposedTransformArrayForKeepOrder,
+                            disposedPerspectiveCameraProjectionArray,
+                            disposedBasicMaterialArray,
+                            disposedLightMaterialArray,
+                            disposedBoxGeometryArray,
+                            disposedCustomGeometryArray,
+                            disposedSourceInstanceArray,
+                            disposedObjectInstanceArray,
+                            disposedAmbientLightArray,
+                            disposedDirectionLightArray,
+                            disposedPointLightArray,
+                            disposedMeshRendererComponentArray,
+                            disposedMeshRendererUidArray,
                             aliveUidArray,
                             transformMap,
                             basicCameraViewMap,
@@ -1202,6 +1223,23 @@ let _ =
                             GameObjectTool.getGameObjectRecord(state);
                           [|
                             disposedUidMap |> Obj.magic,
+                            disposedUidArray |> Obj.magic,
+                            disposedUidArrayForKeepOrder |> Obj.magic,
+                            disposedBasicCameraViewArray |> Obj.magic,
+                            disposedTransformArray |> Obj.magic,
+                            disposedTransformArrayForKeepOrder |> Obj.magic,
+                            disposedPerspectiveCameraProjectionArray |> Obj.magic,
+                            disposedBasicMaterialArray |> Obj.magic,
+                            disposedLightMaterialArray |> Obj.magic,
+                            disposedBoxGeometryArray |> Obj.magic,
+                            disposedCustomGeometryArray |> Obj.magic,
+                            disposedSourceInstanceArray |> Obj.magic,
+                            disposedObjectInstanceArray |> Obj.magic,
+                            disposedAmbientLightArray |> Obj.magic,
+                            disposedDirectionLightArray |> Obj.magic,
+                            disposedPointLightArray |> Obj.magic,
+                            disposedMeshRendererComponentArray |> Obj.magic,
+                            disposedMeshRendererUidArray |> Obj.magic,
                             aliveUidArray |> Obj.magic,
                             transformMap |> Obj.magic,
                             basicCameraViewMap |> Obj.magic,
