@@ -145,7 +145,8 @@ let _ =
                                                {name: "clear_last_send_component"},
                                                {name: "send_uniform_shader_data"},
                                                {name: "render_basic"},
-                                               {name: "front_render_light"}
+                                               {name: "front_render_light"},
+                                               {name: "dispose"}
                                              |]
                                            }
                                          |],
@@ -188,7 +189,8 @@ let _ =
                                            {name: "clear_last_send_component", flags: None},
                                            {name: "send_uniform_shader_data", flags: None},
                                            {name: "render_basic", flags: None},
-                                           {name: "front_render_light", flags: None}
+                                           {name: "front_render_light", flags: None},
+                                           {name: "dispose", flags: None}
                                          |]
                                        )
                              |> resolve

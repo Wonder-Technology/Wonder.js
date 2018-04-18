@@ -25,6 +25,7 @@ let _getLoopJobHandles = () => [
   ("send_uniform_shader_data", SendUniformShaderDataJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferJob.execJob),
   ("create_light_render_object_buffer", CreateLightRenderObjectBufferJob.execJob),
+  ("dispose", DisposeJob.execJob),
   ("render_basic", RenderBasicJob.execJob),
   ("front_render_light", FrontRenderLightJob.execJob)
 ];

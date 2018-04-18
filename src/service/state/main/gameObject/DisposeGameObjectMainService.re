@@ -25,6 +25,22 @@ let rec batchDispose = (uidArray: array(int), state) => {
   |> _handleByDisposeCount(record)
 };
 
+let deferBatchDispose = (uidArray: array(int), state) => {
+  ...state,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
+    disposedUidArray: state.gameObjectRecord.disposedUidArray |> Js.Array.concat(uidArray)
+  }
+};
+
+let clearDeferDisposeData = (state) => {
+  ...state,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
+    disposedUidArray: WonderCommonlib.ArrayService.createEmpty()
+  }
+};
+
 let _dispose = (uid: int, disposeFunc, state) => {
   let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
   record.disposeCount = succ(disposeCount);

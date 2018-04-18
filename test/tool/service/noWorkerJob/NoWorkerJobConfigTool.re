@@ -64,6 +64,9 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "tick"
             },
             {
+                "name": "dispose"
+            },
+            {
                 "name": "update_transform"
             },
             {
@@ -146,7 +149,10 @@ let buildNoWorkerLoopJobConfig = () => {|
     },
     {
         "name": "front_render_light"
-    }
+    },
+            {
+                "name": "dispose"
+            }
 ]
         |};
 

@@ -44,6 +44,7 @@ type gameObjectRecord = {
   mutable uid: int,
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
+  mutable disposedUidArray: array(int),
   mutable aliveUidArray: gameObjectAliveUidArray,
   mutable currentGeometryDataMap: gameObjectCurrentGeometryDataMap,
   mutable transformMap: gameObjectTransformMap,

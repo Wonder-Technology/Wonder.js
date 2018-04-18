@@ -520,7 +520,7 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  batchDispose(gameObjectArray, state)
+  deferBatchDispose(gameObjectArray, state)
 };
 
 let cloneGameObject =
