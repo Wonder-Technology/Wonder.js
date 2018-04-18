@@ -23,7 +23,6 @@ let _ =
           describe(
             "test dispose component",
             () => {
-              /* TODO test more components */
               describe(
                 "test disposeGameObjectBasicCameraViewComponent",
                 () => {
@@ -410,6 +409,29 @@ let _ =
             }
           )
         }
+      );
+      describe(
+        "clear all defer disposed data",
+        () =>
+          describe(
+            "not dispose the same one again in the second job execution",
+            () =>
+              test(
+                "test dispose box geometry component",
+                () => {
+                  TestTool.closeContractCheck();
+                  open GameObjectType;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                  let state = state |> DisposeJob.execJob(None);
+                  let (state, _, geometry3) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> DisposeJob.execJob(None);
+                  (geometry3, BoxGeometryTool.isGeometryDisposed(geometry1, state))
+                  |> expect == (geometry1, false)
+                }
+              )
+          )
       )
     }
   );
