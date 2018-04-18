@@ -81,7 +81,7 @@ let _disposeGameObjects = ({gameObjectRecord} as state) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
   state
   |> DisposeGameObjectMainService.batchDispose(disposedUidArray, false)
-  |> DisposeGameObjectMainService.batchDispose(disposedUidArrayForKeepOrder, false)
+  |> DisposeGameObjectMainService.batchDispose(disposedUidArrayForKeepOrder, true)
   |> DisposeGameObjectMainService.clearDeferDisposeData
 };
 

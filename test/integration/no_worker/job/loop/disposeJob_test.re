@@ -387,21 +387,91 @@ let _ =
               describe(
                 "test disposeGameObjectKeepOrder",
                 () => {
+                  let _prepare = (state) => {
+                    let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                    let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
+                    let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
+                    let (state, gameObject4, transform4) = GameObjectTool.createGameObject(state);
+                    let pos1 = (10., 20., 30.);
+                    let pos3 = (1., 2., 3.);
+                    let state =
+                      state
+                      |> TransformAPI.setTransformLocalPosition(transform1, pos1)
+                      |> TransformAPI.setTransformLocalPosition(transform3, pos3);
+                    let state =
+                      state
+                      |> TransformAPI.setTransformParent(
+                           Js.Nullable.return(transform1),
+                           transform2
+                         )
+                      |> TransformAPI.setTransformParent(
+                           Js.Nullable.return(transform1),
+                           transform3
+                         )
+                      |> TransformAPI.setTransformParent(
+                           Js.Nullable.return(transform1),
+                           transform4
+                         );
+                    (
+                      state,
+                      (gameObject1, gameObject2, gameObject3, gameObject4),
+                      (transform1, transform2, transform3, transform4),
+                      pos3
+                    )
+                  };
                   test(
                     "shouldn't dispose data",
                     () => {
-                      let (state, gameObject1, gameObject2) = _prepare(state);
+                      let (
+                        state,
+                        (gameObject1, gameObject2, gameObject3, gameObject4),
+                        (transform1, transform2, transform3, transform4),
+                        pos3
+                      ) =
+                        _prepare(state);
                       let state = state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject1);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 2
+                      state
+                      |> TransformAPI.getTransformPosition(transform3)
+                      |> expect == (11., 22., 33.)
                     }
                   );
-                  test(
+                  describe(
                     "dispose data in dispose job",
                     () => {
-                      let (state, gameObject1, gameObject2) = _prepare(state);
-                      let state = state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject1);
-                      let state = state |> DisposeJob.execJob(None);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 1
+                      test(
+                        "test dispose data",
+                        () => {
+                          let (
+                            state,
+                            (gameObject1, gameObject2, gameObject3, gameObject4),
+                            (transform1, transform2, transform3, transform4),
+                            pos3
+                          ) =
+                            _prepare(state);
+                          let state =
+                            state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject1);
+                          let state = state |> DisposeJob.execJob(None);
+                          state |> TransformAPI.getTransformPosition(transform3) |> expect == pos3
+                        }
+                      );
+                      test(
+                        "dispose data in dispose job that not change its current parent's children order",
+                        () => {
+                          let (
+                            state,
+                            (gameObject1, gameObject2, gameObject3, gameObject4),
+                            (transform1, transform2, transform3, transform4),
+                            pos3
+                          ) =
+                            _prepare(state);
+                          let state =
+                            state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject2);
+                          let state = state |> DisposeJob.execJob(None);
+                          state
+                          |> TransformAPI.unsafeGetTransformChildren(transform1)
+                          |> expect == [|transform3, transform4|]
+                        }
+                      )
                     }
                   )
                 }
