@@ -20,10 +20,8 @@ let _ =
       describe
         (
           "actually do the dispose work",
-          () =>
-            describe(
-              "test batchDisposeGameObject",
-              () => {
+          () =>{
+
                 let _prepare = (state) => {
                   let (state, gameObject1, meshRenderer1) =
                     MeshRendererTool.createGameObject(state^);
@@ -31,8 +29,11 @@ let _ =
                     MeshRendererTool.createGameObject(state);
                   (state, gameObject1, gameObject2)
                 };
+            describe(
+              "test batchDisposeGameObject",
+              () => {
                 test(
-                  "batchDisposeGameObject shouldn't dispose data",
+                  "shouldn't dispose data",
                   () => {
                     let (state, gameObject1, gameObject2) = _prepare(state);
                     let state =
@@ -51,7 +52,56 @@ let _ =
                   }
                 )
               }
+            );
+            describe(
+              "test disposeGameObject",
+              () => {
+                test(
+                  "shouldn't dispose data",
+                  () => {
+                    let (state, gameObject1, gameObject2) = _prepare(state);
+                    let state =
+                      state |> GameObjectAPI.disposeGameObject(gameObject1);
+                    state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 2
+                  }
+                );
+                test(
+                  "dispose data in dispose job",
+                  () => {
+                    let (state, gameObject1, gameObject2) = _prepare(state);
+                    let state =
+                      state |> GameObjectAPI.disposeGameObject(gameObject1);
+                    let state = state |> DisposeJob.execJob(None);
+                    state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 1
+                  }
+                )
+              }
+            );
+            describe(
+              "test disposeGameObjectKeepOrder",
+              () => {
+                test(
+                  "shouldn't dispose data",
+                  () => {
+                    let (state, gameObject1, gameObject2) = _prepare(state);
+                    let state =
+                      state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject1);
+                    state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 2
+                  }
+                );
+                test(
+                  "dispose data in dispose job",
+                  () => {
+                    let (state, gameObject1, gameObject2) = _prepare(state);
+                    let state =
+                      state |> GameObjectAPI.disposeGameObjectKeepOrder(gameObject1);
+                    let state = state |> DisposeJob.execJob(None);
+                    state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 1
+                  }
+                )
+              }
             )
+          }
         )
     }
   );

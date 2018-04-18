@@ -6,6 +6,9 @@
                 "name": "tick"
             },
             {
+                "name": "dispose"
+            },
+            {
                 "name": "update_transform"
             },
             {

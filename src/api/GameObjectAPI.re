@@ -486,7 +486,7 @@ let disposeGameObject = (gameObject: gameObject, state: StateDataMainType.state)
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  dispose(gameObject, state)
+  deferDispose(gameObject, state)
 };
 
 let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainType.state) => {
@@ -494,7 +494,7 @@ let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainTy
     () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  disposeKeepOrder(gameObject, state)
+  deferDisposeKeepOrder(gameObject, state)
 };
 
 let initGameObject = (gameObject: gameObject, state: StateDataMainType.state) => {

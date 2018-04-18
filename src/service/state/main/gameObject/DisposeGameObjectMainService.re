@@ -51,5 +51,22 @@ let _dispose = (uid: int, disposeFunc, state) => {
 let dispose = (uid: int, state) =>
   _dispose(uid, DisposeGameObjectComponentMainService.dispose, state);
 
+let deferDispose = (uid: int, state) => {
+  ...state,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
+    disposedUidArray: state.gameObjectRecord.disposedUidArray |> ArrayService.push(uid)
+  }
+};
+
 let disposeKeepOrder = (uid: int, state) =>
   _dispose(uid, DisposeGameObjectComponentMainService.disposeKeepOrder, state);
+
+let deferDisposeKeepOrder = (uid: int, state) => {
+  ...state,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
+    disposedUidArrayForKeepOrder:
+      state.gameObjectRecord.disposedUidArrayForKeepOrder |> ArrayService.push(uid)
+  }
+};
