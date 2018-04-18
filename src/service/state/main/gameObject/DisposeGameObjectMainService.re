@@ -13,13 +13,12 @@ let _handleByDisposeCount = (record, state) =>
     state
   };
 
-let rec batchDispose = (uidArray: array(int), state) => {
+let rec batchDispose = (uidArray: array(int), isKeepOrder, state) => {
   let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
   record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   state
   |> DisposeGameObjectComponentMainService.batchDispose(
-       uidArray,
-       DisposeECSService.buildMapFromArray(uidArray, disposedUidMap),
+       (uidArray, DisposeECSService.buildMapFromArray(uidArray, disposedUidMap), isKeepOrder),
        batchDispose
      )
   |> _handleByDisposeCount(record)
@@ -30,6 +29,15 @@ let deferBatchDispose = (uidArray: array(int), state) => {
   gameObjectRecord: {
     ...state.gameObjectRecord,
     disposedUidArray: state.gameObjectRecord.disposedUidArray |> Js.Array.concat(uidArray)
+  }
+};
+
+let deferBatchDisposeKeepOrder = (uidArray: array(int), state) => {
+  ...state,
+  gameObjectRecord: {
+    ...state.gameObjectRecord,
+    disposedUidArrayForKeepOrder:
+      state.gameObjectRecord.disposedUidArrayForKeepOrder |> Js.Array.concat(uidArray)
   }
 };
 

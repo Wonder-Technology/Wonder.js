@@ -389,11 +389,13 @@ let batchDisposeMeshRendererComponent =
     )
 };
 
-let batchDisposeTransformComponent = ({settingRecord} as state, componentArray: array(component)) =>
+let batchDisposeTransformComponent =
+    ({settingRecord} as state, isKeepOrder, componentArray: array(component)) =>
   [@bs]
   DisposeTransformMainService.handleBatchDisposeComponent(
     componentArray,
     MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
+    isKeepOrder,
     state
   );
 
@@ -462,10 +464,16 @@ let batchDisposePointLightComponent =
 };
 
 let batchDisposeSourceInstanceComponent =
-    (state: StateDataMainType.state, disposeGameObjectFunc, componentArray: array(component)) =>
+    (
+      state: StateDataMainType.state,
+      isKeepOrder,
+      disposeGameObjectFunc,
+      componentArray: array(component)
+    ) =>
   [@bs]
   DisposeSourceInstanceMainService.handleBatchDisposeComponent(
     componentArray,
+    isKeepOrder,
     disposeGameObjectFunc,
     state
   );
@@ -489,7 +497,5 @@ let batchDisposeObjectInstanceComponent =
     (state: StateDataMainType.state, componentArray: array(component)) =>
   switch (componentArray |> Js.Array.length) {
   | 0 => state
-  | _ =>
-    [@bs]
-    DisposeObjectInstanceMainService.handleBatchDisposeComponent(componentArray, state)
+  | _ => [@bs] DisposeObjectInstanceMainService.handleBatchDisposeComponent(componentArray, state)
   };

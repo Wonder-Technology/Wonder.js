@@ -19,7 +19,11 @@ let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainTy
   DisposeGameObjectMainService.disposeKeepOrder(gameObject, state);
 
 let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataMainType.state) =>
-  DisposeGameObjectMainService.batchDispose(gameObjectArray, state);
+  DisposeGameObjectMainService.batchDispose(gameObjectArray, false, state);
+
+let batchDisposeGameObjectKeepOrder =
+    (gameObjectArray: array(gameObject), state: StateDataMainType.state) =>
+  DisposeGameObjectMainService.batchDispose(gameObjectArray, true, state);
 
 let disposeGameObjectBasicCameraViewComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>

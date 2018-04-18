@@ -10,7 +10,12 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(sourceInstance, disposedIndexArray);
 
 let _disposeObjectInstanceGameObject =
-    (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, {sourceInstanceRecord} as state) => {
+    (
+      sourceInstance: sourceInstance,
+      isKeepOrder,
+      batchDisposeGameObjectFunc,
+      {sourceInstanceRecord} as state
+    ) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
   let objectInstanceGameObjectArr =
     GetObjectInstanceArrayMainService.getObjectInstanceArray(
@@ -19,18 +24,23 @@ let _disposeObjectInstanceGameObject =
       transformRecord
     )
     |> Js.Array.copy;
-  batchDisposeGameObjectFunc(objectInstanceGameObjectArr, state)
+  batchDisposeGameObjectFunc(objectInstanceGameObjectArr, isKeepOrder, state)
 };
 
 let _disposeData =
-    (sourceInstance: sourceInstance, batchDisposeGameObjectFunc, {vboBufferRecord} as state) => {
+    (
+      sourceInstance: sourceInstance,
+      isKeepOrder,
+      batchDisposeGameObjectFunc,
+      {vboBufferRecord} as state
+    ) => {
   let {sourceInstanceRecord, typeArrayPoolRecord, settingRecord} as state =
     {
       ...state,
       vboBufferRecord:
         DisposeVboBufferService.disposeInstanceBufferData(sourceInstance, vboBufferRecord)
     }
-    |> _disposeObjectInstanceGameObject(sourceInstance, batchDisposeGameObjectFunc);
+    |> _disposeObjectInstanceGameObject(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc);
   let {
         objectInstanceTransformArrayMap,
         matrixFloat32ArrayMap,
@@ -96,7 +106,8 @@ let handleDisposeComponent =
         vboBufferRecord:
           PoolVboBufferService.addInstanceBufferToPool(sourceInstance, vboBufferRecord)
       };
-      let state = state |> _disposeData(sourceInstance, batchDisposeGameObjectFunc);
+      /* TODO fix */
+      let state = state |> _disposeData(sourceInstance, false, batchDisposeGameObjectFunc);
       {
         ...state,
         sourceInstanceRecord: {
@@ -112,6 +123,7 @@ let handleBatchDisposeComponent =
   (
     (
       sourceInstanceArray: array(sourceInstance),
+      isKeepOrder:bool,
       batchDisposeGameObjectFunc,
       {vboBufferRecord, sourceInstanceRecord} as state
     ) => {
@@ -148,7 +160,7 @@ let handleBatchDisposeComponent =
                  vboBufferRecord:
                    vboBufferRecord |> PoolVboBufferService.addInstanceBufferToPool(sourceInstance)
                }
-               |> _disposeData(sourceInstance, batchDisposeGameObjectFunc)
+               |> _disposeData(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc)
            ),
            state
          )

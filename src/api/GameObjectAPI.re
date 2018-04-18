@@ -115,6 +115,7 @@ let addGameObjectTransformComponent =
   addTransformComponent(gameObject, component, state)
 };
 
+/* TODO remove */
 let disposeGameObjectTransformComponent =
     (gameObject: gameObject, component: component, isKeepOrder, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
@@ -518,6 +519,25 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   deferBatchDispose(gameObjectArray, state)
+};
+
+let batchDisposeGameObjectKeepOrder =
+    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            gameObjectArray
+            |> WonderCommonlib.ArrayService.forEach(
+                 [@bs] ((gameObject) => _checkGameObjectShouldAlive(gameObject, state))
+               )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  deferBatchDisposeKeepOrder(gameObjectArray, state)
 };
 
 let cloneGameObject =

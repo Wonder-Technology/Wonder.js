@@ -149,11 +149,15 @@ let _batchDisposeGeometryComponent = (uidArray, disposedUidMap, state) => {
 };
 
 let batchDispose =
-    (uidArray: array(int), disposedUidMap, batchDisposeFunc, {gameObjectRecord} as state) => {
+    (
+      (uidArray: array(int), disposedUidMap, isKeepOrder),
+      batchDisposeFunc,
+      {gameObjectRecord} as state
+    ) => {
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
-    |> batchDisposeTransformComponent(state);
+    |> batchDisposeTransformComponent(state, isKeepOrder);
   let state = state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
   let state =
     state
@@ -171,20 +175,6 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetMeshRendererComponent(uidArray)
     |> batchDisposeMeshRendererComponent(disposedUidMap, state);
-  /* let state =
-       state
-       |> BatchGetComponentGameObjectMainService.batchGetBoxGeometryComponent(uidArray)
-       |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
-            disposedUidMap,
-            state
-          );
-     let state =
-       state
-       |> BatchGetComponentGameObjectMainService.batchGetCustomGeometryComponent(uidArray)
-       |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
-            disposedUidMap,
-            state
-          ); */
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(uidArray)
@@ -210,6 +200,7 @@ let batchDispose =
     |> BatchGetComponentGameObjectMainService.batchGetSourceInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
+         isKeepOrder,
          batchDisposeFunc
        );
   let state =

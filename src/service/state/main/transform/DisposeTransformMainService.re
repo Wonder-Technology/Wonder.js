@@ -103,6 +103,7 @@ let handleBatchDisposeComponent =
     (
       transformArray: array(int),
       maxTypeArrayPoolSize: int,
+      isKeepOrder,
       {settingRecord, transformRecord} as state: StateDataMainType.state
     ) => {
       WonderLog.Contract.requireCheck(
@@ -128,7 +129,7 @@ let handleBatchDisposeComponent =
          }; */
       let transformDataBufferCount =
         BufferSettingService.getTransformDataBufferCount(settingRecord);
-      let dataTuple = (transformDataBufferCount, maxTypeArrayPoolSize, false);
+      let dataTuple = (transformDataBufferCount, maxTypeArrayPoolSize, isKeepOrder);
       /* TODO optimize: batch remove parent,child? */
       let transformRecord =
         transformArray

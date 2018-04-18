@@ -30,23 +30,10 @@ let _disposeComponents = ({settingRecord, gameObjectRecord} as state) => {
        );
   let state =
     disposedTransformArray
-    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state);
-  /* TODO perf: add batch dispose transform for keep order */
+    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state, false);
   let state =
     disposedTransformArrayForKeepOrder
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (state, transform) =>
-             DisposeTransformMainService.handleDisposeComponent(
-               transform,
-               MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
-               true,
-               state
-             )
-         ),
-         state
-       );
+    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state, true);
   let state =
     disposedBasicMaterialArray
     |> DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(state);
@@ -63,6 +50,7 @@ let _disposeComponents = ({settingRecord, gameObjectRecord} as state) => {
     disposedSourceInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
+         false,
          DisposeGameObjectMainService.batchDispose
        );
   let state =
@@ -91,13 +79,9 @@ let _disposeComponents = ({settingRecord, gameObjectRecord} as state) => {
 
 let _disposeGameObjects = ({gameObjectRecord} as state) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
-  let state = state |> DisposeGameObjectMainService.batchDispose(disposedUidArray);
-  /* TODO perf: add batch dispose for keep order */
-  disposedUidArrayForKeepOrder
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((state, uid) => DisposeGameObjectMainService.disposeKeepOrder(uid, state)),
-       state
-     )
+  state
+  |> DisposeGameObjectMainService.batchDispose(disposedUidArray, false)
+  |> DisposeGameObjectMainService.batchDispose(disposedUidArrayForKeepOrder, false)
   |> DisposeGameObjectMainService.clearDeferDisposeData
 };
 
