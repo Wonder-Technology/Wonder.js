@@ -12,18 +12,38 @@ let getGameObjectRecord = (state: StateDataMainType.state) => state.gameObjectRe
 let initGameObject = (gameObject, state: StateDataMainType.state) =>
   state |> AllMaterialTool.prepareForInit |> GameObjectAPI.initGameObject(gameObject);
 
-let disposeGameObject = (gameObject: gameObject, state: StateDataMainType.state) =>
-  DisposeGameObjectTool.dispose(gameObject, state);
-
-let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainType.state) =>
-  DisposeGameObjectTool.disposeKeepOrder(gameObject, state);
-
-let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataMainType.state) =>
-  DisposeGameObjectMainService.batchDispose(gameObjectArray, false, state);
+let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+  let (state, boxGeometryNeedDisposeVboBufferArr) =
+    DisposeGameObjectMainService.batchDispose(gameObjectArray, false, state);
+  {
+    ...state,
+    vboBufferRecord:
+      DisposeVboBufferService.disposeGeometryVboBuffer(
+        boxGeometryNeedDisposeVboBufferArr,
+        state.vboBufferRecord
+      )
+  }
+};
 
 let batchDisposeGameObjectKeepOrder =
-    (gameObjectArray: array(gameObject), state: StateDataMainType.state) =>
-  DisposeGameObjectMainService.batchDispose(gameObjectArray, true, state);
+    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+  let (state, boxGeometryNeedDisposeVboBufferArr) =
+    DisposeGameObjectMainService.batchDispose(gameObjectArray, true, state);
+  {
+    ...state,
+    vboBufferRecord:
+      DisposeVboBufferService.disposeGeometryVboBuffer(
+        boxGeometryNeedDisposeVboBufferArr,
+        state.vboBufferRecord
+      )
+  }
+};
+
+let disposeGameObject = (gameObject: gameObject, state: StateDataMainType.state) =>
+  batchDisposeGameObject([|gameObject|], state);
+
+let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainType.state) =>
+  batchDisposeGameObjectKeepOrder([|gameObject|], state);
 
 let disposeGameObjectBasicCameraViewComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
@@ -71,12 +91,22 @@ let disposeGameObjectPointLightComponent =
   [@bs] DisposeComponentGameObjectTool.disposePointLightComponent(component, state);
 
 let disposeGameObjectSourceInstanceComponent =
-    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  DisposeComponentGameObjectTool.disposeSourceInstanceComponent(
-    component,
-    DisposeGameObjectMainService.batchDispose,
-    state
-  );
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) => {
+  let (state, boxGeometryNeedDisposeVboBufferArr) =
+    DisposeComponentGameObjectTool.disposeSourceInstanceComponent(
+      component,
+      DisposeGameObjectMainService.batchDispose,
+      state
+    );
+  {
+    ...state,
+    vboBufferRecord:
+      DisposeVboBufferService.disposeGeometryVboBuffer(
+        boxGeometryNeedDisposeVboBufferArr,
+        state.vboBufferRecord
+      )
+  }
+};
 
 let disposeGameObjectObjectInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>

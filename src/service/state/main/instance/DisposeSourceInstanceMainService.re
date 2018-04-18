@@ -34,7 +34,10 @@ let _disposeData =
       batchDisposeGameObjectFunc,
       {vboBufferRecord} as state
     ) => {
-  let {sourceInstanceRecord, typeArrayPoolRecord, settingRecord} as state =
+  let (
+    {sourceInstanceRecord, typeArrayPoolRecord, settingRecord} as state,
+    boxGeometryNeedDisposeVboBufferArr
+  ) =
     {
       ...state,
       vboBufferRecord:
@@ -60,68 +63,84 @@ let _disposeData =
     |> ignore
   | None => ()
   };
-  {
-    ...state,
-    sourceInstanceRecord: {
-      ...record,
-      objectInstanceTransformArrayMap:
-        objectInstanceTransformArrayMap |> disposeSparseMapData(sourceInstance),
-      matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
-      matrixInstanceBufferCapacityMap:
-        matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
-      isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
-      isSendTransformMatrixDataMap:
-        isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
-    }
-  }
+  (
+    {
+      ...state,
+      sourceInstanceRecord: {
+        ...record,
+        objectInstanceTransformArrayMap:
+          objectInstanceTransformArrayMap |> disposeSparseMapData(sourceInstance),
+        matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
+        matrixInstanceBufferCapacityMap:
+          matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
+        isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
+        isSendTransformMatrixDataMap:
+          isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
+        gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
+      }
+    },
+    boxGeometryNeedDisposeVboBufferArr
+  )
 };
 
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (
-      sourceInstanceArray: array(sourceInstance),
-      isKeepOrder:bool,
-      batchDisposeGameObjectFunc,
-      {vboBufferRecord, sourceInstanceRecord} as state
-    ) => {
-      WonderLog.Contract.requireCheck(
-        () =>
-          WonderLog.(
-            Contract.(
-              Operators.(
-                DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
-                  sourceInstanceArray,
-                  isAlive,
-                  sourceInstanceRecord
+    fun (
+          sourceInstanceArray: array(sourceInstance),
+          isKeepOrder: bool,
+          batchDisposeGameObjectFunc,
+          {vboBufferRecord, sourceInstanceRecord} as state
+        ) => (
+      {
+        WonderLog.Contract.requireCheck(
+          () =>
+            WonderLog.(
+              Contract.(
+                Operators.(
+                  DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+                    sourceInstanceArray,
+                    isAlive,
+                    sourceInstanceRecord
+                  )
                 )
               )
-            )
-          ),
-        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-      );
-      let {disposedIndexArray} = sourceInstanceRecord;
-      let state = {
-        ...state,
-        sourceInstanceRecord: {
-          ...sourceInstanceRecord,
-          disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
-        }
-      };
-      sourceInstanceArray
-      |> ReduceStateMainService.reduceState(
-           [@bs]
-           (
-             (state, sourceInstance) =>
-               {
-                 ...state,
-                 vboBufferRecord:
-                   vboBufferRecord |> PoolVboBufferService.addInstanceBufferToPool(sourceInstance)
+            ),
+          IsDebugMainService.getIsDebug(StateDataMain.stateData)
+        );
+        let {disposedIndexArray} = sourceInstanceRecord;
+        let state = {
+          ...state,
+          sourceInstanceRecord: {
+            ...sourceInstanceRecord,
+            disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
+          }
+        };
+        sourceInstanceArray
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             [@bs]
+             (
+               ((state, totalBoxGeometryNeedDisposeVboBufferArr), sourceInstance) => {
+                 let (state, boxGeometryNeedDisposeVboBufferArr) =
+                   {
+                     ...state,
+                     vboBufferRecord:
+                       vboBufferRecord
+                       |> PoolVboBufferService.addInstanceBufferToPool(sourceInstance)
+                   }
+                   |> _disposeData(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc);
+                 (
+                   state,
+                   totalBoxGeometryNeedDisposeVboBufferArr
+                   |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArr)
+                 )
                }
-               |> _disposeData(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc)
-           ),
-           state
-         )
-    }
+             ),
+             (state, [||])
+           )
+      }: (
+        StateDataMainType.state,
+        array(int)
+      )
+    )
   );

@@ -27,8 +27,9 @@ let handleDisposeComponent = (geometry: geometry, {vboBufferRecord} as state) =>
   | false =>
     let vboBufferRecord =
       PoolVboBufferService.addBoxGeometryBufferToPool(geometry, vboBufferRecord);
-    let (vboBufferRecord, boxGeometryRecord) =
-      _disposeData(geometry, (vboBufferRecord, boxGeometryRecord));
+    let vboBufferRecord =
+      DisposeVboBufferService.disposeBoxGeometryBufferData(geometry, vboBufferRecord);
+    let boxGeometryRecord = _disposeData(geometry, boxGeometryRecord);
     {...state, vboBufferRecord, boxGeometryRecord}
   | true => {
       ...state,

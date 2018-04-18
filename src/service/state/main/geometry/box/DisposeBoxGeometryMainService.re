@@ -10,30 +10,17 @@ let isAlive = (geometry, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(geometry, disposedIndexArray);
 
 let _disposeData =
-    (
-      geometry,
-      (vboBufferRecord, {disposedIndexArray, gameObjectMap, groupCountMap} as boxGeometryRecord)
-    ) => {
-  let vboBufferRecord =
-    DisposeVboBufferService.disposeBoxGeometryBufferData(geometry, vboBufferRecord);
-  (
-    vboBufferRecord,
-    {
-      ...boxGeometryRecord,
-      disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
-      groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
-    }
-  )
+    (geometry, {disposedIndexArray, gameObjectMap, groupCountMap} as boxGeometryRecord) => {
+  ...boxGeometryRecord,
+  disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
+  gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
+  groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
 };
 
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (
-      geometryArray: array(geometry),
-      {vboBufferRecord} as state
-    ) => {
+    (geometryArray: array(geometry), {vboBufferRecord} as state) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(
@@ -50,25 +37,26 @@ let handleBatchDisposeComponent =
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
       let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-      let (vboBufferRecord, boxGeometryRecord) =
+      /* let geometryNeedDisposeVboBufferArr = [||]; */
+      let (geometryNeedDisposeVboBufferArr, boxGeometryRecord) =
         geometryArray
         |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
-               ((vboBufferRecord, boxGeometryRecord), geometry) =>
+               ((geometryNeedDisposeVboBufferArr, boxGeometryRecord), geometry) =>
                  switch (GroupBoxGeometryService.isGroupGeometry(geometry, boxGeometryRecord)) {
-                 | false =>
-                   let vboBufferRecord =
-                     PoolVboBufferService.addBoxGeometryBufferToPool(geometry, vboBufferRecord);
-                   _disposeData(geometry, (vboBufferRecord, boxGeometryRecord))
+                 | false => (
+                     geometryNeedDisposeVboBufferArr |> ArrayService.push(geometry),
+                     _disposeData(geometry, boxGeometryRecord)
+                   )
                  | true => (
-                     vboBufferRecord,
+                     geometryNeedDisposeVboBufferArr,
                      GroupBoxGeometryService.decreaseGroupCount(geometry, boxGeometryRecord)
                    )
                  }
              ),
-             (vboBufferRecord, boxGeometryRecord)
+             ([||], boxGeometryRecord)
            );
-      {...state, vboBufferRecord, boxGeometryRecord}
+      ( {...state, boxGeometryRecord}, geometryNeedDisposeVboBufferArr )
     }
   );

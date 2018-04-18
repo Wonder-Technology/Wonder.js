@@ -170,6 +170,9 @@ let buildMainLoopPipelinesConfigWithoutMessage = () => {|
                 "name": "sync",
                 "link": "concat",
                 "jobs": [
+                    {
+                        "name": "dispose_and_send_dispose_data"
+                    }
                 ]
             },
             {
@@ -257,6 +260,12 @@ let buildMainLoopJobConfig = () => {|
         "name": "get_finish_render_data",
         "flags": [
             "FINISH_RENDER"
+        ]
+    },
+    {
+        "name": "dispose_and_send_dispose_data",
+        "flags": [
+            "DISPOSE"
         ]
     }
 ]

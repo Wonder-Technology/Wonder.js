@@ -9,10 +9,12 @@ open BatchGetComponentGameObjectMainService;
 let _batchDisposeGeometryComponent = (uidArray, disposedUidMap, state) => {
   let (boxGeometryArr, customGeometryArr) =
     state |> BatchGetComponentGameObjectMainService.batchGetGeometryComponentData(uidArray);
-  let state =
+  let (state, boxGeometryNeedDisposeVboBufferArr) =
     boxGeometryArr |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(state);
-  customGeometryArr
-  |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(state)
+  let state =
+    customGeometryArr
+    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(state);
+  (state, boxGeometryNeedDisposeVboBufferArr)
 };
 
 let batchDispose =
@@ -25,7 +27,8 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(state, isKeepOrder);
-  let state = state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
+  let (state, boxGeometryNeedDisposeVboBufferArrFromGeometry) =
+    state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(uidArray)
@@ -62,7 +65,7 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPointLightComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposePointLightComponent(state);
-  let state =
+  let (state, boxGeometryNeedDisposeVboBufferArrFromSourceInstance) =
     state
     |> BatchGetComponentGameObjectMainService.batchGetSourceInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
@@ -74,5 +77,9 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetObjectInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state);
-  state
+  (
+    state,
+    boxGeometryNeedDisposeVboBufferArrFromGeometry
+    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromSourceInstance)
+  )
 };

@@ -13,6 +13,7 @@ let _getMainLoopJobHandles = () => [
   ("update_transform", UpdateTransformMainWorkerJob.execJob),
   ("update_camera", UpdateCameraMainWorkerJob.execJob),
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
+  ("dispose_and_send_dispose_data", DisposeAndSendDisposeDataMainWorkerJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
   ("send_render_data", SendRenderDataMainWorkerJob.execJob),
   ("copy_transform", CopyTransformMainWorkerJob.execJob),
@@ -43,7 +44,9 @@ let _getWorkerJobHandles = () => [
   ("get_camera_data", GetCameraDataRenderWorkerJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),
-  ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob)
+  ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
+  ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
+  ("dispose_vbo", DisposeVboRenderWorkerJob.execJob)
 ];
 
 let createMainInitJobHandleMap = () =>

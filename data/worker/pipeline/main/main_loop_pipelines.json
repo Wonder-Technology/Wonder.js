@@ -42,6 +42,9 @@
                 "name": "sync",
                 "link": "concat",
                 "jobs": [
+                    {
+                        "name": "dispose_and_send_dispose_data"
+                    }
                 ]
             },
             {

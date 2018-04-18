@@ -28,5 +28,11 @@
         "flags": [
             "FINISH_RENDER"
         ]
+    },
+    {
+        "name": "dispose_and_send_dispose_data",
+        "flags": [
+            "DISPOSE"
+        ]
     }
 ]

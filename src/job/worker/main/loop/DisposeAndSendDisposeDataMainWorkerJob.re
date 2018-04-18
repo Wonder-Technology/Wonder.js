@@ -1,3 +1,4 @@
+/* TODO duplicate */
 open StateDataMainType;
 
 open GameObjectType;
@@ -91,30 +92,26 @@ let _disposeGameObjects = ({gameObjectRecord} as state) => {
   (state, boxGeometryNeedDisposeVboBufferArr)
 };
 
-/* let _disposeVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
-   boxGeometryNeedDisposeVboBufferArr
-   |> WonderCommonlib.ArrayService.reduceOneParam(
-        [@bs]
-        (
-          (vboBufferRecord, geometry) =>
-            vboBufferRecord
-            |> PoolVboBufferService.addBoxGeometryBufferToPool(geometry)
-            |> DisposeVboBufferService.disposeBoxGeometryBufferData(geometry)
-        ),
-        vboBufferRecord
-      ); */
-let execJob = (flags, state) => {
-  let (state, boxGeometryNeedDisposeVboBufferArrFromComponent) = state |> _disposeComponents;
-  let (state, boxGeometryNeedDisposeVboBufferArrFromGameObject) = state |> _disposeGameObjects;
-  let boxGeometryNeedDisposeVboBufferArr =
-    boxGeometryNeedDisposeVboBufferArrFromComponent
-    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromGameObject);
-  {
-    ...state,
-    vboBufferRecord:
-      DisposeVboBufferService.disposeGeometryVboBuffer(
-        boxGeometryNeedDisposeVboBufferArr,
-        state.vboBufferRecord
-      )
-  }
-};
+let _sendDisposeData = (operateType, boxGeometryNeedDisposeVboBufferArr, state) =>
+  WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
+  |> WorkerService.postMessage({
+       "operateType": operateType,
+       "boxGeometryNeedDisposeVboBufferArr": boxGeometryNeedDisposeVboBufferArr
+     });
+
+let execJob = (flags, stateData) =>
+  MostUtils.callFunc(
+    () => {
+      let state = StateDataMainService.unsafeGetState(stateData);
+      let operateType = JobConfigUtils.getOperateType(flags);
+      let (state, boxGeometryNeedDisposeVboBufferArrFromComponent) = state |> _disposeComponents;
+      let (state, boxGeometryNeedDisposeVboBufferArrFromGameObject) = state |> _disposeGameObjects;
+      let boxGeometryNeedDisposeVboBufferArr =
+        boxGeometryNeedDisposeVboBufferArrFromComponent
+        |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromGameObject);
+      _sendDisposeData(operateType, boxGeometryNeedDisposeVboBufferArr, state);
+      /*! only sync job can set state */
+      state |> StateDataMainService.setState(stateData);
+      Some(operateType)
+    }
+  );

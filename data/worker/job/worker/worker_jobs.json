@@ -84,5 +84,14 @@
         "flags": [
             "FINISH_RENDER"
         ]
+    },
+    {
+        "name": "get_dispose_data",
+        "flags": [
+            "DISPOSE"
+        ]
+    },
+    {
+        "name": "dispose_vbo"
     }
 ]
