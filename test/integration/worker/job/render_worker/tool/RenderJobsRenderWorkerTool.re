@@ -36,7 +36,7 @@ let init = (completeFunc, state) => {
          WorkerJobTool.buildWorkerJobConfig(
            ~mainInitPipelines=
              WorkerJobTool.buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage(),
-           ~mainLoopPipelines=WorkerJobTool.buildMainLoopPipelinesConfigWithoutMessage(),
+           ~mainLoopPipelines=WorkerJobTool.buildMainLoopPipelinesConfigWithoutMessageExceptDisposeMessage(),
            ()
          )
        );
@@ -65,7 +65,8 @@ let init = (completeFunc, state) => {
      )
 };
 
-let execMainLoopJobs = (completeFunc) =>
+let execMainLoopJobs = (completeFunc) =>{
+  MainInitJobToolMainWorker.prepare();
   MainStateTool.unsafeGetState()
   |> WorkerJobToolWorker.getMainLoopJobStream(
        MainStateTool.getStateData(),
@@ -76,6 +77,7 @@ let execMainLoopJobs = (completeFunc) =>
      )
   |> Most.drain
   |> then_(() => completeFunc(MainStateTool.unsafeGetState()));
+};
 
 let render = (completeFunc) => {
   let state = MainStateTool.unsafeGetState();

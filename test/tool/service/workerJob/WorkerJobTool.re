@@ -128,7 +128,7 @@ let buildMainLoopPipelinesConfig = () => {|
 ]
     |};
 
-let buildMainLoopPipelinesConfigWithoutMessage = () => {|
+let buildMainLoopPipelinesConfigWithoutMessageExceptDisposeMessage = () => {|
 [
     {
         "name": "default",

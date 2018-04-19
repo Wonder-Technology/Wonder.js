@@ -42,6 +42,7 @@ let _ =
             "test",
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
+
               RenderJobsRenderWorkerTool.initAndLoop(
                 ~completeFunc=
                   (state) => useProgram |> expect |> toCalledWith([|program|]) |> resolve,
