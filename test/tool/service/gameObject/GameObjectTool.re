@@ -49,16 +49,22 @@ let disposeGameObjectKeepOrder = (gameObject: gameObject, state: StateDataMainTy
 
 let disposeGameObjectBasicCameraViewComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeBasicCameraViewComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(state, [|component|]);
 
 let disposeGameObjectPerspectiveCameraProjectionComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs]
-  DisposeComponentGameObjectTool.disposePerspectiveCameraProjectionComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposePerspectiveCameraProjectionComponent(
+    state,
+    [|component|]
+  );
 
 let disposeGameObjectTransformComponent =
     (gameObject: gameObject, component: component, isKeepOrder, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeTransformComponent(component, isKeepOrder, state);
+  DisposeComponentGameObjectMainService.batchDisposeTransformComponent(
+    state,
+    isKeepOrder,
+    [|component|]
+  );
 
 let disposeGameObjectBoxGeometryComponentWithoutVboBuffer =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) => {
@@ -79,27 +85,34 @@ let disposeGameObjectCustomGeometryComponentWithoutVboBuffer =
 
 let disposeGameObjectBasicMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeBasicMaterialComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(state, [|component|]);
 
 let disposeGameObjectLightMaterialComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeLightMaterialComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(state, [|component|]);
 
 let disposeGameObjectMeshRendererComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeMeshRendererComponent(gameObject, component, state);
+  DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
+    DisposeECSService.buildMapFromArray(
+      [|gameObject|],
+      WonderCommonlib.SparseMapService.createEmpty()
+    ),
+    state,
+    [|component|]
+  );
 
 let disposeGameObjectAmbientLightComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeAmbientLightComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(state, [|component|]);
 
 let disposeGameObjectDirectionLightComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeDirectionLightComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(state, [|component|]);
 
 let disposeGameObjectPointLightComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposePointLightComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposePointLightComponent(state, [|component|]);
 
 let disposeGameObjectSourceInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
@@ -112,4 +125,4 @@ let disposeGameObjectSourceInstanceComponent =
 
 let disposeGameObjectObjectInstanceComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeObjectInstanceComponent(component, state);
+  DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state, [|component|]);

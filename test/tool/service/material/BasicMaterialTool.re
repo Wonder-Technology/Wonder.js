@@ -46,11 +46,8 @@ let getShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
 let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.state) =>
   [@bs] ShaderIndexBasicMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
-let dispose = (material, state: StateDataMainType.state) => {
-  ...state,
-  basicMaterialRecord:
-    Some(DisposeBasicMaterialTool.handleDisposeComponent(material, getRecord(state)))
-};
+let dispose = (material, state: StateDataMainType.state) =>
+  GameObjectTool.disposeGameObjectBasicMaterialComponent(-1, material, state);
 
 let initMaterial = (materialIndex, state) =>
   /* let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;

@@ -52,6 +52,7 @@ let _disposeObjectInstance =
   |> ignore;
   state
 };
+
 let _batchDisposeObjectInstance =
     (sourceInstance, isUidDisposedMap, disposedUidArr, {sourceInstanceRecord} as state) => {
   let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
@@ -67,16 +68,18 @@ let _batchDisposeObjectInstance =
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (
-      objectInstanceArray: array(objectInstance),
-      {objectInstanceRecord} as state
-    ) => {
+    (objectInstanceArray: array(objectInstance), {objectInstanceRecord} as state) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
           open Contract;
           open Operators;
           let objectInstanceLen = objectInstanceArray |> Js.Array.length;
+          DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+            objectInstanceArray,
+            isAlive,
+            objectInstanceRecord
+          );
           test(
             Log.buildAssertMessage(
               ~expect={j|objectInstanceArray has one objectInstance at least|j},
