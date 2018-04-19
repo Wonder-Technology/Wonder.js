@@ -10,7 +10,7 @@ let execJob = (flags, e, stateData) =>
         |> DisposeVboBufferService.disposeBoxGeometryVboBuffer(
              data##boxGeometryNeedDisposeVboBufferArr
            )
-        |> DisposeVboBufferService.disposeBoxGeometryVboBuffer(
+        |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
              data##customGeometryNeedDisposeVboBufferArr
            );
       e

@@ -1,5 +1,6 @@
 open StateDataMainType;
 
+/* open VboBufferType; */
 let getRecord = (state) => state.vboBufferRecord;
 
 let getOrCreateBoxGeometryVertexArrayBuffer = (geometryIndex: int, state: StateDataMainType.state) => {
@@ -58,11 +59,11 @@ let getOrCreateInstanceBuffer =
   )
 };
 
-let passBufferShouldExistCheckWhenDisposeBoxGeometry =
-    (geometryIndex, state: StateDataMainType.state) => {
-  open VboBufferType;
-  let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} =
-    state.vboBufferRecord;
+let addVboBufferToBoxGeometryBufferMapByRecord =
+    (
+      geometryIndex,
+      {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} as vboBufferRecord: VboBufferType.vboBufferRecord
+    ) => {
   WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(0), boxGeometryVertexBufferMap);
   WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(1), boxGeometryNormalBufferMap);
   WonderCommonlib.SparseMapService.set(
@@ -70,18 +71,18 @@ let passBufferShouldExistCheckWhenDisposeBoxGeometry =
     Obj.magic(2),
     boxGeometryElementArrayBufferMap
   );
-  state
+  vboBufferRecord
 };
 
-let passBufferShouldExistCheckWhenDisposeCustomGeometry =
-    (geometryIndex, state: StateDataMainType.state) => {
-  open VboBufferType;
-  let {
-    customGeometryVertexBufferMap,
-    customGeometryNormalBufferMap,
-    customGeometryElementArrayBufferMap
-  } =
-    state.vboBufferRecord;
+let addVboBufferToCustomGeometryBufferMapByRecord =
+    (
+      geometryIndex,
+      {
+        customGeometryVertexBufferMap,
+        customGeometryNormalBufferMap,
+        customGeometryElementArrayBufferMap
+      } as vboBufferRecord: VboBufferType.vboBufferRecord
+    ) => {
   WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(0), customGeometryVertexBufferMap);
   WonderCommonlib.SparseMapService.set(geometryIndex, Obj.magic(1), customGeometryNormalBufferMap);
   WonderCommonlib.SparseMapService.set(
@@ -89,11 +90,21 @@ let passBufferShouldExistCheckWhenDisposeCustomGeometry =
     Obj.magic(2),
     customGeometryElementArrayBufferMap
   );
-  state
+  vboBufferRecord
 };
 
-let passBufferShouldExistCheckWhenDisposeSourceInstance =
-    (sourceInstanceIndex, state: StateDataMainType.state) => {
+let addVboBufferToBoxGeometryBufferMap = (geometryIndex, state: StateDataMainType.state) => {
+  ...state,
+  vboBufferRecord: addVboBufferToBoxGeometryBufferMapByRecord(geometryIndex, state.vboBufferRecord)
+};
+
+let addVboBufferToCustomGeometryBufferMap = (geometryIndex, state: StateDataMainType.state) => {
+  ...state,
+  vboBufferRecord:
+    addVboBufferToCustomGeometryBufferMapByRecord(geometryIndex, state.vboBufferRecord)
+};
+
+let addVboBufferToSourceInstanceBufferMap = (sourceInstanceIndex, state: StateDataMainType.state) => {
   open VboBufferType;
   let {matrixInstanceBufferMap} = state.vboBufferRecord;
   WonderCommonlib.SparseMapService.set(sourceInstanceIndex, Obj.magic(0), matrixInstanceBufferMap);

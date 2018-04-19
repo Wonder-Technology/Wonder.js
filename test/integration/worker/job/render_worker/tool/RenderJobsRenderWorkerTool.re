@@ -36,7 +36,8 @@ let init = (completeFunc, state) => {
          WorkerJobTool.buildWorkerJobConfig(
            ~mainInitPipelines=
              WorkerJobTool.buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage(),
-           ~mainLoopPipelines=WorkerJobTool.buildMainLoopPipelinesConfigWithoutMessageExceptDisposeMessage(),
+           ~mainLoopPipelines=
+             WorkerJobTool.buildMainLoopPipelinesConfigWithoutMessageExceptDisposeMessage(),
            ()
          )
        );
@@ -65,9 +66,11 @@ let init = (completeFunc, state) => {
      )
 };
 
-let execMainLoopJobs = (completeFunc) =>{
-  MainInitJobToolMainWorker.prepare();
-  MainStateTool.unsafeGetState()
+let execMainLoopJobs = (sandbox, completeFunc) => {
+  let state = MainInitJobToolMainWorker.prepare();
+  let renderWorker = WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state);
+  let postMessageToRenderWorker = WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
+  state
   |> WorkerJobToolWorker.getMainLoopJobStream(
        MainStateTool.getStateData(),
        (
@@ -76,10 +79,10 @@ let execMainLoopJobs = (completeFunc) =>{
        )
      )
   |> Most.drain
-  |> then_(() => completeFunc(MainStateTool.unsafeGetState()));
+  |> then_(() => completeFunc(postMessageToRenderWorker))
 };
 
-let render = (completeFunc) => {
+let render = (postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
   let drawData = {
     "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
@@ -92,16 +95,22 @@ let render = (completeFunc) => {
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
   |> Most.drain
-  |> then_(() => completeFunc(MainStateTool.unsafeGetState()))
+  |> then_(() => completeFunc(postMessageToRenderWorker))
 };
 
-let loop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+let mainLoopAndRender =
+    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
   execMainLoopJobs(
-    (state) => {
-      beforeExecRenderRenderWorkerJobsFunc(state);
-      render(completeFunc)
+    sandbox,
+    (postMessageToRenderWorker) => {
+      beforeExecRenderRenderWorkerJobsFunc(postMessageToRenderWorker);
+      render(postMessageToRenderWorker, completeFunc)
     }
   );
 
-let initAndLoop = (~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
-  init((state) => loop(~completeFunc, ~state, ~beforeExecRenderRenderWorkerJobsFunc, ()), state);
+let initAndMainLoopAndRender =
+    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+  init(
+    (state) => mainLoopAndRender(~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc, ()),
+    state
+  );

@@ -166,7 +166,7 @@ let _ =
                     let (state, gameObject1, geometry1) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
                         geometry1,
                         state
                       );
@@ -524,7 +524,7 @@ let _ =
                     CustomGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                    VboBufferTool.addVboBufferToCustomGeometryBufferMap(
                       geometry1,
                       state
                     );
@@ -566,7 +566,7 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
                         geometry,
                         state
                       );
@@ -585,7 +585,7 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
                         geometry,
                         state
                       );

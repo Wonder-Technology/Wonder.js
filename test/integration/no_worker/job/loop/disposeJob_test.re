@@ -21,7 +21,7 @@ let _ =
         "actually do the dispose work",
         () => {
           describe(
-            "test dispose component",
+            "dispose components",
             () => {
               describe(
                 "test disposeGameObjectBasicCameraViewComponent",
@@ -340,10 +340,7 @@ let _ =
                             let (state, gameObject1, geometry1) =
                               BoxGeometryTool.createGameObject(state^);
                             let state =
-                              VboBufferTool.passBufferShouldExistCheckWhenDisposeBoxGeometry(
-                                geometry1,
-                                state
-                              );
+                              VboBufferTool.addVboBufferToBoxGeometryBufferMap(geometry1, state);
                             let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                             (state, gameObject1, geometry1)
                           };
@@ -404,7 +401,7 @@ let _ =
                             let (state, gameObject1, geometry1) =
                               CustomGeometryTool.createGameObject(state^);
                             let state =
-                              VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                              VboBufferTool.addVboBufferToCustomGeometryBufferMap(
                                 geometry1,
                                 state
                               );
@@ -420,12 +417,10 @@ let _ =
                               let {vertexArrayBufferPool, elementArrayBufferPool} =
                                 VboBufferTool.getVboBufferRecord(state);
                               (
-                                vertexArrayBufferPool
-                                |> WonderCommonlib.SparseMapService.has(geometry1),
-                                elementArrayBufferPool
-                                |> WonderCommonlib.SparseMapService.has(geometry1)
+                                vertexArrayBufferPool |> SparseMapService.length,
+                                elementArrayBufferPool |> SparseMapService.length
                               )
-                              |> expect == (true, true)
+                              |> expect == (2 * 1, 1 * 1)
                             }
                           );
                           test(
@@ -458,7 +453,7 @@ let _ =
             }
           );
           describe(
-            "test dispose gameObject",
+            "dispose gameObjects",
             () => {
               let _prepare = (state) => {
                 let (state, gameObject1, meshRenderer1) =

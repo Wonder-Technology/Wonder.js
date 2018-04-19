@@ -97,6 +97,7 @@ let _ =
                                    );
                               MainStateTool.setState(state) |> ignore;
                               RenderJobsRenderWorkerTool.execMainLoopJobs(
+                                sandbox,
                                 (_) => customData |> expect == [|1|] |> resolve
                               )
                             }
@@ -123,6 +124,7 @@ let _ =
                                );
                           MainStateTool.setState(state) |> ignore;
                           RenderJobsRenderWorkerTool.execMainLoopJobs(
+                            sandbox,
                             (_) => customData |> expect == [|2, 1|] |> resolve
                           )
                         }
@@ -133,34 +135,34 @@ let _ =
               describe(
                 "removeWorkerMainLoopJob",
                 () =>
-                  testPromise
-                    (
-                      "test remove custom added job",
-                      () => {
-                        let customData = [||];
-                        let state =
-                          state^
-                          |> JobAPI.addWorkerMainLoopJob(
-                               ("customJob", "tick"),
-                               AFTER,
-                               (stateData) => {
-                                 let state = StateDataMainService.unsafeGetState(stateData);
-                                 customData |> ArrayService.push(1) |> ignore
-                               }
-                             )
-                          |> JobAPI.removeWorkerMainLoopJob("customJob");
-                        MainStateTool.setState(state) |> ignore;
-                        RenderJobsRenderWorkerTool.execMainLoopJobs(
-                          (_) => customData |> expect == [||] |> resolve
-                        )
-                      }
-                    )
-                    /* describe(
-                         "test remove default job",
-                         () => {
-                         }
-                       ) */
+                  testPromise(
+                    "test remove custom added job",
+                    () => {
+                      let customData = [||];
+                      let state =
+                        state^
+                        |> JobAPI.addWorkerMainLoopJob(
+                             ("customJob", "tick"),
+                             AFTER,
+                             (stateData) => {
+                               let state = StateDataMainService.unsafeGetState(stateData);
+                               customData |> ArrayService.push(1) |> ignore
+                             }
+                           )
+                        |> JobAPI.removeWorkerMainLoopJob("customJob");
+                      MainStateTool.setState(state) |> ignore;
+                      RenderJobsRenderWorkerTool.execMainLoopJobs(
+                        sandbox,
+                        (_) => customData |> expect == [||] |> resolve
+                      )
+                    }
+                  )
               )
+              /* describe(
+                   "test remove default job",
+                   () => {
+                   }
+                 ) */
             }
           )
       )

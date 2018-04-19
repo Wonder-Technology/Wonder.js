@@ -45,9 +45,9 @@ let _ =
             let (state, gameObject1, geometry1) = CustomGeometryTool.createGameObject(state);
             let (state, gameObject2, geometry2) = CustomGeometryTool.createGameObject(state);
             let state =
-              VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry1, state);
+              VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry1, state);
             let state =
-              VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry2, state);
+              VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry2, state);
             let state =
               state
               |> setCustomGeometryVertices(geometry1, vertices1)

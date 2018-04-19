@@ -765,7 +765,7 @@ let _ =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
                     state
-                    |> VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                    |> VboBufferTool.addVboBufferToSourceInstanceBufferMap(
                          sourceInstance
                        );
                   let state = state |> GameObjectTool.disposeGameObject(gameObject);
@@ -1476,7 +1476,7 @@ let _ =
                                  [@bs]
                                  (
                                    (state, sourceInstance) =>
-                                     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                                     VboBufferTool.addVboBufferToSourceInstanceBufferMap(
                                        sourceInstance,
                                        state
                                      )
@@ -1508,7 +1508,7 @@ let _ =
                                  [@bs]
                                  (
                                    (state, sourceInstance) =>
-                                     VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(
+                                     VboBufferTool.addVboBufferToSourceInstanceBufferMap(
                                        sourceInstance,
                                        state
                                      )

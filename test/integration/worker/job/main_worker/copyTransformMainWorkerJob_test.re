@@ -57,9 +57,11 @@ let _ =
                      )
                    );
               let state = MainStateTool.setState(state);
-              RenderJobsRenderWorkerTool.initAndLoop(
+              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                ~state,
+                ~sandbox,
                 ~completeFunc=
-                  (state) =>
+                  (_) =>
                     uniformMatrix4fv
                     |> withOneArg(pos)
                     |> expect
@@ -88,10 +90,9 @@ let _ =
                          )
                        |])
                     |> resolve,
-                ~state,
                 ~beforeExecRenderRenderWorkerJobsFunc=
-                  (state) =>
-                    state
+                  (_) =>
+                    MainStateTool.unsafeGetState()
                     |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (10., 1., 2.))
                     |> TransformTool.update(gameObjectTransform)
                     |> MainStateTool.setState

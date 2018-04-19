@@ -51,7 +51,8 @@ let _ =
               RenderJobsRenderWorkerTool.init(
                 (state) =>
                   RenderJobsRenderWorkerTool.render(
-                    (state) =>
+                    Obj.magic(1),
+                    (_) =>
                       (uniformMatrix4fv |> getCallCount, uniform3f |> getCallCount)
                       |> expect == (0, 0)
                       |> resolve
@@ -74,7 +75,8 @@ let _ =
               RenderJobsRenderWorkerTool.init(
                 (state) =>
                   RenderJobsRenderWorkerTool.render(
-                    (state) => drawElements |> expect |> not_ |> toCalled |> resolve
+                    Obj.magic(1),
+                    (_) => drawElements |> expect |> not_ |> toCalled |> resolve
                   ),
                 state
               )

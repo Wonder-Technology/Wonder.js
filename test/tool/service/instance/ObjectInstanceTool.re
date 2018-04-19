@@ -4,7 +4,7 @@ let createObjectInstanceGameObject = (state: StateDataMainType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =
-    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
+    VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance, state);
   let (state, objectInstanceGameObject) =
     SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
   (
@@ -20,7 +20,7 @@ let createObjectInstanceGameObjectArr = (count, state: StateDataMainType.state) 
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let (state, sourceInstance) = InstanceTool.addSourceInstance(gameObject, state);
   let state =
-    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
+    VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance, state);
   let objectInstanceGameObjectArr = [||];
   for (i in 0 to count - 1) {
     let (state, objectInstanceGameObject) =

@@ -6,7 +6,7 @@ let createSourceInstanceGameObject = (state: StateDataMainType.state) => {
   /* let (state, _) = SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state); */
   let (state, _) = SourceInstanceAPI.createObjectInstanceGameObject(sourceInstance, state);
   let state =
-    VboBufferTool.passBufferShouldExistCheckWhenDisposeSourceInstance(sourceInstance, state);
+    VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance, state);
   (state, gameObject, sourceInstance)
 };
 

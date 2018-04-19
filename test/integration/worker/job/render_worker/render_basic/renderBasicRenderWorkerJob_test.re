@@ -42,11 +42,10 @@ let _ =
             "test",
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
-
-              RenderJobsRenderWorkerTool.initAndLoop(
-                ~completeFunc=
-                  (state) => useProgram |> expect |> toCalledWith([|program|]) |> resolve,
+              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,
+                ~sandbox,
+                ~completeFunc=(_) => useProgram |> expect |> toCalledWith([|program|]) |> resolve,
                 ()
               )
             }
@@ -87,9 +86,11 @@ let _ =
                          )
                        );
                   let state = MainStateTool.setState(state);
-                  RenderJobsRenderWorkerTool.initAndLoop(
+                  RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                    ~state,
+                    ~sandbox,
                     ~completeFunc=
-                      (state) =>
+                      (_) =>
                         uniformMatrix4fv
                         |> withOneArg(pos)
                         |> expect
@@ -118,7 +119,6 @@ let _ =
                              )
                            |])
                         |> resolve,
-                    ~state,
                     ()
                   )
                 }
@@ -158,9 +158,11 @@ let _ =
                              )
                            );
                       let state = MainStateTool.setState(state);
-                      RenderJobsRenderWorkerTool.initAndLoop(
+                      RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                        ~state,
+                        ~sandbox,
                         ~completeFunc=
-                          (state) =>
+                          (_) =>
                             uniformMatrix4fv
                             |> withOneArg(pos)
                             |> getCall(1)
@@ -173,7 +175,6 @@ let _ =
                                  )
                                |])
                             |> resolve,
-                        ~state,
                         ()
                       )
                     }
