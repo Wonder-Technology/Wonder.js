@@ -139,7 +139,7 @@ let _ =
                   let (state, boxGeometry2) = BoxGeometryAPI.createBoxGeometry(state);
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                    |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                          gameObject,
                          customGeometry1
                        )

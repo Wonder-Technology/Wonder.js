@@ -42,7 +42,7 @@ let disposeInstanceBufferData =
   matrixInstanceBufferMap: disposeSparseMapData(sourceInstance, matrixInstanceBufferMap)
 };
 
-let disposeGeometryVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
+let disposeBoxGeometryVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
   boxGeometryNeedDisposeVboBufferArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -51,6 +51,19 @@ let disposeGeometryVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRec
            vboBufferRecord
            |> PoolVboBufferService.addBoxGeometryBufferToPool(geometry)
            |> disposeBoxGeometryBufferData(geometry)
+       ),
+       vboBufferRecord
+     );
+
+let disposeCustomGeometryVboBuffer = (customGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
+  customGeometryNeedDisposeVboBufferArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (vboBufferRecord, geometry) =>
+           vboBufferRecord
+           |> PoolVboBufferService.addCustomGeometryBufferToPool(geometry)
+           |> disposeCustomGeometryBufferData(geometry)
        ),
        vboBufferRecord
      );

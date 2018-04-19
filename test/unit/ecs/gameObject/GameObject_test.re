@@ -1735,7 +1735,7 @@ let _ =
                 () => _testThreeParmFunc(addGameObjectBoxGeometryComponent)
               );
               test(
-                "disposeGameObjectBoxGeometryComponentWithoutVboBuffer should error",
+                "disposeGameObjectBoxGeometryComponentshould error",
                 () => _testThreeParmFunc(disposeGameObjectBoxGeometryComponent)
               );
               test(
@@ -1743,7 +1743,7 @@ let _ =
                 () => _testThreeParmFunc(addGameObjectCustomGeometryComponent)
               );
               test(
-                "disposeGameObjectCustomGeometryComponent should error",
+                "disposeGameObjectCustomGeometryComponentshould error",
                 () => _testThreeParmFunc(disposeGameObjectCustomGeometryComponent)
               )
             }

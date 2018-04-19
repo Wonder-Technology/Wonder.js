@@ -11,10 +11,10 @@ let _batchDisposeGeometryComponent = (uidArray, disposedUidMap, state) => {
     state |> BatchGetComponentGameObjectMainService.batchGetGeometryComponentData(uidArray);
   let (state, boxGeometryNeedDisposeVboBufferArr) =
     boxGeometryArr |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(state);
-  let state =
+  let (state, customGeometryNeedDisposeVboBufferArr) =
     customGeometryArr
     |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(state);
-  (state, boxGeometryNeedDisposeVboBufferArr)
+  (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr)
 };
 
 let batchDispose =
@@ -27,7 +27,11 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(state, isKeepOrder);
-  let (state, boxGeometryNeedDisposeVboBufferArrFromGeometry) =
+  let (
+    state,
+    boxGeometryNeedDisposeVboBufferArrFromGeometry,
+    customGeometryNeedDisposeVboBufferArr
+  ) =
     state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
   let state =
     state
@@ -65,7 +69,7 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPointLightComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposePointLightComponent(state);
-  let (state, boxGeometryNeedDisposeVboBufferArrFromSourceInstance) =
+  let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetSourceInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
@@ -77,9 +81,5 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetObjectInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state);
-  (
-    state,
-    boxGeometryNeedDisposeVboBufferArrFromGeometry
-    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromSourceInstance)
-  )
+  (state, boxGeometryNeedDisposeVboBufferArrFromGeometry, customGeometryNeedDisposeVboBufferArr)
 };

@@ -62,7 +62,7 @@ let _ =
               |> setCustomGeometryIndices(geometry2, indices2);
             let state =
               state
-              |> GameObjectTool.disposeGameObjectCustomGeometryComponent(gameObject1, geometry1);
+              |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(gameObject1, geometry1);
             let (state, gameObject3, geometry3) = CustomGeometryTool.createGameObject(state);
             let state = state |> setCustomGeometryVertices(geometry3, vertices3);
             let state = state |> setCustomGeometryNormals(geometry3, normals3);

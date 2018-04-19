@@ -23,11 +23,8 @@ let _ =
           state := TestTool.init(~sandbox, ())
         }
       );
-      afterEach(() => {restoreSandbox(refJsObjToSandbox(sandbox^));
-      
-                            /* let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ()); */
-      
-      });
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      /* let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ()); */
       describe(
         "createCustomGeometry",
         () =>
@@ -154,7 +151,7 @@ let _ =
                            );
                       let state =
                         state
-                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                              gameObject1,
                              geometry1
                            );
@@ -175,7 +172,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                            gameObject1,
                            geometry1
                          );
@@ -192,21 +189,6 @@ let _ =
                         gameObjectMap |> WonderCommonlib.SparseMapService.has(geometry1)
                       )
                       |> expect == (false, false)
-                    }
-                  );
-                  test(
-                    "remove from buffer map",
-                    () => {
-                      open VboBufferType;
-                      let (state, gameObject1, geometry1) = _prepare(state);
-                      let {customGeometryVertexBufferMap, customGeometryNormalBufferMap, customGeometryElementArrayBufferMap} =
-                        VboBufferTool.getVboBufferRecord(state);
-                      (
-                        customGeometryVertexBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        customGeometryNormalBufferMap |> WonderCommonlib.SparseMapService.has(geometry1),
-                        customGeometryElementArrayBufferMap |> WonderCommonlib.SparseMapService.has(geometry1)
-                      )
-                      |> expect == (false, false, false)
                     }
                   );
                   describe(
@@ -239,7 +221,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                              gameObject1,
                                              geometry1
                                            );
@@ -278,7 +260,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                              gameObject2,
                                              geometry2
                                            );
@@ -351,7 +333,7 @@ let _ =
                                     _prepare(state^);
                                   let state =
                                     state
-                                    |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                    |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                          gameObject1,
                                          geometry1
                                        );
@@ -394,13 +376,13 @@ let _ =
                                 _prepare(state^);
                               let state =
                                 state
-                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                      gameObject1,
                                      geometry1
                                    );
                               let state =
                                 state
-                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                      gameObject3,
                                      geometry3
                                    );
@@ -430,7 +412,7 @@ let _ =
                                 _prepare(state^);
                               let state =
                                 state
-                                |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                      gameObject1,
                                      geometry1
                                    );
@@ -482,7 +464,7 @@ let _ =
                                         _prepare(state^);
                                       let state =
                                         state
-                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                              gameObject2,
                                              geometry2
                                            );
@@ -492,7 +474,7 @@ let _ =
                                         state |> GameObjectAPI.initGameObject(gameObject4);
                                       let state =
                                         state
-                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                                              gameObject4,
                                              geometry4
                                            );
@@ -542,10 +524,13 @@ let _ =
                     CustomGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry1, state);
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                      geometry1,
+                      state
+                    );
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                    |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                          gameObject1,
                          geometry1
                        );
@@ -553,7 +538,7 @@ let _ =
                     () => {
                       let state =
                         state
-                        |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                              gameObject1,
                              geometry1
                            );
@@ -581,10 +566,13 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                        geometry,
+                        state
+                      );
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                            gameObject,
                            geometry
                          );
@@ -597,10 +585,13 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(geometry, state);
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeCustomGeometry(
+                        geometry,
+                        state
+                      );
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectCustomGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
                            gameObject,
                            geometry
                          );

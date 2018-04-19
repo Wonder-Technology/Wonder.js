@@ -20,7 +20,7 @@ let _disposeData =
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (geometryArray: array(geometry), {vboBufferRecord} as state) => {
+    (geometryArray: array(geometry), state) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(

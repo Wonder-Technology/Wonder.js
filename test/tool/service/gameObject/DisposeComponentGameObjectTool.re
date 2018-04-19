@@ -47,16 +47,6 @@ let disposeTransformComponent =
       )
   );
 
-let disposeCustomGeometryComponent =
-  [@bs]
-  (
-    (component: component, {settingRecord, gameObjectRecord} as state) =>
-      /* TODO refactor: move to handleDisposeComponent */
-      /* CurrentComponentDataMapRenderTool.removeFromMap(uid, gameObjectRecord.currentGeometryDataMap)
-         |> ignore; */
-      DisposeCustomGeometryTool.handleDisposeComponent(component, state)
-  );
-
 let disposePerspectiveCameraProjectionComponent =
   [@bs]
   (
@@ -128,10 +118,6 @@ let disposePointLightComponent =
       pointLightRecord: DisposePointLightTool.handleDisposeComponent(component, pointLightRecord)
     }
   );
-
-let disposeSourceInstanceComponent = (component: component, batchDisposeGameObjectFunc, state) =>
-  [@bs]
-  DisposeSourceInstanceTool.handleDisposeComponent(component, batchDisposeGameObjectFunc, state);
 
 /* let disposeObjectInstanceComponent =
    [@bs]

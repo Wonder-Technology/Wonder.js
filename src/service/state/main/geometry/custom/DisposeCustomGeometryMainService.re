@@ -19,57 +19,43 @@ let isAlive = (geometry, {disposedIndexArray}) =>
 let _disposeData =
     (
       geometry,
-      (
-        vboBufferRecord,
-        {
-          disposeCount,
-          disposedIndexArray,
-          disposedIndexMap,
-          /* verticesInfoArray,
-             normalsInfoArray,
-             indicesInfoArray, */
-          /* computeDataFuncMap,
-             configDataMap, */
-          gameObjectMap,
-          /* isInitMap, */
-          groupCountMap
-        } as customGeometryRecord
-      )
+      {
+        disposeCount,
+        disposedIndexArray,
+        disposedIndexMap,
+        /* verticesInfoArray,
+           normalsInfoArray,
+           indicesInfoArray, */
+        /* computeDataFuncMap,
+           configDataMap, */
+        gameObjectMap,
+        /* isInitMap, */
+        groupCountMap
+      } as customGeometryRecord
     ) => {
-  let vboBufferRecord =
-    DisposeVboBufferService.disposeCustomGeometryBufferData(geometry, vboBufferRecord);
-  (
-    vboBufferRecord,
-    {
-      ...customGeometryRecord,
-      disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-      disposedIndexMap: disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
-      disposeCount: succ(disposeCount),
-      /* computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
-         configDataMap: configDataMap |> disposeSparseMapData(geometry), */
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
-      /* isInitMap: isInitMap |> disposeSparseMapData(geometry), */
-      groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
-    }: customGeometryRecord
-  )
+  ...customGeometryRecord,
+  disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
+  disposedIndexMap: disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
+  disposeCount: succ(disposeCount),
+  /* computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
+     configDataMap: configDataMap |> disposeSparseMapData(geometry), */
+  gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
+  /* isInitMap: isInitMap |> disposeSparseMapData(geometry), */
+  groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
 };
 
-let _handleByDisposeCount =
-    (settingRecord, (vboBufferRecord, customGeometryRecord: customGeometryRecord)) =>
+let _handleByDisposeCount = (settingRecord, customGeometryRecord: customGeometryRecord) =>
   if (QueryCPUMemoryService.isDisposeTooMany(customGeometryRecord.disposeCount, settingRecord)) {
     customGeometryRecord.disposeCount = 0;
-    (vboBufferRecord, ReallocateCustomGeometryCPUMemoryService.reAllocate(customGeometryRecord))
+    ReallocateCustomGeometryCPUMemoryService.reAllocate(customGeometryRecord)
   } else {
-    (vboBufferRecord, customGeometryRecord)
+    customGeometryRecord
   };
 
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (
-      geometryArray: array(geometry),
-      {settingRecord, vboBufferRecord} as state
-    ) => {
+    (geometryArray: array(geometry), {settingRecord} as state) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(
@@ -87,31 +73,32 @@ let handleBatchDisposeComponent =
       );
       /* let {disposedIndexMap} = state |> RecordCustomGeometryMainService.getRecord; */
       let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
-      let (vboBufferRecord, customGeometryRecord) =
+      let (geometryNeedDisposeVboBufferArr, customGeometryRecord) =
         geometryArray
         |> WonderCommonlib.ArrayService.reduceOneParam(
              [@bs]
              (
-               ((vboBufferRecord, customGeometryRecord), geometry) =>
+               ((geometryNeedDisposeVboBufferArr, customGeometryRecord), geometry) =>
                  switch (
                    GroupCustomGeometryService.isGroupGeometry(geometry, customGeometryRecord)
                  ) {
-                 | false =>
-                   let vboBufferRecord =
-                     PoolVboBufferService.addCustomGeometryBufferToPool(geometry, vboBufferRecord);
-                   /* customGeometryRecord.disposedIndexArray =
-                      disposedIndexArray |> ArrayService.push(geometry); */
-                   _disposeData(geometry, (vboBufferRecord, customGeometryRecord))
-                   |> _handleByDisposeCount(settingRecord)
+                 | false => (
+                     geometryNeedDisposeVboBufferArr |> ArrayService.push(geometry),
+                     _disposeData(geometry, customGeometryRecord)
+                     |> _handleByDisposeCount(settingRecord)
+                   )
                  | true => (
-                     vboBufferRecord,
+                     geometryNeedDisposeVboBufferArr,
                      GroupCustomGeometryService.decreaseGroupCount(geometry, customGeometryRecord)
                    )
                  }
              ),
-             (vboBufferRecord, customGeometryRecord)
+             ([||], customGeometryRecord)
            );
-      {...state, vboBufferRecord, customGeometryRecord: Some(customGeometryRecord)}
+      (
+        {...state, customGeometryRecord: Some(customGeometryRecord)},
+        geometryNeedDisposeVboBufferArr
+      )
     }
   );
 

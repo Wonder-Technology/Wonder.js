@@ -392,7 +392,7 @@ let _ =
                   )
               );
               describe(
-                "test disposeGameObjectCustomGeometryComponent",
+                "test disposeGameObjectCustomGeometryComponentWithoutVboBuffer",
                 () =>
                   describe(
                     "dispose data in dispose job",
