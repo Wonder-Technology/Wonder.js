@@ -58,9 +58,12 @@ let disposeGameObjectTransformComponent =
     (gameObject: gameObject, component: component, isKeepOrder, state: StateDataMainType.state) =>
   [@bs] DisposeComponentGameObjectTool.disposeTransformComponent(component, isKeepOrder, state);
 
-let disposeGameObjectBoxGeometryComponent =
-    (gameObject: gameObject, component: component, state: StateDataMainType.state) =>
-  [@bs] DisposeComponentGameObjectTool.disposeBoxGeometryComponent(component, state);
+let disposeGameObjectBoxGeometryComponentWithoutVboBuffer =
+    (gameObject: gameObject, component: component, state: StateDataMainType.state) => {
+  let (state, boxGeometryNeedDisposeVboBufferArr) =
+    DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(state, [|component|]);
+  state
+};
 
 let disposeGameObjectCustomGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) =>

@@ -70,9 +70,11 @@ let _ =
                   ) =
                     VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry1, state);
                   let state =
-                    state |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    state
+                    |> GameObjectAPI.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GameObjectAPI.initGameObject(gameObject2);
+                  let state = state |> DisposeJob.execJob(None);
                   let (
                     resultVertexArrayBuffer2,
                     resultNormalArrayBuffer2,
@@ -112,8 +114,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   let instanceBuffer1 =
                     VboBufferTool.getOrCreateInstanceBuffer(
                       sourceInstance1,
@@ -122,10 +123,11 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
+                    |> GameObjectAPI.disposeGameObjectSourceInstanceComponent(
                          gameObject1,
                          sourceInstance1
                        );
+                  let state = state |> DisposeJob.execJob(None);
                   let (state, gameObject2, (_, _, _, sourceInstance2, _)) =
                     RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
                   let instanceBuffer2 =

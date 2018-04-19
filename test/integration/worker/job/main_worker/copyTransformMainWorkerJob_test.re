@@ -4,7 +4,7 @@ open Js.Promise;
 
 let _ =
   describe(
-    "test copy transform worker job",
+    "test copy transform main worker job",
     () => {
       open Expect;
       open Expect.Operators;

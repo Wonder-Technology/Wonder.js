@@ -47,13 +47,6 @@ let disposeTransformComponent =
       )
   );
 
-let disposeBoxGeometryComponent =
-  [@bs]
-  (
-    (component: component, {settingRecord, gameObjectRecord} as state) =>
-      DisposeBoxGeometryTool.handleDisposeComponent(component, state)
-  );
-
 let disposeCustomGeometryComponent =
   [@bs]
   (

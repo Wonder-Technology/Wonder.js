@@ -55,7 +55,7 @@ let _ =
                           |> CustomGeometryAPI.setCustomGeometryIndices(customGeometry2, indices2);
                         let state =
                           state
-                          |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
+                          |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(
                                gameObject,
                                boxGeometry
                              )
@@ -97,7 +97,7 @@ let _ =
                            let (state, customGeometry2) = CustomGeometryAPI.createCustomGeometry(state);
                            let state =
                              state
-                             |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
+                             |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(
                                   gameObject,
                                   boxGeometry
                                 )
@@ -161,7 +161,7 @@ let _ =
                  let (state, gameObject, boxGeometry) = BoxGeometryTool.createGameObject(state^);
                  let state =
                    state
-                   |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, boxGeometry);
+                   |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, boxGeometry);
                  expect(
                    () =>
                      state

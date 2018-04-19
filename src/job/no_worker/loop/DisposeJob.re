@@ -83,26 +83,18 @@ let _disposeComponents = ({settingRecord, gameObjectRecord} as state) => {
 
 let _disposeGameObjects = ({gameObjectRecord} as state) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
+  let (state, boxGeometryNeedDisposeVboBufferArrForNotKeepOrder) =
     state |> DisposeGameObjectMainService.batchDispose(disposedUidArray, false);
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
+  let (state, boxGeometryNeedDisposeVboBufferArrForKeepOrder) =
     state |> DisposeGameObjectMainService.batchDispose(disposedUidArrayForKeepOrder, true);
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
-  (state, boxGeometryNeedDisposeVboBufferArr)
+  (
+    state,
+    boxGeometryNeedDisposeVboBufferArrForNotKeepOrder
+    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrForKeepOrder)
+  )
 };
 
-/* let _disposeVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
-   boxGeometryNeedDisposeVboBufferArr
-   |> WonderCommonlib.ArrayService.reduceOneParam(
-        [@bs]
-        (
-          (vboBufferRecord, geometry) =>
-            vboBufferRecord
-            |> PoolVboBufferService.addBoxGeometryBufferToPool(geometry)
-            |> DisposeVboBufferService.disposeBoxGeometryBufferData(geometry)
-        ),
-        vboBufferRecord
-      ); */
 let execJob = (flags, state) => {
   let (state, boxGeometryNeedDisposeVboBufferArrFromComponent) = state |> _disposeComponents;
   let (state, boxGeometryNeedDisposeVboBufferArrFromGameObject) = state |> _disposeGameObjects;

@@ -84,7 +84,7 @@ let _ =
         "dispose component",
         () => {
           describe(
-            "dispose data",
+            "dispose geometry data",
             () => {
               describe(
                 "test dispose shared geometry",
@@ -107,7 +107,7 @@ let _ =
                         |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject3, geometry1);
                       let state =
                         state
-                        |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(
                              gameObject1,
                              geometry1
                            );
@@ -125,10 +125,9 @@ let _ =
                         geometry1,
                         state
                       );
-                    /*let state = state |> BoxGeometryTool.initGeometrys;*/
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(
                            gameObject1,
                            geometry1
                          );
@@ -148,28 +147,6 @@ let _ =
                       |> expect == (false, false)
                     }
                   );
-                  test(
-                    "remove from buffer map",
-                    () => {
-                      open VboBufferType;
-                      let (state, gameObject1, geometry1) = _prepare(state);
-                      let {
-                        boxGeometryVertexBufferMap,
-                        boxGeometryNormalBufferMap,
-                        boxGeometryElementArrayBufferMap
-                      } =
-                        VboBufferTool.getVboBufferRecord(state);
-                      (
-                        boxGeometryVertexBufferMap
-                        |> WonderCommonlib.SparseMapService.has(geometry1),
-                        boxGeometryNormalBufferMap
-                        |> WonderCommonlib.SparseMapService.has(geometry1),
-                        boxGeometryElementArrayBufferMap
-                        |> WonderCommonlib.SparseMapService.has(geometry1)
-                      )
-                      |> expect == (false, false, false)
-                    }
-                  )
                 }
               )
             }
@@ -189,7 +166,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   geometry2 |> expect == geometry1
                 }
@@ -206,7 +183,7 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject1, geometry1);
                   let (state, geometry2) = createBoxGeometry(state);
                   let (state, geometry3) = createBoxGeometry(state);
                   (geometry2, geometry3) |> expect == (geometry1, geometry1 + 1)
@@ -229,12 +206,12 @@ let _ =
                     );
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject1, geometry1);
+                    |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject1, geometry1);
                   expect(
                     () => {
                       let state =
                         state
-                        |> GameObjectTool.disposeGameObjectBoxGeometryComponent(
+                        |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(
                              gameObject1,
                              geometry1
                            );
@@ -268,7 +245,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, geometry);
                     expect(() => getFunc(geometry, state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };
@@ -284,7 +261,7 @@ let _ =
                       );
                     let state =
                       state
-                      |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+                      |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, geometry);
                     expect(() => setFunc(geometry, Obj.magic(0), state))
                     |> toThrowMessage("expect component alive, but actual not")
                   };

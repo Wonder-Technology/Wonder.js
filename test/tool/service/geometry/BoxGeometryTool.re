@@ -31,12 +31,9 @@ let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
 
 let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
 
-let dispose = (geometry, state: StateDataMainType.state) =>
-  DisposeBoxGeometryTool.handleDisposeComponent(geometry, state);
-
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
-  let state = state |> GameObjectTool.disposeGameObjectBoxGeometryComponent(gameObject, geometry);
+  let state = state |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, geometry);
   TestTool.openContractCheck();
   state
 };
