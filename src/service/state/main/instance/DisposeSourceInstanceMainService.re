@@ -25,6 +25,23 @@ let _disposeObjectInstanceGameObject =
     )
     |> Js.Array.copy;
   batchDisposeGameObjectFunc(objectInstanceGameObjectArr, isKeepOrder, state)
+  |> WonderLog.Contract.ensureCheck(
+       ((state, boxGeometryNeedDisposeVboBufferArr)) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|boxGeometryNeedDisposeVboBufferArr from object instance gameObject should be empty|j},
+                   ~actual={j|is $boxGeometryNeedDisposeVboBufferArr|j}
+                 ),
+                 () => boxGeometryNeedDisposeVboBufferArr |> Js.Array.length == 0
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     )
 };
 
 let _disposeData =
