@@ -8,46 +8,43 @@ let _initMaterialShader =
       (materialIndex: int, isSourceInstance, isSupportInstance),
       (buildGLSLSourceFunc, setShaderIndexFunc, getShaderLibItemsFunc),
       {materialRecord, renderConfigRecord} as state
-    ) =>
-  ShaderIndicesService.hasShaderIndex(materialIndex, materialRecord.shaderIndices) ?
-    state :
-    {
-      let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
-      [@bs]
-      setShaderIndexFunc(
-        materialIndex,
-        InitShaderInitMaterialService.initMaterialShader(
-          materialIndex,
+    ) => {
+  let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
+  [@bs]
+  setShaderIndexFunc(
+    materialIndex,
+    InitShaderInitMaterialService.initMaterialShader(
+      materialIndex,
+      (
+        gl,
+        GetDataRenderConfigService.getMaterialShaderLibDataArr(
+          isSourceInstance,
+          isSupportInstance,
           (
-            gl,
-            GetDataRenderConfigService.getMaterialShaderLibDataArr(
-              isSourceInstance,
-              isSupportInstance,
-              (
-                shaders,
-                getShaderLibItemsFunc(shaders),
-                GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
-              )
-            )
-          ),
-          buildGLSLSourceFunc,
-          /* (
-               directionLightIn,ex
-               pointLightRecord,
-               shaderRecord,
-               programRecord,
-               glslRecord,
-               glslSenderRecord,
-               glslLocationRecord,
-               glslChunkRecord
-             ) */
-          state
-        ),
-        materialRecord.shaderIndices
-      )
-      |> ignore;
+            shaders,
+            getShaderLibItemsFunc(shaders),
+            GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
+          )
+        )
+      ),
+      buildGLSLSourceFunc,
+      /* (
+           directionLightIn,ex
+           pointLightRecord,
+           shaderRecord,
+           programRecord,
+           glslRecord,
+           glslSenderRecord,
+           glslLocationRecord,
+           glslChunkRecord
+         ) */
       state
-    };
+    ),
+    materialRecord.shaderIndices
+  )
+  |> ignore;
+  state
+};
 
 let initMaterial = (gl, dataTuple, funcTuple, state) =>
   _initMaterialShader(gl, dataTuple, funcTuple, state);

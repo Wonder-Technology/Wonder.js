@@ -1,34 +1,8 @@
 open StateInitMaterialType;
 
-/* let createInitMaterialState =
-       (
-         (
-           index,
-           disposedIndexArray,
-           shaderIndices,
-           directionLightIndex,
-           pointLightIndex,
-           renderConfigRecord,
-           shaderRecord,
-           programRecord,
-           glslRecord,
-           glslSenderRecord,
-           glslLocationRecord,
-           glslChunkRecord
-         )
-         state
-       ) => {
-     materialRecord: {index, disposedIndexArray, shaderIndices},
-     directionLightIndex,
-     pointLightIndex,
-     renderConfigRecord,
-     shaderRecord,
-     programRecord,
-     glslRecord,
-     glslSenderRecord,
-     glslLocationRecord,
-     glslChunkRecord
-   }; */
+/* TODO refactor: extract:
+   createInitBasicMaterialState(no light data)
+   createInitLightMaterialState */
 let createInitMaterialState =
     (
       (index, disposedIndexArray, shaderIndices),

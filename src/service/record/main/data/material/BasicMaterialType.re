@@ -11,5 +11,6 @@ type basicMaterialRecord = {
   defaultColor: array(float),
   gameObjectMap,
   groupCountMap,
-  disposedIndexArray
+  disposedIndexArray,
+  materialArrayForWorkerInit: array(int)
 };

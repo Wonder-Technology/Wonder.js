@@ -34,6 +34,7 @@ let _getWorkerJobHandles = () => [
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
   ("get_render_data", GetRenderDataRenderWorkerJob.execJob),
+  ("init_material_for_render", InitMaterialForRenderRenderWorkerJob.execJob),
   ("clear_color", ClearColorRenderWorkerJob.execJob),
   ("clear_buffer", ClearBufferRenderWorkerJob.execJob),
   ("clear_last_send_component", ClearLastSendComponentRenderWorkerJob.execJob),

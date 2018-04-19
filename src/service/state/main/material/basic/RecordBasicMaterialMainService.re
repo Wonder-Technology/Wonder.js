@@ -53,7 +53,8 @@ let create = ({settingRecord} as state) => {
       defaultColor,
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty()
     });
   state
 };
@@ -68,7 +69,8 @@ let deepCopyForRestore = (state) => {
         defaultColor,
         groupCountMap,
         gameObjectMap,
-        disposedIndexArray
+        disposedIndexArray,
+        materialArrayForWorkerInit
       } as record =
     state |> getRecord;
   {
@@ -86,7 +88,9 @@ let deepCopyForRestore = (state) => {
         defaultColor,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+        /* TODO test */
+        materialArrayForWorkerInit: materialArrayForWorkerInit |> Js.Array.copy
       })
   }
 };

@@ -47,35 +47,10 @@ let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.
   [@bs] ShaderIndexBasicMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
 
 let dispose = (material, state: StateDataMainType.state) =>
-  GameObjectTool.disposeGameObjectBasicMaterialComponent(-1, material, state);
+  GameObjectTool.disposeGameObjectBasicMaterialComponent((-1), material, state);
 
 let initMaterial = (materialIndex, state) =>
-  /* let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
-     [@bs]
-     InitBasicMaterialInitMaterialService.initMaterial(
-       [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-       (
-         materialIndex,
-         JudgeInstanceMainService.isSourceInstance(
-           materialIndex,
-           gameObjectMap,
-           state.gameObjectRecord
-         ),
-         JudgeInstanceMainService.isSupportInstance(state)
-       ),
-
-       CreateInitMaterialStateMainService.createInitMaterialState(
-         (index, disposedIndexArray, shaderIndices),
-         state
-       )
-     )
-     |> ignore;
-     state */
-  InitBasicMaterialMainService.handleInitComponent(
-    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    materialIndex,
-    state
-  );
+  InitBasicMaterialMainService.handleInitComponent(materialIndex, state);
 
 let isMaterialDisposed = (material, state) => {
   open BasicMaterialType;

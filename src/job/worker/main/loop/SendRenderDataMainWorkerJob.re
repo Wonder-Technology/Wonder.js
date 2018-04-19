@@ -1,11 +1,15 @@
 open StateDataMainType;
 
+open BasicMaterialType;
+
 open RenderType;
 
 open RenderCameraType;
 
 let _buildData = (operateType, stateData) => {
-  let {settingRecord} as state = StateDataMainService.unsafeGetState(stateData);
+  let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
+    StateDataMainService.unsafeGetState(stateData);
+  let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
@@ -19,6 +23,28 @@ let _buildData = (operateType, stateData) => {
     };
   {
     "operateType": operateType,
+    "initData": {
+      "materialData": {
+        "basicMaterialData": {
+          "materialDataForWorkerInit":
+            basicMaterialRecord.materialArrayForWorkerInit
+            |> Js.Array.map(
+                 (materialIndex) => (
+                   materialIndex,
+                   JudgeInstanceMainService.isSourceInstance(
+                     materialIndex,
+                     basicMaterialRecord.gameObjectMap,
+                     gameObjectRecord
+                   )
+                 )
+               ),
+          "index": basicMaterialRecord.index,
+          "disposedIndexArray": basicMaterialRecord.disposedIndexArray
+        }
+      },
+      "directionLightData": {"index": directionLightRecord.index},
+      "pointLightData": {"index": pointLightRecord.index}
+    },
     "renderData": {
       "isRender": isRender,
       "camera": cameraData,

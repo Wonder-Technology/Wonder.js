@@ -65,6 +65,9 @@
         ]
     },
     {
+        "name": "init_material_for_render"
+    },
+    {
         "name": "clear_last_send_component"
     },
     {

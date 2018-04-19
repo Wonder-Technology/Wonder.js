@@ -43,6 +43,9 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "init_material_for_render"
+                    },
+                    {
                         "name": "clear_color"
                     },
                     {
