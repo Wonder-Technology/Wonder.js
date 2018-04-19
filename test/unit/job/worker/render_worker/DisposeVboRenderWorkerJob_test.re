@@ -26,11 +26,15 @@ let _ =
       describe(
         "dispose vbo buffer data",
         () => {
-          /* TODO duplicate */
           let _prepare = (state) => {
-            let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-            let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-            let (state, gameObject3, geometry3) = CustomGeometryTool.createGameObject(state);
+            let (state, (gameObject1, gameObject2, gameObject3), (geometry1, geometry2, geometry3)) =
+              DisposeJobTool.prepareBoxAndCustomGeometryGameObjects(state);
+            let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
+            renderWorkerState.vboBufferRecord =
+              renderWorkerState.vboBufferRecord
+              |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry1)
+              |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry2)
+              |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(geometry3);
             (state, (gameObject1, gameObject2, gameObject3), (geometry1, geometry2, geometry3))
           };
           testPromise(
@@ -43,12 +47,6 @@ let _ =
                 (geometry1, geometry2, geometry3)
               ) =
                 _prepare(state);
-              let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
-              renderWorkerState.vboBufferRecord =
-                renderWorkerState.vboBufferRecord
-                |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry1)
-                |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry2)
-                |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(geometry3);
               DisposeVboRenderWorkerJob.execJob(
                 None,
                 Some({
@@ -78,7 +76,6 @@ let _ =
           testPromise(
             "remove from buffer map",
             () => {
-              /* TODO duplicate */
               open VboBufferType;
               let (
                 state,
@@ -86,12 +83,6 @@ let _ =
                 (geometry1, geometry2, geometry3)
               ) =
                 _prepare(state);
-              let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
-              renderWorkerState.vboBufferRecord =
-                renderWorkerState.vboBufferRecord
-                |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry1)
-                |> VboBufferTool.addVboBufferToBoxGeometryBufferMapByRecord(geometry2)
-                |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(geometry3);
               DisposeVboRenderWorkerJob.execJob(
                 None,
                 Some({

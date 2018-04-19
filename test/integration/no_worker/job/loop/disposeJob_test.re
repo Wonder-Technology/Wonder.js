@@ -336,19 +336,11 @@ let _ =
                       describe(
                         "dispose vbo buffer data",
                         () => {
-                          let _prepare = (state) => {
-                            let (state, gameObject1, geometry1) =
-                              BoxGeometryTool.createGameObject(state^);
-                            let state =
-                              VboBufferTool.addVboBufferToBoxGeometryBufferMap(geometry1, state);
-                            let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-                            (state, gameObject1, geometry1)
-                          };
                           test(
                             "add buffer to pool",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = _prepare(state);
+                              let (state, gameObject1, geometry1) = DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state = state |> DisposeJob.execJob(None);
                               let {vertexArrayBufferPool, elementArrayBufferPool} =
                                 VboBufferTool.getVboBufferRecord(state);
@@ -365,7 +357,7 @@ let _ =
                             "remove from buffer map",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = _prepare(state);
+                              let (state, gameObject1, geometry1) = DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state = state |> DisposeJob.execJob(None);
                               let {
                                 boxGeometryVertexBufferMap,
@@ -456,10 +448,7 @@ let _ =
             "dispose gameObjects",
             () => {
               let _prepare = (state) => {
-                let (state, gameObject1, meshRenderer1) =
-                  MeshRendererTool.createGameObject(state^);
-                let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
-                (state, gameObject1, gameObject2)
+                DisposeJobTool.prepareForDisposeGameObjects(state)
               };
               describe(
                 "test batchDisposeGameObject",

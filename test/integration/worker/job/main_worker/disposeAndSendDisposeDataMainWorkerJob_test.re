@@ -37,24 +37,13 @@ let _ =
                     () =>
                       describe(
                         "not dispose main state->vbo buffer data",
-                        () => {
-                          /* TODO duplicate */
-                          let _prepare = (state) => {
-                            let (state, gameObject1, geometry1) =
-                              BoxGeometryTool.createGameObject(state^);
-                            let state =
-                              VboBufferTool.addVboBufferToBoxGeometryBufferMap(
-                                geometry1,
-                                state
-                              );
-                            let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-                            (state, gameObject1, geometry1)
-                          };
+                        () =>
                           testPromise(
                             "not add buffer to pool",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = _prepare(state);
+                              let (state, gameObject1, geometry1) =
+                                DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state =
                                 state
                                 |> FakeGlToolWorker.setFakeGl(
@@ -82,7 +71,6 @@ let _ =
                               )
                             }
                           )
-                        }
                       )
                   )
               )
@@ -91,12 +79,7 @@ let _ =
       describe(
         "dispose gameObjects",
         () => {
-          /* TODO duplicate */
-          let _prepare = (state) => {
-            let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state^);
-            let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
-            (state, gameObject1, gameObject2)
-          };
+          let _prepare = (state) => DisposeJobTool.prepareForDisposeGameObjects(state);
           describe(
             "test disposeGameObject",
             () =>
@@ -131,9 +114,12 @@ let _ =
           testPromise(
             "send dispose data",
             () => {
-              let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-              let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-              let (state, gameObject3, geometry3) = CustomGeometryTool.createGameObject(state);
+              let (
+                state,
+                (gameObject1, gameObject2, gameObject3),
+                (geometry1, geometry2, geometry3)
+              ) =
+                DisposeJobTool.prepareBoxAndCustomGeometryGameObjects(state);
               let state =
                 state
                 |> GameObjectAPI.batchDisposeGameObject([|gameObject1, gameObject2, gameObject3|]);
