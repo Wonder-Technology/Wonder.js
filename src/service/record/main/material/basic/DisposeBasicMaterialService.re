@@ -46,10 +46,7 @@ let _handleDispose = (disposedIndexArray, material, record) =>
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (
-      materialArray: array(material),
-      {disposedIndexArray} as record
-    ) => {
+    (materialArray: array(material), {disposedIndexArray} as record) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(
@@ -65,18 +62,6 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
-
-
-    /* TODO optimize */
-    /* TODO test */
-/* record.materialArrayForWorkerInit = record.materialArrayForWorkerInit |> Js.Array.filter((material) => {
-!(materialArray  |> Js.Array.includes(material))
-}); */
-
-
-
-
-
       materialArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs] ((record, material) => _handleDispose(disposedIndexArray, material, record)),
@@ -84,3 +69,20 @@ let handleBatchDisposeComponent =
          )
     }
   );
+
+let removeDisposedOnesFromMaterialArrayForWorkerInit =
+    (materialArray, {materialArrayForWorkerInit} as record) => {
+  let materialMap =
+    DisposeECSService.buildMapFromArray(
+      materialArray,
+      WonderCommonlib.SparseMapService.createEmpty()
+    );
+  {
+    ...record,
+    materialArrayForWorkerInit:
+      record.materialArrayForWorkerInit
+      |> Js.Array.filter(
+           (material) => ! (materialMap |> WonderCommonlib.SparseMapService.has(material))
+         )
+  }
+};

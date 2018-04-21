@@ -14,7 +14,12 @@ let initGameObject = (gameObject, state: StateDataMainType.state) =>
 
 let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
-    DisposeGameObjectMainService.batchDispose(gameObjectArray, false, state);
+    DisposeGameObjectMainService.batchDispose(
+      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+      gameObjectArray,
+      false,
+      state
+    );
   {
     ...state,
     vboBufferRecord:
@@ -29,7 +34,12 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
 let batchDisposeGameObjectKeepOrder =
     (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
-    DisposeGameObjectMainService.batchDispose(gameObjectArray, true, state);
+    DisposeGameObjectMainService.batchDispose(
+      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+      gameObjectArray,
+      true,
+      state
+    );
   {
     ...state,
     vboBufferRecord:
@@ -119,7 +129,9 @@ let disposeGameObjectSourceInstanceComponent =
   DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
     state,
     false,
-    DisposeGameObjectMainService.batchDispose,
+    DisposeGameObjectMainService.batchDispose(
+      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent
+    ),
     [|component|]
   );
 

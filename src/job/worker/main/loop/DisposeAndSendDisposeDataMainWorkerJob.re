@@ -17,7 +17,10 @@ let execJob = (flags, stateData) =>
       let state = StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
       let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
-        DisposeJobUtils.execJob(state);
+        DisposeJobUtils.execJob(
+          DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentForWorker,
+          state
+        );
       _sendDisposeData(
         operateType,
         boxGeometryNeedDisposeVboBufferArr,

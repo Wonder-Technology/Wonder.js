@@ -250,6 +250,21 @@ let batchDisposeBasicMaterialComponent = (state, componentArray: array(component
     )
 };
 
+let batchDisposeBasicMaterialComponentForWorker = (state, componentArray: array(component)) => {
+  ...state,
+  basicMaterialRecord:
+    Some(
+      ComponentMapService.batchDisposeComponent(
+        RecordBasicMaterialMainService.getRecord(state),
+        DisposeBasicMaterialService.handleBatchDisposeComponent,
+        componentArray
+      )
+      |> DisposeBasicMaterialService.removeDisposedOnesFromMaterialArrayForWorkerInit(
+           componentArray
+         )
+    )
+};
+
 let batchDisposeLightMaterialComponent = (state, componentArray: array(component)) => {
   ...state,
   lightMaterialRecord:

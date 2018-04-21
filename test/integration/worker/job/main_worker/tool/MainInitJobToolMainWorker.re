@@ -1,17 +1,6 @@
 open StateDataMainType;
 
-let setFakeWorkers = (state) =>
-  {
-    ...state,
-    workerInstanceRecord:
-      WorkerInstanceToolMainWorker.setRenderWorker(
-        state.workerInstanceRecord,
-        WorkerToolWorker.createWorker()
-      )
-  }
-  |> MainStateTool.setState;
-
-let prepare = () => setFakeWorkers(MainStateTool.unsafeGetState());
+let prepare = () => WorkerToolWorker.setFakeWorkersAndSetState(MainStateTool.unsafeGetState());
 
 let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   open Js.Promise;
