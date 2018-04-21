@@ -26,13 +26,13 @@ let _addSharableComponent =
 
 let addBasicCameraViewComponent =
     (uid: int, component: component, {basicCameraViewRecord, gameObjectRecord} as state) => {
-  ...state,
-  basicCameraViewRecord:
+  state.basicCameraViewRecord =
     _addComponent(
       (uid, component, gameObjectRecord.basicCameraViewMap),
       AddBasicCameraViewService.handleAddComponent,
       basicCameraViewRecord
-    )
+    );
+  state
 };
 
 let addPerspectiveCameraProjectionComponent =
@@ -41,26 +41,26 @@ let addPerspectiveCameraProjectionComponent =
       component: component,
       {perspectiveCameraProjectionRecord, gameObjectRecord} as state
     ) => {
-  ...state,
-  perspectiveCameraProjectionRecord:
+  state.perspectiveCameraProjectionRecord =
     _addComponent(
       (uid, component, gameObjectRecord.perspectiveCameraProjectionMap),
       AddPerspectiveCameraProjectionService.handleAddComponent,
       perspectiveCameraProjectionRecord
-    )
+    );
+  state
 };
 
 let addTransformComponent =
     (uid: int, component: component, {transformRecord, gameObjectRecord} as state) => {
-  ...state,
-  transformRecord:
+  state.transformRecord =
     Some(
       _addComponent(
         (uid, component, gameObjectRecord.transformMap),
         AddTransformService.handleAddComponent,
         state |> RecordTransformMainService.getRecord
       )
-    )
+    );
+  state
 };
 
 let _addSharableGeometryComponent =
@@ -100,20 +100,18 @@ let _addCurrentBoxGeometryComponentData =
 let addBoxGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   _addCurrentBoxGeometryComponentData(uid, component, gameObjectRecord) |> ignore;
   let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-  {
-    ...state,
-    boxGeometryRecord:
-      boxGeometryRecord
-      |> _addSharableGeometryComponent(
-           (
-             uid,
-             component,
-             /* gameObjectRecord.boxGeometryMap, */
-             GameObjectBoxGeometryService.getGameObject(component, boxGeometryRecord)
-           ),
-           (GroupBoxGeometryService.increaseGroupCount, AddBoxGeometryService.handleAddComponent)
-         )
-  }
+  state.boxGeometryRecord =
+    boxGeometryRecord
+    |> _addSharableGeometryComponent(
+         (
+           uid,
+           component,
+           /* gameObjectRecord.boxGeometryMap, */
+           GameObjectBoxGeometryService.getGameObject(component, boxGeometryRecord)
+         ),
+         (GroupBoxGeometryService.increaseGroupCount, AddBoxGeometryService.handleAddComponent)
+       );
+  state
 };
 
 let _addCurrentCustomGeometryComponentData =
@@ -150,135 +148,129 @@ let _addCurrentCustomGeometryComponentData =
 let addCustomGeometryComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   _addCurrentCustomGeometryComponentData(uid, component, gameObjectRecord) |> ignore;
   let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
-  {
-    ...state,
-    customGeometryRecord:
-      Some(
-        customGeometryRecord
-        |> _addSharableGeometryComponent(
-             (
-               uid,
-               component,
-               /* gameObjectRecord.customGeometryMap, */
-               GameObjectCustomGeometryService.getGameObject(component, customGeometryRecord)
-             ),
-             (
-               GroupCustomGeometryService.increaseGroupCount,
-               AddCustomGeometryService.handleAddComponent
-             )
+  state.customGeometryRecord =
+    Some(
+      customGeometryRecord
+      |> _addSharableGeometryComponent(
+           (
+             uid,
+             component,
+             /* gameObjectRecord.customGeometryMap, */
+             GameObjectCustomGeometryService.getGameObject(component, customGeometryRecord)
+           ),
+           (
+             GroupCustomGeometryService.increaseGroupCount,
+             AddCustomGeometryService.handleAddComponent
            )
-      )
-  }
+         )
+    );
+  state
 };
 
 let addBasicMaterialComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
-  {
-    ...state,
-    basicMaterialRecord:
-      Some(
-        basicMaterialRecord
-        |> _addSharableComponent(
-             (
-               uid,
-               component,
-               gameObjectRecord.basicMaterialMap,
-               GameObjectBasicMaterialService.getGameObject(component, basicMaterialRecord)
-             ),
-             (
-               GroupBasicMaterialService.increaseGroupCount,
-               AddBasicMaterialService.handleAddComponent
-             )
+  state.basicMaterialRecord =
+    Some(
+      basicMaterialRecord
+      |> _addSharableComponent(
+           (
+             uid,
+             component,
+             gameObjectRecord.basicMaterialMap,
+             GameObjectBasicMaterialService.getGameObject(component, basicMaterialRecord)
+           ),
+           (
+             GroupBasicMaterialService.increaseGroupCount,
+             AddBasicMaterialService.handleAddComponent
            )
-      )
-  }
+         )
+    );
+  state
 };
 
 let addLightMaterialComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  {
-    ...state,
-    lightMaterialRecord:
-      Some(
-        lightMaterialRecord
-        |> _addSharableComponent(
-             (
-               uid,
-               component,
-               gameObjectRecord.lightMaterialMap,
-               GameObjectLightMaterialService.getGameObject(component, lightMaterialRecord)
-             ),
-             (
-               GroupLightMaterialService.increaseGroupCount,
-               AddLightMaterialService.handleAddComponent
-             )
+  state.lightMaterialRecord =
+    Some(
+      lightMaterialRecord
+      |> _addSharableComponent(
+           (
+             uid,
+             component,
+             gameObjectRecord.lightMaterialMap,
+             GameObjectLightMaterialService.getGameObject(component, lightMaterialRecord)
+           ),
+           (
+             GroupLightMaterialService.increaseGroupCount,
+             AddLightMaterialService.handleAddComponent
            )
-      )
-  }
+         )
+    );
+  state
 };
 
 let addMeshRendererComponent =
     (uid: int, component: component, {meshRendererRecord, gameObjectRecord} as state) => {
-  ...state,
-  meshRendererRecord:
+  state.meshRendererRecord =
     _addComponent(
       (uid, component, gameObjectRecord.meshRendererMap),
       AddMeshRendererService.handleAddComponent,
       meshRendererRecord
-    )
+    );
+  state
 };
 
 let addAmbientLightComponent =
     (uid: int, component: component, {ambientLightRecord, gameObjectRecord} as state) => {
-  ...state,
-  ambientLightRecord:
+  state.ambientLightRecord =
     _addComponent(
       (uid, component, gameObjectRecord.ambientLightMap),
       AddAmbientLightService.handleAddComponent,
       ambientLightRecord
-    )
+    );
+  state
 };
 
 let addDirectionLightComponent =
     (uid: int, component: component, {directionLightRecord, gameObjectRecord} as state) => {
-  ...state,
-  directionLightRecord:
+  state.directionLightRecord =
     _addComponent(
       (uid, component, gameObjectRecord.directionLightMap),
       AddDirectionLightService.handleAddComponent,
       directionLightRecord
-    )
+    );
+  state
 };
 
 let addPointLightComponent =
     (uid: int, component: component, {pointLightRecord, gameObjectRecord} as state) => {
-  ...state,
-  pointLightRecord:
+  state.pointLightRecord =
     _addComponent(
       (uid, component, gameObjectRecord.pointLightMap),
       AddPointLightService.handleAddComponent,
       pointLightRecord
-    )
+    );
+  state
 };
 
 let addSourceInstanceComponent =
     (uid: int, component: component, {sourceInstanceRecord, gameObjectRecord} as state) => {
-  ...state,
-  sourceInstanceRecord:
+  state.sourceInstanceRecord =
     _addComponent(
       (uid, component, gameObjectRecord.sourceInstanceMap),
       AddSourceInstanceService.handleAddComponent,
       sourceInstanceRecord
-    )
+    );
+  state
 };
 
 let addObjectInstanceComponent =
     (uid: int, component: component, {objectInstanceRecord, gameObjectRecord} as state) => {
-  ...state,
-  objectInstanceRecord:
+  state.objectInstanceRecord =
     _addComponent(
       (uid, component, gameObjectRecord.objectInstanceMap),
       AddObjectInstanceService.handleAddComponent,
       objectInstanceRecord
-    )
+    );
+  state
 };

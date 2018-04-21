@@ -48,9 +48,7 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
         state
       } :
       {
-
         let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-
         let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
         let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
         let {index, disposedIndexArray, shaderIndices} =

@@ -17,7 +17,8 @@ open GameObjectSourceInstanceService;
 let createSourceInstance = (state) => {
   let (sourceInstanceRecord, index) =
     CreateSourceInstanceService.create(state.sourceInstanceRecord);
-  ({...state, sourceInstanceRecord}, index)
+  state.sourceInstanceRecord = sourceInstanceRecord;
+  (state, index)
 };
 
 let unsafeGetSourceInstanceGameObject = (sourceInstance, state: StateDataMainType.state) => {

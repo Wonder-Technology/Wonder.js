@@ -12,7 +12,8 @@ open OperatePointLightService;
 
 let createPointLight = (state) => {
   let (pointLightRecord, index) = [@bs] CreatePointLightService.create(state.pointLightRecord);
-  ({...state, pointLightRecord}, index)
+  state.pointLightRecord = pointLightRecord;
+  (state, index)
 };
 
 let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {

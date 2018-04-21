@@ -65,6 +65,18 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
+
+
+    /* TODO optimize */
+    /* TODO test */
+/* record.materialArrayForWorkerInit = record.materialArrayForWorkerInit |> Js.Array.filter((material) => {
+!(materialArray  |> Js.Array.includes(material))
+}); */
+
+
+
+
+
       materialArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs] ((record, material) => _handleDispose(disposedIndexArray, material, record)),

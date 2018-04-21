@@ -11,7 +11,8 @@ open FrustumPerspectiveCameraProjectionService;
 let createPerspectiveCameraProjection = (state) => {
   let (perspectiveCameraProjectionRecord, index) =
     CreatePerspectiveCameraProjectionService.create(state.perspectiveCameraProjectionRecord);
-  ({...state, perspectiveCameraProjectionRecord}, index)
+  state.perspectiveCameraProjectionRecord = perspectiveCameraProjectionRecord;
+  (state, index)
 };
 
 let unsafeGetPerspectiveCameraProjectionPMatrix = (cameraProjection, state) => {

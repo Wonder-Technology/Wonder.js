@@ -27,20 +27,15 @@ let rec batchDispose = (uidArray: array(int), isKeepOrder, state) => {
 };
 
 let deferBatchDispose = (uidArray: array(int), state) => {
-  ...state,
-  gameObjectRecord: {
-    ...state.gameObjectRecord,
-    disposedUidArray: state.gameObjectRecord.disposedUidArray |> Js.Array.concat(uidArray)
-  }
+  state.gameObjectRecord.disposedUidArray =
+    state.gameObjectRecord.disposedUidArray |> Js.Array.concat(uidArray);
+  state
 };
 
 let deferBatchDisposeKeepOrder = (uidArray: array(int), state) => {
-  ...state,
-  gameObjectRecord: {
-    ...state.gameObjectRecord,
-    disposedUidArrayForKeepOrder:
-      state.gameObjectRecord.disposedUidArrayForKeepOrder |> Js.Array.concat(uidArray)
-  }
+  state.gameObjectRecord.disposedUidArrayForKeepOrder =
+    state.gameObjectRecord.disposedUidArrayForKeepOrder |> Js.Array.concat(uidArray);
+  state
 };
 
 let clearDeferDisposeData = (state) => {
@@ -67,19 +62,6 @@ let clearDeferDisposeData = (state) => {
   }
 };
 
-let deferDispose = (uid: int, state) => {
-  ...state,
-  gameObjectRecord: {
-    ...state.gameObjectRecord,
-    disposedUidArray: state.gameObjectRecord.disposedUidArray |> ArrayService.push(uid)
-  }
-};
+let deferDispose = (uid: int, state) => deferBatchDispose([|uid|], state);
 
-let deferDisposeKeepOrder = (uid: int, state) => {
-  ...state,
-  gameObjectRecord: {
-    ...state.gameObjectRecord,
-    disposedUidArrayForKeepOrder:
-      state.gameObjectRecord.disposedUidArrayForKeepOrder |> ArrayService.push(uid)
-  }
-};
+let deferDisposeKeepOrder = (uid: int, state) => deferBatchDisposeKeepOrder([|uid|], state);

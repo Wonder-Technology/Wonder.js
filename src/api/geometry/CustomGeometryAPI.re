@@ -11,7 +11,8 @@ open RenderGeometryService;
 let createCustomGeometry = (state) => {
   let (customGeometryRecord, index) =
     CreateCustomGeometryService.create(state |> RecordCustomGeometryMainService.getRecord);
-  ({...state, customGeometryRecord: Some(customGeometryRecord)}, index)
+  state.customGeometryRecord = Some(customGeometryRecord);
+  (state, index)
 };
 
 let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>

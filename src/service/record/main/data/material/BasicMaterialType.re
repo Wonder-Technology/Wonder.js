@@ -12,5 +12,5 @@ type basicMaterialRecord = {
   gameObjectMap,
   groupCountMap,
   disposedIndexArray,
-  materialArrayForWorkerInit: array(int)
+  mutable materialArrayForWorkerInit: array(int)
 };

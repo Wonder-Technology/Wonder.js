@@ -10,7 +10,8 @@ let create =
         state |> RecordBasicMaterialMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-      ({...state, basicMaterialRecord: Some({...basicMaterialRecord, index: newIndex})}, index)
+      state.basicMaterialRecord = Some({...basicMaterialRecord, index: newIndex});
+      (state, index)
       |> BufferService.checkNotExceedMaxCount(
            BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
          )

@@ -37,6 +37,7 @@ let render =
        (
          (renderState, index) => {
            let shaderIndex = _getShaderIndex(index, shaderIndices);
+           /* WonderLog.Log.print(("shaderIndex: ", shaderIndex)) |> ignore; */
            let transformIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
            let materialIndex =

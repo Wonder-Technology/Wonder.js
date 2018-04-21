@@ -15,18 +15,15 @@ let createInstance = (sourceInstance, {sourceInstanceRecord, gameObjectRecord} a
   let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(gameObjectRecord);
   let (state, transform) = CreateTransformMainService.create(state);
   let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
-  let state = {
-    ...state,
-    gameObjectRecord,
-    sourceInstanceRecord: {
-      ...sourceInstanceRecord,
-      objectInstanceTransformArrayMap:
-        objectInstanceTransformArrayMap |> _addObjectInstnaceTransform(sourceInstance, transform)
-    }
+  state.gameObjectRecord = gameObjectRecord;
+  state.sourceInstanceRecord = {
+    ...sourceInstanceRecord,
+    objectInstanceTransformArrayMap:
+      objectInstanceTransformArrayMap |> _addObjectInstnaceTransform(sourceInstance, transform)
   };
   let (objectInstanceRecord, objectInstance) =
     CreateObjectInstanceService.create(sourceInstance, uid, state.objectInstanceRecord);
-  let state = {...state, objectInstanceRecord};
+  state.objectInstanceRecord = objectInstanceRecord;
   let state =
     state
     |> AddGameObjectComponentMainService.addTransformComponent(uid, transform)

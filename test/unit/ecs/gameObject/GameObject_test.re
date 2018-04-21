@@ -764,10 +764,7 @@ let _ =
                   let (state, gameObject, sourceInstance) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let state =
-                    state
-                    |> VboBufferTool.addVboBufferToSourceInstanceBufferMap(
-                         sourceInstance
-                       );
+                    state |> VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance);
                   let state = state |> GameObjectTool.disposeGameObject(gameObject);
                   let {disposedIndexArray} = state |> SourceInstanceTool.getSourceInstanceRecord;
                   disposedIndexArray |> expect == [|sourceInstance|]
@@ -1072,7 +1069,8 @@ let _ =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
                           let (state, _, _, objectInstanceGameObject2, _) =
                             ObjectInstanceTool.createObjectInstanceGameObject(state);
-                          let state = state |> GameObjectTool.disposeGameObject(objectInstanceGameObject1);
+                          let state =
+                            state |> GameObjectTool.disposeGameObject(objectInstanceGameObject1);
                           let {objectInstanceMap} = GameObjectTool.getGameObjectRecord(state);
                           (
                             objectInstanceMap

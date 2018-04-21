@@ -11,7 +11,8 @@ open RenderGeometryService;
 let createBoxGeometry = (state) => {
   let (boxGeometryRecord, index) =
     CreateBoxGeometryService.create(state |> RecordBoxGeometryMainService.getRecord);
-  ({...state, boxGeometryRecord}, index)
+  state.boxGeometryRecord = boxGeometryRecord;
+  (state, index)
 };
 
 let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>

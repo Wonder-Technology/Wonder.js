@@ -11,7 +11,8 @@ open GameObjectBasicCameraViewService;
 let createBasicCameraView = (state) => {
   let (basicCameraViewRecord, index) =
     CreateBasicCameraViewService.create(state.basicCameraViewRecord);
-  ({...state, basicCameraViewRecord}, index)
+  state.basicCameraViewRecord = basicCameraViewRecord;
+  (state, index)
 };
 
 let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {

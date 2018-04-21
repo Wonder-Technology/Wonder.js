@@ -12,7 +12,8 @@ let create =
         state |> RecordLightMaterialMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-      ({...state, lightMaterialRecord: Some({...lightMaterialRecord, index: newIndex})}, index)
+      state.lightMaterialRecord = Some({...lightMaterialRecord, index: newIndex});
+      (state, index)
       |> BufferService.checkNotExceedMaxCount(
            BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
          )

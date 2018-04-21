@@ -13,7 +13,8 @@ open OperateAmbientLightService;
 let createAmbientLight = (state) => {
   let (ambientLightRecord, index) =
     [@bs] CreateAmbientLightService.create(state.ambientLightRecord);
-  ({...state, ambientLightRecord}, index)
+  state.ambientLightRecord = ambientLightRecord;
+  (state, index)
 };
 
 let unsafeGetAmbientLightGameObject = (light, state: StateDataMainType.state) => {

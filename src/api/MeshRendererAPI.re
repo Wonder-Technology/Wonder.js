@@ -8,7 +8,8 @@ open MeshRendererType;
 
 let createMeshRenderer = (state) => {
   let (meshRendererRecord, index) = CreateMeshRendererService.create(state.meshRendererRecord);
-  ({...state, meshRendererRecord}, index)
+  state.meshRendererRecord = meshRendererRecord;
+  (state, index)
 };
 
 let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
