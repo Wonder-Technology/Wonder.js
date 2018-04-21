@@ -25,6 +25,46 @@ var BasicBoxesTool = (function () {
 
         return state;
     };
+
+    // var createAndDisposeGameObjects = function (count, boxes, schedulLoopFunc, state) {
+    var createAndDisposeGameObjects = function (count, boxes, state) {
+        // window.boxes = [];
+
+
+        // return schedulLoopFunc(function (state) {
+        // var state = wd.unsafeGetState();
+
+        // var deviceManagerRecord = state[9];
+
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+        var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+        var record = BasicBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+        window.boxes = newBoxes;
+
+
+        for (var i = 0, len = newBoxes.length; i < len; i++) {
+            var box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+
+        // }, state)
+    };
+
+
+
+
+
+
     return {
         createBox: function (state) {
             var record = wd.createBasicMaterial(state);
@@ -191,28 +231,19 @@ var BasicBoxesTool = (function () {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                var state = wd.batchDisposeGameObject(window.boxes, state);
+                return createAndDisposeGameObjects(count, boxes,
+                    state
+                )
+            }, state);
+        },
+        createAndDisposeGameObjectsWorker: function (count, boxes, state) {
+            window.boxes = [];
 
-                var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-
-                var record = BasicBoxesTool.setPosition(newBoxes, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-                window.boxes = newBoxes;
-
-
-                for (var i = 0, len = newBoxes.length; i < len; i++) {
-                    var box = newBoxes[i];
-                    state = wd.initGameObject(box, state);
-                }
-
-                return state;
-
-            }, state)
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                return createAndDisposeGameObjects(count, boxes,
+                    wd.getStateFromData(stateData)
+                )
+            }, state);
         },
         createCamera: function (state) {
             return CameraTool.createCamera(state)
