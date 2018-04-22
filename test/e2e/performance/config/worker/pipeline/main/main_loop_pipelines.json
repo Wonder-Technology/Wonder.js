@@ -7,6 +7,9 @@
                 "link": "concat",
                 "jobs": [
                     {
+                        "name": "create_basic_render_object_buffer"
+                    },
+                    {
                         "name": "send_render_data"
                     },
                     {
@@ -17,15 +20,6 @@
                     },
                     {
                         "name": "update_camera"
-                    },
-                    {
-                        "name": "get_camera_data"
-                    },
-                    {
-                        "name": "create_basic_render_object_buffer"
-                    },
-                    {
-                        "name": "copy_arraybuffer"
                     }
                 ]
             },
@@ -44,6 +38,12 @@
                 "jobs": [
                     {
                         "name": "dispose_and_send_dispose_data"
+                    },
+                    {
+                        "name": "get_camera_data"
+                    },
+                    {
+                        "name": "copy_arraybuffer"
                     }
                 ]
             },

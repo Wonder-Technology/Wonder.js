@@ -65,6 +65,9 @@
         ]
     },
     {
+        "name": "init_material_for_render"
+    },
+    {
         "name": "clear_last_send_component"
     },
     {
@@ -84,5 +87,14 @@
         "flags": [
             "FINISH_RENDER"
         ]
+    },
+    {
+        "name": "get_dispose_data",
+        "flags": [
+            "DISPOSE"
+        ]
+    },
+    {
+        "name": "dispose_vbo"
     }
 ]

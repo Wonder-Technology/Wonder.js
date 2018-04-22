@@ -78,7 +78,6 @@ let _disposeComponents =
 
 let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRecord} as state) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
-  WonderLog.Log.print({j|disposedUidArray:$disposedUidArray|j}) |> ignore;
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrForNotKeepOrder,

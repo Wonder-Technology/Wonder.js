@@ -23,7 +23,7 @@ let rec _createWorkerLoopStream = () =>
   MostAnimationFrame.nextAnimationFrame()
   |> Most.flatMap(
        (time) => {
-         /* WonderLog.Log.log({j|time: $time|j}); */
+         WonderLog.Log.log({j|time: $time|j});
          let state =
            _computeElapseTime(time, StateDataMainService.unsafeGetState(StateDataMain.stateData));
          WorkerJobMainService.getMainLoopJobStream(

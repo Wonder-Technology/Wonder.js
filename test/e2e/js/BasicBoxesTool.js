@@ -28,19 +28,15 @@ var BasicBoxesTool = (function () {
 
     // var createAndDisposeGameObjects = function (count, boxes, schedulLoopFunc, state) {
     var createAndDisposeGameObjects = function (count, boxes, state) {
-        // window.boxes = [];
-
-
-        // return schedulLoopFunc(function (state) {
-        // var state = wd.unsafeGetState();
-
-        // var deviceManagerRecord = state[9];
-
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
         var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
         var state = record[0];
         var newBoxes = record[1];
+
+
+
+
 
 
         var record = BasicBoxesTool.setPosition(newBoxes, state);
@@ -56,8 +52,6 @@ var BasicBoxesTool = (function () {
         }
 
         return state;
-
-        // }, state)
     };
 
 
@@ -183,11 +177,6 @@ var BasicBoxesTool = (function () {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                // for(var i = 0, len = window.boxes.length; i < len; i++){
-                //     var box = window.boxes[i];
-                //     state = disposeGameObject(box, state);
-                // }
-
                 var state = wd.batchDisposeGameObject(window.boxes, state);
 
                 var record = wd.cloneGameObject(window.sourceBox, count, true, state);
@@ -240,9 +229,15 @@ var BasicBoxesTool = (function () {
             window.boxes = [];
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                return createAndDisposeGameObjects(count, boxes,
+                var state = createAndDisposeGameObjects(count, boxes,
                     wd.getStateFromData(stateData)
-                )
+                );
+
+                /*!
+                need set state!
+                because some create operation(e.g. increase transform index) are immutable!
+                */
+                wd.setState(state);
             }, state);
         },
         createCamera: function (state) {

@@ -17,7 +17,14 @@ let getRenderWorkerJobStreamArr = WorkerJobMainService.getRenderWorkerJobStreamA
 
    let isJobExistInJobList = (targetName, jobList) =>
      jobList |> List.exists(((name, _)) => name === targetName); */
+
+
+let execMainWorkerJobWithDefaultData = (execJobFunc) =>
+  execJobFunc(Some([|""|]), MainStateTool.getStateData());
+
 let execMainWorkerJob = (~execJobFunc, ~completeFunc, ~flag=Some([|""|]), ()) =>
   execJobFunc(flag, MainStateTool.getStateData())
   |> Most.drain
   |> then_(() => completeFunc(MainStateTool.unsafeGetState()));
+
+

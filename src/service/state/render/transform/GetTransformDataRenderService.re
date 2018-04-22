@@ -9,12 +9,16 @@ let getLocalToWorldMatrixTypeArray =
   (
     (transform, {workerDetectRecord, globalTempRecord, transformRecord} as state) =>
       /* TODO use condition compile */
-      RenderWorkerDetectService.isUseWorker(workerDetectRecord) ?
+      RenderWorkerDetectService.isUseWorker(workerDetectRecord) ?{
+        WonderLog.Log.print({j|transform: $transform|j}) |> ignore;
+
         RecordTransformMainService.getLocalToWorldMatrixTypeArrayToTarget(
           transform,
           transformRecord.localToWorldMatrices,
           globalTempRecord.float16Array1
-        ) :
+        ) 
+        |>WonderLog.Log.print
+      } :
         ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,

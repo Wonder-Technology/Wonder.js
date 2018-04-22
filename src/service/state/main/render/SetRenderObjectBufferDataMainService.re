@@ -31,7 +31,7 @@ let setData =
              index
            ) => {
              let materialIndex = [@bs] unsafeGetMaterialComponentFunc(uid, gameObjectRecord);
-             WonderLog.Log.print({j|set data->materialIndex: $materialIndex|j}) |> ignore;
+             /* WonderLog.Log.print({j|set data->materialIndex: $materialIndex|j}) |> ignore; */
              let (geometryIndex, type_) =
                GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, gameObjectRecord);
              (

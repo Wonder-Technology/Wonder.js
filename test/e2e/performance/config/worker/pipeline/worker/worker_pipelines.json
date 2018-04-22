@@ -43,6 +43,9 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "init_material_for_render"
+                    },
+                    {
                         "name": "clear_color"
                     },
                     {
@@ -65,6 +68,14 @@
                     },
                     {
                         "name": "send_finish_render_data"
+                    }
+                ],
+                [
+                    {
+                        "name": "get_dispose_data"
+                    },
+                    {
+                        "name": "dispose_vbo"
                     }
                 ]
             ]

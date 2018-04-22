@@ -11,6 +11,7 @@ let _render = (gl, state) =>
       geometryTypes,
       sourceInstanceIndices
     }) =>
+    WonderLog.Log.print({j|count: $count|j}) |> ignore;
     RenderBasicJobUtils.render(
       gl,
       (

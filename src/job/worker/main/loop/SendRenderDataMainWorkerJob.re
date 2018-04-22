@@ -23,10 +23,10 @@ let _buildData = (operateType, stateData) => {
     };
   /* WonderLog.Log.print(("materialDataForWorkerInit: ", basicMaterialRecord.materialArrayForWorkerInit)) |> ignore; */
   WonderLog.Log.print("send render data") |> ignore;
-  WonderLog.Log.print((
-    "send inited material array to render worker:",
-    basicMaterialRecord.materialArrayForWorkerInit
-  ));
+  /* WonderLog.Log.print((
+       "send inited material array to render worker:",
+       basicMaterialRecord.materialArrayForWorkerInit
+     )); */
   {
     "operateType": operateType,
     "initData": {
@@ -57,8 +57,7 @@ let _buildData = (operateType, stateData) => {
                         )
                       )),
                  [||]
-               )
-            |> WonderLog.Log.print,
+               ),
           "index": basicMaterialRecord.index,
           "disposedIndexArray": basicMaterialRecord.disposedIndexArray
         }
