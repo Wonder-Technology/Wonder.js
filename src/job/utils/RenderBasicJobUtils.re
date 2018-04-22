@@ -1,21 +1,9 @@
-/* TODO duplicate with front light render*/
-/* TODO test: if shaderIndex not exist(is default value)(means that render worker not finish init shader), not draw */
 let _getShaderIndex = (materialIndex, renderState) =>
-  [@bs] ShaderIndexBasicMaterialRenderService.getShaderIndex(materialIndex, renderState)
-  |> WonderLog.Contract.ensureCheck(
-       (shaderIndex) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|shaderIndex should exist|j}, ~actual={j|not|j}),
-                 () => shaderIndex <>= DefaultTypeArrayValueService.getDefaultShaderIndex()
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
+  ShaderIndexRenderService.getShaderIndex(
+    materialIndex,
+    ShaderIndexBasicMaterialRenderService.getShaderIndex,
+    renderState
+  );
 
 let render =
     (
