@@ -17,11 +17,6 @@ let createTypeArrays = (buffer, count) => {
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getShaderIndicesOffset(count),
-    ~length=getShaderIndicesLength(count)
-  ),
-  Uint32Array.fromBufferRange(
-    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getGeometryIndicesOffset(count),
     ~length=getGeometryIndicesLength(count)
   ),
@@ -47,7 +42,6 @@ let setDefaultTypeArrData = (count: int, typeArrTuple) => {
            (
              transformIndices,
              materialIndices,
-             shaderIndices,
              geometryIndices,
              sourceInstanceIndices,
              geometryTypes
@@ -56,7 +50,6 @@ let setDefaultTypeArrData = (count: int, typeArrTuple) => {
          ) => (
            transformIndices,
            materialIndices,
-           shaderIndices,
            geometryIndices,
            setComponent(index, defaultSourceInstance, sourceInstanceIndices),
            geometryTypes

@@ -1,5 +1,23 @@
 open StateDataMainType;
 
+let _getShaderIndex = (materialIndex, renderState) =>
+  [@bs]ShaderIndexLightMaterialRenderService.getShaderIndex(materialIndex, renderState)
+  |> WonderLog.Contract.ensureCheck(
+       (shaderIndex) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(~expect={j|shaderIndex should exist|j}, ~actual={j|not|j}),
+                 () => shaderIndex <>= DefaultTypeArrayValueService.getDefaultShaderIndex()
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     );
+
+
 let _render = (gl, state: StateDataMainType.state) =>
   switch (state |> OperateRenderMainService.getLightRenderObjectRecord) {
   | None => state
@@ -7,7 +25,6 @@ let _render = (gl, state: StateDataMainType.state) =>
       count,
       transformIndices,
       materialIndices,
-      shaderIndices,
       geometryIndices,
       geometryTypes,
       sourceInstanceIndices
@@ -22,7 +39,7 @@ let _render = (gl, state: StateDataMainType.state) =>
              let materialIndex =
                RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
              let shaderIndex =
-               RenderObjectBufferTypeArrayService.getComponent(index, shaderIndices);
+               _getShaderIndex(materialIndex, state);
              let geometryIndex =
                RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
              let geometryType =

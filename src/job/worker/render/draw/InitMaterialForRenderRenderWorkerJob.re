@@ -17,6 +17,11 @@ let execJob = (flags, e, stateData) =>
       /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
       let isSupportInstance = false;
       let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
+      WonderLog.Log.print((
+        "inited material array in render worker:",
+        basicMaterialData##materialDataForWorkerInit
+      ))
+      |> ignore;
       basicMaterialData##materialDataForWorkerInit
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs]

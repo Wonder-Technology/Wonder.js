@@ -14,7 +14,7 @@ let _initBufferData = (count) => {
       count
       * (
         Uint32Array._BYTES_PER_ELEMENT
-        * (getComponentSize() * 5)
+        * (getComponentSize() * 4)
         + Uint8Array._BYTES_PER_ELEMENT
         * getGeometryTypeSize()
       )
@@ -34,7 +34,6 @@ let create = ({settingRecord} as state) => {
     (
       transformIndices,
       materialIndices,
-      shaderIndices,
       geometryIndices,
       sourceInstanceIndices,
       geometryTypes
@@ -46,7 +45,6 @@ let create = ({settingRecord} as state) => {
     count: basicMaterialDataBufferCount,
     transformIndices,
     materialIndices,
-    shaderIndices,
     geometryIndices,
     sourceInstanceIndices,
     geometryTypes

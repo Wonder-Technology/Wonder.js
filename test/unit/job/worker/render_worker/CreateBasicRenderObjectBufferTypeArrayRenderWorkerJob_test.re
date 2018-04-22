@@ -65,7 +65,6 @@ let _ =
                               count,
                               transformIndices,
                               materialIndices,
-                              shaderIndices,
                               geometryIndices,
                               sourceInstanceIndices,
                               geometryTypes
@@ -79,7 +78,6 @@ let _ =
                               count,
                               transformIndices,
                               materialIndices,
-                              shaderIndices,
                               geometryIndices,
                               sourceInstanceIndices,
                               geometryTypes
@@ -89,13 +87,6 @@ let _ =
                                         3,
                                         Js.Typed_array.Uint32Array.make([|0, 1, 2, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 2, 0, 0|]),
-                                        Js.Typed_array.Uint32Array.make([|
-                                          defaultShaderIndex,
-                                          defaultShaderIndex,
-                                          defaultShaderIndex,
-                                          0,
-                                          0
-                                        |]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 0, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|
                                           defaultSourceInstance,

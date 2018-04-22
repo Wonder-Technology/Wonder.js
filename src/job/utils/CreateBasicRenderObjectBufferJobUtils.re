@@ -11,7 +11,16 @@ let _getBasicMaterialRenderArray = (renderArray, state: StateDataMainType.state)
          HasComponentGameObjectService.hasBasicMaterialComponent(uid, state.gameObjectRecord)
      );
 
-let execJob = ({gameObjectRecord, meshRendererRecord} as state) =>
+let execJob = ({gameObjectRecord, meshRendererRecord} as state) =>{
+  WonderLog.Log.print((
+    "basicMaterialRenderArray:",
+
+       state
+       |> _getBasicMaterialRenderArray(
+            meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
+          )
+  )) |> ignore;
+
   state
   |> SetRenderObjectBufferDataMainService.setData(
        state
@@ -19,8 +28,8 @@ let execJob = ({gameObjectRecord, meshRendererRecord} as state) =>
             meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
           ),
        (
-         GetComponentGameObjectService.unsafeGetBasicMaterialComponent,
-         ShaderIndexBasicMaterialMainService.getShaderIndex
+         GetComponentGameObjectService.unsafeGetBasicMaterialComponent
        ),
        state |> RecordRenderMainService.getRecord |> RecordBasicRenderObjectMainService.getRecord
      );
+}

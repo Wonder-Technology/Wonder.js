@@ -23,10 +23,7 @@ let execJob = (_, {gameObjectRecord, meshRendererRecord} as state) => {
              |> _getLightMaterialRenderArray(
                   meshRendererRecord |> RenderArrayMeshRendererService.getRenderArray
                 ),
-             (
-               GetComponentGameObjectService.unsafeGetLightMaterialComponent,
-               ShaderIndexLightMaterialMainService.getShaderIndex
-             ),
+             GetComponentGameObjectService.unsafeGetLightMaterialComponent,
              state
              |> RecordRenderMainService.getRecord
              |> RecordLightRenderObjectMainService.getRecord

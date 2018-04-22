@@ -13,17 +13,12 @@ let getMaterialIndicesLength = (count) => count * getComponentSize();
 let getMaterialIndicesOffset = (count) =>
   getTransformIndicesLength(count) * Uint32Array._BYTES_PER_ELEMENT;
 
-let getShaderIndicesLength = (count) => count * getComponentSize();
-
-let getShaderIndicesOffset = (count) =>
-  getMaterialIndicesOffset(count)
-  + getMaterialIndicesLength(count)
-  * Uint32Array._BYTES_PER_ELEMENT;
-
 let getGeometryIndicesLength = (count) => count * getComponentSize();
 
 let getGeometryIndicesOffset = (count) =>
-  getShaderIndicesOffset(count) + getShaderIndicesLength(count) * Uint32Array._BYTES_PER_ELEMENT;
+  getMaterialIndicesOffset(count)
+  + getMaterialIndicesLength(count)
+  * Uint32Array._BYTES_PER_ELEMENT;
 
 let getSourceInstanceIndicesLength = (count) => count * getComponentSize();
 

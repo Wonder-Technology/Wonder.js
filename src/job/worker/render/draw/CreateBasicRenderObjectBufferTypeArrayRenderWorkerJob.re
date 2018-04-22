@@ -14,7 +14,6 @@ let execJob = (_, e, stateData) =>
         let (
           transformIndices,
           materialIndices,
-          shaderIndices,
           geometryIndices,
           sourceInstanceIndices,
           geometryTypes
@@ -28,7 +27,6 @@ let execJob = (_, e, stateData) =>
             count: basicRenderData##count,
             transformIndices,
             materialIndices,
-            shaderIndices,
             geometryIndices,
             sourceInstanceIndices,
             geometryTypes

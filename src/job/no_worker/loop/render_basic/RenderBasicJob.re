@@ -7,7 +7,6 @@ let _render = (gl, state: StateDataMainType.state) =>
       count,
       transformIndices,
       materialIndices,
-      shaderIndices,
       geometryIndices,
       geometryTypes,
       sourceInstanceIndices
@@ -18,7 +17,6 @@ let _render = (gl, state: StateDataMainType.state) =>
         count,
         transformIndices,
         materialIndices,
-        shaderIndices,
         geometryIndices,
         geometryTypes,
         sourceInstanceIndices

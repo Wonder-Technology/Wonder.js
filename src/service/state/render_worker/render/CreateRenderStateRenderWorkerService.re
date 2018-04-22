@@ -66,7 +66,10 @@ let createRenderState =
     /* TODO finish Obj.magic */
     customGeometryRecord: Obj.magic(1),
     cameraRecord: OperateRenderRenderWorkerService.getCameraRecord(state),
-    basicMaterialRecord: {colors: basicMaterialRecord.colors},
+    basicMaterialRecord: {
+      shaderIndices: basicMaterialRecord.shaderIndices,
+      colors: basicMaterialRecord.colors
+    },
     lightMaterialRecord: Obj.magic(1),
     ambientLightRecord: Obj.magic(1),
     directionLightRecord: Obj.magic(1),

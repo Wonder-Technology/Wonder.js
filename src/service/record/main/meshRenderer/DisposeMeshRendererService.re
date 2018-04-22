@@ -29,7 +29,11 @@ let handleBatchDisposeComponent =
           WonderLog.(
             Contract.(
               Operators.(
-                DisposeComponentService.checkComponentShouldAliveWithBatchDispose(meshRendererArray, isAlive, record)
+                DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+                  meshRendererArray,
+                  isAlive,
+                  record
+                )
               )
             )
           ),

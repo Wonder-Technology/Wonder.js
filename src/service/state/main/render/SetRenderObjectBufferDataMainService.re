@@ -9,26 +9,12 @@ open Js.Typed_array;
 let setData =
     (
       renderArray,
-      (unsafeGetMaterialComponentFunc, getShaderIndexFunc),
-      {
-        transformIndices,
-        materialIndices,
-        shaderIndices,
-        geometryIndices,
-        sourceInstanceIndices,
-        geometryTypes
-      } as renderObjectRecord,
+      unsafeGetMaterialComponentFunc,
+      {transformIndices, materialIndices, geometryIndices, sourceInstanceIndices, geometryTypes} as renderObjectRecord,
       {gameObjectRecord} as state
     ) => {
   let count = renderArray |> Js.Array.length;
-  let (
-    transformIndices,
-    materialIndices,
-    shaderIndices,
-    geometryIndices,
-    sourceInstanceIndices,
-    geometryTypes
-  ) =
+  let (transformIndices, materialIndices, geometryIndices, sourceInstanceIndices, geometryTypes) =
     renderArray
     |> WonderCommonlib.ArrayService.reduceOneParami(
          [@bs]
@@ -37,7 +23,6 @@ let setData =
              (
                transformIndices,
                materialIndices,
-               shaderIndices,
                geometryIndices,
                sourceInstanceIndices,
                geometryTypes
@@ -46,6 +31,7 @@ let setData =
              index
            ) => {
              let materialIndex = [@bs] unsafeGetMaterialComponentFunc(uid, gameObjectRecord);
+             WonderLog.Log.print({j|set data->materialIndex: $materialIndex|j}) |> ignore;
              let (geometryIndex, type_) =
                GetComponentGameObjectService.unsafeGetGeometryComponentData(uid, gameObjectRecord);
              (
@@ -55,7 +41,6 @@ let setData =
                  transformIndices
                ),
                setComponent(index, materialIndex, materialIndices),
-               setComponent(index, [@bs] getShaderIndexFunc(materialIndex, state), shaderIndices),
                setComponent(index, geometryIndex, geometryIndices),
                switch (
                  [@bs]
@@ -68,21 +53,13 @@ let setData =
              )
            }
          ),
-         (
-           transformIndices,
-           materialIndices,
-           shaderIndices,
-           geometryIndices,
-           sourceInstanceIndices,
-           geometryTypes
-         )
+         (transformIndices, materialIndices, geometryIndices, sourceInstanceIndices, geometryTypes)
        );
   Some({
     ...renderObjectRecord,
     count,
     transformIndices,
     materialIndices,
-    shaderIndices,
     geometryIndices,
     sourceInstanceIndices,
     geometryTypes

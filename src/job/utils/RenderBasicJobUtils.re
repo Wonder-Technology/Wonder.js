@@ -1,7 +1,7 @@
-/* TODO front light render should also add this check */
+/* TODO duplicate with front light render*/
 /* TODO test: if shaderIndex not exist(is default value)(means that render worker not finish init shader), not draw */
-let _getShaderIndex = (index, shaderIndices) =>
-  RenderObjectBufferTypeArrayService.getComponent(index, shaderIndices)
+let _getShaderIndex = (materialIndex, renderState) =>
+  [@bs] ShaderIndexBasicMaterialRenderService.getShaderIndex(materialIndex, renderState)
   |> WonderLog.Contract.ensureCheck(
        (shaderIndex) =>
          WonderLog.(
@@ -24,7 +24,6 @@ let render =
         count,
         transformIndices,
         materialIndices,
-        shaderIndices,
         geometryIndices,
         geometryTypes,
         sourceInstanceIndices
@@ -36,12 +35,12 @@ let render =
        [@bs]
        (
          (renderState, index) => {
-           let shaderIndex = _getShaderIndex(index, shaderIndices);
-           /* WonderLog.Log.print(("shaderIndex: ", shaderIndex)) |> ignore; */
            let transformIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
            let materialIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
+           let shaderIndex = _getShaderIndex(materialIndex, renderState);
+           WonderLog.Log.print({j|shaderIndex: $shaderIndex; index: $index|j}) |> ignore;
            let geometryIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
            let geometryType =

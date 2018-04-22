@@ -94,8 +94,12 @@ let createRenderState =
       indicesInfoArray: customGeometryRecord.indicesInfoArray
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
-    basicMaterialRecord: {colors: basicMaterialRecord.colors},
+    basicMaterialRecord: {
+      shaderIndices: basicMaterialRecord.shaderIndices,
+      colors: basicMaterialRecord.colors
+    },
     lightMaterialRecord: {
+      shaderIndices: lightMaterialRecord.shaderIndices,
       diffuseColors: lightMaterialRecord.diffuseColors,
       specularColors: lightMaterialRecord.specularColors,
       shininess: lightMaterialRecord.shininess
