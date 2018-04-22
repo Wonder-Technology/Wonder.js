@@ -21,28 +21,44 @@ let _buildData = (operateType, stateData) => {
         Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
       )
     };
-
-
-    /* WonderLog.Log.print(("materialDataForWorkerInit: ", basicMaterialRecord.materialArrayForWorkerInit)) |> ignore; */
-    WonderLog.Log.print("send render data") |> ignore;
-
+  /* WonderLog.Log.print(("materialDataForWorkerInit: ", basicMaterialRecord.materialArrayForWorkerInit)) |> ignore; */
+  WonderLog.Log.print("send render data") |> ignore;
+  WonderLog.Log.print((
+    "send inited material array to render worker:",
+    basicMaterialRecord.materialArrayForWorkerInit
+  ));
   {
     "operateType": operateType,
     "initData": {
       "materialData": {
         "basicMaterialData": {
+          /* "materialDataForWorkerInit":basicMaterialRecord.materialArrayForWorkerInit
+             |> Js.Array.map(
+                  (materialIndex) => (
+                    materialIndex,
+                    JudgeInstanceMainService.isSourceInstance(
+                      materialIndex,
+                      basicMaterialRecord.gameObjectMap,
+                      gameObjectRecord
+                    )
+                  )
+                ), */
           "materialDataForWorkerInit":
             basicMaterialRecord.materialArrayForWorkerInit
-            |> Js.Array.map(
-                 (materialIndex) => (
-                   materialIndex,
-                   JudgeInstanceMainService.isSourceInstance(
-                     materialIndex,
-                     basicMaterialRecord.gameObjectMap,
-                     gameObjectRecord
-                   )
-                 )
-               ),
+            |> Js.Array.reduce(
+                 (arr, materialIndex) =>
+                   arr
+                   |> ArrayService.push((
+                        materialIndex,
+                        JudgeInstanceMainService.isSourceInstance(
+                          materialIndex,
+                          basicMaterialRecord.gameObjectMap,
+                          gameObjectRecord
+                        )
+                      )),
+                 [||]
+               )
+            |> WonderLog.Log.print,
           "index": basicMaterialRecord.index,
           "disposedIndexArray": basicMaterialRecord.disposedIndexArray
         }
@@ -67,11 +83,12 @@ let execJob = (flags, stateData) =>
     () => {
       let {workerInstanceRecord} as state = StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
-      /* let basicRenderObjectRecord =
-           OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
-         let {vMatrix, pMatrix, position} = OperateRenderMainService.unsafeGetCameraRecord(state); */
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessage(_buildData(operateType, stateData));
+      InitBasicMaterialService.clearDataForWorkerInit(
+        RecordBasicMaterialMainService.getRecord(state)
+      )
+      |> ignore;
       Some(operateType)
     }
   );
