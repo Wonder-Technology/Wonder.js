@@ -4,16 +4,6 @@ open MaterialType;
 
 open BasicMaterialType;
 
-let getShaderIndex =
-  [@bs]
-  (
-    (materialIndex: int, state) =>
-      ShaderIndicesService.getShaderIndex(
-        materialIndex,
-        RecordBasicMaterialMainService.getRecord(state).shaderIndices
-      )
-  );
-
 /* let hasShaderIndex = (materialIndex: int, state) =>
    ShaderIndicesService.hasShaderIndex(
      materialIndex,
