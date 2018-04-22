@@ -57,7 +57,7 @@
 		"bs-most": "^0.1.1",
 		"wonder-most-animation-frame": "0.0.3",
 		"wonder-commonlib": "^0.2.20",
-		"wonder-log": "^0.1.1"
+		"wonder-log": "^0.1.2"
 	},
 	"resolutions": {
 		"wonder-commonlib": "0.2.20",
