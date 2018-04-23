@@ -28,6 +28,6 @@ let getMappedIndex = (index, state) =>
   state |> IndexDirectionLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);
 
 let getLightCount = (state) =>
-  CountInitMaterialDirectionLightService.getLightCount(
-    InitMaterialStateTool.createStateWithoutMaterialData(state).directionLightRecord
+  CountInitLightMaterialDirectionLightService.getLightCount(
+    InitLightMaterialStateTool.createStateWithoutMaterialData(state).directionLightRecord
   );

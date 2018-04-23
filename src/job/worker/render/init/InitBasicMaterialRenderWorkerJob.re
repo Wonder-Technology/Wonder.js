@@ -14,14 +14,14 @@ let _initMaterials = (basicMaterialData, data, state) => {
   let pointLightData = data##pointLightData;
   let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
   let isSourceInstanceMap = basicMaterialData##isSourceInstanceMap;
-  InitBasicMaterialInitMaterialService.init(
+  InitInitBasicMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (
       isSourceInstanceMap,
       /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
       false
     ),
-    CreateInitMaterialStateRenderWorkerService.createInitMaterialState(
+    CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
       (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
       (directionLightData, pointLightData),
       state

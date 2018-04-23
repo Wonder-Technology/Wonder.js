@@ -1,8 +1,5 @@
-open StateInitMaterialType;
+open StateInitBasicMaterialType;
 
-/* TODO refactor: extract:
-   createInitBasicMaterialState(no light data)
-   createInitLightMaterialState */
 let createInitMaterialState =
     (
       (index, disposedIndexArray, shaderIndices),
@@ -17,8 +14,6 @@ let createInitMaterialState =
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
   materialRecord: {index, disposedIndexArray, shaderIndices},
-  directionLightRecord: {index: directionLightData##index},
-  pointLightRecord: {index: pointLightData##index},
   renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
   shaderRecord,
   programRecord,

@@ -577,12 +577,12 @@ let getRecord = (state) => RecordRenderConfigMainService.getRecord(state);
 
 let getShaders = (state) =>
   GetDataRenderConfigService.getShaders(
-    InitMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
   );
 
 let getShaderLibs = (state) =>
   GetDataRenderConfigService.getShaderLibs(
-    InitMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
   );
 
 let getMaterialShaderLibRecordArr = GetDataRenderConfigService.getMaterialShaderLibDataArr;

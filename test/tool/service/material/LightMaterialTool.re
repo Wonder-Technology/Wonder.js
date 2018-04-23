@@ -23,7 +23,7 @@ let getDefaultShininess = (state) => getRecord(state).defaultShininess;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
   let {index, disposedIndexArray, shaderIndices} = RecordLightMaterialMainService.getRecord(state);
-  InitLightMaterialInitMaterialService.init(
+  InitInitLightMaterialService.init(
     gl,
     (
       JudgeInstanceMainService.buildMap(
@@ -33,7 +33,7 @@ let initMaterials = (gl, {gameObjectRecord} as state) => {
       ),
       JudgeInstanceMainService.isSupportInstance(state)
     ),
-    CreateInitMaterialStateMainService.createInitMaterialState(
+    CreateInitLightMaterialStateMainService.createInitMaterialState(
       (index, disposedIndexArray, shaderIndices),
       state
     )

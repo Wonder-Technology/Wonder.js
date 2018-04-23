@@ -1,4 +1,4 @@
-open StateInitMaterialType;
+open StateInitBasicMaterialType;
 
 open InitMaterialMaterialType;
 
@@ -6,14 +6,14 @@ let _initMaterialShader =
     (
       gl,
       (materialIndex: int, isSourceInstance, isSupportInstance),
-      (buildGLSLSourceFunc, setShaderIndexFunc, getShaderLibItemsFunc),
-      {materialRecord, renderConfigRecord} as state
+      (initMaterialShaderFunc, buildGLSLSourceFunc, setShaderIndexFunc, getShaderLibItemsFunc),
+      (materialRecord, renderConfigRecord, state)
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
   [@bs]
   setShaderIndexFunc(
     materialIndex,
-    InitShaderInitMaterialService.initMaterialShader(
+    initMaterialShaderFunc(
       materialIndex,
       (
         gl,
@@ -28,16 +28,6 @@ let _initMaterialShader =
         )
       ),
       buildGLSLSourceFunc,
-      /* (
-           directionLightIn,ex
-           pointLightRecord,
-           shaderRecord,
-           programRecord,
-           glslRecord,
-           glslSenderRecord,
-           glslLocationRecord,
-           glslChunkRecord
-         ) */
       state
     ),
     materialRecord.shaderIndices
@@ -46,11 +36,11 @@ let _initMaterialShader =
   state
 };
 
-let initMaterial = (gl, dataTuple, funcTuple, state) =>
-  _initMaterialShader(gl, dataTuple, funcTuple, state);
+let initMaterial = (gl, dataTuple, funcTuple, stateTuple) =>
+  _initMaterialShader(gl, dataTuple, funcTuple, stateTuple);
 
 let init =
-    (gl, (isSourceInstanceMap, isSupportInstance), initMaterialFunc, {materialRecord} as state) => {
+    (gl, (isSourceInstanceMap, isSupportInstance), initMaterialFunc, (materialRecord, state)) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -86,18 +76,6 @@ let init =
              state
            )
        ),
-       /* (
-            directionLightRecord,
-            pointLightRecord,
-            shaderIndices,
-            renderConfigRecord,
-            shaderRecord,
-            programRecord,
-            glslRecord,
-            glslSenderRecord,
-            glslLocationRecord,
-            glslChunkRecord
-          ) */
        state
      )
 };

@@ -14,7 +14,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
        (
          (state, materialIndex: int) =>
            [@bs]
-           InitLightMaterialInitMaterialService.initMaterial(
+           InitInitLightMaterialService.initMaterial(
              gl,
              (
                materialIndex,
@@ -28,7 +28,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
              state
            )
        ),
-       CreateInitMaterialStateMainService.createInitMaterialState(
+       CreateInitLightMaterialStateMainService.createInitMaterialState(
          (index, disposedIndexArray, shaderIndices),
          state
        )
@@ -42,14 +42,14 @@ let handleInitComponent = (gl, materialIndex: int, {gameObjectRecord} as state) 
   let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
   let {index, disposedIndexArray, shaderIndices} = RecordLightMaterialMainService.getRecord(state);
   [@bs]
-  InitLightMaterialInitMaterialService.initMaterial(
+  InitInitLightMaterialService.initMaterial(
     gl,
     (
       materialIndex,
       JudgeInstanceMainService.isSourceInstance(materialIndex, gameObjectMap, gameObjectRecord),
       isSupportInstance
     ),
-    CreateInitMaterialStateMainService.createInitMaterialState(
+    CreateInitLightMaterialStateMainService.createInitMaterialState(
       (index, disposedIndexArray, shaderIndices),
       state
     )

@@ -1,4 +1,4 @@
-open InitMaterialInitMaterialService;
+open StateInitBasicMaterialType;
 
 open RenderConfigType;
 
@@ -19,18 +19,19 @@ let isNeedInitMaterial = (materialIndex, shaderIndices) =>
 let initMaterial =
   [@bs]
   (
-    (gl, dataTuple, state) =>
+    (gl, dataTuple, {materialRecord, renderConfigRecord} as state) =>
       InitMaterialInitMaterialService.initMaterial(
         gl,
         dataTuple,
         (
+          InitShaderInitBasicMaterialService.initMaterialShader,
           BuildShaderSourceInitMaterialService.buildGLSLSource,
           ShaderIndicesService.setShaderIndex,
           _getShaderLibItems
         ),
-        state
+        (materialRecord, renderConfigRecord, state)
       )
   );
 
-let init = (gl, instanceTuple, state) =>
-  InitMaterialInitMaterialService.init(gl, instanceTuple, initMaterial, state);
+let init = (gl, instanceTuple, {materialRecord} as state) =>
+  InitMaterialInitMaterialService.init(gl, instanceTuple, initMaterial, (materialRecord, state));

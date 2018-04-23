@@ -14,7 +14,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
        (
          (state, materialIndex: int) =>
            [@bs]
-           InitBasicMaterialInitMaterialService.initMaterial(
+           InitInitBasicMaterialService.initMaterial(
              gl,
              (
                materialIndex,
@@ -28,7 +28,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
              state
            )
        ),
-       CreateInitMaterialStateMainService.createInitMaterialState(
+       CreateInitBasicMaterialStateMainService.createInitMaterialState(
          (index, disposedIndexArray, shaderIndices),
          state
        )
@@ -40,7 +40,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
 /* TODO fix light material */
 let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
   let {shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
-  InitBasicMaterialInitMaterialService.isNeedInitMaterial(materialIndex, shaderIndices) ?
+  InitInitBasicMaterialService.isNeedInitMaterial(materialIndex, shaderIndices) ?
     WorkerDetectMainService.isUseWorker(state) ?
       {
         let {materialArrayForWorkerInit} = RecordBasicMaterialMainService.getRecord(state);
@@ -54,7 +54,7 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
         let {index, disposedIndexArray, shaderIndices} =
           RecordBasicMaterialMainService.getRecord(state);
         [@bs]
-        InitBasicMaterialInitMaterialService.initMaterial(
+        InitInitBasicMaterialService.initMaterial(
           gl,
           (
             materialIndex,
@@ -65,7 +65,7 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
             ),
             isSupportInstance
           ),
-          CreateInitMaterialStateMainService.createInitMaterialState(
+          CreateInitBasicMaterialStateMainService.createInitMaterialState(
             (index, disposedIndexArray, shaderIndices),
             state
           )

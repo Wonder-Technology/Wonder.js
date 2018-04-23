@@ -1,4 +1,4 @@
-open StateInitMaterialType;
+open StateInitLightMaterialType;
 
 open ShaderType;
 
@@ -67,7 +67,8 @@ let initMaterialShader =
       buildGLSLSourceFunc(
         materialIndex,
         shaderLibDataArr,
-        (directionLightRecord, pointLightRecord, glslRecord, glslChunkRecord)
+        HandleGLSLInitLightMaterialService.getHandle((directionLightRecord, pointLightRecord)),
+        (glslRecord, glslChunkRecord)
       );
     let program =
       gl
@@ -75,11 +76,11 @@ let initMaterialShader =
       |> ProgramService.registerProgram(shaderIndex, programRecord)
       |> ProgramService.initShader(vsSource, fsSource, gl);
     (glslSenderRecord, glslLocationRecord)
-    |> HandleAttributeConfigDataInitMaterialService.addAttributeSendData(
+    |> HandleAttributeConfigDataInitLightMaterialService.addAttributeSendData(
          (gl, shaderIndex, program),
          shaderLibDataArr
        )
-    |> HandleUniformConfigDataInitMaterialService.addUniformSendData(
+    |> HandleUniformConfigDataInitLightMaterialService.addUniformSendData(
          gl,
          (program, shaderIndex, shaderLibDataArr)
        )

@@ -18,23 +18,23 @@ let execJob = (flags, e, stateData) =>
       let isSupportInstance = false;
       let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
       /* WonderLog.Log.print((
-        "inited material array in render worker:",
-        basicMaterialData##materialDataForWorkerInit
-      ))
-      |> ignore; */
+           "inited material array in render worker:",
+           basicMaterialData##materialDataForWorkerInit
+         ))
+         |> ignore; */
       basicMaterialData##materialDataForWorkerInit
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs]
            (
-             (initMaterialState, (materialIndex, isSourceInstance)) =>
+             (initBasicMaterialState, (materialIndex, isSourceInstance)) =>
                [@bs]
-               InitBasicMaterialInitMaterialService.initMaterial(
+               InitInitBasicMaterialService.initMaterial(
                  gl,
                  (materialIndex, isSourceInstance, isSupportInstance),
-                 initMaterialState
+                 initBasicMaterialState
                )
            ),
-           CreateInitMaterialStateRenderWorkerService.createInitMaterialState(
+           CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
              (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
              (directionLightData, pointLightData),
              state
