@@ -12,6 +12,8 @@ let startDirector = DirectorAPI.startDirector;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
+let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOrder;
+
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
@@ -345,6 +347,8 @@ let initDirector = DirectorAPI.initDirector;
 let startDirector = DirectorAPI.startDirector;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
+
+let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOrder;
 
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
