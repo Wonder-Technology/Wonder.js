@@ -18,6 +18,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let renderConfigRecord = RecordRenderConfigMainService.getRecord(state);
   let transformRecord = RecordTransformMainService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   {
@@ -52,15 +53,28 @@ let _buildData = (operateType, canvas, stateData) => {
           gameObjectRecord
         )
     },
+    "lightMaterialData": {
+      "buffer": lightMaterialRecord.buffer,
+      "index": lightMaterialRecord.index,
+      "disposedIndexArray": lightMaterialRecord.disposedIndexArray,
+      "isSourceInstanceMap":
+        JudgeInstanceMainService.buildMap(
+          lightMaterialRecord.index,
+          RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
+          gameObjectRecord
+        )
+    },
     "customGeometryData": {
       "buffer": customGeometryRecord.buffer,
       "verticesInfoArray": customGeometryRecord.verticesInfoArray,
       "normalsInfoArray": customGeometryRecord.normalsInfoArray,
       "indicesInfoArray": customGeometryRecord.indicesInfoArray
     },
-    /* TODO send positionMap */
-    "directionLightData": {"index": directionLightRecord.index},
-    "pointLightData": {"index": pointLightRecord.index}
+    "directionLightData": {
+      "buffer": directionLightRecord.buffer,
+      "index": directionLightRecord.index
+    },
+    "pointLightData": {"buffer": pointLightRecord.buffer, "index": pointLightRecord.index}
   }
 };
 

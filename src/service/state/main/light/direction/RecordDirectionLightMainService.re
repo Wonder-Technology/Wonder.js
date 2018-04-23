@@ -43,18 +43,7 @@ let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer = createBuffer(count);
-  let colors =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getColorsOffset(),
-      ~length=getColorsLength()
-    );
-  let intensities =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getIntensitiesOffset(),
-      ~length=getIntensitiesLength()
-    );
+  let (colors, intensities) = CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities) |> _setDefaultTypeArrData(count)
 };
 

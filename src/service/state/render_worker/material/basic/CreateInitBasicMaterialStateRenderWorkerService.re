@@ -3,7 +3,6 @@ open StateInitBasicMaterialType;
 let createInitMaterialState =
     (
       (index, disposedIndexArray, shaderIndices),
-      (directionLightData, pointLightData),
       {
         shaderRecord,
         programRecord,

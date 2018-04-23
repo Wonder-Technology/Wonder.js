@@ -36,7 +36,6 @@ let execJob = (flags, e, stateData) =>
            ),
            CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
              (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
-             (directionLightData, pointLightData),
              state
            )
          )

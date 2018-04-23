@@ -40,30 +40,8 @@ let _setDefaultTypeArrData =
 let _initBufferData =
     (count, defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness) => {
   let buffer = createBuffer(count);
-  let shaderIndices =
-    Uint32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=ShaderIndicesService.getShaderIndicesOffset(count),
-      ~length=ShaderIndicesService.getShaderIndicesLength(count)
-    );
-  let diffuseColors =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getDiffuseColorsOffset(count),
-      ~length=getDiffuseColorsLength(count)
-    );
-  let specularColors =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getSpecularColorsOffset(count),
-      ~length=getSpecularColorsLength(count)
-    );
-  let shininess =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getShininessOffset(count),
-      ~length=getShininessLength(count)
-    );
+  let (shaderIndices, diffuseColors, specularColors, shininess) =
+    CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
   (buffer, shaderIndices, diffuseColors, specularColors, shininess)
   |> _setDefaultTypeArrData(
        count,

@@ -10,8 +10,6 @@ let _createTypeArrays = (buffer, count, state) => {
 };
 
 let _initMaterials = (basicMaterialData, data, state) => {
-  let directionLightData = data##directionLightData;
-  let pointLightData = data##pointLightData;
   let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
   let isSourceInstanceMap = basicMaterialData##isSourceInstanceMap;
   InitInitBasicMaterialService.init(
@@ -23,7 +21,6 @@ let _initMaterials = (basicMaterialData, data, state) => {
     ),
     CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
       (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
-      (directionLightData, pointLightData),
       state
     )
   )

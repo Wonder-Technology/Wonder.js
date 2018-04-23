@@ -100,42 +100,8 @@ let _setDefaultTypeArrData =
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer = createBuffer(count);
-  let colors =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getColorsOffset(),
-      ~length=getColorsLength()
-    );
-  let intensities =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getIntensitiesOffset(),
-      ~length=getIntensitiesLength()
-    );
-  let constants =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getConstantsOffset(),
-      ~length=getConstantsLength()
-    );
-  let linears =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getLinearsOffset(),
-      ~length=getLinearsLength()
-    );
-  let quadratics =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getQuadraticsOffset(),
-      ~length=getQuadraticsLength()
-    );
-  let ranges =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getRangesOffset(),
-      ~length=getRangesLength()
-    );
+  let (colors, intensities, constants, linears, quadratics, ranges) =
+    CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities, constants, linears, quadratics, ranges)
   |> _setDefaultTypeArrData(count)
 };

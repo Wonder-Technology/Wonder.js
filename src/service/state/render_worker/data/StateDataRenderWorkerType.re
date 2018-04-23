@@ -4,6 +4,14 @@ open RenderWorkerSettingType;
 
 open RenderWorkerBasicMaterialType;
 
+open RenderWorkerLightMaterialType;
+
+open RenderWorkerAmbientLightType;
+
+open RenderWorkerDirectionLightType;
+
+open RenderWorkerPointLightType;
+
 open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
@@ -46,8 +54,12 @@ type renderWorkerState = {
   mutable glslLocationRecord,
   mutable glslChunkRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
+  mutable lightMaterialRecord: option(lightMaterialRecord),
   mutable transformRecord: option(transformRecord),
   mutable boxGeometryRecord,
+  mutable ambientLightRecord: option(ambientLightRecord),
+  mutable directionLightRecord: option(directionLightRecord),
+  mutable pointLightRecord: option(pointLightRecord),
   mutable renderRecord,
   mutable typeArrayPoolRecord,
   mutable vboBufferRecord,
