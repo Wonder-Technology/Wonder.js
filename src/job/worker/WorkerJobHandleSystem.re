@@ -15,6 +15,7 @@ let _getMainLoopJobHandles = () => [
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
   ("dispose_and_send_dispose_data", DisposeAndSendDisposeDataMainWorkerJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
+  ("create_light_render_object_buffer", CreateLightRenderObjectBufferMainWorkerJob.execJob),
   ("send_render_data", SendRenderDataMainWorkerJob.execJob),
   ("copy_transform", CopyTransformMainWorkerJob.execJob),
   ("get_finish_render_data", GetFinishRenderDataMainWorkerJob.execJob)
@@ -37,6 +38,8 @@ let _getWorkerJobHandles = () => [
   ("init_light_material", InitLightMaterialRenderWorkerJob.execJob),
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
   ("get_render_data", GetRenderDataRenderWorkerJob.execJob),
+  ("get_direction_light_data", GetDirectionLightDataRenderWorkerJob.execJob),
+  ("get_point_light_data", GetPointLightDataRenderWorkerJob.execJob),
   ("init_material_for_render", InitMaterialForRenderRenderWorkerJob.execJob),
   ("clear_color", ClearColorRenderWorkerJob.execJob),
   ("clear_buffer", ClearBufferRenderWorkerJob.execJob),
@@ -45,9 +48,14 @@ let _getWorkerJobHandles = () => [
     "create_basic_render_object_typeArray",
     CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob
   ),
+  (
+    "create_light_render_object_typeArray",
+    CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob
+  ),
   ("get_camera_data", GetCameraDataRenderWorkerJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),
+  ("front_render_light", FrontRenderLightRenderWorkerJob.execJob),
   ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob)

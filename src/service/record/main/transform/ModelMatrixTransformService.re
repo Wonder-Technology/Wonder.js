@@ -2,6 +2,8 @@ open Js.Typed_array;
 
 open TypeArrayService;
 
+open PositionType;
+
 open TransformType;
 
 open HierachyTransformService;

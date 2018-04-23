@@ -2,8 +2,6 @@ open ComponentType;
 
 type transform = int;
 
-type position = (float, float, float);
-
 type transformParentMap = array(Js.undefined(transform));
 
 type transformChildMap = array(array(transform));

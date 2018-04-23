@@ -10,6 +10,9 @@
                         "name": "create_basic_render_object_buffer"
                     },
                     {
+                        "name": "create_light_render_object_buffer"
+                    },
+                    {
                         "name": "send_render_data"
                     },
                     {

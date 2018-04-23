@@ -251,30 +251,47 @@ let batchDisposeBasicMaterialComponent = (state, componentArray: array(component
 };
 
 let batchDisposeBasicMaterialComponentForWorker = (state, componentArray: array(component)) => {
-  ...state,
-  basicMaterialRecord:
-    Some(
-      ComponentMapService.batchDisposeComponent(
-        RecordBasicMaterialMainService.getRecord(state),
-        DisposeBasicMaterialService.handleBatchDisposeComponent,
-        componentArray
-      )
-      |> DisposeBasicMaterialService.removeDisposedOnesFromMaterialArrayForWorkerInit(
-           componentArray
-         )
-    )
+  open BasicMaterialType;
+  let {materialArrayForWorkerInit} as record =
+    ComponentMapService.batchDisposeComponent(
+      RecordBasicMaterialMainService.getRecord(state),
+      DisposeBasicMaterialService.handleBatchDisposeComponent,
+      componentArray
+    );
+  {
+    ...state,
+    basicMaterialRecord:
+      Some({
+        ...record,
+        materialArrayForWorkerInit:
+          materialArrayForWorkerInit
+          |> MaterialArrayForWorkerInitService.removeDisposedOnesFromMaterialArrayForWorkerInit(
+               componentArray
+             )
+      })
+  }
 };
 
 let batchDisposeLightMaterialComponent = (state, componentArray: array(component)) => {
-  ...state,
-  lightMaterialRecord:
-    Some(
-      ComponentMapService.batchDisposeComponent(
-        RecordLightMaterialMainService.getRecord(state),
-        DisposeLightMaterialService.handleBatchDisposeComponent,
-        componentArray
-      )
-    )
+  open LightMaterialType;
+  let {materialArrayForWorkerInit} as record =
+    ComponentMapService.batchDisposeComponent(
+      RecordLightMaterialMainService.getRecord(state),
+      DisposeLightMaterialService.handleBatchDisposeComponent,
+      componentArray
+    );
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...record,
+        materialArrayForWorkerInit:
+          materialArrayForWorkerInit
+          |> MaterialArrayForWorkerInitService.removeDisposedOnesFromMaterialArrayForWorkerInit(
+               componentArray
+             )
+      })
+  }
 };
 
 let batchDisposeAmbientLightComponent =

@@ -6,7 +6,7 @@ let _createTypeArrays = (buffer, count, index, state) => {
   let (colors, intensities, constants, linears, quadratics, ranges) =
     CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
   state.pointLightRecord =
-    Some({index, colors, intensities, constants, linears, quadratics, ranges});
+    Some({index, positionMap: None, colors, intensities, constants, linears, quadratics, ranges});
   state
 };
 

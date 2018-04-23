@@ -10,7 +10,9 @@ let _buildData = (operateType, stateData) => {
   let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
     StateDataMainService.unsafeGetState(stateData);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
+  let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
+  let lightRenderObjectRecord = OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
@@ -21,28 +23,30 @@ let _buildData = (operateType, stateData) => {
         Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
       )
     };
-  /* WonderLog.Log.print(("materialDataForWorkerInit: ", basicMaterialRecord.materialArrayForWorkerInit)) |> ignore; */
   WonderLog.Log.print("send render data") |> ignore;
-  /* WonderLog.Log.print((
-       "send inited material array to render worker:",
-       basicMaterialRecord.materialArrayForWorkerInit
-     )); */
   {
     "operateType": operateType,
+    "directionLightData": {
+      "index": directionLightRecord.index,
+      "positionMap":
+        PositionLightMainService.buildPositionMap(
+          directionLightRecord.index,
+          PositionDirectionLightMainService.getPosition,
+          state
+        )
+    },
+    "pointLightData": {
+      "index": pointLightRecord.index,
+      "positionMap":
+        PositionLightMainService.buildPositionMap(
+          pointLightRecord.index,
+          PositionPointLightMainService.getPosition,
+          state
+        )
+    },
     "initData": {
       "materialData": {
         "basicMaterialData": {
-          /* "materialDataForWorkerInit":basicMaterialRecord.materialArrayForWorkerInit
-             |> Js.Array.map(
-                  (materialIndex) => (
-                    materialIndex,
-                    JudgeInstanceMainService.isSourceInstance(
-                      materialIndex,
-                      basicMaterialRecord.gameObjectMap,
-                      gameObjectRecord
-                    )
-                  )
-                ), */
           "materialDataForWorkerInit":
             basicMaterialRecord.materialArrayForWorkerInit
             |> Js.Array.reduce(
@@ -60,10 +64,27 @@ let _buildData = (operateType, stateData) => {
                ),
           "index": basicMaterialRecord.index,
           "disposedIndexArray": basicMaterialRecord.disposedIndexArray
+        },
+        "lightMaterialData": {
+          "materialDataForWorkerInit":
+            lightMaterialRecord.materialArrayForWorkerInit
+            |> Js.Array.reduce(
+                 (arr, materialIndex) =>
+                   arr
+                   |> ArrayService.push((
+                        materialIndex,
+                        JudgeInstanceMainService.isSourceInstance(
+                          materialIndex,
+                          lightMaterialRecord.gameObjectMap,
+                          gameObjectRecord
+                        )
+                      )),
+                 [||]
+               ),
+          "index": lightMaterialRecord.index,
+          "disposedIndexArray": lightMaterialRecord.disposedIndexArray
         }
-      },
-      "directionLightData": {"index": directionLightRecord.index},
-      "pointLightData": {"index": pointLightRecord.index}
+      }
     },
     "renderData": {
       "isRender": isRender,
@@ -72,6 +93,11 @@ let _buildData = (operateType, stateData) => {
         "buffer": basicRenderObjectRecord.buffer,
         "count": basicRenderObjectRecord.count,
         "bufferCount": BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+      },
+      "light": {
+        "buffer": lightRenderObjectRecord.buffer,
+        "count": lightRenderObjectRecord.count,
+        "bufferCount": BufferSettingService.getLightMaterialDataBufferCount(settingRecord)
       }
     }
   }

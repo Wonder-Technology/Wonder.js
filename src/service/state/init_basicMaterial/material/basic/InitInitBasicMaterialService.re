@@ -12,7 +12,6 @@ let _getShaderLibItems = ({material_shaders}) => {
     shader_libs
 };
 
-/* TODO fix light material */
 let isNeedInitMaterial = (materialIndex, shaderIndices) =>
   ! ShaderIndicesService.hasShaderIndex(materialIndex, shaderIndices);
 

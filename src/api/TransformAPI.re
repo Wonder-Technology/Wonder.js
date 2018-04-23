@@ -1,3 +1,5 @@
+open PositionType;
+
 open TransformType;
 
 open DisposeTransformMainService;

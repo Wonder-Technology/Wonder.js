@@ -69,20 +69,3 @@ let handleBatchDisposeComponent =
          )
     }
   );
-
-let removeDisposedOnesFromMaterialArrayForWorkerInit =
-    (materialArray, {materialArrayForWorkerInit} as record) => {
-  let materialMap =
-    DisposeECSService.buildMapFromArray(
-      materialArray,
-      WonderCommonlib.SparseMapService.createEmpty()
-    );
-  {
-    ...record,
-    materialArrayForWorkerInit:
-      record.materialArrayForWorkerInit
-      |> Js.Array.filter(
-           (material) => ! (materialMap |> WonderCommonlib.SparseMapService.has(material))
-         )
-  }
-};

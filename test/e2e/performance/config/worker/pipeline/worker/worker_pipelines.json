@@ -52,6 +52,12 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "get_direction_light_data"
+                    },
+                    {
+                        "name": "get_point_light_data"
+                    },
+                    {
                         "name": "init_material_for_render"
                     },
                     {
@@ -67,6 +73,9 @@
                         "name": "create_basic_render_object_typeArray"
                     },
                     {
+                        "name": "create_light_render_object_typeArray"
+                    },
+                    {
                         "name": "get_camera_data"
                     },
                     {
@@ -74,6 +83,9 @@
                     },
                     {
                         "name": "render_basic"
+                    },
+                    {
+                        "name": "front_render_light"
                     },
                     {
                         "name": "send_finish_render_data"

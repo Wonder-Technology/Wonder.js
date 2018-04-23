@@ -60,6 +60,12 @@
         ]
     },
     {
+        "name": "get_direction_light_data"
+    },
+    {
+        "name": "get_point_light_data"
+    },
+    {
         "name": "clear_color",
         "flags": [
             "#000000"
@@ -81,6 +87,9 @@
     },
     {
         "name": "create_basic_render_object_typeArray"
+    },
+    {
+        "name": "create_light_render_object_typeArray"
     },
     {
         "name": "get_camera_data"

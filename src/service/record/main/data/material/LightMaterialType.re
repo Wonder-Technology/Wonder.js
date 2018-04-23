@@ -15,5 +15,6 @@ type lightMaterialRecord = {
   defaultShininess: float,
   gameObjectMap,
   groupCountMap,
-  disposedIndexArray
+  disposedIndexArray,
+  mutable materialArrayForWorkerInit: array(int)
 };

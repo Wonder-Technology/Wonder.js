@@ -6,6 +6,14 @@ open RenderWorkerSettingType;
 
 open RenderWorkerBasicMaterialType;
 
+open RenderWorkerLightMaterialType;
+
+open RenderWorkerAmbientLightType;
+
+open RenderWorkerDirectionLightType;
+
+open RenderWorkerPointLightType;
+
 open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
@@ -25,10 +33,6 @@ let createRenderState =
         gpuDetectRecord,
         glslSenderRecord,
         programRecord,
-        /* ambientLightRecord,
-           directionLightRecord,
-           pointLightRecord,
-           sourceInstanceRecord, */
         renderRecord,
         vboBufferRecord,
         typeArrayPoolRecord,
@@ -42,11 +46,11 @@ let createRenderState =
   let boxGeometryRecord = RecordBoxGeometryRenderWorkerService.getRecord(state);
   /* let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
+  let lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
+  let ambientLightRecord = RecordAmbientLightRenderWorkerService.getRecord(state);
+  let directionLightRecord = RecordDirectionLightRenderWorkerService.getRecord(state);
+  let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
-  /* let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state); */
-  /* let {index, colors} = ambientLightRecord;
-     let {index, colors, intensities} = directionLightRecord;
-     let {index, colors, intensities, constants, linears, quadratics, ranges} = pointLightRecord; */
   /* let {
        objectInstanceTransformArrayMap,
        matrixInstanceBufferCapacityMap,
@@ -70,10 +74,29 @@ let createRenderState =
       shaderIndices: basicMaterialRecord.shaderIndices,
       colors: basicMaterialRecord.colors
     },
-    lightMaterialRecord: Obj.magic(1),
-    ambientLightRecord: Obj.magic(1),
-    directionLightRecord: Obj.magic(1),
-    pointLightRecord: Obj.magic(1),
+    lightMaterialRecord: {
+      shaderIndices: lightMaterialRecord.shaderIndices,
+      diffuseColors: lightMaterialRecord.diffuseColors,
+      specularColors: lightMaterialRecord.specularColors,
+      shininess: lightMaterialRecord.shininess
+    },
+    ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
+    directionLightRecord: {
+      index: directionLightRecord.index,
+      colors: directionLightRecord.colors,
+      intensities: directionLightRecord.intensities,
+      positionMap: RecordRenderWorkerDirectionLightService.getPositionMap(directionLightRecord)
+    },
+    pointLightRecord: {
+      index: pointLightRecord.index,
+      colors: pointLightRecord.colors,
+      intensities: pointLightRecord.intensities,
+      constants: pointLightRecord.constants,
+      linears: pointLightRecord.linears,
+      quadratics: pointLightRecord.quadratics,
+      ranges: pointLightRecord.ranges,
+      positionMap: RecordRenderWorkerPointLightService.getPositionMap(pointLightRecord)
+    },
     vboBufferRecord,
     typeArrayPoolRecord,
     transformRecord: {

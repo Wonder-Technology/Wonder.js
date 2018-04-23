@@ -57,11 +57,7 @@ let dispose = (material, state: StateDataMainType.state) =>
   GameObjectTool.disposeGameObjectLightMaterialComponent((-1), material, state);
 
 let initMaterial = (materialIndex, state) =>
-  InitLightMaterialMainService.handleInitComponent(
-    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    materialIndex,
-    state
-  );
+  InitLightMaterialMainService.handleInitComponent(materialIndex, state);
 
 let isMaterialDisposed = (material, state) => {
   open LightMaterialType;

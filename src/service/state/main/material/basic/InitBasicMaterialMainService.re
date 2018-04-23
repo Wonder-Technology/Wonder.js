@@ -37,7 +37,6 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
   state
 };
 
-/* TODO fix light material */
 let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
   let {shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
   InitInitBasicMaterialService.isNeedInitMaterial(materialIndex, shaderIndices) ?

@@ -19,3 +19,6 @@ let unsafeGetBasicRenderObjectRecord = (state) =>
 
 let getLightRenderObjectRecord = (state) =>
   RecordRenderMainService.getRecord(state).lightRenderObjectRecord;
+
+let unsafeGetLightRenderObjectRecord = (state) =>
+  getLightRenderObjectRecord(state) |> OptionService.unsafeGet;

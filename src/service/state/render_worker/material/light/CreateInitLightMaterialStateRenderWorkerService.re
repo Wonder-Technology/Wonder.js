@@ -1,5 +1,7 @@
 open StateInitLightMaterialType;
 
+open RenderWorkerLightMaterialType;
+
 let createInitMaterialState =
     (
       (index, disposedIndexArray, shaderIndices),

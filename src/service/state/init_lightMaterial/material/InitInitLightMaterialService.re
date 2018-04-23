@@ -12,6 +12,9 @@ let _getShaderLibItems = ({material_shaders}) => {
     shader_libs
 };
 
+let isNeedInitMaterial = (materialIndex, shaderIndices) =>
+  ! ShaderIndicesService.hasShaderIndex(materialIndex, shaderIndices);
+
 let initMaterial =
   [@bs]
   (
