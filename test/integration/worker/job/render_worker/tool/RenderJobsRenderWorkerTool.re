@@ -15,7 +15,6 @@ let prepareForUseProgram = (sandbox, prepareFunc, state) => {
     |> FakeGlToolWorker.setFakeGl(
          FakeGlToolWorker.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
        );
-  let state = MainStateTool.setState(state);
   (state, program, useProgram)
 };
 
@@ -99,7 +98,8 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     GetCameraDataRenderWorkerJob.execJob(None),
     SendUniformShaderDataRenderWorkerJob.execJob(None),
     RenderBasicRenderWorkerJob.execJob(None),
-    FrontRenderLightRenderWorkerJob.execJob(None)
+    FrontRenderLightRenderWorkerJob.execJob(None),
+    CommitRenderWorkerJob.execJob(None)
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
   |> Most.drain

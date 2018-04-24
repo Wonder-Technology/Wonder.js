@@ -36,7 +36,6 @@ let execJob = (flags, e, stateData) =>
       | true =>
         let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
         _render(gl, state) |> ignore;
-        CommitGlService.commit(gl);
         e
       }
     }

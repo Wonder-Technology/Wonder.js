@@ -107,6 +107,9 @@
         "name": "front_render_light"
     },
     {
+        "name": "commit"
+    },
+    {
         "name": "send_finish_render_data",
         "flags": [
             "FINISH_RENDER"

@@ -57,6 +57,7 @@ let _getWorkerJobHandles = () => [
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),
   ("front_render_light", FrontRenderLightRenderWorkerJob.execJob),
+  ("commit", CommitRenderWorkerJob.execJob),
   ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob)
