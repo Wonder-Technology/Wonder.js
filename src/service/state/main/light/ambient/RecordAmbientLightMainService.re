@@ -29,12 +29,7 @@ let _initBufferData = () => {
   let buffer = createBuffer(count);
   let offset = ref(0);
   let typeArrayLength = count * getColorsSize();
-  let colors =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=offset^,
-      ~length=typeArrayLength
-    );
+  let colors = CreateTypeArrayAmbientLightService.createTypeArrays(buffer, count);
   offset := typeArrayLength * Float32Array._BYTES_PER_ELEMENT;
   (buffer, colors) |> _setDefaultTypeArrData(count)
 };

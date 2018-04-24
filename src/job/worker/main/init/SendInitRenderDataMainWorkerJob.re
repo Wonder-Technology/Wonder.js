@@ -9,6 +9,7 @@ let _buildData = (operateType, canvas, stateData) => {
         settingRecord,
         workerInstanceRecord,
         gameObjectRecord,
+        ambientLightRecord,
         directionLightRecord,
         pointLightRecord
       } as state =
@@ -70,6 +71,7 @@ let _buildData = (operateType, canvas, stateData) => {
       "normalsInfoArray": customGeometryRecord.normalsInfoArray,
       "indicesInfoArray": customGeometryRecord.indicesInfoArray
     },
+    "ambientLightData": {"buffer": ambientLightRecord.buffer, "index": ambientLightRecord.index},
     "directionLightData": {
       "buffer": directionLightRecord.buffer,
       "index": directionLightRecord.index

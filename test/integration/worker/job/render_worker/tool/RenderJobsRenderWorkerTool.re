@@ -58,7 +58,11 @@ let init = (completeFunc, state) => {
            InitTransformRenderWorkerJob.execJob(None),
            GetRenderConfigDataRenderWorkerJob.execJob(None),
            PregetGLSLDataRenderWorkerJob.execJob(None),
-           InitBasicMaterialRenderWorkerJob.execJob(None)
+           InitBasicMaterialRenderWorkerJob.execJob(None),
+           InitAmbientLightRenderWorkerJob.execJob(None),
+           InitDirectionLightRenderWorkerJob.execJob(None),
+           InitPointLightRenderWorkerJob.execJob(None),
+           InitLightMaterialRenderWorkerJob.execJob(None)
          |]
          |> concatStreamFuncArray(initData, RenderWorkerStateTool.getStateData())
          |> Most.drain
@@ -88,10 +92,14 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
   };
   [|
+    GetDirectionLightDataRenderWorkerJob.execJob(None),
+    GetPointLightDataRenderWorkerJob.execJob(None),
     CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
+    CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     GetCameraDataRenderWorkerJob.execJob(None),
     SendUniformShaderDataRenderWorkerJob.execJob(None),
-    RenderBasicRenderWorkerJob.execJob(None)
+    RenderBasicRenderWorkerJob.execJob(None),
+    FrontRenderLightRenderWorkerJob.execJob(None)
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
   |> Most.drain
@@ -111,6 +119,13 @@ let mainLoopAndRender =
 let initAndMainLoopAndRender =
     (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
   init(
-    (state) => mainLoopAndRender(~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc, ()),
+    (state) =>
+      mainLoopAndRender(
+        ~completeFunc,
+        ~state,
+        ~sandbox,
+        ~beforeExecRenderRenderWorkerJobsFunc,
+        ()
+      ),
     state
   );

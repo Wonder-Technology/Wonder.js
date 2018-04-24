@@ -35,6 +35,9 @@
                         "name": "init_basic_material"
                     },
                     {
+                        "name": "init_ambient_light"
+                    },
+                    {
                         "name": "init_direction_light"
                     },
                     {

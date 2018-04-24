@@ -59,6 +59,8 @@ let _ =
                         |> toCalledWith([|
                              {
                                "operateType": Sinon.matchAny,
+                               "directionLightData": Sinon.matchAny,
+                               "pointLightData": Sinon.matchAny,
                                "initData": {
                                  "materialData": {
                                    "basicMaterialData": {
@@ -68,10 +70,9 @@ let _ =
                                      |],
                                      "index": 2,
                                      "disposedIndexArray": Sinon.matchAny
-                                   }
-                                 },
-                                 "directionLightData": Sinon.matchAny,
-                                 "pointLightData": Sinon.matchAny
+                                   },
+                                   "lightMaterialData": Sinon.matchAny
+                                 }
                                },
                                "renderData": Sinon.matchAny
                              }
