@@ -1,3 +1,5 @@
+open SendGLSLDataService;
+
 let getSendNoCachableDataByType = (type_) =>
   SendGLSLDataService.(
     switch type_ {

@@ -2,8 +2,6 @@ open GlType;
 
 open Gl;
 
-open StateRenderType;
-
 let getBufferSizeByType = (type_: string) =>
   switch type_ {
   /* | "vec2" => 2 */
@@ -47,19 +45,27 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
 let sendMatrix3 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) => {
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
       /*WonderLog.Log.log(("send matrix3: ", data)) |> ignore;*/
-      uniformMatrix3fv(pos, Js.false_, data, gl)
-    }
+      uniformMatrix3fv(
+        pos,
+        Js.false_,
+        data,
+        gl
+      )
   );
 
 let sendMatrix4 =
   [@bs]
   (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) => {
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
       /* WonderLog.Log.log(("send matrix4: ", data)) |> ignore; */
-      uniformMatrix4fv(pos, Js.false_, data, gl)
-    }
+      uniformMatrix4fv(
+        pos,
+        Js.false_,
+        data,
+        gl
+      )
   );
 
 let _getCache = (shaderCacheMap, name: string) =>
@@ -127,7 +133,13 @@ let sendFloat3 =
     ) =>
       if (_isNotCacheVector3(shaderCacheMap, name, (x, y, z))) {
         /*WonderLog.Log.log(("send float3: ", name, (x, y, z))) |> ignore;*/
-        uniform3f(pos, x, y, z, gl)
+        uniform3f(
+          pos,
+          x,
+          y,
+          z,
+          gl
+        )
       } else {
         ()
       }
@@ -144,7 +156,13 @@ let sendVec3 =
     ) =>
       if (_isNotCacheVector3(shaderCacheMap, name, dataTuple)) {
         /*WonderLog.Log.log(( "send vec3: ", name, dataTuple )) |> ignore;*/
-        uniform3f(pos, x, y, z, gl)
+        uniform3f(
+          pos,
+          x,
+          y,
+          z,
+          gl
+        )
       } else {
         ()
       }
