@@ -29,8 +29,8 @@ let _buildData = (operateType, canvas, stateData) => {
     "bufferData": {
       "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
       "transformDataBufferCount": buffer.transformDataBufferCount,
-      "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount
-      /* "lightMaterialDataBufferCount": int */
+      "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
+      "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount
     },
     "gpuData": {"useHardwareInstance": gpu.useHardwareInstance},
     "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
@@ -61,7 +61,7 @@ let _buildData = (operateType, canvas, stateData) => {
       "isSourceInstanceMap":
         JudgeInstanceMainService.buildMap(
           lightMaterialRecord.index,
-          RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
+          RecordLightMaterialMainService.getRecord(state).gameObjectMap,
           gameObjectRecord
         )
     },

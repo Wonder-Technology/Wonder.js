@@ -39,7 +39,7 @@ let _ =
           let _prepareForUseProgram = (sandbox, state) =>
             RenderJobsRenderWorkerTool.prepareForUseProgram(sandbox, _prepare, state);
           testPromise(
-            "test",
+            "test use",
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
