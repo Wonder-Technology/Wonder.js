@@ -20,19 +20,15 @@ let _ =
       describe(
         "use program",
         () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            state
-          };
+          let _prepare = (sandbox, state) =>
+            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgram(sandbox, state);
           let _prepareForUseProgram = (sandbox, state) =>
             RenderJobsTool.prepareForUseProgram(sandbox, _prepare, state);
           test(
             "test use",
             () => {
               let (state, program, useProgram) = _prepareForUseProgram(sandbox, state^);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               useProgram |> expect |> toCalledWith([|program|])
             }
           );
@@ -125,8 +121,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 2
                 }
               );
@@ -151,11 +146,8 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices( state);
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
                       bufferData
                       |> withThreeArgs(array_buffer, vertices, static_draw)
                       |> expect
@@ -184,10 +176,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       (
                         calledBefore(bindBuffer |> withTwoArgs(array_buffer, buffer), bufferData),
                         calledAfter(
@@ -221,11 +210,8 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
-                      let indices = BoxGeometryAPI.getBoxGeometryIndices( state);
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
                       bufferData
                       |> withThreeArgs(element_array_buffer, indices, static_draw)
                       |> expect
@@ -254,10 +240,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       (
                         calledBefore(
                           bindBuffer |> withTwoArgs(element_array_buffer, buffer),
@@ -352,10 +335,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       bindBuffer |> expect |> toCalledWith([|array_buffer, buffer|])
                     }
                   );
@@ -379,10 +359,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
                       |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
@@ -525,10 +502,7 @@ let _ =
                              ()
                            )
                          );
-                    let state =
-                      state
-                      |> RenderJobsTool.init
-                      |> DirectorTool.runWithDefaultTime;
+                    let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                     uniformMatrix4fv
                     |> expect
                     |> toCalledWith([|
@@ -573,9 +547,7 @@ let _ =
                                )
                              );
                         let state =
-                          state
-                          |> RenderJobsTool.init
-                          |> DirectorTool.runWithDefaultTime;
+                          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                         uniformMatrix4fv
                         |> withOneArg(pos)
                         |> getCall(1)
@@ -673,9 +645,7 @@ let _ =
                                )
                              );
                         let state =
-                          state
-                          |> RenderJobsTool.init
-                          |> DirectorTool.runWithDefaultTime;
+                          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                         let defaultData = [1., 1., 1.];
                         uniform3f
                         |> withOneArg(pos)

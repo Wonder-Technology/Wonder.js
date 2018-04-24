@@ -31,11 +31,8 @@ let _ =
       describe(
         "use program",
         () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            state
-          };
+          let _prepare = (sandbox, state) =>
+            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgram(sandbox, state);
           let _prepareForUseProgram = (sandbox, state) =>
             RenderJobsRenderWorkerTool.prepareForUseProgram(sandbox, _prepare, state);
           testPromise(
@@ -61,7 +58,6 @@ let _ =
               testPromise(
                 "test send",
                 () => {
-                  /* TODO refactor: duplicate with renderBasicJob_test */
                   let (state, _, (gameObjectTransform, _), cameraTransform, basicCameraView) =
                     GLSLSenderTool.JudgeSendUniformData.prepareSendUniformData(
                       sandbox,

@@ -31,12 +31,8 @@ let _ =
       describe(
         "use program",
         () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _) = AmbientLightTool.createGameObject(state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            state
-          };
+          let _prepare = (sandbox, state) =>
+            FrontRenderLightForNoWorkerAndWorkerJobTool.prepareForUseProgram(sandbox, state);
           let _prepareForUseProgram = (sandbox, state) =>
             RenderJobsRenderWorkerTool.prepareForUseProgram(sandbox, _prepare, state);
           testPromise(
@@ -127,46 +123,15 @@ let _ =
                     () =>
                       describe(
                         "send position",
-                        () => {
-                          /* TODO duplicate with frontRenderLightJob_test  */
-                          let _setFakeGl = (sandbox, nameArr, state) => {
-                            let uniform1f = createEmptyStubWithJsObjSandbox(sandbox);
-                            let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                            let posArr = nameArr |> Js.Array.mapi((_, index) => index);
-                            let getUniformLocation =
-                              GLSLLocationTool.getUniformLocationWithNameArr(
-                                sandbox,
-                                Sinon.createEmptyStubWithJsObjSandbox(sandbox),
-                                nameArr,
-                                posArr
-                              );
-                            let state =
-                              state
-                              |> FakeGlToolWorker.setFakeGl(
-                                   FakeGlToolWorker.buildFakeGl(
-                                     ~sandbox,
-                                     ~uniform1f,
-                                     ~uniform3f,
-                                     ~getUniformLocation,
-                                     ()
-                                   )
-                                 );
-                            (state, posArr, (uniform1f, uniform3f))
-                          };
-                          let _prepareOne = (sandbox, state) => {
-                            let (state, gameObject, _, material, _) =
-                              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                            let (state, lightGameObject, light) =
-                              DirectionLightTool.createGameObject(state);
-                            let (state, _, cameraTransform, _) =
-                              CameraTool.createCameraGameObject(state);
-                            (state, lightGameObject, material, light, cameraTransform)
-                          };
+                        () =>
                           testPromise(
                             "test one light",
                             () => {
                               let (state, lightGameObject, material, light, cameraTransform) =
-                                _prepareOne(sandbox, state^);
+                                FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                                  sandbox,
+                                  state^
+                                );
                               let position = (1., 2., 3.);
                               let state =
                                 state
@@ -178,7 +143,11 @@ let _ =
                                      position
                                    );
                               let (state, posArr, (uniform1f, uniform3f)) =
-                                _setFakeGl(sandbox, [|"u_directionLights[0].position"|], state);
+                                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                                  sandbox,
+                                  [|"u_directionLights[0].position"|],
+                                  state
+                                );
                               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                                 ~state,
                                 ~sandbox,
@@ -192,53 +161,12 @@ let _ =
                               )
                             }
                           )
-                        }
                       )
                   )
               );
               describe(
                 "test send point light record",
-                () => {
-                  let _prepareFour = (sandbox, state) => {
-                    let (state, gameObject, _, material, _) =
-                      FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                    let (state, lightGameObject1, light1) = PointLightTool.createGameObject(state);
-                    let (state, lightGameObject2, light2) = PointLightTool.createGameObject(state);
-                    let (state, lightGameObject3, light3) = PointLightTool.createGameObject(state);
-                    let (state, lightGameObject4, light4) = PointLightTool.createGameObject(state);
-                    let (state, _, cameraTransform, _) = CameraTool.createCameraGameObject(state);
-                    (
-                      state,
-                      (lightGameObject1, lightGameObject2, lightGameObject3, lightGameObject4),
-                      material,
-                      (light1, light2, light3, light4),
-                      cameraTransform
-                    )
-                  };
-                  let _setFakeGl = (sandbox, nameArr, state) => {
-                    let uniform1f = createEmptyStubWithJsObjSandbox(sandbox);
-                    let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                    let posArr = nameArr |> Js.Array.mapi((_, index) => index);
-                    let getUniformLocation =
-                      GLSLLocationTool.getUniformLocationWithNameArr(
-                        sandbox,
-                        Sinon.createEmptyStubWithJsObjSandbox(sandbox),
-                        nameArr,
-                        posArr
-                      );
-                    let state =
-                      state
-                      |> FakeGlToolWorker.setFakeGl(
-                           FakeGlToolWorker.buildFakeGl(
-                             ~sandbox,
-                             ~uniform1f,
-                             ~uniform3f,
-                             ~getUniformLocation,
-                             ()
-                           )
-                         );
-                    (state, posArr, (uniform1f, uniform3f))
-                  };
+                () =>
                   describe(
                     "send structure record",
                     () =>
@@ -260,7 +188,10 @@ let _ =
                                 (light1, light2, light3, light4),
                                 cameraTransform
                               ) =
-                                _prepareFour(sandbox, state^);
+                                FrontRenderLightForNoWorkerAndWorkerJobTool.prepareFourForPointLight(
+                                  sandbox,
+                                  state^
+                                );
                               let state =
                                 state
                                 |> TransformAPI.setTransformPosition(
@@ -292,7 +223,7 @@ let _ =
                                      (4., 2., 3.)
                                    );
                               let (state, posArr, (uniform1f, uniform3f)) =
-                                _setFakeGl(
+                                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
                                   sandbox,
                                   [|
                                     "u_pointLights[0].position",
@@ -327,7 +258,6 @@ let _ =
                           )
                       )
                   )
-                }
               )
             }
           )

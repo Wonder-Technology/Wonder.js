@@ -340,7 +340,7 @@ let _ =
                             "add buffer to pool",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                              let (state, gameObject1, geometry1) = DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state = state |> DisposeJob.execJob(None);
                               let {vertexArrayBufferPool, elementArrayBufferPool} =
                                 VboBufferTool.getVboBufferRecord(state);
@@ -357,7 +357,7 @@ let _ =
                             "remove from buffer map",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                              let (state, gameObject1, geometry1) = DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state = state |> DisposeJob.execJob(None);
                               let {
                                 boxGeometryVertexBufferMap,
@@ -448,7 +448,7 @@ let _ =
             "dispose gameObjects",
             () => {
               let _prepare = (state) => {
-                DisposeJobTool.prepareForDisposeGameObjects(state)
+                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state)
               };
               describe(
                 "test batchDisposeGameObject",

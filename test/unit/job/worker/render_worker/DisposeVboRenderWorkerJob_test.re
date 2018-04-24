@@ -28,7 +28,7 @@ let _ =
         () => {
           let _prepare = (state) => {
             let (state, (gameObject1, gameObject2, gameObject3), (geometry1, geometry2, geometry3)) =
-              DisposeJobTool.prepareBoxAndCustomGeometryGameObjects(state);
+              DisposeForNoWorkerAndWorkerJobTool.prepareBoxAndCustomGeometryGameObjects(state);
             let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
             renderWorkerState.vboBufferRecord =
               renderWorkerState.vboBufferRecord

@@ -43,7 +43,7 @@ let _ =
                             () => {
                               open VboBufferType;
                               let (state, gameObject1, geometry1) =
-                                DisposeJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
                               let state =
                                 state
                                 |> FakeGlToolWorker.setFakeGl(
@@ -79,7 +79,7 @@ let _ =
       describe(
         "dispose gameObjects",
         () => {
-          let _prepare = (state) => DisposeJobTool.prepareForDisposeGameObjects(state);
+          let _prepare = (state) => DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state);
           describe(
             "test disposeGameObject",
             () =>
@@ -119,7 +119,7 @@ let _ =
                 (gameObject1, gameObject2, gameObject3),
                 (geometry1, geometry2, geometry3)
               ) =
-                DisposeJobTool.prepareBoxAndCustomGeometryGameObjects(state);
+                DisposeForNoWorkerAndWorkerJobTool.prepareBoxAndCustomGeometryGameObjects(state);
               let state =
                 state
                 |> GameObjectAPI.batchDisposeGameObject([|gameObject1, gameObject2, gameObject3|]);

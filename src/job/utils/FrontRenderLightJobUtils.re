@@ -28,8 +28,6 @@ let render =
            let materialIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
            let shaderIndex = _getShaderIndex(materialIndex, renderState);
-           WonderLog.Log.print({j|materialIndex: $materialIndex, shaderIndex:$shaderIndex|j}) |> ignore;
-           /* WonderLog.Log.print({j|shaderIndex: $shaderIndex; index: $index|j}) |> ignore; */
            let geometryIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
            let geometryType =
