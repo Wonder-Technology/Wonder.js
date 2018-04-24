@@ -25,6 +25,39 @@ var LightBoxesTool = (function () {
 
         return state;
     };
+
+
+
+    var createAndDisposeGameObjects = function (count, boxes, state) {
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+        var record = LightBoxesTool.createBoxesWithoutClone(count, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+
+
+
+
+        var record = LightBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+        window.boxes = newBoxes;
+
+
+        for (var i = 0, len = newBoxes.length; i < len; i++) {
+            var box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+    };
+
+
+
+
     return {
         createBox: function (state) {
             var record = wd.createLightMaterial(state);
@@ -82,6 +115,10 @@ var LightBoxesTool = (function () {
             return [state, newBoxes];
 
         },
+
+
+
+        
         createBoxesWithoutClone: function (count, state) {
             var boxes = [];
 
@@ -118,6 +155,16 @@ var LightBoxesTool = (function () {
 
 
 
+        setWorkerData: function (boxes, state) {
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = wd.unsafeGetState();
+
+                _setData(boxes, state);
+            }, state)
+        },
+
+
+
         setParent: function (boxes, state) {
             for (var i = 1, len = 10; i < len; i++) {
                 var box = boxes[i];
@@ -132,50 +179,84 @@ var LightBoxesTool = (function () {
                 return _setData(boxes, state);
             }, state)
         },
+
+
         createAndDisposeGameObjects: function (count, boxes, state) {
-            window.sourceBox = boxes[0];
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                // for(var i = 0, len = window.boxes.length; i < len; i++){
-                //     var box = window.boxes[i];
-                //     state = disposeGameObject(box, state);
-                // }
-
-                var state = wd.batchDisposeGameObject(window.boxes, state);
-
-                // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
-
-                var record = wd.cloneGameObject(window.sourceBox, count, true, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-
-                var flatten = (arr) => {
-                    return arr.reduce((a, b) => {
-                        var arr = a.concat(b);
-                        return arr;
-                    }, []);
-                };
-                newBoxes = flatten(newBoxes);
-
-
-                var record = LightBoxesTool.setPosition(newBoxes, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-                window.boxes = newBoxes;
-
-
-                for (var i = 0, len = newBoxes.length; i < len; i++) {
-                    var box = newBoxes[i];
-                    state = wd.initGameObject(box, state);
-                }
-
-                return state;
-
-            }, state)
+                return createAndDisposeGameObjects(count, boxes,
+                    state
+                )
+            }, state);
         },
+        createAndDisposeGameObjectsWorker: function (count, boxes, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = createAndDisposeGameObjects(count, boxes,
+                    wd.getStateFromData(stateData)
+                );
+
+                /*!
+                need set state!
+                because some create operation(e.g. increase transform index) are immutable!
+                */
+                wd.setState(state);
+            }, state);
+        },
+
+
+
+
+
+
+
+
+        // createAndDisposeGameObjects: function (count, boxes, state) {
+        //     window.sourceBox = boxes[0];
+        //     window.boxes = [];
+
+        //     return ScheduleTool.scheduleLoop(function (state) {
+        //         // for(var i = 0, len = window.boxes.length; i < len; i++){
+        //         //     var box = window.boxes[i];
+        //         //     state = disposeGameObject(box, state);
+        //         // }
+
+        //         var state = wd.batchDisposeGameObject(window.boxes, state);
+
+        //         // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
+
+        //         var record = wd.cloneGameObject(window.sourceBox, count, true, state);
+        //         var state = record[0];
+        //         var newBoxes = record[1];
+
+
+        //         var flatten = (arr) => {
+        //             return arr.reduce((a, b) => {
+        //                 var arr = a.concat(b);
+        //                 return arr;
+        //             }, []);
+        //         };
+        //         newBoxes = flatten(newBoxes);
+
+
+        //         var record = LightBoxesTool.setPosition(newBoxes, state);
+        //         var state = record[0];
+        //         var newBoxes = record[1];
+
+        //         window.boxes = newBoxes;
+
+
+        //         for (var i = 0, len = newBoxes.length; i < len; i++) {
+        //             var box = newBoxes[i];
+        //             state = wd.initGameObject(box, state);
+        //         }
+
+        //         return state;
+
+        //     }, state)
+        // },
         createCamera: function (state) {
             return CameraTool.createCamera(state)
         }
