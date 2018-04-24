@@ -2,8 +2,6 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open BasicMaterialType;
-
 let _ =
   describe(
     "test dispose with render worker",
@@ -53,50 +51,87 @@ let _ =
       );
       describe(
         "the material data send to render worker for init should remove the disposed ones",
-        () =>
+        () => {
           describe(
             "test basic material",
             () =>
-              testPromise(
-                "test",
-                () => {
-                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
-                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
-                  let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
-                  let state =
-                    state
-                    |> GameObjectAPI.initGameObject(gameObject1)
-                    |> GameObjectAPI.initGameObject(gameObject2)
-                    |> GameObjectAPI.initGameObject(gameObject3);
-                  let state =
-                    state
-                    |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
-                         gameObject2,
-                         material2
-                       )
-                    |> GameObjectAPI.disposeGameObject(gameObject3);
-                  WorkerToolWorker.setFakeWorkersAndSetState(state);
-                  WorkerJobToolWorker.execMainWorkerJob(
-                    ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
-                    ~completeFunc=
-                      (state) => {
-                        let {materialArrayForWorkerInit} = BasicMaterialTool.getRecord(state);
-                        materialArrayForWorkerInit |> expect == [|material1|] |> resolve
-                      },
-                    ()
-                  )
-                }
+              BasicMaterialType.(
+                testPromise(
+                  "test",
+                  () => {
+                    let (state, gameObject1, material1) =
+                      BasicMaterialTool.createGameObject(state^);
+                    let (state, gameObject2, material2) =
+                      BasicMaterialTool.createGameObject(state);
+                    let (state, gameObject3, material3) =
+                      BasicMaterialTool.createGameObject(state);
+                    let state =
+                      state
+                      |> GameObjectAPI.initGameObject(gameObject1)
+                      |> GameObjectAPI.initGameObject(gameObject2)
+                      |> GameObjectAPI.initGameObject(gameObject3);
+                    let state =
+                      state
+                      |> GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+                           gameObject2,
+                           material2
+                         )
+                      |> GameObjectAPI.disposeGameObject(gameObject3);
+                    WorkerToolWorker.setFakeWorkersAndSetState(state);
+                    WorkerJobToolWorker.execMainWorkerJob(
+                      ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
+                      ~completeFunc=
+                        (state) => {
+                          let {materialArrayForWorkerInit} = BasicMaterialTool.getRecord(state);
+                          materialArrayForWorkerInit |> expect == [|material1|] |> resolve
+                        },
+                      ()
+                    )
+                  }
+                )
+              )
+          );
+          describe(
+            "test light material",
+            () =>
+              LightMaterialType.(
+                testPromise(
+                  "test",
+                  () => {
+                    let (state, gameObject1, material1) =
+                      LightMaterialTool.createGameObject(state^);
+                    let (state, gameObject2, material2) =
+                      LightMaterialTool.createGameObject(state);
+                    let (state, gameObject3, material3) =
+                      LightMaterialTool.createGameObject(state);
+                    let state =
+                      state
+                      |> GameObjectAPI.initGameObject(gameObject1)
+                      |> GameObjectAPI.initGameObject(gameObject2)
+                      |> GameObjectAPI.initGameObject(gameObject3);
+                    let state =
+                      state
+                      |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                           gameObject2,
+                           material2
+                         )
+                      |> GameObjectAPI.disposeGameObject(gameObject3);
+                    WorkerToolWorker.setFakeWorkersAndSetState(state);
+                    WorkerJobToolWorker.execMainWorkerJob(
+                      ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
+                      ~completeFunc=
+                        (state) => {
+                          let {materialArrayForWorkerInit} = LightMaterialTool.getRecord(state);
+                          materialArrayForWorkerInit |> expect == [|material1|] |> resolve
+                        },
+                      ()
+                    )
+                  }
+                )
               )
           )
+        }
       )
-      /* TODO test
-         describe
-         ("test light material",
-         (
-         () => {
-
-         })
-         ); */
       /* describe
          ("fix batchDisposeMeshRendererComponent",
          (

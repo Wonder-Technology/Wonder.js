@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-open BasicMaterialType;
-
 open RenderType;
 
 open RenderCameraType;
@@ -112,6 +110,10 @@ let execJob = (flags, stateData) =>
       |> WorkerService.postMessage(_buildData(operateType, stateData));
       InitBasicMaterialService.clearDataForWorkerInit(
         RecordBasicMaterialMainService.getRecord(state)
+      )
+      |> ignore;
+      InitLightMaterialService.clearDataForWorkerInit(
+        RecordLightMaterialMainService.getRecord(state)
       )
       |> ignore;
       Some(operateType)
