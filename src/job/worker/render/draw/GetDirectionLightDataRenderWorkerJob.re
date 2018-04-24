@@ -13,7 +13,7 @@ let execJob = (flags, e, stateData) =>
         Some({
           ...directionLightRecord,
           index: directionLightData##index,
-          positionMap: directionLightData##positionMap
+          positionMap: Some(directionLightData##positionMap)
         });
       e
     }
