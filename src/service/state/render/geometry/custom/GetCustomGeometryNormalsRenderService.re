@@ -8,7 +8,7 @@ let getNormals =
   [@bs]
   (
     (index, {customGeometryRecord}) => {
-      let {normals, normalsInfoArray} = customGeometryRecord;
-      getFloat32PointData(index, normals, normalsInfoArray)
+      let {normals, normalsInfos} = customGeometryRecord;
+      getFloat32PointData(BufferCustomGeometryService.getInfoIndex(index), normals, normalsInfos)
     }
   );

@@ -51,7 +51,7 @@ let createRenderState =
     RecordTransformMainService.getRecord(state);
   /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
-  /* let {vertices, normals, indices, verticesInfoArray, normalsInfoArray, indicesInfoArray} = */
+  /* let {vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos} = */
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
@@ -89,9 +89,9 @@ let createRenderState =
       vertices: customGeometryRecord.vertices,
       normals: customGeometryRecord.normals,
       indices: customGeometryRecord.indices,
-      verticesInfoArray: customGeometryRecord.verticesInfoArray,
-      normalsInfoArray: customGeometryRecord.normalsInfoArray,
-      indicesInfoArray: customGeometryRecord.indicesInfoArray
+      verticesInfos: customGeometryRecord.verticesInfos,
+      normalsInfos: customGeometryRecord.normalsInfos,
+      indicesInfos: customGeometryRecord.indicesInfos
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
     basicMaterialRecord: {

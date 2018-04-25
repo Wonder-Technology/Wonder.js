@@ -8,7 +8,11 @@ let getVertices =
   [@bs]
   (
     (index, {customGeometryRecord}) => {
-      let {vertices, verticesInfoArray} = customGeometryRecord;
-      getFloat32PointData(index, vertices, verticesInfoArray)
+      let {vertices, verticesInfos} = customGeometryRecord;
+      getFloat32PointData(
+        BufferCustomGeometryService.getInfoIndex(index),
+        vertices,
+        verticesInfos
+      )
     }
   );

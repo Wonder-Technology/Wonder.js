@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-let buildInfo = ReallocatedPointsGeometryService.buildInfo;
-
 let getIndexType = (state: StateRenderType.renderState) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
   |> RenderGeometryService.getIndexType;

@@ -303,7 +303,7 @@ let _ =
               )
             }
           );
-          describe(
+          /* describe(
             "deep copy geometry record",
             () =>
               /* describe(
@@ -725,11 +725,11 @@ let _ =
                      )
                    }
                  ); */
-              describe(
+              /* describe(
                 "deep copy custom geometry record",
                 () =>
                   test(
-                    "copy verticesInfoArray",
+                    "copy verticesInfos",
                     () => {
                       open StateDataMainType;
                       open CustomGeometryAPI;
@@ -739,16 +739,16 @@ let _ =
                       let vertices1 = Float32Array.make([|10.|]);
                       let state = state |> setCustomGeometryVertices(geometry1, vertices1);
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      CustomGeometryTool.getRecord(copiedState).verticesInfoArray[0] = {
+                      CustomGeometryTool.getRecord(copiedState).verticesInfos[0] = {
                         startIndex: 10,
                         endIndex: 20
                       };
-                      CustomGeometryTool.getRecord(state).verticesInfoArray[0]
+                      CustomGeometryTool.getRecord(state).verticesInfos[0]
                       |> expect == {startIndex: 0, endIndex: 1}
                     }
                   )
-              )
-          );
+              ) */
+          ); */
           /* test(
                "copy vertices",
                () =>

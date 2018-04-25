@@ -14,30 +14,17 @@ let getVertices =
   [@bs]
   (
     (index, state) => {
-      let {vertices, verticesInfoArray} = getRecord(state);
-      getFloat32PointData(index, vertices, verticesInfoArray)
+      let {vertices, verticesInfos} = getRecord(state);
+      getFloat32PointData(BufferCustomGeometryService.getInfoIndex(index), vertices, verticesInfos)
     }
   );
 
-let setVertices = (index, data: array(float), state) => {
-  let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);
-  record.verticesOffset =
-    setFloat32PointData(
-      index,
-      verticesInfoArray,
-      verticesOffset,
-      Js.Array.length(data),
-      fillFloat32Array(vertices, data)
-    );
-  state
-};
-
 let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
-  let {verticesInfoArray, vertices, verticesOffset} as record = getRecord(state);
+  let {verticesInfos, vertices, verticesOffset} as record = getRecord(state);
   record.verticesOffset =
     setFloat32PointData(
-      index,
-      verticesInfoArray,
+      BufferCustomGeometryService.getInfoIndex(index),
+      verticesInfos,
       verticesOffset,
       Float32Array.length(data),
       fillFloat32ArrayWithOffset(vertices, data)

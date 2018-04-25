@@ -21,7 +21,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
-  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  /* let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state); */
   {
     "operateType": operateType,
     "canvas": canvas,
@@ -65,12 +65,12 @@ let _buildData = (operateType, canvas, stateData) => {
           gameObjectRecord
         )
     },
-    "customGeometryData": {
+    /* "customGeometryData": {
       "buffer": customGeometryRecord.buffer,
-      "verticesInfoArray": customGeometryRecord.verticesInfoArray,
-      "normalsInfoArray": customGeometryRecord.normalsInfoArray,
-      "indicesInfoArray": customGeometryRecord.indicesInfoArray
-    },
+      "verticesInfos": customGeometryRecord.verticesInfos,
+      "normalsInfos": customGeometryRecord.normalsInfos,
+      "indicesInfos": customGeometryRecord.indicesInfos
+    }, */
     "ambientLightData": {"buffer": ambientLightRecord.buffer, "index": ambientLightRecord.index},
     "directionLightData": {
       "buffer": directionLightRecord.buffer,

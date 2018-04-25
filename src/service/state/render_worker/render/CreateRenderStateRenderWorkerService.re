@@ -44,7 +44,7 @@ let createRenderState =
   let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformRenderWorkerService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryRenderWorkerService.getRecord(state);
-  /* let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state); */
+  let customGeometryRecord = RecordCustomGeometryRenderWorkerService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
   let ambientLightRecord = RecordAmbientLightRenderWorkerService.getRecord(state);
@@ -67,8 +67,14 @@ let createRenderState =
       normals: boxGeometryRecord.normals,
       indices: boxGeometryRecord.indices
     },
-    /* TODO finish Obj.magic */
-    customGeometryRecord: Obj.magic(1),
+    customGeometryRecord: {
+      vertices: customGeometryRecord.vertices,
+      normals: customGeometryRecord.normals,
+      indices: customGeometryRecord.indices,
+      verticesInfos: customGeometryRecord.verticesInfos,
+      normalsInfos: customGeometryRecord.normalsInfos,
+      indicesInfos: customGeometryRecord.indicesInfos
+    },
     cameraRecord: OperateRenderRenderWorkerService.getCameraRecord(state),
     basicMaterialRecord: {
       shaderIndices: basicMaterialRecord.shaderIndices,
@@ -105,6 +111,7 @@ let createRenderState =
       localToWorldMatrixCacheMap,
       normalMatrixCacheMap
     },
+    /* TODO fix Obj.magic */
     sourceInstanceRecord: Obj.magic(1),
     gpuDetectRecord,
     globalTempRecord,

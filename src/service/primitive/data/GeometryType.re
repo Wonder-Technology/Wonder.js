@@ -22,10 +22,3 @@ type geometryDisposedIndexMap = array(bool);
 type geometryIsInitMap = array(bool);
 
 type geometryGroupCountMap = array(int);
-
-type geometryInfo = {
-  startIndex: int,
-  endIndex: int
-};
-
-type geometryInfoArray = array(geometryInfo);

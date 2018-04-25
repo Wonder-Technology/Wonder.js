@@ -107,7 +107,6 @@ let _ =
             "get geometry's gameObject",
             () => {
               open GameObjectAPI;
-              open GameObjectAPI;
               let (state, geometry) = createCustomGeometry(state^);
               let (state, gameObject) = state |> createGameObject;
               let state = state |> addGameObjectCustomGeometryComponent(gameObject, geometry);
@@ -166,10 +165,7 @@ let _ =
                     let (state, gameObject1, geometry1) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
-                        geometry1,
-                        state
-                      );
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry1, state);
                     let state =
                       state
                       |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
@@ -337,26 +333,18 @@ let _ =
                                          gameObject1,
                                          geometry1
                                        );
-                                  let {verticesInfoArray, normalsInfoArray, indicesInfoArray} =
+                                  let {verticesInfos, normalsInfos, indicesInfos} =
                                     state |> CustomGeometryTool.getRecord;
-                                  (verticesInfoArray, normalsInfoArray, indicesInfoArray)
+                                  (
+                                    verticesInfos |> Uint8Array.slice(~start=0, ~end_=6),
+                                    normalsInfos |> Uint8Array.slice(~start=0, ~end_=6),
+                                    indicesInfos |> Uint8Array.slice(~start=0, ~end_=6)
+                                  )
                                   |>
                                   expect == (
-                                              [|
-                                                GeometryTool.buildInfo(0, 1),
-                                                GeometryTool.buildInfo(0, 2),
-                                                GeometryTool.buildInfo(2, 5)
-                                              |],
-                                              [|
-                                                GeometryTool.buildInfo(0, 1),
-                                                GeometryTool.buildInfo(0, 2),
-                                                GeometryTool.buildInfo(2, 5)
-                                              |],
-                                              [|
-                                                GeometryTool.buildInfo(0, 1),
-                                                GeometryTool.buildInfo(0, 2),
-                                                GeometryTool.buildInfo(2, 5)
-                                              |]
+                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|]),
+                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|]),
+                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|])
                                             )
                                 }
                               )
@@ -524,10 +512,7 @@ let _ =
                     CustomGeometryTool.createGameObject(state^);
                   let state = state |> GameObjectAPI.initGameObject(gameObject1);
                   let state =
-                    VboBufferTool.addVboBufferToCustomGeometryBufferMap(
-                      geometry1,
-                      state
-                    );
+                    VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry1, state);
                   let state =
                     state
                     |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
@@ -566,10 +551,7 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
-                        geometry,
-                        state
-                      );
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry, state);
                     let state =
                       state
                       |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
@@ -585,10 +567,7 @@ let _ =
                     let (state, gameObject, geometry) =
                       CustomGeometryTool.createGameObject(state^);
                     let state =
-                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(
-                        geometry,
-                        state
-                      );
+                      VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry, state);
                     let state =
                       state
                       |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(

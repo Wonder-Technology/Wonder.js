@@ -16,39 +16,26 @@ let getIndices =
   [@bs]
   (
     (index: int, state) => {
-      let {indices, indicesInfoArray} = getRecord(state);
-      getUint16PointData(index, indices, indicesInfoArray)
+      let {indices, indicesInfos} = getRecord(state);
+      getUint16PointData(BufferCustomGeometryService.getInfoIndex(index), indices, indicesInfos)
     }
   );
 
-let setIndices = (index: int, data: array(int), state) => {
-  let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);
-  record.indicesOffset =
-    setUint16PointData(
-      index,
-      indicesInfoArray,
-      indicesOffset,
-      Js.Array.length(data),
-      fillUint16Array(indices, data)
-    );
-  state
-};
-
 let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
-  let {indicesInfoArray, indices, indicesOffset} as record = getRecord(state);
+  let {indicesInfos, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
-      index,
-      indicesInfoArray,
+      BufferCustomGeometryService.getInfoIndex(index),
+      indicesInfos,
       indicesOffset,
       Uint16Array.length(data),
       fillUint16ArrayWithOffset(indices, data)
     );
   state
 };
-/* 
-let getIndicesCount = (index, state) => {
-  let {indicesInfoArray} = getRecord(state);
-  let {startIndex, endIndex} = ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
-  endIndex - startIndex
-}; */
+/*
+ let getIndicesCount = (index, state) => {
+   let {indicesInfos} = getRecord(state);
+   let {startIndex, endIndex} = ReallocatedPointsGeometryService.getInfo(indicesInfos, index);
+   endIndex - startIndex
+ }; */

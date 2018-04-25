@@ -23,9 +23,9 @@ let _disposeData =
         disposeCount,
         disposedIndexArray,
         disposedIndexMap,
-        /* verticesInfoArray,
-           normalsInfoArray,
-           indicesInfoArray, */
+        /* verticesInfos,
+           normalsInfos,
+           indicesInfos, */
         /* computeDataFuncMap,
            configDataMap, */
         gameObjectMap,

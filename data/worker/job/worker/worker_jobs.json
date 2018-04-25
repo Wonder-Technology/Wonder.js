@@ -36,6 +36,9 @@
         "name": "init_state"
     },
     {
+        "name": "init_custom_geometry"
+    },
+    {
         "name": "init_basic_material"
     },
     {

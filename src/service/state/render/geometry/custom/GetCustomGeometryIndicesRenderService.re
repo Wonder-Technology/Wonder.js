@@ -10,8 +10,8 @@ let getIndices =
   [@bs]
   (
     (index: int, {customGeometryRecord}) => {
-      let {indices, indicesInfoArray} = customGeometryRecord;
-      getUint16PointData(index, indices, indicesInfoArray)
+      let {indices, indicesInfos} = customGeometryRecord;
+      getUint16PointData(BufferCustomGeometryService.getInfoIndex(index), indices, indicesInfos)
     }
   );
 
@@ -19,9 +19,12 @@ let getIndicesCount =
   [@bs]
   (
     (index, {customGeometryRecord}) => {
-      let {indicesInfoArray} = customGeometryRecord;
-      let {startIndex, endIndex} =
-        ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
+      let {indicesInfos} = customGeometryRecord;
+      let (startIndex, endIndex) =
+        ReallocatedPointsGeometryService.getInfo(
+          BufferCustomGeometryService.getInfoIndex(index),
+          indicesInfos
+        );
       endIndex - startIndex
     }
   );

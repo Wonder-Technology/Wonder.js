@@ -4,6 +4,11 @@ open CustomGeometryType;
 
 open CustomGeometryAPI;
 
+let buildInfo = (startIndex, endIndex) => (startIndex, endIndex);
+
+let getInfo = (index, infos) =>
+  ReallocatedPointsGeometryService.getInfo(BufferCustomGeometryService.getInfoIndex(index), infos);
+
 let getRecord = (state) => RecordCustomGeometryMainService.getRecord(state);
 
 let createGameObject = (state: StateDataMainType.state) => {

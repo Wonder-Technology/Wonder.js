@@ -32,6 +32,7 @@ let _getWorkerJobHandles = () => [
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
   ("init_state", InitStateRenderWorkerJob.execJob),
   ("init_transform", InitTransformRenderWorkerJob.execJob),
+  ("init_custom_geometry", InitCustomGeometryRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
   ("init_ambient_light", InitAmbientLightRenderWorkerJob.execJob),
   ("init_direction_light", InitDirectionLightRenderWorkerJob.execJob),

@@ -16,6 +16,8 @@ open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
 
+open RenderWorkerCustomGeometryType;
+
 open RenderWorkerRenderType;
 
 open RenderWorkerWorkerDetectType;
@@ -57,6 +59,7 @@ type renderWorkerState = {
   mutable lightMaterialRecord: option(lightMaterialRecord),
   mutable transformRecord: option(transformRecord),
   mutable boxGeometryRecord,
+  mutable customGeometryRecord: option(customGeometryRecord),
   mutable ambientLightRecord: option(ambientLightRecord),
   mutable directionLightRecord: option(directionLightRecord),
   mutable pointLightRecord: option(pointLightRecord),

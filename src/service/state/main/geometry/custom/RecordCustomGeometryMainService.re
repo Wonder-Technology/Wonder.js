@@ -10,31 +10,16 @@ let getRecord = ({customGeometryRecord}) => customGeometryRecord |> OptionServic
 
 let _initBufferData = (count) => {
   let buffer = createBuffer(count);
-  let vertices =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getVerticesOffset(count),
-      ~length=getVertexLength(count)
-    );
-  let normals =
-    Float32Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getNormalsOffset(count),
-      ~length=getVertexLength(count)
-    );
-  let indices =
-    Uint16Array.fromBufferRange(
-      Worker.sharedArrayBufferToArrayBuffer(buffer),
-      ~offset=getIndicesOffset(count),
-      ~length=getIndicesLength(count)
-    );
-  (buffer, vertices, normals, indices)
+  let (vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos) =
+    CreateTypeArrayCustomGeometryService.createTypeArrays(buffer, count);
+  (buffer, vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos)
 };
 
 let create = ({settingRecord} as state) => {
   let geometryDataBufferCount =
     BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
-  let (buffer, vertices, normals, indices) = _initBufferData(geometryDataBufferCount);
+  let (buffer, vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos) =
+    _initBufferData(geometryDataBufferCount);
   state.customGeometryRecord =
     Some({
       index: 0,
@@ -42,9 +27,9 @@ let create = ({settingRecord} as state) => {
       vertices,
       normals,
       indices,
-      verticesInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
-      normalsInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
-      indicesInfoArray: WonderCommonlib.SparseMapService.createEmpty(),
+      verticesInfos,
+      normalsInfos,
+      indicesInfos,
       verticesOffset: 0,
       normalsOffset: 0,
       indicesOffset: 0,
@@ -65,9 +50,9 @@ let deepCopyForRestore = (state) => {
   let {
         index,
         buffer,
-        verticesInfoArray,
-        normalsInfoArray,
-        indicesInfoArray,
+        verticesInfos,
+        normalsInfos,
+        indicesInfos,
         verticesOffset,
         normalsOffset,
         indicesOffset,
@@ -90,9 +75,9 @@ let deepCopyForRestore = (state) => {
             buffer,
             BufferCustomGeometryService.getTotalByteLength(index)
           ),
-        verticesInfoArray: verticesInfoArray |> SparseMapService.copy,
-        normalsInfoArray: normalsInfoArray |> SparseMapService.copy,
-        indicesInfoArray: indicesInfoArray |> SparseMapService.copy,
+        /* verticesInfos: verticesInfos |> SparseMapService.copy,
+        normalsInfos: normalsInfos |> SparseMapService.copy,
+        indicesInfos: indicesInfos |> SparseMapService.copy, */
         verticesOffset,
         normalsOffset,
         indicesOffset,

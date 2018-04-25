@@ -4,11 +4,9 @@ open CustomGeometryType;
 
 open VboBufferType;
 
-let _updateInfoArray = (infoArray, index: int, {startIndex, endIndex}, offset: int) => {
+let _updateInfos = (infos, infoIndex, (startIndex, endIndex), offset: int) => {
   let increment = endIndex - startIndex;
-  let newInfo = ReallocatedPointsGeometryService.buildInfo(offset, offset + increment);
-  Array.unsafe_set(infoArray, index, newInfo);
-  infoArray
+  ReallocatedPointsGeometryService.setInfo(infoIndex, offset, offset + increment, infos)
 };
 
 let _setNewMap = (oldIndex, newIndex, oldMap, newMap) =>
@@ -25,9 +23,9 @@ let _allocateNewData =
         vertices,
         normals,
         indices,
-        verticesInfoArray,
-        normalsInfoArray,
-        indicesInfoArray,
+        verticesInfos,
+        normalsInfos,
+        indicesInfos,
         disposedIndexMap,
         aliveIndexArray
       }
@@ -39,9 +37,9 @@ let _allocateNewData =
          (
            (
              newIndex,
-             newVerticesInfoArray,
-             newNormalsInfoArray,
-             newIndicesInfoArray,
+             newVerticesInfos,
+             newNormalsInfos,
+             newIndicesInfos,
              newVerticesOffset,
              newNormalsOffset,
              newIndicesOffset,
@@ -51,28 +49,32 @@ let _allocateNewData =
            ),
            index
          ) => {
-           let verticesInfo = ReallocatedPointsGeometryService.getInfo(verticesInfoArray, index);
-           let normalsInfo = ReallocatedPointsGeometryService.getInfo(normalsInfoArray, index);
-           let indicesInfo = ReallocatedPointsGeometryService.getInfo(indicesInfoArray, index);
+           let infoIndex = BufferCustomGeometryService.getInfoIndex(index);
+           let (verticesStartIndex, verticesEndIndex) as verticesInfo =
+             ReallocatedPointsGeometryService.getInfo(infoIndex, verticesInfos);
+           let (normalsStartIndex, normalsEndIndex) as normalsInfo =
+             ReallocatedPointsGeometryService.getInfo(infoIndex, normalsInfos);
+           let (indicesStartIndex, indicesEndIndex) as indicesInfo =
+             ReallocatedPointsGeometryService.getInfo(infoIndex, indicesInfos);
            (
              succ(newIndex),
-             _updateInfoArray(verticesInfoArray, index, verticesInfo, newVerticesOffset),
-             _updateInfoArray(normalsInfoArray, index, normalsInfo, newNormalsOffset),
-             _updateInfoArray(indicesInfoArray, index, indicesInfo, newIndicesOffset),
+             _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
+             _updateInfos(normalsInfos, infoIndex, normalsInfo, newNormalsOffset),
+             _updateInfos(indicesInfos, infoIndex, indicesInfo, newIndicesOffset),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (vertices, newVerticesOffset),
-               (vertices, verticesInfo.startIndex),
-               verticesInfo.endIndex
+               (vertices, verticesStartIndex),
+               verticesEndIndex
              ),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (normals, newNormalsOffset),
-               (normals, normalsInfo.startIndex),
-               normalsInfo.endIndex
+               (normals, normalsStartIndex),
+               normalsEndIndex
              ),
              TypeArrayService.fillUint16ArrayWithUint16Array(
                (indices, newIndicesOffset),
-               (indices, indicesInfo.startIndex),
-               indicesInfo.endIndex
+               (indices, indicesStartIndex),
+               indicesEndIndex
              ),
              vertices,
              normals,
@@ -80,18 +82,7 @@ let _allocateNewData =
            )
          }
        ),
-       (
-         0,
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty(),
-         0,
-         0,
-         0,
-         vertices,
-         normals,
-         indices
-       )
+       (0, verticesInfos, normalsInfos, indicesInfos, 0, 0, 0, vertices, normals, indices)
      );
 
 let _setNewDataToState =
@@ -100,9 +91,9 @@ let _setNewDataToState =
       customGeometryRecord,
       (
         newIndex,
-        newVerticesInfoArray,
-        newNormalsInfoArray,
-        newIndicesInfoArray,
+        newVerticesInfos,
+        newNormalsInfos,
+        newIndicesInfos,
         newVerticesOffset,
         newNormalsOffset,
         newIndicesOffset,
@@ -112,9 +103,9 @@ let _setNewDataToState =
       )
     ) => {
   ...customGeometryRecord,
-  verticesInfoArray: newVerticesInfoArray,
-  normalsInfoArray: newNormalsInfoArray,
-  indicesInfoArray: newIndicesInfoArray,
+  verticesInfos: newVerticesInfos,
+  normalsInfos: newNormalsInfos,
+  indicesInfos: newIndicesInfos,
   verticesOffset: newVerticesOffset,
   normalsOffset: newNormalsOffset,
   indicesOffset: newIndicesOffset,

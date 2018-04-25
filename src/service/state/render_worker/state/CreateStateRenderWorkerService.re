@@ -10,6 +10,7 @@ let createState = () => {
   pointLightRecord: None,
   transformRecord: None,
   boxGeometryRecord: RecordBoxGeometryRenderWorkerService.create(),
+  customGeometryRecord: None,
   gpuDetectRecord: {extensionInstancedArrays: None, precision: None},
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),
