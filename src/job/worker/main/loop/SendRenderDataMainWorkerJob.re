@@ -21,7 +21,7 @@ let _buildData = (operateType, stateData) => {
         Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
       )
     };
-  WonderLog.Log.print("send render data") |> ignore;
+  /* WonderLog.Log.print("send render data") |> ignore; */
   {
     "operateType": operateType,
     "directionLightData": {

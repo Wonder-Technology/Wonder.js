@@ -28,4 +28,6 @@ let removeFromArray = (target: int, arr) => {
 };
 
 let batchRemoveFromArray = (map, arr) =>
-  arr |> Js.Array.filter((value) => map |> WonderCommonlib.SparseMapService.has(value) == false);
+  map |> SparseMapService.length === 0 ?
+    arr :
+    arr |> Js.Array.filter((value) => map |> WonderCommonlib.SparseMapService.has(value) == false);

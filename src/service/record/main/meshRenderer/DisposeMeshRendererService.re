@@ -2,9 +2,6 @@ open MeshRendererType;
 
 open DisposeComponentService;
 
-let _removeFromRenderArray = (disposedGameObjectUid: int, renderGameObjectArray) =>
-  removeFromArray(disposedGameObjectUid, renderGameObjectArray);
-
 let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, renderGameObjectArray) =>
   batchRemoveFromArray(disposedGameObjectUidMap, renderGameObjectArray);
 
