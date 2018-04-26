@@ -15,11 +15,7 @@ let _initMaterials = (lightMaterialData, data, state) => {
   let isSourceInstanceMap = lightMaterialData##isSourceInstanceMap;
   InitInitLightMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      isSourceInstanceMap,
-      /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
-      false
-    ),
+    (isSourceInstanceMap, JudgeInstanceRenderWorkerService.isSupportInstance(state)),
     CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(
       (lightMaterialData##index, lightMaterialData##disposedIndexArray, shaderIndices),
       state

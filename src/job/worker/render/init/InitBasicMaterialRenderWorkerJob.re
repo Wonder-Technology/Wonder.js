@@ -14,11 +14,7 @@ let _initMaterials = (basicMaterialData, data, state) => {
   let isSourceInstanceMap = basicMaterialData##isSourceInstanceMap;
   InitInitBasicMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (
-      isSourceInstanceMap,
-      /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
-      false
-    ),
+    (isSourceInstanceMap, JudgeInstanceRenderWorkerService.isSupportInstance(state)),
     CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
       (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
       state

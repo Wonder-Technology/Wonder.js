@@ -2,12 +2,13 @@ open StateDataMainType;
 
 open SourceInstanceType;
 
-let _addObjectInstnaceTransform = (sourceInstance, transform, objectInstanceTransformArrayMap) => {
+let _addObjectInstanceTransform = (sourceInstance, transform, objectInstanceTransformArrayMap) => {
   objectInstanceTransformArrayMap
   |> GetObjectInstanceArrayService.unsafeGetObjectInstanceTransformArray(sourceInstance)
   |> ArrayService.push(transform)
   |> ignore;
   objectInstanceTransformArrayMap
+  /* TODO ensure check:has no duplicate transform */
 };
 
 /* TODO init objectInstance gameObjects when init? */
@@ -19,7 +20,7 @@ let createInstance = (sourceInstance, {sourceInstanceRecord, gameObjectRecord} a
   state.sourceInstanceRecord = {
     ...sourceInstanceRecord,
     objectInstanceTransformArrayMap:
-      objectInstanceTransformArrayMap |> _addObjectInstnaceTransform(sourceInstance, transform)
+      objectInstanceTransformArrayMap |> _addObjectInstanceTransform(sourceInstance, transform)
   };
   let (objectInstanceRecord, objectInstance) =
     CreateObjectInstanceService.create(sourceInstance, uid, state.objectInstanceRecord);

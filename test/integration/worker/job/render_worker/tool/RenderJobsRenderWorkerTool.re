@@ -56,6 +56,7 @@ let init = (completeFunc, state) => {
            CreateGlRenderWorkerJob.execJob(None),
            InitTransformRenderWorkerJob.execJob(None),
            GetRenderConfigDataRenderWorkerJob.execJob(None),
+           GetSettingDataRenderWorkerJob.execJob(None),
            PregetGLSLDataRenderWorkerJob.execJob(None),
            InitCustomGeometryRenderWorkerJob.execJob(None),
            InitBasicMaterialRenderWorkerJob.execJob(None),
@@ -94,6 +95,7 @@ let render = (postMessageToRenderWorker, completeFunc) => {
   [|
     GetDirectionLightDataRenderWorkerJob.execJob(None),
     GetPointLightDataRenderWorkerJob.execJob(None),
+    GetInstanceDataRenderWorkerJob.execJob(None),
     CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     GetCameraDataRenderWorkerJob.execJob(None),

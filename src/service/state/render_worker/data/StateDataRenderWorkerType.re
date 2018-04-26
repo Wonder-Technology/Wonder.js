@@ -12,6 +12,8 @@ open RenderWorkerDirectionLightType;
 
 open RenderWorkerPointLightType;
 
+open RenderWorkerSourceInstanceType;
+
 open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
@@ -55,6 +57,7 @@ type renderWorkerState = {
   mutable glslSenderRecord,
   mutable glslLocationRecord,
   mutable glslChunkRecord,
+  mutable sourceInstanceRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
   mutable transformRecord: option(transformRecord),

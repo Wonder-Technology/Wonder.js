@@ -5,7 +5,13 @@ open RenderType;
 open RenderCameraType;
 
 let _buildData = (operateType, stateData) => {
-  let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
+  let {
+        settingRecord,
+        gameObjectRecord,
+        directionLightRecord,
+        pointLightRecord,
+        sourceInstanceRecord
+      } as state =
     StateDataMainService.unsafeGetState(stateData);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
@@ -96,6 +102,11 @@ let _buildData = (operateType, stateData) => {
         "buffer": lightRenderObjectRecord.buffer,
         "count": lightRenderObjectRecord.count,
         "bufferCount": BufferSettingService.getLightMaterialDataBufferCount(settingRecord)
+      },
+      "instance": {
+        /* TODO optimize */
+        "objectInstanceTransformArrayMap": sourceInstanceRecord.objectInstanceTransformArrayMap,
+        "isTransformStaticMap": sourceInstanceRecord.isTransformStaticMap
       }
     }
   }

@@ -14,6 +14,8 @@ open RenderWorkerDirectionLightType;
 
 open RenderWorkerPointLightType;
 
+open RenderWorkerSourceInstanceType;
+
 open RenderWorkerTransformType;
 
 open RenderWorkerBoxGeometryType;
@@ -38,6 +40,7 @@ let createRenderState =
         typeArrayPoolRecord,
         globalTempRecord,
         deviceManagerRecord,
+        sourceInstanceRecord,
         shaderRecord
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
@@ -51,13 +54,13 @@ let createRenderState =
   let directionLightRecord = RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
-  /* let {
-       objectInstanceTransformArrayMap,
-       matrixInstanceBufferCapacityMap,
-       matrixFloat32ArrayMap,
-       isTransformStaticMap,
-       isSendTransformMatrixDataMap
-     } = sourceInstanceRecord; */
+  let {
+    objectInstanceTransformArrayMap,
+    matrixInstanceBufferCapacityMap,
+    matrixFloat32ArrayMap,
+    isTransformStaticMap,
+    isSendTransformMatrixDataMap
+  } = sourceInstanceRecord;
   {
     settingRecord: {gpu: settingRecord.gpu},
     glslSenderRecord,
@@ -111,8 +114,17 @@ let createRenderState =
       localToWorldMatrixCacheMap,
       normalMatrixCacheMap
     },
-    /* TODO fix Obj.magic */
-    sourceInstanceRecord: Obj.magic(1),
+    sourceInstanceRecord: {
+      objectInstanceTransformArrayMap:
+        RecordRenderWorkerSourceInstanceService.unsafeGetObjectInstanceTransformArrayMap(
+          sourceInstanceRecord
+        ),
+      matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
+      matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
+      isTransformStaticMap:
+        RecordRenderWorkerSourceInstanceService.unsafeGetIsTransformStaticMap(sourceInstanceRecord),
+      isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
+    },
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,

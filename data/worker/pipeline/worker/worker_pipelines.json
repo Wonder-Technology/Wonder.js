@@ -67,6 +67,9 @@
                         "name": "get_point_light_data"
                     },
                     {
+                        "name": "get_instance_data"
+                    },
+                    {
                         "name": "init_material_for_render"
                     },
                     {
