@@ -3,7 +3,12 @@ open StateDataMainType;
 open GameObjectType;
 
 let execJob = (flags, state) => {
-  let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
+  let (
+    state,
+    boxGeometryNeedDisposeVboBufferArr,
+    customGeometryNeedDisposeVboBufferArr,
+    sourceInstanceNeedDisposeVboBufferArr
+  ) =
     DisposeJobUtils.execJob(
       DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
       state
@@ -15,6 +20,9 @@ let execJob = (flags, state) => {
       |> DisposeVboBufferService.disposeBoxGeometryVboBuffer(boxGeometryNeedDisposeVboBufferArr)
       |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
            customGeometryNeedDisposeVboBufferArr
+         )
+      |> DisposeVboBufferService.disposeSourceInstanceVboBuffer(
+           sourceInstanceNeedDisposeVboBufferArr
          )
   }
 };

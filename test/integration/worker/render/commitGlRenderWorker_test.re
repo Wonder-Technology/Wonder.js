@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => TestToolWorker.clear(sandbox));
       describe(
         "should only commit once",
         () =>

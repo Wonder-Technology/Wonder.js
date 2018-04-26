@@ -16,10 +16,11 @@ let _ =
             ~sandbox,
             ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
             ()
-          ) |> ignore;
+          )
+          |> ignore
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => TestToolWorker.clear(sandbox));
       describe(
         "send data to render worker",
         () => {

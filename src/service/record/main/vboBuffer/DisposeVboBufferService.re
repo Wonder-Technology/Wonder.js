@@ -67,3 +67,16 @@ let disposeCustomGeometryVboBuffer = (customGeometryNeedDisposeVboBufferArr, vbo
        ),
        vboBufferRecord
      );
+
+let disposeSourceInstanceVboBuffer = (sourceInstanceNeedDisposeVboBufferArr, vboBufferRecord) =>
+  sourceInstanceNeedDisposeVboBufferArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (vboBufferRecord, sourceInstance) =>
+           vboBufferRecord
+           |> PoolVboBufferService.addInstanceBufferToPool(sourceInstance)
+           |> disposeInstanceBufferData(sourceInstance)
+       ),
+       vboBufferRecord
+     );

@@ -340,7 +340,10 @@ let _ =
                             "add buffer to pool",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                              let (state, gameObject1, geometry1) =
+                                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(
+                                  state
+                                );
                               let state = state |> DisposeJob.execJob(None);
                               let {vertexArrayBufferPool, elementArrayBufferPool} =
                                 VboBufferTool.getVboBufferRecord(state);
@@ -357,7 +360,10 @@ let _ =
                             "remove from buffer map",
                             () => {
                               open VboBufferType;
-                              let (state, gameObject1, geometry1) = DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                              let (state, gameObject1, geometry1) =
+                                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(
+                                  state
+                                );
                               let state = state |> DisposeJob.execJob(None);
                               let {
                                 boxGeometryVertexBufferMap,
@@ -381,7 +387,7 @@ let _ =
                   )
               );
               describe(
-                "test disposeGameObjectCustomGeometryComponentWithoutVboBuffer",
+                "test disposeGameObjectCustomGeometryComponent",
                 () =>
                   describe(
                     "dispose data in dispose job",
@@ -441,15 +447,65 @@ let _ =
                         }
                       )
                   )
+              );
+              describe(
+                "test disposeGameObjectSourceInstanceComponent",
+                () =>
+                  describe(
+                    "dispose data in dispose job",
+                    () =>
+                      describe(
+                        "dispose vbo buffer data",
+                        () => {
+                          let _prepare = (state) => {
+                            let (state, gameObject1, (_, _, _, sourceInstance1, _)) =
+                              RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(
+                                sandbox,
+                                state^
+                              );
+                            let state =
+                              VboBufferTool.addVboBufferToSourceInstanceBufferMap(
+                                sourceInstance1,
+                                state
+                              );
+                            let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+                            (state, gameObject1, sourceInstance1)
+                          };
+                          test(
+                            "add buffer to pool",
+                            () => {
+                              open VboBufferType;
+                              let (state, gameObject1, sourceInstance1) = _prepare(state);
+                              let state = state |> DisposeJob.execJob(None);
+                              let {matrixInstanceBufferPool} =
+                                VboBufferTool.getVboBufferRecord(state);
+                              matrixInstanceBufferPool |> SparseMapService.length |> expect == 1
+                            }
+                          );
+                          test(
+                            "remove from buffer map",
+                            () => {
+                              open VboBufferType;
+                              let (state, gameObject1, sourceInstance1) = _prepare(state);
+                              let state = state |> DisposeJob.execJob(None);
+                              let {matrixInstanceBufferMap} =
+                                VboBufferTool.getVboBufferRecord(state);
+                              matrixInstanceBufferMap
+                              |> WonderCommonlib.SparseMapService.has(sourceInstance1)
+                              |> expect == false
+                            }
+                          )
+                        }
+                      )
+                  )
               )
             }
           );
           describe(
             "dispose gameObjects",
             () => {
-              let _prepare = (state) => {
-                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state)
-              };
+              let _prepare = (state) =>
+                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state);
               describe(
                 "test batchDisposeGameObject",
                 () => {

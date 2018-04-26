@@ -17,14 +17,24 @@ let rec batchDispose =
         (batchDisposeBasicMaterialComponentFunc, uidArray: array(int), isKeepOrder, state) => {
   let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
   record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
-  let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
+  let (
+    state,
+    boxGeometryNeedDisposeVboBufferArr,
+    customGeometryNeedDisposeVboBufferArr,
+    sourceInstanceNeedDisposeVboBufferArr
+  ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
          (uidArray, DisposeECSService.buildMapFromArray(uidArray, disposedUidMap), isKeepOrder),
          (batchDisposeBasicMaterialComponentFunc, batchDispose)
        );
   let state = state |> _handleByDisposeCount(record);
-  (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr)
+  (
+    state,
+    boxGeometryNeedDisposeVboBufferArr,
+    customGeometryNeedDisposeVboBufferArr,
+    sourceInstanceNeedDisposeVboBufferArr
+  )
 };
 
 let deferBatchDispose = (uidArray: array(int), state) => {

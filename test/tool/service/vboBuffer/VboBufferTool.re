@@ -93,6 +93,16 @@ let addVboBufferToCustomGeometryBufferMapByRecord =
   vboBufferRecord
 };
 
+let addVboBufferToSourceInstanceBufferMapByRecord =
+    (
+      sourceInstanceIndex,
+      {matrixInstanceBufferMap} as vboBufferRecord: VboBufferType.vboBufferRecord
+    ) => {
+  open VboBufferType;
+  WonderCommonlib.SparseMapService.set(sourceInstanceIndex, Obj.magic(0), matrixInstanceBufferMap);
+  vboBufferRecord
+};
+
 let addVboBufferToBoxGeometryBufferMap = (geometryIndex, state: StateDataMainType.state) => {
   ...state,
   vboBufferRecord: addVboBufferToBoxGeometryBufferMapByRecord(geometryIndex, state.vboBufferRecord)
@@ -105,10 +115,9 @@ let addVboBufferToCustomGeometryBufferMap = (geometryIndex, state: StateDataMain
 };
 
 let addVboBufferToSourceInstanceBufferMap = (sourceInstanceIndex, state: StateDataMainType.state) => {
-  open VboBufferType;
-  let {matrixInstanceBufferMap} = state.vboBufferRecord;
-  WonderCommonlib.SparseMapService.set(sourceInstanceIndex, Obj.magic(0), matrixInstanceBufferMap);
-  state
+  ...state,
+  vboBufferRecord:
+    addVboBufferToSourceInstanceBufferMapByRecord(sourceInstanceIndex, state.vboBufferRecord)
 };
 
 let getVboBufferRecord = (state) => state.vboBufferRecord;

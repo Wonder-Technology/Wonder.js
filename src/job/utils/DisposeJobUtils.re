@@ -45,7 +45,7 @@ let _disposeComponents =
   let (state, customGeometryNeedDisposeVboBufferArr) =
     disposedCustomGeometryArray
     |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(state);
-  let state =
+  let (state, sourceInstanceNeedDisposeVboBufferArr) =
     disposedSourceInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
@@ -73,7 +73,12 @@ let _disposeComponents =
          ),
          state
        );
-  (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr)
+  (
+    state,
+    boxGeometryNeedDisposeVboBufferArr,
+    customGeometryNeedDisposeVboBufferArr,
+    sourceInstanceNeedDisposeVboBufferArr
+  )
 };
 
 let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRecord} as state) => {
@@ -81,7 +86,8 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrForNotKeepOrder,
-    customGeometryNeedDisposeVboBufferArrForNotKeepOrder
+    customGeometryNeedDisposeVboBufferArrForNotKeepOrder,
+    sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
@@ -92,7 +98,8 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrForKeepOrder,
-    customGeometryNeedDisposeVboBufferArrForKeepOrder
+    customGeometryNeedDisposeVboBufferArrForKeepOrder,
+    sourceInstanceNeedDisposeVboBufferArrForKeepOrder
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
@@ -106,7 +113,9 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
     boxGeometryNeedDisposeVboBufferArrForNotKeepOrder
     |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrForKeepOrder),
     customGeometryNeedDisposeVboBufferArrForNotKeepOrder
-    |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrForKeepOrder)
+    |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrForKeepOrder),
+    sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
+    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrForKeepOrder)
   )
 };
 
@@ -114,13 +123,15 @@ let execJob = (batchDisposeBasicMaterialComponentFunc, state) => {
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromComponent,
-    customGeometryNeedDisposeVboBufferArrFromComponent
+    customGeometryNeedDisposeVboBufferArrFromComponent,
+    sourceInstanceNeedDisposeVboBufferArrFromComponent
   ) =
     state |> _disposeComponents(batchDisposeBasicMaterialComponentFunc);
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromGameObject,
-    customGeometryNeedDisposeVboBufferArrFromGameObject
+    customGeometryNeedDisposeVboBufferArrFromGameObject,
+    sourceInstanceNeedDisposeVboBufferArrFromGameObject
   ) =
     state |> _disposeGameObjects(batchDisposeBasicMaterialComponentFunc);
   (
@@ -128,6 +139,8 @@ let execJob = (batchDisposeBasicMaterialComponentFunc, state) => {
     boxGeometryNeedDisposeVboBufferArrFromComponent
     |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromGameObject),
     customGeometryNeedDisposeVboBufferArrFromComponent
-    |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrFromGameObject)
+    |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrFromGameObject),
+    sourceInstanceNeedDisposeVboBufferArrFromComponent
+    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrFromGameObject)
   )
 };

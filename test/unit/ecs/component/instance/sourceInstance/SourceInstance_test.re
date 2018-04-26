@@ -105,24 +105,6 @@ let _ =
                   |> expect == (false, false, false, false, false, false)
                 }
               );
-              test(
-                "remove from buffer map",
-                () => {
-                  open VboBufferType;
-                  let (state, gameObject, sourceInstance) =
-                    SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let state =
-                    state
-                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
-                         gameObject,
-                         sourceInstance
-                       );
-                  let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
-                  matrixInstanceBufferMap
-                  |> WonderCommonlib.SparseMapService.has(sourceInstance)
-                  |> expect == false
-                }
-              );
               describe(
                 "dispose all objectInstance gameObjects",
                 () =>

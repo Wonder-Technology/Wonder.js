@@ -27,11 +27,7 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(state, isKeepOrder);
-  let (
-    state,
-    boxGeometryNeedDisposeVboBufferArrFromGeometry,
-    customGeometryNeedDisposeVboBufferArr
-  ) =
+  let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
     state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
   let state =
     state
@@ -69,7 +65,7 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPointLightComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposePointLightComponent(state);
-  let state =
+  let (state, sourceInstanceNeedDisposeVboBufferArr) =
     state
     |> BatchGetComponentGameObjectMainService.batchGetSourceInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
@@ -81,5 +77,10 @@ let batchDispose =
     state
     |> BatchGetComponentGameObjectMainService.batchGetObjectInstanceComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state);
-  (state, boxGeometryNeedDisposeVboBufferArrFromGeometry, customGeometryNeedDisposeVboBufferArr)
+  (
+    state,
+    boxGeometryNeedDisposeVboBufferArr,
+    customGeometryNeedDisposeVboBufferArr,
+    sourceInstanceNeedDisposeVboBufferArr
+  )
 };

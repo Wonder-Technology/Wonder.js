@@ -28,7 +28,7 @@ let _ =
             )
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => TestToolWorker.clear(sandbox));
       describe(
         "use program",
         () => {

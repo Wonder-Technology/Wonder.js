@@ -22,7 +22,7 @@ let _ =
             )
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => TestToolWorker.clear(sandbox));
       describe(
         "actually do the dispose work",
         () =>
@@ -43,7 +43,9 @@ let _ =
                             () => {
                               open VboBufferType;
                               let (state, gameObject1, geometry1) =
-                                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(state);
+                                DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeBoxGeometryVboBuffer(
+                                  state
+                                );
                               let state =
                                 state
                                 |> FakeGlToolWorker.setFakeGl(
@@ -79,7 +81,8 @@ let _ =
       describe(
         "dispose gameObjects",
         () => {
-          let _prepare = (state) => DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state);
+          let _prepare = (state) =>
+            DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(state);
           describe(
             "test disposeGameObject",
             () =>
@@ -106,6 +109,23 @@ let _ =
                 }
               )
           )
+          /* testPromise(
+               "test dispose sourceInstance gameObject",
+               () => {
+                 let (state, gameObject, _) =
+                   RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(
+                     sandbox,
+                     state^
+                   );
+                 let state = state |> GameObjectAPI.disposeGameObject(gameObject);
+                 WorkerToolWorker.setFakeWorkersAndSetState(state);
+                 WorkerJobToolWorker.execMainWorkerJob(
+                   ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
+                   ~completeFunc=(state) => 1 |> expect == 1 |> resolve,
+                   ()
+                 )
+               }
+             ) */
         }
       );
       describe(
@@ -120,12 +140,18 @@ let _ =
                 (geometry1, geometry2, geometry3)
               ) =
                 DisposeForNoWorkerAndWorkerJobTool.prepareBoxAndCustomGeometryGameObjects(state);
+              let (state, gameObject4, (geometry4, _, _, sourceInstance4, _)) =
+                RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
               let state =
                 state
-                |> GameObjectAPI.batchDisposeGameObject([|gameObject1, gameObject2, gameObject3|]);
+                |> GameObjectAPI.batchDisposeGameObject([|
+                     gameObject1,
+                     gameObject2,
+                     gameObject3,
+                     gameObject4
+                   |]);
               let state =
                 state |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
-              let state = MainStateTool.setState(state);
               let state = MainStateTool.setState(state);
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,
@@ -137,8 +163,13 @@ let _ =
                     |> toCalledWith([|
                          {
                            "operateType": "DISPOSE",
-                           "boxGeometryNeedDisposeVboBufferArr": [|geometry1, geometry2|],
-                           "customGeometryNeedDisposeVboBufferArr": [|geometry3|]
+                           "boxGeometryNeedDisposeVboBufferArr": [|
+                             geometry1,
+                             geometry2,
+                             geometry4
+                           |],
+                           "customGeometryNeedDisposeVboBufferArr": [|geometry3|],
+                           "sourceInstanceNeedDisposeVboBufferArr": [|sourceInstance4|]
                          }
                        |])
                     |> resolve,

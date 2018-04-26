@@ -22,7 +22,7 @@ let _ =
             )
         }
       );
-      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      afterEach(() => TestToolWorker.clear(sandbox));
       describe(
         "detect extension",
         () =>
@@ -31,7 +31,10 @@ let _ =
             () => {
               let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
               let renderWorkerState =
-                renderWorkerState |> FakeGlToolWorker.setFakeGlToRenderWorkerState(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
+                renderWorkerState
+                |> FakeGlToolWorker.setFakeGlToRenderWorkerState(
+                     FakeGlToolWorker.buildFakeGl(~sandbox, ())
+                   );
               WorkerJobToolWorker.execRenderWorkerJob(
                 ~execJobFunc=DetectGlRenderWorkerJob.execJob,
                 ~completeFunc=
