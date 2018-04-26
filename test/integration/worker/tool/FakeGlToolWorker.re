@@ -130,3 +130,14 @@ let buildFakeGl =
 
 let setFakeGl = (fakeGlObj, state) =>
   FakeGlTool.setFakeGl(fakeGlObj, state) |> MainStateTool.setState;
+
+let setFakeGlToRenderWorkerState = (fakeGlObj, state: StateDataRenderWorkerType.renderWorkerState) =>
+  {
+    ...state,
+    deviceManagerRecord:
+      state.deviceManagerRecord |> DeviceManagerService.setGl(Obj.magic(fakeGlObj))
+  }
+  |> RenderWorkerStateTool.setState;
+/*
+ let setFakeGlToRenderWorkerState = (fakeGlObj, state) =>
+   FakeGlTool.setFakeGl(fakeGlObj, state) |> RenderWorkerStateTool.setState; */

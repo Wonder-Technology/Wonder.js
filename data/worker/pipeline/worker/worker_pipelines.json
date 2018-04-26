@@ -23,6 +23,9 @@
                         "name": "create_gl"
                     },
                     {
+                        "name": "detect_gl"
+                    },
+                    {
                         "name": "init_transform"
                     },
                     {

@@ -24,6 +24,9 @@
         "name": "create_gl"
     },
     {
+        "name": "detect_gl"
+    },
+    {
         "name": "preget_glslData"
     },
     {
