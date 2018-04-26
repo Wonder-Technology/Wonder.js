@@ -7,9 +7,6 @@ let create = ({index, objectInstanceTransformArrayMap, disposedIndexArray} as re
   objectInstanceTransformArrayMap
   |> WonderCommonlib.SparseMapService.set(index, WonderCommonlib.ArrayService.createEmpty())
   |> ignore;
-  let record =
-    record
-    |> StaticSourceInstanceService.markModelMatrixIsStatic(index, true)
-    |> StaticSourceInstanceService.markIsSendTransformMatrixData(index, false);
+  let record = record |> StaticSourceInstanceService.markModelMatrixIsStatic(index, true);
   ({...record, index: newIndex, disposedIndexArray, objectInstanceTransformArrayMap}, index)
 };

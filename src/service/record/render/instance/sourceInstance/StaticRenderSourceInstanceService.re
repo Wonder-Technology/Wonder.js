@@ -32,19 +32,7 @@ let markIsSendTransformMatrixData =
 };
 
 let isSendTransformMatrixData = (sourceInstance: sourceInstance, {isSendTransformMatrixDataMap}) =>
-  isSendTransformMatrixDataMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
-  |> WonderLog.Contract.ensureCheck(
-       (isSend) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|isSend exist|j}, ~actual={j|not|j}),
-                 () => isSend |> assertNullableExist
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
+  switch (isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
+  | None => false
+  | Some(isSend) => isSend
+  };

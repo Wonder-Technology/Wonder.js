@@ -8,14 +8,3 @@ let markModelMatrixIsStatic =
   isTransformStaticMap:
     isTransformStaticMap |> WonderCommonlib.SparseMapService.set(sourceInstance, isStatic)
 };
-
-let markIsSendTransformMatrixData =
-    (sourceInstance: sourceInstance, isSend, {isSendTransformMatrixDataMap} as record) => {
-  ...record,
-  isSendTransformMatrixDataMap:
-    MarkIsSendTransformMatrixDataService.markIsSendTransformMatrixData(
-      sourceInstance,
-      isSend,
-      isSendTransformMatrixDataMap
-    )
-};

@@ -33,7 +33,7 @@ let _ =
         () => RenderHardwareInstanceTool.testProgram(sandbox, _prepare, state)
       );
       describe(
-        "send attribute record",
+        "send attribute data",
         () =>
           describe(
             "send sourceInstance gameObject's a_position",
@@ -47,7 +47,7 @@ let _ =
           )
       );
       describe(
-        "send uniform record",
+        "send uniform data",
         () => {
           RenderHardwareInstanceTool.testSendShaderUniformData(
             sandbox,
@@ -65,7 +65,7 @@ let _ =
         }
       );
       describe(
-        "send instance record",
+        "send instance data",
         () => {
           describe(
             "create instance buffer when first send",
@@ -316,7 +316,7 @@ let _ =
             }
           );
           describe(
-            "send modelMatrix record",
+            "send modelMatrix data",
             () => {
               describe(
                 "send sourceInstance gameObject's and objectInstanceGameObject gameObjects' model matrices",
@@ -331,7 +331,7 @@ let _ =
                     (state, gameObject, sourceInstance, objectInstanceGameObject)
                   };
                   test(
-                    "buffer sub record",
+                    "buffer sub data",
                     () => {
                       let (state, gameObject, sourceInstance, objectInstanceGameObject) =
                         _prepare(sandbox, state^);
@@ -359,7 +359,7 @@ let _ =
                         state
                         |> RenderJobsTool.init
                         |> DirectorTool.runWithDefaultTime;
-                      let record = Js.Typed_array.Float32Array.fromLength(64 * 16);
+                      let data = Js.Typed_array.Float32Array.fromLength(64 * 16);
                       let transformArr = [|sourceTransform, objectTransform|];
                       ArrayService.range(0, 1)
                       |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -368,7 +368,7 @@ let _ =
                              (offset, index) => {
                                let transform = transformArr[index];
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
                                  offset
                                );
@@ -384,7 +384,7 @@ let _ =
                            (
                              (offset, index) => {
                                TypeArrayService.fillFloat32ArrayWithOffset(
-                                 record,
+                                 data,
                                  Js.Typed_array.Float32Array.make([|
                                    0.,
                                    0.,
@@ -412,7 +412,7 @@ let _ =
                          )
                       |> ignore;
                       bufferSubData
-                      |> withThreeArgs(array_buffer, 0, record)
+                      |> withThreeArgs(array_buffer, 0, data)
                       |> expect
                       |> toCalledOnce
                     }
@@ -420,7 +420,7 @@ let _ =
                 }
               );
               describe(
-                "handle instance record position",
+                "handle instance data position",
                 () => {
                   let _prepareForHandleInstanceData = (sandbox, state) => {
                     let (
@@ -450,7 +450,7 @@ let _ =
                     (state, pos1, pos2, pos3, pos4, getAttribLocation)
                   };
                   describe(
-                    "vertexAttribPointer instance record",
+                    "vertexAttribPointer instance data",
                     () => {
                       let _prepareForTestVertexAttribPointer = (sandbox, state) =>
                         RenderBasicHardwareInstanceTool.prepareForTestVertexAttribPointer(
@@ -459,7 +459,7 @@ let _ =
                           state
                         );
                       test(
-                        "test first record",
+                        "test first data",
                         () => {
                           let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
                             _prepareForTestVertexAttribPointer(sandbox, state);
@@ -469,7 +469,7 @@ let _ =
                         }
                       );
                       test(
-                        "test second record",
+                        "test second data",
                         () => {
                           let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
                             _prepareForTestVertexAttribPointer(sandbox, state);
@@ -479,7 +479,7 @@ let _ =
                         }
                       );
                       test(
-                        "test third record",
+                        "test third data",
                         () => {
                           let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
                             _prepareForTestVertexAttribPointer(sandbox, state);
@@ -489,7 +489,7 @@ let _ =
                         }
                       );
                       test(
-                        "test fourth record",
+                        "test fourth data",
                         () => {
                           let (state, float, (pos1, pos2, pos3, pos4), vertexAttribPointer) =
                             _prepareForTestVertexAttribPointer(sandbox, state);
@@ -526,7 +526,7 @@ let _ =
                     }
                   );
                   test(
-                    "enableVertexAttribArray instance record",
+                    "enableVertexAttribArray instance data",
                     () => {
                       let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
                         _prepareForHandleInstanceData(sandbox, state);
@@ -596,7 +596,7 @@ let _ =
                             "if isTransformStatic is true",
                             () => {
                               test(
-                                "if not send record before, send record",
+                                "if not send data before, send data",
                                 () => {
                                   let (state, _, (bufferSubData, bindBuffer)) =
                                     _prepareForBufferSubData(sandbox, Js.true_, state);
@@ -608,7 +608,7 @@ let _ =
                                 "else",
                                 () => {
                                   test(
-                                    "not buffer record",
+                                    "not buffer data",
                                     () => {
                                       let (state, _, (bufferSubData, bindBuffer)) =
                                         _prepareForBufferSubData(sandbox, Js.true_, state);
@@ -629,7 +629,7 @@ let _ =
                                     }
                                   );
                                   describe(
-                                    "vertexAttribPointer instance record",
+                                    "vertexAttribPointer instance data",
                                     () => {
                                       let _prepareForTestVertexAttribPointer = (sandbox, state) =>
                                         RenderBasicHardwareInstanceTool.prepareForTestVertexAttribPointer(
@@ -638,7 +638,7 @@ let _ =
                                           state
                                         );
                                       test(
-                                        "test first record",
+                                        "test first data",
                                         () => {
                                           let (
                                             state,
@@ -703,7 +703,7 @@ let _ =
                                     }
                                   );
                                   test(
-                                    "not enableVertexAttribArray instance record(because alreay enable before)",
+                                    "not enableVertexAttribArray instance data(because alreay enable before)",
                                     () => {
                                       let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
                                         _prepareForHandleInstanceData(sandbox, state);
@@ -739,7 +739,7 @@ let _ =
                             "else",
                             () =>
                               test(
-                                "send record",
+                                "send data",
                                 () => {
                                   let (state, sourceInstance, (bufferSubData, _)) =
                                     _prepareForBufferSubData(sandbox, Js.false_, state);
@@ -755,7 +755,7 @@ let _ =
                                 "test after switch",
                                 () =>
                                   test(
-                                    "send record",
+                                    "send data",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
                                         _prepareForBufferSubData(sandbox, Js.false_, state);
@@ -780,7 +780,7 @@ let _ =
                                 "test after switch",
                                 () =>
                                   test(
-                                    "send record in the next render, and not send record in the next next render",
+                                    "send data in the next render, and not send data in the next next render",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
                                         _prepareForBufferSubData(sandbox, Js.false_, state);
@@ -806,7 +806,7 @@ let _ =
                                 "test after switch",
                                 () =>
                                   test(
-                                    "send record in the next render, and not send record in the next next render",
+                                    "send data in the next render, and not send data in the next next render",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
                                         _prepareForBufferSubData(sandbox, Js.false_, state);
