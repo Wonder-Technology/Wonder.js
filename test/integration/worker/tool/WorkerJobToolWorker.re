@@ -30,4 +30,4 @@ let execRenderWorkerJob =
     (~execJobFunc, ~completeFunc, ~e=Some({"data": {}}), ~flag=Some([|""|]), ()) =>
   execJobFunc(flag, e, RenderWorkerStateTool.getStateData())
   |> Most.drain
-  |> then_(() => completeFunc(RenderWorkerStateTool.getState()));
+  |> then_(() => completeFunc(RenderWorkerStateTool.unsafeGetState()));

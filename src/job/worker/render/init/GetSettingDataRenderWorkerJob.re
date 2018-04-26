@@ -4,7 +4,7 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let gpuData = data##gpuData;
-      state.settingRecord = {gpu: Some(gpuData##useHardwareInstance)};
+      state.settingRecord = {gpu: Some({useHardwareInstance: gpuData##useHardwareInstance})};
       e
     }
   );

@@ -60,7 +60,7 @@ let _ =
                      |> Most.drain
                      |> then_(
                           () => {
-                            let renderWorkerState = RenderWorkerStateTool.getState();
+                            let renderWorkerState = RenderWorkerStateTool.unsafeGetState();
                             let {
                               count,
                               transformIndices,

@@ -1,6 +1,16 @@
+open StateDataRenderWorkerType;
+
 let getStateData = () => StateDataRenderWorker.renderWorkerStateData;
 
-let getState = () => StateRenderWorkerService.unsafeGetState(getStateData());
+let unsafeGetState = () => StateRenderWorkerService.unsafeGetState(getStateData());
+
+let getState = () => {
+  let stateData = getStateData();
+  switch stateData.state {
+  | None => CreateStateRenderWorkerService.createState()
+  | Some(state) => state
+  }
+};
 
 let setState = (state) =>
   StateRenderWorkerService.setState(StateDataRenderWorker.renderWorkerStateData, state);

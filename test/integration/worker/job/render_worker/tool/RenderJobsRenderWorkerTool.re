@@ -27,8 +27,9 @@ let init = (completeFunc, state) => {
         MainStateTool.getStateData()
       )
   };
-  let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
+  let renderWorkerState = RenderWorkerStateTool.getState();
   renderWorkerState.workerDetectRecord = Some({isUseWorker: true});
+  RenderWorkerStateTool.setState(renderWorkerState);
   let state =
     state
     |> WorkerJobTool.create(
