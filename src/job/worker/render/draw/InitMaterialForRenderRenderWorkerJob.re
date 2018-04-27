@@ -49,7 +49,6 @@ let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
 let execJob = (flags, e, stateData) =>
   MostUtils.callFunc(
     () => {
-      /* TODO init light material */
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let initData = data##initData;
@@ -59,13 +58,7 @@ let execJob = (flags, e, stateData) =>
       let directionLightData = initData##directionLightData;
       let pointLightData = initData##pointLightData;
       let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-      /* TODO get isSupportInstance by JudgeInstanceAllService.isSupportInstance */
-      let isSupportInstance = false;
-      /* WonderLog.Log.print((
-           "inited material array in render worker:",
-           basicMaterialData##materialDataForWorkerInit
-         ))
-         |> ignore; */
+      let isSupportInstance = JudgeInstanceRenderWorkerService.isSupportInstance(state);
       _initBasicMaterials(gl, basicMaterialData, isSupportInstance, state) |> ignore;
       _initLightMaterials(gl, lightMaterialData, isSupportInstance, state) |> ignore;
       e

@@ -98,6 +98,7 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     GetDirectionLightDataRenderWorkerJob.execJob(None),
     GetPointLightDataRenderWorkerJob.execJob(None),
     GetInstanceDataRenderWorkerJob.execJob(None),
+    InitMaterialForRenderRenderWorkerJob.execJob(None),
     CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     GetCameraDataRenderWorkerJob.execJob(None),

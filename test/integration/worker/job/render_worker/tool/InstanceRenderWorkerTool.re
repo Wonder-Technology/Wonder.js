@@ -11,3 +11,6 @@ let setGPUDetectDataAllowHardwareInstance = (sandbox, state) => {
       })
   }
 };
+
+let getExtensionInstancedArrays = (state) =>
+  state.gpuDetectRecord.extensionInstancedArrays |> OptionTool.unsafeGet;

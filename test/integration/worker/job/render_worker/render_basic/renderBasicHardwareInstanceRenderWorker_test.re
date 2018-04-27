@@ -184,6 +184,104 @@ let _ =
                     ()
                   )
                 }
+              );
+              describe(
+                "fix bug",
+                () =>
+                  describe(
+                    "test create new sourceInstance gameObject after first loop",
+                    () =>
+                      describe(
+                        "handle instance data position",
+                        () => {
+                          let _prepareGetAttribLocationForHandleInstanceData = (sandbox, state) => {
+                            let pos1 = 1;
+                            let pos2 = 2;
+                            let pos3 = 3;
+                            let pos4 = 4;
+                            let getAttribLocation =
+                              GLSLLocationTool.getAttribLocation(~pos=pos1, sandbox, "a_mVec4_0");
+                            getAttribLocation
+                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_1")
+                            |> returns(pos2)
+                            |> ignore;
+                            getAttribLocation
+                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_2")
+                            |> returns(pos3)
+                            |> ignore;
+                            getAttribLocation
+                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_3")
+                            |> returns(pos4)
+                            |> ignore;
+                            (state, pos1, pos2, pos3, pos4, getAttribLocation)
+                          };
+                          testPromise(
+                            "vertexAttribDivisorANGLE 1",
+                            () => {
+                              let renderWorkerState =
+                                RenderWorkerStateTool.createState()
+                                |> InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(
+                                     sandbox
+                                   )
+                                |> RenderWorkerStateTool.setState;
+                              let vertexAttribDivisorANGLE =
+                                Obj.magic(
+                                  InstanceRenderWorkerTool.getExtensionInstancedArrays(
+                                    renderWorkerState
+                                  )##vertexAttribDivisorANGLE
+                                );
+                              let (state, _, _, _) = CameraTool.createCameraGameObject(state^);
+                              let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
+                                _prepareGetAttribLocationForHandleInstanceData(sandbox, state);
+                              let state =
+                                state
+                                |> FakeGlToolWorker.setFakeGl(
+                                     FakeGlToolWorker.buildFakeGl(~sandbox, ~getAttribLocation, ())
+                                   );
+                              MainStateTool.setState(state);
+                              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                                ~state,
+                                ~sandbox,
+                                ~completeFunc=
+                                  (_) => {
+                                    let state = MainStateTool.unsafeGetState();
+                                    let (state, gameObject2, componentTuple) =
+                                      RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(
+                                        sandbox,
+                                        state
+                                      );
+                                    let state = GameObjectAPI.initGameObject(gameObject2, state);
+                                    RenderJobsRenderWorkerTool.mainLoopAndRender(
+                                      ~completeFunc=
+                                        (_) =>
+                                          (
+                                            vertexAttribDivisorANGLE
+                                            |> withTwoArgs(pos1, 1)
+                                            |> getCallCount,
+                                            vertexAttribDivisorANGLE
+                                            |> withTwoArgs(pos2, 1)
+                                            |> getCallCount,
+                                            vertexAttribDivisorANGLE
+                                            |> withTwoArgs(pos3, 1)
+                                            |> getCallCount,
+                                            vertexAttribDivisorANGLE
+                                            |> withTwoArgs(pos4, 1)
+                                            |> getCallCount
+                                          )
+                                          |> expect == (1, 1, 1, 1)
+                                          |> resolve,
+                                      ~state,
+                                      ~sandbox,
+                                      ()
+                                    )
+                                  },
+                                ()
+                              )
+                            }
+                          )
+                        }
+                      )
+                  )
               )
             }
           )
