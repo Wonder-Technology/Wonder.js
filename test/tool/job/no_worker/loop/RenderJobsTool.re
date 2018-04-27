@@ -56,7 +56,7 @@ let passGl = (sandbox, state: StateDataMainType.state) =>
 
 let buildConfigData = (~flags=None, ~shader=None, ()) => (flags, shader);
 
-let prepareForUseProgram = (sandbox, prepareFunc, state) => {
+let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   open Sinon;
   let state = prepareFunc(sandbox, state);
   let program = Obj.magic(1);

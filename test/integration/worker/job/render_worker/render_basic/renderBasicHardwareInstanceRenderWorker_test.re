@@ -96,23 +96,12 @@ let _ =
               testPromise(
                 "buffer sub data",
                 () => {
-                  let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                    _prepare(sandbox, state^);
-                  let sourceTransform =
-                    state |> GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject);
-                  let objectTransform =
-                    state
-                    |> GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                         objectInstanceGameObject
-                       );
-                  let pos1 = (1., 2., 3.);
-                  let pos2 = (2., 4., 5.);
-                  let state =
-                    state
-                    |> TransformAPI.setTransformLocalPosition(sourceTransform, pos1)
-                    |> TransformAPI.setTransformLocalPosition(objectInstanceGameObject, pos2);
-                  let array_buffer = 1;
-                  let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
+                  let (state, (sourceTransform, objectTransform), array_buffer, bufferSubData) =
+                    RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.prepareForBufferSubDataCase(
+                      sandbox,
+                      _prepare,
+                      state
+                    );
                   let state =
                     state
                     |> FakeGlToolWorker.setFakeGl(
@@ -122,65 +111,15 @@ let _ =
                     ~state,
                     ~sandbox,
                     ~completeFunc=
-                      (_) => {
-                        let data = Js.Typed_array.Float32Array.fromLength(64 * 16);
-                        let transformArr = [|sourceTransform, objectTransform|];
-                        ArrayService.range(0, 1)
-                        |> WonderCommonlib.ArrayService.reduceOneParam(
-                             [@bs]
-                             (
-                               (offset, index) => {
-                                 let transform = transformArr[index];
-                                 TypeArrayService.fillFloat32ArrayWithOffset(
-                                   data,
-                                   TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
-                                   offset
-                                 );
-                                 offset + 16
-                               }
-                             ),
-                             0
-                           )
-                        |> ignore;
-                        ArrayService.range(2, 63)
-                        |> WonderCommonlib.ArrayService.reduceOneParam(
-                             [@bs]
-                             (
-                               (offset, index) => {
-                                 TypeArrayService.fillFloat32ArrayWithOffset(
-                                   data,
-                                   Js.Typed_array.Float32Array.make([|
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.,
-                                     0.
-                                   |]),
-                                   offset
-                                 );
-                                 offset + 16
-                               }
-                             ),
-                             32
-                           )
-                        |> ignore;
-                        bufferSubData
-                        |> withThreeArgs(array_buffer, 0, data)
-                        |> expect
-                        |> toCalledOnce
-                        |> resolve
-                      },
+                      (_) =>
+                        RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.testForBufferSubDataCase(
+                          sandbox,
+                          (sourceTransform, objectTransform),
+                          array_buffer,
+                          bufferSubData,
+                          MainStateTool.unsafeGetState()
+                        )
+                        |> resolve,
                     ()
                   )
                 }
@@ -194,27 +133,6 @@ let _ =
                       describe(
                         "handle instance data position",
                         () => {
-                          let _prepareGetAttribLocationForHandleInstanceData = (sandbox, state) => {
-                            let pos1 = 1;
-                            let pos2 = 2;
-                            let pos3 = 3;
-                            let pos4 = 4;
-                            let getAttribLocation =
-                              GLSLLocationTool.getAttribLocation(~pos=pos1, sandbox, "a_mVec4_0");
-                            getAttribLocation
-                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_1")
-                            |> returns(pos2)
-                            |> ignore;
-                            getAttribLocation
-                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_2")
-                            |> returns(pos3)
-                            |> ignore;
-                            getAttribLocation
-                            |> withTwoArgs(Sinon.matchAny, "a_mVec4_3")
-                            |> returns(pos4)
-                            |> ignore;
-                            (state, pos1, pos2, pos3, pos4, getAttribLocation)
-                          };
                           testPromise(
                             "vertexAttribDivisorANGLE 1",
                             () => {
@@ -230,7 +148,10 @@ let _ =
                                 );
                               let (state, _, _, _) = CameraTool.createCameraGameObject(state^);
                               let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
-                                _prepareGetAttribLocationForHandleInstanceData(sandbox, state);
+                                RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.prepareGetAttribLocationForHandleInstanceData(
+                                  sandbox,
+                                  state
+                                );
                               let state =
                                 state
                                 |> FakeGlToolWorker.setFakeGl(

@@ -1,6 +1,6 @@
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;
-  let (state, gameObject, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
+  let (state, gameObject, _, _) = InitLightMaterialJobTool.prepareGameObject(sandbox, state);
   let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =

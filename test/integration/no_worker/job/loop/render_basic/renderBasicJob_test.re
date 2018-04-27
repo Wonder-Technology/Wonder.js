@@ -21,9 +21,9 @@ let _ =
         "use program",
         () => {
           let _prepare = (sandbox, state) =>
-            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgram(sandbox, state);
+            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgramCase(sandbox, state);
           let _prepareForUseProgram = (sandbox, state) =>
-            RenderJobsTool.prepareForUseProgram(sandbox, _prepare, state);
+            RenderJobsTool.prepareForUseProgramCase(sandbox, _prepare, state);
           test(
             "test use",
             () => {

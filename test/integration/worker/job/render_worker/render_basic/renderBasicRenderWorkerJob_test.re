@@ -32,9 +32,9 @@ let _ =
         "use program",
         () => {
           let _prepare = (sandbox, state) =>
-            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgram(sandbox, state);
+            RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgramCase(sandbox, state);
           let _prepareForUseProgram = (sandbox, state) =>
-            RenderJobsRenderWorkerTool.prepareForUseProgram(sandbox, _prepare, state);
+            RenderJobsRenderWorkerTool.prepareForUseProgramCase(sandbox, _prepare, state);
           testPromise(
             "test use",
             () => {

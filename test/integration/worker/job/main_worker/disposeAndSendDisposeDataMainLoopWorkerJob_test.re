@@ -104,29 +104,27 @@ let _ =
                                 ~sandbox,
                                 ~completeFunc=
                                   (_) => {
-
-GameObjectAPI.disposeGameObject(gameObject,  MainStateTool.unsafeGetState()) |> MainStateTool.setState;
-
-
-                              RenderJobsRenderWorkerTool.mainLoopAndRender(
-                                ~state,
-                                ~sandbox,
-                                ~completeFunc=
-                                  (_) => {
-                                    open SourceInstanceType;
-
-                                    let state = MainStateTool.unsafeGetState();
-
-
-TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord) |> SparseMapService.length |> expect == 0 |> resolve
-
-
-
-                                  },
-                                ()
-                              )
-
-
+                                    GameObjectAPI.disposeGameObject(
+                                      gameObject,
+                                      MainStateTool.unsafeGetState()
+                                    )
+                                    |> MainStateTool.setState;
+                                    RenderJobsRenderWorkerTool.mainLoopAndRender(
+                                      ~state,
+                                      ~sandbox,
+                                      ~completeFunc=
+                                        (_) => {
+                                          open SourceInstanceType;
+                                          let state = MainStateTool.unsafeGetState();
+                                          TypeArrayPoolTool.getFloat32ArrayPoolMap(
+                                            state.typeArrayPoolRecord
+                                          )
+                                          |> SparseMapService.length
+                                          |> expect == 0
+                                          |> resolve
+                                        },
+                                      ()
+                                    )
                                   },
                                 ()
                               )
@@ -202,13 +200,19 @@ TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord) |> SparseMap
                 DisposeForNoWorkerAndWorkerJobTool.prepareBoxAndCustomGeometryGameObjects(state);
               let (state, gameObject4, (geometry4, _, _, sourceInstance4, _)) =
                 RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(sandbox, state);
+              let (state, gameObject5, (geometry5, _, _, sourceInstance5, _)) =
+                FrontRenderLightHardwareInstanceTool.createSourceInstanceGameObject(
+                  sandbox,
+                  state
+                );
               let state =
                 state
                 |> GameObjectAPI.batchDisposeGameObject([|
                      gameObject1,
                      gameObject2,
                      gameObject3,
-                     gameObject4
+                     gameObject4,
+                     gameObject5
                    |]);
               let state =
                 state |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
@@ -226,10 +230,14 @@ TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord) |> SparseMap
                            "boxGeometryNeedDisposeVboBufferArr": [|
                              geometry1,
                              geometry2,
-                             geometry4
+                             geometry4,
+                             geometry5
                            |],
                            "customGeometryNeedDisposeVboBufferArr": [|geometry3|],
-                           "sourceInstanceNeedDisposeVboBufferArr": [|sourceInstance4|]
+                           "sourceInstanceNeedDisposeVboBufferArr": [|
+                             sourceInstance4,
+                             sourceInstance5
+                           |]
                          }
                        |])
                     |> resolve,

@@ -78,8 +78,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 3
                 }
               );
@@ -92,8 +91,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   let state = state |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 3
                 }
@@ -156,9 +154,7 @@ let _ =
                                  FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ~deleteBuffer, ())
                                );
                           let state =
-                            state
-                            |> RenderJobsTool.init
-                            |> DirectorTool.runWithDefaultTime;
+                            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                           deleteBuffer |> expect |> toCalledWith([|buffer1|])
                         }
                       );
@@ -180,9 +176,7 @@ let _ =
                                  )
                                );
                           let state =
-                            state
-                            |> RenderJobsTool.init
-                            |> DirectorTool.runWithDefaultTime;
+                            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                           bindBuffer
                           |> withTwoArgs(Sinon.matchAny, buffer1)
                           |> getCallCount
@@ -204,10 +198,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       createBuffer |> getCallCount |> expect == 4
                     }
                   );
@@ -230,10 +221,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       bufferData
                       |> withThreeArgs(array_buffer, 8192, dynamic_draw)
                       |> expect
@@ -333,88 +321,30 @@ let _ =
                   test(
                     "buffer sub data",
                     () => {
-                      let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                        _prepare(sandbox, state^);
-                      let sourceTransform =
-                        state |> GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject);
-                      let objectTransform =
+                      let (state, (sourceTransform, objectTransform), array_buffer, bufferSubData) =
+                        RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.prepareForBufferSubDataCase(
+                          sandbox,
+                          _prepare,
+                          state
+                        );
+                      let state =
                         state
-                        |> GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                             objectInstanceGameObject
+                        |> FakeGlToolWorker.setFakeGl(
+                             FakeGlToolWorker.buildFakeGl(
+                               ~sandbox,
+                               ~array_buffer,
+                               ~bufferSubData,
+                               ()
+                             )
                            );
-                      let pos1 = (1., 2., 3.);
-                      let pos2 = (2., 4., 5.);
-                      let state =
-                        state
-                        |> TransformAPI.setTransformLocalPosition(sourceTransform, pos1)
-                        |> TransformAPI.setTransformLocalPosition(objectInstanceGameObject, pos2);
-                      let array_buffer = 1;
-                      let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(~sandbox, ~array_buffer, ~bufferSubData, ())
-                           );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
-                      let data = Js.Typed_array.Float32Array.fromLength(64 * 16);
-                      let transformArr = [|sourceTransform, objectTransform|];
-                      ArrayService.range(0, 1)
-                      |> WonderCommonlib.ArrayService.reduceOneParam(
-                           [@bs]
-                           (
-                             (offset, index) => {
-                               let transform = transformArr[index];
-                               TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
-                                 TransformTool.getLocalToWorldMatrixTypeArray(transform, state),
-                                 offset
-                               );
-                               offset + 16
-                             }
-                           ),
-                           0
-                         )
-                      |> ignore;
-                      ArrayService.range(2, 63)
-                      |> WonderCommonlib.ArrayService.reduceOneParam(
-                           [@bs]
-                           (
-                             (offset, index) => {
-                               TypeArrayService.fillFloat32ArrayWithOffset(
-                                 data,
-                                 Js.Typed_array.Float32Array.make([|
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.,
-                                   0.
-                                 |]),
-                                 offset
-                               );
-                               offset + 16
-                             }
-                           ),
-                           32
-                         )
-                      |> ignore;
-                      bufferSubData
-                      |> withThreeArgs(array_buffer, 0, data)
-                      |> expect
-                      |> toCalledOnce
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.testForBufferSubDataCase(
+                        sandbox,
+                        (sourceTransform, objectTransform),
+                        array_buffer,
+                        bufferSubData,
+                        MainStateTool.unsafeGetState()
+                      )
                     }
                   )
                 }
@@ -429,25 +359,10 @@ let _ =
                       (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject)
                     ) =
                       _prepare(sandbox, state^);
-                    let pos1 = 1;
-                    let pos2 = 2;
-                    let pos3 = 3;
-                    let pos4 = 4;
-                    let getAttribLocation =
-                      GLSLLocationTool.getAttribLocation(~pos=pos1, sandbox, "a_mVec4_0");
-                    getAttribLocation
-                    |> withTwoArgs(Sinon.matchAny, "a_mVec4_1")
-                    |> returns(pos2)
-                    |> ignore;
-                    getAttribLocation
-                    |> withTwoArgs(Sinon.matchAny, "a_mVec4_2")
-                    |> returns(pos3)
-                    |> ignore;
-                    getAttribLocation
-                    |> withTwoArgs(Sinon.matchAny, "a_mVec4_3")
-                    |> returns(pos4)
-                    |> ignore;
-                    (state, pos1, pos2, pos3, pos4, getAttribLocation)
+                    RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.prepareGetAttribLocationForHandleInstanceData(
+                      sandbox,
+                      state
+                    )
                   };
                   describe(
                     "vertexAttribPointer instance data",

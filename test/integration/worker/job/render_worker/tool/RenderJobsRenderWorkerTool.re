@@ -4,7 +4,7 @@ open Js.Promise;
 
 open MostRenderWorkerTool;
 
-let prepareForUseProgram = (sandbox, prepareFunc, state) => {
+let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   open Sinon;
   let state = prepareFunc(sandbox, state);
   let program = Obj.magic(1);
