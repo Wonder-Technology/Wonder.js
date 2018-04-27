@@ -25,7 +25,7 @@ let createSourceInstanceGameObjectArr = (count, state: StateDataMainType.state) 
        (state, [||], [||])
      );
 
-let getSourceInstanceRecord = (state) => state.sourceInstanceRecord;
+let getRecord = (state) => state.sourceInstanceRecord;
 
 let getGameObject = (sourceInstance, state) =>
   state.sourceInstanceRecord |> GameObjectSourceInstanceService.getGameObject(sourceInstance);

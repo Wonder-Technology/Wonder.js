@@ -4,6 +4,8 @@ open BasicMaterialType;
 
 open SettingType;
 
+open SettingGPUType;
+
 let _buildData = (operateType, canvas, stateData) => {
   let {
         settingRecord,
@@ -14,7 +16,8 @@ let _buildData = (operateType, canvas, stateData) => {
         pointLightRecord
       } as state =
     StateDataMainService.unsafeGetState(stateData);
-  let gpu = OperateSettingService.unsafeGetGPU(settingRecord);
+  let {useHardwareInstance} = OperateSettingService.unsafeGetGPU(settingRecord);
+  let {maxBigTypeArrayPoolSize} = OperateSettingService.unsafeGetMemory(settingRecord);
   let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
   let renderConfigRecord = RecordRenderConfigMainService.getRecord(state);
   let transformRecord = RecordTransformMainService.getRecord(state);
@@ -32,7 +35,8 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
       "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount
     },
-    "gpuData": {"useHardwareInstance": gpu.useHardwareInstance},
+    "gpuData": {"useHardwareInstance": useHardwareInstance},
+    "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},
     "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
     "renderConfigData": {
       "shaders":
@@ -65,9 +69,7 @@ let _buildData = (operateType, canvas, stateData) => {
           gameObjectRecord
         )
     },
-    "customGeometryData": {
-      "buffer": customGeometryRecord.buffer
-    },
+    "customGeometryData": {"buffer": customGeometryRecord.buffer},
     "ambientLightData": {"buffer": ambientLightRecord.buffer, "index": ambientLightRecord.index},
     "directionLightData": {
       "buffer": directionLightRecord.buffer,

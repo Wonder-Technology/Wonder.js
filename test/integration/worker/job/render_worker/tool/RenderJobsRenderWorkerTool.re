@@ -122,6 +122,58 @@ let mainLoopAndRender =
     }
   );
 
+let dispose = (postMessageToRenderWorker, completeFunc) => {
+  open Sinon;
+  /* let state = MainStateTool.unsafeGetState(); */
+  /* let (
+       state,
+       boxGeometryNeedDisposeVboBufferArr,
+       customGeometryNeedDisposeVboBufferArr,
+       sourceInstanceNeedDisposeVboBufferArr
+     ) =
+       DisposeJobUtils.execJob(
+         DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentForWorker,
+         state
+       );
+       WonderLog.Log.print(sourceInstanceNeedDisposeVboBufferArr) |> ignore; */
+  let args =
+    postMessageToRenderWorker
+    |> withOneArg({
+         "operateType": "DISPOSE",
+         "boxGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
+         "customGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
+         "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny
+       })
+    |> Obj.magic
+    |> getSpecificArg(0)
+    |> List.hd;
+  let disposeData = {
+    "data": args
+    /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
+         "",
+         (
+           boxGeometryNeedDisposeVboBufferArr,
+           customGeometryNeedDisposeVboBufferArr,
+           sourceInstanceNeedDisposeVboBufferArr
+         )
+       ) */
+  };
+  [|DisposeVboRenderWorkerJob.execJob(None), DisposeSourceInstanceRenderWorkerJob.execJob(None)|]
+  |> concatStreamFuncArray(disposeData, RenderWorkerStateTool.getStateData())
+  |> Most.drain
+  |> then_(() => completeFunc(postMessageToRenderWorker))
+};
+
+let mainLoopAndDispose =
+    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+  execMainLoopJobs(
+    sandbox,
+    (postMessageToRenderWorker) => {
+      beforeExecRenderRenderWorkerJobsFunc(postMessageToRenderWorker);
+      dispose(postMessageToRenderWorker, completeFunc)
+    }
+  );
+
 let initAndMainLoopAndRender =
     (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
   init(

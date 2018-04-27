@@ -2,23 +2,24 @@ open StateDataMainType;
 
 open GameObjectType;
 
-let _sendDisposeData =
+let _buildData =
     (
       operateType,
       (
         boxGeometryNeedDisposeVboBufferArr,
         customGeometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr
-      ),
-      state
-    ) =>
+      )
+    ) => {
+  "operateType": operateType,
+  "boxGeometryNeedDisposeVboBufferArr": boxGeometryNeedDisposeVboBufferArr,
+  "customGeometryNeedDisposeVboBufferArr": customGeometryNeedDisposeVboBufferArr,
+  "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr
+};
+
+let _sendDisposeData = (operateType, needDisposeVboBufferArrTuple, state) =>
   WorkerInstanceService.unsafeGetRenderWorker(state.workerInstanceRecord)
-  |> WorkerService.postMessage({
-       "operateType": operateType,
-       "boxGeometryNeedDisposeVboBufferArr": boxGeometryNeedDisposeVboBufferArr,
-       "customGeometryNeedDisposeVboBufferArr": customGeometryNeedDisposeVboBufferArr,
-       "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr
-     });
+  |> WorkerService.postMessage(_buildData(operateType, needDisposeVboBufferArrTuple));
 
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(

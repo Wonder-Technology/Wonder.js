@@ -112,7 +112,13 @@ let buildMainLoopPipelinesConfig = () => {|
                 ]
             },
             {
-                "name": "frame",
+                "name": "sync",
+                "link": "concat",
+                "jobs": [
+                ]
+            },
+            {
+                "name": "begin_loop",
                 "link": "merge",
                 "jobs": [
                     {
@@ -120,6 +126,18 @@ let buildMainLoopPipelinesConfig = () => {|
                     },
                     {
                         "name": "get_finish_render_data"
+                    }
+                ]
+            },
+            {
+                "name": "frame",
+                "link": "concat",
+                "jobs": [
+                    {
+                        "name": "begin_loop"
+                    },
+                    {
+                        "name": "sync"
                     }
                 ]
             }

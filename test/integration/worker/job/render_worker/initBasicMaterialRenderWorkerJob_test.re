@@ -64,12 +64,7 @@ let _ =
                               state^
                             );
                           let (state, _) = state |> InstanceTool.addSourceInstance(gameObject);
-                          let renderWorkerState =
-                            RenderWorkerStateTool.createState()
-                            |> InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(
-                                 sandbox
-                               )
-                            |> RenderWorkerStateTool.setState;
+                          InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(sandbox);
                           RenderJobsRenderWorkerTool.init(
                             (state) =>
                               GLSLTool.containMultiline(

@@ -1113,7 +1113,7 @@ let _ =
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
                   let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(state);
+                    SourceInstanceTool.getRecord(state);
                   let originMatrixFloat32Array = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap
                   |> WonderCommonlib.SparseMapService.set(
@@ -1130,7 +1130,7 @@ let _ =
                   |> ignore;
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(copiedState);
+                    SourceInstanceTool.getRecord(copiedState);
                   let objectInstanceArray =
                     objectInstanceTransformArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
@@ -1140,7 +1140,7 @@ let _ =
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   Float32Array.unsafe_set(matrixFloat32Array, 0, 1000.) |> ignore;
                   let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(state);
+                    SourceInstanceTool.getRecord(state);
                   (
                     objectInstanceTransformArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1),
@@ -1163,7 +1163,7 @@ let _ =
                             gameObjectMap,
                             disposedIndexArray
                           } =
-                            SourceInstanceTool.getSourceInstanceRecord(state);
+                            SourceInstanceTool.getRecord(state);
                           [|
                             matrixInstanceBufferCapacityMap |> Obj.magic,
                             isTransformStaticMap |> Obj.magic,
@@ -1841,7 +1841,7 @@ let _ =
                   let state = state^;
                   let currentState = MainStateTool.createNewCompleteState(sandbox);
                   let {matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(currentState);
+                    SourceInstanceTool.getRecord(currentState);
                   let index = 0;
                   let typeArr = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.set(index, typeArr);
@@ -1861,7 +1861,7 @@ let _ =
                   open TypeArrayPoolType;
                   let state = state^;
                   let {isSendTransformMatrixDataMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(state);
+                    SourceInstanceTool.getRecord(state);
                   isSendTransformMatrixDataMap
                   |> WonderCommonlib.SparseMapService.set(0, true)
                   |> WonderCommonlib.SparseMapService.set(1, false)
@@ -1869,7 +1869,7 @@ let _ =
                   let _ =
                     MainStateTool.restore(MainStateTool.createNewCompleteState(sandbox), state);
                   let {isSendTransformMatrixDataMap} =
-                    SourceInstanceTool.getSourceInstanceRecord(MainStateTool.unsafeGetState());
+                    SourceInstanceTool.getRecord(MainStateTool.unsafeGetState());
                   isSendTransformMatrixDataMap |> expect == [|false, false|]
                 }
               )

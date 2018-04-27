@@ -56,7 +56,7 @@ let _ =
                          gameObject,
                          objectInstance
                        );
-                  let {objectInstanceTransformArrayMap} = SourceInstanceTool.getSourceInstanceRecord(state);
+                  let {objectInstanceTransformArrayMap} = SourceInstanceTool.getRecord(state);
                   objectInstanceTransformArrayMap
                   |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
                   |> WonderCommonlib.SparseMapService.has(objectInstance)

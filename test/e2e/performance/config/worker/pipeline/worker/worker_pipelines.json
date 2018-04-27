@@ -112,6 +112,9 @@
                     },
                     {
                         "name": "dispose_vbo"
+                    },
+                    {
+                        "name": "dispose_sourceInstance"
                     }
                 ]
             ]

@@ -218,12 +218,10 @@ let _ =
                           testPromise(
                             "vertexAttribDivisorANGLE 1",
                             () => {
-                              let renderWorkerState =
-                                RenderWorkerStateTool.createState()
-                                |> InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(
-                                     sandbox
-                                   )
-                                |> RenderWorkerStateTool.setState;
+                              InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(
+                                sandbox
+                              );
+                              let renderWorkerState = RenderWorkerStateTool.unsafeGetState();
                               let vertexAttribDivisorANGLE =
                                 Obj.magic(
                                   InstanceRenderWorkerTool.getExtensionInstancedArrays(

@@ -71,7 +71,32 @@ let _ =
             "dispose data",
             () => {
               test(
-                "remove from sourceInstanceListMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransformStaticMap, isSendTransformMatrixDataMap, gameObjectMap",
+                "add matrixFloat32ArrayMap->typeArray to pool",
+                () => {
+                  open SourceInstanceType;
+                  let (state, gameObject, sourceInstance) =
+                    SourceInstanceTool.createSourceInstanceGameObject(state^);
+                  let state =
+                    VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance, state);
+                  let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(state);
+                  let typeArr = Js.Typed_array.Float32Array.make([|1.|]);
+                  let matrixFloat32ArrayMap =
+                    matrixFloat32ArrayMap
+                    |> WonderCommonlib.SparseMapService.set(sourceInstance, typeArr);
+                  let state =
+                    state
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
+                         gameObject,
+                         sourceInstance
+                       );
+                  TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)[typeArr
+                                                                    |> Js.Typed_array.Float32Array.length]
+                  |> SparseMapService.length
+                  |> expect == 1
+                }
+              );
+              test(
+                "remove from objectInstanceTransformArrayMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransformStaticMap, isSendTransformMatrixDataMap, gameObjectMap",
                 () => {
                   open SourceInstanceType;
                   let (state, gameObject, sourceInstance) =
@@ -90,7 +115,7 @@ let _ =
                     isSendTransformMatrixDataMap,
                     gameObjectMap
                   } =
-                    SourceInstanceTool.getSourceInstanceRecord(state);
+                    SourceInstanceTool.getRecord(state);
                   (
                     objectInstanceTransformArrayMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),

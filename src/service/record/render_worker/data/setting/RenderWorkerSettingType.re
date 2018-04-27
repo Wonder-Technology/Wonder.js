@@ -1,3 +1,10 @@
 open SettingGPUType;
 
-type settingRecord = {gpu: option(gpu)};
+type memory = {
+  maxBigTypeArrayPoolSize: int
+};
+
+type settingRecord = {
+  gpu: option(gpu),
+  memory: option(memory)
+};

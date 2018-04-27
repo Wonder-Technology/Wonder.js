@@ -766,7 +766,7 @@ let _ =
                   let state =
                     state |> VboBufferTool.addVboBufferToSourceInstanceBufferMap(sourceInstance);
                   let state = state |> GameObjectTool.disposeGameObject(gameObject);
-                  let {disposedIndexArray} = state |> SourceInstanceTool.getSourceInstanceRecord;
+                  let {disposedIndexArray} = state |> SourceInstanceTool.getRecord;
                   disposedIndexArray |> expect == [|sourceInstance|]
                 }
               );
@@ -1418,7 +1418,7 @@ let _ =
                             state
                             |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
                           let {objectInstanceTransformArrayMap} =
-                            SourceInstanceTool.getSourceInstanceRecord(state);
+                            SourceInstanceTool.getRecord(state);
                           objectInstanceTransformArrayMap
                           |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
                           |> expect == [||]
@@ -1484,7 +1484,7 @@ let _ =
                           let state =
                             state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
                           let {objectInstanceTransformArrayMap} =
-                            SourceInstanceTool.getSourceInstanceRecord(state);
+                            SourceInstanceTool.getRecord(state);
                           (
                             objectInstanceTransformArrayMap
                             |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),

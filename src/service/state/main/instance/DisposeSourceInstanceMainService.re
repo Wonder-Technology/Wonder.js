@@ -75,30 +75,30 @@ let _disposeData = (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGam
         isSendTransformMatrixDataMap,
         gameObjectMap
       } as record = sourceInstanceRecord;
-  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
-  | Some(typeArr) =>
-  /* TODO send to render worker */
-    [@bs]
-    TypeArrayPoolService.addFloat32TypeArrayToPool(
-      typeArr,
-      MemorySettingService.getMaxBigTypeArrayPoolSize(state.settingRecord),
-      TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord)
-    )
-    |> ignore
-  | None => ()
-  };
   {
     ...state,
     sourceInstanceRecord: {
       ...record,
       objectInstanceTransformArrayMap:
         objectInstanceTransformArrayMap |> disposeSparseMapData(sourceInstance),
-      matrixFloat32ArrayMap: matrixFloat32ArrayMap |> disposeSparseMapData(sourceInstance),
+      matrixFloat32ArrayMap:
+        DisposeSourceInstanceAllService.disposeMatrixFloat32ArrayMap(
+          sourceInstance,
+          MemorySettingService.getMaxBigTypeArrayPoolSize(state.settingRecord),
+          matrixFloat32ArrayMap,
+          typeArrayPoolRecord
+        ),
       matrixInstanceBufferCapacityMap:
-        matrixInstanceBufferCapacityMap |> disposeSparseMapData(sourceInstance),
-      isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
+        DisposeSourceInstanceAllService.disposeMatrixInstanceBufferCapacityMap(
+          sourceInstance,
+          matrixInstanceBufferCapacityMap
+        ),
       isSendTransformMatrixDataMap:
-        isSendTransformMatrixDataMap |> disposeSparseMapData(sourceInstance),
+        DisposeSourceInstanceAllService.disposeIsSendTransformMatrixDataMap(
+          sourceInstance,
+          isSendTransformMatrixDataMap
+        ),
+      isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
       gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
     }
   }

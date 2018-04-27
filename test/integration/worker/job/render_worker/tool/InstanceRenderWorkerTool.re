@@ -1,6 +1,6 @@
 open StateDataRenderWorkerType;
 
-let setGPUDetectDataAllowHardwareInstance = (sandbox, state) => {
+let _setGPUDetectDataAllowHardwareInstance = (sandbox, state) => {
   ...state,
   gpuDetectRecord: {
     ...state.gpuDetectRecord,
@@ -10,6 +10,14 @@ let setGPUDetectDataAllowHardwareInstance = (sandbox, state) => {
         "vertexAttribDivisorANGLE": Sinon.createEmptyStubWithJsObjSandbox(sandbox)
       })
   }
+};
+
+let setGPUDetectDataAllowHardwareInstance = (sandbox) => {
+  let renderWorkerState =
+    RenderWorkerStateTool.createState()
+    |> _setGPUDetectDataAllowHardwareInstance(sandbox)
+    |> RenderWorkerStateTool.setState;
+  ()
 };
 
 let getExtensionInstancedArrays = (state) =>

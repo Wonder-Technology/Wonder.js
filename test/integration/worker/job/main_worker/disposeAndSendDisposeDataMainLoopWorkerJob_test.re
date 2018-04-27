@@ -24,11 +24,11 @@ let _ =
       );
       afterEach(() => TestToolWorker.clear(sandbox));
       describe(
-        "actually do the dispose work",
+        "not dispose the data of render worker state",
         () =>
           describe(
             "dispose components",
-            () =>
+            () => {
               describe(
                 "test disposeGameObjectBoxGeometryComponent",
                 () =>
@@ -36,7 +36,7 @@ let _ =
                     "dispose data in dispose job",
                     () =>
                       describe(
-                        "not dispose main state->vbo buffer data",
+                        "not dispose main worker state->vbo buffer data",
                         () =>
                           testPromise(
                             "not add buffer to pool",
@@ -75,7 +75,67 @@ let _ =
                           )
                       )
                   )
+              );
+              describe(
+                "test disposeGameObjectSourceInstanceComponent",
+                () =>
+                  describe(
+                    "dispose data in dispose job",
+                    () =>
+                      describe(
+                        "not dispose main worker state->matrixFloat32ArrayMap data",
+                        () =>
+                          testPromise(
+                            "not add typeArray to pool",
+                            () => {
+                              let (state, gameObject, sourceInstance) =
+                                SourceInstanceTool.createSourceInstanceGameObject(state^);
+                              InstanceRenderWorkerTool.setGPUDetectDataAllowHardwareInstance(
+                                sandbox
+                              );
+                              let state =
+                                state
+                                |> FakeGlToolWorker.setFakeGl(
+                                     FakeGlToolWorker.buildFakeGl(~sandbox, ())
+                                   );
+                              let state = MainStateTool.setState(state);
+                              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                                ~state,
+                                ~sandbox,
+                                ~completeFunc=
+                                  (_) => {
+
+GameObjectAPI.disposeGameObject(gameObject,  MainStateTool.unsafeGetState()) |> MainStateTool.setState;
+
+
+                              RenderJobsRenderWorkerTool.mainLoopAndRender(
+                                ~state,
+                                ~sandbox,
+                                ~completeFunc=
+                                  (_) => {
+                                    open SourceInstanceType;
+
+                                    let state = MainStateTool.unsafeGetState();
+
+
+TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord) |> SparseMapService.length |> expect == 0 |> resolve
+
+
+
+                                  },
+                                ()
+                              )
+
+
+                                  },
+                                ()
+                              )
+                            }
+                          )
+                      )
+                  )
               )
+            }
           )
       );
       describe(

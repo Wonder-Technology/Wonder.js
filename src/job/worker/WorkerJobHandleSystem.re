@@ -63,7 +63,8 @@ let _getWorkerJobHandles = () => [
   ("commit", CommitRenderWorkerJob.execJob),
   ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
-  ("dispose_vbo", DisposeVboRenderWorkerJob.execJob)
+  ("dispose_vbo", DisposeVboRenderWorkerJob.execJob),
+  ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob)
 ];
 
 let createMainInitJobHandleMap = () =>
