@@ -147,7 +147,7 @@ var BasicBoxesTool = (function () {
         },
 
 
-        setWorkerData: function (boxes, state) {
+        setDataWorker: function (boxes, state) {
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
                 var state = wd.unsafeGetState();
 
