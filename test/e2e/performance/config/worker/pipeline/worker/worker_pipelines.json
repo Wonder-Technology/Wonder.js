@@ -11,6 +11,9 @@
                         "name": "get_init_render_data"
                     },
                     {
+                        "name": "get_isDebug_data"
+                    },
+                    {
                         "name": "get_renderConfig_data"
                     },
                     {

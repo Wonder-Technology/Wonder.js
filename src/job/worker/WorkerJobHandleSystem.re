@@ -24,6 +24,7 @@ let _getMainLoopJobHandles = () => [
 let _getWorkerJobHandles = () => [
   ("send_finish_send_job_data", SendFinishSendJobDataRenderWorkerJob.execJob),
   ("get_init_render_data", GetInitRenderDataRenderWorkerJob.execJob),
+  ("get_isDebug_data", GetIsDebugDataRenderWorkerJob.execJob),
   ("get_renderConfig_data", GetRenderConfigDataRenderWorkerJob.execJob),
   ("get_setting_data", GetSettingDataRenderWorkerJob.execJob),
   ("get_material_data", GetMaterialDataRenderWorkerJob.execJob),

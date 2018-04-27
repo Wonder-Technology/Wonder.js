@@ -12,6 +12,9 @@
         ]
     },
     {
+        "name": "get_isDebug_data"
+    },
+    {
         "name": "get_renderConfig_data"
     },
     {

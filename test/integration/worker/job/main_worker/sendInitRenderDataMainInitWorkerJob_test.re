@@ -24,23 +24,7 @@ let _ =
       describe(
         "send data to render worker",
         () => {
-          let _buildInitRenderData = () => {
-            "operateType": "INIT_RENDER",
-            "canvas": Sinon.matchAny,
-            "contextConfig": Sinon.matchAny,
-            "bufferData": Sinon.matchAny,
-            "gpuData": Sinon.matchAny,
-            "memoryData": Sinon.matchAny,
-            "renderConfigData": Sinon.matchAny,
-            "workerDetectData": Sinon.matchAny,
-            "transformData": Sinon.matchAny,
-            "basicMaterialData": Sinon.matchAny,
-            "lightMaterialData": Sinon.matchAny,
-            "customGeometryData": Sinon.matchAny,
-            "ambientLightData": Sinon.matchAny,
-            "directionLightData": Sinon.matchAny,
-            "pointLightData": Sinon.matchAny
-          };
+          let _buildInitRenderData = () => SendInitRenderDataToolWorker.buildInitRenderData();
           testPromise(
             "test send data",
             () =>

@@ -29,6 +29,7 @@ let _buildData = (operateType, canvas, stateData) => {
     "operateType": operateType,
     "canvas": canvas,
     "contextConfig": OperateSettingService.unsafeGetContext(settingRecord),
+    "isDebug": IsDebugMainService.getIsDebug(stateData),
     "bufferData": {
       "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
       "transformDataBufferCount": buffer.transformDataBufferCount,
