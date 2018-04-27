@@ -40,6 +40,37 @@ var InstanceLightBoxesTool = (function () {
         return state;
 
     };
+
+
+
+    var createAndDisposeSourceInstanceGameObjects = function (sourceInstanceCount, objectInstanceCount, boxes, state) {
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+
+
+        var record = InstanceLightBoxesTool.createBoxes(sourceInstanceCount, objectInstanceCount, false, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+        var record = InstanceLightBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+
+        window.boxes = newBoxes;
+
+
+
+        for (let i = 0, len = newBoxes.length; i < len; i++) {
+            let box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+    };
+
     return {
         createBox: function (count, isStatic, state) {
             var record = wd.createLightMaterial(state);
@@ -204,41 +235,38 @@ var InstanceLightBoxesTool = (function () {
                 return _setData(boxes, state)
             }, state)
         },
+
+
+        setWorkerData: function (boxes, state) {
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = wd.unsafeGetState();
+
+                _setData(boxes, state);
+            }, state)
+        },
+
         createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                // for (let i = 0, len = window.boxes.length; i < len; i++) {
-                //     let box = window.boxes[i];
-                //     state = disposeGameObject(box, state);
-                // }
-
-                var state = wd.batchDisposeGameObject(window.boxes, state);
+                return createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, state)
+            }, state)
+        },
 
 
-
-                var record = InstanceLightBoxesTool.createBoxes(sourceInstanceCount, objectInstanceCount, false, state);
-                var state = record[0];
-                var newBoxes = record[1];
+        createAndDisposeSourceInstanceGameObjectsWorker: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
+            window.boxes = [];
 
 
-                var record = InstanceLightBoxesTool.setPosition(newBoxes, state);
-                var state = record[0];
-                var newBoxes = record[1];
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, wd.getStateFromData(stateData));
 
 
-
-                window.boxes = newBoxes;
-
-
-
-                for (let i = 0, len = newBoxes.length; i < len; i++) {
-                    let box = newBoxes[i];
-                    state = wd.initGameObject(box, state);
-                }
-
-                return state;
-
+                /*!
+                need set state!
+                because some create operation(e.g. increase transform index) are immutable!
+                */
+                wd.setState(state);
             }, state)
         },
         createAndDisposeObjectInstanceGameObjects: function (boxes, state) {
