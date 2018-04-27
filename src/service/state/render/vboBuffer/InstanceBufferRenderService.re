@@ -4,9 +4,6 @@ open Js.Typed_array;
 
 open StateRenderType;
 
-/*! start with a maximum of 64 instances */
-/* let _getDefaultCapacity = () => 64 * ( 16 + 9 ) * 4; */
-/* let _getDefaultCapacity = () => 64 * (16 + 0); */
 let createBuffer = (gl, capacity: int, state) => {
   let buffer = PoolVboBufferService.getInstanceBuffer(gl, state.vboBufferRecord);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
@@ -65,9 +62,12 @@ let getOrCreateMatrixFloat32Array =
   switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
   | Some(typeArr) => typeArr
   | None =>
-    /* TODO fix */
     switch (
-      [@bs] TypeArrayPoolService.getFloat32TypeArrayFromPool(capacity, state.typeArrayPoolRecord)
+      [@bs]
+      TypeArrayPoolService.getFloat32TypeArrayFromPool(
+        capacity |> _getFloat32InstanceArraySize,
+        state.typeArrayPoolRecord
+      )
     ) {
     | Some(typeArr) => typeArr
     | None =>
