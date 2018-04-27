@@ -65,9 +65,7 @@ let _buildData = (operateType, stateData) => {
                         )
                       )),
                  [||]
-               ),
-          "index": basicMaterialRecord.index,
-          "disposedIndexArray": basicMaterialRecord.disposedIndexArray
+               )
         },
         "lightMaterialData": {
           "materialDataForWorkerInit":
@@ -84,9 +82,7 @@ let _buildData = (operateType, stateData) => {
                         )
                       )),
                  [||]
-               ),
-          "index": lightMaterialRecord.index,
-          "disposedIndexArray": lightMaterialRecord.disposedIndexArray
+               )
         }
       }
     },

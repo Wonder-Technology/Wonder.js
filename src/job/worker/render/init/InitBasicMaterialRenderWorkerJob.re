@@ -2,23 +2,21 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerBasicMaterialType;
 
-let _createTypeArrays = (buffer, count, state) => {
+let _createTypeArrays = (count, state) => {
+  let {buffer} as basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
   let (shaderIndices, colors) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(buffer, count);
-  state.basicMaterialRecord = Some({shaderIndices, colors});
+  state.basicMaterialRecord =
+    Some({...basicMaterialRecord, shaderIndices: Some(shaderIndices), colors: Some(colors)});
   state
 };
 
 let _initMaterials = (basicMaterialData, data, state) => {
-  let {shaderIndices} = RecordBasicMaterialRenderWorkerService.getRecord(state);
-  let isSourceInstanceMap = basicMaterialData##isSourceInstanceMap;
+  let {isSourceInstanceMap} = RecordBasicMaterialRenderWorkerService.getRecord(state);
   InitInitBasicMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (isSourceInstanceMap, JudgeInstanceRenderWorkerService.isSupportInstance(state)),
-    CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
-      (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
-      state
-    )
+    CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(state)
   )
   |> ignore;
   state
@@ -30,12 +28,9 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let basicMaterialData = data##basicMaterialData;
-      let buffer = basicMaterialData##buffer;
+      /* let buffer = basicMaterialData##buffer; */
       let count = data##bufferData##basicMaterialDataBufferCount;
-      state
-      |> _createTypeArrays(buffer, count)
-      |> _initMaterials(basicMaterialData, data)
-      |> ignore;
+      state |> _createTypeArrays(count) |> _initMaterials(basicMaterialData, data) |> ignore;
       e
     }
   );

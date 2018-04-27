@@ -1,6 +1,12 @@
+open MaterialType;
+
 type lightMaterialRecord = {
-  shaderIndices: Js.Typed_array.Uint32Array.t,
-  diffuseColors: Js.Typed_array.Float32Array.t,
-  specularColors: Js.Typed_array.Float32Array.t,
-  shininess: Js.Typed_array.Float32Array.t
+  buffer: WorkerType.sharedArrayBuffer,
+  shaderIndices: option(Js.Typed_array.Uint32Array.t),
+  diffuseColors: option(Js.Typed_array.Float32Array.t),
+  specularColors: option(Js.Typed_array.Float32Array.t),
+  shininess: option(Js.Typed_array.Float32Array.t),
+  index: int,
+  disposedIndexArray,
+  isSourceInstanceMap: array(bool)
 };

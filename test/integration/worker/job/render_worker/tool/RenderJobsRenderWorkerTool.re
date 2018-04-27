@@ -59,6 +59,7 @@ let init = (completeFunc, state) => {
            InitTransformRenderWorkerJob.execJob(None),
            GetRenderConfigDataRenderWorkerJob.execJob(None),
            GetSettingDataRenderWorkerJob.execJob(None),
+           GetMaterialDataRenderWorkerJob.execJob(None),
            PregetGLSLDataRenderWorkerJob.execJob(None),
            InitCustomGeometryRenderWorkerJob.execJob(None),
            InitBasicMaterialRenderWorkerJob.execJob(None),

@@ -3,23 +3,27 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerLightMaterialType;
 
-let _createTypeArrays = (buffer, count, state) => {
+let _createTypeArrays = (count, state) => {
+  let {buffer} as lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
   let (shaderIndices, diffuseColors, specularColors, shininess) =
     CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
-  state.lightMaterialRecord = Some({shaderIndices, diffuseColors, specularColors, shininess});
+  state.lightMaterialRecord =
+    Some({
+      ...lightMaterialRecord,
+      shaderIndices: Some(shaderIndices),
+      diffuseColors: Some(diffuseColors),
+      specularColors: Some(specularColors),
+      shininess: Some(shininess)
+    });
   state
 };
 
 let _initMaterials = (lightMaterialData, data, state) => {
-  let {shaderIndices} = RecordLightMaterialRenderWorkerService.getRecord(state);
-  let isSourceInstanceMap = lightMaterialData##isSourceInstanceMap;
+  let {isSourceInstanceMap} = RecordLightMaterialRenderWorkerService.getRecord(state);
   InitInitLightMaterialService.init(
     [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
     (isSourceInstanceMap, JudgeInstanceRenderWorkerService.isSupportInstance(state)),
-    CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(
-      (lightMaterialData##index, lightMaterialData##disposedIndexArray, shaderIndices),
-      state
-    )
+    CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(state)
   )
   |> ignore;
   state
@@ -31,12 +35,8 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let lightMaterialData = data##lightMaterialData;
-      let buffer = lightMaterialData##buffer;
       let count = data##bufferData##lightMaterialDataBufferCount;
-      state
-      |> _createTypeArrays(buffer, count)
-      |> _initMaterials(lightMaterialData, data)
-      |> ignore;
+      state |> _createTypeArrays(count) |> _initMaterials(lightMaterialData, data) |> ignore;
       e
     }
   );

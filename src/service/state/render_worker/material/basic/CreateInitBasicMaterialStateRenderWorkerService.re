@@ -1,8 +1,9 @@
 open StateInitBasicMaterialType;
 
+open RenderWorkerBasicMaterialType;
+
 let createInitMaterialState =
     (
-      (index, disposedIndexArray, shaderIndices),
       {
         shaderRecord,
         programRecord,
@@ -12,12 +13,19 @@ let createInitMaterialState =
         glslChunkRecord
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
-  materialRecord: {index, disposedIndexArray, shaderIndices},
-  renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
-  shaderRecord,
-  programRecord,
-  glslRecord,
-  glslSenderRecord,
-  glslLocationRecord,
-  glslChunkRecord
+  let {index, disposedIndexArray} = RecordBasicMaterialRenderWorkerService.getRecord(state);
+  {
+    materialRecord: {
+      index,
+      disposedIndexArray,
+      shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state)
+    },
+    renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
+    shaderRecord,
+    programRecord,
+    glslRecord,
+    glslSenderRecord,
+    glslLocationRecord,
+    glslChunkRecord
+  }
 };

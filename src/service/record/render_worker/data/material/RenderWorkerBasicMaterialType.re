@@ -1,4 +1,10 @@
+open MaterialType;
+
 type basicMaterialRecord = {
-  shaderIndices: Js.Typed_array.Uint32Array.t,
-  colors: Js.Typed_array.Float32Array.t
+  buffer: WorkerType.sharedArrayBuffer,
+  shaderIndices: option(Js.Typed_array.Uint32Array.t),
+  colors: option(Js.Typed_array.Float32Array.t),
+  index: int,
+  disposedIndexArray,
+  isSourceInstanceMap: array(bool)
 };

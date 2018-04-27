@@ -17,10 +17,7 @@ let _initBasicMaterials = (gl, basicMaterialData, isSupportInstance, state) => {
              initBasicMaterialState
            )
        ),
-       CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
-         (basicMaterialData##index, basicMaterialData##disposedIndexArray, shaderIndices),
-         state
-       )
+       CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
 };
 
@@ -39,10 +36,7 @@ let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
              initLightMaterialState
            )
        ),
-       CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(
-         (lightMaterialData##index, lightMaterialData##disposedIndexArray, shaderIndices),
-         state
-       )
+       CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
 };
 

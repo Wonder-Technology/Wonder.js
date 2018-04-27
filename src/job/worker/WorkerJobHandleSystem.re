@@ -26,6 +26,7 @@ let _getWorkerJobHandles = () => [
   ("get_init_render_data", GetInitRenderDataRenderWorkerJob.execJob),
   ("get_renderConfig_data", GetRenderConfigDataRenderWorkerJob.execJob),
   ("get_setting_data", GetSettingDataRenderWorkerJob.execJob),
+  ("get_material_data", GetMaterialDataRenderWorkerJob.execJob),
   ("get_workerDetect_data", GetWorkerDetectDataRenderWorkerJob.execJob),
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
   ("create_gl", CreateGlRenderWorkerJob.execJob),

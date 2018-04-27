@@ -80,14 +80,14 @@ let createRenderState =
     },
     cameraRecord: OperateRenderRenderWorkerService.getCameraRecord(state),
     basicMaterialRecord: {
-      shaderIndices: basicMaterialRecord.shaderIndices,
-      colors: basicMaterialRecord.colors
+      shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
+      colors: basicMaterialRecord.colors |> OptionService.unsafeGet
     },
     lightMaterialRecord: {
-      shaderIndices: lightMaterialRecord.shaderIndices,
-      diffuseColors: lightMaterialRecord.diffuseColors,
-      specularColors: lightMaterialRecord.specularColors,
-      shininess: lightMaterialRecord.shininess
+      shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
+      diffuseColors: lightMaterialRecord.diffuseColors |> OptionService.unsafeGet,
+      specularColors: lightMaterialRecord.specularColors |> OptionService.unsafeGet,
+      shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {

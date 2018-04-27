@@ -65,9 +65,7 @@ let _ =
                                      "materialDataForWorkerInit": [|
                                        (material1, false),
                                        (material2, false)
-                                     |],
-                                     "index": 2,
-                                     "disposedIndexArray": Sinon.matchAny
+                                     |]
                                    },
                                    "lightMaterialData": Sinon.matchAny
                                  }
@@ -136,9 +134,7 @@ let _ =
                                      "materialDataForWorkerInit": [|
                                        (material1, false),
                                        (material2, false)
-                                     |],
-                                     "index": 2,
-                                     "disposedIndexArray": Sinon.matchAny
+                                     |]
                                    },
                                    "basicMaterialData": Sinon.matchAny
                                  }
