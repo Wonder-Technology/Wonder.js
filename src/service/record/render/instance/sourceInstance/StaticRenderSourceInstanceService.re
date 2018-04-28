@@ -3,22 +3,7 @@ open InstanceType;
 open RenderSourceInstanceType;
 
 let isTransformStatic = (sourceInstance: sourceInstance, {isTransformStaticMap}) =>
-  isTransformStaticMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
-  |> WonderLog.Contract.ensureCheck(
-       (isStatic) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(~expect={j|isStatic exist|j}, ~actual={j|not|j}),
-                 () => isStatic |> assertNullableExist
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
+  StaticSourceInstanceService.isTransformStatic(sourceInstance, isTransformStaticMap);
 
 let markIsSendTransformMatrixData =
     (sourceInstance: sourceInstance, isSend, {isSendTransformMatrixDataMap} as record) => {
@@ -32,7 +17,7 @@ let markIsSendTransformMatrixData =
 };
 
 let isSendTransformMatrixData = (sourceInstance: sourceInstance, {isSendTransformMatrixDataMap}) =>
-  switch (isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
-  | None => false
-  | Some(isSend) => isSend
-  };
+  StaticSourceInstanceService.isSendTransformMatrixData(
+    sourceInstance,
+    isSendTransformMatrixDataMap
+  );

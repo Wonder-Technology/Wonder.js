@@ -101,7 +101,11 @@ let _buildData = (operateType, stateData) => {
       },
       "instance": {
         /* TODO optimize */
-        "objectInstanceTransformArrayMap": sourceInstanceRecord.objectInstanceTransformArrayMap,
+        "objectInstanceTransformArrayMap":
+          sourceInstanceRecord
+          |> SendInstanceDataUtils.filterOnlyNeedObjectInstanceTransformArrayMapForRender(
+               sourceInstanceRecord.objectInstanceTransformArrayMap
+             ),
         "isTransformStaticMap": sourceInstanceRecord.isTransformStaticMap
       }
     }
