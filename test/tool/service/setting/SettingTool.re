@@ -87,26 +87,15 @@ let buildBufferConfigStr =
       ()
     ) => {j|
        {
-            "customGeometryPointDataBufferCount": $customGeometryPointDataBufferCount,
-  "transformDataBufferCount": $transformDataBufferCount,
-  "basicMaterialDataBufferCount": $basicMaterialDataBufferCount,
-  "lightMaterialDataBufferCount": $lightMaterialDataBufferCount
+            "custom_geometry_point_data_buffer_count": $customGeometryPointDataBufferCount,
+  "transform_data_buffer_count": $transformDataBufferCount,
+  "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
+  "light_material_data_buffer_count": $lightMaterialDataBufferCount
 
        }
         |j};
 
-
-
-let setToStateData =
-    (
-      state,
-      isDebug,
-      canvasId,
-      context,
-      useHardwareInstance,
-      useWorker,
-      buffer
-    ) => {
+let setToStateData = (state, isDebug, canvasId, context, useHardwareInstance, useWorker, buffer) => {
   let stateData = MainStateTool.getStateData();
   ParseSettingService.convertToRecord(
     buildSetting(isDebug, canvasId, buffer, context, useHardwareInstance, useWorker)
@@ -116,8 +105,6 @@ let setToStateData =
   |> ConfigDataLoaderSystem._createRecordWithState
   |> MainStateTool.setState
 };
-
-
 
 let createStateAndSetToStateData =
     (
@@ -137,20 +124,16 @@ let createStateAndSetToStateData =
       ~useWorker="false",
       ~buffer=buildBufferConfigStr(),
       ()
-    ) => {
-
-setToStateData(
-      CreateStateMainService.createState(),
-      isDebug,
-      canvasId,
-      context,
-      useHardwareInstance,
-      useWorker,
-      buffer
-
-
-)
-};
+    ) =>
+  setToStateData(
+    CreateStateMainService.createState(),
+    isDebug,
+    canvasId,
+    context,
+    useHardwareInstance,
+    useWorker,
+    buffer
+  );
 
 let setMemory = (state: StateDataMainType.state, ~maxDisposeCount=1000, ()) => {
   ...state,
