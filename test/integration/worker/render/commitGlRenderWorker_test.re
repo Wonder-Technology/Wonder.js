@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "should only commit once",
         () =>
@@ -40,7 +40,7 @@ let _ =
               let commit = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
                 state
-                |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ~commit, ()));
+                |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ~commit, ()));
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,
                 ~sandbox,

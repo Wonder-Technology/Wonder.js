@@ -15,14 +15,14 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "detect extension",
         () =>
@@ -32,14 +32,14 @@ let _ =
               let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
               let renderWorkerState =
                 renderWorkerState
-                |> FakeGlToolWorker.setFakeGlToRenderWorkerState(
-                     FakeGlToolWorker.buildFakeGl(~sandbox, ())
+                |> FakeGlWorkerTool.setFakeGlToRenderWorkerState(
+                     FakeGlWorkerTool.buildFakeGl(~sandbox, ())
                    );
-              WorkerJobToolWorker.execRenderWorkerJob(
+              WorkerJobWorkerTool.execRenderWorkerJob(
                 ~execJobFunc=DetectGlRenderWorkerJob.execJob,
                 ~completeFunc=
                   (state) => {
-                    let gl = GlToolRenderWorker.unsafeGetGl(state) |> Obj.magic;
+                    let gl = GlRenderWorkerTool.unsafeGetGl(state) |> Obj.magic;
                     gl##getExtension |> expect |> toCalledOnce |> resolve
                   },
                 ()

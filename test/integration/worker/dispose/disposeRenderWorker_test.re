@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
@@ -77,8 +77,8 @@ let _ =
                            material2
                          )
                       |> GameObjectAPI.disposeGameObject(gameObject3);
-                    WorkerToolWorker.setFakeWorkersAndSetState(state);
-                    WorkerJobToolWorker.execMainWorkerJob(
+                    WorkerWorkerTool.setFakeWorkersAndSetState(state);
+                    WorkerJobWorkerTool.execMainWorkerJob(
                       ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
                       ~completeFunc=
                         (state) => {
@@ -116,8 +116,8 @@ let _ =
                            material2
                          )
                       |> GameObjectAPI.disposeGameObject(gameObject3);
-                    WorkerToolWorker.setFakeWorkersAndSetState(state);
-                    WorkerJobToolWorker.execMainWorkerJob(
+                    WorkerWorkerTool.setFakeWorkersAndSetState(state);
+                    WorkerJobWorkerTool.execMainWorkerJob(
                       ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
                       ~completeFunc=
                         (state) => {
@@ -155,7 +155,7 @@ let _ =
                             );
 
 
-                       WorkerToolWorker.setFakeWorkersAndSetState(state);
+                       WorkerWorkerTool.setFakeWorkersAndSetState(state);
 
 
 

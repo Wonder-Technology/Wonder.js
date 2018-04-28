@@ -38,8 +38,8 @@ let _ =
             "concat exec sub jobs",
             () => {
               open Js.Promise;
-              let worker = WorkerToolRenderWorker.getSelf();
-              let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
+              let worker = WorkerRenderWorkerTool.getSelf();
+              let postMessageToWorker = WorkerWorkerTool.stubPostMessage(sandbox, worker);
               WorkerJobTool.getRenderWorkerJobStreamArr(
                 {|
          [
@@ -92,8 +92,8 @@ let _ =
             () => {
               open Js.Promise;
               let callCount = ref(0);
-              let worker = WorkerToolRenderWorker.getSelf();
-              let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
+              let worker = WorkerRenderWorkerTool.getSelf();
+              let postMessageToWorker = WorkerWorkerTool.stubPostMessage(sandbox, worker);
               WorkerJobTool.getRenderWorkerJobStreamArr(
                 {|
          [

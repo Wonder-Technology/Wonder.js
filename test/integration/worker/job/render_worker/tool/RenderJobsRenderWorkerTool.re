@@ -12,8 +12,8 @@ let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
-    |> FakeGlToolWorker.setFakeGl(
-         FakeGlToolWorker.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
+    |> FakeGlWorkerTool.setFakeGl(
+         FakeGlWorkerTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
        );
   (state, program, useProgram)
 };
@@ -44,7 +44,7 @@ let init = (completeFunc, state) => {
        );
   let state = MainStateTool.setState(state);
   MainStateTool.unsafeGetState()
-  |> WorkerJobToolWorker.getMainInitJobStream(
+  |> WorkerJobWorkerTool.getMainInitJobStream(
        MainStateTool.getStateData(),
        (
          WorkerJobHandleSystem.createMainInitJobHandleMap,
@@ -76,11 +76,11 @@ let init = (completeFunc, state) => {
 };
 
 let execMainLoopJobs = (sandbox, completeFunc) => {
-  let state = MainInitJobToolMainWorker.prepare();
-  let renderWorker = WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state);
-  let postMessageToRenderWorker = WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
+  let state = MainInitJobMainWorkerTool.prepare();
+  let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
+  let postMessageToRenderWorker = WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
   state
-  |> WorkerJobToolWorker.getMainLoopJobStream(
+  |> WorkerJobWorkerTool.getMainLoopJobStream(
        MainStateTool.getStateData(),
        (
          WorkerJobHandleSystem.createMainLoopJobHandleMap,

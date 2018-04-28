@@ -40,13 +40,13 @@ let _ =
                      Obj.magic(1)
                    ));
               let state = MainStateTool.setState(state);
-              WorkerToolMainWorker.buildFakeWorker();
+              WorkerMainWorkerTool.buildFakeWorker();
               CreateWorkerInstanceMainWorkerJob.execJob(None, MainStateTool.getStateData())
               |> Most.drain
               |> then_(
                    () => {
                      let state = MainStateTool.unsafeGetState();
-                     Obj.magic(WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state))##path
+                     Obj.magic(WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state))##path
                      |> expect == {j|$(workerFileDir)wd.render.worker.js|j}
                      |> resolve
                    }

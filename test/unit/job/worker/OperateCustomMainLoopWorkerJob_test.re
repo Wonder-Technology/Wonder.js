@@ -17,7 +17,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(~sandbox, ())
+            TestMainWorkerTool.initWithJobConfig(~sandbox, ())
             |> WorkerJobTool.create(
                  WorkerJobTool.buildWorkerJobConfig(
                    ~mainInitPipelines=

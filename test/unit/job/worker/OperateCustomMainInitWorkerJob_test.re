@@ -16,8 +16,8 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          SettingToolWorker.buildFakeCanvasForNotPassCanvasId(sandbox);
-          state := TestToolMainWorker.initWithJobConfig(~sandbox, ())
+          SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox);
+          state := TestMainWorkerTool.initWithJobConfig(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -51,11 +51,11 @@ let _ =
                                        customData |> ArrayService.push(1) |> ignore
                                      }
                                    );
-                              MainInitJobToolMainWorker.prepare()
-                              |> MainInitJobToolMainWorker.test(
+                              MainInitJobMainWorkerTool.prepare()
+                              |> MainInitJobMainWorkerTool.test(
                                    sandbox,
                                    (state) =>
-                                     WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                     WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                    (postMessageToRenderWorker) => customData |> expect == [|1|]
                                  )
                             }
@@ -79,11 +79,11 @@ let _ =
                                      AFTER,
                                      (stateData) => customData |> ArrayService.push(2) |> ignore
                                    );
-                              MainInitJobToolMainWorker.prepare()
-                              |> MainInitJobToolMainWorker.test(
+                              MainInitJobMainWorkerTool.prepare()
+                              |> MainInitJobMainWorkerTool.test(
                                    sandbox,
                                    (state) =>
-                                     WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                     WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                    (postMessageToRenderWorker) => customData |> expect == [|2, 1|]
                                  )
                             }
@@ -107,11 +107,11 @@ let _ =
                                      AFTER,
                                      (stateData) => customData |> ArrayService.push(2) |> ignore
                                    );
-                              MainInitJobToolMainWorker.prepare()
-                              |> MainInitJobToolMainWorker.test(
+                              MainInitJobMainWorkerTool.prepare()
+                              |> MainInitJobMainWorkerTool.test(
                                    sandbox,
                                    (state) =>
-                                     WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                     WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                    (postMessageToRenderWorker) => customData |> expect == [|1, 2|]
                                  )
                             }
@@ -137,11 +137,11 @@ let _ =
                                  BEFORE,
                                  (stateData) => customData |> ArrayService.push(2) |> ignore
                                );
-                          MainInitJobToolMainWorker.prepare()
-                          |> MainInitJobToolMainWorker.test(
+                          MainInitJobMainWorkerTool.prepare()
+                          |> MainInitJobMainWorkerTool.test(
                                sandbox,
                                (state) =>
-                                 WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                 WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                (postMessageToRenderWorker) => customData |> expect == [|2, 1|]
                              )
                         }
@@ -167,10 +167,10 @@ let _ =
                              }
                            )
                         |> JobAPI.removeWorkerMainInitJob("customJob");
-                      MainInitJobToolMainWorker.prepare()
-                      |> MainInitJobToolMainWorker.test(
+                      MainInitJobMainWorkerTool.prepare()
+                      |> MainInitJobMainWorkerTool.test(
                            sandbox,
-                           (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                           (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                            (postMessageToRenderWorker) => customData |> expect == [||]
                          )
                     }
@@ -184,11 +184,11 @@ let _ =
                           let customData = [||];
                           let state =
                             state^ |> JobAPI.removeWorkerMainInitJob("transfer_job_data");
-                          MainInitJobToolMainWorker.prepare()
-                          |> MainInitJobToolMainWorker.test(
+                          MainInitJobMainWorkerTool.prepare()
+                          |> MainInitJobMainWorkerTool.test(
                                sandbox,
                                (state) =>
-                                 WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                 WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                (postMessageToRenderWorker) =>
                                  postMessageToRenderWorker
                                  |> expect
@@ -211,11 +211,11 @@ let _ =
                             state^
                             |> JobAPI.removeWorkerMainInitJob("send_job_data")
                             |> JobAPI.removeWorkerMainInitJob("get_finish_send_job_data");
-                          MainInitJobToolMainWorker.prepare()
-                          |> MainInitJobToolMainWorker.test(
+                          MainInitJobMainWorkerTool.prepare()
+                          |> MainInitJobMainWorkerTool.test(
                                sandbox,
                                (state) =>
-                                 WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                                 WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                                (postMessageToRenderWorker) =>
                                  postMessageToRenderWorker
                                  |> expect

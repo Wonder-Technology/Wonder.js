@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
@@ -30,10 +30,10 @@ let _ =
             "test",
             () => {
               RenderWorkerStateTool.createStateAndSetToStateData()
-              |> FakeGlToolWorker.setFakeGlToRenderWorkerState(
-                   FakeGlToolWorker.buildFakeGl(~sandbox, ())
+              |> FakeGlWorkerTool.setFakeGlToRenderWorkerState(
+                   FakeGlWorkerTool.buildFakeGl(~sandbox, ())
                  );
-              WorkerJobToolWorker.execRenderWorkerJob(
+              WorkerJobWorkerTool.execRenderWorkerJob(
                 ~execJobFunc=GetIsDebugDataRenderWorkerJob.execJob |> Obj.magic,
                 ~completeFunc=
                   (state) =>
@@ -49,20 +49,20 @@ let _ =
       describe(
         "test sended init render data->isDebug",
         () => {
-          beforeEach(() => SettingToolWorker.buildFakeCanvasForNotPassCanvasId(sandbox));
+          beforeEach(() => SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox));
           testPromise(
             "test false",
             () => {
               MainStateDataTool.setIsDebug(MainStateTool.getStateData(), false) |> ignore;
-              MainInitJobToolMainWorker.prepare()
-              |> MainInitJobToolMainWorker.test(
+              MainInitJobMainWorkerTool.prepare()
+              |> MainInitJobMainWorkerTool.test(
                    sandbox,
-                   (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                   (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> expect
                      |> toCalledWith([|
-                          SendInitRenderDataToolWorker.buildInitRenderData(~isDebug=false, ())
+                          SendInitRenderDataWorkerTool.buildInitRenderData(~isDebug=false, ())
                         |])
                  )
             }
@@ -71,15 +71,15 @@ let _ =
             "test true",
             () => {
               MainStateDataTool.setIsDebug(MainStateTool.getStateData(), true) |> ignore;
-              MainInitJobToolMainWorker.prepare()
-              |> MainInitJobToolMainWorker.test(
+              MainInitJobMainWorkerTool.prepare()
+              |> MainInitJobMainWorkerTool.test(
                    sandbox,
-                   (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                   (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> expect
                      |> toCalledWith([|
-                          SendInitRenderDataToolWorker.buildInitRenderData(~isDebug=true, ())
+                          SendInitRenderDataWorkerTool.buildInitRenderData(~isDebug=true, ())
                         |])
                  )
             }

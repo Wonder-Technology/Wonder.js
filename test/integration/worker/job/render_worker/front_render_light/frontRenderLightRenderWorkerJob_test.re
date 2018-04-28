@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "use program",
         () => {
@@ -73,8 +73,8 @@ let _ =
                     GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
                   let state =
                     state
-                    |> FakeGlToolWorker.setFakeGl(
-                         FakeGlToolWorker.buildFakeGl(
+                    |> FakeGlWorkerTool.setFakeGl(
+                         FakeGlWorkerTool.buildFakeGl(
                            ~sandbox,
                            ~uniformMatrix3fv,
                            ~getUniformLocation,

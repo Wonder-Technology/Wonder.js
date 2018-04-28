@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -28,7 +28,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "use program",
         () => {
@@ -45,8 +45,8 @@ let _ =
             let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
             let state =
               state
-              |> FakeGlToolWorker.setFakeGl(
-                   FakeGlToolWorker.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
+              |> FakeGlWorkerTool.setFakeGl(
+                   FakeGlWorkerTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
                  );
             (state, program, createProgram, useProgram)
           };
@@ -104,8 +104,8 @@ let _ =
                     );
                   let state =
                     state
-                    |> FakeGlToolWorker.setFakeGl(
-                         FakeGlToolWorker.buildFakeGl(~sandbox, ~array_buffer, ~bufferSubData, ())
+                    |> FakeGlWorkerTool.setFakeGl(
+                         FakeGlWorkerTool.buildFakeGl(~sandbox, ~array_buffer, ~bufferSubData, ())
                        );
                   RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                     ~state,
@@ -154,8 +154,8 @@ let _ =
                                 );
                               let state =
                                 state
-                                |> FakeGlToolWorker.setFakeGl(
-                                     FakeGlToolWorker.buildFakeGl(~sandbox, ~getAttribLocation, ())
+                                |> FakeGlWorkerTool.setFakeGl(
+                                     FakeGlWorkerTool.buildFakeGl(~sandbox, ~getAttribLocation, ())
                                    );
                               MainStateTool.setState(state);
                               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(

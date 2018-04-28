@@ -21,7 +21,7 @@ let initWithJobConfig =
       ~buffer=SettingTool.buildBufferConfigStr(),
       ()
     ) =>
-  SettingToolWorker.createStateAndSetToStateData(
+  SettingWorkerTool.createStateAndSetToStateData(
     ~state={
       let state = CreateStateMainService.createState();
       {

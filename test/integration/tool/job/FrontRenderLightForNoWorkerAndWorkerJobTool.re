@@ -20,8 +20,8 @@ let setFakeGlForLight = (sandbox, nameArr, state) => {
     );
   let state =
     state
-    |> FakeGlToolWorker.setFakeGl(
-         FakeGlToolWorker.buildFakeGl(~sandbox, ~uniform1f, ~uniform3f, ~getUniformLocation, ())
+    |> FakeGlWorkerTool.setFakeGl(
+         FakeGlWorkerTool.buildFakeGl(~sandbox, ~uniform1f, ~uniform3f, ~getUniformLocation, ())
        );
   (state, posArr, (uniform1f, uniform3f))
 };

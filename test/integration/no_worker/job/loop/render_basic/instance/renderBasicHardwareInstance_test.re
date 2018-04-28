@@ -329,8 +329,8 @@ let _ =
                         );
                       let state =
                         state
-                        |> FakeGlToolWorker.setFakeGl(
-                             FakeGlToolWorker.buildFakeGl(
+                        |> FakeGlWorkerTool.setFakeGl(
+                             FakeGlWorkerTool.buildFakeGl(
                                ~sandbox,
                                ~array_buffer,
                                ~bufferSubData,

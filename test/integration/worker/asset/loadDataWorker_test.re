@@ -34,7 +34,7 @@ let _ =
               mainLoopJobs,
               workerJobs
             ) =
-              WorkerJobConfigToolWorker.buildWorkerJobConfig();
+              WorkerJobConfigWorkerTool.buildWorkerJobConfig();
             fetch
             |> onCall(0)
             |> returns(

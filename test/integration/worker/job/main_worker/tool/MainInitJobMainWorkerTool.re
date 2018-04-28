@@ -1,13 +1,13 @@
 open StateDataMainType;
 
-let prepare = () => WorkerToolWorker.setFakeWorkersAndSetState(MainStateTool.unsafeGetState());
+let prepare = () => WorkerWorkerTool.setFakeWorkersAndSetState(MainStateTool.unsafeGetState());
 
 let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   open Js.Promise;
   let worker = getWorkerFunc(state);
-  let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
+  let postMessageToWorker = WorkerWorkerTool.stubPostMessage(sandbox, worker);
   MainStateTool.unsafeGetState()
-  |> WorkerJobToolWorker.getMainInitJobStream(
+  |> WorkerJobWorkerTool.getMainInitJobStream(
        MainStateTool.getStateData(),
        (
          WorkerJobHandleSystem.createMainInitJobHandleMap,
@@ -18,14 +18,14 @@ let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
        (record) =>
          switch record {
          | Some("SEND_JOB_DATA") =>
-           EventToolWorker.triggerWorkerEvent(
+           EventWorkerTool.triggerWorkerEvent(
              worker,
              "message",
              {"data": {"operateType": "FINISH_SEND_JOB_DATA"}}
            )
            |> ignore
          | Some("INIT_RENDER") =>
-           EventToolWorker.triggerWorkerEvent(
+           EventWorkerTool.triggerWorkerEvent(
              worker,
              "message",
              {"data": {"operateType": "FINISH_INIT_RENDER"}}

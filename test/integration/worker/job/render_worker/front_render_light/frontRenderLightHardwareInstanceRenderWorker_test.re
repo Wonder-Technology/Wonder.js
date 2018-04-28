@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -28,7 +28,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "send instance data",
         () =>
@@ -58,8 +58,8 @@ let _ =
                         );
                       let state =
                         state
-                        |> FakeGlToolWorker.setFakeGl(
-                             FakeGlToolWorker.buildFakeGl(
+                        |> FakeGlWorkerTool.setFakeGl(
+                             FakeGlWorkerTool.buildFakeGl(
                                ~sandbox,
                                ~array_buffer,
                                ~bufferSubData,

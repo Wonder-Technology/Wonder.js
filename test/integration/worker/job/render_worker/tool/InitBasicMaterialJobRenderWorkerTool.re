@@ -5,8 +5,8 @@ let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
-    |> FakeGlToolWorker.setFakeGl(
-         FakeGlToolWorker.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ())
+    |> FakeGlWorkerTool.setFakeGl(
+         FakeGlWorkerTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ())
        );
   (state, shaderSource, gameObject)
 };

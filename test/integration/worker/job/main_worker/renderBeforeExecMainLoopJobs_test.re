@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "not render in render worker in the first frame",
         () => {
@@ -44,8 +44,8 @@ let _ =
               let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
                 state
-                |> FakeGlToolWorker.setFakeGl(
-                     FakeGlToolWorker.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~uniform3f, ())
+                |> FakeGlWorkerTool.setFakeGl(
+                     FakeGlWorkerTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~uniform3f, ())
                    );
               let state = MainStateTool.setState(state);
               RenderJobsRenderWorkerTool.init(
@@ -68,8 +68,8 @@ let _ =
               let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
                 state
-                |> FakeGlToolWorker.setFakeGl(
-                     FakeGlToolWorker.buildFakeGl(~sandbox, ~drawElements, ())
+                |> FakeGlWorkerTool.setFakeGl(
+                     FakeGlWorkerTool.buildFakeGl(~sandbox, ~drawElements, ())
                    );
               let state = MainStateTool.setState(state);
               RenderJobsRenderWorkerTool.init(

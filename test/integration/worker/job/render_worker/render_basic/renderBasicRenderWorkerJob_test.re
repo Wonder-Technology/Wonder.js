@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "use program",
         () => {
@@ -73,8 +73,8 @@ let _ =
                       let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
-                        |> FakeGlToolWorker.setFakeGl(
-                             FakeGlToolWorker.buildFakeGl(
+                        |> FakeGlWorkerTool.setFakeGl(
+                             FakeGlWorkerTool.buildFakeGl(
                                ~sandbox,
                                ~array_buffer,
                                ~static_draw,
@@ -112,8 +112,8 @@ let _ =
                       let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
-                        |> FakeGlToolWorker.setFakeGl(
-                             FakeGlToolWorker.buildFakeGl(
+                        |> FakeGlWorkerTool.setFakeGl(
+                             FakeGlWorkerTool.buildFakeGl(
                                ~sandbox,
                                ~element_array_buffer,
                                ~static_draw,
@@ -382,8 +382,8 @@ let _ =
                     GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
                   let state =
                     state
-                    |> FakeGlToolWorker.setFakeGl(
-                         FakeGlToolWorker.buildFakeGl(
+                    |> FakeGlWorkerTool.setFakeGl(
+                         FakeGlWorkerTool.buildFakeGl(
                            ~sandbox,
                            ~uniformMatrix4fv,
                            ~getUniformLocation,
@@ -454,8 +454,8 @@ let _ =
                         GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
                       let state =
                         state
-                        |> FakeGlToolWorker.setFakeGl(
-                             FakeGlToolWorker.buildFakeGl(
+                        |> FakeGlWorkerTool.setFakeGl(
+                             FakeGlWorkerTool.buildFakeGl(
                                ~sandbox,
                                ~uniformMatrix4fv,
                                ~getUniformLocation,

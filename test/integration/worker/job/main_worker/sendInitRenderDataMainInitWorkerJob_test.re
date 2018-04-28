@@ -11,8 +11,8 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          SettingToolWorker.buildFakeCanvasForNotPassCanvasId(sandbox);
-          TestToolMainWorker.initWithJobConfig(
+          SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox);
+          TestMainWorkerTool.initWithJobConfig(
             ~sandbox,
             ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
             ()
@@ -20,18 +20,18 @@ let _ =
           |> ignore
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "send data to render worker",
         () => {
-          let _buildInitRenderData = () => SendInitRenderDataToolWorker.buildInitRenderData();
+          let _buildInitRenderData = () => SendInitRenderDataWorkerTool.buildInitRenderData();
           testPromise(
             "test send data",
             () =>
-              MainInitJobToolMainWorker.prepare()
-              |> MainInitJobToolMainWorker.test(
+              MainInitJobMainWorkerTool.prepare()
+              |> MainInitJobMainWorkerTool.test(
                    sandbox,
-                   (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                   (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> expect
@@ -41,10 +41,10 @@ let _ =
           testPromise(
             "test send after send job data",
             () =>
-              MainInitJobToolMainWorker.prepare()
-              |> MainInitJobToolMainWorker.test(
+              MainInitJobMainWorkerTool.prepare()
+              |> MainInitJobMainWorkerTool.test(
                    sandbox,
-                   (state) => WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state),
+                   (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
                    (postMessageToRenderWorker) =>
                      postMessageToRenderWorker
                      |> withOneArg(_buildInitRenderData())

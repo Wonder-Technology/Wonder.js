@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
@@ -28,8 +28,8 @@ let _ =
         () => {
           let (width, height) = RootTool.setRoot();
           let state =
-            state^ |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
-          SettingToolWorker.buildFakeCanvasForNotPassCanvasId(sandbox);
+            state^ |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
+          SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox);
           RenderJobsRenderWorkerTool.init(
             (state) => {
               let fakeGl = [@bs] GlTool.unsafeGetGl(state) |> Obj.magic;

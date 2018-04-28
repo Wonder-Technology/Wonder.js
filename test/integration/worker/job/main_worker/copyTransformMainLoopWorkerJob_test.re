@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
@@ -27,7 +27,7 @@ let _ =
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe
         (
           "if change transform data in main worker during render in render worker, the transform data in render worker shouldn't change",
@@ -50,8 +50,8 @@ let _ =
                   GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
                 let state =
                   state
-                  |> FakeGlToolWorker.setFakeGl(
-                       FakeGlToolWorker.buildFakeGl(
+                  |> FakeGlWorkerTool.setFakeGl(
+                       FakeGlWorkerTool.buildFakeGl(
                          ~sandbox,
                          ~uniformMatrix4fv,
                          ~getUniformLocation,
@@ -126,8 +126,8 @@ let _ =
                  GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_normalMatrix");
                let state =
                  state
-                 |> FakeGlToolWorker.setFakeGl(
-                      FakeGlToolWorker.buildFakeGl(
+                 |> FakeGlWorkerTool.setFakeGl(
+                      FakeGlWorkerTool.buildFakeGl(
                         ~sandbox,
                         ~uniformMatrix3fv,
                         ~getUniformLocation,

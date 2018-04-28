@@ -15,14 +15,14 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
             )
         }
       );
-      afterEach(() => TestToolWorker.clear(sandbox));
+      afterEach(() => TestWorkerTool.clear(sandbox));
       describe(
         "not dispose the data of render worker state",
         () =>
@@ -48,8 +48,8 @@ let _ =
                                 );
                               let state =
                                 state
-                                |> FakeGlToolWorker.setFakeGl(
-                                     FakeGlToolWorker.buildFakeGl(~sandbox, ())
+                                |> FakeGlWorkerTool.setFakeGl(
+                                     FakeGlWorkerTool.buildFakeGl(~sandbox, ())
                                    );
                               let state = MainStateTool.setState(state);
                               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
@@ -95,8 +95,8 @@ let _ =
                               );
                               let state =
                                 state
-                                |> FakeGlToolWorker.setFakeGl(
-                                     FakeGlToolWorker.buildFakeGl(~sandbox, ())
+                                |> FakeGlWorkerTool.setFakeGl(
+                                     FakeGlWorkerTool.buildFakeGl(~sandbox, ())
                                    );
                               let state = MainStateTool.setState(state);
                               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
@@ -150,7 +150,7 @@ let _ =
                   let (state, gameObject1, gameObject2) = _prepare(state);
                   let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                   let state =
-                    state |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
+                    state |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
                   let state = MainStateTool.setState(state);
                   RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                     ~state,
@@ -176,8 +176,8 @@ let _ =
                      state^
                    );
                  let state = state |> GameObjectAPI.disposeGameObject(gameObject);
-                 WorkerToolWorker.setFakeWorkersAndSetState(state);
-                 WorkerJobToolWorker.execMainWorkerJob(
+                 WorkerWorkerTool.setFakeWorkersAndSetState(state);
+                 WorkerJobWorkerTool.execMainWorkerJob(
                    ~execJobFunc=DisposeAndSendDisposeDataMainWorkerJob.execJob,
                    ~completeFunc=(state) => 1 |> expect == 1 |> resolve,
                    ()
@@ -215,7 +215,7 @@ let _ =
                      gameObject5
                    |]);
               let state =
-                state |> FakeGlToolWorker.setFakeGl(FakeGlToolWorker.buildFakeGl(~sandbox, ()));
+                state |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
               let state = MainStateTool.setState(state);
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,

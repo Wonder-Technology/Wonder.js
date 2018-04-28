@@ -18,8 +18,8 @@ let _ =
           testPromise(
             "test send data",
             () => {
-              let worker = WorkerToolRenderWorker.getSelf();
-              let postMessageToWorker = WorkerToolWorker.stubPostMessage(sandbox, worker);
+              let worker = WorkerRenderWorkerTool.getSelf();
+              let postMessageToWorker = WorkerWorkerTool.stubPostMessage(sandbox, worker);
               let flag = Some([|"FINISH_SEND_JOB_DATA"|]);
               SendFinishSendJobDataRenderWorkerJob.execJob(
                 flag,

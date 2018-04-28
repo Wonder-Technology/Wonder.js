@@ -17,7 +17,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
@@ -39,8 +39,8 @@ let _ =
             createBuffer |> returns(Obj.magic(1));
             let state =
               state
-              |> FakeGlToolWorker.setFakeGl(
-                   FakeGlToolWorker.buildFakeGl(~sandbox, ~createBuffer, ())
+              |> FakeGlWorkerTool.setFakeGl(
+                   FakeGlWorkerTool.buildFakeGl(~sandbox, ~createBuffer, ())
                  );
             let state = MainStateTool.setState(state);
             RenderJobsRenderWorkerTool.initAndMainLoopAndRender(

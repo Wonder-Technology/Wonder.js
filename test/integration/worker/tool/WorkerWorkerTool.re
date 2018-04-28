@@ -19,6 +19,6 @@ let setFakeWorkersAndSetState = (state) =>
   {
     ...state,
     workerInstanceRecord:
-      WorkerInstanceToolMainWorker.setRenderWorker(state.workerInstanceRecord, createWorker())
+      WorkerInstanceMainWorkerTool.setRenderWorker(state.workerInstanceRecord, createWorker())
   }
   |> MainStateTool.setState;

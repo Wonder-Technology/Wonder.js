@@ -15,7 +15,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestToolMainWorker.initWithJobConfig(
+            TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=SettingTool.buildBufferConfigStr(),
               ()
@@ -37,7 +37,7 @@ let _ =
                   state
                   |> GameObjectAPI.initGameObject(gameObject1)
                   |> GameObjectAPI.initGameObject(gameObject2);
-                let state = WorkerToolWorker.setFakeWorkersAndSetState(state);
+                let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
                 (state, (gameObject1, gameObject2), (material1, material2))
               };
               testPromise(
@@ -45,10 +45,10 @@ let _ =
                 () => {
                   let (state, (gameObject1, gameObject2), (material1, material2)) =
                     _prepare(state);
-                  let renderWorker = WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state);
+                  let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
                   let postMessageToRenderWorker =
-                    WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
-                  WorkerJobToolWorker.execMainWorkerJob(
+                    WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
+                  WorkerJobWorkerTool.execMainWorkerJob(
                     ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
                     ~completeFunc=
                       (_) =>
@@ -82,7 +82,7 @@ let _ =
                 "clear basicMaterialRecord->materialArrayForWorkerInit after send",
                 () => {
                   let (state, _, _) = _prepare(state);
-                  WorkerJobToolWorker.execMainWorkerJob(
+                  WorkerJobWorkerTool.execMainWorkerJob(
                     ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
                     ~completeFunc=
                       (state) => {
@@ -106,7 +106,7 @@ let _ =
                   state
                   |> GameObjectAPI.initGameObject(gameObject1)
                   |> GameObjectAPI.initGameObject(gameObject2);
-                let state = WorkerToolWorker.setFakeWorkersAndSetState(state);
+                let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
                 (state, (gameObject1, gameObject2), (material1, material2))
               };
               testPromise(
@@ -114,10 +114,10 @@ let _ =
                 () => {
                   let (state, (gameObject1, gameObject2), (material1, material2)) =
                     _prepare(state);
-                  let renderWorker = WorkerInstanceToolMainWorker.unsafeGetRenderWorker(state);
+                  let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
                   let postMessageToRenderWorker =
-                    WorkerToolWorker.stubPostMessage(sandbox, renderWorker);
-                  WorkerJobToolWorker.execMainWorkerJob(
+                    WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
+                  WorkerJobWorkerTool.execMainWorkerJob(
                     ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
                     ~completeFunc=
                       (_) =>
@@ -151,7 +151,7 @@ let _ =
                 "clear lightMaterialRecord->materialArrayForWorkerInit after send",
                 () => {
                   let (state, _, _) = _prepare(state);
-                  WorkerJobToolWorker.execMainWorkerJob(
+                  WorkerJobWorkerTool.execMainWorkerJob(
                     ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
                     ~completeFunc=
                       (state) => {
