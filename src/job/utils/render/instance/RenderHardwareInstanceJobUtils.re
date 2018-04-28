@@ -137,7 +137,7 @@ let _sendStaticTransformMatrixData =
           defaultCapacity,
           strideForCapacity,
           strideForSend,
-          objectInstanceTransformArray,
+          _,
           instanceRenderListCount
         ),
         (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
