@@ -8,7 +8,7 @@ let buildRenderConfig =
     (
       ~shaders={|
 {
-  "staticBranchs": [
+  "static_branchs": [
     {
       "name": "modelMatrix_instance",
       "value": [
@@ -41,10 +41,10 @@ let buildRenderConfig =
       ]
     }
   ],
-  "materialShaders": [
+  "material_shaders": [
     {
       "name": "render_basic",
-      "shaderLibs": [
+      "shader_libs": [
         {
           "type": "group",
           "name": "top"
@@ -67,7 +67,7 @@ let buildRenderConfig =
     },
     {
       "name": "front_render_light",
-      "shaderLibs": [
+      "shader_libs": [
         {
           "type": "group",
           "name": "top"

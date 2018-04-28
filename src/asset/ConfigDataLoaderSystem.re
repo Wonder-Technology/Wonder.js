@@ -49,7 +49,7 @@ let _createFetchRenderConfigStreamArr = (dataDir, fetchFunc) => [|
   |> map((json) => ParseRenderConfigService.convertShadersToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathService.join([|dataDir, "render/shader/shaderLibs.json"|]),
+    PathService.join([|dataDir, "render/shader/shader_libs.json"|]),
     fetchFunc
   )
   |> map((json) => ParseRenderConfigService.convertShaderLibsToRecord(json))

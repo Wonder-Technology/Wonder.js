@@ -91,6 +91,24 @@ let _ =
                      )
                 }
               );
+              testPromise(
+                "should fetch shader_libs.json file",
+                () => {
+                  let fetchFunc = _buildFakeFetch(sandbox);
+                  LoadDataTool.load(
+                    ~jsonPathArr=[|"../../.res/job/setting.json", "../../.res/job/"|],
+                    ~fetchFunc,
+                    ()
+                  )
+                  |> then_(
+                       () =>
+                         fetchFunc
+                         |> expect
+                         |> toCalledWith([|"../../.res/job/render/shader/shader_libs.json"|])
+                         |> resolve
+                     )
+                }
+              );
               describe(
                 "parse job record and set to state",
                 () =>
