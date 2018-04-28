@@ -2,14 +2,14 @@ open StateInitLightMaterialType;
 
 open RenderConfigType;
 
-let _getShaderLibItems = ({material_shaders}) => {
+let _getShaderLibItems = ({materialShaders}) => {
   let shaderName = "front_render_light";
   JobConfigService.unsafeFindFirst(
-    material_shaders,
+    materialShaders,
     shaderName,
     ({name}: material_shader) => JobConfigService.filterTargetName(name, shaderName)
   ).
-    shader_libs
+    shaderLibs
 };
 
 let isNeedInitMaterial = (materialIndex, shaderIndices) =>

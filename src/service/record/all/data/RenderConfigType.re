@@ -14,13 +14,13 @@ type shaderLibItem = {
 
 type material_shader = {
   name: string,
-  shader_libs: array(shaderLibItem)
+  shaderLibs: array(shaderLibItem)
 };
 
 type shaders = {
-  static_branchs: array(shaderMapData),
+  staticBranchs: array(shaderMapData),
   groups: array(shaderMapData),
-  material_shaders: array(material_shader)
+  materialShaders: array(material_shader)
 };
 
 type glsl = {
@@ -52,9 +52,9 @@ type shaderLib = {
   variables: option(variables)
 };
 
-type shader_libs = array(shaderLib);
+type shaderLibs = array(shaderLib);
 
 type renderConfigRecord = {
   shaders,
-  shader_libs
+  shaderLibs
 };

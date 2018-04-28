@@ -48,21 +48,21 @@ let convertShadersToRecord = (shaders) => {
   open Decode;
   let json = shaders;
   {
-    static_branchs: json |> field("static_branchs", (json) => _convertShaderMapData(json)),
+    staticBranchs: json |> field("staticBranchs", (json) => _convertShaderMapData(json)),
     groups: json |> field("groups", (json) => _convertShaderMapData(json)),
-    material_shaders:
+    materialShaders:
       json
       |> field(
-           "material_shaders",
+           "materialShaders",
            (json) =>
              json
              |> array(
                   (json) => {
                     name: json |> field("name", string),
-                    shader_libs:
+                    shaderLibs:
                       json
                       |> field(
-                           "shader_libs",
+                           "shaderLibs",
                            array(
                              fun (json) => (
                                {
@@ -145,10 +145,10 @@ let _convertVariableToRecord = (json) =>
     )
   );
 
-let convertShaderLibsToRecord = (shader_libs) =>
+let convertShaderLibsToRecord = (shaderLibs) =>
   Json.(
     Decode.(
-      shader_libs
+      shaderLibs
       |> array(
            (json) => {
              name: json |> field("name", string),

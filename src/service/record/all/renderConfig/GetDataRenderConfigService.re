@@ -2,9 +2,9 @@ open RenderConfigType;
 
 let getShaders = ({shaders}) => shaders;
 
-let getShaderLibs = ({shader_libs}) => shader_libs;
+let getShaderLibs = ({shaderLibs}) => shaderLibs;
 
-let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
+let _findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
   JobConfigService.unsafeFindFirst(
     shaderLibs,
     shaderLibName,
@@ -45,7 +45,7 @@ let _getMaterialShaderLibDataArrByStaticBranchInstance =
 let _getMaterialShaderLibDataArrByStaticBranch =
     (
       (name, isSourceInstance, isSupportInstance),
-      (static_branchs: array(shaderMapData), shaderLibs),
+      (staticBranchs: array(shaderMapData), shaderLibs),
       resultDataArr
     ) =>
   switch name {
@@ -53,7 +53,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
   | "normalMatrix_instance" =>
     let {value} =
       JobConfigService.unsafeFindFirst(
-        static_branchs,
+        staticBranchs,
         name,
         (item) => JobConfigService.filterTargetName(item.name, name)
       );
@@ -64,7 +64,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     )
   | _ =>
     WonderLog.Log.debugJson(
-      WonderLog.Log.buildDebugJsonMessage(~description={j|static_branchs|j}, ~var=static_branchs),
+      WonderLog.Log.buildDebugJsonMessage(~description={j|staticBranchs|j}, ~var=staticBranchs),
       IsDebugMainService.getIsDebug(StateDataMain.stateData)
     );
     WonderLog.Log.fatal(
@@ -81,7 +81,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
 let _getMaterialShaderLibDataArrByType =
     (
       (type_, groups: array(shaderMapData), name, isSourceInstance, isSupportInstance),
-      (shaderLibs, static_branchs: array(shaderMapData)),
+      (shaderLibs, staticBranchs: array(shaderMapData)),
       resultDataArr
     ) =>
   switch type_ {
@@ -89,7 +89,7 @@ let _getMaterialShaderLibDataArrByType =
   | "static_branch" =>
     _getMaterialShaderLibDataArrByStaticBranch(
       (name, isSourceInstance, isSupportInstance),
-      (static_branchs: array(shaderMapData), shaderLibs),
+      (staticBranchs: array(shaderMapData), shaderLibs),
       resultDataArr
     )
   | _ =>
@@ -112,7 +112,7 @@ let getMaterialShaderLibDataArr =
     (
       isSourceInstance,
       isSupportInstance,
-      ({static_branchs, groups}, shaderLibItems, shaderLibs: shader_libs)
+      ({staticBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs)
     ) =>
   shaderLibItems
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -124,7 +124,7 @@ let getMaterialShaderLibDataArr =
            | Some(type_) =>
              _getMaterialShaderLibDataArrByType(
                (type_, groups, name, isSourceInstance, isSupportInstance),
-               (shaderLibs, static_branchs),
+               (shaderLibs, staticBranchs),
                resultDataArr
              )
            }

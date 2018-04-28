@@ -75,7 +75,7 @@ let _readAttributeSendData =
 let addAttributeSendData =
   [@bs]
   (
-    (glTuple, shaderLibDataArr: shader_libs, recordTuple) =>
+    (glTuple, shaderLibDataArr: shaderLibs, recordTuple) =>
       HandleAttributeConfigDataInitMaterialService.addAttributeSendData(
         glTuple,
         shaderLibDataArr,

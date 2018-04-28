@@ -109,7 +109,7 @@ let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>
 let addUniformSendData =
     (
       gl,
-      (program: program, shaderIndex: int, shaderLibDataArr: shader_libs),
+      (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
       readUniformSendDataFunc,
       (glslSenderRecord, glslLocationRecord)
     ) => {

@@ -133,10 +133,10 @@ let _readUniformSendData =
 let addUniformSendData =
   [@bs]
   (
-    (gl, (program: program, shaderIndex: int, shaderLibDataArr: shader_libs), recordTuple) =>
+    (gl, (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs), recordTuple) =>
       HandleUniformConfigDataInitMaterialService.addUniformSendData(
         gl,
-        (program: program, shaderIndex: int, shaderLibDataArr: shader_libs),
+        (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
         _readUniformSendData,
         recordTuple
       )

@@ -207,7 +207,7 @@ let _ =
                   |> then_(
                        () => {
                          let state = MainStateTool.unsafeGetState();
-                         RenderConfigTool.getShaders(state).static_branchs
+                         RenderConfigTool.getShaders(state).staticBranchs
                          |>
                          expect == [|
                                      {

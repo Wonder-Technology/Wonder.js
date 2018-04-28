@@ -9,15 +9,15 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "customGeometryPointDataBufferCount": 2000000,
-        "transformDataBufferCount": 300000,
-        "basicMaterialDataBufferCount": 300000,
-        "lightMaterialDataBufferCount": 300000
+        "custom_geometry_point_data_buffer_count": 2000000,
+        "transform_data_buffer_count": 300000,
+        "basic_material_data_buffer_count": 300000,
+        "light_material_data_buffer_count": 300000
     },
     "gpu": {
         "use_hardware_instance": true
     },
     "worker": {
-        "use_worker": false
+        "use_worker": true
     }
 }

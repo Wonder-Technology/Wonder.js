@@ -78,7 +78,7 @@ let _setToAttributeSendMap =
 let addAttributeSendData =
     (
       (gl, shaderIndex: int, program: program),
-      shaderLibDataArr: shader_libs,
+      shaderLibDataArr: shaderLibs,
       readAttributeSendDataFunc,
       (glslSenderRecord, glslLocationRecord)
     ) => {

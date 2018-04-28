@@ -12,7 +12,7 @@ let webgl1_main_begin: string = "void main(void){\n";
 
 let webgl1_main_end: string = "}\n";
 
-let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
+let _generateAttributeSource = (shaderLibDataArr: shaderLibs) =>
   shaderLibDataArr
   |> Js.Array.reduce(
        (result: string, {variables}) =>
@@ -50,7 +50,7 @@ let _generateUniformSourceType = (type_: string) =>
 
 let _generateUniformSource =
     (
-      shaderLibDataArr: shader_libs,
+      shaderLibDataArr: shaderLibs,
       sourceVarDeclare: string,
       sourceFuncDefine: string,
       sourceBody: string
@@ -179,7 +179,7 @@ let buildGLSLSource =
   (
     (
       materialIndex: int,
-      shaderLibDataArr: shader_libs,
+      shaderLibDataArr: shaderLibs,
       execHandleFunc,
       (glslRecord, glslChunkRecord)
     ) => {

@@ -8,7 +8,7 @@ let buildRenderConfig =
     (
       ~shaders={|
 {
-  "static_branchs": [
+  "staticBranchs": [
     {
       "name": "modelMatrix_instance",
       "value": [
@@ -41,10 +41,10 @@ let buildRenderConfig =
       ]
     }
   ],
-  "material_shaders": [
+  "materialShaders": [
     {
       "name": "render_basic",
-      "shader_libs": [
+      "shaderLibs": [
         {
           "type": "group",
           "name": "top"
@@ -67,7 +67,7 @@ let buildRenderConfig =
     },
     {
       "name": "front_render_light",
-      "shader_libs": [
+      "shaderLibs": [
         {
           "type": "group",
           "name": "top"
@@ -569,7 +569,7 @@ let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
   renderConfigRecord:
     Some({
       shaders: convertShadersToRecord(shaders |> Js.Json.parseExn),
-      shader_libs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
+      shaderLibs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
     })
 };
 

@@ -39,7 +39,7 @@ let _join = (array: array(shaderLib)) => {
   output^
 };
 
-let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
+let _buildShaderIndexMapKey = (shaderLibDataArr: shaderLibs) => shaderLibDataArr |> _join;
 
 let initMaterialShader =
     (
