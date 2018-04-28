@@ -25,11 +25,13 @@ let _buildData = (operateType, canvas, stateData) => {
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
     "operateType": operateType,
     "canvas": canvas,
     "contextConfig": OperateSettingService.unsafeGetContext(settingRecord),
     "isDebug": IsDebugMainService.getIsDebug(stateData),
+    "viewportData": [|x, y, width, height|],
     "bufferData": {
       "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
       "transformDataBufferCount": buffer.transformDataBufferCount,
@@ -85,6 +87,7 @@ let execJob = (flags, stateData) =>
     () => {
       let {
             settingRecord,
+            viewRecord,
             workerInstanceRecord,
             gameObjectRecord,
             directionLightRecord,
@@ -92,9 +95,7 @@ let execJob = (flags, stateData) =>
           } as state =
         StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
-      let offscreen =
-        CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(settingRecord))
-        |> Worker.transferControlToOffscreen;
+      let offscreen = ViewService.getCanvas(viewRecord) |> Worker.transferControlToOffscreen;
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessageWithTransferData(
            _buildData(operateType, offscreen, stateData),

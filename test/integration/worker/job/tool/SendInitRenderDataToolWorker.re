@@ -1,9 +1,10 @@
-let buildInitRenderData = (~isDebug=false, ()) => {
+let buildInitRenderData = (~isDebug=true, ~viewportData=Sinon.matchAny, ()) => {
   "operateType": "INIT_RENDER",
   "canvas": Sinon.matchAny,
   "contextConfig": Sinon.matchAny,
   "bufferData": Sinon.matchAny,
   "isDebug": isDebug,
+  "viewportData": viewportData,
   "gpuData": Sinon.matchAny,
   "memoryData": Sinon.matchAny,
   "renderConfigData": Sinon.matchAny,

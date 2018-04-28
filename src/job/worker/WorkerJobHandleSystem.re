@@ -3,6 +3,8 @@ open StateDataMainType;
 let _getMainInitJobHandles = () => [
   ("create_worker_instance", CreateWorkerInstanceMainWorkerJob.execJob),
   ("send_job_data", SendJobDataMainWorkerJob.execJob),
+  ("create_canvas", CreateCanvasMainWorkerJob.execJob),
+  ("set_full_screen", SetFullScreenMainWorkerJob.execJob),
   ("get_finish_send_job_data", GetFinishSendJobDataMainWorkerJob.execJob),
   ("send_init_render_data", SendInitRenderDataMainWorkerJob.execJob),
   ("get_finish_init_render_data", GetFinishInitRenderDataMainWorkerJob.execJob)
@@ -31,6 +33,7 @@ let _getWorkerJobHandles = () => [
   ("get_workerDetect_data", GetWorkerDetectDataRenderWorkerJob.execJob),
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
   ("create_gl", CreateGlRenderWorkerJob.execJob),
+  ("set_viewport", SetViewportRenderWorkerJob.execJob),
   ("detect_gl", DetectGlRenderWorkerJob.execJob),
   ("preget_glslData", PregetGLSLDataRenderWorkerJob.execJob),
   ("init_state", InitStateRenderWorkerJob.execJob),

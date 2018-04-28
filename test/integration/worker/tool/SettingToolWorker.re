@@ -6,9 +6,9 @@ let addTransferControlToOffscreen = [%bs.raw
   {|
   function(canvas) {
     if(canvas.transferControlToOffscreen === undefined){
-canvas.transferControlToOffscreen = function(){
-  return {}
-};
+      canvas.transferControlToOffscreen = function(){
+        return canvas
+      };
     }
 
     return canvas;

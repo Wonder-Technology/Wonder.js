@@ -33,10 +33,7 @@ let _ =
           ()
         );
       let _exec = () => {
-        let width = 100.;
-        let height = 200.;
-        Root.root##innerWidth#=width;
-        Root.root##innerHeight#=height;
+        let (width, height) = RootTool.setRoot();
         let (canvasDom, fakeGl, div, body) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
         TestTool.initWithJobConfigWithoutBuildFakeDom(
           ~sandbox,
@@ -51,7 +48,7 @@ let _ =
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       test(
-        "set viewport",
+        "set gl viewport",
         () => {
           let (canvasDom, fakeGl, width, height) = _exec();
           fakeGl##viewport |> expect |> toCalledWith([|0., 0., 100., 200.|])

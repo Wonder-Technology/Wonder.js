@@ -26,6 +26,12 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
             {
               "name": "transfer_job_data"
             },
+    {
+        "name": "create_canvas"
+    },
+    {
+        "name": "set_full_screen"
+    },
             {
               "name": "send_init_render_data"
             }
@@ -75,6 +81,12 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
           "name": "init",
           "link": "concat",
           "jobs": [
+    {
+        "name": "create_canvas"
+    },
+    {
+        "name": "set_full_screen"
+    }
           ]
         },
         {
@@ -235,6 +247,13 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
         "flags": [
             "FINISH_SEND_JOB_DATA"
         ]
+    },
+
+    {
+        "name": "create_canvas"
+    },
+    {
+        "name": "set_full_screen"
     },
     {
         "name": "send_init_render_data",

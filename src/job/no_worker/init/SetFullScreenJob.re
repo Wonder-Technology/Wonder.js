@@ -7,6 +7,6 @@ let execJob = (_, state) => {
     |> ViewService.setCanvas(
          ViewService.getCanvas(state.viewRecord)
          |> Obj.magic
-         |> ViewService.setToFullScreen(ViewService.getFullScreenData())
+         |> ScreenService.setToFullScreen(ScreenService.queryFullScreenData())
        )
 };

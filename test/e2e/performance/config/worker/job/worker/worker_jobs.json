@@ -30,6 +30,9 @@
         "name": "create_gl"
     },
     {
+        "name": "set_viewport"
+    },
+    {
         "name": "detect_gl"
     },
     {

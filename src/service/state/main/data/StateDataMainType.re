@@ -110,7 +110,7 @@ and state = {
   gpuDetectRecord,
   mutable sourceInstanceRecord,
   mutable objectInstanceRecord,
-  viewRecord,
+  mutable viewRecord,
   deviceManagerRecord,
   mutable gameObjectRecord,
   mutable transformRecord: option(transformRecord),

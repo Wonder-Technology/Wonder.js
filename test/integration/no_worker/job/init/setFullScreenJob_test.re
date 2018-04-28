@@ -40,10 +40,7 @@ let _ =
           ()
         );
       let _exec = () => {
-        let width = 100.;
-        let height = 200.;
-        Root.root##innerWidth#=width;
-        Root.root##innerHeight#=height;
+        let (width, height) = RootTool.setRoot();
         let (canvasDom, fakeGl, div, body) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
         TestTool.initWithJobConfigWithoutBuildFakeDom(
           ~sandbox,
