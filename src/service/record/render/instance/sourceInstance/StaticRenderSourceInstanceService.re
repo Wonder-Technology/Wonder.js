@@ -2,8 +2,8 @@ open InstanceType;
 
 open RenderSourceInstanceType;
 
-let isTransformStatic = (sourceInstance: sourceInstance, {isTransformStaticMap}) =>
-  StaticSourceInstanceService.isTransformStatic(sourceInstance, isTransformStaticMap);
+let isTransformStatic = (sourceInstance: sourceInstance, {isTransformStatics}) =>
+  StaticTransformService.isTransformStatic(sourceInstance, isTransformStatics);
 
 let markIsSendTransformMatrixData =
     (sourceInstance: sourceInstance, isSend, {isSendTransformMatrixDataMap} as record) => {
@@ -15,9 +15,3 @@ let markIsSendTransformMatrixData =
       isSendTransformMatrixDataMap
     )
 };
-
-let isSendTransformMatrixData = (sourceInstance: sourceInstance, {isSendTransformMatrixDataMap}) =>
-  StaticSourceInstanceService.isSendTransformMatrixData(
-    sourceInstance,
-    isSendTransformMatrixDataMap
-  );

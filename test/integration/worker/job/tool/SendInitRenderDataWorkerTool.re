@@ -3,6 +3,7 @@ let buildInitRenderData = (~isDebug=true, ~viewportData=Sinon.matchAny, ()) => {
   "canvas": Sinon.matchAny,
   "contextConfig": Sinon.matchAny,
   "bufferData": Sinon.matchAny,
+  "instanceBufferData": Sinon.matchAny,
   "isDebug": isDebug,
   "viewportData": viewportData,
   "gpuData": Sinon.matchAny,
@@ -15,5 +16,6 @@ let buildInitRenderData = (~isDebug=true, ~viewportData=Sinon.matchAny, ()) => {
   "customGeometryData": Sinon.matchAny,
   "ambientLightData": Sinon.matchAny,
   "directionLightData": Sinon.matchAny,
-  "pointLightData": Sinon.matchAny
+  "pointLightData": Sinon.matchAny,
+  "sourceInstanceData": Sinon.matchAny
 };

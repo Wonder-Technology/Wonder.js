@@ -10,22 +10,32 @@ let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
      );
 
 let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
-  let {matrixFloat32ArrayMap} = currentState.sourceInstanceRecord;
-  let {isSendTransformMatrixDataMap} as targetRecord = targetState.sourceInstanceRecord;
+  /* TODO test restore buffer */
+  let currentSourceInstanceRecord = RecordSourceInstanceMainService.getRecord(currentState);
+  let targetSourceInstanceRecord = RecordSourceInstanceMainService.getRecord(targetState);
+  let newBuffer =
+    CopyArrayBufferService.copyArrayBufferData(
+      targetSourceInstanceRecord.buffer,
+      currentSourceInstanceRecord.buffer
+    );
   let float32ArrayPoolMap =
     TypeArrayPoolService.addAllFloat32TypeArrayToPool(
-      matrixFloat32ArrayMap,
+      currentSourceInstanceRecord.matrixFloat32ArrayMap,
       MemorySettingService.getMaxBigTypeArrayPoolSize(targetState.settingRecord),
       float32ArrayPoolMap
     );
   (
     {
       ...targetState,
-      sourceInstanceRecord: {
-        ...targetRecord,
-        isSendTransformMatrixDataMap:
-          _buildIsNotSendTransformMatrixDataMap(isSendTransformMatrixDataMap)
-      }
+      sourceInstanceRecord:
+        Some({
+          ...targetSourceInstanceRecord,
+          buffer: newBuffer,
+          isSendTransformMatrixDataMap:
+            _buildIsNotSendTransformMatrixDataMap(
+              targetSourceInstanceRecord.isSendTransformMatrixDataMap
+            )
+        })
     },
     {...sharedData, float32ArrayPoolMap}
   )

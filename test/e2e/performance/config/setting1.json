@@ -1,5 +1,5 @@
 {
-    "is_debug": true,
+    "is_debug": false,
     "context": {
         "alpha": true,
         "depth": true,
@@ -9,10 +9,14 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "custom_geometry_point_data_buffer_count": 2000000,
-        "transform_data_buffer_count": 300000,
+        "custom_geometry_point_data_buffer_count": 200000,
+        "transform_data_buffer_count": 500000,
         "basic_material_data_buffer_count": 300000,
-        "light_material_data_buffer_count": 300000
+        "light_material_data_buffer_count": 300000,
+        "instanceBuffer": {
+            "sourceInstanceCount": 10,
+            "objectInstanceCountPerSourceInstance": 10000
+        }
     },
     "gpu": {
         "use_hardware_instance": true

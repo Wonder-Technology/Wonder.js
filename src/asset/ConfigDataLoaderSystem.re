@@ -156,6 +156,7 @@ let _createRecordWithState = (state) =>
   |> RecordTransformMainService.create
   |> RecordBasicMaterialMainService.create
   |> RecordLightMaterialMainService.create
+  |> RecordSourceInstanceMainService.create
   |> RecordCustomGeometryMainService.create
   |> RecordRenderMainService.create;
 

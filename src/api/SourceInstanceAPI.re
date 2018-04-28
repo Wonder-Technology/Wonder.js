@@ -8,18 +8,9 @@ open DisposeSourceInstanceMainService;
 
 open CreateObjectInstanceGameObjectMainService;
 
-open GetObjectInstanceArrayMainService;
-
-open StaticSourceInstanceService;
-
 open GameObjectSourceInstanceService;
 
-let createSourceInstance = (state) => {
-  let (sourceInstanceRecord, index) =
-    CreateSourceInstanceService.create(state.sourceInstanceRecord);
-  state.sourceInstanceRecord = sourceInstanceRecord;
-  (state, index)
-};
+let createSourceInstance = CreateSourceInstanceMainService.create;
 
 let unsafeGetSourceInstanceGameObject = (sourceInstance, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
@@ -30,14 +21,14 @@ let unsafeGetSourceInstanceGameObject = (sourceInstance, state: StateDataMainTyp
             AliveComponentService.checkComponentShouldAlive(
               sourceInstance,
               isAlive,
-              state.sourceInstanceRecord
+              RecordSourceInstanceMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  unsafeGetGameObject(sourceInstance, state.sourceInstanceRecord)
+  unsafeGetGameObject(sourceInstance, RecordSourceInstanceMainService.getRecord(state))
 };
 
 let createObjectInstanceGameObject = (sourceInstance, state: StateDataMainType.state) => {
@@ -49,7 +40,7 @@ let createObjectInstanceGameObject = (sourceInstance, state: StateDataMainType.s
             AliveComponentService.checkComponentShouldAlive(
               sourceInstance,
               isAlive,
-              state.sourceInstanceRecord
+              RecordSourceInstanceMainService.getRecord(state)
             )
           )
         )
@@ -69,14 +60,14 @@ let getSourceInstanceObjectInstanceTransformArray =
             AliveComponentService.checkComponentShouldAlive(
               sourceInstance,
               isAlive,
-              state.sourceInstanceRecord
+              RecordSourceInstanceMainService.getRecord(state)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  getObjectInstanceTransformArray(sourceInstance, state.sourceInstanceRecord)
+  GetObjectInstanceArrayMainService.getObjectInstanceTransformArray(sourceInstance, state)
 };
 
 let markSourceInstanceModelMatrixIsStatic =
@@ -89,7 +80,7 @@ let markSourceInstanceModelMatrixIsStatic =
             AliveComponentService.checkComponentShouldAlive(
               sourceInstance,
               isAlive,
-              state.sourceInstanceRecord
+              RecordSourceInstanceMainService.getRecord(state)
             )
           )
         )
@@ -99,6 +90,14 @@ let markSourceInstanceModelMatrixIsStatic =
   {
     ...state,
     sourceInstanceRecord:
-      markModelMatrixIsStatic(sourceInstance, Js.to_bool(isStatic), state.sourceInstanceRecord)
+      Some({
+        ...RecordSourceInstanceMainService.getRecord(state),
+        isTransformStatics:
+          StaticTransformService.markModelMatrixIsStatic(
+            sourceInstance,
+            Js.to_bool(isStatic),
+            RecordSourceInstanceMainService.getRecord(state).isTransformStatics
+          )
+      })
   }
 };

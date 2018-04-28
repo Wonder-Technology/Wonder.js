@@ -1,16 +1,17 @@
-open InstanceType;
+/* TODO remove */
+/* open InstanceType;
 
 open SourceInstanceType;
 
 let markModelMatrixIsStatic =
-    (sourceInstance: sourceInstance, isStatic: bool, {isTransformStaticMap} as record) => {
+    (sourceInstance: sourceInstance, isStatic: bool, {isTransformStatics} as record) => {
   ...record,
-  isTransformStaticMap:
-    isTransformStaticMap |> WonderCommonlib.SparseMapService.set(sourceInstance, isStatic)
-};
-
-let isTransformStatic = (sourceInstance: sourceInstance, isTransformStaticMap) =>
-  isTransformStaticMap
+  isTransformStatics:
+    isTransformStatics |> WonderCommonlib.SparseMapService.set(sourceInstance, isStatic)
+}; */
+/* 
+let isTransformStatic = (sourceInstance: sourceInstance, isTransformStatics) =>
+  isTransformStatics
   |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
   |> WonderLog.Contract.ensureCheck(
        (isStatic) =>
@@ -25,10 +26,4 @@ let isTransformStatic = (sourceInstance: sourceInstance, isTransformStaticMap) =
            )
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
-
-let isSendTransformMatrixData = (sourceInstance: sourceInstance, isSendTransformMatrixDataMap) =>
-  switch (isSendTransformMatrixDataMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
-  | None => false
-  | Some(isSend) => isSend
-  };
+     ); */

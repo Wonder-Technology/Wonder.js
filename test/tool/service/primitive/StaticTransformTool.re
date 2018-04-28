@@ -1,0 +1,1 @@
+let isTransformStatic = StaticTransformService.isTransformStatic;

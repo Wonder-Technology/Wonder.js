@@ -139,8 +139,6 @@ let deepCopyForRestore = (state) => {
   let {
         index,
         buffer,
-        localToWorldMatrices,
-        localPositions,
         defaultLocalToWorldMatrix,
         defaultLocalPosition,
         localToWorldMatrixCacheMap,

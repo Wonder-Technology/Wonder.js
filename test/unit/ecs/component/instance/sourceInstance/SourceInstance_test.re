@@ -96,7 +96,23 @@ let _ =
                 }
               );
               test(
-                "remove from objectInstanceTransformArrayMap, matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransformStaticMap, isSendTransformMatrixDataMap, gameObjectMap",
+                "reset objectInstanceTransformIndexMap",
+                () => {
+                  open SourceInstanceType;
+                  let (state, gameObject, sourceInstance) =
+                    SourceInstanceTool.createSourceInstanceGameObject(state^);
+                  let state =
+                    state
+                    |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
+                         gameObject,
+                         sourceInstance
+                       );
+                  let {objectInstanceTransformIndexMap} = SourceInstanceTool.getRecord(state);
+                  objectInstanceTransformIndexMap |> expect == [|0|]
+                }
+              );
+              test(
+                "remove from t32ArrayMap, matrixInstanceBufferCapacityMap, isTransforsformMatrixDataMap, gameObjectMap",
                 () => {
                   open SourceInstanceType;
                   let (state, gameObject, sourceInstance) =
@@ -108,27 +124,49 @@ let _ =
                          sourceInstance
                        );
                   let {
-                    objectInstanceTransformArrayMap,
                     matrixFloat32ArrayMap,
                     matrixInstanceBufferCapacityMap,
-                    isTransformStaticMap,
                     isSendTransformMatrixDataMap,
                     gameObjectMap
                   } =
                     SourceInstanceTool.getRecord(state);
                   (
-                    objectInstanceTransformArrayMap
-                    |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     matrixInstanceBufferCapacityMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),
-                    isTransformStaticMap |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     isSendTransformMatrixDataMap
                     |> WonderCommonlib.SparseMapService.has(sourceInstance),
                     gameObjectMap |> WonderCommonlib.SparseMapService.has(sourceInstance)
                   )
-                  |> expect == (false, false, false, false, false, false)
+                  |> expect == (false, false, false, false)
                 }
+              );
+              describe(
+                "test remove from type array",
+                () =>
+                  test(
+                    "delete and reset from isTransformStatics",
+                    () => {
+                      open SourceInstanceType;
+                      let (state, gameObject, sourceInstance) =
+                        SourceInstanceTool.createSourceInstanceGameObject(state^);
+                      let state =
+                        state
+                        |> SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
+                             sourceInstance,
+                             Js.false_
+                           );
+                      let state =
+                        state
+                        |> GameObjectTool.disposeGameObjectSourceInstanceComponent(
+                             gameObject,
+                             sourceInstance
+                           );
+                      let {isTransformStatics} = SourceInstanceTool.getRecord(state);
+                      StaticTransformTool.isTransformStatic(sourceInstance, isTransformStatics)
+                      |> expect == true
+                    }
+                  )
               );
               describe(
                 "dispose all objectInstance gameObjects",

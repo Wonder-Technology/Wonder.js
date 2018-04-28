@@ -25,6 +25,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
     "operateType": operateType,
@@ -40,6 +41,11 @@ let _buildData = (operateType, canvas, stateData) => {
     },
     "gpuData": {"useHardwareInstance": useHardwareInstance},
     "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},
+    "instanceBufferData": {
+      "sourceInstanceCount": BufferSettingService.getSourceInstanceCount(settingRecord),
+      "objectInstanceCountPerSourceInstance":
+        BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+    },
     "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
     "renderConfigData": {
       "shaders":
@@ -78,7 +84,11 @@ let _buildData = (operateType, canvas, stateData) => {
       "buffer": directionLightRecord.buffer,
       "index": directionLightRecord.index
     },
-    "pointLightData": {"buffer": pointLightRecord.buffer, "index": pointLightRecord.index}
+    "pointLightData": {"buffer": pointLightRecord.buffer, "index": pointLightRecord.index},
+    "sourceInstanceData": {
+      "buffer": sourceInstanceRecord.buffer,
+      "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
+    }
   }
 };
 

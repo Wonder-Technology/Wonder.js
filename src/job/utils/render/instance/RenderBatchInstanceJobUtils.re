@@ -29,33 +29,30 @@ let render =
   let getIndicesCountFunc =
     CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   let indicesCount = [@bs] getIndicesCountFunc(geometryIndex, state);
-  let objectInstanceTransformArray =
-    GetObjectInstanceArrayRenderService.getObjectInstanceTransformArray(
-      sourceInstance,
-      state.sourceInstanceRecord
-    );
-  objectInstanceTransformArray
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (state, transform) => {
-           let state =
-             uniformInstanceSendNoCachableData
-             |> WonderCommonlib.ArrayService.reduceOneParam(
-                  [@bs]
-                  (
-                    (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {
-                      [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(transform, state));
-                      state
-                    }
-                  ),
-                  state
-                );
-           DrawGLSLService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
-           |> ignore;
-           state
-         }
-       ),
-       state
-     )
+  let (_, objectInstanceTransformDataTuple) =
+    BuildObjectInstanceTransformDataTupleUtils.build(sourceInstance, state);
+  ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
+    objectInstanceTransformDataTuple,
+    state,
+    [@bs]
+    (
+      (state, objectInstanceTransform) => {
+        let state =
+          uniformInstanceSendNoCachableData
+          |> WonderCommonlib.ArrayService.reduceOneParam(
+               [@bs]
+               (
+                 (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {
+                   [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(objectInstanceTransform, state));
+                   state
+                 }
+               ),
+               state
+             );
+        DrawGLSLService.drawElement((drawMode, indexType, indexTypeSize, indicesCount), gl)
+        |> ignore;
+        state
+      }
+    )
+  )
 };

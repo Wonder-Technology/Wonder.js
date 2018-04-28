@@ -8,7 +8,7 @@ let createState = () => {
   renderConfigRecord: None,
   gpuDetectRecord: RecordGPUDetectService.create(),
   viewRecord: RecordViewService.create(),
-  sourceInstanceRecord: RecordSourceInstanceService.create(),
+  sourceInstanceRecord: None,
   objectInstanceRecord: RecordObjectInstanceService.create(),
   deviceManagerRecord: RecordDeviceManagerService.create(),
   gameObjectRecord: RecordGameObjectService.create(),

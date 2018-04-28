@@ -5,18 +5,13 @@ open RenderType;
 open RenderCameraType;
 
 let _buildData = (operateType, stateData) => {
-  let {
-        settingRecord,
-        gameObjectRecord,
-        directionLightRecord,
-        pointLightRecord,
-        sourceInstanceRecord
-      } as state =
+  let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
     StateDataMainService.unsafeGetState(stateData);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let lightRenderObjectRecord = OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
+  let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
@@ -99,14 +94,8 @@ let _buildData = (operateType, stateData) => {
         "count": lightRenderObjectRecord.count,
         "bufferCount": BufferSettingService.getLightMaterialDataBufferCount(settingRecord)
       },
-      "instance": {
-        /* TODO optimize */
-        "objectInstanceTransformArrayMap":
-          sourceInstanceRecord
-          |> SendInstanceDataUtils.filterOnlyNeedObjectInstanceTransformArrayMapForRender(
-               sourceInstanceRecord.objectInstanceTransformArrayMap
-             ),
-        "isTransformStaticMap": sourceInstanceRecord.isTransformStaticMap
+      "sourceInstance": {
+        "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
       }
     }
   }

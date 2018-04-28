@@ -1173,7 +1173,7 @@ let _ =
       describe(
         "test batchDispose gameObject",
         () => {
-          describe(
+          /* describe(
             "batch dispose all components",
             () => {
               test(
@@ -1403,7 +1403,7 @@ let _ =
                         }
                       );
                       test(
-                        "remove from sourceInstance->objectInstanceTransformArrayMap",
+                        "remove from sourceInstance->objectInstanceTransforms",
                         () => {
                           open SourceInstanceType;
                           let (
@@ -1417,10 +1417,10 @@ let _ =
                           let state =
                             state
                             |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
-                          let {objectInstanceTransformArrayMap} =
-                            SourceInstanceTool.getRecord(state);
-                          objectInstanceTransformArrayMap
-                          |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
+                          SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
+                            sourceInstance,
+                            state
+                          )
                           |> expect == [||]
                         }
                       )
@@ -1483,18 +1483,20 @@ let _ =
                                );
                           let state =
                             state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
-                          let {objectInstanceTransformArrayMap} =
-                            SourceInstanceTool.getRecord(state);
                           (
-                            objectInstanceTransformArrayMap
-                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
-                            objectInstanceTransformArrayMap
-                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
+                            SourceInstanceTool.hasObjectInstanceTransform(
+                              sourceInstanceArr[0],
+                              state
+                            ),
+                            SourceInstanceTool.hasObjectInstanceTransform(
+                              sourceInstanceArr[1],
+                              state
+                            )
                           )
                           |> expect == (false, false)
                         }
                       );
-                      test(
+                      /* test(
                         "remove from buffer map",
                         () => {
                           open VboBufferType;
@@ -1524,12 +1526,12 @@ let _ =
                           )
                           |> expect == (false, false)
                         }
-                      )
+                      ) */
                     }
                   )
               )
             }
-          );
+          ); */
           describe(
             "test reallocate gameObject",
             () =>

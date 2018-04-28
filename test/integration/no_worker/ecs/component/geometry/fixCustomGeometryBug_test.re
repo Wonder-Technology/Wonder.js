@@ -23,7 +23,7 @@ let _ =
           state :=
             TestTool.init(
               ~sandbox,
-              ~buffer=TestTool.buildBufferJsObj(~customGeometryPointDataBufferCount=10, ()),
+              ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointDataBufferCount=10, ()),
               ()
             )
         }
@@ -44,10 +44,8 @@ let _ =
             let indices3 = Uint16Array.make([|3, 3, 2|]);
             let (state, gameObject1, geometry1) = CustomGeometryTool.createGameObject(state);
             let (state, gameObject2, geometry2) = CustomGeometryTool.createGameObject(state);
-            let state =
-              VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry1, state);
-            let state =
-              VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry2, state);
+            let state = VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry1, state);
+            let state = VboBufferTool.addVboBufferToCustomGeometryBufferMap(geometry2, state);
             let state =
               state
               |> setCustomGeometryVertices(geometry1, vertices1)
@@ -62,7 +60,10 @@ let _ =
               |> setCustomGeometryIndices(geometry2, indices2);
             let state =
               state
-              |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(gameObject1, geometry1);
+              |> GameObjectTool.disposeGameObjectCustomGeometryComponentWithoutVboBuffer(
+                   gameObject1,
+                   geometry1
+                 );
             let (state, gameObject3, geometry3) = CustomGeometryTool.createGameObject(state);
             let state = state |> setCustomGeometryVertices(geometry3, vertices3);
             let state = state |> setCustomGeometryNormals(geometry3, normals3);

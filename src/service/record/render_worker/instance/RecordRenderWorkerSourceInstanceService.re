@@ -1,15 +1,19 @@
 open RenderWorkerSourceInstanceType;
 
 let create = () => {
-  objectInstanceTransformArrayMap: None,
-  isTransformStaticMap: None,
+  objectInstanceTransformIndexMap: None,
+  objectInstanceTransformCollections: None,
+  isTransformStatics: None,
   matrixFloat32ArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
   matrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapService.createEmpty(),
   isSendTransformMatrixDataMap: WonderCommonlib.SparseMapService.createEmpty()
 };
 
-let unsafeGetObjectInstanceTransformArrayMap = (record) =>
-  record.objectInstanceTransformArrayMap |> OptionService.unsafeGet;
+let unsafeGetObjectInstanceTransformIndexMap = (record) =>
+  record.objectInstanceTransformIndexMap |> OptionService.unsafeGet;
+
+let unsafeGetObjectInstanceTransformCollections = (record) =>
+  record.objectInstanceTransformCollections |> OptionService.unsafeGet;
 
 let unsafeGetIsTransformStaticMap = (record) =>
-  record.isTransformStaticMap |> OptionService.unsafeGet;
+  record.isTransformStatics |> OptionService.unsafeGet;

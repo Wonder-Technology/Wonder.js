@@ -304,451 +304,451 @@ let _ =
             }
           );
           /* describe(
-            "deep copy geometry record",
-            () =>
-              /* describe(
-                   "deep copy box geometry record",
-                   () => {
+               "deep copy geometry record",
+               () =>
+                 /* describe(
+                      "deep copy box geometry record",
+                      () => {
+                        test(
+                          "copy vertices",
+                          () =>
+                            _testCopyTypeArraySingleValue(
+                              (
+                                GameObjectTool.createGameObject,
+                                BoxGeometryAPI.getBoxGeometryVertices,
+                                BoxGeometryTool.setVertices,
+                                () => (
+                                  Float32Array.make([|
+                                    2.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.
+                                  |]),
+                                  Float32Array.make([|
+                                    4.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.
+                                  |])
+                                )
+                              ),
+                              state
+                            )
+                        );
+                        test(
+                          "copy normals",
+                          () =>
+                            _testCopyTypeArraySingleValue(
+                              (
+                                GameObjectTool.createGameObject,
+                                BoxGeometryAPI.getBoxGeometryNormals,
+                                BoxGeometryTool.setNormals,
+                                () => (
+                                  Float32Array.make([|
+                                    2.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.
+                                  |]),
+                                  Float32Array.make([|
+                                    4.,
+                                    2.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    1.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.,
+                                    0.
+                                  |])
+                                )
+                              ),
+                              state
+                            )
+                        );
+                        test(
+                          "copy indices",
+                          () =>
+                            _testCopyTypeArraySingleValue(
+                              (
+                                GameObjectTool.createGameObject,
+                                BoxGeometryAPI.getBoxGeometryIndices,
+                                BoxGeometryTool.setIndices,
+                                () => (
+                                  Uint16Array.make([|
+                                    4,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  |]),
+                                  Uint16Array.make([|
+                                    7,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                  |])
+                                )
+                              ),
+                              state
+                            )
+                        )
+                      }
+                    ); */
+                 /* describe(
+                   "deep copy custom geometry record",
+                   () =>
                      test(
-                       "copy vertices",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             BoxGeometryAPI.getBoxGeometryVertices,
-                             BoxGeometryTool.setVertices,
-                             () => (
-                               Float32Array.make([|
-                                 2.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.
-                               |]),
-                               Float32Array.make([|
-                                 4.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.
-                               |])
-                             )
-                           ),
-                           state
-                         )
-                     );
-                     test(
-                       "copy normals",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             BoxGeometryAPI.getBoxGeometryNormals,
-                             BoxGeometryTool.setNormals,
-                             () => (
-                               Float32Array.make([|
-                                 2.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.
-                               |]),
-                               Float32Array.make([|
-                                 4.,
-                                 2.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 1.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.,
-                                 0.
-                               |])
-                             )
-                           ),
-                           state
-                         )
-                     );
-                     test(
-                       "copy indices",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             BoxGeometryAPI.getBoxGeometryIndices,
-                             BoxGeometryTool.setIndices,
-                             () => (
-                               Uint16Array.make([|
-                                 4,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0
-                               |]),
-                               Uint16Array.make([|
-                                 7,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 1,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0,
-                                 0
-                               |])
-                             )
-                           ),
-                           state
-                         )
+                       "copy verticesInfos",
+                       () => {
+                         open StateDataMainType;
+                         open CustomGeometryAPI;
+                         open GeometryType;
+                         let (state, gameObject1, geometry1) =
+                           GameObjectTool.createGameObject(state^);
+                         let vertices1 = Float32Array.make([|10.|]);
+                         let state = state |> setCustomGeometryVertices(geometry1, vertices1);
+                         let copiedState = MainStateTool.deepCopyForRestore(state);
+                         CustomGeometryTool.getRecord(copiedState).verticesInfos[0] = {
+                           startIndex: 10,
+                           endIndex: 20
+                         };
+                         CustomGeometryTool.getRecord(state).verticesInfos[0]
+                         |> expect == {startIndex: 0, endIndex: 1}
+                       }
                      )
-                   }
-                 ); */
-              /* describe(
-                "deep copy custom geometry record",
-                () =>
-                  test(
-                    "copy verticesInfos",
-                    () => {
-                      open StateDataMainType;
-                      open CustomGeometryAPI;
-                      open GeometryType;
-                      let (state, gameObject1, geometry1) =
-                        GameObjectTool.createGameObject(state^);
-                      let vertices1 = Float32Array.make([|10.|]);
-                      let state = state |> setCustomGeometryVertices(geometry1, vertices1);
-                      let copiedState = MainStateTool.deepCopyForRestore(state);
-                      CustomGeometryTool.getRecord(copiedState).verticesInfos[0] = {
-                        startIndex: 10,
-                        endIndex: 20
-                      };
-                      CustomGeometryTool.getRecord(state).verticesInfos[0]
-                      |> expect == {startIndex: 0, endIndex: 1}
-                    }
-                  )
-              ) */
-          ); */
+                 ) */
+             ); */
           /* test(
                "copy vertices",
                () =>
@@ -1106,14 +1106,13 @@ let _ =
             "deep copy sourceInstance record",
             () => {
               test(
-                "deep copy objectInstanceTransformArrayMap, matrixFloat32ArrayMap",
+                "deep copy matrixFloat32ArrayMap",
                 () => {
                   open StateDataMainType;
                   open SourceInstanceType;
                   let (state, gameObject1, sourceInstance1) =
                     SourceInstanceTool.createSourceInstanceGameObject(state^);
-                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getRecord(state);
+                  let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(state);
                   let originMatrixFloat32Array = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap
                   |> WonderCommonlib.SparseMapService.set(
@@ -1121,52 +1120,35 @@ let _ =
                        originMatrixFloat32Array
                      )
                   |> ignore;
-                  let originObjectInstanceArray = [|20|];
-                  objectInstanceTransformArrayMap
-                  |> WonderCommonlib.SparseMapService.set(
-                       sourceInstance1,
-                       originObjectInstanceArray
-                     )
-                  |> ignore;
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getRecord(copiedState);
-                  let objectInstanceArray =
-                    objectInstanceTransformArrayMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
-                  objectInstanceArray |> Js.Array.push(100) |> ignore;
+                  let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(copiedState);
                   let matrixFloat32Array =
                     matrixFloat32ArrayMap
                     |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
                   Float32Array.unsafe_set(matrixFloat32Array, 0, 1000.) |> ignore;
-                  let {objectInstanceTransformArrayMap, matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getRecord(state);
-                  (
-                    objectInstanceTransformArrayMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1),
-                    matrixFloat32ArrayMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1)
-                  )
-                  |> expect == (originObjectInstanceArray, originMatrixFloat32Array)
+                  let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(state);
+                  matrixFloat32ArrayMap
+                  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1)
+                  |> expect == originMatrixFloat32Array
                 }
               );
               test(
-                "shadow copy matrixInstanceBufferCapacityMap, isTransformStaticMap, gameObjectMap, disposedIndexArray",
+                "shadow copy objectInstanceTransformIndexMap, matrixInstanceBufferCapacityMap, gameObjectMap, disposedIndexArray",
                 () =>
                   StateDataMainType.(
                     SourceInstanceType.(
                       MainStateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
                           let {
+                            objectInstanceTransformIndexMap,
                             matrixInstanceBufferCapacityMap,
-                            isTransformStaticMap,
                             gameObjectMap,
                             disposedIndexArray
                           } =
                             SourceInstanceTool.getRecord(state);
                           [|
+                            objectInstanceTransformIndexMap |> Obj.magic,
                             matrixInstanceBufferCapacityMap |> Obj.magic,
-                            isTransformStaticMap |> Obj.magic,
                             gameObjectMap |> Obj.magic,
                             disposedIndexArray |> Obj.magic
                           |]
@@ -1452,7 +1434,7 @@ let _ =
                   state :=
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
-                      ~buffer=TestTool.buildBufferJsObj(~transformDataBufferCount=5, ()),
+                      ~buffer=SettingTool.buildBufferConfigStr(~transformDataBufferCount=5, ()),
                       ()
                     );
                   let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
@@ -1584,7 +1566,11 @@ let _ =
                   state :=
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
-                      ~buffer=TestTool.buildBufferJsObj(~customGeometryPointDataBufferCount=2, ()),
+                      ~buffer=
+                        SettingTool.buildBufferConfigStr(
+                          ~customGeometryPointDataBufferCount=2,
+                          ()
+                        ),
                       ()
                     );
                   let (state, gameObject1, geometry1, (vertices1, normals1, indices1)) =
@@ -1616,7 +1602,8 @@ let _ =
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
-                          ~buffer=TestTool.buildBufferJsObj(~basicMaterialDataBufferCount=3, ()),
+                          ~buffer=
+                            SettingTool.buildBufferConfigStr(~basicMaterialDataBufferCount=3, ()),
                           ()
                         );
                       let (
@@ -1654,7 +1641,8 @@ let _ =
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
-                          ~buffer=TestTool.buildBufferJsObj(~lightMaterialDataBufferCount=3, ()),
+                          ~buffer=
+                            SettingTool.buildBufferConfigStr(~lightMaterialDataBufferCount=3, ()),
                           ()
                         );
                       let (
@@ -1840,8 +1828,7 @@ let _ =
                   open TypeArrayPoolType;
                   let state = state^;
                   let currentState = MainStateTool.createNewCompleteState(sandbox);
-                  let {matrixFloat32ArrayMap} =
-                    SourceInstanceTool.getRecord(currentState);
+                  let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(currentState);
                   let index = 0;
                   let typeArr = Float32Array.make([|1.|]);
                   matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.set(index, typeArr);
@@ -1860,8 +1847,7 @@ let _ =
                   open SourceInstanceType;
                   open TypeArrayPoolType;
                   let state = state^;
-                  let {isSendTransformMatrixDataMap} =
-                    SourceInstanceTool.getRecord(state);
+                  let {isSendTransformMatrixDataMap} = SourceInstanceTool.getRecord(state);
                   isSendTransformMatrixDataMap
                   |> WonderCommonlib.SparseMapService.set(0, true)
                   |> WonderCommonlib.SparseMapService.set(1, false)

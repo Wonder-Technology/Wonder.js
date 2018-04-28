@@ -2,26 +2,26 @@ open StateDataMainType;
 
 open SourceInstanceType;
 
-let _addObjectInstanceTransform = (sourceInstance, transform, objectInstanceTransformArrayMap) => {
-  objectInstanceTransformArrayMap
-  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceTransformArray(sourceInstance)
-  |> ArrayService.push(transform)
-  |> ignore;
-  objectInstanceTransformArrayMap
-  /* TODO ensure check:has no duplicate transform */
-};
-
 /* TODO init objectInstance gameObjects when init? */
-let createInstance = (sourceInstance, {sourceInstanceRecord, gameObjectRecord} as state) => {
+let createInstance = (sourceInstance, {settingRecord, gameObjectRecord} as state) => {
   let (gameObjectRecord, uid) = CreateGameObjectGameObjectService.create(gameObjectRecord);
   let (state, transform) = CreateTransformMainService.create(state);
-  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
+  let {objectInstanceTransformCollections, objectInstanceTransformIndexMap} as sourceInstanceRecord =
+    RecordSourceInstanceMainService.getRecord(state);
   state.gameObjectRecord = gameObjectRecord;
-  state.sourceInstanceRecord = {
-    ...sourceInstanceRecord,
-    objectInstanceTransformArrayMap:
-      objectInstanceTransformArrayMap |> _addObjectInstanceTransform(sourceInstance, transform)
-  };
+  let (objectInstanceTransformIndexMap, objectInstanceTransformCollections) =
+    ObjectInstanceCollectionService.addObjectInstanceTransform(
+      sourceInstance,
+      transform,
+      BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord),
+      (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+    );
+  state.sourceInstanceRecord =
+    Some({
+      ...sourceInstanceRecord,
+      objectInstanceTransformIndexMap,
+      objectInstanceTransformCollections
+    });
   let (objectInstanceRecord, objectInstance) =
     CreateObjectInstanceService.create(sourceInstance, uid, state.objectInstanceRecord);
   state.objectInstanceRecord = objectInstanceRecord;

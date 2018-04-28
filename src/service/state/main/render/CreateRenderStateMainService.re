@@ -32,7 +32,6 @@ let createRenderState =
         ambientLightRecord,
         directionLightRecord,
         pointLightRecord,
-        sourceInstanceRecord,
         vboBufferRecord,
         typeArrayPoolRecord,
         globalTempRecord,
@@ -56,16 +55,7 @@ let createRenderState =
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  /* let {index, colors} = ambientLightRecord;
-     let {index, colors, intensities} = directionLightRecord;
-     let {index, colors, intensities, constants, linears, quadratics, ranges} = pointLightRecord; */
-  /* let {
-       objectInstanceTransformArrayMap,
-       matrixInstanceBufferCapacityMap,
-       matrixFloat32ArrayMap,
-       isTransformStaticMap,
-       isSendTransformMatrixDataMap
-     } = sourceInstanceRecord; */
+  let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let isUseWorker = WorkerDetectMainService.isUseWorker(state);
   let renderStateTransformRecord: RenderTransformType.transformRecord =
     isUseWorker ?
@@ -134,18 +124,33 @@ let createRenderState =
     vboBufferRecord,
     typeArrayPoolRecord,
     transformRecord: renderStateTransformRecord,
+    /* sourceInstanceRecord: {
+         objectInstanceTransformCollections: sourceInstanceRecord.objectInstanceTransformCollections,
+         matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
+         matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
+         isTransformStatics: sourceInstanceRecord.isTransformStatics,
+         isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
+       }, */
     sourceInstanceRecord: {
-      objectInstanceTransformArrayMap: sourceInstanceRecord.objectInstanceTransformArrayMap,
+      objectInstanceTransformCollections: sourceInstanceRecord.objectInstanceTransformCollections,
+      objectInstanceTransformIndexMap: sourceInstanceRecord.objectInstanceTransformIndexMap,
+      isTransformStatics: sourceInstanceRecord.isTransformStatics,
       matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
       matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
-      isTransformStaticMap: sourceInstanceRecord.isTransformStaticMap,
       isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
     },
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
     shaderRecord: {index: shaderRecord.index},
-    settingRecord: {gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord))},
+    settingRecord: {
+      gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord)),
+      instanceBuffer:
+        Some({
+          objectInstanceCountPerSourceInstance:
+            BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+        })
+    },
     workerDetectRecord: {isUseWorker: isUseWorker}
   }
 };

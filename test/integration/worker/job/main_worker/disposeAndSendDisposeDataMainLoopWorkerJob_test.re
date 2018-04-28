@@ -17,7 +17,7 @@ let _ =
           state :=
             TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
-              ~buffer=SettingTool.buildBufferConfigStr(),
+              ~buffer=SettingTool.buildBufferConfigStr(~sourceInstanceCount=2, ()),
               ()
             )
         }

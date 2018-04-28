@@ -55,14 +55,21 @@ let createRenderState =
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
   let {
-    objectInstanceTransformArrayMap,
+    objectInstanceTransformCollections,
     matrixInstanceBufferCapacityMap,
     matrixFloat32ArrayMap,
-    isTransformStaticMap,
+    isTransformStatics,
     isSendTransformMatrixDataMap
   } = sourceInstanceRecord;
   {
-    settingRecord: {gpu: settingRecord.gpu},
+    settingRecord: {
+      gpu: settingRecord.gpu,
+      instanceBuffer:
+        Some({
+          objectInstanceCountPerSourceInstance:
+            BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+        })
+    },
     glslSenderRecord,
     programRecord,
     boxGeometryRecord: {
@@ -115,14 +122,18 @@ let createRenderState =
       normalMatrixCacheMap
     },
     sourceInstanceRecord: {
-      objectInstanceTransformArrayMap:
-        RecordRenderWorkerSourceInstanceService.unsafeGetObjectInstanceTransformArrayMap(
+      objectInstanceTransformCollections:
+        RecordRenderWorkerSourceInstanceService.unsafeGetObjectInstanceTransformCollections(
           sourceInstanceRecord
         ),
+      objectInstanceTransformIndexMap:
+        RecordRenderWorkerSourceInstanceService.unsafeGetObjectInstanceTransformIndexMap(
+          sourceInstanceRecord
+        ),
+      isTransformStatics:
+        RecordRenderWorkerSourceInstanceService.unsafeGetIsTransformStaticMap(sourceInstanceRecord),
       matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
       matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
-      isTransformStaticMap:
-        RecordRenderWorkerSourceInstanceService.unsafeGetIsTransformStaticMap(sourceInstanceRecord),
       isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
     },
     gpuDetectRecord,

@@ -86,6 +86,56 @@ let _ =
                 }
               )
           )
+      );
+      describe(
+        "fix bug",
+        () =>
+          describe(
+            "test create sourceInstance type arrays",
+            () =>
+              testPromise(
+                "test objectInstanceTransformCollections->length",
+                () => {
+                  TestMainWorkerTool.openContractCheck();
+                  let sourceInstanceCount = 2;
+                  let objectInstanceCountPerSourceInstance = 3;
+                  let state =
+                    TestMainWorkerTool.initWithJobConfig(
+                      ~sandbox,
+                      ~buffer=
+                        SettingTool.buildBufferConfigStr(
+                          ~sourceInstanceCount,
+                          ~objectInstanceCountPerSourceInstance,
+                          ()
+                        ),
+                      ()
+                    );
+                  let (
+                    state,
+                    gameObject,
+                    (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject)
+                  ) =
+                    FrontRenderLightHardwareInstanceRenderWorkerTool.prepare(sandbox, state);
+                  let state =
+                    state |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
+                  MainStateTool.setState(state);
+                  RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                    ~state,
+                    ~sandbox,
+                    ~completeFunc=
+                      (_) =>
+                        SourceInstanceRenderWorkerTool.unsafeGetObjectInstanceTransformCollections(
+                          RenderWorkerStateTool.unsafeGetState()
+                        )
+                        |> Js.Typed_array.Uint32Array.length
+                        |> expect == sourceInstanceCount
+                        * objectInstanceCountPerSourceInstance
+                        |> resolve,
+                    ()
+                  )
+                }
+              )
+          )
       )
     }
   );

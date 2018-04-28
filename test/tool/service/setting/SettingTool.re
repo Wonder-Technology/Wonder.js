@@ -84,14 +84,19 @@ let buildBufferConfigStr =
       ~transformDataBufferCount=50,
       ~basicMaterialDataBufferCount=50,
       ~lightMaterialDataBufferCount=50,
+      ~sourceInstanceCount=2,
+      ~objectInstanceCountPerSourceInstance=100,
       ()
     ) => {j|
        {
             "custom_geometry_point_data_buffer_count": $customGeometryPointDataBufferCount,
   "transform_data_buffer_count": $transformDataBufferCount,
   "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
-  "light_material_data_buffer_count": $lightMaterialDataBufferCount
-
+  "light_material_data_buffer_count": $lightMaterialDataBufferCount,
+  "instanceBuffer": {
+    "sourceInstanceCount": $sourceInstanceCount,
+"objectInstanceCountPerSourceInstance": $objectInstanceCountPerSourceInstance
+  }
        }
         |j};
 

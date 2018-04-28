@@ -12,3 +12,9 @@ let getBasicMaterialDataBufferCount = (record) =>
 
 let getLightMaterialDataBufferCount = (record) =>
   (record |> unsafeGetBuffer).lightMaterialDataBufferCount;
+
+let getSourceInstanceCount = (record) =>
+  (record |> unsafeGetBuffer).instanceBuffer.sourceInstanceCount;
+
+let getObjectInstanceCountPerSourceInstance = (record) =>
+  (record |> unsafeGetBuffer).instanceBuffer.objectInstanceCountPerSourceInstance;

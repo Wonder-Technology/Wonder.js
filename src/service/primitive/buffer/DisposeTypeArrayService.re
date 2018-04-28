@@ -26,10 +26,9 @@ let deleteSingleValueBySwapAndResetFloat32TypeArr =
     }
   );
 
-let deleteSingleValueBySwapAndResetUint8TypeArr = (sourceIndex, lastIndex, typeArr, defaultValue) => {
+let deleteSingleValueBySwapUint32TypeArr = (sourceIndex, lastIndex, typeArr) => {
   open Js.Typed_array;
-  Uint8Array.unsafe_set(typeArr, sourceIndex, Uint8Array.unsafe_get(typeArr, lastIndex));
-  Uint8Array.unsafe_set(typeArr, lastIndex, defaultValue);
+  Uint32Array.unsafe_set(typeArr, sourceIndex, Uint32Array.unsafe_get(typeArr, lastIndex));
   typeArr
 };
 
@@ -61,6 +60,16 @@ let deleteAndResetUint32 =
     (sourceIndex, defaultValue, typeArr) => {
       open Js.Typed_array;
       Uint32Array.unsafe_set(typeArr, sourceIndex, defaultValue);
+      typeArr
+    }
+  );
+
+let deleteAndResetUint8 =
+  [@bs]
+  (
+    (sourceIndex, defaultValue, typeArr) => {
+      open Js.Typed_array;
+      Uint8Array.unsafe_set(typeArr, sourceIndex, defaultValue);
       typeArr
     }
   );

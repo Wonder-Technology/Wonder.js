@@ -1,3 +1,8 @@
 open SettingGPUType;
 
-type settingRecord = {gpu: option(gpu)};
+type instanceBuffer = {objectInstanceCountPerSourceInstance: int};
+
+type settingRecord = {
+  gpu: option(gpu),
+  instanceBuffer: option(instanceBuffer)
+};

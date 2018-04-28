@@ -62,6 +62,7 @@ let init = (completeFunc, state) => {
            GetSettingDataRenderWorkerJob.execJob(None),
            GetMaterialDataRenderWorkerJob.execJob(None),
            PregetGLSLDataRenderWorkerJob.execJob(None),
+           InitInstanceRenderWorkerJob.execJob(None),
            InitCustomGeometryRenderWorkerJob.execJob(None),
            InitBasicMaterialRenderWorkerJob.execJob(None),
            InitAmbientLightRenderWorkerJob.execJob(None),
@@ -126,18 +127,6 @@ let mainLoopAndRender =
 
 let dispose = (postMessageToRenderWorker, completeFunc) => {
   open Sinon;
-  /* let state = MainStateTool.unsafeGetState(); */
-  /* let (
-       state,
-       boxGeometryNeedDisposeVboBufferArr,
-       customGeometryNeedDisposeVboBufferArr,
-       sourceInstanceNeedDisposeVboBufferArr
-     ) =
-       DisposeJobUtils.execJob(
-         DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentForWorker,
-         state
-       );
-       WonderLog.Log.print(sourceInstanceNeedDisposeVboBufferArr) |> ignore; */
   let args =
     postMessageToRenderWorker
     |> withOneArg({

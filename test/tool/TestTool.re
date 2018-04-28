@@ -1,32 +1,10 @@
-let buildBufferJsObj =
-    (
-      ~customGeometryPointDataBufferCount=300,
-      ~transformDataBufferCount=50,
-      ~basicMaterialDataBufferCount=50,
-      ~lightMaterialDataBufferCount=50,
-      ()
-    ) => {
-  "customGeometryPointDataBufferCount": customGeometryPointDataBufferCount,
-  "transformDataBufferCount": transformDataBufferCount,
-  "basicMaterialDataBufferCount": basicMaterialDataBufferCount,
-  "lightMaterialDataBufferCount": lightMaterialDataBufferCount
-};
-
-let _buildBufferConfigStr = (buffer) =>
-  SettingTool.buildBufferConfigStr(
-    ~customGeometryPointDataBufferCount=buffer##customGeometryPointDataBufferCount,
-    ~transformDataBufferCount=buffer##transformDataBufferCount,
-    ~basicMaterialDataBufferCount=buffer##basicMaterialDataBufferCount,
-    ~lightMaterialDataBufferCount=buffer##lightMaterialDataBufferCount,
-    ()
-  );
-
-let initWithoutBuildFakeDom = (~sandbox, ~isDebug="true", ~buffer=buildBufferJsObj(), ()) => {
+let initWithoutBuildFakeDom =
+    (~sandbox, ~isDebug="true", ~buffer=SettingTool.buildBufferConfigStr(), ()) => {
   Random.init(1);
-  SettingTool.createStateAndSetToStateData(~isDebug, ~buffer=_buildBufferConfigStr(buffer), ())
+  SettingTool.createStateAndSetToStateData(~isDebug, ~buffer, ())
 };
 
-let init = (~sandbox, ~isDebug="true", ~buffer=buildBufferJsObj(), ()) => {
+let init = (~sandbox, ~isDebug="true", ~buffer=SettingTool.buildBufferConfigStr(), ()) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   initWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ())
 };
@@ -47,7 +25,7 @@ let initWithJobConfigWithoutBuildFakeDom =
         }
                |},
       ~useHardwareInstance="true",
-      ~buffer=buildBufferJsObj(),
+      ~buffer=SettingTool.buildBufferConfigStr(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()
@@ -55,7 +33,7 @@ let initWithJobConfigWithoutBuildFakeDom =
   SettingTool.createStateAndSetToStateData(
     ~isDebug,
     ~canvasId,
-    ~buffer=_buildBufferConfigStr(buffer),
+    ~buffer,
     ~context,
     ~useHardwareInstance,
     ()
@@ -71,7 +49,7 @@ let initWithJobConfig =
     (
       ~sandbox,
       ~isDebug="true",
-      ~buffer=buildBufferJsObj(),
+      ~buffer=SettingTool.buildBufferConfigStr(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ()

@@ -1,3 +1,3 @@
 open RenderWorkerSettingType;
 
-let create = () => {gpu: None, memory: None};
+let create = () => {gpu: None, memory: None, instanceBuffer: None};

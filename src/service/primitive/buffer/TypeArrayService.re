@@ -17,6 +17,9 @@ let getFloat3 = (index: int, typeArray: Float32Array.t) => [|
 let getFloat3TypeArray = (index: int, typeArray: Float32Array.t) =>
   Float32Array.subarray(~start=index, ~end_=index + 3, typeArray);
 
+let getUint32TypeArray = (index: int, count, typeArray: Uint32Array.t) =>
+  Uint32Array.subarray(~start=index, ~end_=index + count - 1, typeArray);
+
 let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index),
   Float32Array.unsafe_get(typeArray, index + 1),

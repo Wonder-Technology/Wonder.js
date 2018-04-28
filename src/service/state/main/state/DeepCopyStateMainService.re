@@ -8,11 +8,10 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     |> RecordLightMaterialMainService.deepCopyForRestore
     |> RecordBoxGeometryMainService.deepCopyForRestore
     |> RecordCustomGeometryMainService.deepCopyForRestore
-
+    |> RecordSourceInstanceMainService.deepCopyForRestore
     |> RecordAmbientLightMainService.deepCopyForRestore
     |> RecordDirectionLightMainService.deepCopyForRestore
     |> RecordPointLightMainService.deepCopyForRestore;
-
   {
     ...state,
     gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
@@ -24,8 +23,6 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
       ),
     meshRendererRecord: RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
     typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
-    sourceInstanceRecord:
-      RecordSourceInstanceService.deepCopyForRestore(state.sourceInstanceRecord),
     objectInstanceRecord:
       RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
     vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),

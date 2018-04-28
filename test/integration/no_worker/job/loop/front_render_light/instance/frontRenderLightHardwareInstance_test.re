@@ -18,12 +18,15 @@ let _ =
             RenderJobsTool.initWithJobConfigAndBufferConfig(
               sandbox,
               LoopRenderJobTool.buildNoWorkerJobConfig(),
-              {
-                "customGeometryPointDataBufferCount": 300,
-                "transformDataBufferCount": 500,
-                "basicMaterialDataBufferCount": 50,
-                "lightMaterialDataBufferCount": 50
-              }
+              SettingTool.buildBufferConfigStr(
+                ~customGeometryPointDataBufferCount=300,
+                ~transformDataBufferCount=500,
+                ~basicMaterialDataBufferCount=50,
+                ~lightMaterialDataBufferCount=50,
+                ~sourceInstanceCount=3,
+                ~objectInstanceCountPerSourceInstance=100,
+                ()
+              )
             )
         }
       );

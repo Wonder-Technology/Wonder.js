@@ -43,24 +43,18 @@ let _disposeData = (objectInstance: objectInstance, {objectInstanceRecord} as st
   }
 };
 
-let _disposeObjectInstance =
-    (sourceInstance, objectInstanceTransform, {sourceInstanceRecord} as state) => {
-  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
-  objectInstanceTransformArrayMap
-  |> GetObjectInstanceArrayService.unsafeGetObjectInstanceTransformArray(sourceInstance)
-  |> removeFromArray(objectInstanceTransform)
-  |> ignore;
-  state
-};
-
 let _batchDisposeObjectInstance =
-    (sourceInstance, isUidDisposedMap, disposedUidArr, {sourceInstanceRecord} as state) => {
-  let {objectInstanceTransformArrayMap} = sourceInstanceRecord;
-  objectInstanceTransformArrayMap
-  |> WonderCommonlib.SparseMapService.set(
-       sourceInstance,
-       batchRemoveFromArray(isUidDisposedMap, disposedUidArr)
-     )
+    (sourceInstance, objectInstanceTransformArray, {settingRecord} as state) => {
+  let {objectInstanceTransformCollections, objectInstanceTransformIndexMap} =
+    RecordSourceInstanceMainService.getRecord(state);
+  let objectInstanceCountPerSourceInstance =
+    BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord);
+  ObjectInstanceCollectionService.batchRemoveObjectInstanceTransform(
+    sourceInstance,
+    objectInstanceTransformArray,
+    objectInstanceCountPerSourceInstance,
+    (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+  )
   |> ignore;
   state
 };
@@ -68,7 +62,7 @@ let _batchDisposeObjectInstance =
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (objectInstanceArray: array(objectInstance), {objectInstanceRecord} as state) => {
+    (objectInstanceArray: array(objectInstance), {objectInstanceRecord, gameObjectRecord} as state) => {
       WonderLog.Contract.requireCheck(
         () => {
           open WonderLog;
@@ -114,29 +108,21 @@ let handleBatchDisposeComponent =
         ...objectInstanceRecord,
         disposedIndexArray: disposedIndexArray |> Js.Array.concat(objectInstanceArray)
       };
-      let disposedUidArr =
+      let objectInstanceTransformArray =
         objectInstanceArray
         |> Js.Array.map(
              (objectInstance) =>
-               GameObjectObjectInstanceService.unsafeGetGameObject(
-                 objectInstance,
-                 objectInstanceRecord
+               GetComponentGameObjectService.unsafeGetTransformComponent(
+                 GameObjectObjectInstanceService.unsafeGetGameObject(
+                   objectInstance,
+                   objectInstanceRecord
+                 ),
+                 gameObjectRecord
                )
            );
-      let isGameObjectDisposedMap =
-        DisposeECSService.buildMapFromArray(
-          disposedUidArr,
-          WonderCommonlib.SparseMapService.createEmpty()
-        );
       let sourceInstance = _unsafeGetSourceInstance(objectInstanceArray[0], objectInstanceRecord);
       let state = {...state, objectInstanceRecord};
-      let state =
-        _batchDisposeObjectInstance(
-          sourceInstance,
-          isGameObjectDisposedMap,
-          disposedUidArr,
-          state
-        );
+      let state = _batchDisposeObjectInstance(sourceInstance, objectInstanceTransformArray, state);
       objectInstanceArray
       |> ReduceStateMainService.reduceState(
            [@bs] ((state, objectInstance) => state |> _disposeData(objectInstance)),

@@ -10,19 +10,9 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(sourceInstance, disposedIndexArray);
 
 let _disposeObjectInstanceGameObject =
-    (
-      sourceInstance: sourceInstance,
-      isKeepOrder,
-      batchDisposeGameObjectFunc,
-      {sourceInstanceRecord} as state
-    ) => {
-  let transformRecord = RecordTransformMainService.getRecord(state);
+    (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGameObjectFunc, state) => {
   let objectInstanceGameObjectArr =
-    GetObjectInstanceArrayMainService.getObjectInstanceArray(
-      sourceInstance,
-      sourceInstanceRecord,
-      transformRecord
-    )
+    GetObjectInstanceArrayMainService.getObjectInstanceArray(sourceInstance, state)
     |> Js.Array.copy;
   batchDisposeGameObjectFunc(objectInstanceGameObjectArr, isKeepOrder, state)
   |> WonderLog.Contract.ensureCheck(
@@ -64,43 +54,54 @@ let _disposeObjectInstanceGameObject =
 };
 
 let _disposeData = (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGameObjectFunc, state) => {
-  let ({sourceInstanceRecord, typeArrayPoolRecord, settingRecord} as state, _, _, _) =
+  let ({typeArrayPoolRecord, settingRecord} as state, _, _, _) =
     state
     |> _disposeObjectInstanceGameObject(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc);
   let {
-        objectInstanceTransformArrayMap,
+        objectInstanceTransformIndexMap,
         matrixFloat32ArrayMap,
         matrixInstanceBufferCapacityMap,
-        isTransformStaticMap,
+        isTransformStatics,
         isSendTransformMatrixDataMap,
         gameObjectMap
-      } as record = sourceInstanceRecord;
+      } as record =
+    RecordSourceInstanceMainService.getRecord(state);
   {
     ...state,
-    sourceInstanceRecord: {
-      ...record,
-      objectInstanceTransformArrayMap:
-        objectInstanceTransformArrayMap |> disposeSparseMapData(sourceInstance),
-      matrixFloat32ArrayMap:
-        DisposeSourceInstanceAllService.disposeMatrixFloat32ArrayMap(
-          sourceInstance,
-          MemorySettingService.getMaxBigTypeArrayPoolSize(state.settingRecord),
-          matrixFloat32ArrayMap,
-          typeArrayPoolRecord
-        ),
-      matrixInstanceBufferCapacityMap:
-        DisposeSourceInstanceAllService.disposeMatrixInstanceBufferCapacityMap(
-          sourceInstance,
-          matrixInstanceBufferCapacityMap
-        ),
-      isSendTransformMatrixDataMap:
-        DisposeSourceInstanceAllService.disposeIsSendTransformMatrixDataMap(
-          sourceInstance,
-          isSendTransformMatrixDataMap
-        ),
-      isTransformStaticMap: isTransformStaticMap |> disposeSparseMapData(sourceInstance),
-      gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
-    }
+    sourceInstanceRecord:
+      Some({
+        ...record,
+        objectInstanceTransformIndexMap:
+          ObjectInstanceCollectionService.resetObjectInstanceTransformIndexMap(
+            sourceInstance,
+            objectInstanceTransformIndexMap
+          ),
+        matrixFloat32ArrayMap:
+          DisposeSourceInstanceAllService.disposeMatrixFloat32ArrayMap(
+            sourceInstance,
+            MemorySettingService.getMaxBigTypeArrayPoolSize(state.settingRecord),
+            matrixFloat32ArrayMap,
+            typeArrayPoolRecord
+          ),
+        matrixInstanceBufferCapacityMap:
+          DisposeSourceInstanceAllService.disposeMatrixInstanceBufferCapacityMap(
+            sourceInstance,
+            matrixInstanceBufferCapacityMap
+          ),
+        isSendTransformMatrixDataMap:
+          DisposeSourceInstanceAllService.disposeIsSendTransformMatrixDataMap(
+            sourceInstance,
+            isSendTransformMatrixDataMap
+          ),
+        isTransformStatics:
+          [@bs]
+          DisposeTypeArrayService.deleteAndResetUint8(
+            sourceInstance,
+            StaticTransformService.getDefault(),
+            isTransformStatics
+          ),
+        gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
+      })
   }
 };
 
@@ -113,7 +114,7 @@ let handleBatchDisposeComponent =
       batchDisposeGameObjectFunc:
         (array(int), bool, StateDataMainType.state) =>
         (StateDataMainType.state, array(int), array(int), array(int)),
-      {sourceInstanceRecord} as state
+      state
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -123,20 +124,21 @@ let handleBatchDisposeComponent =
                 DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
                   sourceInstanceArray,
                   isAlive,
-                  sourceInstanceRecord
+                  RecordSourceInstanceMainService.getRecord(state)
                 )
               )
             )
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
-      let {disposedIndexArray} = sourceInstanceRecord;
+      let {disposedIndexArray} as sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
       let state = {
         ...state,
-        sourceInstanceRecord: {
-          ...sourceInstanceRecord,
-          disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
-        }
+        sourceInstanceRecord:
+          Some({
+            ...sourceInstanceRecord,
+            disposedIndexArray: disposedIndexArray |> Js.Array.concat(sourceInstanceArray)
+          })
       };
       (
         sourceInstanceArray

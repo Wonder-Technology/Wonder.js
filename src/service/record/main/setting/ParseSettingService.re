@@ -31,7 +31,17 @@ let convertToRecord = (setting) => {
                  json |> field("custom_geometry_point_data_buffer_count", int),
                transformDataBufferCount: json |> field("transform_data_buffer_count", int),
                basicMaterialDataBufferCount: json |> field("basic_material_data_buffer_count", int),
-               lightMaterialDataBufferCount: json |> field("light_material_data_buffer_count", int)
+               lightMaterialDataBufferCount: json |> field("light_material_data_buffer_count", int),
+               instanceBuffer:
+                 json
+                 |> field(
+                      "instanceBuffer",
+                      (json) => {
+                        sourceInstanceCount: json |> field("sourceInstanceCount", int),
+                        objectInstanceCountPerSourceInstance:
+                          json |> field("objectInstanceCountPerSourceInstance", int)
+                      }
+                    )
              }
            )
          ),

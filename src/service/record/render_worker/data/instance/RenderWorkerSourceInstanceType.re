@@ -1,9 +1,10 @@
 open InstanceType;
 
 type sourceInstanceRecord = {
-  objectInstanceTransformArrayMap: option(objectInstanceTransformArrayMap),
+  objectInstanceTransformIndexMap: option(objectInstanceTransformIndexMap),
+  objectInstanceTransformCollections: option(objectInstanceTransformCollections),
+  isTransformStatics: option(isTransformStatics),
   matrixInstanceBufferCapacityMap,
   matrixFloat32ArrayMap: array(Js.Typed_array.Float32Array.t),
-  isTransformStaticMap: option(isTransformStaticMap),
   isSendTransformMatrixDataMap
 };

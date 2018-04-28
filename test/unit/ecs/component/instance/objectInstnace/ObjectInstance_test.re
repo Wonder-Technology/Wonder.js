@@ -44,22 +44,29 @@ let _ =
                 }
               );
               test(
-                "remove from sourceInstance->objectInstanceTransformArrayMap",
+                "remove from sourceInstance->objectInstanceTransformCollections",
                 () => {
                   open ObjectInstanceType;
                   open SourceInstanceType;
+                  let (state, transform) = TransformAPI.createTransform(state^);
                   let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
-                    ObjectInstanceTool.createObjectInstanceGameObject(state^);
+                    ObjectInstanceTool.createObjectInstanceGameObject(state);
                   let state =
                     state
                     |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
                          gameObject,
                          objectInstance
                        );
-                  let {objectInstanceTransformArrayMap} = SourceInstanceTool.getRecord(state);
-                  objectInstanceTransformArrayMap
-                  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
-                  |> WonderCommonlib.SparseMapService.has(objectInstance)
+                  SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
+                    sourceInstance,
+                    state
+                  )
+                  |> Js.Array.includes(
+                       GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                         objectInstanceGameObject,
+                         state
+                       )
+                     )
                   |> expect == false
                 }
               )

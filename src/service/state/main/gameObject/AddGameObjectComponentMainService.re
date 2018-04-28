@@ -253,13 +253,14 @@ let addPointLightComponent =
   state
 };
 
-let addSourceInstanceComponent =
-    (uid: int, component: component, {sourceInstanceRecord, gameObjectRecord} as state) => {
+let addSourceInstanceComponent = (uid: int, component: component, {gameObjectRecord} as state) => {
   state.sourceInstanceRecord =
-    _addComponent(
-      (uid, component, gameObjectRecord.sourceInstanceMap),
-      AddSourceInstanceService.handleAddComponent,
-      sourceInstanceRecord
+    Some(
+      _addComponent(
+        (uid, component, gameObjectRecord.sourceInstanceMap),
+        AddSourceInstanceService.handleAddComponent,
+        RecordSourceInstanceMainService.getRecord(state)
+      )
     );
   state
 };

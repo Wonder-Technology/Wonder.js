@@ -4,10 +4,12 @@ open InstanceType;
 
 type sourceInstanceRecord = {
   index: int,
-  objectInstanceTransformArrayMap,
+  objectInstanceTransformIndexMap,
+  buffer: WorkerType.sharedArrayBuffer,
+  isTransformStatics,
+  objectInstanceTransformCollections,
   matrixInstanceBufferCapacityMap,
   matrixFloat32ArrayMap: array(Js.Typed_array.Float32Array.t),
-  isTransformStaticMap,
   isSendTransformMatrixDataMap,
   disposedIndexArray: array(sourceInstance),
   gameObjectMap

@@ -13,11 +13,17 @@ type memory = {
   maxBigTypeArrayPoolSize: int
 };
 
+type instanceBuffer = {
+  sourceInstanceCount: int,
+  objectInstanceCountPerSourceInstance: int
+};
+
 type buffer = {
   customGeometryPointDataBufferCount: int,
   transformDataBufferCount: int,
   basicMaterialDataBufferCount: int,
-  lightMaterialDataBufferCount: int
+  lightMaterialDataBufferCount: int,
+  instanceBuffer
 };
 
 type worker = {useWorker: bool};

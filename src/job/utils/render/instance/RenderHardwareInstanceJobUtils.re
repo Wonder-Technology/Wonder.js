@@ -8,26 +8,26 @@ open InstanceBufferRenderService;
 
 let _fillObjectInstanceData =
     (
-      objectInstanceTransformArray,
+      objectInstanceTransformDataTuple,
       matricesArrayForInstance,
       fillMatrixTypeArrFunc,
       stateOffsetTuple
     ) => {
   let (state, offset) =
-    objectInstanceTransformArray
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (stateOffsetTuple, objectInstanceTransform) =>
-             [@bs]
-             fillMatrixTypeArrFunc(
-               objectInstanceTransform,
-               matricesArrayForInstance,
-               stateOffsetTuple
-             )
-         ),
-         stateOffsetTuple
-       );
+    ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
+      objectInstanceTransformDataTuple,
+      stateOffsetTuple,
+      [@bs]
+      (
+        (stateOffsetTuple, objectInstanceTransform) =>
+          [@bs]
+          fillMatrixTypeArrFunc(
+            objectInstanceTransform,
+            matricesArrayForInstance,
+            stateOffsetTuple
+          )
+      )
+    );
   state
 };
 
@@ -87,7 +87,7 @@ let _sendTransformMatrixData =
           defaultCapacity,
           strideForCapacity,
           strideForSend,
-          objectInstanceTransformArray,
+          objectInstanceTransformDataTuple,
           instanceRenderListCount
         ),
         (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
@@ -117,7 +117,7 @@ let _sendTransformMatrixData =
     );
   [@bs] fillMatrixTypeArrFunc(transformIndex, matricesArrayForInstance, (state, 0))
   |> _fillObjectInstanceData(
-       objectInstanceTransformArray,
+       objectInstanceTransformDataTuple,
        matricesArrayForInstance,
        fillMatrixTypeArrFunc
      )
@@ -133,21 +133,15 @@ let _sendStaticTransformMatrixData =
       (transformIndex, sourceInstance) as componentTuple,
       (
         (gl, extension, shaderIndex),
-        (
-          defaultCapacity,
-          strideForCapacity,
-          strideForSend,
-          _,
-          instanceRenderListCount
-        ),
+        (defaultCapacity, strideForCapacity, strideForSend, _, instanceRenderListCount),
         (matrixInstanceBufferCapacityMap, matrixInstanceBufferMap, matrixFloat32ArrayMap)
       ) as dataTuple,
       fillMatrixTypeArrFunc,
       state
     ) =>
-  StaticRenderSourceInstanceService.isSendTransformMatrixData(
+  MarkIsSendTransformMatrixDataService.isSendTransformMatrixData(
     sourceInstance,
-    state.sourceInstanceRecord
+    state.sourceInstanceRecord.isSendTransformMatrixDataMap
   ) ?
     {
       InstanceBufferRenderService.bind(
@@ -199,19 +193,18 @@ let _renderSourceInstanceGameObject = (gl, indexTuple, renderFunc, state) =>
 let _prepareData =
     (gl, shaderIndex, (sourceInstance, defaultCapacity, strideForCapacity, strideForSend), state) => {
   let extension = GPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
-  let objectInstanceTransformArray =
-    GetObjectInstanceArrayRenderService.getObjectInstanceTransformArray(
-      sourceInstance,
-      state.sourceInstanceRecord
-    );
-  let instanceRenderListCount = Js.Array.length(objectInstanceTransformArray) + 1;
+  let (objectInstanceTransformIndex, objectInstanceTransformDataTuple) =
+    BuildObjectInstanceTransformDataTupleUtils.build(sourceInstance, state);
+  let instanceRenderListCount =
+    ObjectInstanceCollectionService.getObjectInstanceTransformCount(objectInstanceTransformIndex)
+    + 1;
   (
     (gl, extension, shaderIndex),
     (
       defaultCapacity,
       strideForCapacity,
       strideForSend,
-      objectInstanceTransformArray,
+      objectInstanceTransformDataTuple,
       instanceRenderListCount
     ),
     _geMatrixMapTuple(state)

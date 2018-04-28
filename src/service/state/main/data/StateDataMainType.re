@@ -108,7 +108,7 @@ and state = {
   workerJobRecord: option(workerJobRecord),
   renderConfigRecord: option(renderConfigRecord),
   gpuDetectRecord,
-  mutable sourceInstanceRecord,
+  mutable sourceInstanceRecord: option(sourceInstanceRecord),
   mutable objectInstanceRecord,
   mutable viewRecord,
   deviceManagerRecord,

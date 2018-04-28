@@ -44,6 +44,9 @@
                         "name": "init_state"
                     },
                     {
+                        "name": "init_instance"
+                    },
+                    {
                         "name": "init_custom_geometry"
                     },
                     {
@@ -70,13 +73,13 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "get_instance_data"
+                    },
+                    {
                         "name": "get_direction_light_data"
                     },
                     {
                         "name": "get_point_light_data"
-                    },
-                    {
-                        "name": "get_instance_data"
                     },
                     {
                         "name": "init_material_for_render"
