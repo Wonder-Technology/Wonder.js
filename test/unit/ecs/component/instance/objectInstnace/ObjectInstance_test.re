@@ -49,25 +49,32 @@ let _ =
                   open ObjectInstanceType;
                   open SourceInstanceType;
                   let (state, transform) = TransformAPI.createTransform(state^);
-                  let (state, gameObject, sourceInstance, objectInstanceGameObject, objectInstance) =
-                    ObjectInstanceTool.createObjectInstanceGameObject(state);
+                  let (
+                    state,
+                    gameObject,
+                    sourceInstance,
+                    objectInstanceGameObjectArr,
+                    objectInstanceArr
+                  ) =
+                    ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state);
                   let state =
                     state
-                    |> GameObjectTool.disposeGameObjectObjectInstanceComponent(
-                         gameObject,
-                         objectInstance
+                    |> GameObjectTool.batchDisposeGameObject(
+                         objectInstanceGameObjectArr |> Js.Array.slice_start(1)
                        );
-                  SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
-                    sourceInstance,
-                    state
-                  )
-                  |> Js.Array.includes(
-                       GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                         objectInstanceGameObject,
-                         state
-                       )
-                     )
-                  |> expect == false
+                  let sourceInstanceObjectInstanceTransformArray =
+                    SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
+                      sourceInstance,
+                      state
+                    );
+                  sourceInstanceObjectInstanceTransformArray
+                  |>
+                  expect == [|
+                              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                                objectInstanceGameObjectArr[0],
+                                state
+                              )
+                            |]
                 }
               )
             }

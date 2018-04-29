@@ -149,26 +149,31 @@ let batchRemoveObjectInstanceTransform =
   let objectInstanceTransformIndex =
     objectInstanceTransformIndexMap |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
   (
-    objectInstanceTransformIndexMap
-    |> WonderCommonlib.SparseMapService.set(
-         sourceInstance,
-         objectInstanceTransformIndex - Js.Array.length(objectInstanceTransformArray)
-       ),
-    objectInstanceTransformArray
-    |> Js.Array.reducei(
-         (objectInstanceTransformCollections, objectInstanceTransform, i) =>
-           objectInstanceTransformCollections
-           |> DisposeTypeArrayService.deleteSingleValueBySwapUint32TypeArr(
-                objectInstanceTransformCollections
-                |> Js.Typed_array.Uint32Array.indexOf(objectInstanceTransform),
-                BufferSourceInstanceService.getObjectInstanceTransformIndex(
-                  sourceInstance,
-                  objectInstanceTransformIndex - i,
-                  objectInstanceCountPerSourceInstance
-                )
-              ),
-         objectInstanceTransformCollections
-       )
+    switch objectInstanceTransformIndex {
+    | 0 => (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+    | _ => (
+        objectInstanceTransformIndexMap
+        |> WonderCommonlib.SparseMapService.set(
+             sourceInstance,
+             objectInstanceTransformIndex - Js.Array.length(objectInstanceTransformArray)
+           ),
+        objectInstanceTransformArray
+        |> Js.Array.reducei(
+             (objectInstanceTransformCollections, objectInstanceTransform, i) =>
+               objectInstanceTransformCollections
+               |> DisposeTypeArrayService.deleteSingleValueBySwapUint32TypeArr(
+                    objectInstanceTransformCollections
+                    |> Js.Typed_array.Uint32Array.indexOf(objectInstanceTransform),
+                    BufferSourceInstanceService.getObjectInstanceTransformIndex(
+                      sourceInstance,
+                      objectInstanceTransformIndex - i,
+                      objectInstanceCountPerSourceInstance
+                    )
+                  ),
+             objectInstanceTransformCollections
+           )
+      )
+    }
   )
   |> WonderLog.Contract.ensureCheck(
        ((objectInstanceTransformIndexMap, objectInstanceTransformCollections)) => {

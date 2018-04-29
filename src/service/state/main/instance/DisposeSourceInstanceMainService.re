@@ -10,10 +10,7 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(sourceInstance, disposedIndexArray);
 
 let _disposeObjectInstanceGameObject =
-    (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGameObjectFunc, state) => {
-  let objectInstanceGameObjectArr =
-    GetObjectInstanceArrayMainService.getObjectInstanceArray(sourceInstance, state)
-    |> Js.Array.copy;
+    (objectInstanceGameObjectArr, isKeepOrder, batchDisposeGameObjectFunc, state) =>
   batchDisposeGameObjectFunc(objectInstanceGameObjectArr, isKeepOrder, state)
   |> WonderLog.Contract.ensureCheck(
        (
@@ -50,13 +47,15 @@ let _disposeObjectInstanceGameObject =
          )
        },
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     )
-};
+     );
 
-let _disposeData = (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGameObjectFunc, state) => {
-  let ({typeArrayPoolRecord, settingRecord} as state, _, _, _) =
-    state
-    |> _disposeObjectInstanceGameObject(sourceInstance, isKeepOrder, batchDisposeGameObjectFunc);
+let _disposeData =
+    (
+      sourceInstance: sourceInstance,
+      isKeepOrder,
+      batchDisposeGameObjectFunc,
+      {typeArrayPoolRecord, settingRecord} as state
+    ) => {
   let {
         objectInstanceTransformIndexMap,
         matrixFloat32ArrayMap,
@@ -66,7 +65,9 @@ let _disposeData = (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGam
         gameObjectMap
       } as record =
     RecordSourceInstanceMainService.getRecord(state);
-  {
+  let objectInstanceGameObjectArr =
+    GetObjectInstanceArrayMainService.getObjectInstanceArray(sourceInstance, state);
+  let state = {
     ...state,
     sourceInstanceRecord:
       Some({
@@ -102,7 +103,15 @@ let _disposeData = (sourceInstance: sourceInstance, isKeepOrder, batchDisposeGam
           ),
         gameObjectMap: gameObjectMap |> disposeSparseMapData(sourceInstance)
       })
-  }
+  };
+  let (state, _, _, _) =
+    state
+    |> _disposeObjectInstanceGameObject(
+         objectInstanceGameObjectArr,
+         isKeepOrder,
+         batchDisposeGameObjectFunc
+       );
+  state
 };
 
 let handleBatchDisposeComponent =
@@ -131,7 +140,8 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
-      let {disposedIndexArray} as sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
+      let {disposedIndexArray} as sourceInstanceRecord =
+        RecordSourceInstanceMainService.getRecord(state);
       let state = {
         ...state,
         sourceInstanceRecord:
