@@ -20,7 +20,10 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
     sourceInstanceNeedDisposeVboBufferArr
   ) =
     DisposeGameObjectMainService.batchDispose(
-      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+      (
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent
+      ),
       gameObjectArray,
       false,
       state
@@ -48,7 +51,10 @@ let batchDisposeGameObjectKeepOrder =
     sourceInstanceNeedDisposeVboBufferArr
   ) =
     DisposeGameObjectMainService.batchDispose(
-      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+      (
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent
+      ),
       gameObjectArray,
       true,
       state
@@ -146,9 +152,10 @@ let disposeGameObjectSourceInstanceComponent =
     DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
       state,
       false,
-      DisposeGameObjectMainService.batchDispose(
-        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent
-      ),
+      DisposeGameObjectMainService.batchDispose((
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent
+      )),
       [|component|]
     );
   state

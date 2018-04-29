@@ -3,7 +3,11 @@ open StateDataMainType;
 open GameObjectType;
 
 let _disposeComponents =
-    (batchDisposeBasicMaterialComponentFunc, {settingRecord, gameObjectRecord} as state) => {
+    (
+      batchDisposeBasicMaterialComponentFunc,
+      batchDisposeLightMaterialComponentFunc,
+      {settingRecord, gameObjectRecord} as state
+    ) => {
   let {
     disposedBasicCameraViewArray,
     disposedTransformArray,
@@ -36,9 +40,7 @@ let _disposeComponents =
     disposedTransformArrayForKeepOrder
     |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state, true);
   let state = disposedBasicMaterialArray |> batchDisposeBasicMaterialComponentFunc(state);
-  let state =
-    disposedLightMaterialArray
-    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(state);
+  let state = disposedLightMaterialArray |> batchDisposeLightMaterialComponentFunc(state);
   let (state, boxGeometryNeedDisposeVboBufferArr) =
     disposedBoxGeometryArray
     |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(state);
@@ -50,7 +52,10 @@ let _disposeComponents =
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
          false,
-         DisposeGameObjectMainService.batchDispose(batchDisposeBasicMaterialComponentFunc)
+         DisposeGameObjectMainService.batchDispose((
+           batchDisposeLightMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc
+         ))
        );
   let state =
     disposedObjectInstanceArray
@@ -81,7 +86,12 @@ let _disposeComponents =
   )
 };
 
-let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRecord} as state) => {
+let _disposeGameObjects =
+    (
+      batchDisposeBasicMaterialComponentFunc,
+      batchDisposeLightMaterialComponentFunc,
+      {gameObjectRecord} as state
+    ) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
   let (
     state,
@@ -91,7 +101,7 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
-         batchDisposeBasicMaterialComponentFunc,
+         (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc),
          disposedUidArray,
          false
        );
@@ -103,7 +113,7 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
-         batchDisposeBasicMaterialComponentFunc,
+         (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc),
          disposedUidArrayForKeepOrder,
          true
        );
@@ -119,21 +129,30 @@ let _disposeGameObjects = (batchDisposeBasicMaterialComponentFunc, {gameObjectRe
   )
 };
 
-let execJob = (batchDisposeBasicMaterialComponentFunc, state) => {
+let execJob =
+    (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc, state) => {
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromComponent,
     customGeometryNeedDisposeVboBufferArrFromComponent,
     sourceInstanceNeedDisposeVboBufferArrFromComponent
   ) =
-    state |> _disposeComponents(batchDisposeBasicMaterialComponentFunc);
+    state
+    |> _disposeComponents(
+         batchDisposeBasicMaterialComponentFunc,
+         batchDisposeLightMaterialComponentFunc
+       );
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromGameObject,
     customGeometryNeedDisposeVboBufferArrFromGameObject,
     sourceInstanceNeedDisposeVboBufferArrFromGameObject
   ) =
-    state |> _disposeGameObjects(batchDisposeBasicMaterialComponentFunc);
+    state
+    |> _disposeGameObjects(
+         batchDisposeBasicMaterialComponentFunc,
+         batchDisposeLightMaterialComponentFunc
+       );
   (
     state,
     boxGeometryNeedDisposeVboBufferArrFromComponent

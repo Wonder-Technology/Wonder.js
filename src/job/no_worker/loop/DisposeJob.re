@@ -11,6 +11,7 @@ let execJob = (flags, state) => {
   ) =
     DisposeJobUtils.execJob(
       DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
+      DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentForWorker,
       state
     );
   {

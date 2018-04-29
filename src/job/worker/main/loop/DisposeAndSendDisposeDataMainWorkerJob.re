@@ -34,6 +34,7 @@ let execJob = (flags, stateData) =>
       ) =
         DisposeJobUtils.execJob(
           DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentForWorker,
+          DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentForWorker,
           state
         );
       _sendDisposeData(
