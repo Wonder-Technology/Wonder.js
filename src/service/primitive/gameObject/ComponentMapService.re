@@ -3,9 +3,6 @@ open ComponentType;
 let getComponent = (uid: int, componentMap: array(int)) : option(component) =>
   WonderCommonlib.SparseMapService.get(uid, componentMap);
 
-let hasComponent = (uid: int, componentMap: array(int)) : bool =>
-  Js.Option.isSome(getComponent(uid, componentMap));
-
 let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
   WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap)
   |> WonderLog.Contract.ensureCheck(
@@ -22,6 +19,9 @@ let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
+
+let hasComponent = (uid: int, componentMap: array(int)) : bool =>
+  WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap) |> Obj.magic !== Js.Undefined.empty;
 
 let addComponent = (uid: int, component: component, componentMap: array(int)) => {
   WonderLog.Contract.requireCheck(
