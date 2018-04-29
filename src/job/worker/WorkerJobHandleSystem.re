@@ -16,6 +16,7 @@ let _getMainLoopJobHandles = () => [
   ("update_camera", UpdateCameraMainWorkerJob.execJob),
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
   ("dispose_and_send_dispose_data", DisposeAndSendDisposeDataMainWorkerJob.execJob),
+  ("reallocate_cpu_memory", ReallocateCPUMemoryMainWorkerJob.execJob),
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
   ("create_light_render_object_buffer", CreateLightRenderObjectBufferMainWorkerJob.execJob),
   ("send_render_data", SendRenderDataMainWorkerJob.execJob),

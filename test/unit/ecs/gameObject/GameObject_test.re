@@ -783,7 +783,7 @@ let _ =
           );
           describe(
             "test reallocate gameObject",
-            () =>
+            () => {
               describe(
                 "if have dispose too many gameObjects, reallocate gameObject",
                 () => {
@@ -1139,7 +1139,69 @@ let _ =
                     }
                   )
                 }
+              );
+              describe(
+                "optimize: should only reallocate once in one loop",
+                () => {
+                  test(
+                    "test can correctly reallocate",
+                    () => {
+                      let (state, gameObject1, gameObject2, gameObject3) =
+                        ReallocateGameObjectCPUMemoryTool.prepareForOptimize(state);
+                      ReallocateGameObjectCPUMemoryTool.judgeForOptimize(
+                        state,
+                        gameObject1,
+                        gameObject2,
+                        gameObject3
+                      )
+                    }
+                  );
+                  test(
+                    "test dispose sourceInstance",
+                    () => {
+                      open GameObjectType;
+                      let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
+                      let (
+                        state,
+                        gameObject1,
+                        sourceInstance1,
+                        objectInstanceGameObject1,
+                        objectInstance1
+                      ) =
+                        ObjectInstanceTool.createObjectInstanceGameObject(state);
+                      let (
+                        state,
+                        gameObject2,
+                        sourceInstance2,
+                        objectInstanceGameObject2,
+                        objectInstance2
+                      ) =
+                        ObjectInstanceTool.createObjectInstanceGameObject(state);
+                      let (
+                        state,
+                        gameObject3,
+                        sourceInstance3,
+                        objectInstanceGameObject3,
+                        objectInstance3
+                      ) =
+                        ObjectInstanceTool.createObjectInstanceGameObject(state);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+                      let state = state |> GameObjectTool.disposeGameObject(gameObject2);
+                      let {objectInstanceMap} = GameObjectTool.getGameObjectRecord(state);
+                      (
+                        objectInstanceMap
+                        |> WonderCommonlib.SparseMapService.has(objectInstanceGameObject1),
+                        objectInstanceMap
+                        |> WonderCommonlib.SparseMapService.has(objectInstanceGameObject2),
+                        objectInstanceMap
+                        |> WonderCommonlib.SparseMapService.has(objectInstanceGameObject3)
+                      )
+                      |> expect == (false, false, true)
+                    }
+                  )
+                }
               )
+            }
           )
         }
       );

@@ -45,5 +45,8 @@
     },
     {
         "name": "dispose"
+    },
+    {
+        "name": "reallocate_cpu_memory"
     }
 ]

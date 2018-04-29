@@ -189,14 +189,14 @@ let _ =
                   );
                   describe(
                     "test reallocate geometry",
-                    () =>
+                    () => {
+                      let _prepare = (state) => {
+                        let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ());
+                        CustomGeometryTool.createThreeGameObjectsAndSetPointData(state)
+                      };
                       describe(
                         "if have dispose too many geometrys, reallocate geometry",
                         () => {
-                          let _prepare = (state) => {
-                            let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ());
-                            CustomGeometryTool.createThreeGameObjectsAndSetPointData(state)
-                          };
                           describe(
                             "test type array data",
                             () =>
@@ -496,7 +496,34 @@ let _ =
                             }
                           )
                         }
+                      );
+                      describe(
+                        "optimize: should only reallocate once in one loop",
+                        () =>
+                          test(
+                            "test can correctly reallocate",
+                            () => {
+                              let (
+                                state,
+                                (gameObject1, gameObject2, gameObject3),
+                                (geometry1, geometry2, geometry3),
+                                (vertices1, vertices2, vertices3),
+                                (normals1, normals2, normals3),
+                                (indices1, indices2, indices3)
+                              ) =
+                                ReallocateCustomGeometryCPUMemoryTool.prepareForOptimize(state);
+                              ReallocateCustomGeometryCPUMemoryTool.judgeForOptimize(
+                                state,
+                                (gameObject1, gameObject2, gameObject3),
+                                (geometry1, geometry2, geometry3),
+                                (vertices1, vertices2, vertices3),
+                                (normals1, normals2, normals3),
+                                (indices1, indices2, indices3)
+                              )
+                            }
+                          )
                       )
+                    }
                   )
                 }
               )

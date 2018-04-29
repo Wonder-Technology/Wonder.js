@@ -26,6 +26,7 @@ let _getLoopJobHandles = () => [
   ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferJob.execJob),
   ("create_light_render_object_buffer", CreateLightRenderObjectBufferJob.execJob),
   ("dispose", DisposeJob.execJob),
+  ("reallocate_cpu_memory", ReallocateCPUMemoryJob.execJob),
   ("render_basic", RenderBasicJob.execJob),
   ("front_render_light", FrontRenderLightJob.execJob)
 ];

@@ -6,7 +6,7 @@ open DisposeComponentGameObjectMainService;
 
 open BatchGetComponentGameObjectMainService;
 
-let _batchDisposeGeometryComponent = (uidArray, disposedUidMap, state) => {
+let _batchDisposeGeometryComponent = (uidArray, state) => {
   let (boxGeometryArr, customGeometryArr) =
     state |> BatchGetComponentGameObjectMainService.batchGetGeometryComponentData(uidArray);
   let (state, boxGeometryNeedDisposeVboBufferArr) =
@@ -32,7 +32,7 @@ let batchDispose =
     |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(uidArray)
     |> batchDisposeTransformComponent(state, isKeepOrder);
   let (state, boxGeometryNeedDisposeVboBufferArr, customGeometryNeedDisposeVboBufferArr) =
-    state |> _batchDisposeGeometryComponent(uidArray, disposedUidMap);
+    state |> _batchDisposeGeometryComponent(uidArray);
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(uidArray)

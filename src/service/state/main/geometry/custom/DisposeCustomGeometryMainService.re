@@ -44,14 +44,6 @@ let _disposeData =
   groupCountMap: groupCountMap |> disposeSparseMapData(geometry)
 };
 
-let _handleByDisposeCount = (settingRecord, customGeometryRecord: customGeometryRecord) =>
-  if (QueryCPUMemoryService.isDisposeTooMany(customGeometryRecord.disposeCount, settingRecord)) {
-    customGeometryRecord.disposeCount = 0;
-    ReallocateCustomGeometryCPUMemoryService.reAllocate(customGeometryRecord)
-  } else {
-    customGeometryRecord
-  };
-
 let handleBatchDisposeComponent =
   [@bs]
   (
@@ -85,7 +77,6 @@ let handleBatchDisposeComponent =
                  | false => (
                      geometryNeedDisposeVboBufferArr |> ArrayService.push(geometry),
                      _disposeData(geometry, customGeometryRecord)
-                     |> _handleByDisposeCount(settingRecord)
                    )
                  | true => (
                      geometryNeedDisposeVboBufferArr,

@@ -28,6 +28,7 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
       false,
       state
     );
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
   {
     ...state,
     vboBufferRecord:
@@ -112,6 +113,7 @@ let disposeGameObjectCustomGeometryComponentWithoutVboBuffer =
       state,
       [|component|]
     );
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
   state
 };
 

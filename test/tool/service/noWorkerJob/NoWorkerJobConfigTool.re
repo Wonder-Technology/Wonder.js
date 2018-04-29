@@ -67,6 +67,9 @@ let buildNoWorkerLoopPipelineConfig = () => {|
                 "name": "dispose"
             },
             {
+                "name": "reallocate_cpu_memory"
+            },
+            {
                 "name": "update_transform"
             },
             {
@@ -152,6 +155,9 @@ let buildNoWorkerLoopJobConfig = () => {|
     },
             {
                 "name": "dispose"
+            },
+            {
+                "name": "reallocate_cpu_memory"
             }
 ]
         |};

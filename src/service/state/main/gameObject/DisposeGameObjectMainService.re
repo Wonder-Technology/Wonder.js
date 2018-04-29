@@ -2,17 +2,6 @@ open StateDataMainType;
 
 open GameObjectType;
 
-let _handleByDisposeCount = (record, state) =>
-  if (QueryCPUMemoryService.isDisposeTooMany(record.disposeCount, state.settingRecord)) {
-    record.disposeCount = 0;
-    {
-      ...state,
-      gameObjectRecord: ReallocateGameObjectCPUMemoryService.reAllocate(state.gameObjectRecord)
-    }
-  } else {
-    state
-  };
-
 let rec batchDispose =
         (
           (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc),
@@ -37,7 +26,6 @@ let rec batchDispose =
            batchDispose
          )
        );
-  let state = state |> _handleByDisposeCount(record);
   (
     state,
     boxGeometryNeedDisposeVboBufferArr,

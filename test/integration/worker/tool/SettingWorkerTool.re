@@ -67,3 +67,5 @@ let createStateAndSetToStateData =
     useWorker,
     buffer
   );
+
+let setMemory = SettingTool.setMemory;

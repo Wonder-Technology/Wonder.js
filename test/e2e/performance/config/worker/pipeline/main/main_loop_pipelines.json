@@ -55,6 +55,9 @@
                         "name": "dispose_and_send_dispose_data"
                     },
                     {
+                        "name": "reallocate_cpu_memory"
+                    },
+                    {
                         "name": "get_camera_data"
                     },
                     {

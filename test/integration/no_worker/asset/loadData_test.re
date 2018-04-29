@@ -154,6 +154,7 @@ let _ =
                                              jobs: [|
                                                {name: "tick"},
                                                {name: "dispose"},
+                                               {name: "reallocate_cpu_memory"},
                                                {name: "update_transform"},
                                                {name: "update_camera"},
                                                {name: "get_camera_data"},
@@ -208,7 +209,8 @@ let _ =
                                            {name: "send_uniform_shader_data", flags: None},
                                            {name: "render_basic", flags: None},
                                            {name: "front_render_light", flags: None},
-                                           {name: "dispose", flags: None}
+                                           {name: "dispose", flags: None},
+                                           {name: "reallocate_cpu_memory", flags: None}
                                          |]
                                        )
                              |> resolve
