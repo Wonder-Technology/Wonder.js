@@ -127,6 +127,9 @@
                     },
                     {
                         "name": "dispose_sourceInstance"
+                    },
+                    {
+                        "name": "send_finish_dispose_data"
                     }
                 ]
             ]

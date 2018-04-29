@@ -37,5 +37,11 @@
         "flags": [
             "DISPOSE"
         ]
+    },
+    {
+        "name": "get_finish_dispose_data",
+        "flags": [
+            "FINISH_DISPOSE"
+        ]
     }
 ]

@@ -24,11 +24,11 @@ let _logMessage = (data, worker) =>
     };
 
 let postMessage = (data, worker) => {
-  /* _logMessage(data, worker); */
+  _logMessage(data, worker);
   worker |> Worker.postMessage(data)
 };
 
 let postMessageWithTransferData = (data, transferData, worker) => {
-  /* _logMessage(data, worker); */
+  _logMessage(data, worker);
   worker |> Worker.postMessageWithTransferData(data, transferData)
 };

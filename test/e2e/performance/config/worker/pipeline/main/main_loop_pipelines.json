@@ -36,6 +36,18 @@
                 ]
             },
             {
+                "name": "begin_sync",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "sync"
+                    },
+                    {
+                        "name": "get_finish_dispose_data"
+                    }
+                ]
+            },
+            {
                 "name": "sync",
                 "link": "concat",
                 "jobs": [
@@ -70,7 +82,7 @@
                         "name": "begin_loop"
                     },
                     {
-                        "name": "sync"
+                        "name": "begin_sync"
                     }
                 ]
             }

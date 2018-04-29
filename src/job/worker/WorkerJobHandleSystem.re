@@ -20,7 +20,8 @@ let _getMainLoopJobHandles = () => [
   ("create_light_render_object_buffer", CreateLightRenderObjectBufferMainWorkerJob.execJob),
   ("send_render_data", SendRenderDataMainWorkerJob.execJob),
   ("copy_transform", CopyTransformMainWorkerJob.execJob),
-  ("get_finish_render_data", GetFinishRenderDataMainWorkerJob.execJob)
+  ("get_finish_render_data", GetFinishRenderDataMainWorkerJob.execJob),
+  ("get_finish_dispose_data", GetFinishDisposeDataMainWorkerJob.execJob)
 ];
 
 let _getWorkerJobHandles = () => [
@@ -70,7 +71,8 @@ let _getWorkerJobHandles = () => [
   ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob),
-  ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob)
+  ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob),
+  ("send_finish_dispose_data", SendFinishDisposeDataRenderWorkerJob.execJob)
 ];
 
 let createMainInitJobHandleMap = () =>

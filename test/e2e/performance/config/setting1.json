@@ -9,12 +9,12 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "custom_geometry_point_data_buffer_count": 200000,
-        "transform_data_buffer_count": 500000,
-        "basic_material_data_buffer_count": 300000,
-        "light_material_data_buffer_count": 300000,
+        "custom_geometry_point_data_buffer_count": 20000,
+        "transform_data_buffer_count": 30000,
+        "basic_material_data_buffer_count": 30000,
+        "light_material_data_buffer_count": 30000,
         "instanceBuffer": {
-            "sourceInstanceCount": 10,
+            "sourceInstanceCount": 20,
             "objectInstanceCountPerSourceInstance": 10000
         }
     },
