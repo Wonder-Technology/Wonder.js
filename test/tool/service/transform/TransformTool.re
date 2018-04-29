@@ -37,6 +37,7 @@ let isTransform = (transform: transform) => {
 let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
+  [@bs]
   ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
     transform,
     localToWorldMatrices,

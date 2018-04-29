@@ -162,8 +162,7 @@ let _ =
                              gameObject,
                              sourceInstance
                            );
-                      let {isTransformStatics} = SourceInstanceTool.getRecord(state);
-                      StaticTransformTool.isTransformStatic(sourceInstance, isTransformStatics)
+                      StaticTransformTool.isTransformStatic(sourceInstance, state)
                       |> expect == true
                     }
                   )

@@ -83,21 +83,14 @@ let createMainLoopJobHandleMap = () =>
 
 let createWorkerJobHandleMap = () => HandleJobService.createJobHandleMap(_getWorkerJobHandles());
 
-/* TODO duplicate with getMainLoopJobHandle, getWorkerJobHandle */
-let getMainInitJobHandle = (name, jobHandleMap) =>
+let _getJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
   | None => JobService.handleGetNoneJob(name, jobHandleMap)
   | Some(handleFunc) => handleFunc
   };
 
-let getMainLoopJobHandle = (name, jobHandleMap) =>
-  switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
-  | None => JobService.handleGetNoneJob(name, jobHandleMap)
-  | Some(handleFunc) => handleFunc
-  };
+let getMainInitJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);
 
-let getWorkerJobHandle = (name, jobHandleMap) =>
-  switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
-  | None => JobService.handleGetNoneJob(name, jobHandleMap)
-  | Some(handleFunc) => handleFunc
-  };
+let getMainLoopJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);
+
+let getWorkerJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);

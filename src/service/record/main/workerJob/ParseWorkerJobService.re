@@ -53,7 +53,6 @@ let convertMainInitPipelinesToRecord = (pipelines) =>
     )
   );
 
-/* TODO duplicate? */
 let convertMainLoopPipelinesToRecord = (pipelines) =>
   Json.(
     Decode.(
@@ -95,13 +94,6 @@ let convertMainLoopPipelinesToRecord = (pipelines) =>
     )
   );
 
-/*
- let convertRenderWorkerPipelineJobsToRecord = (jobs) =>
-   Json.(
-     Decode.(
-       jobs |> array((json) => json |> array((json) => {name: json |> field("name", string)}))
-     )
-   ); */
 let convertWorkerPipelinesToRecord = (pipelines) =>
   Json.(
     Decode.(

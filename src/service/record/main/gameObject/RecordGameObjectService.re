@@ -78,7 +78,6 @@ let deepCopyForRestore =
   uid,
   disposeCount,
   disposedUidMap: disposedUidMap |> SparseMapService.copy,
-  /* TODO test */
   disposedUidArray: disposedUidArray |> SparseMapService.copy,
   disposedUidArrayForKeepOrder: disposedUidArrayForKeepOrder |> SparseMapService.copy,
   disposedBasicCameraViewArray: disposedBasicCameraViewArray |> SparseMapService.copy,

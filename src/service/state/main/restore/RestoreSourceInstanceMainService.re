@@ -10,7 +10,6 @@ let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
      );
 
 let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
-  /* TODO test restore buffer */
   let currentSourceInstanceRecord = RecordSourceInstanceMainService.getRecord(currentState);
   let targetSourceInstanceRecord = RecordSourceInstanceMainService.getRecord(targetState);
   let newBuffer =

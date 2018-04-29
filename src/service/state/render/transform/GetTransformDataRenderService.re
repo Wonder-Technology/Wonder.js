@@ -10,11 +10,13 @@ let getLocalToWorldMatrixTypeArray =
     (transform, {workerDetectRecord, globalTempRecord, transformRecord} as state) =>
       /* TODO use condition compile */
       RenderWorkerDetectService.isUseWorker(workerDetectRecord) ?
+        [@bs]
         RecordTransformMainService.getLocalToWorldMatrixTypeArrayToTarget(
           transform,
           transformRecord.localToWorldMatrices,
           globalTempRecord.float16Array1
         ) :
+        [@bs]
         ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
@@ -27,7 +29,6 @@ let getNormalMatrixTypeArray =
   (
     (transform, {workerDetectRecord, globalTempRecord, transformRecord}) =>
       RenderWorkerDetectService.isUseWorker(workerDetectRecord) ?
-        /* TODO test in render worker */
         ModelMatrixTransformService.getNormalMatrixTypeArrayToTarget(
           transform,
           transformRecord.localToWorldMatrices,

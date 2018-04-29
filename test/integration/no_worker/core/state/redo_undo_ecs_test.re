@@ -834,78 +834,125 @@ let _ =
                  |> expect == (false, false, false)
                }
              ) */
-          /* describe(
-               "deep copy material record",
-               () => {
-                 describe(
-                   "test basic material",
-                   () =>
-                     test(
-                       "copy colors",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             (material, state) =>
-                               BasicMaterialAPI.getBasicMaterialColor(material, state)
-                               |> TypeArrayTool.truncateArray,
-                             BasicMaterialAPI.setBasicMaterialColor,
-                             () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                           ),
-                           state
-                         )
-                     )
-                 );
-                 describe(
-                   "test light material",
-                   () => {
-                     test(
-                       "copy diffuseColors",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             (material, state) =>
-                               LightMaterialAPI.getLightMaterialDiffuseColor(material, state)
-                               |> TypeArrayTool.truncateArray,
-                             LightMaterialAPI.setLightMaterialDiffuseColor,
-                             () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                           ),
-                           state
-                         )
-                     );
-                     test(
-                       "copy specularColors",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             (material, state) =>
-                               LightMaterialAPI.getLightMaterialSpecularColor(material, state)
-                               |> TypeArrayTool.truncateArray,
-                             LightMaterialAPI.setLightMaterialSpecularColor,
-                             () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                           ),
-                           state
-                         )
-                     );
-                     test(
-                       "copy shininess",
-                       () =>
-                         _testCopyTypeArraySingleValue(
-                           (
-                             GameObjectTool.createGameObject,
-                             LightMaterialAPI.getLightMaterialShininess,
-                             LightMaterialAPI.setLightMaterialShininess,
-                             () => (1., 2.)
-                           ),
-                           state
-                         )
-                     )
-                   }
-                 )
-               }
-             ); */
+          describe(
+            "deep copy material record",
+            () => {
+              describe(
+                "test basic material",
+                () =>
+                  test(
+                    "shadow copy materialArrayForWorkerInit",
+                    () =>
+                      StateDataMainType.(
+                        BasicMaterialType.(
+                          MainStateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {materialArrayForWorkerInit} =
+                                BasicMaterialTool.getRecord(state);
+                              [|materialArrayForWorkerInit |> Obj.magic |> Obj.magic|]
+                            },
+                            state^
+                          )
+                        )
+                      )
+                  )
+              );
+              describe(
+                "test light material",
+                () =>
+                  test(
+                    "shadow copy materialArrayForWorkerInit",
+                    () =>
+                      StateDataMainType.(
+                        LightMaterialType.(
+                          MainStateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {materialArrayForWorkerInit} =
+                                LightMaterialTool.getRecord(state);
+                              [|materialArrayForWorkerInit |> Obj.magic |> Obj.magic|]
+                            },
+                            state^
+                          )
+                        )
+                      )
+                  )
+              )
+            }
+          );
+          /*
+
+           describe(
+                "deep copy material record",
+                () => {
+                  describe(
+                    "test basic material",
+                    () =>
+                      test(
+                        "copy colors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              GameObjectTool.createGameObject,
+                              (material, state) =>
+                                BasicMaterialAPI.getBasicMaterialColor(material, state)
+                                |> TypeArrayTool.truncateArray,
+                              BasicMaterialAPI.setBasicMaterialColor,
+                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                            ),
+                            state
+                          )
+                      )
+                  );
+                  describe(
+                    "test light material",
+                    () => {
+                      test(
+                        "copy diffuseColors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              GameObjectTool.createGameObject,
+                              (material, state) =>
+                                LightMaterialAPI.getLightMaterialDiffuseColor(material, state)
+                                |> TypeArrayTool.truncateArray,
+                              LightMaterialAPI.setLightMaterialDiffuseColor,
+                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy specularColors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              GameObjectTool.createGameObject,
+                              (material, state) =>
+                                LightMaterialAPI.getLightMaterialSpecularColor(material, state)
+                                |> TypeArrayTool.truncateArray,
+                              LightMaterialAPI.setLightMaterialSpecularColor,
+                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy shininess",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              GameObjectTool.createGameObject,
+                              LightMaterialAPI.getLightMaterialShininess,
+                              LightMaterialAPI.setLightMaterialShininess,
+                              () => (1., 2.)
+                            ),
+                            state
+                          )
+                      )
+                    }
+                  )
+                }
+              ); */
           describe(
             "deep copy light record",
             () => {
@@ -1820,6 +1867,66 @@ let _ =
           describe(
             "restore sourceInstance record to target state",
             () => {
+              test(
+                "get target buffer to current buffer",
+                () => {
+                  open SourceInstanceType;
+                  open Js.Typed_array;
+                  let state =
+                    TestTool.initWithJobConfigWithoutBuildFakeDom(
+                      ~sandbox,
+                      ~buffer=
+                        SettingTool.buildBufferConfigStr(
+                          ~sourceInstanceCount=3,
+                          ~objectInstanceCountPerSourceInstance=3,
+                          ()
+                        ),
+                      ()
+                    );
+                  let (
+                    state,
+                    gameObject,
+                    sourceInstance1,
+                    objectInstanceGameObjectArr,
+                    objectInstanceArr
+                  ) =
+                    ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state);
+                  let (
+                    state,
+                    gameObject,
+                    sourceInstance2,
+                    objectInstanceGameObjectArr,
+                    objectInstanceArr
+                  ) =
+                    ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state);
+                  let state =
+                    state
+                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance1, true)
+                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance2, false);
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
+                  let currentState = MainStateTool.createNewCompleteState(sandbox);
+                  let (
+                    currentState,
+                    gameObject,
+                    sourceInstance3,
+                    objectInstanceGameObjectArr,
+                    objectInstanceArr
+                  ) =
+                    ObjectInstanceTool.createObjectInstanceGameObjectArr(1, currentState);
+                  let currentState =
+                    currentState
+                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance3, true);
+                  let _ = MainStateTool.restore(currentState, copiedState);
+                  let {isTransformStatics, objectInstanceTransformCollections} =
+                    MainStateTool.unsafeGetState() |> SourceInstanceTool.getRecord;
+                  (isTransformStatics, objectInstanceTransformCollections)
+                  |>
+                  expect == (
+                              Uint8Array.make([|1, 0, 1|]),
+                              Uint32Array.make([|1, 2, 0, 4, 5, 6, 0, 0, 0|])
+                            )
+                }
+              );
               test(
                 "add current state->sourceInstanceRecord->matrixFloat32ArrayMap typeArr to pool",
                 () => {

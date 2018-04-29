@@ -82,9 +82,6 @@ open WorkerDetectType;
 
 open ViewType;
 
-/* TODO move out or remove? */
-type colorRgba = (float, float, float, float);
-
 type stateData = {
   mutable state: option(state),
   mutable isDebug: bool

@@ -32,12 +32,14 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
     | Some(parent) =>
       let transformRecord = transformRecord |> update(parent, globalTempRecord);
       let parentLocalToWorldMatrix =
+        [@bs]
         getLocalToWorldMatrixTypeArray(
           parent,
           transformRecord.localToWorldMatrices,
           transformRecord.localToWorldMatrixCacheMap
         );
       let childLocalToWorldMatrix =
+        [@bs]
         getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
@@ -55,6 +57,7 @@ let rec update = (transform: transform, globalTempRecord, {localPositions} as tr
       transformRecord
     | None =>
       let localToWorldMatrix =
+        [@bs]
         getLocalToWorldMatrixTypeArray(
           transform,
           transformRecord.localToWorldMatrices,
@@ -71,6 +74,7 @@ let _updateAndGetPosition = (transform: transform, getTranslationFunc, globalTem
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     update(transform, globalTempRecord, record);
   let localToWorldMatrix =
+    [@bs]
     getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices, localToWorldMatrixCacheMap);
   [@bs] getTranslationFunc(localToWorldMatrix)
 };
@@ -88,6 +92,7 @@ let updateAndGetPositionTuple = (transform: transform, globalTempRecord, record)
 
 let updateAndGetLocalToWorldMatrixTypeArray = (transform: transform, globalTempRecord, record) => {
   let record = update(transform, globalTempRecord, record);
+  [@bs]
   getLocalToWorldMatrixTypeArray(
     transform,
     record.localToWorldMatrices,

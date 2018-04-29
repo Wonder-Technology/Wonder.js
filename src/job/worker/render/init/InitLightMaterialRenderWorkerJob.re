@@ -1,4 +1,3 @@
-/* TODO duplicate with basic material */
 open StateDataRenderWorkerType;
 
 open RenderWorkerLightMaterialType;

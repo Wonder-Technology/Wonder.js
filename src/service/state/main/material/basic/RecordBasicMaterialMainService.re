@@ -89,7 +89,6 @@ let deepCopyForRestore = (state) => {
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        /* TODO test */
         materialArrayForWorkerInit: materialArrayForWorkerInit |> Js.Array.copy
       })
   }

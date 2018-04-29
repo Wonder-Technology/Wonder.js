@@ -28,7 +28,6 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let basicMaterialData = data##basicMaterialData;
-      /* let buffer = basicMaterialData##buffer; */
       let count = data##bufferData##basicMaterialDataBufferCount;
       state
       |> _createTypeArrays(count)

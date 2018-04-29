@@ -115,7 +115,6 @@ let addGameObjectTransformComponent =
   addTransformComponent(gameObject, component, state)
 };
 
-/* TODO remove */
 let disposeGameObjectTransformComponent =
     (gameObject: gameObject, component: component, isKeepOrder, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
