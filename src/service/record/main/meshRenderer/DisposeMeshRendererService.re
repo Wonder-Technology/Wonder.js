@@ -36,20 +36,24 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
-      let record = {
-        ...record,
-        disposedIndexArray: disposedIndexArray |> Js.Array.concat(meshRendererArray),
-        basicMaterialRenderGameObjectArray:
-          basicMaterialRenderGameObjectArray
-          |> _batchRemoveFromRenderArray(isGameObjectDisposedMap),
-        lightMaterialRenderGameObjectArray:
-          lightMaterialRenderGameObjectArray
-          |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
-      };
-      meshRendererArray
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           [@bs] ((record, meshRenderer) => record |> _disposeData(meshRenderer)),
-           record
-         )
+      switch (meshRendererArray |> Js.Array.length) {
+      | 0 => record
+      | _ =>
+        let record = {
+          ...record,
+          disposedIndexArray: disposedIndexArray |> Js.Array.concat(meshRendererArray),
+          basicMaterialRenderGameObjectArray:
+            basicMaterialRenderGameObjectArray
+            |> _batchRemoveFromRenderArray(isGameObjectDisposedMap),
+          lightMaterialRenderGameObjectArray:
+            lightMaterialRenderGameObjectArray
+            |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
+        };
+        meshRendererArray
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             [@bs] ((record, meshRenderer) => record |> _disposeData(meshRenderer)),
+             record
+           )
+      }
     }
   );
