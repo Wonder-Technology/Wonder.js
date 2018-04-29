@@ -12,6 +12,7 @@ let execJob = (_, stateData) =>
                ViewService.getCanvas(viewRecord) |> Obj.magic
              )
            );
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

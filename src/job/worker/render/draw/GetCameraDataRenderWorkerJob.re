@@ -18,6 +18,7 @@ let execJob = (_, e, stateData) =>
           })
         }
       );
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

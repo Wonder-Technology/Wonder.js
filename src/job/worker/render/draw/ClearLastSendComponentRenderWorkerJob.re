@@ -5,6 +5,7 @@ let execJob = (flags, e, stateData) =>
     () => {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       state.glslSenderRecord = ClearLastSendComponentJobUtils.execJob(state.glslSenderRecord);
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

@@ -11,6 +11,7 @@ let execJob = (_, e, stateData) =>
           CreateRenderStateRenderWorkerService.createRenderState(state)
         )
         |> ignore;
+        StateRenderWorkerService.setState(stateData, state);
         e
       }
     }

@@ -15,6 +15,7 @@ let execJob = (flags, e, stateData) =>
           index: directionLightData##index,
           positionMap: Some(directionLightData##positionMap)
         });
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

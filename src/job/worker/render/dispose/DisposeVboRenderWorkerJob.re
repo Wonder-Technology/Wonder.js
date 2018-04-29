@@ -16,6 +16,7 @@ let execJob = (flags, e, stateData) =>
         |> DisposeVboBufferService.disposeSourceInstanceVboBuffer(
              data##sourceInstanceNeedDisposeVboBufferArr
            );
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

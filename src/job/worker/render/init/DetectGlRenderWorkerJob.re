@@ -9,6 +9,7 @@ let execJob = (_, e, stateData) =>
         |> GPUDetectService.detect(
              [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
            );
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

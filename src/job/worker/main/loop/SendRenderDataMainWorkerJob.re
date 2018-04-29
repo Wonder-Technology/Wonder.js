@@ -116,6 +116,7 @@ let execJob = (flags, stateData) =>
         RecordLightMaterialMainService.getRecord(state)
       )
       |> ignore;
+      StateDataMainService.setState(stateData, state);
       Some(operateType)
     }
   );

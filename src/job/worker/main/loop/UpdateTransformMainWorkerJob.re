@@ -9,6 +9,7 @@ let execJob = (flags, stateData) =>
       let {index} as transformRecord = RecordTransformMainService.getRecord(state);
       state.transformRecord =
         Some(UpdateTransformJobUtils.execJob(index, globalTempRecord, transformRecord));
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

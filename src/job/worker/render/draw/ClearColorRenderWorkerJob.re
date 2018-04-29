@@ -5,6 +5,7 @@ let execJob = (flags, e, stateData) =>
     () => {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       state.deviceManagerRecord = ClearColorJobUtils.execJob(flags, state.deviceManagerRecord);
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

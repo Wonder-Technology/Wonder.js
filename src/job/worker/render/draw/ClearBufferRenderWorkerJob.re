@@ -11,6 +11,7 @@ let execJob = (flags, e, stateData) =>
           ClearBufferJobUtils.getBit(gl, JobConfigService.unsafeGetFlags(flags)),
           state.deviceManagerRecord
         );
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

@@ -35,7 +35,7 @@ let execJob = (flags, e, stateData) =>
       | false => e
       | true =>
         let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-        _render(gl, state) |> ignore;
+        _render(gl, state) |> StateRenderWorkerService.setState(stateData);
         e
       }
     }

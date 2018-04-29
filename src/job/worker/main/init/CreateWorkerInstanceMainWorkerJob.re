@@ -7,7 +7,6 @@ let execJob = (_, stateData) => {
     |> WorkerInstanceService.initWorkInstances(
          OperateRenderWorkerJobService.getSetting(state.workerJobRecord).workerFileDir
        );
-  /* TODO test set state */
   StateDataMainService.setState(stateData, state) |> ignore;
   Most.just(None)
 };

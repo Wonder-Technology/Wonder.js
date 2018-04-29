@@ -31,6 +31,7 @@ let execJob = (_, e, stateData) =>
             sourceInstanceIndices,
             geometryTypes
           });
+        StateRenderWorkerService.setState(stateData, state);
         e
       }
     }

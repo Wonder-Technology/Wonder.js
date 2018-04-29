@@ -18,7 +18,9 @@ let execJob = (_, e, stateData) =>
       let pointLightData = data##pointLightData;
       let buffer = pointLightData##buffer;
       let count = BufferPointLightService.getBufferMaxCount();
-      state |> _createTypeArrays(buffer, count, pointLightData##index) |> ignore;
+      state
+      |> _createTypeArrays(buffer, count, pointLightData##index)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

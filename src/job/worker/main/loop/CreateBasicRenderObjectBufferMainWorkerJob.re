@@ -9,6 +9,7 @@ let execJob = (_, stateData) =>
         StateDataMainService.unsafeGetState(stateData);
       RecordRenderMainService.getRecord(state).basicRenderObjectRecord =
         CreateBasicRenderObjectBufferJobUtils.execJob(state);
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

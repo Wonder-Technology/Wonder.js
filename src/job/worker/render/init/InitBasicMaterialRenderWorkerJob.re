@@ -30,7 +30,10 @@ let execJob = (_, e, stateData) =>
       let basicMaterialData = data##basicMaterialData;
       /* let buffer = basicMaterialData##buffer; */
       let count = data##bufferData##basicMaterialDataBufferCount;
-      state |> _createTypeArrays(count) |> _initMaterials(basicMaterialData, data) |> ignore;
+      state
+      |> _createTypeArrays(count)
+      |> _initMaterials(basicMaterialData, data)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

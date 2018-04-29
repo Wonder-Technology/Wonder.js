@@ -6,6 +6,7 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       state.glslRecord.precision =
         Some(PrecisionAllService.getPrecisionSource(state.gpuDetectRecord, state.glslChunkRecord));
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

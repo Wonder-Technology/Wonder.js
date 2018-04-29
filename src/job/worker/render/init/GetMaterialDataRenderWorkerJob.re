@@ -27,6 +27,7 @@ let execJob = (_, e, stateData) =>
           disposedIndexArray: lightMaterialData##disposedIndexArray,
           isSourceInstanceMap: lightMaterialData##isSourceInstanceMap
         });
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

@@ -7,6 +7,7 @@ let execJob = (flags, stateData) =>
         StateDataMainService.unsafeGetState(stateData);
       state.perspectiveCameraProjectionRecord =
         UpdatePerspectiveCameraProjectionService.update(perspectiveCameraProjectionRecord);
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

@@ -16,7 +16,9 @@ let execJob = (_, e, stateData) =>
       let ambientLightData = data##ambientLightData;
       let buffer = ambientLightData##buffer;
       let count = BufferAmbientLightService.getBufferMaxCount();
-      state |> _createTypeArrays(buffer, count, ambientLightData##index) |> ignore;
+      state
+      |> _createTypeArrays(buffer, count, ambientLightData##index)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

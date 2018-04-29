@@ -19,6 +19,8 @@ let _initBasicMaterials = (gl, basicMaterialData, isSupportInstance, state) => {
        ),
        CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
+  |> ignore;
+  state
 };
 
 let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
@@ -38,6 +40,8 @@ let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
        ),
        CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
+  |> ignore;
+  state
 };
 
 let execJob = (flags, e, stateData) =>
@@ -53,8 +57,10 @@ let execJob = (flags, e, stateData) =>
       let pointLightData = initData##pointLightData;
       let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
       let isSupportInstance = JudgeInstanceRenderWorkerService.isSupportInstance(state);
-      _initBasicMaterials(gl, basicMaterialData, isSupportInstance, state) |> ignore;
-      _initLightMaterials(gl, lightMaterialData, isSupportInstance, state) |> ignore;
+      state
+      |> _initBasicMaterials(gl, basicMaterialData, isSupportInstance)
+      |> _initLightMaterials(gl, lightMaterialData, isSupportInstance)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

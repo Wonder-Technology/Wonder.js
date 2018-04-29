@@ -295,10 +295,6 @@ var InstanceBasicBoxesTool = (function () {
                 var state = createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, wd.getStateFromData(stateData));
 
 
-                /*!
-                need set state!
-                because some create operation(e.g. increase transform index) are immutable!
-                */
                 wd.setState(state);
             }, state)
         },

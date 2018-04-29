@@ -7,6 +7,7 @@ let execJob = (flags, stateData) =>
     () => {
       let state = StateDataMainService.unsafeGetState(stateData);
       state.timeControllerRecord = TickJobUtils.execJob(state.timeControllerRecord);
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

@@ -233,10 +233,6 @@ var BasicBoxesTool = (function () {
                     wd.getStateFromData(stateData)
                 );
 
-                /*!
-                need set state!
-                because some create operation(e.g. increase transform index) are immutable!
-                */
                 wd.setState(state);
             }, state);
         },

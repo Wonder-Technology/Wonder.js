@@ -46,6 +46,7 @@ let execJob = (flags, e, stateData) =>
         matrixInstanceBufferCapacityMap,
         isSendTransformMatrixDataMap
       };
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

@@ -36,7 +36,10 @@ let execJob = (_, e, stateData) =>
       let data = MessageService.getRecord(e);
       let lightMaterialData = data##lightMaterialData;
       let count = data##bufferData##lightMaterialDataBufferCount;
-      state |> _createTypeArrays(count) |> _initMaterials(lightMaterialData, data) |> ignore;
+      state
+      |> _createTypeArrays(count)
+      |> _initMaterials(lightMaterialData, data)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

@@ -20,6 +20,7 @@ let execJob = (flags, stateData) =>
               )
             )
         });
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

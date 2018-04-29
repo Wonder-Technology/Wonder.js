@@ -23,7 +23,7 @@ let _ =
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-      describe(
+      /* describe(
         "defer dispose and create operations should all be mutable.(because custom main worker job which has these operation shouldn't set the result main state to main stateData)",
         () => {
           let _prepare = (state) => {
@@ -48,7 +48,7 @@ let _ =
             }
           )
         }
-      );
+      ); */
       describe(
         "the material data send to render worker for init should remove the disposed ones",
         () => {

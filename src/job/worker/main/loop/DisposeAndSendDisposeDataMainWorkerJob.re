@@ -45,8 +45,7 @@ let execJob = (flags, stateData) =>
         ),
         state
       );
-      /*! only sync job can set state */
-      state |> StateDataMainService.setState(stateData);
+      StateDataMainService.setState(stateData, state);
       Some(operateType)
     }
   );

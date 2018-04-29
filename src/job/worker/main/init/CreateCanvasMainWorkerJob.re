@@ -9,6 +9,7 @@ let execJob = (_, stateData) =>
           CreateCanvasService.createCanvas(OperateSettingService.getCanvasId(state.settingRecord)),
           state.viewRecord
         );
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

@@ -16,7 +16,9 @@ let execJob = (_, e, stateData) =>
       let directionLightData = data##directionLightData;
       let buffer = directionLightData##buffer;
       let count = BufferDirectionLightService.getBufferMaxCount();
-      state |> _createTypeArrays(buffer, count, directionLightData##index) |> ignore;
+      state
+      |> _createTypeArrays(buffer, count, directionLightData##index)
+      |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

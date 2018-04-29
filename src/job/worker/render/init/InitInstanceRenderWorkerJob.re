@@ -36,6 +36,7 @@ let execJob = (_, e, stateData) =>
         ...state.sourceInstanceRecord,
         objectInstanceTransformIndexMap: Some(sourceInstanceData##objectInstanceTransformIndexMap)
       };
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

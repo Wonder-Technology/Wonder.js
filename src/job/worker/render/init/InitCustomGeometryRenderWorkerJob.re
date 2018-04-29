@@ -18,7 +18,7 @@ let execJob = (_, e, stateData) =>
       let customGeometryData = data##customGeometryData;
       let buffer = customGeometryData##buffer;
       let count = data##bufferData##customGeometryPointDataBufferCount;
-      state |> _createTypeArrays(buffer, count) |> ignore;
+      state |> _createTypeArrays(buffer, count) |> StateRenderWorkerService.setState(stateData);
       e
     }
   );

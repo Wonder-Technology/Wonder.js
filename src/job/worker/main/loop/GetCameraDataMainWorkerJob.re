@@ -5,6 +5,7 @@ let execJob = (_, stateData) =>
     () => {
       let state = StateDataMainService.unsafeGetState(stateData);
       OperateRenderMainService.setCameraRecord(GetCameraDataJobUtils.getCameraData(state), state);
+      StateDataMainService.setState(stateData, state);
       None
     }
   );

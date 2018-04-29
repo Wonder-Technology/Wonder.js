@@ -13,6 +13,7 @@ let execJob = (_, e, stateData) =>
              viewportData
            )
         |> DeviceManagerService.setViewportData(viewportData);
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );

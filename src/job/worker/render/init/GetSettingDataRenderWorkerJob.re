@@ -15,6 +15,7 @@ let execJob = (_, e, stateData) =>
             objectInstanceCountPerSourceInstance: instanceBufferData##objectInstanceCountPerSourceInstance
           })
       };
+      StateRenderWorkerService.setState(stateData, state);
       e
     }
   );
