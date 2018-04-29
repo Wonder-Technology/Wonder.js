@@ -301,11 +301,11 @@ let _ =
                 () => {
                   let _prepare = (state) => {
                     let (state, gameObject1, meshRenderer1) =
-                      MeshRendererTool.createGameObject(state^);
+                      MeshRendererTool.createBasicMaterialGameObject(state^);
                     let (state, gameObject2, meshRenderer2) =
-                      MeshRendererTool.createGameObject(state);
+                      MeshRendererTool.createBasicMaterialGameObject(state);
                     let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-                    /* state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|] */
+                    /* state |> MeshRendererTool.getBasicMaterialRenderArray |> expect == [|gameObject2|] */
                     (state, (gameObject1, gameObject2), (meshRenderer1, meshRenderer2))
                   };
                   test(
@@ -313,7 +313,10 @@ let _ =
                     () => {
                       let (state, (gameObject1, gameObject2), (meshRenderer1, meshRenderer2)) =
                         _prepare(state);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect == 2
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> Js.Array.length
+                      |> expect == 2
                     }
                   );
                   test(
@@ -322,7 +325,9 @@ let _ =
                       let (state, (gameObject1, gameObject2), (meshRenderer1, meshRenderer2)) =
                         _prepare(state);
                       let state = state |> DisposeJob.execJob(None);
-                      state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> expect == [|gameObject2|]
                     }
                   )
                 }
@@ -515,7 +520,10 @@ let _ =
                       let (state, gameObject1, gameObject2) = _prepare(state);
                       let state =
                         state |> GameObjectAPI.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 2
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> Js.Array.length
+                      |> expect === 2
                     }
                   );
                   test(
@@ -525,7 +533,10 @@ let _ =
                       let state =
                         state |> GameObjectAPI.batchDisposeGameObject([|gameObject1, gameObject2|]);
                       let state = state |> DisposeJob.execJob(None);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 0
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> Js.Array.length
+                      |> expect === 0
                     }
                   )
                 }
@@ -538,7 +549,10 @@ let _ =
                     () => {
                       let (state, gameObject1, gameObject2) = _prepare(state);
                       let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 2
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> Js.Array.length
+                      |> expect === 2
                     }
                   );
                   test(
@@ -547,7 +561,10 @@ let _ =
                       let (state, gameObject1, gameObject2) = _prepare(state);
                       let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
                       let state = state |> DisposeJob.execJob(None);
-                      state |> MeshRendererTool.getRenderArray |> Js.Array.length |> expect === 1
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> Js.Array.length
+                      |> expect === 1
                     }
                   )
                 }

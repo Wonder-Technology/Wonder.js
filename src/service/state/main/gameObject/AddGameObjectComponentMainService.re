@@ -11,6 +11,11 @@ let _addComponent = ((uid, component, componentMap), handleAddComponentFunc, com
   [@bs] handleAddComponentFunc(component, uid, componentRecord)
 };
 
+let _addComponentWithState = ((uid, component, componentMap), handleAddComponentFunc, state) => {
+  componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
+  [@bs] handleAddComponentFunc(component, uid, state)
+};
+
 let _addSharableComponent =
     (
       (uid, component, componentMap, gameObject),
@@ -209,16 +214,12 @@ let addLightMaterialComponent = (uid: int, component: component, {gameObjectReco
   state
 };
 
-let addMeshRendererComponent =
-    (uid: int, component: component, {meshRendererRecord, gameObjectRecord} as state) => {
-  state.meshRendererRecord =
-    _addComponent(
-      (uid, component, gameObjectRecord.meshRendererMap),
-      AddMeshRendererService.handleAddComponent,
-      meshRendererRecord
-    );
-  state
-};
+let addMeshRendererComponent = (uid: int, component: component, {gameObjectRecord} as state) =>
+  _addComponentWithState(
+    (uid, component, gameObjectRecord.meshRendererMap),
+    AddMeshRendererMainService.handleAddComponent,
+    state
+  );
 
 let addAmbientLightComponent =
     (uid: int, component: component, {ambientLightRecord, gameObjectRecord} as state) => {

@@ -6,8 +6,12 @@ let prepareForDisposeBoxGeometryVboBuffer = (state) => {
 };
 
 let prepareForDisposeGameObjects = (state) => {
-  let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state^);
-  let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
+  let (state, gameObject1, meshRenderer1) = MeshRendererTool.createBasicMaterialGameObject(state^);
+  let (state, gameObject2, meshRenderer2) = MeshRendererTool.createBasicMaterialGameObject(state);
+  let (state, geometry1) = BoxGeometryAPI.createBoxGeometry(state);
+  let (state, geometry2) = BoxGeometryAPI.createBoxGeometry(state);
+  let state = state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject1, geometry1);
+  let state = state |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject2, geometry2);
   (state, gameObject1, gameObject2)
 };
 

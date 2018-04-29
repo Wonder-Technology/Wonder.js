@@ -1,3 +1,5 @@
 open MeshRendererType;
 
-let getRenderArray = ({renderGameObjectArray}) => renderGameObjectArray;
+let getBasicMaterialRenderArray = ({basicMaterialRenderGameObjectArray}) => basicMaterialRenderGameObjectArray;
+
+let getLightMaterialRenderArray = ({lightMaterialRenderGameObjectArray}) => lightMaterialRenderGameObjectArray;

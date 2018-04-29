@@ -74,7 +74,7 @@ let _ =
                 () => {
                   open StateDataMainType;
                   let (state, gameObject1, meshRenderer1) =
-                    MeshRendererTool.createGameObject(state^);
+                    MeshRendererTool.createBasicMaterialGameObject(state^);
                   let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   clonedGameObjectArr
                   |> CloneTool.getFlattenClonedGameObjectArr
@@ -91,10 +91,10 @@ let _ =
                 () => {
                   open StateDataMainType;
                   let (state, gameObject1, meshRenderer1) =
-                    MeshRendererTool.createGameObject(state^);
+                    MeshRendererTool.createBasicMaterialGameObject(state^);
                   let (state, clonedGameObjectArr) = _cloneGameObject(gameObject1, 2, state);
                   state
-                  |> MeshRendererTool.getRenderArray
+                  |> MeshRendererTool.getBasicMaterialRenderArray
                   |>
                   expect == (
                               [|gameObject1|]
@@ -1045,7 +1045,7 @@ let _ =
                 () => {
                   let _createMeshRendererGameObject = (state) => {
                     let (state, gameObject1, meshRenderer1) =
-                      MeshRendererTool.createGameObject(state);
+                      MeshRendererTool.createBasicMaterialGameObject(state);
                     (
                       state,
                       gameObject1,

@@ -93,18 +93,6 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
-         [@bs] GetComponentGameObjectService.getMeshRendererComponent(uid, gameObjectRecord),
-         countRangeArr,
-         clonedGameObjectArr
-       ),
-       (
-         CloneComponentGameObjectMainService.cloneMeshRendererComponent,
-         BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForClone
-       )
-     )
-  |> _clone(
-       (
-         uid,
          [@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, gameObjectRecord),
          countRangeArr,
          clonedGameObjectArr
@@ -128,6 +116,18 @@ let _cloneComponentExceptTransform =
          BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone(
            isShareMaterial
          )
+       )
+     )
+  |> _clone(
+       (
+         uid,
+         [@bs] GetComponentGameObjectService.getMeshRendererComponent(uid, gameObjectRecord),
+         countRangeArr,
+         clonedGameObjectArr
+       ),
+       (
+         CloneComponentGameObjectMainService.cloneMeshRendererComponent,
+         BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForClone
        )
      )
   |> _clone(

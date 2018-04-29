@@ -19,7 +19,7 @@ let handleBatchDisposeComponent =
     (
       meshRendererArray: array(meshRenderer),
       isGameObjectDisposedMap: array(bool),
-      {renderGameObjectArray, disposedIndexArray} as record
+      {basicMaterialRenderGameObjectArray, lightMaterialRenderGameObjectArray, disposedIndexArray} as record
     ) => {
       WonderLog.Contract.requireCheck(
         () =>
@@ -39,8 +39,12 @@ let handleBatchDisposeComponent =
       let record = {
         ...record,
         disposedIndexArray: disposedIndexArray |> Js.Array.concat(meshRendererArray),
-        renderGameObjectArray:
-          renderGameObjectArray |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
+        basicMaterialRenderGameObjectArray:
+          basicMaterialRenderGameObjectArray
+          |> _batchRemoveFromRenderArray(isGameObjectDisposedMap),
+        lightMaterialRenderGameObjectArray:
+          lightMaterialRenderGameObjectArray
+          |> _batchRemoveFromRenderArray(isGameObjectDisposedMap)
       };
       meshRendererArray
       |> WonderCommonlib.ArrayService.reduceOneParam(

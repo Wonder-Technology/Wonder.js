@@ -244,10 +244,8 @@ let _ =
                   test(
                     "get meshRenderer component",
                     () => {
-                      let (state, gameObject) = createGameObject(state^);
-                      let (state, meshRenderer) = MeshRendererAPI.createMeshRenderer(state);
-                      let state =
-                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      let (state, gameObject, meshRenderer) =
+                        MeshRendererTool.createBasicMaterialGameObject(state^);
                       unsafeGetGameObjectMeshRendererComponent(gameObject, state)
                       |> MeshRendererTool.isMeshRenderer
                     }
@@ -259,10 +257,8 @@ let _ =
                   test(
                     "has meshRenderer component",
                     () => {
-                      let (state, gameObject) = createGameObject(state^);
-                      let (state, meshRenderer) = MeshRendererAPI.createMeshRenderer(state);
-                      let state =
-                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      let (state, gameObject, meshRenderer) =
+                        MeshRendererTool.createBasicMaterialGameObject(state^);
                       hasGameObjectMeshRendererComponent(gameObject, state) |> expect == true
                     }
                   )
@@ -522,11 +518,13 @@ let _ =
                 "dispose meshRenderer component",
                 () => {
                   let (state, gameObject1, meshRenderer1) =
-                    MeshRendererTool.createGameObject(state^);
+                    MeshRendererTool.createBasicMaterialGameObject(state^);
                   let (state, gameObject2, meshRenderer2) =
-                    MeshRendererTool.createGameObject(state);
+                    MeshRendererTool.createBasicMaterialGameObject(state);
                   let state = state |> GameObjectTool.disposeGameObject(gameObject1);
-                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                  state
+                  |> MeshRendererTool.getBasicMaterialRenderArray
+                  |> expect == [|gameObject2|]
                 }
               );
               describe(
@@ -816,17 +814,12 @@ let _ =
                         () => {
                           open GameObjectType;
                           let state = SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
-                          let (state, gameObject1) = createGameObject(state);
-                          let (state, gameObject2) = createGameObject(state);
-                          let (state, gameObject3) = createGameObject(state);
-                          let (state, meshRenderer1) = MeshRendererAPI.createMeshRenderer(state);
-                          let (state, meshRenderer2) = MeshRendererAPI.createMeshRenderer(state);
-                          let (state, meshRenderer3) = MeshRendererAPI.createMeshRenderer(state);
-                          let state =
-                            state
-                            |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
-                            |> addGameObjectMeshRendererComponent(gameObject2, meshRenderer2)
-                            |> addGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
+                          let (state, gameObject1, meshRenderer1) =
+                            MeshRendererTool.createBasicMaterialGameObject(state);
+                          let (state, gameObject2, meshRenderer2) =
+                            MeshRendererTool.createBasicMaterialGameObject(state);
+                          let (state, gameObject3, meshRenderer3) =
+                            MeshRendererTool.createBasicMaterialGameObject(state);
                           let state = state |> GameObjectTool.disposeGameObject(gameObject1);
                           let state = state |> GameObjectTool.disposeGameObject(gameObject2);
                           let {meshRendererMap} = GameObjectTool.getGameObjectRecord(state);
@@ -1172,366 +1165,366 @@ let _ =
       );
       describe(
         "test batchDispose gameObject",
-        () => {
+        () =>
           /* describe(
-            "batch dispose all components",
-            () => {
-              test(
-                "batch dispose meshRenderer components",
-                () => {
-                  let (state, gameObject1, meshRenderer1) =
-                    MeshRendererTool.createGameObject(state^);
-                  let (state, gameObject2, meshRenderer2) =
-                    MeshRendererTool.createGameObject(state);
-                  let state =
-                    state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  state |> MeshRendererTool.getRenderArray |> expect == [||]
-                }
-              );
-              test(
-                "batch dispose transform componets",
-                () => {
-                  let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
-                  let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
-                  let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
-                  let state =
-                    state
-                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform2)
-                    |> TransformAPI.setTransformParent(Js.Nullable.return(transform2), transform3);
-                  let pos1 = (1., 2., 3.);
-                  let pos2 = (2., 3., 4.);
-                  let pos3 = (4., 3., 4.);
-                  let state =
-                    state
-                    |> TransformAPI.setTransformLocalPosition(transform1, pos1)
-                    |> TransformAPI.setTransformLocalPosition(transform2, pos2)
-                    |> TransformAPI.setTransformLocalPosition(transform3, pos3);
-                  let state =
-                    state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  state |> TransformAPI.getTransformPosition(transform3) |> expect == pos3
-                }
-              );
-              describe(
-                "batch dispose material components",
-                () => {
-                  test(
-                    "test basic material componet",
-                    () => {
-                      open BasicMaterialType;
-                      let (state, gameObject1, material1) =
-                        BasicMaterialTool.createGameObject(state^);
-                      let (state, gameObject2, material2) =
-                        BasicMaterialTool.createGameObject(state);
-                      let state =
-                        state
-                        |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      let {disposedIndexArray} = state |> BasicMaterialTool.getRecord;
-                      (
-                        disposedIndexArray |> Js.Array.includes(material1),
-                        disposedIndexArray |> Js.Array.includes(material2)
-                      )
-                      |> expect == (true, true)
-                    }
-                  );
-                  test(
-                    "test light material componet",
-                    () => {
-                      open LightMaterialType;
-                      let (state, gameObject1, material1) =
-                        LightMaterialTool.createGameObject(state^);
-                      let (state, gameObject2, material2) =
-                        LightMaterialTool.createGameObject(state);
-                      let state =
-                        state
-                        |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      let {disposedIndexArray} = state |> LightMaterialTool.getRecord;
-                      (
-                        disposedIndexArray |> Js.Array.includes(material1),
-                        disposedIndexArray |> Js.Array.includes(material2)
-                      )
-                      |> expect == (true, true)
-                    }
-                  )
-                }
-              );
-              describe(
-                "batch dispose light components",
-                () => {
-                  let _test = ((createGameObjectFunc, isAliveFunc), state) => {
-                    TestTool.closeContractCheck();
-                    open GameObjectType;
-                    let (state, gameObject1, light1) = createGameObjectFunc(state^);
-                    let (state, gameObject2, light2) = createGameObjectFunc(state);
-                    let state =
-                      state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                    (isAliveFunc(light1, state), isAliveFunc(light2, state))
-                    |> expect == (false, false)
-                  };
-                  test(
-                    "test ambient light component",
-                    () =>
-                      _test((AmbientLightTool.createGameObject, AmbientLightTool.isAlive), state)
-                  );
-                  test(
-                    "test direction light component",
-                    () =>
-                      _test(
-                        (DirectionLightTool.createGameObject, DirectionLightTool.isAlive),
-                        state
-                      )
-                  );
-                  test(
-                    "test point light component",
-                    () => _test((PointLightTool.createGameObject, PointLightTool.isAlive), state)
-                  )
-                }
-              );
-              describe(
-                "batch dispose geometry components",
-                () => {
-                  test(
-                    "test box geometry component",
-                    () => {
-                      TestTool.closeContractCheck();
-                      open GameObjectType;
-                      let (state, gameObject1, geometry1) =
-                        BoxGeometryTool.createGameObject(state^);
-                      let (state, gameObject2, geometry2) =
-                        BoxGeometryTool.createGameObject(state);
-                      /*let state = state |> BoxGeometryTool.initGeometrys;*/
-                      let state =
-                        state
-                        |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      (
-                        BoxGeometryTool.isGeometryDisposed(geometry1, state),
-                        BoxGeometryTool.isGeometryDisposed(geometry2, state)
-                      )
-                      |> expect == (true, true)
-                    }
-                  );
-                  test(
-                    "test custom geometry component",
-                    () => {
-                      TestTool.closeContractCheck();
-                      open GameObjectType;
-                      let (state, gameObject1, geometry1) =
-                        CustomGeometryTool.createGameObject(state^);
-                      let (state, gameObject2, geometry2) =
-                        CustomGeometryTool.createGameObject(state);
-                      let state =
-                        state
-                        |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                      (
-                        CustomGeometryTool.isGeometryDisposed(geometry1, state),
-                        CustomGeometryTool.isGeometryDisposed(geometry2, state)
-                      )
-                      |> expect == (true, true)
-                    }
-                  )
-                }
-              );
-              test(
-                "batch dispose basicCameraView componets",
-                () => {
-                  open BasicCameraViewType;
-                  let (state, gameObject1, _, (basicCameraView1, _)) =
-                    CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, (basicCameraView2, _)) =
-                    CameraTool.createCameraGameObject(state);
-                  let state =
-                    state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexArray} = state.basicCameraViewRecord;
-                  (
-                    disposedIndexArray |> Js.Array.includes(basicCameraView1),
-                    disposedIndexArray |> Js.Array.includes(basicCameraView2)
-                  )
-                  |> expect == (true, true)
-                }
-              );
-              test(
-                "batch dispose perspectiveCameraProjection componets",
-                () => {
-                  open PerspectiveCameraProjectionType;
-                  let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
-                    CameraTool.createCameraGameObject(state^);
-                  let (state, gameObject2, _, (_, perspectiveCameraProjection2)) =
-                    CameraTool.createCameraGameObject(state);
-                  let state =
-                    state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexArray} = state.perspectiveCameraProjectionRecord;
-                  (
-                    disposedIndexArray |> Js.Array.includes(perspectiveCameraProjection1),
-                    disposedIndexArray |> Js.Array.includes(perspectiveCameraProjection2)
-                  )
-                  |> expect == (true, true)
-                }
-              );
-              describe(
-                "batch dispose objectInstance componets",
-                () => {
-                  describe(
-                    "dispose data",
-                    () => {
-                      test(
-                        "remove from sourceInstanceMap, gameObjectMap",
-                        () => {
-                          open ObjectInstanceType;
-                          let (
-                            state,
-                            gameObject,
-                            sourceInstance,
-                            objectInstanceGameObjectArr,
-                            objectInstanceArr
-                          ) =
-                            ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state^);
-                          let state =
-                            state
-                            |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
-                          let {sourceInstanceMap, gameObjectMap} =
-                            ObjectInstanceTool.getObjectInstanceRecord(state);
-                          (
-                            sourceInstanceMap
-                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
-                            sourceInstanceMap
-                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1]),
-                            gameObjectMap
-                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
-                            sourceInstanceMap
-                            |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1])
-                          )
-                          |> expect == (false, false, false, false)
-                        }
-                      );
-                      test(
-                        "remove from sourceInstance->objectInstanceTransforms",
-                        () => {
-                          open SourceInstanceType;
-                          let (
-                            state,
-                            gameObject,
-                            sourceInstance,
-                            objectInstanceGameObjectArr,
-                            objectInstanceArr
-                          ) =
-                            ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state^);
-                          let state =
-                            state
-                            |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
-                          SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
-                            sourceInstance,
-                            state
-                          )
-                          |> expect == [||]
-                        }
-                      )
-                    }
-                  );
-                  describe(
-                    "contract check",
-                    () =>
-                      test(
-                        "all objectInstance should belong to the same sourceInstance",
-                        () => {
-                          open ObjectInstanceType;
-                          let (state, _, _, objectInstanceGameObject1, _) =
-                            ObjectInstanceTool.createObjectInstanceGameObject(state^);
-                          let (state, _, _, objectInstanceGameObject2, _) =
-                            ObjectInstanceTool.createObjectInstanceGameObject(state);
-                          expect(
-                            () => {
-                              let state =
-                                state
-                                |> GameObjectTool.batchDisposeGameObject([|
-                                     objectInstanceGameObject1,
-                                     objectInstanceGameObject2
-                                   |]);
-                              ()
-                            }
-                          )
-                          |> toThrowMessage(
-                               "expect all objectInstance belong to the same sourceInstance, but actual not"
+               "batch dispose all components",
+               () => {
+                 test(
+                   "batch dispose meshRenderer components",
+                   () => {
+                     let (state, gameObject1, meshRenderer1) =
+                       MeshRendererTool.createBasicMaterialGameObject(state^);
+                     let (state, gameObject2, meshRenderer2) =
+                       MeshRendererTool.createBasicMaterialGameObject(state);
+                     let state =
+                       state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                     state |> MeshRendererTool.getRenderArray |> expect == [||]
+                   }
+                 );
+                 test(
+                   "batch dispose transform componets",
+                   () => {
+                     let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                     let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
+                     let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
+                     let state =
+                       state
+                       |> TransformAPI.setTransformParent(Js.Nullable.return(transform1), transform2)
+                       |> TransformAPI.setTransformParent(Js.Nullable.return(transform2), transform3);
+                     let pos1 = (1., 2., 3.);
+                     let pos2 = (2., 3., 4.);
+                     let pos3 = (4., 3., 4.);
+                     let state =
+                       state
+                       |> TransformAPI.setTransformLocalPosition(transform1, pos1)
+                       |> TransformAPI.setTransformLocalPosition(transform2, pos2)
+                       |> TransformAPI.setTransformLocalPosition(transform3, pos3);
+                     let state =
+                       state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                     state |> TransformAPI.getTransformPosition(transform3) |> expect == pos3
+                   }
+                 );
+                 describe(
+                   "batch dispose material components",
+                   () => {
+                     test(
+                       "test basic material componet",
+                       () => {
+                         open BasicMaterialType;
+                         let (state, gameObject1, material1) =
+                           BasicMaterialTool.createGameObject(state^);
+                         let (state, gameObject2, material2) =
+                           BasicMaterialTool.createGameObject(state);
+                         let state =
+                           state
+                           |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                         let {disposedIndexArray} = state |> BasicMaterialTool.getRecord;
+                         (
+                           disposedIndexArray |> Js.Array.includes(material1),
+                           disposedIndexArray |> Js.Array.includes(material2)
+                         )
+                         |> expect == (true, true)
+                       }
+                     );
+                     test(
+                       "test light material componet",
+                       () => {
+                         open LightMaterialType;
+                         let (state, gameObject1, material1) =
+                           LightMaterialTool.createGameObject(state^);
+                         let (state, gameObject2, material2) =
+                           LightMaterialTool.createGameObject(state);
+                         let state =
+                           state
+                           |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                         let {disposedIndexArray} = state |> LightMaterialTool.getRecord;
+                         (
+                           disposedIndexArray |> Js.Array.includes(material1),
+                           disposedIndexArray |> Js.Array.includes(material2)
+                         )
+                         |> expect == (true, true)
+                       }
+                     )
+                   }
+                 );
+                 describe(
+                   "batch dispose light components",
+                   () => {
+                     let _test = ((createGameObjectFunc, isAliveFunc), state) => {
+                       TestTool.closeContractCheck();
+                       open GameObjectType;
+                       let (state, gameObject1, light1) = createGameObjectFunc(state^);
+                       let (state, gameObject2, light2) = createGameObjectFunc(state);
+                       let state =
+                         state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                       (isAliveFunc(light1, state), isAliveFunc(light2, state))
+                       |> expect == (false, false)
+                     };
+                     test(
+                       "test ambient light component",
+                       () =>
+                         _test((AmbientLightTool.createGameObject, AmbientLightTool.isAlive), state)
+                     );
+                     test(
+                       "test direction light component",
+                       () =>
+                         _test(
+                           (DirectionLightTool.createGameObject, DirectionLightTool.isAlive),
+                           state
+                         )
+                     );
+                     test(
+                       "test point light component",
+                       () => _test((PointLightTool.createGameObject, PointLightTool.isAlive), state)
+                     )
+                   }
+                 );
+                 describe(
+                   "batch dispose geometry components",
+                   () => {
+                     test(
+                       "test box geometry component",
+                       () => {
+                         TestTool.closeContractCheck();
+                         open GameObjectType;
+                         let (state, gameObject1, geometry1) =
+                           BoxGeometryTool.createGameObject(state^);
+                         let (state, gameObject2, geometry2) =
+                           BoxGeometryTool.createGameObject(state);
+                         /*let state = state |> BoxGeometryTool.initGeometrys;*/
+                         let state =
+                           state
+                           |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                         (
+                           BoxGeometryTool.isGeometryDisposed(geometry1, state),
+                           BoxGeometryTool.isGeometryDisposed(geometry2, state)
+                         )
+                         |> expect == (true, true)
+                       }
+                     );
+                     test(
+                       "test custom geometry component",
+                       () => {
+                         TestTool.closeContractCheck();
+                         open GameObjectType;
+                         let (state, gameObject1, geometry1) =
+                           CustomGeometryTool.createGameObject(state^);
+                         let (state, gameObject2, geometry2) =
+                           CustomGeometryTool.createGameObject(state);
+                         let state =
+                           state
+                           |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                         (
+                           CustomGeometryTool.isGeometryDisposed(geometry1, state),
+                           CustomGeometryTool.isGeometryDisposed(geometry2, state)
+                         )
+                         |> expect == (true, true)
+                       }
+                     )
+                   }
+                 );
+                 test(
+                   "batch dispose basicCameraView componets",
+                   () => {
+                     open BasicCameraViewType;
+                     let (state, gameObject1, _, (basicCameraView1, _)) =
+                       CameraTool.createCameraGameObject(state^);
+                     let (state, gameObject2, _, (basicCameraView2, _)) =
+                       CameraTool.createCameraGameObject(state);
+                     let state =
+                       state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                     let {disposedIndexArray} = state.basicCameraViewRecord;
+                     (
+                       disposedIndexArray |> Js.Array.includes(basicCameraView1),
+                       disposedIndexArray |> Js.Array.includes(basicCameraView2)
+                     )
+                     |> expect == (true, true)
+                   }
+                 );
+                 test(
+                   "batch dispose perspectiveCameraProjection componets",
+                   () => {
+                     open PerspectiveCameraProjectionType;
+                     let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
+                       CameraTool.createCameraGameObject(state^);
+                     let (state, gameObject2, _, (_, perspectiveCameraProjection2)) =
+                       CameraTool.createCameraGameObject(state);
+                     let state =
+                       state |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
+                     let {disposedIndexArray} = state.perspectiveCameraProjectionRecord;
+                     (
+                       disposedIndexArray |> Js.Array.includes(perspectiveCameraProjection1),
+                       disposedIndexArray |> Js.Array.includes(perspectiveCameraProjection2)
+                     )
+                     |> expect == (true, true)
+                   }
+                 );
+                 describe(
+                   "batch dispose objectInstance componets",
+                   () => {
+                     describe(
+                       "dispose data",
+                       () => {
+                         test(
+                           "remove from sourceInstanceMap, gameObjectMap",
+                           () => {
+                             open ObjectInstanceType;
+                             let (
+                               state,
+                               gameObject,
+                               sourceInstance,
+                               objectInstanceGameObjectArr,
+                               objectInstanceArr
+                             ) =
+                               ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state^);
+                             let state =
+                               state
+                               |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
+                             let {sourceInstanceMap, gameObjectMap} =
+                               ObjectInstanceTool.getObjectInstanceRecord(state);
+                             (
+                               sourceInstanceMap
+                               |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
+                               sourceInstanceMap
+                               |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1]),
+                               gameObjectMap
+                               |> WonderCommonlib.SparseMapService.has(objectInstanceArr[0]),
+                               sourceInstanceMap
+                               |> WonderCommonlib.SparseMapService.has(objectInstanceArr[1])
                              )
-                        }
-                      )
-                  )
-                }
-              );
-              describe(
-                "batch dispose sourceInstance componets",
-                () =>
-                  describe(
-                    "dispose data",
-                    () => {
-                      test(
-                        "remove from map",
-                        () => {
-                          open SourceInstanceType;
-                          let (state, gameObjectArr, sourceInstanceArr) =
-                            SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
-                          let state =
-                            sourceInstanceArr
-                            |> ReduceStateMainService.reduceState(
-                                 [@bs]
-                                 (
-                                   (state, sourceInstance) =>
-                                     VboBufferTool.addVboBufferToSourceInstanceBufferMap(
-                                       sourceInstance,
-                                       state
-                                     )
-                                 ),
+                             |> expect == (false, false, false, false)
+                           }
+                         );
+                         test(
+                           "remove from sourceInstance->objectInstanceTransforms",
+                           () => {
+                             open SourceInstanceType;
+                             let (
+                               state,
+                               gameObject,
+                               sourceInstance,
+                               objectInstanceGameObjectArr,
+                               objectInstanceArr
+                             ) =
+                               ObjectInstanceTool.createObjectInstanceGameObjectArr(3, state^);
+                             let state =
+                               state
+                               |> GameObjectTool.batchDisposeGameObject(objectInstanceGameObjectArr);
+                             SourceInstanceAPI.getSourceInstanceObjectInstanceTransformArray(
+                               sourceInstance,
+                               state
+                             )
+                             |> expect == [||]
+                           }
+                         )
+                       }
+                     );
+                     describe(
+                       "contract check",
+                       () =>
+                         test(
+                           "all objectInstance should belong to the same sourceInstance",
+                           () => {
+                             open ObjectInstanceType;
+                             let (state, _, _, objectInstanceGameObject1, _) =
+                               ObjectInstanceTool.createObjectInstanceGameObject(state^);
+                             let (state, _, _, objectInstanceGameObject2, _) =
+                               ObjectInstanceTool.createObjectInstanceGameObject(state);
+                             expect(
+                               () => {
+                                 let state =
+                                   state
+                                   |> GameObjectTool.batchDisposeGameObject([|
+                                        objectInstanceGameObject1,
+                                        objectInstanceGameObject2
+                                      |]);
+                                 ()
+                               }
+                             )
+                             |> toThrowMessage(
+                                  "expect all objectInstance belong to the same sourceInstance, but actual not"
+                                )
+                           }
+                         )
+                     )
+                   }
+                 );
+                 describe(
+                   "batch dispose sourceInstance componets",
+                   () =>
+                     describe(
+                       "dispose data",
+                       () => {
+                         test(
+                           "remove from map",
+                           () => {
+                             open SourceInstanceType;
+                             let (state, gameObjectArr, sourceInstanceArr) =
+                               SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
+                             let state =
+                               sourceInstanceArr
+                               |> ReduceStateMainService.reduceState(
+                                    [@bs]
+                                    (
+                                      (state, sourceInstance) =>
+                                        VboBufferTool.addVboBufferToSourceInstanceBufferMap(
+                                          sourceInstance,
+                                          state
+                                        )
+                                    ),
+                                    state
+                                  );
+                             let state =
+                               state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
+                             (
+                               SourceInstanceTool.hasObjectInstanceTransform(
+                                 sourceInstanceArr[0],
                                  state
-                               );
-                          let state =
-                            state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
-                          (
-                            SourceInstanceTool.hasObjectInstanceTransform(
-                              sourceInstanceArr[0],
-                              state
-                            ),
-                            SourceInstanceTool.hasObjectInstanceTransform(
-                              sourceInstanceArr[1],
-                              state
-                            )
-                          )
-                          |> expect == (false, false)
-                        }
-                      );
-                      /* test(
-                        "remove from buffer map",
-                        () => {
-                          open VboBufferType;
-                          let (state, gameObjectArr, sourceInstanceArr) =
-                            SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
-                          let state =
-                            sourceInstanceArr
-                            |> ReduceStateMainService.reduceState(
-                                 [@bs]
-                                 (
-                                   (state, sourceInstance) =>
-                                     VboBufferTool.addVboBufferToSourceInstanceBufferMap(
-                                       sourceInstance,
-                                       state
-                                     )
-                                 ),
+                               ),
+                               SourceInstanceTool.hasObjectInstanceTransform(
+                                 sourceInstanceArr[1],
                                  state
-                               );
-                          let state =
-                            state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
-                          let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
-                          (
-                            matrixInstanceBufferMap
-                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
-                            matrixInstanceBufferMap
-                            |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
-                          )
-                          |> expect == (false, false)
-                        }
-                      ) */
-                    }
-                  )
-              )
-            }
-          ); */
+                               )
+                             )
+                             |> expect == (false, false)
+                           }
+                         );
+                         /* test(
+                           "remove from buffer map",
+                           () => {
+                             open VboBufferType;
+                             let (state, gameObjectArr, sourceInstanceArr) =
+                               SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
+                             let state =
+                               sourceInstanceArr
+                               |> ReduceStateMainService.reduceState(
+                                    [@bs]
+                                    (
+                                      (state, sourceInstance) =>
+                                        VboBufferTool.addVboBufferToSourceInstanceBufferMap(
+                                          sourceInstance,
+                                          state
+                                        )
+                                    ),
+                                    state
+                                  );
+                             let state =
+                               state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
+                             let {matrixInstanceBufferMap} = VboBufferTool.getVboBufferRecord(state);
+                             (
+                               matrixInstanceBufferMap
+                               |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[0]),
+                               matrixInstanceBufferMap
+                               |> WonderCommonlib.SparseMapService.has(sourceInstanceArr[1])
+                             )
+                             |> expect == (false, false)
+                           }
+                         ) */
+                       }
+                     )
+                 )
+               }
+             ); */
           describe(
             "test reallocate gameObject",
             () =>
@@ -1564,7 +1557,6 @@ let _ =
                 }
               )
           )
-        }
       );
       describe(
         "initGameObject",

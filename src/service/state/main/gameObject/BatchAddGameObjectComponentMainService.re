@@ -44,6 +44,27 @@ let _batchAddComponent =
      )
 };
 
+let _batchAddComponentWithState =
+    (
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      handleAddComponentFunc,
+      state
+    ) => {
+  _checkBatchAdd(uidArr, componentArr);
+  uidArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       [@bs]
+       (
+         (state, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           ComponentMapService.addComponent(uid, component, componentMap);
+           [@bs] handleAddComponentFunc(component, uid, state)
+         }
+       ),
+       state
+     )
+};
+
 let batchAddBasicCameraViewComponentForClone =
     (
       uidArr: array(int),
@@ -88,19 +109,12 @@ let batchAddTransformComponentForClone =
 };
 
 let batchAddMeshRendererComponentForClone =
-    (
-      uidArr: array(int),
-      componentArr: array(component),
-      {meshRendererRecord, gameObjectRecord} as state
-    ) => {
-  ...state,
-  meshRendererRecord:
-    _batchAddComponent(
-      (uidArr, componentArr, gameObjectRecord.meshRendererMap),
-      AddMeshRendererService.handleAddComponent,
-      meshRendererRecord
-    )
-};
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) =>
+  _batchAddComponentWithState(
+    (uidArr, componentArr, gameObjectRecord.meshRendererMap),
+    AddMeshRendererMainService.handleAddComponent,
+    state
+  );
 
 let _batchAddSharableComponent =
     (

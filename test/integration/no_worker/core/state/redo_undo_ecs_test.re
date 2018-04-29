@@ -12,9 +12,12 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(MainStateTool.createState());
       let _prepareMeshRendererData = (state) => {
-        let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state^);
-        let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
-        let (state, gameObject3, meshRenderer3) = MeshRendererTool.createGameObject(state);
+        let (state, gameObject1, meshRenderer1) =
+          MeshRendererTool.createBasicMaterialGameObject(state^);
+        let (state, gameObject2, meshRenderer2) =
+          MeshRendererTool.createLightMaterialGameObject(state);
+        let (state, gameObject3, meshRenderer3) =
+          MeshRendererTool.createBasicMaterialGameObject(state);
         let state =
           state
           |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
@@ -154,7 +157,8 @@ let _ =
               |>
               expect == {
                           index: 3,
-                          renderGameObjectArray: [|gameObject1, gameObject2|],
+                          basicMaterialRenderGameObjectArray: [|gameObject1|],
+                          lightMaterialRenderGameObjectArray: [|gameObject2|],
                           gameObjectMap: [|
                             gameObject1,
                             gameObject2,
@@ -165,7 +169,7 @@ let _ =
             }
           );
           test(
-            "change copied state shouldn't affect source state",
+            "changing copied state shouldn't affect source state",
             () => {
               open MeshRendererType;
               let (
@@ -179,10 +183,16 @@ let _ =
               ) =
                 _prepareMeshRendererData(state);
               let copiedState = MainStateTool.deepCopyForRestore(state);
-              let {renderGameObjectArray, gameObjectMap, disposedIndexArray} as record =
+              let {
+                    basicMaterialRenderGameObjectArray,
+                    lightMaterialRenderGameObjectArray,
+                    gameObjectMap,
+                    disposedIndexArray
+                  } as record =
                 MeshRendererTool.getMeshRendererRecord(copiedState);
               let record = {...record, index: 0};
-              renderGameObjectArray |> Js.Array.pop |> ignore;
+              basicMaterialRenderGameObjectArray |> Js.Array.pop |> ignore;
+              lightMaterialRenderGameObjectArray |> Js.Array.pop |> ignore;
               disposedIndexArray |> Js.Array.pop |> ignore;
               gameObjectMap
               |> Obj.magic
@@ -191,7 +201,8 @@ let _ =
               |>
               expect == {
                           index: 3,
-                          renderGameObjectArray: [|gameObject1, gameObject2|],
+                          basicMaterialRenderGameObjectArray: [|gameObject1|],
+                          lightMaterialRenderGameObjectArray: [|gameObject2|],
                           gameObjectMap: [|
                             gameObject1,
                             gameObject2,
@@ -1420,8 +1431,12 @@ let _ =
                   meshRenderer3
                 ) =
                   _prepareMeshRendererData(state);
+                let state = AllMaterialTool.prepareForInit(state);
                 let (currentState, gameObject4, meshRenderer4) =
-                  MeshRendererTool.createGameObject(MainStateTool.createNewCompleteState(sandbox));
+                  MeshRendererTool.createBasicMaterialGameObject(
+                    MainStateTool.createNewCompleteState(sandbox)
+                  );
+                let currentState = AllMaterialTool.pregetGLSLData(currentState);
                 (
                   (
                     state,
@@ -1449,7 +1464,7 @@ let _ =
                   let ((state, _, _, _, _, _, _), (currentState, _, _)) = _prepare(state);
                   let currentState = MainStateTool.restore(currentState, state);
                   let (currentState, gameObject5, meshRenderer5) =
-                    MeshRendererTool.createGameObject(
+                    MeshRendererTool.createBasicMaterialGameObject(
                       MainStateTool.createNewCompleteState(sandbox)
                     );
                   state
@@ -1458,15 +1473,24 @@ let _ =
                 }
               );
               test(
-                "change restored state which is restore from deep copied state shouldn't affect source state",
+                "changing restored state which is restored from deep copied state shouldn't affect source state",
                 () => {
-                  let ((state, gameObject1, gameObject2, _, _, _, _), (currentState, _, _)) =
+                  let (
+                    (state, gameObject1, gameObject2, gameObject3, _, _, _),
+                    (currentState, _, _)
+                  ) =
                     _prepare(state);
                   let currentState =
                     MainStateTool.restore(currentState, state |> MainStateTool.deepCopyForRestore);
-                  let (currentState, _, _) = MeshRendererTool.createGameObject(currentState);
-                  MeshRendererTool.getMeshRendererRecord(state).renderGameObjectArray
-                  |> expect == [|gameObject1, gameObject2|]
+                  let (currentState, _, _) =
+                    MeshRendererTool.createBasicMaterialGameObject(currentState);
+                  (
+                    MeshRendererTool.getMeshRendererRecord(state).
+                      basicMaterialRenderGameObjectArray,
+                    MeshRendererTool.getMeshRendererRecord(state).
+                      lightMaterialRenderGameObjectArray
+                  )
+                  |> expect == ([|gameObject1|], [|gameObject2|])
                 }
               )
             }

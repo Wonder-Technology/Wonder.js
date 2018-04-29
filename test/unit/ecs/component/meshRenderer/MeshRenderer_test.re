@@ -11,11 +11,22 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(MainStateTool.createState());
-      let _prepareOne = (state) => MeshRendererTool.createGameObject(state);
+      let _prepareOne = (state) => MeshRendererTool.createBasicMaterialGameObject(state);
       let _prepareTwo = (state) => {
-        let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state);
-        let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
+        let (state, gameObject1, meshRenderer1) =
+          MeshRendererTool.createBasicMaterialGameObject(state);
+        let (state, gameObject2, meshRenderer2) =
+          MeshRendererTool.createBasicMaterialGameObject(state);
         (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2)
+      };
+      let _prepareThree = (state) => {
+        let (state, gameObject1, meshRenderer1) =
+          MeshRendererTool.createBasicMaterialGameObject(state);
+        let (state, gameObject2, meshRenderer2) =
+          MeshRendererTool.createBasicMaterialGameObject(state);
+        let (state, gameObject3, meshRenderer3) =
+          MeshRendererTool.createLightMaterialGameObject(state);
+        (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2, gameObject3, meshRenderer3)
       };
       beforeEach(
         () => {
@@ -25,13 +36,91 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "getRenderArray",
+        "getBasicMaterialRenderArray",
         () =>
           test(
-            "get array of gameObject which has MeshRendererAPI component",
+            "get array of gameObject which has meshRenderer component and basicMaterial component",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
-              state |> MeshRendererTool.getRenderArray |> expect == [|gameObject1, gameObject2|]
+              let (
+                state,
+                gameObject1,
+                meshRenderer1,
+                gameObject2,
+                meshRenderer2,
+                gameObject3,
+                meshRenderer3
+              ) =
+                _prepareThree(state^);
+              state
+              |> MeshRendererTool.getBasicMaterialRenderArray
+              |> expect == [|gameObject1, gameObject2|]
+            }
+          )
+      );
+      describe(
+        "getLightMaterialRenderArray",
+        () =>
+          test(
+            "get array of gameObject which has meshRenderer component and lightMaterial component",
+            () => {
+              let (
+                state,
+                gameObject1,
+                meshRenderer1,
+                gameObject2,
+                meshRenderer2,
+                gameObject3,
+                meshRenderer3
+              ) =
+                _prepareThree(state^);
+              state |> MeshRendererTool.getLightMaterialRenderArray |> expect == [|gameObject3|]
+            }
+          )
+      );
+      describe(
+        "test add component",
+        () =>
+          describe(
+            "should add meshRenderer component after add material component",
+            () => {
+              test(
+                "test basic material",
+                () => {
+                  open MeshRendererAPI;
+                  open GameObjectAPI;
+                  let (state, meshRenderer) = createMeshRenderer(state^);
+                  let (state, gameObject) = state |> createGameObject;
+                  expect(
+                    () => {
+                      let state =
+                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      ()
+                    }
+                  )
+                  |> toThrowMessage(
+                       "should add material component before add meshRenderer component"
+                     )
+                }
+              );
+              test(
+                "test light material",
+                () => {
+                  open MeshRendererAPI;
+                  open GameObjectAPI;
+                  let (state, meshRenderer) = createMeshRenderer(state^);
+                  let (state, gameObject) = state |> createGameObject;
+                  expect(
+                    () => {
+                      let state =
+                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      ()
+                    }
+                  )
+                  |> toThrowMessage(
+                       "should add material component before add meshRenderer component"
+                     )
+                }
+              )
             }
           )
       );
@@ -46,7 +135,7 @@ let _ =
                 () => {
                   open MeshRendererType;
                   let (state, gameObject1, meshRenderer1) =
-                    MeshRendererTool.createGameObject(state^);
+                    MeshRendererTool.createBasicMaterialGameObject(state^);
                   let state =
                     state
                     |> GameObjectTool.disposeGameObjectMeshRendererComponent(
@@ -60,10 +149,10 @@ let _ =
                 }
               );
               describe(
-                "remove from renderGameObjectArray",
+                "remove from basicMaterialRenderGameObjectArray",
                 () => {
                   test(
-                    "test getRenderArray",
+                    "test getBasicMaterialRenderArray",
                     () => {
                       let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
                         _prepareTwo(state^);
@@ -73,7 +162,9 @@ let _ =
                              gameObject1,
                              meshRenderer1
                            );
-                      state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> expect == [|gameObject2|]
                     }
                   );
                   test(
@@ -87,7 +178,81 @@ let _ =
                              meshRenderer1
                            );
                       let (state, gameObject2, meshRenderer2) = _prepareOne(state);
-                      state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                      state
+                      |> MeshRendererTool.getBasicMaterialRenderArray
+                      |> expect == [|gameObject2|]
+                    }
+                  )
+                }
+              );
+              describe(
+                "remove from lightMaterialRenderGameObjectArray",
+                () => {
+                  let _prepare = (state) => {
+                    let (state, gameObject1, meshRenderer1) =
+                      MeshRendererTool.createBasicMaterialGameObject(state);
+                    let (state, gameObject2, meshRenderer2) =
+                      MeshRendererTool.createLightMaterialGameObject(state);
+                    let (state, gameObject3, meshRenderer3) =
+                      MeshRendererTool.createLightMaterialGameObject(state);
+                    (
+                      state,
+                      gameObject1,
+                      meshRenderer1,
+                      gameObject2,
+                      meshRenderer2,
+                      gameObject3,
+                      meshRenderer3
+                    )
+                  };
+                  test(
+                    "test getLightMaterialRenderArray",
+                    () => {
+                      let (
+                        state,
+                        gameObject1,
+                        meshRenderer1,
+                        gameObject2,
+                        meshRenderer2,
+                        gameObject3,
+                        meshRenderer3
+                      ) =
+                        _prepare(state^);
+                      let state =
+                        state
+                        |> GameObjectTool.disposeGameObjectMeshRendererComponent(
+                             gameObject2,
+                             meshRenderer2
+                           );
+                      state
+                      |> MeshRendererTool.getLightMaterialRenderArray
+                      |> expect == [|gameObject3|]
+                    }
+                  );
+                  test(
+                    "test add gameObject after dispose",
+                    () => {
+                      let (
+                        state,
+                        gameObject1,
+                        meshRenderer1,
+                        gameObject2,
+                        meshRenderer2,
+                        gameObject3,
+                        meshRenderer3
+                      ) =
+                        _prepare(state^);
+                      let state =
+                        state
+                        |> GameObjectTool.disposeGameObjectMeshRendererComponent(
+                             gameObject2,
+                             meshRenderer2
+                           );
+                      let (state, gameObject4, meshRenderer4) =
+                        MeshRendererTool.createLightMaterialGameObject(state);
+                      state
+                      |> MeshRendererTool.getLightMaterialRenderArray
+                      |> expect == [|gameObject3, gameObject4|]
                     }
                   )
                 }
@@ -97,10 +262,14 @@ let _ =
           test(
             "the disposed meshRenderer shouldn't affect other alive ones' record",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo(state^);
+              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                _prepareTwo(state^);
               let state =
                 state
-                |> GameObjectTool.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
+                |> GameObjectTool.disposeGameObjectMeshRendererComponent(
+                     gameObject1,
+                     meshRenderer1
+                   );
               state
               |> MeshRendererAPI.unsafeGetMeshRendererGameObject(meshRenderer2)
               |> expect == gameObject2

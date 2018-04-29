@@ -4,7 +4,8 @@ type meshRenderer = int;
 
 type meshRendererRecord = {
   index: int,
-  renderGameObjectArray: array(int),
+  basicMaterialRenderGameObjectArray: array(int),
+  lightMaterialRenderGameObjectArray: array(int),
   gameObjectMap,
   disposedIndexArray: array(meshRenderer)
 };

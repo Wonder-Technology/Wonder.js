@@ -141,11 +141,11 @@ let _ =
          (
          () => {
 
-           let (state, gameObject1, meshRenderer1) = MeshRendererTool.createGameObject(state^);
+           let (state, gameObject1, meshRenderer1) = MeshRendererTool.createBasicMaterialGameObject(state^);
 
 
 
-           let (state, gameObject2, meshRenderer2) = MeshRendererTool.createGameObject(state);
+           let (state, gameObject2, meshRenderer2) = MeshRendererTool.createBasicMaterialGameObject(state);
 
 
                        let state =
