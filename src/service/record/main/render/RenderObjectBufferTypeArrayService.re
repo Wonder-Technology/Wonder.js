@@ -39,16 +39,16 @@ let getComponentIndex = (index) => index;
 let getGeometryTypeIndex = (index) => index;
 
 let getComponent = (index, typeArr) =>
-  TypeArrayService.getInt32_1(getComponentIndex(index), typeArr);
+  TypeArrayService.getUInt32_1(getComponentIndex(index), typeArr);
 
 let setComponent = (index, component, typeArr) =>
-  TypeArrayService.setInt32_1(getComponentIndex(index), component, typeArr);
+  TypeArrayService.setUInt32_1(getComponentIndex(index), component, typeArr);
 
 let getGeometryType = (index, typeArr) =>
-  TypeArrayService.getInt8_1(getGeometryTypeIndex(index), typeArr);
+  TypeArrayService.getUInt8_1(getGeometryTypeIndex(index), typeArr);
 
 let setGeometryType = (index, type_, typeArr) =>
-  TypeArrayService.setInt8_1(getGeometryTypeIndex(index), type_, typeArr);
+  TypeArrayService.setUInt8_1(getGeometryTypeIndex(index), type_, typeArr);
 
 let hasSourceInstance = (sourceInstance) =>
   sourceInstance !== DefaultTypeArrayValueService.getDefaultSourceInstance();

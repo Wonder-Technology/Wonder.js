@@ -5,7 +5,7 @@ open Js.Typed_array;
 open TypeArrayService;
 
 let getInfo = (infoIndex, infos) =>
-  (TypeArrayService.getInt8_1(infoIndex, infos), TypeArrayService.getInt8_1(infoIndex + 1, infos))
+  (TypeArrayService.getUInt8_1(infoIndex, infos), TypeArrayService.getUInt8_1(infoIndex + 1, infos))
   |> WonderLog.Contract.ensureCheck(
        ((startIndex, endIndex)) =>
          WonderLog.(
@@ -42,8 +42,8 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   infos
-  |> TypeArrayService.setInt8_1(infoIndex, startIndex)
-  |> TypeArrayService.setInt8_1(infoIndex + 1, endIndex)
+  |> TypeArrayService.setUInt8_1(infoIndex, startIndex)
+  |> TypeArrayService.setUInt8_1(infoIndex + 1, endIndex)
 };
 
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {

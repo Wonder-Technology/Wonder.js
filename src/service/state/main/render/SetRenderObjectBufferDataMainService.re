@@ -49,7 +49,7 @@ let setData =
                | None => sourceInstanceIndices
                | Some(sourceInstance) => setComponent(index, sourceInstance, sourceInstanceIndices)
                },
-               TypeArrayService.setInt8_1(index, type_, geometryTypes)
+               TypeArrayService.setUInt8_1(index, type_, geometryTypes)
              )
            }
          ),
