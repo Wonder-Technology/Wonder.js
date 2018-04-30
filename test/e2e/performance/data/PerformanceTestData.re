@@ -1281,7 +1281,7 @@ let performanceTestData = {
       name: "basic_light_geometrys_boxes",
       caseList: [
         {
-          name: "create_1k_basic_customGeometry+1k_basic_boxGeometry+1k_light_boxGeometry",
+          name: "create_150_basic_customGeometry+150_basic_boxGeometry+150_light_boxGeometry",
           bodyFuncStr: {|
                            ReplaceFetchTool.replaceFetchForTest();
 
@@ -1296,7 +1296,7 @@ let performanceTestData = {
                        function initSample(state) {
         var n1 = performance.now();
 
-        var data = BasicBoxesTool.createBoxesWithoutClone(1000, state);
+        var data = BasicBoxesTool.createBoxesWithoutClone(150, state);
 
         var state = data[0];
         var boxes = data[1];
@@ -1308,7 +1308,7 @@ let performanceTestData = {
 
 
 
-        var data = CustomGeometryTool.createBasicTriangleWithoutClone(1000, 10, state);
+        var data = CustomGeometryTool.createBasicTriangleWithoutClone(150, 10, state);
 
         var state = data[0];
         var boxes = data[1];
@@ -1321,7 +1321,7 @@ let performanceTestData = {
 
 
 
-        var data = LightBoxesTool.createBoxesWithoutClone(1000, state);
+        var data = LightBoxesTool.createBoxesWithoutClone(150, state);
 
         var state = data[0];
         var boxes = data[1];
