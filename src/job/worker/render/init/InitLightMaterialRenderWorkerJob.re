@@ -17,17 +17,6 @@ let _createTypeArrays = (count, state) => {
   state
 };
 
-let _initMaterials = (lightMaterialData, data, state) => {
-  let {isSourceInstanceMap} = RecordLightMaterialRenderWorkerService.getRecord(state);
-  InitInitLightMaterialService.init(
-    [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-    (isSourceInstanceMap, JudgeInstanceRenderWorkerService.isSupportInstance(state)),
-    CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(state)
-  )
-  |> ignore;
-  state
-};
-
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(
     () => {
@@ -37,7 +26,13 @@ let execJob = (_, e, stateData) =>
       let count = data##bufferData##lightMaterialDataBufferCount;
       state
       |> _createTypeArrays(count)
-      |> _initMaterials(lightMaterialData, data)
+      |> InitMaterialRenderWorkerJobUtils.initMaterials(
+           (
+             CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState,
+             InitInitLightMaterialService.init
+           ),
+           RecordLightMaterialRenderWorkerService.getRecord(state).isSourceInstanceMap
+         )
       |> StateRenderWorkerService.setState(stateData);
       e
     }
