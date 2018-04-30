@@ -21,7 +21,7 @@ let initWithJobConfig =
       ~buffer=SettingTool.buildBufferConfigStr(),
       ()
     ) => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+  [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingWorkerTool.createStateAndSetToStateData(
     ~state={
       let state = CreateStateMainService.createState();
