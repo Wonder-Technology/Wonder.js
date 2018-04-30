@@ -8,7 +8,10 @@ let unsafeGetState = () => StateDataMainService.unsafeGetState(getStateData());
 
 let setState = (state) => StateDataMainService.setState(getStateData(), state);
 
-let createState = StateAPI.createState;
+let createState = () => {
+  [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+  StateAPI.createState()
+};
 
 let createNewCompleteState = (sandbox) =>
   SettingType.(
