@@ -4,6 +4,23 @@ open RenderType;
 
 open RenderCameraType;
 
+let _buildMaterialData = (materialArrayForWorkerInit, gameObjectMap, gameObjectRecord) =>
+  materialArrayForWorkerInit
+  |> WonderCommonlib.ArrayService.removeDuplicateItems
+  |> Js.Array.reduce(
+       (arr, materialIndex) =>
+         arr
+         |> ArrayService.push((
+              materialIndex,
+              JudgeInstanceMainService.isSourceInstance(
+                materialIndex,
+                gameObjectMap,
+                gameObjectRecord
+              )
+            )),
+       [||]
+     );
+
 let _buildData = (operateType, stateData) => {
   let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
     StateDataMainService.unsafeGetState(stateData);
@@ -47,39 +64,19 @@ let _buildData = (operateType, stateData) => {
       "materialData": {
         "basicMaterialData": {
           "materialDataForWorkerInit":
-            basicMaterialRecord.materialArrayForWorkerInit
-            |> WonderCommonlib.ArrayService.removeDuplicateItems
-            |> Js.Array.reduce(
-                 (arr, materialIndex) =>
-                   arr
-                   |> ArrayService.push((
-                        materialIndex,
-                        JudgeInstanceMainService.isSourceInstance(
-                          materialIndex,
-                          basicMaterialRecord.gameObjectMap,
-                          gameObjectRecord
-                        )
-                      )),
-                 [||]
-               )
+            _buildMaterialData(
+              basicMaterialRecord.materialArrayForWorkerInit,
+              basicMaterialRecord.gameObjectMap,
+              gameObjectRecord
+            )
         },
         "lightMaterialData": {
           "materialDataForWorkerInit":
-            lightMaterialRecord.materialArrayForWorkerInit
-            |> WonderCommonlib.ArrayService.removeDuplicateItems
-            |> Js.Array.reduce(
-                 (arr, materialIndex) =>
-                   arr
-                   |> ArrayService.push((
-                        materialIndex,
-                        JudgeInstanceMainService.isSourceInstance(
-                          materialIndex,
-                          lightMaterialRecord.gameObjectMap,
-                          gameObjectRecord
-                        )
-                      )),
-                 [||]
-               )
+            _buildMaterialData(
+              lightMaterialRecord.materialArrayForWorkerInit,
+              lightMaterialRecord.gameObjectMap,
+              gameObjectRecord
+            )
         }
       }
     },
