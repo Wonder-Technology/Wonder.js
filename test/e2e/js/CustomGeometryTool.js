@@ -68,7 +68,7 @@ var CustomGeometryTool = (function () {
             var record = wd.createMeshRenderer(state);
             var state = record[0];
             var meshRenderer = record[1];
-            state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+            state = wd.addGameObjectMeshRendererComponent(gameObject, meshRenderer, state);
 
 
 
