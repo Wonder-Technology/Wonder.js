@@ -20,7 +20,8 @@ let initWithJobConfig =
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ~buffer=SettingTool.buildBufferConfigStr(),
       ()
-    ) =>
+    ) => {
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingWorkerTool.createStateAndSetToStateData(
     ~state={
       let state = CreateStateMainService.createState();
@@ -42,7 +43,8 @@ let initWithJobConfig =
   )
   |> WorkerJobTool.create(workerJobRecord)
   |> RenderConfigTool.create(renderConfigRecord)
-  |> MainStateTool.setState;
+  |> MainStateTool.setState
+};
 
 let openContractCheck = () =>
   IsDebugMainService.setIsDebug(StateDataMain.stateData, true) |> ignore;
