@@ -10,7 +10,12 @@ let _ =
       open Expect.Operators;
       open Sinon;
       let sandbox = getSandboxDefaultVal();
-      beforeEach(() => sandbox := createSandbox());
+      beforeEach(
+        () => {
+          [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+          sandbox := createSandbox()
+        }
+      );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "fix bug",
