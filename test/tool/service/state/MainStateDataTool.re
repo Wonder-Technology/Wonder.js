@@ -1,3 +1,3 @@
 let getIsDebug = IsDebugMainService.getIsDebug;
 
-let setIsDebug = IsDebugMainService.setIsDebug;
+let setIsDebug = (isDebug) => StateAPI.setIsDebug(isDebug);

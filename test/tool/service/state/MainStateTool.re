@@ -8,7 +8,7 @@ let unsafeGetState = () => StateDataMainService.unsafeGetState(getStateData());
 
 let setState = (state) => StateDataMainService.setState(getStateData(), state);
 
-let createState = CreateStateMainService.createState;
+let createState = StateAPI.createState;
 
 let createNewCompleteState = (sandbox) =>
   SettingType.(

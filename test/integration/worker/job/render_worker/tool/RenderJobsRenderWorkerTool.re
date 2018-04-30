@@ -58,6 +58,7 @@ let init = (completeFunc, state) => {
            CreateGlRenderWorkerJob.execJob(None),
            SetViewportRenderWorkerJob.execJob(None),
            InitTransformRenderWorkerJob.execJob(None),
+           InitStateRenderWorkerJob.execJob(None),
            GetRenderConfigDataRenderWorkerJob.execJob(None),
            GetSettingDataRenderWorkerJob.execJob(None),
            GetMaterialDataRenderWorkerJob.execJob(None),

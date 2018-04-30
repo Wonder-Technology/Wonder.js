@@ -179,3 +179,8 @@ let setGPU = (config, state) => {
   ...state,
   settingRecord: {...state.settingRecord, gpu: Some(config)}
 };
+
+let setUseWorker = (isUseWorker, state) => {
+  ...state,
+  settingRecord: {...state.settingRecord, worker: Some({useWorker: isUseWorker})}
+};

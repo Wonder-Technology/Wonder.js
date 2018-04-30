@@ -4,7 +4,7 @@ open Js.Promise;
 
 let _ =
   describe(
-    "GetIsDebugDataRenderWorkerJob",
+    "GetWorkerDetectDataRenderWorkerJob",
     () => {
       open Expect;
       open Expect.Operators;
@@ -24,36 +24,39 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "get isDebug data and set to main state data",
+        "get worker detect data and set to main state data",
         () =>
           testPromise(
             "test",
             () => {
-              RenderWorkerStateTool.createStateAndSetToStateData()
-              |> FakeGlWorkerTool.setFakeGlToRenderWorkerState(
-                   FakeGlWorkerTool.buildFakeGl(~sandbox, ())
-                 );
+              RenderWorkerStateTool.createStateAndSetToStateData();
               WorkerJobWorkerTool.execRenderWorkerJob(
-                ~execJobFunc=GetIsDebugDataRenderWorkerJob.execJob |> Obj.magic,
+                ~execJobFunc=GetWorkerDetectDataRenderWorkerJob.execJob |> Obj.magic,
                 ~completeFunc=
                   (state) =>
-                    MainStateDataTool.getIsDebug(MainStateTool.getStateData())
+                    WorkerDetectRenderWorkerTool.getRecord(state).isUseWorker
                     |> expect == true
                     |> resolve,
-                ~e=Some({"data": {"isDebug": true}}) |> Obj.magic,
+                ~e=Some({"data": {"workerDetectData": {"isUseWorker": true}}}) |> Obj.magic,
                 ()
               )
             }
           )
       );
       describe(
-        "test sended init render data->isDebug",
+        "test sended init render data->workerDetectData",
         () => {
           beforeEach(() => SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox));
           testPromise(
-            "test false",
+            "test",
             () => {
-              MainStateDataTool.setIsDebug(false) |> ignore;
+              let state =
+                WorkerDetectMainWorkerTool.markIsSupportRenderWorkerAndSharedArrayBuffer(
+                  false,
+                  state^
+                )
+                |> SettingTool.setUseWorker(false);
+              MainStateTool.setState(state);
               MainInitJobMainWorkerTool.prepare()
               |> MainInitJobMainWorkerTool.test(
                    sandbox,
@@ -62,24 +65,10 @@ let _ =
                      postMessageToRenderWorker
                      |> expect
                      |> toCalledWith([|
-                          SendInitRenderDataWorkerTool.buildInitRenderData(~isDebug=false, ())
-                        |])
-                 )
-            }
-          );
-          testPromise(
-            "test true",
-            () => {
-              MainStateDataTool.setIsDebug(true) |> ignore;
-              MainInitJobMainWorkerTool.prepare()
-              |> MainInitJobMainWorkerTool.test(
-                   sandbox,
-                   (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
-                   (postMessageToRenderWorker) =>
-                     postMessageToRenderWorker
-                     |> expect
-                     |> toCalledWith([|
-                          SendInitRenderDataWorkerTool.buildInitRenderData(~isDebug=true, ())
+                          SendInitRenderDataWorkerTool.buildInitRenderData(
+                            ~workerDetectData={"isUseWorker": false},
+                            ()
+                          )
                         |])
                  )
             }
