@@ -117,14 +117,22 @@ let _setParent = (parent: option(transform), child: transform, isKeepOrder, reco
   | Some(newParent) => _setNewParent(newParent, child, isKeepOrder, record)
   };
 
-let setParent = (parent: option(transform), child: transform, record) =>
-  _setParent(parent, child, false, record) |> markHierachyDirty(child);
+let setParent =
+  [@bs]
+  (
+    (parent: option(transform), child: transform, record) =>
+      _setParent(parent, child, false, record) |> markHierachyDirty(child)
+  );
 
 let setParentNotMarkDirty = (parent: option(transform), child: transform, record) =>
   _setParent(parent, child, false, record);
 
-let setParentKeepOrder = (parent: option(transform), child: transform, record) =>
-  _setParent(parent, child, true, record) |> markHierachyDirty(child);
+let setParentKeepOrder =
+  [@bs]
+  (
+    (parent: option(transform), child: transform, record) =>
+      _setParent(parent, child, true, record) |> markHierachyDirty(child)
+  );
 
 let setParentKeepOrderNotMarkDirty = (parent: option(transform), child: transform, record) =>
   _setParent(parent, child, true, record);

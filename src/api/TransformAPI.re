@@ -85,22 +85,30 @@ let _checkParentAndChildTransformShouldAlive =
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
 
-let setTransformParent =
-    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
-  _checkParentAndChildTransformShouldAlive(parent, child, state);
-  state.transformRecord =
-    Some(setParent(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord));
-  state
-};
-
-let setTransformParentKeepOrder =
-    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
+let _setTransformParent =
+    (
+      parent: Js.nullable(transform),
+      child: transform,
+      setParentFunc,
+      state: StateDataMainType.state
+    ) => {
   _checkParentAndChildTransformShouldAlive(parent, child, state);
   state.transformRecord =
     Some(
-      setParentKeepOrder(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord)
+      [@bs]
+      setParentFunc(Js.toOption(parent), child, state |> RecordTransformMainService.getRecord)
     );
   state
+};
+
+let setTransformParent =
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) =>
+  _setTransformParent(parent, child, setParent, state);
+
+let setTransformParentKeepOrder =
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
+
+  _setTransformParent(parent, child, setParentKeepOrder, state);
 };
 
 let unsafeGetTransformChildren = (transform: transform, state: StateDataMainType.state) => {
