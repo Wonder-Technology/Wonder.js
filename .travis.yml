@@ -50,7 +50,7 @@ jobs:
           secure: TJSUZ+WTiYMNjOW+VJoIDBNxZ12aXte/8GtPPo87bVNUeBo3PGimVdVgaQsV5s4FJN58U70hdIXcPQROpnL9Wi/BXFA2ylE0E8AKskQj1Exqs4vnugmFDdqPIENunMuHwHF7aUcE7DPvpFA6SfhhiY7U8OfiF5VGhQmelstkUf8=
         skip_cleanup: true
         overwrite: true
-        file: dist/wd.js
+        file: dist/*.js
         on:
           repo: Wonder-Technology/Wonder.js
           branch: master
