@@ -1,8 +1,8 @@
-type attributeLocationMap = array(Js.Dict.t(int));
+type attributeLocationMap = WonderCommonlib.SparseMapService.t(Js.Dict.t(int));
 
 type uniformLocationMapOfShader = Js.Dict.t(GlType.uniformLocation);
 
-type uniformLocationMap = array(uniformLocationMapOfShader);
+type uniformLocationMap = WonderCommonlib.SparseMapService.t(uniformLocationMapOfShader);
 
 type glslLocationRecord = {
   attributeLocationMap,

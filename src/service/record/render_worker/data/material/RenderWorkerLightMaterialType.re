@@ -8,5 +8,5 @@ type lightMaterialRecord = {
   shininess: option(Js.Typed_array.Float32Array.t),
   index: int,
   disposedIndexArray,
-  isSourceInstanceMap: array(bool)
+  isSourceInstanceMap: WonderCommonlib.SparseMapService.t(bool)
 };

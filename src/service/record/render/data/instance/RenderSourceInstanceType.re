@@ -5,6 +5,6 @@ type sourceInstanceRecord = {
   objectInstanceTransformCollections,
   isTransformStatics,
   matrixInstanceBufferCapacityMap,
-  matrixFloat32ArrayMap: array(Js.Typed_array.Float32Array.t),
+  matrixFloat32ArrayMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
   isSendTransformMatrixDataMap
 };

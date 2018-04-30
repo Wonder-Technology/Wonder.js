@@ -1,6 +1,6 @@
 open GlType;
 
 type programRecord = {
-  programMap: array(program),
+  programMap: WonderCommonlib.SparseMapService.t(program),
   mutable lastUsedProgram: option(program)
 };

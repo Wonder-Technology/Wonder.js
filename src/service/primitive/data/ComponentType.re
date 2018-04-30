@@ -1,3 +1,3 @@
-type gameObjectMap = array(int);
+type gameObjectMap = WonderCommonlib.SparseMapService.t(int);
 
 type component = int;

@@ -1,13 +1,13 @@
 open GlType;
 
 type vboBufferRecord = {
-  boxGeometryVertexBufferMap: array(buffer),
-  boxGeometryNormalBufferMap: array(buffer),
-  boxGeometryElementArrayBufferMap: array(buffer),
-  customGeometryVertexBufferMap: array(buffer),
-  customGeometryNormalBufferMap: array(buffer),
-  customGeometryElementArrayBufferMap: array(buffer),
-  matrixInstanceBufferMap: array(buffer),
+  boxGeometryVertexBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  boxGeometryNormalBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  boxGeometryElementArrayBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  customGeometryVertexBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  customGeometryNormalBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  customGeometryElementArrayBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  matrixInstanceBufferMap: WonderCommonlib.SparseMapService.t(buffer),
   vertexArrayBufferPool: array(buffer),
   elementArrayBufferPool: array(buffer),
   matrixInstanceBufferPool: array(buffer)

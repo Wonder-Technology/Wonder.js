@@ -14,31 +14,31 @@ open InstanceType;
 
 type gameObject = int;
 
-type gameObjectDisposedUidMap = array(bool);
+type gameObjectDisposedUidMap = WonderCommonlib.SparseMapService.t(bool);
 
 type gameObjectAliveUidArray = array(gameObject);
 
 type gameObjectComponentData = array(component);
 
-type gameObjectTransformMap = array(transform);
+type gameObjectTransformMap = WonderCommonlib.SparseMapService.t(transform);
 
-type gameObjectCameraViewMap = array(component);
+type gameObjectCameraViewMap = WonderCommonlib.SparseMapService.t(component);
 
-type gameObjectCameraProjectionMap = array(component);
+type gameObjectCameraProjectionMap = WonderCommonlib.SparseMapService.t(component);
 
-type gameObjectGeometryMap = array(geometry);
+type gameObjectGeometryMap = WonderCommonlib.SparseMapService.t(geometry);
 
-type gameObjectMeshRendererMap = array(meshRenderer);
+type gameObjectMeshRendererMap = WonderCommonlib.SparseMapService.t(meshRenderer);
 
-type gameObjectMaterialMap = array(material);
+type gameObjectMaterialMap = WonderCommonlib.SparseMapService.t(material);
 
-type gameObjectSourceInstanceMap = array(sourceInstance);
+type gameObjectSourceInstanceMap = WonderCommonlib.SparseMapService.t(sourceInstance);
 
-type gameObjectObjectInstanceMap = array(objectInstance);
+type gameObjectObjectInstanceMap = WonderCommonlib.SparseMapService.t(objectInstance);
 
-type gameObjectLightMap = array(int);
+type gameObjectLightMap = WonderCommonlib.SparseMapService.t(int);
 
-type gameObjectCurrentGeometryDataMap = array((geometry, int));
+type gameObjectCurrentGeometryDataMap = WonderCommonlib.SparseMapService.t((geometry, int));
 
 type gameObjectRecord = {
   mutable uid: int,

@@ -17,7 +17,7 @@ type customGeometryRecord = {
   mutable normalsOffset: int,
   mutable indicesOffset: int,
   mutable disposeCount: int,
-  /* computeDataFuncMap: array(((int, boxGeometryRecord) => geometryComputeData)), */
+  /* computeDataFuncMap: WonderCommonlib.SparseMapService.t(((int, boxGeometryRecord) => geometryComputeData)), */
   /* configDataMap: geometryConfigDataMap, */
   gameObjectMap,
   /* isInitMap: geometryIsInitMap, */

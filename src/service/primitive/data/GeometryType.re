@@ -9,8 +9,8 @@ type geometryComputeData = {
 };
 
 /* TODO optimize: use Uint32Array based on config or query gpu extension */
-type geometryDisposedIndexMap = array(bool);
+type geometryDisposedIndexMap = WonderCommonlib.SparseMapService.t(bool);
 
-type geometryIsInitMap = array(bool);
+type geometryIsInitMap = WonderCommonlib.SparseMapService.t(bool);
 
-type geometryGroupCountMap = array(int);
+type geometryGroupCountMap = WonderCommonlib.SparseMapService.t(int);

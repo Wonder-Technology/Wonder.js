@@ -1,9 +1,9 @@
 type material = int;
 
-type shaderIndexMap = array(int);
+type shaderIndexMap = WonderCommonlib.SparseMapService.t(int);
 
-type colorMap = array(array(float));
+type colorMap = WonderCommonlib.SparseMapService.t(array(float));
 
-type groupCountMap = array(int);
+type groupCountMap = WonderCommonlib.SparseMapService.t(int);
 
 type disposedIndexArray = array(int);
