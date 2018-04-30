@@ -80,6 +80,8 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   };
 
 let addBoxGeometryBufferToPool =
+  [@bs]
+  (
     (
       geometryIndex: int,
       {
@@ -90,16 +92,19 @@ let addBoxGeometryBufferToPool =
         elementArrayBufferPool
       } as record
     ) => {
-  ...record,
-  vertexArrayBufferPool:
-    vertexArrayBufferPool
-    |> _addBufferToPool(geometryIndex, boxGeometryVertexBufferMap)
-    |> _addBufferToPool(geometryIndex, boxGeometryNormalBufferMap),
-  elementArrayBufferPool:
-    elementArrayBufferPool |> _addBufferToPool(geometryIndex, boxGeometryElementArrayBufferMap)
-};
+      ...record,
+      vertexArrayBufferPool:
+        vertexArrayBufferPool
+        |> _addBufferToPool(geometryIndex, boxGeometryVertexBufferMap)
+        |> _addBufferToPool(geometryIndex, boxGeometryNormalBufferMap),
+      elementArrayBufferPool:
+        elementArrayBufferPool |> _addBufferToPool(geometryIndex, boxGeometryElementArrayBufferMap)
+    }
+  );
 
 let addCustomGeometryBufferToPool =
+  [@bs]
+  (
     (
       geometryIndex: int,
       {
@@ -110,14 +115,16 @@ let addCustomGeometryBufferToPool =
         elementArrayBufferPool
       } as record
     ) => {
-  ...record,
-  vertexArrayBufferPool:
-    vertexArrayBufferPool
-    |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
-    |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
-  elementArrayBufferPool:
-    elementArrayBufferPool |> _addBufferToPool(geometryIndex, customGeometryElementArrayBufferMap)
-};
+      ...record,
+      vertexArrayBufferPool:
+        vertexArrayBufferPool
+        |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
+        |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
+      elementArrayBufferPool:
+        elementArrayBufferPool
+        |> _addBufferToPool(geometryIndex, customGeometryElementArrayBufferMap)
+    }
+  );
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapService.unsafeGet(index, bufferMap)
@@ -140,11 +147,14 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
      );
 
 let addInstanceBufferToPool =
+  [@bs]
+  (
     (sourceInstanceIndex: int, {matrixInstanceBufferMap, matrixInstanceBufferPool} as record) => {
-  ...record,
-  matrixInstanceBufferPool:
-    matrixInstanceBufferPool
-    |> ArrayService.push(
-         _unsafeGetBufferFromBufferMap(sourceInstanceIndex, matrixInstanceBufferMap)
-       )
-};
+      ...record,
+      matrixInstanceBufferPool:
+        matrixInstanceBufferPool
+        |> ArrayService.push(
+             _unsafeGetBufferFromBufferMap(sourceInstanceIndex, matrixInstanceBufferMap)
+           )
+    }
+  );

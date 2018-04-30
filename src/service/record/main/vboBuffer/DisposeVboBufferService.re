@@ -9,18 +9,23 @@ open VboBufferType;
 open DisposeComponentService;
 
 let disposeBoxGeometryBufferData =
+  [@bs]
+  (
     (
       geometry,
       {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} as record
     ) => {
-  ...record,
-  boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
-  boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
-  boxGeometryElementArrayBufferMap:
-    disposeSparseMapData(geometry, boxGeometryElementArrayBufferMap)
-};
+      ...record,
+      boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
+      boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
+      boxGeometryElementArrayBufferMap:
+        disposeSparseMapData(geometry, boxGeometryElementArrayBufferMap)
+    }
+  );
 
 let disposeCustomGeometryBufferData =
+  [@bs]
+  (
     (
       geometry,
       {
@@ -29,54 +34,63 @@ let disposeCustomGeometryBufferData =
         customGeometryElementArrayBufferMap
       } as record
     ) => {
-  ...record,
-  customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
-  customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),
-  customGeometryElementArrayBufferMap:
-    disposeSparseMapData(geometry, customGeometryElementArrayBufferMap)
-};
+      ...record,
+      customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
+      customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),
+      customGeometryElementArrayBufferMap:
+        disposeSparseMapData(geometry, customGeometryElementArrayBufferMap)
+    }
+  );
 
 let disposeInstanceBufferData =
+  [@bs]
+  (
     (sourceInstance: sourceInstance, {matrixInstanceBufferMap} as record) => {
-  ...record,
-  matrixInstanceBufferMap: disposeSparseMapData(sourceInstance, matrixInstanceBufferMap)
-};
+      ...record,
+      matrixInstanceBufferMap: disposeSparseMapData(sourceInstance, matrixInstanceBufferMap)
+    }
+  );
+
+let _disposeVboBuffer =
+    (
+      needDisposeVboBufferArr,
+      (addBoxGeometryBufferToPoolFunc, disposeBoxGeometryBufferDataFunc),
+      vboBufferRecord
+    ) =>
+  needDisposeVboBufferArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (vboBufferRecord, component) =>
+           [@bs]
+           disposeBoxGeometryBufferDataFunc(
+             component,
+             [@bs] addBoxGeometryBufferToPoolFunc(component, vboBufferRecord)
+           )
+       ),
+       vboBufferRecord
+     );
 
 let disposeBoxGeometryVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
-  boxGeometryNeedDisposeVboBufferArr
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (vboBufferRecord, geometry) =>
-           vboBufferRecord
-           |> PoolVboBufferService.addBoxGeometryBufferToPool(geometry)
-           |> disposeBoxGeometryBufferData(geometry)
-       ),
-       vboBufferRecord
-     );
+  _disposeVboBuffer(
+    boxGeometryNeedDisposeVboBufferArr,
+    ([@bs] PoolVboBufferService.addBoxGeometryBufferToPool, [@bs] disposeBoxGeometryBufferData),
+    vboBufferRecord
+  );
 
 let disposeCustomGeometryVboBuffer = (customGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
-  customGeometryNeedDisposeVboBufferArr
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (vboBufferRecord, geometry) =>
-           vboBufferRecord
-           |> PoolVboBufferService.addCustomGeometryBufferToPool(geometry)
-           |> disposeCustomGeometryBufferData(geometry)
-       ),
-       vboBufferRecord
-     );
+  _disposeVboBuffer(
+    customGeometryNeedDisposeVboBufferArr,
+    (
+      [@bs] PoolVboBufferService.addCustomGeometryBufferToPool,
+      [@bs] disposeCustomGeometryBufferData
+    ),
+    vboBufferRecord
+  );
 
 let disposeSourceInstanceVboBuffer = (sourceInstanceNeedDisposeVboBufferArr, vboBufferRecord) =>
-  sourceInstanceNeedDisposeVboBufferArr
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (vboBufferRecord, sourceInstance) =>
-           vboBufferRecord
-           |> PoolVboBufferService.addInstanceBufferToPool(sourceInstance)
-           |> disposeInstanceBufferData(sourceInstance)
-       ),
-       vboBufferRecord
-     );
+  _disposeVboBuffer(
+    sourceInstanceNeedDisposeVboBufferArr,
+    ([@bs] PoolVboBufferService.addInstanceBufferToPool, [@bs] disposeInstanceBufferData),
+    vboBufferRecord
+  );

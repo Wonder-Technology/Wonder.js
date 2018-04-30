@@ -5,7 +5,10 @@ open Js.Typed_array;
 open TypeArrayService;
 
 let getInfo = (infoIndex, infos) =>
-  (TypeArrayService.getUInt8_1(infoIndex, infos), TypeArrayService.getUInt8_1(infoIndex + 1, infos))
+  (
+    TypeArrayService.getUInt8_1(infoIndex, infos),
+    TypeArrayService.getUInt8_1(infoIndex + 1, infos)
+  )
   |> WonderLog.Contract.ensureCheck(
        ((startIndex, endIndex)) =>
          WonderLog.(
@@ -51,23 +54,21 @@ let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {
   TypeArrayService.getFloat32ArraySubarray(points, startIndex, endIndex)
 };
 
-let setFloat32PointData = (infoIndex: int, infos, offset: int, count, fillFloat32ArrayFunc) => {
+let _setPointData = (infoIndex: int, infos, offset: int, count, fillTypeArrayFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
   setInfo(infoIndex, startIndex, newOffset, infos) |> ignore;
-  fillFloat32ArrayFunc(startIndex);
+  fillTypeArrayFunc(startIndex);
   newOffset
 };
 
+let setFloat32PointData = (infoIndex: int, infos, offset: int, count, fillFloat32ArrayFunc) =>
+  _setPointData(infoIndex, infos, offset, count, fillFloat32ArrayFunc);
+
 let getUint16PointData = (infoIndex: int, points: Uint16Array.t, infos) => {
-  let ( startIndex, endIndex ) = getInfo(infoIndex, infos);
+  let (startIndex, endIndex) = getInfo(infoIndex, infos);
   getUint16ArraySubarray(points, startIndex, endIndex)
 };
 
-let setUint16PointData = (infoIndex: int, infos, offset: int, count, fillUint16ArraryFunc) => {
-  let startIndex = offset;
-  let newOffset = offset + count;
-  setInfo(infoIndex, startIndex, newOffset, infos) |> ignore;
-  fillUint16ArraryFunc(startIndex);
-  newOffset
-};
+let setUint16PointData = (infoIndex: int, infos, offset: int, count, fillUint16ArraryFunc) =>
+  _setPointData(infoIndex, infos, offset, count, fillUint16ArraryFunc);
