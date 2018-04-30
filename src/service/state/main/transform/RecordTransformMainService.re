@@ -11,17 +11,6 @@ let getRecord = ({transformRecord}) => transformRecord |> OptionService.unsafeGe
 let getLocalToWorldMatrixTypeArray = (index, typeArr) =>
   TypeArrayService.getFloat16TypeArray(getLocalToWorldMatrixIndex(index), typeArr);
 
-let getLocalToWorldMatrixTypeArrayToTarget =
-  [@bs]
-  (
-    (index, sourceTypeArr, targetTypeArr) =>
-      TypeArrayService.getFloat16TypeArrayToTarget(
-        getLocalToWorldMatrixIndex(index),
-        sourceTypeArr,
-        targetTypeArr
-      )
-  );
-
 let getLocalToWorldMatrix = (index, typeArr) =>
   TypeArrayService.getFloat16(getLocalToWorldMatrixIndex(index), typeArr);
 

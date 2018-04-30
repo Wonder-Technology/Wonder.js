@@ -62,15 +62,6 @@ let getNormalMatrixTypeArray =
     matrix
   };
 
-let getNormalMatrixTypeArrayToTarget =
-    (transform: transform, localToWorldMatrices, localToWorldTargetTypeArr, normalTargetTypeArr) =>
-  _getNormalMatrixTypeArray(
-    transform,
-    localToWorldMatrices,
-    (localToWorldTargetTypeArr, normalTargetTypeArr),
-    RecordTransformMainService.getLocalToWorldMatrixTypeArrayToTarget
-  );
-
 let getLocalPositionTypeArray = (transform: transform, localPositions) =>
   RecordTransformMainService.getLocalPositionTypeArray(transform, localPositions);
 
