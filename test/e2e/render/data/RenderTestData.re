@@ -225,6 +225,13 @@ let renderTestData = {
                         var state = wd.addGameObjectBasicMaterialComponent(box, material, state);
 
 
+
+                        var record = wd.createMeshRenderer(state);
+                        var state = record[0];
+                        var meshRenderer = record[1];
+                        state = wd.addGameObjectMeshRendererComponent(box, meshRenderer, state);
+
+
                         var data = BasicBoxesTool.createCamera(state);
                         var state = data[0];
                         var camera = data[1];
@@ -269,6 +276,12 @@ let renderTestData = {
 
 
                         var state = wd.addGameObjectLightMaterialComponent(box, material, state);
+
+
+                        var record = wd.createMeshRenderer(state);
+                        var state = record[0];
+                        var meshRenderer = record[1];
+                        state = wd.addGameObjectMeshRendererComponent(box, meshRenderer, state);
 
 
 
