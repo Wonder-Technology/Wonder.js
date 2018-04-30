@@ -15,10 +15,6 @@ It is currently in alpha, any contributions are very welcome.
 
 # What's this?
 
-## Art
-This is Art, Artwork.
-
-
 ## Extend Everything
 
 
@@ -28,7 +24,9 @@ This is Art, Artwork.
 
 ## Support All Web Platform
 PC Browser
+
 Mobile Browser
+
 Web VR
 
 
