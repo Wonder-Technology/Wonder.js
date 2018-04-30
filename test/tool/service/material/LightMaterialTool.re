@@ -13,6 +13,13 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
+let createGameObjectWithMaterial = (material, state) => {
+  open GameObjectAPI;
+  let (state, gameObject) = state |> createGameObject;
+  let state = state |> addGameObjectLightMaterialComponent(gameObject, material);
+  (state, gameObject, material)
+};
+
 let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
 
 let getDefaultDiffuseColor = (state) => getRecord(state).defaultDiffuseColor;

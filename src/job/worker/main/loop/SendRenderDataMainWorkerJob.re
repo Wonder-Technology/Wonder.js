@@ -48,6 +48,7 @@ let _buildData = (operateType, stateData) => {
         "basicMaterialData": {
           "materialDataForWorkerInit":
             basicMaterialRecord.materialArrayForWorkerInit
+            |> WonderCommonlib.ArrayService.removeDuplicateItems
             |> Js.Array.reduce(
                  (arr, materialIndex) =>
                    arr
@@ -65,6 +66,7 @@ let _buildData = (operateType, stateData) => {
         "lightMaterialData": {
           "materialDataForWorkerInit":
             lightMaterialRecord.materialArrayForWorkerInit
+            |> WonderCommonlib.ArrayService.removeDuplicateItems
             |> Js.Array.reduce(
                  (arr, materialIndex) =>
                    arr

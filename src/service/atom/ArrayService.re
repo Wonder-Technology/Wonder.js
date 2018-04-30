@@ -45,3 +45,5 @@ let push = (item, arr) => {
   arr |> Js.Array.push(item) |> ignore;
   arr
 };
+
+let getLast = (arr) => Array.unsafe_get(arr, Js.Array.length(arr) - 1);

@@ -13,6 +13,13 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
+let createGameObjectWithMaterial = (material, state) => {
+  open GameObjectAPI;
+  let (state, gameObject) = state |> createGameObject;
+  let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
+  (state, gameObject, material)
+};
+
 let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
 
 let getDefaultColor = (state) => getRecord(state).defaultColor;

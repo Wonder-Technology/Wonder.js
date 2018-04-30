@@ -12,3 +12,7 @@ let removeDisposedOnesFromMaterialArrayForWorkerInit = (materialArray, materialA
          (material) => ! (materialMap |> WonderCommonlib.SparseMapService.has(material))
        )
   };
+
+let addMaterialToMaterialArrayForWorkerInit = (materialIndex, materialArrayForWorkerInit) =>
+  materialArrayForWorkerInit |> ArrayService.getLast === materialIndex ?
+    materialArrayForWorkerInit : materialArrayForWorkerInit |> ArrayService.push(materialIndex);

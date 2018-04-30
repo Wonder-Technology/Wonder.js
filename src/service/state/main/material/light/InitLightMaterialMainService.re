@@ -43,7 +43,11 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
     WorkerDetectMainService.isUseWorker(state) ?
       {
         let {materialArrayForWorkerInit} = RecordLightMaterialMainService.getRecord(state);
-        materialArrayForWorkerInit |> ArrayService.push(materialIndex) |> ignore;
+        MaterialArrayForWorkerInitService.addMaterialToMaterialArrayForWorkerInit(
+          materialIndex,
+          materialArrayForWorkerInit
+        )
+        |> ignore;
         state
       } :
       {

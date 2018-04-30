@@ -31,7 +31,8 @@ var LightBoxesTool = (function () {
     var createAndDisposeGameObjects = function (count, boxes, state) {
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
-        var record = LightBoxesTool.createBoxesWithoutClone(count, state);
+        // var record = LightBoxesTool.createBoxesWithoutClone(count, state);
+        var record = LightBoxesTool.createBoxesByClone(count, state);
         var state = record[0];
         var newBoxes = record[1];
 
