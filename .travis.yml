@@ -18,8 +18,8 @@ jobs:
   include:
     - stage: test
       script: npm run test:renderCI
-    # - stage: test
-    #   script: npm run test:pfCI
+    - stage: test
+      script: npm run test:pfCI
 
     - stage: test
       env:
