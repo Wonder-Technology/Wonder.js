@@ -41,10 +41,7 @@ let addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrT
     HandleUniformInstanceNoCachableService.addUniformSendDataByType(
       pos,
       sendDataArrTuple,
-      (
-        GetTransformDataRenderService.getLocalToWorldMatrixTypeArray,
-        SendGLSLDataService.sendMatrix3
-      )
+      (GetTransformDataRenderService.getNormalMatrixTypeArray, SendGLSLDataService.sendMatrix3)
     )
   | _ =>
     WonderLog.Log.fatal(

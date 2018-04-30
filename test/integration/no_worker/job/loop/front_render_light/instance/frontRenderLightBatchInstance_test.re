@@ -69,6 +69,15 @@ let _ =
             ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
             ()
           );
+          GLSLSenderTool.JudgeSendUniformData.testSendMatrix3(
+            sandbox,
+            "u_normalMatrix",
+            (gameObjectTransform, cameraTransform, _, state) =>
+              state |> TransformAPI.setTransformLocalPosition(gameObjectTransform, (10., 2., 3.)),
+            Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|]),
+            ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
+            ()
+          );
           describe(
             "send object instance gameObject's record",
             () => {
@@ -94,8 +103,7 @@ let _ =
                            ()
                          )
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
                 }
               );
@@ -121,9 +129,16 @@ let _ =
                            ()
                          )
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  uniformMatrix3fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  uniformMatrix3fv
+                  |> withThreeArgs(
+                       pos,
+                       Js.false_,
+                       Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|])
+                     )
+                  |> getCallCount
+                  |> expect == 2
+                  + 3
                 }
               )
             }
