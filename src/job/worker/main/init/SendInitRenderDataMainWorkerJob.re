@@ -6,6 +6,13 @@ open SettingType;
 
 open SettingGPUType;
 
+let _buildMaterialData = (buffer, index, disposedIndexArray, isSourceInstanceMap) => {
+  "buffer": buffer,
+  "index": index,
+  "disposedIndexArray": disposedIndexArray,
+  "isSourceInstanceMap": isSourceInstanceMap
+};
+
 let _buildData = (operateType, canvas, stateData) => {
   let {
         settingRecord,
@@ -56,28 +63,28 @@ let _buildData = (operateType, canvas, stateData) => {
         |> Js.Json.stringify
     },
     "transformData": {"buffer": transformRecord |> CopyTransformService.unsafeGetCopiedBuffer},
-    "basicMaterialData": {
-      "buffer": basicMaterialRecord.buffer,
-      "index": basicMaterialRecord.index,
-      "disposedIndexArray": basicMaterialRecord.disposedIndexArray,
-      "isSourceInstanceMap":
+    "basicMaterialData":
+      _buildMaterialData(
+        basicMaterialRecord.buffer,
+        basicMaterialRecord.index,
+        basicMaterialRecord.disposedIndexArray,
         JudgeInstanceMainService.buildMap(
           basicMaterialRecord.index,
           RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
           gameObjectRecord
         )
-    },
-    "lightMaterialData": {
-      "buffer": lightMaterialRecord.buffer,
-      "index": lightMaterialRecord.index,
-      "disposedIndexArray": lightMaterialRecord.disposedIndexArray,
-      "isSourceInstanceMap":
+      ),
+    "lightMaterialData":
+      _buildMaterialData(
+        lightMaterialRecord.buffer,
+        lightMaterialRecord.index,
+        lightMaterialRecord.disposedIndexArray,
         JudgeInstanceMainService.buildMap(
           lightMaterialRecord.index,
           RecordLightMaterialMainService.getRecord(state).gameObjectMap,
           gameObjectRecord
         )
-    },
+      ),
     "customGeometryData": {"buffer": customGeometryRecord.buffer},
     "ambientLightData": {"buffer": ambientLightRecord.buffer, "index": ambientLightRecord.index},
     "directionLightData": {
