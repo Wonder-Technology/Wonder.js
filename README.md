@@ -12,8 +12,13 @@ It is currently in alpha, any contributions are very welcome.
 
 
 
-
 # What's this?
+
+## Art
+Design is Art
+Code is Art
+Everthing is Art
+
 
 ## Extend Everything
 
@@ -23,11 +28,10 @@ It is currently in alpha, any contributions are very welcome.
 
 
 ## Support All Web Platform
-PC Browser
+### PC
+Chrome
+Firefox
 
-Mobile Browser
-
-Web VR
 
 
 # Document
