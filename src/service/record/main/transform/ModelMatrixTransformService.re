@@ -51,12 +51,15 @@ let getNormalMatrixTypeArray =
   switch (normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)) {
   | Some(matrix) => matrix
   | None =>
-    _getNormalMatrixTypeArray(
-      transform,
-      localToWorldMatrices,
-      (localToWorldMatrixCacheMap, Matrix3Service.createIdentityMatrix3()),
-      getLocalToWorldMatrixTypeArray
-    )
+    let matrix =
+      _getNormalMatrixTypeArray(
+        transform,
+        localToWorldMatrices,
+        (localToWorldMatrixCacheMap, Matrix3Service.createIdentityMatrix3()),
+        getLocalToWorldMatrixTypeArray
+      );
+    WonderCommonlib.SparseMapService.set(transform, matrix, normalMatrixCacheMap) |> ignore;
+    matrix
   };
 
 let getNormalMatrixTypeArrayToTarget =
