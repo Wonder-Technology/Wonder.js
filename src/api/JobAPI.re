@@ -1,10 +1,30 @@
 let addNoWorkerInitJob =
-    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataMainType.state) =>
-  NoWorkerJobMainService.addNoWorkerInitJob(targetJobName, afterJobName, targetHandleFunc, state);
+    (
+      (targetJobName: string, afterJobName: string),
+      action,
+      targetHandleFunc,
+      state: StateDataMainType.state
+    ) =>
+  NoWorkerJobMainService.addNoWorkerInitJob(
+    (targetJobName, afterJobName),
+    action,
+    targetHandleFunc,
+    state
+  );
 
 let addNoWorkerLoopJob =
-    (targetJobName: string, afterJobName: string, targetHandleFunc, state: StateDataMainType.state) =>
-  NoWorkerJobMainService.addNoWorkerLoopJob(targetJobName, afterJobName, targetHandleFunc, state);
+    (
+      (targetJobName: string, afterJobName: string),
+      action,
+      targetHandleFunc,
+      state: StateDataMainType.state
+    ) =>
+  NoWorkerJobMainService.addNoWorkerLoopJob(
+    (targetJobName, afterJobName),
+    action,
+    targetHandleFunc,
+    state
+  );
 
 let removeNoWorkerInitJob = (targetJobName: string, state: StateDataMainType.state) =>
   NoWorkerJobMainService.removeNoWorkerInitJob(targetJobName, state);

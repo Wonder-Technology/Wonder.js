@@ -1,5 +1,7 @@
 open Wonder_jest;
 
+open JobType;
+
 let _ =
   describe(
     "operate custom no worker job",
@@ -93,16 +95,16 @@ let _ =
                           let state =
                             state
                             |> JobAPI.addNoWorkerInitJob(
-                                 "customJob1",
-                                 "start_time",
+                                 ("customJob1", "start_time"),
+                                 AFTER,
                                  (state) => {
                                    customData |> ArrayService.push(1) |> ignore;
                                    state
                                  }
                                )
                             |> JobAPI.addNoWorkerInitJob(
-                                 "customJob2",
-                                 "customJob1",
+                                 ("customJob2", "customJob1"),
+                                 AFTER,
                                  (state) => {
                                    customData |> ArrayService.push(2) |> ignore;
                                    state
@@ -114,23 +116,23 @@ let _ =
                       )
                   );
                   test(
-                    "test add job to head",
+                    "test add job before target job",
                     () => {
                       let state = _prepare(state);
                       let customData = [||];
                       let state =
                         state
                         |> JobAPI.addNoWorkerInitJob(
-                             "customJob1",
-                             "",
+                             ("customJob1", "create_canvas"),
+                             BEFORE,
                              (state) => {
                                customData |> ArrayService.push(1) |> ignore;
                                state
                              }
                            )
                         |> JobAPI.addNoWorkerInitJob(
-                             "customJob2",
-                             "start_time",
+                             ("customJob2", "start_time"),
+                             AFTER,
                              (state) => {
                                customData |> ArrayService.push(2) |> ignore;
                                state
@@ -154,8 +156,8 @@ let _ =
                   let state =
                     state
                     |> JobAPI.addNoWorkerInitJob(
-                         "customJob",
-                         "start_time",
+                         ("customJob", "start_time"),
+                         AFTER,
                          (state) => {
                            customData |> ArrayService.push(1) |> ignore;
                            state
@@ -209,8 +211,8 @@ let _ =
                           let state =
                             state
                             |> JobAPI.addNoWorkerLoopJob(
-                                 "customJob",
-                                 "tick",
+                                 ("customJob", "tick"),
+                                 AFTER,
                                  (state) => {
                                    customData
                                    |> ArrayService.push(
@@ -244,8 +246,8 @@ let _ =
                   let state =
                     state
                     |> JobAPI.addNoWorkerLoopJob(
-                         "customJob",
-                         "tick",
+                         ("customJob", "tick"),
+                         AFTER,
                          (state) => {
                            customData
                            |> ArrayService.push(

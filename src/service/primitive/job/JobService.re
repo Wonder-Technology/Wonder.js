@@ -1,3 +1,5 @@
+open JobType;
+
 let handleGetNoneJob = (name, jobHandleMap) =>
   WonderLog.Log.fatal(
     WonderLog.Log.buildFatalMessage(
@@ -10,16 +12,28 @@ name: $name|j}
     )
   );
 
-let addJob = ((targetJobName: string, afterJobName: string, targetHandleFunc), jobList) =>
-  afterJobName |> Js.String.length === 0 ?
-    [(targetJobName, targetHandleFunc), ...jobList] :
+let addJob = ((targetJobName: string, afterJobName: string, action, targetHandleFunc), jobList) =>
+  switch action {
+  | BEFORE => [(targetJobName, targetHandleFunc), ...jobList]
+  | AFTER =>
     jobList
     |> List.fold_left(
          (list, (jobName, handleFunc) as jobItem) =>
            jobName === afterJobName ?
              list @ [jobItem, (targetJobName, targetHandleFunc)] : list @ [jobItem],
          []
-       );
+       )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="addJob",
+        ~description={j|unknown action:$action|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  };
 
 let removeJob = (targetJobName: string, jobList) =>
   jobList |> List.filter(((jobName, handleFunc)) => jobName !== targetJobName);
