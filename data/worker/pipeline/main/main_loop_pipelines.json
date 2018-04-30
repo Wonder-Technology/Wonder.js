@@ -36,11 +36,26 @@
                 ]
             },
             {
+                "name": "begin_sync",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "sync"
+                    },
+                    {
+                        "name": "get_finish_dispose_data"
+                    }
+                ]
+            },
+            {
                 "name": "sync",
                 "link": "concat",
                 "jobs": [
                     {
                         "name": "dispose_and_send_dispose_data"
+                    },
+                    {
+                        "name": "reallocate_cpu_memory"
                     },
                     {
                         "name": "get_camera_data"
@@ -70,7 +85,7 @@
                         "name": "begin_loop"
                     },
                     {
-                        "name": "sync"
+                        "name": "begin_sync"
                     }
                 ]
             }

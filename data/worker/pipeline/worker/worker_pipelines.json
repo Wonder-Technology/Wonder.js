@@ -11,6 +11,9 @@
                         "name": "get_init_render_data"
                     },
                     {
+                        "name": "get_isDebug_data"
+                    },
+                    {
                         "name": "get_renderConfig_data"
                     },
                     {
@@ -26,6 +29,9 @@
                         "name": "create_gl"
                     },
                     {
+                        "name": "set_viewport"
+                    },
+                    {
                         "name": "detect_gl"
                     },
                     {
@@ -36,6 +42,9 @@
                     },
                     {
                         "name": "init_state"
+                    },
+                    {
+                        "name": "init_instance"
                     },
                     {
                         "name": "init_custom_geometry"
@@ -64,13 +73,13 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "get_instance_data"
+                    },
+                    {
                         "name": "get_direction_light_data"
                     },
                     {
                         "name": "get_point_light_data"
-                    },
-                    {
-                        "name": "get_instance_data"
                     },
                     {
                         "name": "init_material_for_render"
@@ -118,6 +127,9 @@
                     },
                     {
                         "name": "dispose_sourceInstance"
+                    },
+                    {
+                        "name": "send_finish_dispose_data"
                     }
                 ]
             ]
