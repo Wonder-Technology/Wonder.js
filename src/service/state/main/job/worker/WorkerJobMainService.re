@@ -28,8 +28,7 @@ let getRenderWorkerJobStreamArr =
       stateData: StateDataRenderWorkerType.renderWorkerStateData
     ) =>
   OperateRenderWorkerJobService.getRenderWorkerJobStreamArr(
-    pipelineJobs,
-    workerJobs,
+    (pipelineJobs, workerJobs),
     createJobHandleMapFunc(),
     stateData,
     getJobHandleFunc

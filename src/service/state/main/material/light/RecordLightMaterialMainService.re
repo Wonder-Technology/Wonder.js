@@ -15,10 +15,7 @@ let getRecord = ({lightMaterialRecord}) => lightMaterialRecord |> OptionService.
 let _setDefaultTypeArrData =
     (
       count: int,
-      defaultShaderIndex,
-      defaultDiffuseColor,
-      defaultSpecularColor,
-      defaultShininess,
+      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
       (buffer, shaderIndices, diffuseColors, specularColors, shininess)
     ) => (
   buffer,
@@ -38,17 +35,14 @@ let _setDefaultTypeArrData =
 );
 
 let _initBufferData =
-    (count, defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness) => {
+    (count, (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness)) => {
   let buffer = createBuffer(count);
   let (shaderIndices, diffuseColors, specularColors, shininess) =
     CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
   (buffer, shaderIndices, diffuseColors, specularColors, shininess)
   |> _setDefaultTypeArrData(
        count,
-       defaultShaderIndex,
-       defaultDiffuseColor,
-       defaultSpecularColor,
-       defaultShiness
+       (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness)
      )
 };
 
@@ -63,10 +57,7 @@ let create = ({settingRecord} as state) => {
   let (buffer, (shaderIndices, diffuseColors, specularColors, shininess)) =
     _initBufferData(
       lightMaterialDataBufferCount,
-      defaultShaderIndex,
-      defaultDiffuseColor,
-      defaultSpecularColor,
-      defaultShininess
+      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess)
     );
   state.lightMaterialRecord =
     Some({

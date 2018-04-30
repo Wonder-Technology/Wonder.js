@@ -127,7 +127,7 @@ let _createEmptyChunk = () => {
   body: ""
 };
 
-let _buildVsAndFsByType = ((vs, fs), type_, name, execHandleFunc, glslChunkRecord) =>
+let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRecord) =>
   switch type_ {
   | "vs" => (_setSource(vs, getChunk(name, glslChunkRecord)), fs)
   | "vs_function" => (_setSource(vs, execHandleFunc(name)), fs)
@@ -145,7 +145,7 @@ let _buildVsAndFsByType = ((vs, fs), type_, name, execHandleFunc, glslChunkRecor
     )
   };
 
-let _buildVsAndFs = (vs, fs, shaderLibDataArr, execHandleFunc, glslChunkRecord) =>
+let _buildVsAndFs = ((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord) =>
   shaderLibDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -161,8 +161,7 @@ let _buildVsAndFs = (vs, fs, shaderLibDataArr, execHandleFunc, glslChunkRecord) 
                     (sourceTuple, {type_, name}: glsl) =>
                       _buildVsAndFsByType(
                         sourceTuple,
-                        type_,
-                        name,
+                        (type_, name),
                         execHandleFunc,
                         glslChunkRecord
                       )
@@ -191,7 +190,7 @@ let buildGLSLSource =
       let precision = precision |> OptionService.unsafeGet;
       vs.top = precision ++ vs.top;
       fs.top = precision ++ fs.top;
-      let (vs, fs) = _buildVsAndFs(vs, fs, shaderLibDataArr, execHandleFunc, glslChunkRecord);
+      let (vs, fs) = _buildVsAndFs((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord);
       vs.body = _buildBody(vs, webgl1_main_end);
       fs.body = _buildBody(fs, webgl1_main_end);
       vs.varDeclare = "\n" ++ _generateAttributeSource(shaderLibDataArr) ++ vs.varDeclare;

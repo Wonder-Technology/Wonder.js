@@ -9,16 +9,17 @@ let getExecutableJob = (jobs, jobItemName) =>
     ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
+let _addHandleFuncToList = (action, handleFunc, handleList) =>
+  switch action {
+  | BEFORE => [handleFunc, ...handleList]
+  | AFTER => handleList @ [handleFunc]
+  };
+
 let rec _findAllCustomJobHandles = (subJobName, workerCustomMainLoopTargetJobMap, handleList) =>
   switch (workerCustomMainLoopTargetJobMap |> WonderCommonlib.HashMapService.get(subJobName)) {
   | None => handleList
   | Some((customJobName, action, handleFunc)) =>
-    (
-      switch action {
-      | BEFORE => [handleFunc, ...handleList]
-      | AFTER => handleList @ [handleFunc]
-      }
-    )
+    _addHandleFuncToList(action, handleFunc, handleList)
     |> _findAllCustomJobHandles(customJobName, workerCustomMainLoopTargetJobMap)
   };
 

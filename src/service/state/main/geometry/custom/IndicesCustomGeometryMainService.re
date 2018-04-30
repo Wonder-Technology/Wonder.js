@@ -25,10 +25,12 @@ let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
   let {indicesInfos, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
-      BufferCustomGeometryService.getInfoIndex(index),
-      indicesInfos,
-      indicesOffset,
-      Uint16Array.length(data),
+      (
+        BufferCustomGeometryService.getInfoIndex(index),
+        indicesInfos,
+        indicesOffset,
+        Uint16Array.length(data)
+      ),
       fillUint16ArrayWithOffset(indices, data)
     );
   state

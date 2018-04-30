@@ -59,7 +59,7 @@ let _buildWorkerStreamFuncArr =
      );
 
 let getRenderWorkerJobStreamArr =
-    (pipelineJobs, workerJobs, jobHandleMap, stateData, getJobHandleFunc) =>
+    ((pipelineJobs, workerJobs), jobHandleMap, stateData, getJobHandleFunc) =>
   pipelineJobs
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -76,6 +76,3 @@ let getRenderWorkerJobStreamArr =
        ),
        [||]
      );
-
-
-

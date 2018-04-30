@@ -15,11 +15,7 @@ let getNormals =
   (
     (index, state) => {
       let {normals, normalsInfos} = getRecord(state);
-      getFloat32PointData(
-        BufferCustomGeometryService.getInfoIndex(index),
-        normals,
-        normalsInfos
-      )
+      getFloat32PointData(BufferCustomGeometryService.getInfoIndex(index), normals, normalsInfos)
     }
   );
 
@@ -27,10 +23,12 @@ let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {normalsInfos, normals, normalsOffset} as record = getRecord(state);
   record.normalsOffset =
     setFloat32PointData(
-      BufferCustomGeometryService.getInfoIndex(index),
-      normalsInfos,
-      normalsOffset,
-      Float32Array.length(data),
+      (
+        BufferCustomGeometryService.getInfoIndex(index),
+        normalsInfos,
+        normalsOffset,
+        Float32Array.length(data)
+      ),
       fillFloat32ArrayWithOffset(normals, data)
     );
   state

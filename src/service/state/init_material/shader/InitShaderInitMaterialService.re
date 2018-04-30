@@ -41,6 +41,12 @@ let _join = (array: array(shaderLib)) => {
 
 let _buildShaderIndexMapKey = (shaderLibDataArr: shaderLibs) => shaderLibDataArr |> _join;
 
+let _createProgramAndInit = (gl, shaderIndex, (vsSource, fsSource), programRecord) =>
+  gl
+  |> Gl.createProgram
+  |> ProgramService.registerProgram(shaderIndex, programRecord)
+  |> ProgramService.initShader(vsSource, fsSource, gl);
+
 let initMaterialShader =
     (
       materialIndex: int,
@@ -68,11 +74,7 @@ let initMaterialShader =
         getHandleFunc,
         (glslRecord, glslChunkRecord)
       );
-    let program =
-      gl
-      |> Gl.createProgram
-      |> ProgramService.registerProgram(shaderIndex, programRecord)
-      |> ProgramService.initShader(vsSource, fsSource, gl);
+    let program = _createProgramAndInit(gl, shaderIndex, (vsSource, fsSource), programRecord);
     let recordTuple =
       [@bs]
       addAttributeSendDataFunc(
