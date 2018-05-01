@@ -32,7 +32,11 @@ let copyArrayBufferSpecificData = (sourceBuffer, targetBuffer, totalByteLength) 
 };
 
 let copyArrayBuffer = (buffer, totalByteLength) =>
-  buffer
-  |> Worker.sharedArrayBufferToArrayBuffer
-  |> ArrayBuffer.slice(~start=0, ~end_=totalByteLength)
-  |> Worker.arrayBufferToSharedArrayBuffer;
+  switch totalByteLength {
+  | 0 => buffer
+  | _ =>
+    buffer
+    |> Worker.sharedArrayBufferToArrayBuffer
+    |> ArrayBuffer.slice(~start=0, ~end_=totalByteLength)
+    |> Worker.arrayBufferToSharedArrayBuffer
+  };
