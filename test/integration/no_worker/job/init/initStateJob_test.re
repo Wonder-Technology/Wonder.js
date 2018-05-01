@@ -18,7 +18,7 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "set gl state",
-        () =>
+        () => {
           describe(
             "set side to FRONT",
             () => {
@@ -57,7 +57,22 @@ let _ =
                 }
               )
             }
+          );
+          test(
+            "enable depth test",
+            () => {
+              let enable = createEmptyStubWithJsObjSandbox(sandbox);
+              let getDepthTest = 1;
+              let state =
+                state^
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~enable, ~getDepthTest, ())
+                   );
+              let state = InitStateJobTool.exec(state);
+              enable |> expect |> toCalledWith([|getDepthTest|])
+            }
           )
+        }
       )
     }
   );

@@ -3,4 +3,8 @@ let execJob = (deviceManagerRecord) =>
     [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
     FRONT,
     deviceManagerRecord
-  );
+  )
+  |> DeviceManagerService.setDepthTest(
+       [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
+       true
+     );

@@ -91,6 +91,14 @@ let setSide = (gl, targetSide, {side} as record) =>
     {...record, side: Some(targetSide)}
   };
 
+let setDepthTest = (gl, targetDepthTest, {depthTest} as record) =>
+  switch depthTest {
+  | Some(oldDepthTest) when oldDepthTest === targetDepthTest => record
+  | _ =>
+    targetDepthTest ? gl |> Gl.enable(Gl.getDepthTest(gl)) : gl |> Gl.disable(Gl.getDepthTest(gl));
+    {...record, depthTest: Some(targetDepthTest)}
+  };
+
 let clearBuffer = (gl, bit: int, record) => {
   let record = setColorWrite(gl, (Js.true_, Js.true_, Js.true_, Js.true_), record);
   /*! optimize in ANGLE:

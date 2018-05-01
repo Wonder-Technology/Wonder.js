@@ -18,11 +18,12 @@ let _ =
         let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
         let clearColor = Some((1., 0.1, 0.2, 1.));
         let side = Some(BOTH);
+        let depthTest = Some(true);
         let viewport = Some((1., 0.1, 10., 20.));
         (
-          {...state, deviceManagerRecord: {gl: Some(gl), colorWrite, clearColor, side, viewport}},
+          {...state, deviceManagerRecord: {gl: Some(gl), colorWrite, clearColor, side, depthTest, viewport}},
           Some(gl),
-          (colorWrite, clearColor, side, viewport)
+          (colorWrite, clearColor, side, depthTest, viewport)
         )
       };
       let _prepareTypeArrayPoolData = (state) => {
@@ -102,7 +103,7 @@ let _ =
                 "directly use readonly record",
                 () => {
                   open StateDataMainType;
-                  let (state, gl, (colorWrite, clearColor, side, viewport)) =
+                  let (state, gl, (colorWrite, clearColor, side,depthTest, viewport)) =
                     _prepareDeviceManagerData(state^);
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerRecord(state);
@@ -111,6 +112,7 @@ let _ =
                     copiedData.colorWrite,
                     copiedData.clearColor,
                     copiedData.side,
+                    copiedData.depthTest,
                     copiedData.viewport
                   )
                   |>
@@ -118,6 +120,7 @@ let _ =
                               targetData.colorWrite,
                               targetData.clearColor,
                               targetData.side,
+                              targetData.depthTest,
                               targetData.viewport
                             )
                 }
