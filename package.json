@@ -60,7 +60,7 @@
     "wonder-log": "^0.1.2"
   },
   "resolutions": {
-    "wonder-commonlib": "0.2.20",
+    "wonder-commonlib": "0.2.21",
     "wonder-bs-jest": "0.2.17",
     "wonder-bs-puppeteer": "^0.1.1"
   }
