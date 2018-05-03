@@ -52,21 +52,14 @@ let disposeInstanceBufferData =
   );
 
 let _disposeVboBuffer =
-    (
-      needDisposeVboBufferArr,
-      (addBoxGeometryBufferToPoolFunc, disposeBoxGeometryBufferDataFunc),
-      vboBufferRecord
-    ) =>
+    (needDisposeVboBufferArr, (addBufferToPoolFunc, disposeBufferDataFunc), vboBufferRecord) =>
   needDisposeVboBufferArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (vboBufferRecord, component) =>
            [@bs]
-           disposeBoxGeometryBufferDataFunc(
-             component,
-             [@bs] addBoxGeometryBufferToPoolFunc(component, vboBufferRecord)
-           )
+           disposeBufferDataFunc(component, [@bs] addBufferToPoolFunc(component, vboBufferRecord))
        ),
        vboBufferRecord
      );

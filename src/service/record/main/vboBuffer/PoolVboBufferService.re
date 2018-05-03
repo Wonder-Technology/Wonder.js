@@ -149,12 +149,12 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
 let addInstanceBufferToPool =
   [@bs]
   (
-    (sourceInstanceIndex: int, {matrixInstanceBufferMap, matrixInstanceBufferPool} as record) => {
-      ...record,
-      matrixInstanceBufferPool:
-        matrixInstanceBufferPool
-        |> ArrayService.push(
-             _unsafeGetBufferFromBufferMap(sourceInstanceIndex, matrixInstanceBufferMap)
-           )
-    }
+    (sourceInstanceIndex: int, {matrixInstanceBufferMap, matrixInstanceBufferPool} as record) =>
+      switch (WonderCommonlib.SparseMapService.get(sourceInstanceIndex, matrixInstanceBufferMap)) {
+      | None => record
+      | Some(buffer) => {
+          ...record,
+          matrixInstanceBufferPool: matrixInstanceBufferPool |> ArrayService.push(buffer)
+        }
+      }
   );

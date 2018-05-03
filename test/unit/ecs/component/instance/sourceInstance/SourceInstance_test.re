@@ -112,7 +112,7 @@ let _ =
                 }
               );
               test(
-                "remove from t32ArrayMap, matrixInstanceBufferCapacityMap, isTransforsformMatrixDataMap, gameObjectMap",
+                "remove from matrixFloat32ArrayMap, matrixInstanceBufferCapacityMap, isTransforsformMatrixDataMap, gameObjectMap",
                 () => {
                   open SourceInstanceType;
                   let (state, gameObject, sourceInstance) =

@@ -111,7 +111,7 @@ let _ =
       );
       describe(
         "fix bug",
-        () =>
+        () => {
           describe(
             "if sourceInstance gameObject not has  objectInstanceGameObjects,",
             () => {
@@ -198,7 +198,49 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "dispose",
+            () => {
+              test(
+                "not add buffer to pool",
+                () => {
+                  open VboBufferType;
+                  let (state, gameObject, componentTuple, objectInstanceGameObjectList) =
+                    RenderBasicBatchInstanceTool.prepare(sandbox, 2, state^);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let buffer = Obj.magic(1);
+                  let createBuffer = createBuffer |> returns(buffer);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject);
+                  let {matrixInstanceBufferPool} = VboBufferTool.getVboBufferRecord(state);
+                  matrixInstanceBufferPool |> SparseMapService.length |> expect == 0
+                }
+              );
+              test(
+                "not add matrixFloat32ArrayMap->typeArray to pool",
+                () => {
+                  let (state, gameObject, componentTuple, objectInstanceGameObjectList) =
+                    RenderBasicBatchInstanceTool.prepare(sandbox, 2, state^);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let buffer = Obj.magic(1);
+                  let createBuffer = createBuffer |> returns(buffer);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> GameObjectTool.disposeGameObject(gameObject);
+                  TypeArrayPoolTool.getFloat32ArrayPoolMap(state.typeArrayPoolRecord)
+                  |> SparseMapService.length
+                  |> expect == 0
+                }
+              )
+            }
           )
+        }
       )
     }
   );
