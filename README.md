@@ -16,7 +16,9 @@ It is currently in alpha, any contributions are very welcome.
 
 ## Art
 Design is Art
+
 Code is Art
+
 Everthing is Art
 
 
@@ -30,6 +32,7 @@ Everthing is Art
 ## Support All Web Platform
 ### PC
 Chrome
+
 Firefox
 
 
