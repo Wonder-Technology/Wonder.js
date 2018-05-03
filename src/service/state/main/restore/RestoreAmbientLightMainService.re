@@ -2,20 +2,23 @@ open StateDataMainType;
 
 open AmbientLightType;
 
-let _restoreTypeArrays = (currentAmbientLightRecord, targetAmbientLightRecord) => {
-  let colors =
-    currentAmbientLightRecord.colors
-    |> RecordAmbientLightMainService.setDefaultTypeArrData(
-         BufferAmbientLightService.getBufferMaxCount()
-       );
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentAmbientLightRecord.colors, 0),
-    (targetAmbientLightRecord.colors, 0),
-    Js.Typed_array.Float32Array.length(targetAmbientLightRecord.colors)
-  )
-  |> ignore;
-  (currentAmbientLightRecord, targetAmbientLightRecord)
-};
+let _restoreTypeArrays = (currentAmbientLightRecord, targetAmbientLightRecord) =>
+  currentAmbientLightRecord.colors === targetAmbientLightRecord.colors ?
+    (currentAmbientLightRecord, targetAmbientLightRecord) :
+    {
+      let colors =
+        currentAmbientLightRecord.colors
+        |> RecordAmbientLightMainService.setDefaultTypeArrData(
+             BufferAmbientLightService.getBufferMaxCount()
+           );
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentAmbientLightRecord.colors, 0),
+        (targetAmbientLightRecord.colors, 0),
+        Js.Typed_array.Float32Array.length(targetAmbientLightRecord.colors)
+      )
+      |> ignore;
+      (currentAmbientLightRecord, targetAmbientLightRecord)
+    };
 
 let restore = (currentState, targetState) => {
   let currentAmbientLightRecord = currentState.ambientLightRecord;

@@ -1510,7 +1510,114 @@ let _ =
           );
           describe(
             "restore transform record to target state",
-            () =>
+            () => {
+              let _test = (state) => {
+                open TransformType;
+                let {localToWorldMatrices, localPositions} = state |> TransformTool.getRecord;
+                (localToWorldMatrices, localPositions)
+                |>
+                expect == (
+                            Float32Array.make([|
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              1.,
+                              2.,
+                              3.,
+                              1.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              3.,
+                              6.,
+                              13.,
+                              1.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              1.
+                            |]),
+                            Float32Array.make([|
+                              1.,
+                              2.,
+                              3.,
+                              2.,
+                              4.,
+                              10.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              0.,
+                              0.
+                            |])
+                          )
+              };
               test(
                 "test restore typeArrays",
                 () => {
@@ -1537,113 +1644,35 @@ let _ =
                     TransformAPI.setTransformLocalPosition(transform1, pos1, currentState);
                   let currentState = TransformTool.update(transform1, currentState);
                   let _ = MainStateTool.restore(currentState, copiedState);
-                  let {localToWorldMatrices, localPositions} =
-                    MainStateTool.unsafeGetState() |> TransformTool.getRecord;
-                  (localToWorldMatrices, localPositions)
-                  |>
-                  expect == (
-                              Float32Array.make([|
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                1.,
-                                2.,
-                                3.,
-                                1.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                3.,
-                                6.,
-                                13.,
-                                1.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                1.
-                              |]),
-                              Float32Array.make([|
-                                1.,
-                                2.,
-                                3.,
-                                2.,
-                                4.,
-                                10.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                0.,
-                                0.
-                              |])
-                            )
+                  _test(MainStateTool.unsafeGetState())
                 }
+              );
+              describe(
+                "test restore to the same state",
+                () =>
+                  test(
+                    "should not change typeArrays",
+                    () => {
+                      open TransformType;
+                      state :=
+                        TestTool.initWithJobConfigWithoutBuildFakeDom(
+                          ~sandbox,
+                          ~buffer=
+                            SettingTool.buildBufferConfigStr(~transformDataBufferCount=5, ()),
+                          ()
+                        );
+                      let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
+                        _prepareTransformMatrixData(state);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state = TransformTool.update(transform1, state);
+                      let state = TransformTool.update(transform2, state);
+                      let _ = MainStateTool.restore(state, state);
+                      _test(MainStateTool.unsafeGetState())
+                    }
+                  )
               )
+            }
           );
           describe(
             "restore customGeometry record to target state",
@@ -1745,7 +1774,7 @@ let _ =
                 "test light material",
                 () =>
                   test(
-                    "copy target buffer data to current buffer",
+                    "test restore typeArrays",
                     () => {
                       open LightMaterialType;
                       state :=

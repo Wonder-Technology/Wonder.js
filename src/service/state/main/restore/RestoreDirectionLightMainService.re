@@ -2,26 +2,30 @@ open StateDataMainType;
 
 open DirectionLightType;
 
-let _restoreTypeArrays = (currentDirectionLightRecord, targetDirectionLightRecord) => {
-  let (colors, intensities) =
-    (currentDirectionLightRecord.colors, currentDirectionLightRecord.intensities)
-    |> RecordDirectionLightMainService.setDefaultTypeArrData(
-         BufferDirectionLightService.getBufferMaxCount()
-       );
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentDirectionLightRecord.colors, 0),
-    (targetDirectionLightRecord.colors, 0),
-    Js.Typed_array.Float32Array.length(targetDirectionLightRecord.colors)
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentDirectionLightRecord.intensities, 0),
-    (targetDirectionLightRecord.intensities, 0),
-    Js.Typed_array.Float32Array.length(targetDirectionLightRecord.intensities)
-  )
-  |> ignore;
-  (currentDirectionLightRecord, targetDirectionLightRecord)
-};
+let _restoreTypeArrays = (currentDirectionLightRecord, targetDirectionLightRecord) =>
+  currentDirectionLightRecord.colors === targetDirectionLightRecord.colors
+  && currentDirectionLightRecord.intensities === targetDirectionLightRecord.intensities ?
+    (currentDirectionLightRecord, targetDirectionLightRecord) :
+    {
+      let (colors, intensities) =
+        (currentDirectionLightRecord.colors, currentDirectionLightRecord.intensities)
+        |> RecordDirectionLightMainService.setDefaultTypeArrData(
+             BufferDirectionLightService.getBufferMaxCount()
+           );
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentDirectionLightRecord.colors, 0),
+        (targetDirectionLightRecord.colors, 0),
+        Js.Typed_array.Float32Array.length(targetDirectionLightRecord.colors)
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentDirectionLightRecord.intensities, 0),
+        (targetDirectionLightRecord.intensities, 0),
+        Js.Typed_array.Float32Array.length(targetDirectionLightRecord.intensities)
+      )
+      |> ignore;
+      (currentDirectionLightRecord, targetDirectionLightRecord)
+    };
 
 let restore = (currentState, targetState) => {
   let currentDirectionLightRecord = currentState.directionLightRecord;

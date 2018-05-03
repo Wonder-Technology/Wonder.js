@@ -10,32 +10,38 @@ let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
      );
 
 let _restoreTypeArrays =
-    (currentSourceInstanceRecord, targetSourceInstanceRecord, objectInstanceCountPerSourceInstance) => {
-  let (objectInstanceTransformCollections, isTransformStatics) =
-    (
-      currentSourceInstanceRecord.objectInstanceTransformCollections,
-      currentSourceInstanceRecord.isTransformStatics
-    )
-    |> RecordSourceInstanceMainService.setDefaultTypeArrData(
-         objectInstanceCountPerSourceInstance,
-         StaticTransformService.getDefault()
-       );
-  TypeArrayService.fillUint32ArrayWithUint32Array(
-    (currentSourceInstanceRecord.objectInstanceTransformCollections, 0),
-    (targetSourceInstanceRecord.objectInstanceTransformCollections, 0),
-    Js.Typed_array.Uint32Array.length(
-      targetSourceInstanceRecord.objectInstanceTransformCollections
-    )
-  )
-  |> ignore;
-  TypeArrayService.fillUint8ArrayWithUint8Array(
-    (currentSourceInstanceRecord.isTransformStatics, 0),
-    (targetSourceInstanceRecord.isTransformStatics, 0),
-    Js.Typed_array.Uint8Array.length(targetSourceInstanceRecord.isTransformStatics)
-  )
-  |> ignore;
-  (currentSourceInstanceRecord, targetSourceInstanceRecord)
-};
+    (currentSourceInstanceRecord, targetSourceInstanceRecord, objectInstanceCountPerSourceInstance) =>
+  currentSourceInstanceRecord.objectInstanceTransformCollections
+  === targetSourceInstanceRecord.objectInstanceTransformCollections
+  &&
+  currentSourceInstanceRecord.isTransformStatics === targetSourceInstanceRecord.isTransformStatics ?
+    (currentSourceInstanceRecord, targetSourceInstanceRecord) :
+    {
+      let (objectInstanceTransformCollections, isTransformStatics) =
+        (
+          currentSourceInstanceRecord.objectInstanceTransformCollections,
+          currentSourceInstanceRecord.isTransformStatics
+        )
+        |> RecordSourceInstanceMainService.setDefaultTypeArrData(
+             objectInstanceCountPerSourceInstance,
+             StaticTransformService.getDefault()
+           );
+      TypeArrayService.fillUint32ArrayWithUint32Array(
+        (currentSourceInstanceRecord.objectInstanceTransformCollections, 0),
+        (targetSourceInstanceRecord.objectInstanceTransformCollections, 0),
+        Js.Typed_array.Uint32Array.length(
+          targetSourceInstanceRecord.objectInstanceTransformCollections
+        )
+      )
+      |> ignore;
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentSourceInstanceRecord.isTransformStatics, 0),
+        (targetSourceInstanceRecord.isTransformStatics, 0),
+        Js.Typed_array.Uint8Array.length(targetSourceInstanceRecord.isTransformStatics)
+      )
+      |> ignore;
+      (currentSourceInstanceRecord, targetSourceInstanceRecord)
+    };
 
 let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) => {
   let currentSourceInstanceRecord = RecordSourceInstanceMainService.getRecord(currentState);
