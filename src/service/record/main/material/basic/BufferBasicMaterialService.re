@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let getShaderIndicesSize = () => 1;
+
 let getColorsSize = () => 3;
 
 let getColorsLength = (count) => count * getColorsSize();

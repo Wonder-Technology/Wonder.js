@@ -12,13 +12,12 @@ open OperateTypeArrayLightMaterialService;
 
 let getRecord = ({lightMaterialRecord}) => lightMaterialRecord |> OptionService.unsafeGet;
 
-let _setDefaultTypeArrData =
+let setDefaultTypeArrData =
     (
       count: int,
       (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
-      (buffer, shaderIndices, diffuseColors, specularColors, shininess)
-    ) => (
-  buffer,
+      (shaderIndices, diffuseColors, specularColors, shininess)
+    ) =>
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -31,7 +30,20 @@ let _setDefaultTypeArrData =
          )
        ),
        (shaderIndices, diffuseColors, specularColors, shininess)
-     )
+     );
+
+let _setDefaultTypeArrData =
+    (
+      count: int,
+      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
+      (buffer, shaderIndices, diffuseColors, specularColors, shininess)
+    ) => (
+  buffer,
+  setDefaultTypeArrData(
+    count,
+    (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
+    (shaderIndices, diffuseColors, specularColors, shininess)
+  )
 );
 
 let _initBufferData =
@@ -82,7 +94,6 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = (state) => {
   let {
         index,
-        buffer,
         shaderIndices,
         diffuseColors,
         specularColors,
@@ -103,11 +114,18 @@ let deepCopyForRestore = (state) => {
       Some({
         ...record,
         index,
-        buffer:
-          CopyArrayBufferService.copyArrayBuffer(
-            buffer,
-            BufferLightMaterialService.getTotalByteLength(index)
-          ),
+        shaderIndices:
+          shaderIndices
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(index * getShaderIndicesSize()),
+        diffuseColors:
+          diffuseColors
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getDiffuseColorsSize()),
+        specularColors:
+          specularColors
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getSpecularColorsSize()),
+        shininess:
+          shininess
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getShininessSize()),
         defaultShaderIndex,
         defaultDiffuseColor,
         defaultSpecularColor,

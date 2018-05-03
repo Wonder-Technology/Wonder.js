@@ -69,33 +69,36 @@ let getDefaultQuadratic = () => 0.017;
 
 let getDefaultRange = () => 65.;
 
-let _setDefaultTypeArrData =
-    (count: int, (buffer, colors, intensities, constants, linears, quadratics, ranges)) => {
+let setDefaultTypeArrData =
+    (count: int, (colors, intensities, constants, linears, quadratics, ranges)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
   let defaultConstant = getDefaultConstant();
   let defaultLinear = getDefaultLinear();
   let defaultQuadratic = getDefaultQuadratic();
   let defaultRange = getDefaultRange();
-  (
-    buffer,
-    WonderCommonlib.ArrayService.range(0, count - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           ((colors, intensities, constants, linears, quadratics, ranges), index) => (
-             setColor(index, defaultColor, colors),
-             setIntensity(index, defaultIntensity, intensities),
-             setConstant(index, defaultConstant, constants),
-             setLinear(index, defaultLinear, linears),
-             setQuadratic(index, defaultQuadratic, quadratics),
-             setRange(index, defaultRange, ranges)
-           )
-         ),
-         (colors, intensities, constants, linears, quadratics, ranges)
-       )
-  )
+  WonderCommonlib.ArrayService.range(0, count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         ((colors, intensities, constants, linears, quadratics, ranges), index) => (
+           setColor(index, defaultColor, colors),
+           setIntensity(index, defaultIntensity, intensities),
+           setConstant(index, defaultConstant, constants),
+           setLinear(index, defaultLinear, linears),
+           setQuadratic(index, defaultQuadratic, quadratics),
+           setRange(index, defaultRange, ranges)
+         )
+       ),
+       (colors, intensities, constants, linears, quadratics, ranges)
+     )
 };
+
+let _setDefaultTypeArrData =
+    (count: int, (buffer, colors, intensities, constants, linears, quadratics, ranges)) => (
+  buffer,
+  setDefaultTypeArrData(count, (colors, intensities, constants, linears, quadratics, ranges))
+);
 
 let _initBufferData = () => {
   let count = getBufferMaxCount();
@@ -125,7 +128,6 @@ let create = () => {
 let deepCopyForRestore = ({pointLightRecord} as state) => {
   let {
     index,
-    buffer,
     colors,
     intensities,
     constants,
@@ -140,11 +142,18 @@ let deepCopyForRestore = ({pointLightRecord} as state) => {
     pointLightRecord: {
       ...pointLightRecord,
       index,
-      buffer:
-        CopyArrayBufferService.copyArrayBuffer(
-          buffer,
-          BufferPointLightService.getTotalByteLength(index)
-        ),
+      colors: colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
+      intensities:
+        intensities
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getIntensitiesSize()),
+      constants:
+        constants |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getConstantsSize()),
+      linears:
+        linears |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getLinearsSize()),
+      quadratics:
+        quadratics
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getQuadraticsSize()),
+      ranges: ranges |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getRangesSize()),
       mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
       gameObjectMap: gameObjectMap |> SparseMapService.copy
     }

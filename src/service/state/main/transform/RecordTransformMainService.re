@@ -29,14 +29,13 @@ let setLocalPosition = (index, data, typeArr) =>
 let setLocalPositionByTuple = (index, dataTuple, typeArr) =>
   TypeArrayService.setFloat3ByTuple(getLocalPositionIndex(index), dataTuple, typeArr);
 
-let _setDefaultTypeArrData =
+let setDefaultTypeArrData =
     (
       count: int,
       defaultLocalToWorldMatrix,
       defaultLocalPosition,
-      (buffer, localToWorldMatrices, localPositions)
-    ) => (
-  buffer,
+      (localToWorldMatrices, localPositions)
+    ) =>
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -47,7 +46,22 @@ let _setDefaultTypeArrData =
          )
        ),
        (localToWorldMatrices, localPositions)
-     )
+     );
+
+let _setDefaultTypeArrData =
+    (
+      count: int,
+      defaultLocalToWorldMatrix,
+      defaultLocalPosition,
+      (buffer, localToWorldMatrices, localPositions)
+    ) => (
+  buffer,
+  setDefaultTypeArrData(
+    count,
+    defaultLocalToWorldMatrix,
+    defaultLocalPosition,
+    (localToWorldMatrices, localPositions)
+  )
 );
 
 let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) => {
@@ -158,7 +172,8 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = (state) => {
   let {
         index,
-        buffer,
+        localPositions,
+        localToWorldMatrices,
         defaultLocalToWorldMatrix,
         defaultLocalPosition,
         localToWorldMatrixCacheMap,
@@ -175,11 +190,14 @@ let deepCopyForRestore = (state) => {
     transformRecord:
       Some({
         ...record,
-        buffer:
-          CopyArrayBufferService.copyArrayBuffer(
-            buffer,
-            BufferTransformService.getTotalByteLength(index)
-          ),
+        localPositions:
+          localPositions
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getLocalPositionsSize()),
+        localToWorldMatrices:
+          localToWorldMatrices
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getLocalToWorldMatricesSize()
+             ),
         defaultLocalToWorldMatrix,
         defaultLocalPosition,
         localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),

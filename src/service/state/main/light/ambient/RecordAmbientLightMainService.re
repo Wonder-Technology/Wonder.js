@@ -11,17 +11,19 @@ let setColor = (index, color, typeArr) =>
 
 let getDefaultColor = () => [|1., 1., 1.|];
 
-let _setDefaultTypeArrData = (count: int, (buffer, colors)) => {
+let setDefaultTypeArrData = (count: int, colors) => {
   let defaultColor = getDefaultColor();
-  (
-    buffer,
-    WonderCommonlib.ArrayService.range(0, count - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs] ((colors, index) => setColor(index, defaultColor, colors)),
-         colors
-       )
-  )
+  WonderCommonlib.ArrayService.range(0, count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs] ((colors, index) => setColor(index, defaultColor, colors)),
+       colors
+     )
 };
+
+let _setDefaultTypeArrData = (count: int, (buffer, colors)) => (
+  buffer,
+  setDefaultTypeArrData(count, colors)
+);
 
 let _initBufferData = () => {
   open Js.Typed_array;
@@ -46,17 +48,13 @@ let create = () => {
 };
 
 let deepCopyForRestore = ({ambientLightRecord} as state) => {
-  let {index, buffer, colors, gameObjectMap, mappedIndexMap} = ambientLightRecord;
+  let {index, colors, gameObjectMap, mappedIndexMap} = ambientLightRecord;
   {
     ...state,
     ambientLightRecord: {
       ...ambientLightRecord,
       index,
-      buffer:
-        CopyArrayBufferService.copyArrayBuffer(
-          buffer,
-          BufferAmbientLightService.getTotalByteLength(index)
-        ),
+      colors: colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
       mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
       gameObjectMap: gameObjectMap |> SparseMapService.copy
     }

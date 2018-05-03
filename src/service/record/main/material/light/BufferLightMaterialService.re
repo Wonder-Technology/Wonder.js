@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let getShaderIndicesSize = () => 1;
+
 let getDiffuseColorsSize = () => 3;
 
 let getDiffuseColorsLength = (count) => count * getDiffuseColorsSize();

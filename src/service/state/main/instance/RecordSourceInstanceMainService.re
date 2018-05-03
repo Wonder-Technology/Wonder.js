@@ -6,28 +6,40 @@ open BufferSourceInstanceService;
 
 let getRecord = ({sourceInstanceRecord}) => sourceInstanceRecord |> OptionService.unsafeGet;
 
-let _setDefaultTypeArrData =
+let setDefaultTypeArrData =
     (
-      count: int,
+      sourceInstanceCount: int,
       defaultIsTransformStatic,
-      (buffer, objectInstanceTransformCollections, isTransformStatics)
+      (objectInstanceTransformCollections, isTransformStatics)
     ) => (
-  buffer,
-  WonderCommonlib.ArrayService.range(0, count - 1)
+  objectInstanceTransformCollections |> Js.Typed_array.Uint32Array.fillInPlace(0),
+  WonderCommonlib.ArrayService.range(0, sourceInstanceCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         ((objectInstanceTransformCollections, isTransformStatics), index) => (
-           objectInstanceTransformCollections,
+         (isTransformStatics, index) =>
            StaticTransformService.setModelMatrixIsStatic(
              index,
              defaultIsTransformStatic,
              isTransformStatics
            )
-         )
        ),
-       (objectInstanceTransformCollections, isTransformStatics)
+       isTransformStatics
      )
+);
+
+let _setDefaultTypeArrData =
+    (
+      sourceInstanceCount: int,
+      defaultIsTransformStatic,
+      (buffer, objectInstanceTransformCollections, isTransformStatics)
+    ) => (
+  buffer,
+  setDefaultTypeArrData(
+    sourceInstanceCount,
+    defaultIsTransformStatic,
+    (objectInstanceTransformCollections, isTransformStatics)
+  )
 );
 
 let _initBufferData =
@@ -73,7 +85,6 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
-        buffer,
         objectInstanceTransformIndexMap,
         objectInstanceTransformCollections,
         matrixFloat32ArrayMap,
@@ -90,14 +101,17 @@ let deepCopyForRestore = ({settingRecord} as state) => {
       Some({
         ...record,
         index,
-        buffer:
-          CopyArrayBufferService.copyArrayBuffer(
-            buffer,
-            BufferSourceInstanceService.getTotalByteLength(
-              index,
-              BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
-            )
-          ),
+        objectInstanceTransformCollections:
+          objectInstanceTransformCollections
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
+               index
+               * getObjectInstanceTransformCollectionsSize(
+                   BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+                 )
+             ),
+        isTransformStatics:
+          isTransformStatics
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsTransformStaticsSize()),
         matrixFloat32ArrayMap:
           matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
         matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> SparseMapService.copy,

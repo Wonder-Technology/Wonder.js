@@ -293,7 +293,7 @@ let getPointLightRange = (light, state: StateDataMainType.state) => {
   )
 };
 
-let setPointLightRange = (light, color, state: StateDataMainType.state) => {
+let setPointLightRange = (light, range, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -313,7 +313,7 @@ let setPointLightRange = (light, color, state: StateDataMainType.state) => {
           light,
           IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
         ),
-        color,
+        range,
         state.pointLightRecord
       )
   }

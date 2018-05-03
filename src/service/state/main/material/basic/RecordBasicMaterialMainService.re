@@ -12,9 +12,7 @@ open OperateTypeArrayBasicMaterialService;
 
 let getRecord = ({basicMaterialRecord}) => basicMaterialRecord |> OptionService.unsafeGet;
 
-let _setDefaultTypeArrData =
-    (count: int, defaultShaderIndex, defaultColor, (buffer, shaderIndices, colors)) => (
-  buffer,
+let setDefaultTypeArrData = (count: int, defaultShaderIndex, defaultColor, (shaderIndices, colors)) =>
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -25,7 +23,12 @@ let _setDefaultTypeArrData =
          )
        ),
        (shaderIndices, colors)
-     )
+     );
+
+let _setDefaultTypeArrData =
+    (count: int, defaultShaderIndex, defaultColor, (buffer, shaderIndices, colors)) => (
+  buffer,
+  setDefaultTypeArrData(count, defaultShaderIndex, defaultColor, (shaderIndices, colors))
 );
 
 let _initBufferData = (count, defaultShaderIndex, defaultColor) => {
@@ -79,11 +82,11 @@ let deepCopyForRestore = (state) => {
       Some({
         ...record,
         index,
-        buffer:
-          CopyArrayBufferService.copyArrayBuffer(
-            buffer,
-            BufferBasicMaterialService.getTotalByteLength(index)
-          ),
+        shaderIndices:
+          shaderIndices
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(index * getShaderIndicesSize()),
+        colors:
+          colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
         defaultShaderIndex,
         defaultColor,
         groupCountMap: groupCountMap |> SparseMapService.copy,

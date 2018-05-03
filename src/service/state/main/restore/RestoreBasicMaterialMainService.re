@@ -16,6 +16,30 @@ let _resetShaderIndices = (state) => {
   }
 };
 
+let _restoreTypeArrays =
+    (currentBasicMaterialRecord, targetBasicMaterialRecord, basicMaterialDataBufferCount) => {
+  let (shaderIndices, colors) =
+    (currentBasicMaterialRecord.shaderIndices, currentBasicMaterialRecord.colors)
+    |> RecordBasicMaterialMainService.setDefaultTypeArrData(
+         basicMaterialDataBufferCount,
+         currentBasicMaterialRecord.defaultShaderIndex,
+         currentBasicMaterialRecord.defaultColor
+       );
+  TypeArrayService.fillUint32ArrayWithUint32Array(
+    (currentBasicMaterialRecord.shaderIndices, 0),
+    (targetBasicMaterialRecord.shaderIndices, 0),
+    Js.Typed_array.Uint32Array.length(targetBasicMaterialRecord.shaderIndices)
+  )
+  |> ignore;
+  TypeArrayService.fillFloat32ArrayWithFloat32Array(
+    (currentBasicMaterialRecord.colors, 0),
+    (targetBasicMaterialRecord.colors, 0),
+    Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.colors)
+  )
+  |> ignore;
+  (currentBasicMaterialRecord, targetBasicMaterialRecord)
+};
+
 let restore = (gl, currentState, targetState) => {
   let targetState = _resetShaderIndices(targetState);
   let targetState =
@@ -28,10 +52,22 @@ let restore = (gl, currentState, targetState) => {
        );
   let currentBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(currentState);
   let targetBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(targetState);
-  let newBuffer =
-    CopyArrayBufferService.copyArrayBufferData(
-      targetBasicMaterialRecord.buffer,
-      currentBasicMaterialRecord.buffer
+  let basicMaterialDataBufferCount =
+    BufferSettingService.getBasicMaterialDataBufferCount(currentState.settingRecord);
+  let (currentBasicMaterialRecord, targetBasicMaterialRecord) =
+    _restoreTypeArrays(
+      currentBasicMaterialRecord,
+      targetBasicMaterialRecord,
+      basicMaterialDataBufferCount
     );
-  {...targetState, basicMaterialRecord: Some({...targetBasicMaterialRecord, buffer: newBuffer})}
+  {
+    ...targetState,
+    basicMaterialRecord:
+      Some({
+        ...targetBasicMaterialRecord,
+        buffer: currentBasicMaterialRecord.buffer,
+        shaderIndices: currentBasicMaterialRecord.shaderIndices,
+        colors: currentBasicMaterialRecord.colors
+      })
+  }
 };

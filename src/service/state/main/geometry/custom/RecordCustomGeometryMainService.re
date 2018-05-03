@@ -8,6 +8,20 @@ open BufferCustomGeometryService;
 
 let getRecord = ({customGeometryRecord}) => customGeometryRecord |> OptionService.unsafeGet;
 
+let setDefaultTypeArrData = (count: int, (vertices, normals, indices)) =>
+  WonderCommonlib.ArrayService.range(0, count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         ((vertices, normals, indices), index) => (
+           TypeArrayService.setFloat1(getVertexIndex(index), 0., vertices),
+           TypeArrayService.setFloat1(getVertexIndex(index), 0., normals),
+           TypeArrayService.setUInt16_1(getIndexIndex(index), 0, indices)
+         )
+       ),
+       (vertices, normals, indices)
+     );
+
 let _initBufferData = (count) => {
   let buffer = createBuffer(count);
   let (vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos) =
@@ -49,10 +63,9 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = (state) => {
   let {
         index,
-        buffer,
-        verticesInfos,
-        normalsInfos,
-        indicesInfos,
+        vertices,
+        normals,
+        indices,
         verticesOffset,
         normalsOffset,
         indicesOffset,
@@ -70,14 +83,12 @@ let deepCopyForRestore = (state) => {
       Some({
         ...record,
         index,
-        buffer:
-          CopyArrayBufferService.copyArrayBuffer(
-            buffer,
-            BufferCustomGeometryService.getTotalByteLength(index)
-          ),
-        /* verticesInfos: verticesInfos |> SparseMapService.copy,
-        normalsInfos: normalsInfos |> SparseMapService.copy,
-        indicesInfos: indicesInfos |> SparseMapService.copy, */
+        vertices:
+          vertices |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
+        normals:
+          normals |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
+        indices:
+          indices |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getIndexSize()),
         verticesOffset,
         normalsOffset,
         indicesOffset,

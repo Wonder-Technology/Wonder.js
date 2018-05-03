@@ -21,23 +21,26 @@ let getIntensity = (index, typeArr) =>
 let setIntensity = (index, intensity, typeArr) =>
   TypeArrayService.setFloat1(getIntensityIndex(index), intensity, typeArr);
 
+let setDefaultTypeArrData = (count: int, (colors, intensities)) => {
+  let defaultColor = getDefaultColor();
+  let defaultIntensity = getDefaultIntensity();
+  WonderCommonlib.ArrayService.range(0, count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         ((colors, intensities), index) => (
+           setColor(index, defaultColor, colors),
+           setIntensity(index, defaultIntensity, intensities)
+         )
+       ),
+       (colors, intensities)
+     )
+};
+
 let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
-  (
-    buffer,
-    WonderCommonlib.ArrayService.range(0, count - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           ((colors, intensities), index) => (
-             setColor(index, defaultColor, colors),
-             setIntensity(index, defaultIntensity, intensities)
-           )
-         ),
-         (colors, intensities)
-       )
-  )
+  (buffer, setDefaultTypeArrData(count, (colors, intensities)))
 };
 
 let _initBufferData = () => {
@@ -60,17 +63,17 @@ let create = () => {
 };
 
 let deepCopyForRestore = ({directionLightRecord} as state) => {
-  let {index, buffer, colors, intensities, gameObjectMap, mappedIndexMap} = directionLightRecord;
+  let {index, colors, intensities, gameObjectMap, mappedIndexMap} = directionLightRecord;
   {
     ...state,
     directionLightRecord: {
       ...directionLightRecord,
       index,
-      buffer:
-        CopyArrayBufferService.copyArrayBuffer(
-          buffer,
-          BufferDirectionLightService.getTotalByteLength(index)
-        ),
+      colors:
+        colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
+      intensities:
+        intensities
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getIntensitiesSize()),
       mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
       gameObjectMap: gameObjectMap |> SparseMapService.copy
     }

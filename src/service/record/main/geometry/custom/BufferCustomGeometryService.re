@@ -33,8 +33,10 @@ let getIndicesInfosLength = (count) => count * getInfoSize();
 let getIndicesInfosOffset = (count) =>
   getNormalsInfosOffset(count) + getNormalsInfosLength(count) * Uint8Array._BYTES_PER_ELEMENT;
 
-/* let getVertexIndex = (index) => index * getVertexSize(); */
-/* let getIndexIndex = (index) => index * getIndexSize(); */
+let getVertexIndex = (index) => index * getVertexSize();
+
+let getIndexIndex = (index) => index * getIndexSize();
+
 let getInfoIndex = (index) => index * getInfoSize();
 
 let getTotalByteLength = (count) =>

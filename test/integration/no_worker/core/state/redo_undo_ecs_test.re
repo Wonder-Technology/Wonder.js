@@ -231,35 +231,35 @@ let _ =
           describe(
             "deep copy transform record",
             () => {
-              /* test(
-                   "copy localToWorldMatrices",
-                   () =>
-                     _testCopyTypeArraySingleValue(
-                       (
-                         GameObjectTool.createGameObject,
-                         TransformTool.getLocalToWorldMatrix,
-                         TransformTool.setLocalToWorldMatrix,
-                         () => (
-                           [|2., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|],
-                           [|3., 1., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|]
-                         )
-                       ),
-                       state
-                     )
-                 );
-                 test(
-                   "copy localPositions",
-                   () =>
-                     _testCopyTypeArraySingleValue(
-                       (
-                         GameObjectTool.createGameObject,
-                         TransformAPI.getTransformLocalPosition,
-                         TransformAPI.setTransformLocalPosition,
-                         () => ((2., 0., 0.), (3., 1., 2.))
-                       ),
-                       state
-                     )
-                 ); */
+              test(
+                "copy localToWorldMatrices",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      TransformTool.getLocalToWorldMatrix,
+                      TransformTool.setLocalToWorldMatrix,
+                      () => (
+                        [|2., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|],
+                        [|3., 1., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|]
+                      )
+                    ),
+                    state
+                  )
+              );
+              test(
+                "copy localPositions",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      TransformAPI.getTransformLocalPosition,
+                      TransformAPI.setTransformLocalPosition,
+                      () => ((2., 0., 0.), (3., 1., 2.))
+                    ),
+                    state
+                  )
+              );
               test(
                 "deep copy childMap",
                 () => {
@@ -316,426 +316,426 @@ let _ =
           );
           /* describe(
                "deep copy geometry record",
-               () =>
+               () => {
                  /* describe(
-                      "deep copy box geometry record",
-                      () => {
-                        test(
-                          "copy vertices",
-                          () =>
-                            _testCopyTypeArraySingleValue(
-                              (
-                                GameObjectTool.createGameObject,
-                                BoxGeometryAPI.getBoxGeometryVertices,
-                                BoxGeometryTool.setVertices,
-                                () => (
-                                  Float32Array.make([|
-                                    2.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.
-                                  |]),
-                                  Float32Array.make([|
-                                    4.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.
-                                  |])
-                                )
-                              ),
-                              state
-                            )
-                        );
-                        test(
-                          "copy normals",
-                          () =>
-                            _testCopyTypeArraySingleValue(
-                              (
-                                GameObjectTool.createGameObject,
-                                BoxGeometryAPI.getBoxGeometryNormals,
-                                BoxGeometryTool.setNormals,
-                                () => (
-                                  Float32Array.make([|
-                                    2.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.
-                                  |]),
-                                  Float32Array.make([|
-                                    4.,
-                                    2.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    1.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.,
-                                    0.
-                                  |])
-                                )
-                              ),
-                              state
-                            )
-                        );
-                        test(
-                          "copy indices",
-                          () =>
-                            _testCopyTypeArraySingleValue(
-                              (
-                                GameObjectTool.createGameObject,
-                                BoxGeometryAPI.getBoxGeometryIndices,
-                                BoxGeometryTool.setIndices,
-                                () => (
-                                  Uint16Array.make([|
-                                    4,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  |]),
-                                  Uint16Array.make([|
-                                    7,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  |])
-                                )
-                              ),
-                              state
-                            )
-                        )
-                      }
-                    ); */
+                   "deep copy box geometry record",
+                   () => {
+                     test(
+                       "copy vertices",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             GameObjectTool.createGameObject,
+                             BoxGeometryAPI.getBoxGeometryVertices,
+                             BoxGeometryTool.setVertices,
+                             () => (
+                               Float32Array.make([|
+                                 2.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.
+                               |]),
+                               Float32Array.make([|
+                                 4.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.
+                               |])
+                             )
+                           ),
+                           state
+                         )
+                     );
+                     test(
+                       "copy normals",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             GameObjectTool.createGameObject,
+                             BoxGeometryAPI.getBoxGeometryNormals,
+                             BoxGeometryTool.setNormals,
+                             () => (
+                               Float32Array.make([|
+                                 2.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.
+                               |]),
+                               Float32Array.make([|
+                                 4.,
+                                 2.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.
+                               |])
+                             )
+                           ),
+                           state
+                         )
+                     );
+                     test(
+                       "copy indices",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             GameObjectTool.createGameObject,
+                             BoxGeometryAPI.getBoxGeometryIndices,
+                             BoxGeometryTool.setIndices,
+                             () => (
+                               Uint16Array.make([|
+                                 4,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0
+                               |]),
+                               Uint16Array.make([|
+                                 7,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 1,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 0
+                               |])
+                             )
+                           ),
+                           state
+                         )
+                     )
+                   }
+                 ); */
                  /* describe(
                    "deep copy custom geometry record",
                    () =>
@@ -759,65 +759,77 @@ let _ =
                        }
                      )
                  ) */
+               }
              ); */
-          /* test(
-               "copy vertices",
+          /* describe(
+               "deep copy geometry record",
                () =>
-                 _testCopyTypeArraySingleValue(
-                   (
-                     GameObjectTool.createGameObject,
-                     CustomGeometryAPI.getCustomGeometryVertices,
-                     CustomGeometryAPI.setCustomGeometryVertices,
-                     () => (
-                       Float32Array.make([|2., 0., 0.|]),
-                       Float32Array.make([|4., 0., 0.|])
+                 describe(
+                   "deep copy custom geometry record",
+                   () => {
+                     beforeEach(()=>{
+
+                     state :=
+                       TestTool.initWithJobConfigWithoutBuildFakeDom(
+                         ~sandbox,
+                         ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointDataBufferCount=500, ()),
+                         ()
+                       );
+                     });
+                     test(
+                       "copy vertices",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             /* GameObjectTool.createGameObject, */
+                             CustomGeometryTool.createGameObject,
+                             CustomGeometryAPI.getCustomGeometryVertices,
+                             CustomGeometryAPI.setCustomGeometryVertices,
+                             () => (
+                               Float32Array.make([|2., 0., 0.|]),
+                               Float32Array.make([|4., 0., 0.|])
+                             )
+                           ),
+                           state
+                         )
+                     );
+                     test(
+                       "copy normals",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             GameObjectTool.createGameObject,
+                             CustomGeometryAPI.getCustomGeometryNormals,
+                             CustomGeometryAPI.setCustomGeometryNormals,
+                             () => (
+                               Float32Array.make([|2., 0., 0.|]),
+                               Float32Array.make([|4., 0., 0.|])
+                             )
+                           ),
+                           state
+                         )
+                     );
+                     test(
+                       "copy indices",
+                       () =>
+                         _testCopyTypeArraySingleValue(
+                           (
+                             GameObjectTool.createGameObject,
+                             CustomGeometryAPI.getCustomGeometryIndices,
+                             CustomGeometryAPI.setCustomGeometryIndices,
+                             () => (Uint16Array.make([|2, 0, 0|]), Uint16Array.make([|4|]))
+                           ),
+                           state
+                         )
                      )
-                   ),
-                   state
+                   }
                  )
-             );
-             test(
-               "copy normals",
-               () =>
-                 _testCopyTypeArraySingleValue(
-                   (
-                     GameObjectTool.createGameObject,
-                     CustomGeometryAPI.getCustomGeometryNormals,
-                     CustomGeometryAPI.setCustomGeometryNormals,
-                     () => (
-                       Float32Array.make([|2., 0., 0.|]),
-                       Float32Array.make([|4., 0., 0.|])
-                     )
-                   ),
-                   state
-                 )
-             );
-             test(
-               "copy indices",
-               () =>
-                 _testCopyTypeArraySingleValue(
-                   (
-                     GameObjectTool.createGameObject,
-                     CustomGeometryAPI.getCustomGeometryIndices,
-                     CustomGeometryAPI.setCustomGeometryIndices,
-                     () => (Uint16Array.make([|2, 0, 0|]), Uint16Array.make([|4|]))
-                   ),
-                   state
-                 )
-             ) */
+             ); */
           /* test(
                "change copied state shouldn't affect source state",
                () => {
                  open StateDataMainType;
-                 let (
-                   state,
-                   gameObject1,
-                   gameObject2,
-                   gameObject3,
-                   geometry1,
-                   geometry2,
-                   geometry3
-                 ) =
+                 let (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3) =
                    _prepareGeometryData(state);
                  let copiedState = MainStateTool.deepCopyForRestore(state);
                  let record = copiedState.boxGeometryRecord;
@@ -844,7 +856,7 @@ let _ =
                  )
                  |> expect == (false, false, false)
                }
-             ) */
+             ); */
           describe(
             "deep copy material record",
             () => {
@@ -890,103 +902,101 @@ let _ =
               )
             }
           );
-          /*
-
-           describe(
-                "deep copy material record",
+          describe(
+            "deep copy material record",
+            () => {
+              describe(
+                "test basic material",
+                () =>
+                  test(
+                    "copy colors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            BasicMaterialAPI.getBasicMaterialColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          BasicMaterialAPI.setBasicMaterialColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
+                  )
+              );
+              describe(
+                "test light material",
+                () => {
+                  test(
+                    "copy diffuseColors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialAPI.getLightMaterialDiffuseColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          LightMaterialAPI.setLightMaterialDiffuseColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy specularColors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialAPI.getLightMaterialSpecularColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          LightMaterialAPI.setLightMaterialSpecularColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy shininess",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          LightMaterialAPI.getLightMaterialShininess,
+                          LightMaterialAPI.setLightMaterialShininess,
+                          () => (1., 2.)
+                        ),
+                        state
+                      )
+                  )
+                }
+              )
+            }
+          );
+          describe(
+            "deep copy light record",
+            () => {
+              describe(
+                "test ambient light",
                 () => {
                   describe(
-                    "test basic material",
+                    "copy type array record",
                     () =>
                       test(
                         "copy colors",
                         () =>
                           _testCopyTypeArraySingleValue(
                             (
-                              GameObjectTool.createGameObject,
-                              (material, state) =>
-                                BasicMaterialAPI.getBasicMaterialColor(material, state)
-                                |> TypeArrayTool.truncateArray,
-                              BasicMaterialAPI.setBasicMaterialColor,
-                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                              AmbientLightTool.createGameObject,
+                              AmbientLightAPI.getAmbientLightColor,
+                              AmbientLightAPI.setAmbientLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
                             ),
                             state
                           )
                       )
                   );
-                  describe(
-                    "test light material",
-                    () => {
-                      test(
-                        "copy diffuseColors",
-                        () =>
-                          _testCopyTypeArraySingleValue(
-                            (
-                              GameObjectTool.createGameObject,
-                              (material, state) =>
-                                LightMaterialAPI.getLightMaterialDiffuseColor(material, state)
-                                |> TypeArrayTool.truncateArray,
-                              LightMaterialAPI.setLightMaterialDiffuseColor,
-                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                            ),
-                            state
-                          )
-                      );
-                      test(
-                        "copy specularColors",
-                        () =>
-                          _testCopyTypeArraySingleValue(
-                            (
-                              GameObjectTool.createGameObject,
-                              (material, state) =>
-                                LightMaterialAPI.getLightMaterialSpecularColor(material, state)
-                                |> TypeArrayTool.truncateArray,
-                              LightMaterialAPI.setLightMaterialSpecularColor,
-                              () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                            ),
-                            state
-                          )
-                      );
-                      test(
-                        "copy shininess",
-                        () =>
-                          _testCopyTypeArraySingleValue(
-                            (
-                              GameObjectTool.createGameObject,
-                              LightMaterialAPI.getLightMaterialShininess,
-                              LightMaterialAPI.setLightMaterialShininess,
-                              () => (1., 2.)
-                            ),
-                            state
-                          )
-                      )
-                    }
-                  )
-                }
-              ); */
-          describe(
-            "deep copy light record",
-            () => {
-              describe(
-                "test ambient light",
-                () =>
-                  /* describe(
-                       "copy type array record",
-                       () =>
-                         test(
-                           "copy colors",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 AmbientLightTool.createGameObject,
-                                 AmbientLightAPI.getAmbientLightColor,
-                                 AmbientLightAPI.setAmbientLightColor,
-                                 () => ([|1., 1., 0.|], [|0., 1., 0.|])
-                               ),
-                               state
-                             )
-                         )
-                     ); */
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
@@ -1003,41 +1013,42 @@ let _ =
                         )
                       )
                   )
+                }
               );
               describe(
                 "test direction light",
-                () =>
-                  /* describe(
-                       "copy type array record",
-                       () => {
-                         test(
-                           "copy colors",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 DirectionLightTool.createGameObject,
-                                 DirectionLightAPI.getDirectionLightColor,
-                                 DirectionLightAPI.setDirectionLightColor,
-                                 () => ([|1., 1., 0.|], [|0., 1., 0.|])
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy intensities",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 DirectionLightTool.createGameObject,
-                                 DirectionLightAPI.getDirectionLightIntensity,
-                                 DirectionLightAPI.setDirectionLightIntensity,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         )
-                       }
-                     ); */
+                () => {
+                  describe(
+                    "copy type array record",
+                    () => {
+                      test(
+                        "copy colors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              DirectionLightTool.createGameObject,
+                              DirectionLightAPI.getDirectionLightColor,
+                              DirectionLightAPI.setDirectionLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy intensities",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              DirectionLightTool.createGameObject,
+                              DirectionLightAPI.getDirectionLightIntensity,
+                              DirectionLightAPI.setDirectionLightIntensity,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      )
+                    }
+                  );
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
@@ -1054,93 +1065,94 @@ let _ =
                         )
                       )
                   )
+                }
               );
               describe(
                 "test point light",
-                () =>
-                  /* describe(
-                       "copy type array record",
-                       () => {
-                         test(
-                           "copy colors",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightColor,
-                                 PointLightAPI.setPointLightColor,
-                                 () => ([|1., 1., 0.|], [|0., 1., 0.|])
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy intensities",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightIntensity,
-                                 PointLightAPI.setPointLightIntensity,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy constants",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightConstant,
-                                 PointLightAPI.setPointLightConstant,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy linears",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightLinear,
-                                 PointLightAPI.setPointLightLinear,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy quadratics",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightQuadratic,
-                                 PointLightAPI.setPointLightQuadratic,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         );
-                         test(
-                           "copy ranges",
-                           () =>
-                             _testCopyTypeArraySingleValue(
-                               (
-                                 PointLightTool.createGameObject,
-                                 PointLightAPI.getPointLightRange,
-                                 PointLightAPI.setPointLightRange,
-                                 () => (2., 3.)
-                               ),
-                               state
-                             )
-                         )
-                       }
-                     ); */
+                () => {
+                  describe(
+                    "copy type array record",
+                    () => {
+                      test(
+                        "copy colors",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightColor,
+                              PointLightAPI.setPointLightColor,
+                              () => ([|1., 1., 0.|], [|0., 1., 0.|])
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy intensities",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightIntensity,
+                              PointLightAPI.setPointLightIntensity,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy constants",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightConstant,
+                              PointLightAPI.setPointLightConstant,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy linears",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightLinear,
+                              PointLightAPI.setPointLightLinear,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy quadratics",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightQuadratic,
+                              PointLightAPI.setPointLightQuadratic,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      );
+                      test(
+                        "copy ranges",
+                        () =>
+                          _testCopyTypeArraySingleValue(
+                            (
+                              PointLightTool.createGameObject,
+                              PointLightAPI.getPointLightRange,
+                              PointLightAPI.setPointLightRange,
+                              () => (2., 3.)
+                            ),
+                            state
+                          )
+                      )
+                    }
+                  );
                   test(
                     "shadow copy mappedIndexMap, gameObjectMap",
                     () =>
@@ -1157,6 +1169,7 @@ let _ =
                         )
                       )
                   )
+                }
               )
             }
           );
@@ -1499,7 +1512,7 @@ let _ =
             "restore transform record to target state",
             () =>
               test(
-                "get target buffer to current buffer",
+                "test restore typeArrays",
                 () => {
                   open TransformType;
                   state :=
@@ -1510,14 +1523,19 @@ let _ =
                     );
                   let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
                     _prepareTransformMatrixData(state);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                   let state = TransformTool.update(transform1, state);
                   let state = TransformTool.update(transform2, state);
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let (currentState, _, transform4) =
-                    GameObjectTool.createGameObject(MainStateTool.createNewCompleteState(sandbox));
-                  let pos4 = ((-1.), 4., 5.);
+                  let (currentState, _, transform4) = GameObjectTool.createGameObject(state);
+                  let pos4 = ((-2.), 3., 1.);
                   let currentState =
                     TransformAPI.setTransformLocalPosition(transform4, pos4, currentState);
+                  let currentState = state;
+                  let pos1 = (11., 17., 20.);
+                  let currentState =
+                    TransformAPI.setTransformLocalPosition(transform1, pos1, currentState);
+                  let currentState = TransformTool.update(transform1, currentState);
                   let _ = MainStateTool.restore(currentState, copiedState);
                   let {localToWorldMatrices, localPositions} =
                     MainStateTool.unsafeGetState() |> TransformTool.getRecord;
@@ -1631,7 +1649,7 @@ let _ =
             "restore customGeometry record to target state",
             () =>
               test(
-                "get target buffer to current buffer",
+                "test restore typeArrays",
                 () => {
                   open CustomGeometryType;
                   state :=
@@ -1646,14 +1664,17 @@ let _ =
                     );
                   let (state, gameObject1, geometry1, (vertices1, normals1, indices1)) =
                     CustomGeometryTool.createGameObjectAndSetPointData(state^);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let (state, gameObject2, geometry2) =
-                    CustomGeometryTool.createGameObject(
-                      MainStateTool.createNewCompleteState(sandbox)
-                    );
+                  let (currentState, gameObject2, geometry2) =
+                    CustomGeometryTool.createGameObject(state);
                   let vertices2 = Float32Array.make([|2., 3., 40.|]);
                   let currentState =
-                    CustomGeometryAPI.setCustomGeometryVertices(geometry2, vertices2, state);
+                    CustomGeometryAPI.setCustomGeometryVertices(
+                      geometry2,
+                      vertices2,
+                      currentState
+                    );
                   let _ = MainStateTool.restore(currentState, copiedState);
                   let {vertices} = MainStateTool.unsafeGetState() |> CustomGeometryTool.getRecord;
                   vertices |> expect == Float32Array.make([|10., 0., 0., 0., 0., 0.|])
@@ -1667,14 +1688,14 @@ let _ =
                 "test basic material",
                 () =>
                   test(
-                    "get target buffer to current buffer",
+                    "test restore typeArrays",
                     () => {
                       open BasicMaterialType;
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
                           ~buffer=
-                            SettingTool.buildBufferConfigStr(~basicMaterialDataBufferCount=3, ()),
+                            SettingTool.buildBufferConfigStr(~basicMaterialDataBufferCount=4, ()),
                           ()
                         );
                       let (
@@ -1687,18 +1708,36 @@ let _ =
                         material3
                       ) =
                         _prepareBasicMaterialData(state);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let (state, gameObject4, material4) =
-                        BasicMaterialTool.createGameObject(
-                          MainStateTool.createNewCompleteState(sandbox)
-                        );
+                      let (currentState, gameObject4, material4) =
+                        BasicMaterialTool.createGameObject(state);
                       let currentState =
-                        BasicMaterialAPI.setBasicMaterialColor(material4, [|1., 0.1, 1.|], state);
+                        BasicMaterialAPI.setBasicMaterialColor(
+                          material4,
+                          [|1., 0.1, 1.|],
+                          currentState
+                        );
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
                       let {colors} = MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
                       colors
-                      |> expect == Float32Array.make([|1., 1., 1., 1., 0.5, 0., 1., 1., 1.|])
+                      |>
+                      expect == Float32Array.make([|
+                                  1.,
+                                  1.,
+                                  1.,
+                                  1.,
+                                  0.5,
+                                  0.,
+                                  1.,
+                                  1.,
+                                  1.,
+                                  1.,
+                                  1.,
+                                  1.
+                                |])
                     }
                   )
               );
@@ -1706,7 +1745,7 @@ let _ =
                 "test light material",
                 () =>
                   test(
-                    "get target buffer to current buffer",
+                    "copy target buffer data to current buffer",
                     () => {
                       open LightMaterialType;
                       state :=
@@ -1726,16 +1765,22 @@ let _ =
                         material3
                       ) =
                         _prepareLightMaterialData(state);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let (state, gameObject4, material4) =
-                        LightMaterialTool.createGameObject(
-                          MainStateTool.createNewCompleteState(sandbox)
-                        );
+                      let (currentState, gameObject4, material4) =
+                        LightMaterialTool.createGameObject(state);
                       let currentState =
                         LightMaterialAPI.setLightMaterialDiffuseColor(
                           material4,
                           [|1., 0.1, 1.|],
-                          state
+                          currentState
+                        );
+                      let currentState =
+                        LightMaterialAPI.setLightMaterialDiffuseColor(
+                          material1,
+                          [|0.5, 0.5, 0.5|],
+                          currentState
                         );
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
@@ -1756,48 +1801,24 @@ let _ =
                 open Js.Typed_array;
                 let (state, gameObject1, light1) = createGameObjectFunc(state^);
                 let (state, gameObject2, light2) = createGameObjectFunc(state);
-                let (state, gameObject3, light3) = createGameObjectFunc(state);
                 let state = AllMaterialTool.prepareForInit(state);
                 let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                (state, gameObject1, gameObject2, gameObject3, light1, light2, light3)
+                (state, gameObject1, gameObject2, light1, light2)
               };
-              /* let _prepareAmbientLightData = (state) => {
-                   open LightMaterialAPI;
-                   open Js.Typed_array;
-                   let (state, gameObject1, light1) = AmbientLightTool.createGameObject(state^);
-                   let (state, gameObject2, light2) = AmbientLightTool.createGameObject(state);
-                   let (state, gameObject3, light3) = AmbientLightTool.createGameObject(state);
-                   let state = AllMaterialTool.prepareForInit(state);
-                   let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                   (state, gameObject1, gameObject2, gameObject3, light1, light2, light3)
-                 }; */
-              /* test(
-                   "test ambient light",
-                   () =>
-                     _testRestoreStateEqualTargetState(
-                       state,
-                       _prepareLightData(AmbientLightTool.createGameObject),
-                       AmbientLightTool.getRecord
-                     )
-                 ); */
               describe(
                 "test ambient light",
                 () =>
                   test(
-                    "get target buffer to current buffer",
+                    "test restore typeArrays",
                     () => {
                       open AmbientLightType;
-                      let (state, gameObject1, gameObject2, gameObject3, light1, light2, light3) =
+                      let (state, gameObject1, gameObject2, light1, light2) =
                         _prepareLightData(AmbientLightTool.createGameObject, state);
                       let state =
                         AmbientLightAPI.setAmbientLightColor(light2, [|0., 0.5, 0.|], state);
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let (state, gameObject4, light4) =
-                        AmbientLightTool.createGameObject(
-                          MainStateTool.createNewCompleteState(sandbox)
-                        );
                       let currentState =
-                        AmbientLightAPI.setAmbientLightColor(light4, [|1., 0.1, 1.|], state);
+                        AmbientLightAPI.setAmbientLightColor(light1, [|0.5, 0.1, 1.|], state);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
                       let {colors} = MainStateTool.unsafeGetState() |> AmbientLightTool.getRecord;
@@ -1810,40 +1831,63 @@ let _ =
                 "test direction light",
                 () =>
                   test(
-                    "get target buffer to current buffer",
+                    "test restore typeArrays",
                     () => {
                       open DirectionLightType;
-                      let (state, gameObject1, gameObject2, gameObject3, light1, light2, light3) =
+                      let (state, gameObject1, gameObject2, light1, light2) =
                         _prepareLightData(DirectionLightTool.createGameObject, state);
                       let state =
                         DirectionLightAPI.setDirectionLightColor(light2, [|0., 0.5, 0.|], state);
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let (state, gameObject4, light4) =
-                        DirectionLightTool.createGameObject(
-                          MainStateTool.createNewCompleteState(sandbox)
+                      let (currentState, gameObject3, light3) =
+                        DirectionLightTool.createGameObject(state);
+                      let (currentState, gameObject4, light4) =
+                        DirectionLightTool.createGameObject(state);
+                      let currentState =
+                        DirectionLightAPI.setDirectionLightColor(
+                          light3,
+                          [|1., 0.1, 0.|],
+                          currentState
                         );
                       let currentState =
-                        DirectionLightAPI.setDirectionLightColor(light4, [|1., 0.1, 1.|], state);
+                        DirectionLightAPI.setDirectionLightColor(
+                          light4,
+                          [|0., 0.5, 0.5|],
+                          currentState
+                        );
+                      let currentState =
+                        DirectionLightAPI.setDirectionLightColor(
+                          light1,
+                          [|0., 0.5, 1.|],
+                          currentState
+                        );
+                      let currentState =
+                        DirectionLightAPI.setDirectionLightIntensity(light2, 0.2, currentState);
+                      let currentState =
+                        DirectionLightAPI.setDirectionLightIntensity(light4, 0.5, currentState);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let {colors} =
+                      let {colors, intensities} =
                         MainStateTool.unsafeGetState() |> DirectionLightTool.getRecord;
-                      colors
+                      (colors, intensities)
                       |>
-                      expect == Float32Array.make([|
-                                  1.,
-                                  1.,
-                                  1.,
-                                  0.,
-                                  0.5,
-                                  0.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.
-                                |])
+                      expect == (
+                                  Float32Array.make([|
+                                    1.,
+                                    1.,
+                                    1.,
+                                    0.,
+                                    0.5,
+                                    0.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.
+                                  |]),
+                                  Float32Array.make([|1., 1., 1., 1.|])
+                                )
                     }
                   )
               );
@@ -1851,38 +1895,50 @@ let _ =
                 "test point light",
                 () =>
                   test(
-                    "get target buffer to current buffer",
+                    "test restore typeArrays",
                     () => {
                       open PointLightType;
-                      let (state, gameObject1, gameObject2, gameObject3, light1, light2, light3) =
+                      let (state, gameObject1, gameObject2, light1, light2) =
                         _prepareLightData(PointLightTool.createGameObject, state);
                       let state = PointLightAPI.setPointLightColor(light2, [|0., 0.5, 0.|], state);
                       let copiedState = MainStateTool.deepCopyForRestore(state);
-                      let (state, gameObject4, light4) =
-                        PointLightTool.createGameObject(
-                          MainStateTool.createNewCompleteState(sandbox)
-                        );
+                      let (currentState, gameObject3, light3) =
+                        PointLightTool.createGameObject(state);
+                      let (currentState, gameObject4, light4) =
+                        PointLightTool.createGameObject(currentState);
                       let currentState =
-                        PointLightAPI.setPointLightColor(light4, [|1., 0.1, 1.|], state);
+                        PointLightAPI.setPointLightColor(light3, [|1., 0.1, 1.|], currentState);
+                      let currentState =
+                        PointLightAPI.setPointLightColor(light4, [|1., 0.2, 1.|], currentState);
+                      let currentState =
+                        PointLightAPI.setPointLightColor(light1, [|0., 0., 1.|], currentState);
+                      let currentState =
+                        PointLightAPI.setPointLightRange(light2, 0.2, currentState);
+                      let currentState =
+                        PointLightAPI.setPointLightRange(light3, 0.5, currentState);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let {colors} = MainStateTool.unsafeGetState() |> PointLightTool.getRecord;
-                      colors
+                      let {colors, ranges} =
+                        MainStateTool.unsafeGetState() |> PointLightTool.getRecord;
+                      (colors, ranges)
                       |>
-                      expect == Float32Array.make([|
-                                  1.,
-                                  1.,
-                                  1.,
-                                  0.,
-                                  0.5,
-                                  0.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.
-                                |])
+                      expect == (
+                                  Float32Array.make([|
+                                    1.,
+                                    1.,
+                                    1.,
+                                    0.,
+                                    0.5,
+                                    0.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.
+                                  |]),
+                                  Float32Array.make([|65., 65., 65., 65.|])
+                                )
                     }
                   )
               )
@@ -1892,7 +1948,7 @@ let _ =
             "restore sourceInstance record to target state",
             () => {
               test(
-                "get target buffer to current buffer",
+                "test restore typeArrays",
                 () => {
                   open SourceInstanceType;
                   open Js.Typed_array;
@@ -1915,6 +1971,7 @@ let _ =
                     objectInstanceArr
                   ) =
                     ObjectInstanceTool.createObjectInstanceGameObjectArr(2, state);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                   let (
                     state,
                     gameObject,
@@ -1928,7 +1985,7 @@ let _ =
                     |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance1, true)
                     |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance2, false);
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let currentState = MainStateTool.createNewCompleteState(sandbox);
+                  let currentState = state;
                   let (
                     currentState,
                     gameObject,
@@ -1939,7 +1996,8 @@ let _ =
                     ObjectInstanceTool.createObjectInstanceGameObjectArr(1, currentState);
                   let currentState =
                     currentState
-                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance3, true);
+                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance3, true)
+                    |> StaticTransformTool.markModelMatrixIsStatic(sourceInstance1, false);
                   let _ = MainStateTool.restore(currentState, copiedState);
                   let {isTransformStatics, objectInstanceTransformCollections} =
                     MainStateTool.unsafeGetState() |> SourceInstanceTool.getRecord;
