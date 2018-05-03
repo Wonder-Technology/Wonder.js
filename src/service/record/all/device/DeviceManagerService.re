@@ -91,11 +91,14 @@ let setSide = (gl, targetSide, {side} as record) =>
     {...record, side: Some(targetSide)}
   };
 
+let _setDepthTest = (gl, targetDepthTest) =>
+  targetDepthTest ? gl |> Gl.enable(Gl.getDepthTest(gl)) : gl |> Gl.disable(Gl.getDepthTest(gl));
+
 let setDepthTest = (gl, targetDepthTest, {depthTest} as record) =>
   switch depthTest {
   | Some(oldDepthTest) when oldDepthTest === targetDepthTest => record
   | _ =>
-    targetDepthTest ? gl |> Gl.enable(Gl.getDepthTest(gl)) : gl |> Gl.disable(Gl.getDepthTest(gl));
+    _setDepthTest(gl, targetDepthTest) |> ignore;
     {...record, depthTest: Some(targetDepthTest)}
   };
 
