@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open TransformType;
 
-let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord, transformDataBufferCount) =>
+let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord) =>
   currentTransformRecord.localPositions === targetTransformRecord.localPositions
   && currentTransformRecord.localToWorldMatrices === targetTransformRecord.localToWorldMatrices ?
     (currentTransformRecord, targetTransformRecord) :
@@ -10,7 +10,7 @@ let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord, transfo
       let (localToWorldMatrices, localPositions) =
         (currentTransformRecord.localToWorldMatrices, currentTransformRecord.localPositions)
         |> RecordTransformMainService.setDefaultTypeArrData(
-             transformDataBufferCount,
+             currentTransformRecord.index,
              currentTransformRecord.defaultLocalToWorldMatrix,
              currentTransformRecord.defaultLocalPosition
            );
@@ -32,10 +32,8 @@ let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord, transfo
 let restore = (currentState, targetState) => {
   let currentTransformRecord = RecordTransformMainService.getRecord(currentState);
   let targetTransformRecord = RecordTransformMainService.getRecord(targetState);
-  let transformDataBufferCount =
-    BufferSettingService.getTransformDataBufferCount(currentState.settingRecord);
   let (currentTransformRecord, targetTransformRecord) =
-    _restoreTypeArrays(currentTransformRecord, targetTransformRecord, transformDataBufferCount);
+    _restoreTypeArrays(currentTransformRecord, targetTransformRecord);
   {
     ...targetState,
     transformRecord:

@@ -16,8 +16,7 @@ let _resetShaderIndices = (state) => {
   }
 };
 
-let _restoreTypeArrays =
-    (currentLightMaterialRecord, targetLightMaterialRecord, lightMaterialDataBufferCount) =>
+let _restoreTypeArrays = (currentLightMaterialRecord, targetLightMaterialRecord) =>
   currentLightMaterialRecord.shaderIndices === targetLightMaterialRecord.shaderIndices
   && currentLightMaterialRecord.diffuseColors === targetLightMaterialRecord.diffuseColors
   && currentLightMaterialRecord.specularColors === targetLightMaterialRecord.specularColors ?
@@ -31,7 +30,7 @@ let _restoreTypeArrays =
           currentLightMaterialRecord.shininess
         )
         |> RecordLightMaterialMainService.setDefaultTypeArrData(
-             lightMaterialDataBufferCount,
+             currentLightMaterialRecord.index,
              (
                currentLightMaterialRecord.defaultShaderIndex,
                currentLightMaterialRecord.defaultDiffuseColor,
@@ -78,14 +77,8 @@ let restore = (gl, currentState, targetState) => {
        );
   let currentLightMaterialRecord = RecordLightMaterialMainService.getRecord(currentState);
   let targetLightMaterialRecord = RecordLightMaterialMainService.getRecord(targetState);
-  let lightMaterialDataBufferCount =
-    BufferSettingService.getLightMaterialDataBufferCount(currentState.settingRecord);
   let (currentLightMaterialRecord, targetLightMaterialRecord) =
-    _restoreTypeArrays(
-      currentLightMaterialRecord,
-      targetLightMaterialRecord,
-      lightMaterialDataBufferCount
-    );
+    _restoreTypeArrays(currentLightMaterialRecord, targetLightMaterialRecord);
   {
     ...targetState,
     lightMaterialRecord:

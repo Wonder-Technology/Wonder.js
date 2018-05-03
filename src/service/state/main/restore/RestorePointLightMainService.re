@@ -20,9 +20,7 @@ let _restoreTypeArrays = (currentPointLightRecord, targetPointLightRecord) =>
           currentPointLightRecord.quadratics,
           currentPointLightRecord.ranges
         )
-        |> RecordPointLightMainService.setDefaultTypeArrData(
-             BufferPointLightService.getBufferMaxCount()
-           );
+        |> RecordPointLightMainService.setDefaultTypeArrData(currentPointLightRecord.index);
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentPointLightRecord.colors, 0),
         (targetPointLightRecord.colors, 0),

@@ -8,9 +8,7 @@ let _restoreTypeArrays = (currentAmbientLightRecord, targetAmbientLightRecord) =
     {
       let colors =
         currentAmbientLightRecord.colors
-        |> RecordAmbientLightMainService.setDefaultTypeArrData(
-             BufferAmbientLightService.getBufferMaxCount()
-           );
+        |> RecordAmbientLightMainService.setDefaultTypeArrData(currentAmbientLightRecord.index);
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentAmbientLightRecord.colors, 0),
         (targetAmbientLightRecord.colors, 0),

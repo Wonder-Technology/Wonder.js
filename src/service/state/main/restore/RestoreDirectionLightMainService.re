@@ -9,9 +9,7 @@ let _restoreTypeArrays = (currentDirectionLightRecord, targetDirectionLightRecor
     {
       let (colors, intensities) =
         (currentDirectionLightRecord.colors, currentDirectionLightRecord.intensities)
-        |> RecordDirectionLightMainService.setDefaultTypeArrData(
-             BufferDirectionLightService.getBufferMaxCount()
-           );
+        |> RecordDirectionLightMainService.setDefaultTypeArrData(currentDirectionLightRecord.index);
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentDirectionLightRecord.colors, 0),
         (targetDirectionLightRecord.colors, 0),

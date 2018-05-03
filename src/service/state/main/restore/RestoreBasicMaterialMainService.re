@@ -16,8 +16,7 @@ let _resetShaderIndices = (state) => {
   }
 };
 
-let _restoreTypeArrays =
-    (currentBasicMaterialRecord, targetBasicMaterialRecord, basicMaterialDataBufferCount) =>
+let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord) =>
   currentBasicMaterialRecord.shaderIndices === targetBasicMaterialRecord.shaderIndices
   && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
@@ -25,7 +24,7 @@ let _restoreTypeArrays =
       let (shaderIndices, colors) =
         (currentBasicMaterialRecord.shaderIndices, currentBasicMaterialRecord.colors)
         |> RecordBasicMaterialMainService.setDefaultTypeArrData(
-             basicMaterialDataBufferCount,
+             currentBasicMaterialRecord.index,
              currentBasicMaterialRecord.defaultShaderIndex,
              currentBasicMaterialRecord.defaultColor
            );
@@ -56,14 +55,8 @@ let restore = (gl, currentState, targetState) => {
        );
   let currentBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(currentState);
   let targetBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(targetState);
-  let basicMaterialDataBufferCount =
-    BufferSettingService.getBasicMaterialDataBufferCount(currentState.settingRecord);
   let (currentBasicMaterialRecord, targetBasicMaterialRecord) =
-    _restoreTypeArrays(
-      currentBasicMaterialRecord,
-      targetBasicMaterialRecord,
-      basicMaterialDataBufferCount
-    );
+    _restoreTypeArrays(currentBasicMaterialRecord, targetBasicMaterialRecord);
   {
     ...targetState,
     basicMaterialRecord:

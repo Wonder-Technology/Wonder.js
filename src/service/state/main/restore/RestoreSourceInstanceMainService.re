@@ -9,8 +9,7 @@ let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
        WonderCommonlib.SparseMapService.createEmpty()
      );
 
-let _restoreTypeArrays =
-    (currentSourceInstanceRecord, targetSourceInstanceRecord, objectInstanceCountPerSourceInstance) =>
+let _restoreTypeArrays = (currentSourceInstanceRecord, targetSourceInstanceRecord) =>
   currentSourceInstanceRecord.objectInstanceTransformCollections
   === targetSourceInstanceRecord.objectInstanceTransformCollections
   &&
@@ -23,7 +22,7 @@ let _restoreTypeArrays =
           currentSourceInstanceRecord.isTransformStatics
         )
         |> RecordSourceInstanceMainService.setDefaultTypeArrData(
-             objectInstanceCountPerSourceInstance,
+             currentSourceInstanceRecord.index,
              StaticTransformService.getDefault()
            );
       TypeArrayService.fillUint32ArrayWithUint32Array(
@@ -52,14 +51,8 @@ let restore = (currentState, {float32ArrayPoolMap} as sharedData, targetState) =
       MemorySettingService.getMaxBigTypeArrayPoolSize(targetState.settingRecord),
       float32ArrayPoolMap
     );
-  let sourceInstanceCount =
-    BufferSettingService.getSourceInstanceCount(currentState.settingRecord);
   let (currentSourceInstanceRecord, targetSourceInstanceRecord) =
-    _restoreTypeArrays(
-      currentSourceInstanceRecord,
-      targetSourceInstanceRecord,
-      sourceInstanceCount
-    );
+    _restoreTypeArrays(currentSourceInstanceRecord, targetSourceInstanceRecord);
   (
     {
       ...targetState,
