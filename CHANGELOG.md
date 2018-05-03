@@ -1,3 +1,23 @@
+<a name="1.0.0-alpha.18.4"></a>
+# [1.0.0-alpha.18.4](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.18...v1.0.0-alpha.18.4) (2018-05-03)
+
+
+### Bug Fixes
+
+* **arraybuffer:** fix CopyArrayBufferService->copyArrayBuffer ([64277f6](https://github.com/Wonder-Technology/Wonder.js/commit/64277f6))
+* **instance:** fix batch->draw sourceInstance gameObject ([af0bbfe](https://github.com/Wonder-Technology/Wonder.js/commit/af0bbfe))
+* **package.json:** update resolutions->wonder-commonlib version ([333d266](https://github.com/Wonder-Technology/Wonder.js/commit/333d266))
+* **redo-undo:** fix "redo-undo arraybuffer" bug ([265a1c9](https://github.com/Wonder-Technology/Wonder.js/commit/265a1c9))
+* **redo-undo:** if restore to the same state, not change typeArrays ([a8f7e6d](https://github.com/Wonder-Technology/Wonder.js/commit/a8f7e6d))
+
+
+### Features
+
+* **job:** initState job now enable depth test ([b2fe490](https://github.com/Wonder-Technology/Wonder.js/commit/b2fe490))
+* **redo-undo:** optimize restore: now only setDefaultTypeArrData of specific data ([d63d7da](https://github.com/Wonder-Technology/Wonder.js/commit/d63d7da))
+
+
+
 <a name="1.0.0-alpha.18"></a>
 # [1.0.0-alpha.18](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.17...v1.0.0-alpha.18) (2018-04-30)
 
