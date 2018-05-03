@@ -56,8 +56,7 @@ let testAttachBufferToAttribute = (sandbox, (name, callIndex, size), prepareFunc
                        ()
                      )
                    );
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               vertexAttribPointer
               |> getCall(callIndex)
               |> expect
@@ -90,8 +89,7 @@ let testSendShaderUniformData = (sandbox, (prepareFunc, createSourceInstanceGame
                 |> FakeGlTool.setFakeGl(
                      FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
                    );
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2
             }
           )
@@ -164,8 +162,8 @@ let testDrawElements = (sandbox, prepareFunc, getIndicesCountFunc, state) =>
                    )
                    * 0
                  )
-              |> expect
-              |> toCalledThrice
+              |> getCallCount
+              |> expect == 4
             }
           )
         )

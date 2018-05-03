@@ -226,7 +226,7 @@ let buildRenderConfig =
       "uniforms": [
         {
           "name": "u_mMatrix",
-          "field": "instance_mMatrix",
+          "field": "mMatrix",
           "type": "mat4",
           "from": "model"
         }
@@ -336,7 +336,7 @@ let buildRenderConfig =
       "uniforms": [
         {
           "name": "u_normalMatrix",
-          "field": "instance_normalMatrix",
+          "field": "normalMatrix",
           "type": "mat3",
           "from": "model"
         }

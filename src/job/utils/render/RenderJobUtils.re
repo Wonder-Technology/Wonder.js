@@ -174,3 +174,17 @@ let render =
     };
   state
 };
+
+let draw = (gl, geometryIndex, geometryType, state) => {
+  let getIndicesCountFunc =
+    CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
+  DrawGLSLService.drawElement(
+    (
+      RenderGeometryService.getDrawMode(gl),
+      RenderGeometryService.getIndexType(gl),
+      RenderGeometryService.getIndexTypeSize(gl),
+      [@bs] getIndicesCountFunc(geometryIndex, state)
+    ),
+    gl
+  )
+};

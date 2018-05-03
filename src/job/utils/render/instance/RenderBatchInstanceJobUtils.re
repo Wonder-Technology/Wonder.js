@@ -20,9 +20,13 @@ let render =
       (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
       state
     );
-  let uniformInstanceSendNoCachableData =
+  RenderJobUtils.draw(gl, geometryIndex, geometryType, state);
+  /* let uniformInstanceSendNoCachableData =
+     state.glslSenderRecord
+     |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex); */
+  let uniformRenderObjectSendModelData =
     state.glslSenderRecord
-    |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex);
+    |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(shaderIndex);
   let drawMode = RenderGeometryService.getDrawMode(gl);
   let indexType = RenderGeometryService.getIndexType(gl);
   let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
@@ -38,11 +42,11 @@ let render =
     (
       (state, objectInstanceTransform) => {
         let state =
-          uniformInstanceSendNoCachableData
+          uniformRenderObjectSendModelData
           |> WonderCommonlib.ArrayService.reduceOneParam(
                [@bs]
                (
-                 (state, {pos, getDataFunc, sendDataFunc}: uniformInstanceSendNoCachableData) => {
+                 (state, {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData) => {
                    [@bs] sendDataFunc(gl, pos, [@bs] getDataFunc(objectInstanceTransform, state));
                    state
                  }

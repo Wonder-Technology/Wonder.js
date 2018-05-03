@@ -24,7 +24,7 @@ let _ =
           RenderBatchInstanceTool.testProgram(sandbox, RenderBasicBatchInstanceTool.prepare, state)
       );
       describe(
-        "send attribute record",
+        "send attribute data",
         () =>
           describe(
             "send sourceInstance gameObject's a_position",
@@ -38,7 +38,7 @@ let _ =
           )
       );
       describe(
-        "send uniform record",
+        "send uniform data",
         () => {
           RenderBatchInstanceTool.testSendShaderUniformData(
             sandbox,
@@ -54,10 +54,10 @@ let _ =
             ()
           );
           describe(
-            "send object instance gameObject's record",
+            "send object instance gameObject's data",
             () =>
               test(
-                "send u_mMatrix record",
+                "send u_mMatrix data",
                 () => {
                   let name = "u_mMatrix";
                   let (state, _, _, _) = RenderBasicBatchInstanceTool.prepare(sandbox, 2, state^);
@@ -77,9 +77,8 @@ let _ =
                            ()
                          )
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3 + 2
                 }
               )
           )
@@ -109,6 +108,97 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "fix bug",
+        () =>
+          describe(
+            "if sourceInstance gameObject not has  objectInstanceGameObjects,",
+            () => {
+              let _prepare = (state) => {
+                let state = state |> InstanceTool.setGPUDetectDataAllowBatchInstance;
+                let (state, gameObject, geometry, material, meshRenderer) =
+                  RenderBasicJobTool.prepareGameObject(sandbox, state);
+                let (state, sourceInstance) = SourceInstanceAPI.createSourceInstance(state);
+                let state =
+                  state
+                  |> GameObjectAPI.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
+                let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+                (state, gameObject, geometry, material, meshRenderer, sourceInstance)
+              };
+              test(
+                "should send sourceInstance gameObject u_mMatrix",
+                () => {
+                  let (state, gameObject, geometry, material, meshRenderer, sourceInstance) =
+                    _prepare(state^);
+                  let state =
+                    state
+                    |> TransformAPI.setTransformLocalPosition(
+                         GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state),
+                         (1., 2., 5.)
+                       );
+                  let name = "u_mMatrix";
+                  let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+                  let pos = 1;
+                  let getUniformLocation =
+                    GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(
+                           ~sandbox,
+                           ~uniformMatrix4fv,
+                           ~getUniformLocation,
+                           ()
+                         )
+                       );
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  uniformMatrix4fv
+                  |> withThreeArgs(
+                       pos,
+                       Js.false_,
+                       Js.Typed_array.Float32Array.make([|
+                         1.,
+                         0.,
+                         0.,
+                         0.,
+                         0.,
+                         1.,
+                         0.,
+                         0.,
+                         0.,
+                         0.,
+                         1.,
+                         0.,
+                         1.,
+                         2.,
+                         5.,
+                         1.
+                       |])
+                     )
+                  |> getCallCount
+                  |> expect == 1
+                }
+              );
+              test(
+                "should still draw sourceInstance gameObject",
+                () => {
+                  let (state, gameObject, geometry, material, meshRenderer, sourceInstance) =
+                    _prepare(state^);
+                  let triangles = 1;
+                  let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(~sandbox, ~triangles, ~drawElements, ())
+                       );
+                  let state = state |> RenderJobsTool.init;
+                  let state = state |> DirectorTool.runWithDefaultTime;
+                  drawElements |> expect |> toCalledOnce
+                }
+              )
+            }
+          )
       )
     }
   );

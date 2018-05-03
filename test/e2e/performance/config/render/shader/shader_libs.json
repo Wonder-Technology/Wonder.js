@@ -92,7 +92,7 @@
       "uniforms": [
         {
           "name": "u_mMatrix",
-          "field": "instance_mMatrix",
+          "field": "mMatrix",
           "type": "mat4",
           "from": "model"
         }
@@ -202,7 +202,7 @@
       "uniforms": [
         {
           "name": "u_normalMatrix",
-          "field": "instance_normalMatrix",
+          "field": "normalMatrix",
           "type": "mat3",
           "from": "model"
         }

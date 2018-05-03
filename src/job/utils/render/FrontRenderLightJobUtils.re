@@ -1,8 +1,8 @@
-let _getShaderIndex = (materialIndex, renderState) =>
+let _getShaderIndex = (materialIndex, state) =>
   ShaderIndexRenderService.getShaderIndex(
     materialIndex,
     ShaderIndexLightMaterialRenderService.getShaderIndex,
-    renderState
+    state
   );
 
 let render =
@@ -16,18 +16,18 @@ let render =
         geometryTypes,
         sourceInstanceIndices
       ),
-      renderState
+      state
     ) =>
   ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (renderState, index) => {
+         (state, index) => {
            let transformIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, transformIndices);
            let materialIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, materialIndices);
-           let shaderIndex = _getShaderIndex(materialIndex, renderState);
+           let shaderIndex = _getShaderIndex(materialIndex, state);
            let geometryIndex =
              RenderObjectBufferTypeArrayService.getComponent(index, geometryIndices);
            let geometryType =
@@ -45,30 +45,20 @@ let render =
                  geometryType,
                  sourceInstance
                ),
-               renderState
+               state
              )
            } else {
-             let renderState =
+             let state =
                [@bs]
                FrontRenderLightJobCommon.render(
                  gl,
                  (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
-                 renderState
+                 state
                );
-             let getIndicesCountFunc =
-               CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
-             DrawGLSLService.drawElement(
-               (
-                 RenderGeometryService.getDrawMode(gl),
-                 RenderGeometryService.getIndexType(gl),
-                 RenderGeometryService.getIndexTypeSize(gl),
-                 [@bs] getIndicesCountFunc(geometryIndex, renderState)
-               ),
-               gl
-             );
-             renderState
+             RenderJobUtils.draw(gl, geometryIndex, geometryType, state);
+             state
            }
          }
        ),
-       renderState
+       state
      );

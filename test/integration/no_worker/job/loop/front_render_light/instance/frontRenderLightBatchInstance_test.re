@@ -28,7 +28,7 @@ let _ =
           )
       );
       describe(
-        "send attribute record",
+        "send attribute data",
         () => {
           describe(
             "send sourceInstance gameObject's a_position",
@@ -53,7 +53,7 @@ let _ =
         }
       );
       describe(
-        "send uniform record",
+        "send uniform data",
         () => {
           RenderBatchInstanceTool.testSendShaderUniformData(
             sandbox,
@@ -79,10 +79,10 @@ let _ =
             ()
           );
           describe(
-            "send object instance gameObject's record",
+            "send object instance gameObject's data",
             () => {
               test(
-                "send u_mMatrix record",
+                "send u_mMatrix data",
                 () => {
                   let name = "u_mMatrix";
                   let (state, _, _, _) =
@@ -104,11 +104,11 @@ let _ =
                          )
                        );
                   let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3
+                  uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2 + 3 + 2
                 }
               );
               test(
-                "send u_normalMatrix record",
+                "send u_normalMatrix data",
                 () => {
                   let name = "u_normalMatrix";
                   let (state, _, _, _) =
@@ -139,6 +139,7 @@ let _ =
                   |> getCallCount
                   |> expect == 2
                   + 3
+                  + 2
                 }
               )
             }
