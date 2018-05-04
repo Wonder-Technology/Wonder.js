@@ -19,7 +19,7 @@ Design is Art
 
 Code is Art
 
-Everthing is Art
+Everything is Art
 
 
 ## Extend Everything
