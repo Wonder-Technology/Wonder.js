@@ -28,6 +28,15 @@
       "path": "node_modules/cz-customizable"
     }
   },
+  "keywords": [
+    "wonder",
+    "webgl",
+    "functional-programming",
+    "high-performance",
+    "3d",
+    "engine",
+    "reasonml"
+  ],
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
