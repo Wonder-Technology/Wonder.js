@@ -3,6 +3,17 @@ type shaderMapData = {
   value: array(string)
 };
 
+type pass = {value: option(string)};
+
+type fail = {value: option(string)};
+
+type dynamicBranchData = {
+  name: string,
+  condition: string,
+  pass: array(pass),
+  fail: array(fail)
+};
+
 /* type shaderStaticBranch = {
      name: string,
      value: array(string)
@@ -19,6 +30,7 @@ type material_shader = {
 
 type shaders = {
   staticBranchs: array(shaderMapData),
+  dynamicBranchs: array(dynamicBranchData),
   groups: array(shaderMapData),
   materialShaders: array(material_shader)
 };

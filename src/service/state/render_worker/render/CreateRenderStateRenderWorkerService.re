@@ -74,11 +74,13 @@ let createRenderState =
     programRecord,
     boxGeometryRecord: {
       vertices: boxGeometryRecord.vertices,
+      texCoords: boxGeometryRecord.texCoords,
       normals: boxGeometryRecord.normals,
       indices: boxGeometryRecord.indices
     },
     customGeometryRecord: {
       vertices: customGeometryRecord.vertices,
+      texCoords: customGeometryRecord.texCoords,
       normals: customGeometryRecord.normals,
       indices: customGeometryRecord.indices,
       verticesInfos: customGeometryRecord.verticesInfos,

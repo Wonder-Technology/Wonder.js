@@ -19,3 +19,8 @@ let setColor = (material, color: array(float), state) => {
       })
   }
 };
+
+let getMap = (material, state) => ManageMapBasicMaterialMainService.getMap(material, state);
+
+let setMap = (material, texture, state) =>
+  ManageMapBasicMaterialMainService.setMap(material, texture, state);

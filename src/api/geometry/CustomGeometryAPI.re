@@ -57,6 +57,45 @@ let setCustomGeometryVertices =
   VerticesCustomGeometryMainService.setVerticesByTypeArray(geometry, data, state)
 };
 
+let getCustomGeometryTexCoords = (geometry: int, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              geometry,
+              isAlive,
+              RecordCustomGeometryMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  [@bs] TexCoordsCustomGeometryMainService.getTexCoords(geometry, state)
+};
+
+let setCustomGeometryTexCoords =
+    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              geometry,
+              isAlive,
+              RecordCustomGeometryMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(geometry, data, state)
+};
+
 let getCustomGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>

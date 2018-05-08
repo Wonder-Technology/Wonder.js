@@ -10,6 +10,11 @@ let createTypeArrays = (buffer, count) => (
   ),
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTexCoordsOffset(count),
+    ~length=getVertexLength(count)
+  ),
+  Float32Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getNormalsOffset(count),
     ~length=getVertexLength(count)
   ),
@@ -22,6 +27,11 @@ let createTypeArrays = (buffer, count) => (
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getVerticesInfosOffset(count),
     ~length=getVerticesInfosLength(count)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTexCoordsInfosOffset(count),
+    ~length=getTexCoordsInfosLength(count)
   ),
   Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),

@@ -58,11 +58,17 @@ let _detectPrecision = (gl, record) => {
   }
 };
 
-let _detectCapabilty = (gl, record) => _detectPrecision(gl, record);
-
-let detect = (gl, record) => {
-    record |> _detectExtension(gl) |> _detectCapabilty(gl)
+/* TODO checkout maxTextureUnit should >= textureCountPerBasicMaterial in settingRecord */
+let _getTextureCapabilty = (gl, record) => {
+  ...record,
+  maxTextureUnit: gl |> getParameter(gl |> getMaxTextureImageUnits)
 };
+
+let _detectCapabilty = (gl, record) =>
+  /* TODO test */
+  record |> _getTextureCapabilty(gl) |> _detectPrecision(gl);
+
+let detect = (gl, record) => record |> _detectExtension(gl) |> _detectCapabilty(gl);
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 
@@ -84,5 +90,5 @@ let unsafeGetInstanceExtension = (record) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  record.extensionInstancedArrays |> OptionService.unsafeGet; 
+  record.extensionInstancedArrays |> OptionService.unsafeGet
 };

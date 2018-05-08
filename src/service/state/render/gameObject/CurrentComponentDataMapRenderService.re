@@ -44,11 +44,13 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
   | type_ when type_ === getBoxGeometryType() => (
       (
         vboBufferRecord.boxGeometryVertexBufferMap,
+        vboBufferRecord.boxGeometryTexCoordBufferMap,
         vboBufferRecord.boxGeometryNormalBufferMap,
         vboBufferRecord.boxGeometryElementArrayBufferMap
       ),
       (
         GetBoxGeometryVerticesRenderService.getVertices,
+        GetBoxGeometryTexCoordsRenderService.getTexCoords,
         GetBoxGeometryNormalsRenderService.getNormals,
         GetBoxGeometryIndicesRenderService.getIndices
       )
@@ -56,11 +58,13 @@ let getCurrentGeometryBufferMapAndGetPointsFuncs = (type_, vboBufferRecord) =>
   | type_ when type_ === getCustomGeometryType() => (
       (
         vboBufferRecord.customGeometryVertexBufferMap,
+        vboBufferRecord.customGeometryTexCoordBufferMap,
         vboBufferRecord.customGeometryNormalBufferMap,
         vboBufferRecord.customGeometryElementArrayBufferMap
       ),
       (
         GetCustomGeometryVerticesRenderService.getVertices,
+        GetCustomGeometryTexCoordsRenderService.getTexCoords,
         GetCustomGeometryNormalsRenderService.getNormals,
         GetCustomGeometryIndicesRenderService.getIndices
       )

@@ -11,5 +11,6 @@ type extensionInstancedArrays = {
 
 type gpuDetectRecord = {
   extensionInstancedArrays: option(extensionInstancedArrays),
-  precision: option(gpuPrecision)
+  precision: option(gpuPrecision),
+  maxTextureUnit: int
 };

@@ -117,14 +117,21 @@ and uniformInstanceSendNoCachableData = {
 }
 and glslSenderRecord = {
   attributeSendDataMap: WonderCommonlib.SparseMapService.t(array(attributeSendData)),
-  instanceAttributeSendDataMap: WonderCommonlib.SparseMapService.t(array(instanceAttributeSendData)),
+  instanceAttributeSendDataMap:
+    WonderCommonlib.SparseMapService.t(array(instanceAttributeSendData)),
   uniformCacheMap,
-  uniformRenderObjectSendModelDataMap: WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendModelData)),
-  uniformRenderObjectSendMaterialDataMap: WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendMaterialData)),
-  uniformShaderSendNoCachableDataMap: WonderCommonlib.SparseMapService.t(array(uniformShaderSendNoCachableData)),
-  uniformShaderSendCachableDataMap: WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableData)),
-  uniformShaderSendCachableFunctionDataMap: WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableFunctionData)),
-  uniformInstanceSendNoCachableDataMap: WonderCommonlib.SparseMapService.t(array(uniformInstanceSendNoCachableData)),
+  uniformRenderObjectSendModelDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendModelData)),
+  uniformRenderObjectSendMaterialDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendMaterialData)),
+  uniformShaderSendNoCachableDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformShaderSendNoCachableData)),
+  uniformShaderSendCachableDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableData)),
+  uniformShaderSendCachableFunctionDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableFunctionData)),
+  uniformInstanceSendNoCachableDataMap:
+    WonderCommonlib.SparseMapService.t(array(uniformInstanceSendNoCachableData)),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
   mutable lastSendMaterial: option(material),

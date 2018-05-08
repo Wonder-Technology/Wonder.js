@@ -2,15 +2,25 @@ open Js.Typed_array;
 
 open BufferBasicMaterialService;
 
-let createTypeArrays = (buffer, count) => (
+let createTypeArrays = (buffer, basicMaterialCount, textureCountPerBasicMaterial) => (
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=ShaderIndicesService.getShaderIndicesOffset(count),
-    ~length=ShaderIndicesService.getShaderIndicesLength(count)
+    ~offset=ShaderIndicesService.getShaderIndicesOffset(basicMaterialCount),
+    ~length=ShaderIndicesService.getShaderIndicesLength(basicMaterialCount)
   ),
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getColorsOffset(count),
-    ~length=getColorsLength(count)
+    ~offset=getColorsOffset(basicMaterialCount),
+    ~length=getColorsLength(basicMaterialCount)
+  ),
+  Uint32Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTextureIndicesOffset(basicMaterialCounl),
+    ~length=getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTextureCountsOffset(basicMaterialCount, textureCountPerBasicMaterial),
+    ~length=getTextureCountsLength(basicMaterialCount)
   )
 );

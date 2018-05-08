@@ -18,13 +18,14 @@ let _initMaterialShader =
       (
         gl,
         GetDataRenderConfigService.getMaterialShaderLibDataArr(
-          isSourceInstance,
-          isSupportInstance,
+          materialIndex,
+          (isSourceInstance, isSupportInstance),
           (
             shaders,
             getShaderLibItemsFunc(shaders),
             GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
-          )
+          ),
+          state
         )
       ),
       buildGLSLSourceFunc,

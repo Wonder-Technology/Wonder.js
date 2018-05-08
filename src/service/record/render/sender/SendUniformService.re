@@ -21,6 +21,7 @@ let getSendNoCachableDataByType = (type_) =>
 let getSendCachableDataByType = (type_) =>
   SendGLSLDataService.(
     switch type_ {
+    | "sampler2D" => sendInt |> Obj.magic
     | "vec3" => sendVec3 |> Obj.magic
     | "float3" => sendFloat3 |> Obj.magic
     | "float" => sendFloat |> Obj.magic

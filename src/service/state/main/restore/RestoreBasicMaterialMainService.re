@@ -18,11 +18,18 @@ let _resetShaderIndices = (state) => {
 
 let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord) =>
   currentBasicMaterialRecord.shaderIndices === targetBasicMaterialRecord.shaderIndices
-  && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors ?
+  && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors
+  && currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.textureIndices
+  && currentBasicMaterialRecord.textureCounts === targetBasicMaterialRecord.textureCounts ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (shaderIndices, colors) =
-        (currentBasicMaterialRecord.shaderIndices, currentBasicMaterialRecord.colors)
+      let (shaderIndices, colors, textureIndices, textureCounts) =
+        (
+          currentBasicMaterialRecord.shaderIndices,
+          currentBasicMaterialRecord.colors,
+          currentBasicMaterialRecord.textureIndices,
+          currentBasicMaterialRecord.textureCounts
+        )
         |> RecordBasicMaterialMainService.setDefaultTypeArrData(
              currentBasicMaterialRecord.index,
              currentBasicMaterialRecord.defaultShaderIndex,
@@ -38,6 +45,18 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
         (currentBasicMaterialRecord.colors, 0),
         (targetBasicMaterialRecord.colors, 0),
         Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.colors)
+      )
+      |> ignore;
+      TypeArrayService.fillUint32ArrayWithUint32Array(
+        (currentBasicMaterialRecord.textureIndices, 0),
+        (targetBasicMaterialRecord.textureIndices, 0),
+        Js.Typed_array.Uint32Array.length(targetBasicMaterialRecord.textureIndices)
+      )
+      |> ignore;
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentBasicMaterialRecord.textureCounts, 0),
+        (targetBasicMaterialRecord.textureCounts, 0),
+        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.textureCounts)
       )
       |> ignore;
       (currentBasicMaterialRecord, targetBasicMaterialRecord)
@@ -64,7 +83,10 @@ let restore = (gl, currentState, targetState) => {
         ...targetBasicMaterialRecord,
         buffer: currentBasicMaterialRecord.buffer,
         shaderIndices: currentBasicMaterialRecord.shaderIndices,
-        colors: currentBasicMaterialRecord.colors
+        colors: currentBasicMaterialRecord.colors,
+        /* TODO test */
+        textureIndices: currentBasicMaterialRecord.textureIndices,
+        textureCounts: currentBasicMaterialRecord.textureCounts
       })
   }
 };

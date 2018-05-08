@@ -4,6 +4,8 @@ open GlType;
 
 open Js.Typed_array;
 
+[@bs.get] external getMaxTextureImageUnits : webgl1Context => int = "MAX_TEXTURE_IMAGE_UNITS";
+
 [@bs.get] external getCompileStatus : webgl1Context => int = "COMPILE_STATUS";
 
 [@bs.get] external getLinkStatus : webgl1Context => int = "LINK_STATUS";
@@ -40,7 +42,6 @@ open Js.Typed_array;
 
 [@bs.get] external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
 
-
 [@bs.get] external getDepthTest : webgl1Context => int = "DEPTH_TEST";
 
 [@bs.get] external getCullFace : webgl1Context => int = "CULL_FACE";
@@ -70,6 +71,8 @@ external getWebgl1Context :
 
 [@bs.send.pipe : webgl1Context] external getShaderPrecisionFormat : (int, int) => precisionFormat =
   "";
+
+[@bs.send.pipe : webgl1Context] external getParameter : int => int = "";
 
 /* [@bs.send]  external clearColor : context::contextT => r::float => g::float => b::float => a::float => unit =
    "clearColor" ; */
@@ -146,6 +149,8 @@ external uniformMatrix3fv : (uniformLocation, Js.boolean, Float32Array.t) => uni
 [@bs.send.pipe : webgl1Context]
 external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
   "";
+
+[@bs.send.pipe : webgl1Context] external uniform1i : (uniformLocation, int) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external uniform1f : (uniformLocation, float) => unit = "";
 

@@ -7,8 +7,8 @@ let _getOrCreateBuffer =
       buffer,
       (gl, geometryIndex),
       (
-        (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
-        (getVerticesFunc, getNormalsFunc, getIndicesFunc)
+        (vertexBufferMap, texCoordBufferMap, normalBufferMap, elementArrayBufferMap),
+        (getVerticesFunc, getTexCoordsFunc, getNormalsFunc, getIndicesFunc)
       ),
       state
     ) =>
@@ -18,6 +18,13 @@ let _getOrCreateBuffer =
       gl,
       (geometryIndex, vertexBufferMap),
       [@bs] getVerticesFunc,
+      state
+    )
+  | "texCoord" =>
+    ArrayBufferRenderService.getOrCreateBuffer(
+      gl,
+      (geometryIndex, texCoordBufferMap),
+      [@bs] getTexCoordsFunc,
       state
     )
   | "normal" =>
@@ -67,39 +74,6 @@ let _directlySendAttributeData =
                currentGeometryBufferMapAndGetPointsFuncsTuple,
                state
              );
-           /* switch buffer {
-              | "vertex" =>
-                ArrayBufferRenderService.getOrCreateBuffer(
-                  gl,
-                  (geometryIndex, vertexBufferMap),
-                  [@bs] getVerticesFunc,
-                  state
-                )
-              | "normal" =>
-                ArrayBufferRenderService.getOrCreateBuffer(
-                  gl,
-                  (geometryIndex, normalBufferMap),
-                  [@bs] getNormalsFunc,
-                  state
-                )
-              | "index" =>
-                ElementArrayBufferRenderService.getOrCreateBuffer(
-                  gl,
-                  (geometryIndex, elementArrayBufferMap),
-                  [@bs] getIndicesFunc,
-                  state
-                )
-              | _ =>
-                WonderLog.Log.fatal(
-                  WonderLog.Log.buildFatalMessage(
-                    ~title="_sendAttributeData",
-                    ~description={j|unknown buffer: $buffer|j},
-                    ~reason="",
-                    ~solution={j||j},
-                    ~params={j||j}
-                  )
-                )
-              }; */
            [@bs] sendFunc(gl, (size, pos), arrayBuffer, state)
          }
        ),

@@ -13,10 +13,17 @@ let disposeBoxGeometryBufferData =
   (
     (
       geometry,
-      {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} as record
+      {
+        boxGeometryVertexBufferMap,
+        boxGeometryTexCoordBufferMap,
+        boxGeometryNormalBufferMap,
+        boxGeometryElementArrayBufferMap
+      } as record
     ) => {
       ...record,
       boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
+      /* TODO test */
+      boxGeometryTexCoordBufferMap: disposeSparseMapData(geometry, boxGeometryTexCoordBufferMap),
       boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
       boxGeometryElementArrayBufferMap:
         disposeSparseMapData(geometry, boxGeometryElementArrayBufferMap)
@@ -30,12 +37,16 @@ let disposeCustomGeometryBufferData =
       geometry,
       {
         customGeometryVertexBufferMap,
+        customGeometryTexCoordBufferMap,
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap
       } as record
     ) => {
       ...record,
       customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
+      /* TODO test */
+      customGeometryTexCoordBufferMap:
+        disposeSparseMapData(geometry, customGeometryTexCoordBufferMap),
       customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),
       customGeometryElementArrayBufferMap:
         disposeSparseMapData(geometry, customGeometryElementArrayBufferMap)

@@ -21,9 +21,11 @@ let _allocateNewData =
       newAliveIndexArray,
       {
         vertices,
+        texCoords,
         normals,
         indices,
         verticesInfos,
+        texCoordsInfos,
         normalsInfos,
         indicesInfos,
         disposedIndexMap,
@@ -38,12 +40,15 @@ let _allocateNewData =
            (
              newIndex,
              newVerticesInfos,
+             newTexCoordsInfos,
              newNormalsInfos,
              newIndicesInfos,
              newVerticesOffset,
+             newTexCoordsOffset,
              newNormalsOffset,
              newIndicesOffset,
              newVertices,
+             newTexCoords,
              newNormals,
              newIndices
            ),
@@ -52,6 +57,8 @@ let _allocateNewData =
            let infoIndex = BufferCustomGeometryService.getInfoIndex(index);
            let (verticesStartIndex, verticesEndIndex) as verticesInfo =
              ReallocatedPointsGeometryService.getInfo(infoIndex, verticesInfos);
+           let (texCoordsStartIndex, texCoordsEndIndex) as texCoordsInfo =
+             ReallocatedPointsGeometryService.getInfo(infoIndex, texCoordsInfos);
            let (normalsStartIndex, normalsEndIndex) as normalsInfo =
              ReallocatedPointsGeometryService.getInfo(infoIndex, normalsInfos);
            let (indicesStartIndex, indicesEndIndex) as indicesInfo =
@@ -59,12 +66,18 @@ let _allocateNewData =
            (
              succ(newIndex),
              _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
+             _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
              _updateInfos(normalsInfos, infoIndex, normalsInfo, newNormalsOffset),
              _updateInfos(indicesInfos, infoIndex, indicesInfo, newIndicesOffset),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (vertices, newVerticesOffset),
                (vertices, verticesStartIndex),
                verticesEndIndex
+             ),
+             TypeArrayService.fillFloat32ArrayWithFloat32Array(
+               (texCoords, newVerticesOffset),
+               (texCoords, texCoordsStartIndex),
+               texCoordsEndIndex
              ),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
                (normals, newNormalsOffset),
@@ -77,12 +90,27 @@ let _allocateNewData =
                indicesEndIndex
              ),
              vertices,
+             texCoords,
              normals,
              indices
            )
          }
        ),
-       (0, verticesInfos, normalsInfos, indicesInfos, 0, 0, 0, vertices, normals, indices)
+       (
+         0,
+         verticesInfos,
+         texCoordsInfos,
+         normalsInfos,
+         indicesInfos,
+         0,
+         0,
+         0,
+         0,
+         vertices,
+         texCoords,
+         normals,
+         indices
+       )
      );
 
 let _setNewDataToState =
@@ -92,24 +120,30 @@ let _setNewDataToState =
       (
         newIndex,
         newVerticesInfos,
+        newTexCoordsInfos,
         newNormalsInfos,
         newIndicesInfos,
         newVerticesOffset,
+        newTexCoordsOffset,
         newNormalsOffset,
         newIndicesOffset,
         newVertices,
+        newTexCoords,
         newNormals,
         newIndices
       )
     ) => {
   ...customGeometryRecord,
   verticesInfos: newVerticesInfos,
+  texCoordsInfos: newTexCoordsInfos,
   normalsInfos: newNormalsInfos,
   indicesInfos: newIndicesInfos,
   verticesOffset: newVerticesOffset,
+  texCoordsOffset: newTexCoordsOffset,
   normalsOffset: newNormalsOffset,
   indicesOffset: newIndicesOffset,
   vertices: newVertices,
+  texCoords: newTexCoords,
   normals: newNormals,
   indices: newIndices,
   aliveIndexArray: newAliveIndexArray,

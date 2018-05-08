@@ -17,6 +17,18 @@
       ]
     }
   ],
+  "dynamic_branchs": [
+    {
+      "name": "basic_map",
+      "condition": "basic_has_map",
+      "pass": [
+        {
+          "value": "basic_map"
+        }
+      ],
+      "fail": []
+    }
+  ],
   "groups": [
     {
       "name": "top",
@@ -46,6 +58,10 @@
         },
         {
           "name": "basic"
+        },
+        {
+          "type": "dynamic_branch",
+          "name": "basic_map"
         },
         {
           "name": "basic_end"

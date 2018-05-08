@@ -21,6 +21,9 @@ let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>
 let getBoxGeometryVertices = (state: StateDataMainType.state) =>
   [@bs] GetBoxGeometryVerticesMainService.getVertices(state);
 
+let getBoxGeometryTexCoords = (state: StateDataMainType.state) =>
+  [@bs] GetBoxGeometryTexCoordsMainService.getTexCoords(state);
+
 let getBoxGeometryNormals = (state: StateDataMainType.state) =>
   [@bs] GetBoxGeometryNormalsMainService.getNormals(state);
 

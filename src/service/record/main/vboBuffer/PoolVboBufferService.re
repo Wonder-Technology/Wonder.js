@@ -28,9 +28,11 @@ let addAllBufferToPool =
     (
       {
         boxGeometryVertexBufferMap,
+        boxGeometryTexCoordBufferMap,
         boxGeometryNormalBufferMap,
         boxGeometryElementArrayBufferMap,
         customGeometryVertexBufferMap,
+        customGeometryTexCoordBufferMap,
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap,
         matrixInstanceBufferMap,
@@ -43,6 +45,11 @@ let addAllBufferToPool =
   |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
+  /* TODO test */
+  boxGeometryTexCoordBufferMap
+  |> SparseMapService.forEachValid(
+       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
   boxGeometryNormalBufferMap
   |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
@@ -52,6 +59,10 @@ let addAllBufferToPool =
        [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
   customGeometryVertexBufferMap
+  |> SparseMapService.forEachValid(
+       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+     );
+  customGeometryTexCoordBufferMap
   |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
@@ -86,6 +97,7 @@ let addBoxGeometryBufferToPool =
       geometryIndex: int,
       {
         boxGeometryVertexBufferMap,
+        boxGeometryTexCoordBufferMap,
         boxGeometryNormalBufferMap,
         boxGeometryElementArrayBufferMap,
         vertexArrayBufferPool,
@@ -96,6 +108,8 @@ let addBoxGeometryBufferToPool =
       vertexArrayBufferPool:
         vertexArrayBufferPool
         |> _addBufferToPool(geometryIndex, boxGeometryVertexBufferMap)
+        /* TODO test */
+        |> _addBufferToPool(geometryIndex, boxGeometryTexCoordBufferMap)
         |> _addBufferToPool(geometryIndex, boxGeometryNormalBufferMap),
       elementArrayBufferPool:
         elementArrayBufferPool |> _addBufferToPool(geometryIndex, boxGeometryElementArrayBufferMap)
@@ -109,6 +123,7 @@ let addCustomGeometryBufferToPool =
       geometryIndex: int,
       {
         customGeometryVertexBufferMap,
+        customGeometryTexCoordBufferMap,
         customGeometryNormalBufferMap,
         customGeometryElementArrayBufferMap,
         vertexArrayBufferPool,
@@ -119,6 +134,8 @@ let addCustomGeometryBufferToPool =
       vertexArrayBufferPool:
         vertexArrayBufferPool
         |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
+        /* TODO test */
+        |> _addBufferToPool(geometryIndex, customGeometryTexCoordBufferMap)
         |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
       elementArrayBufferPool:
         elementArrayBufferPool
