@@ -18,7 +18,7 @@ open GeometryType;
 
 open ShaderChunkType;
 
-open InitMaterialMaterialType;
+open InitMaterialLightMaterialType;
 
 open InitLightMaterialDirectionLightType;
 

@@ -1,7 +1,5 @@
 open Js.Typed_array;
 
-let getDefaultUnit = () => 255;
-
 let getShaderIndicesSize = () => 1;
 
 let getColorsSize = () => 3;

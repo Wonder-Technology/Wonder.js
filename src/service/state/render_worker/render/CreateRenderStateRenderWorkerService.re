@@ -68,7 +68,9 @@ let createRenderState =
         Some({
           objectInstanceCountPerSourceInstance:
             BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
-        })
+        }),
+      /* TODO finish */
+      textureCountPerBasicMaterial: Some(Obj.magic(1))
     },
     glslSenderRecord,
     programRecord,
@@ -84,13 +86,17 @@ let createRenderState =
       normals: customGeometryRecord.normals,
       indices: customGeometryRecord.indices,
       verticesInfos: customGeometryRecord.verticesInfos,
+      texCoordsInfos: customGeometryRecord.texCoordsInfos,
       normalsInfos: customGeometryRecord.normalsInfos,
       indicesInfos: customGeometryRecord.indicesInfos
     },
     cameraRecord: OperateRenderRenderWorkerService.getCameraRecord(state),
     basicMaterialRecord: {
       shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
-      colors: basicMaterialRecord.colors |> OptionService.unsafeGet
+      colors: basicMaterialRecord.colors |> OptionService.unsafeGet,
+      /* TODO finish */
+      textureIndices: Obj.magic(1),
+      mapUnits: Obj.magic(1)
     },
     lightMaterialRecord: {
       shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
@@ -98,6 +104,8 @@ let createRenderState =
       specularColors: lightMaterialRecord.specularColors |> OptionService.unsafeGet,
       shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet
     },
+    /* TODO finish */
+    textureRecord: Obj.magic(1),
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
       index: directionLightRecord.index,

@@ -9,6 +9,7 @@ let _getInitJobHandles = () => [
   ("init_camera", InitCameraJob.execJob),
   ("start_time", StartTimeJob.execJob),
   ("preget_glslData", PregetGLSLDataJob.execJob),
+  ("init_texture", InitTextureJob.execJob),
   ("init_state", InitStateJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
   ("init_light_material", InitLightMaterialJob.execJob)

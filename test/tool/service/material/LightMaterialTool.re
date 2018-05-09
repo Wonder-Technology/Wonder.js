@@ -29,7 +29,7 @@ let getDefaultSpecularColor = (state) => getRecord(state).defaultSpecularColor;
 let getDefaultShininess = (state) => getRecord(state).defaultShininess;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
-  let {index, disposedIndexArray, shaderIndices} = RecordLightMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray} = RecordLightMaterialMainService.getRecord(state);
   InitInitLightMaterialService.init(
     gl,
     (
@@ -41,7 +41,7 @@ let initMaterials = (gl, {gameObjectRecord} as state) => {
       JudgeInstanceMainService.isSupportInstance(state)
     ),
     CreateInitLightMaterialStateMainService.createInitMaterialState(
-      (index, disposedIndexArray, shaderIndices),
+      (index, disposedIndexArray),
       state
     )
   )

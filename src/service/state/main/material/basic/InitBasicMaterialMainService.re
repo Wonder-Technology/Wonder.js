@@ -7,7 +7,7 @@ open BasicMaterialType;
 let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
   let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
   let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
-  let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray} = RecordBasicMaterialMainService.getRecord(state);
   materialIndexArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -29,7 +29,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
            )
        ),
        CreateInitBasicMaterialStateMainService.createInitMaterialState(
-         (index, disposedIndexArray, shaderIndices),
+         (index, disposedIndexArray),
          state
        )
      )
@@ -69,7 +69,7 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
             isSupportInstance
           ),
           CreateInitBasicMaterialStateMainService.createInitMaterialState(
-            (index, disposedIndexArray, shaderIndices),
+            (index, disposedIndexArray),
             state
           )
         )

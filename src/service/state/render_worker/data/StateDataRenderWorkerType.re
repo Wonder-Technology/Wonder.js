@@ -6,6 +6,8 @@ open RenderWorkerBasicMaterialType;
 
 open RenderWorkerLightMaterialType;
 
+open RenderWorkerTextureType;
+
 open RenderWorkerAmbientLightType;
 
 open RenderWorkerDirectionLightType;
@@ -60,6 +62,7 @@ type renderWorkerState = {
   mutable sourceInstanceRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
+  mutable textureRecord: option(textureRecord),
   mutable transformRecord: option(transformRecord),
   mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),

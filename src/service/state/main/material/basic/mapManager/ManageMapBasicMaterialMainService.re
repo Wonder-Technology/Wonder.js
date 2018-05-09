@@ -1,3 +1,5 @@
+open StateDataMainType;
+
 open BasicMaterialType;
 
 /* let _setMapTextureIndex = (material, texture, mapTextureIndexMap) =>

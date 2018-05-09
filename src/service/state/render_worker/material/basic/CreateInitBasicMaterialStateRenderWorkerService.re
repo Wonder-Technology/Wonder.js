@@ -18,7 +18,8 @@ let createInitMaterialState =
     materialRecord: {
       index,
       disposedIndexArray,
-      shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state)
+      shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
+      mapUnits: RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state)
     },
     renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
     shaderRecord,

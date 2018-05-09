@@ -55,6 +55,7 @@ let createRenderState =
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  let textureRecord = RecordTextureMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let isUseWorker = WorkerDetectMainService.isUseWorker(state);
   let renderStateTransformRecord: RenderTransformType.transformRecord =
@@ -82,19 +83,29 @@ let createRenderState =
       normals: customGeometryRecord.normals,
       indices: customGeometryRecord.indices,
       verticesInfos: customGeometryRecord.verticesInfos,
+      texCoordsInfos: customGeometryRecord.texCoordsInfos,
       normalsInfos: customGeometryRecord.normalsInfos,
       indicesInfos: customGeometryRecord.indicesInfos
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
     basicMaterialRecord: {
       shaderIndices: basicMaterialRecord.shaderIndices,
-      colors: basicMaterialRecord.colors
+      colors: basicMaterialRecord.colors,
+      textureIndices: basicMaterialRecord.textureIndices,
+      mapUnits: basicMaterialRecord.mapUnits
     },
     lightMaterialRecord: {
       shaderIndices: lightMaterialRecord.shaderIndices,
       diffuseColors: lightMaterialRecord.diffuseColors,
       specularColors: lightMaterialRecord.specularColors,
       shininess: lightMaterialRecord.shininess
+    },
+    textureRecord: {
+      widths: textureRecord.widths,
+      heights: textureRecord.heights,
+      isNeedUpdates: textureRecord.isNeedUpdates,
+      sourceMap: textureRecord.sourceMap,
+      glTextureMap: textureRecord.glTextureMap
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
@@ -151,7 +162,9 @@ let createRenderState =
         Some({
           objectInstanceCountPerSourceInstance:
             BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
-        })
+        }),
+      textureCountPerBasicMaterial:
+        Some(BufferSettingService.getTextureCountPerBasicMaterial(settingRecord))
     },
     workerDetectRecord: {isUseWorker: isUseWorker}
   }

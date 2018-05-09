@@ -21,12 +21,7 @@
     {
       "name": "basic_map",
       "condition": "basic_has_map",
-      "pass": [
-        {
-          "value": "basic_map"
-        }
-      ],
-      "fail": []
+      "pass": "basic_map"
     }
   ],
   "groups": [

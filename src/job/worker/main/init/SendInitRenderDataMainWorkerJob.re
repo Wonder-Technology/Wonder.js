@@ -44,7 +44,8 @@ let _buildData = (operateType, canvas, stateData) => {
       "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
       "transformDataBufferCount": buffer.transformDataBufferCount,
       "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
-      "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount
+      "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount,
+      "textureCountPerBasicMaterial": buffer.textureCountPerBasicMaterial
     },
     "gpuData": {"useHardwareInstance": useHardwareInstance},
     "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},

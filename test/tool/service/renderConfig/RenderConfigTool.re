@@ -585,4 +585,6 @@ let getShaderLibs = (state) =>
     InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
   );
 
-let getMaterialShaderLibRecordArr = GetDataRenderConfigService.getMaterialShaderLibDataArr;
+let getBasicMaterialShaderLibRecordArr = GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr;
+
+let getLightMaterialShaderLibRecordArr = GetShaderLibDataArrayInitLightMaterialService.getMaterialShaderLibDataArr;

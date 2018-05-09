@@ -16,8 +16,9 @@ let _ =
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+      /* TODO test getLightMaterialShaderLibRecordArr */
       describe(
-        "getMaterialShaderLibDataArr",
+        "getBasicMaterialShaderLibRecordArr",
         () =>
           describe(
             "test fatal",
@@ -29,10 +30,12 @@ let _ =
                   TestTool.closeContractCheck();
                   expect(
                     () =>
-                      RenderConfigTool.getMaterialShaderLibRecordArr(
+                      [@bs]
+                      RenderConfigTool.getBasicMaterialShaderLibRecordArr(
                         Obj.magic(0),
                         Obj.magic(0),
-                        (1 |> Obj.magic, [|{type_: Some("type1"), name: ""}|], 1 |> Obj.magic)
+                        (Obj.magic(1), [|{type_: Some("type1"), name: ""}|], Obj.magic(1)),
+                        Obj.magic(1)
                       )
                   )
                   |> toThrowMessage("unknown type_")
@@ -44,14 +47,16 @@ let _ =
                   TestTool.closeContractCheck();
                   expect(
                     () =>
-                      RenderConfigTool.getMaterialShaderLibRecordArr(
+                      [@bs]
+                      RenderConfigTool.getBasicMaterialShaderLibRecordArr(
                         Obj.magic(0),
                         Obj.magic(0),
                         (
                           1 |> Obj.magic,
                           [|{type_: Some("static_branch"), name: "name1"}|],
                           1 |> Obj.magic
-                        )
+                        ),
+                        Obj.magic(1)
                       )
                   )
                   |> toThrowMessage("unknown name")

@@ -1,4 +1,4 @@
-open StateRenderType;
+open StateInitLightMaterialType;
 
 open RenderConfigType;
 
@@ -49,7 +49,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
   switch name {
   | "modelMatrix_instance"
   | "normalMatrix_instance" =>
-    let {value} =
+    let {value}: shaderMapData =
       JobConfigService.unsafeFindFirst(
         staticBranchs,
         name,
@@ -115,27 +115,30 @@ let _getMaterialShaderLibDataArrByType =
   };
 
 let getMaterialShaderLibDataArr =
+  [@bs]
+  (
     (
-      materialIndex,
+      materialIndex: int,
       (isSourceInstance, isSupportInstance),
       ({staticBranchs, dynamicBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
-      state
+      state: initLightMaterialState
     ) =>
-  shaderLibItems
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (resultDataArr, {type_, name}: shaderLibItem) =>
-           switch type_ {
-           | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
-           | Some(type_) =>
-             _getMaterialShaderLibDataArrByType(
-               (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
-               (shaderLibs, staticBranchs, dynamicBranchs),
-               state,
-               resultDataArr
-             )
-           }
-       ),
-       WonderCommonlib.ArrayService.createEmpty()
-     );
+      shaderLibItems
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           [@bs]
+           (
+             (resultDataArr, {type_, name}: shaderLibItem) =>
+               switch type_ {
+               | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
+               | Some(type_) =>
+                 _getMaterialShaderLibDataArrByType(
+                   (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
+                   (shaderLibs, staticBranchs, dynamicBranchs),
+                   state,
+                   resultDataArr
+                 )
+               }
+           ),
+           WonderCommonlib.ArrayService.createEmpty()
+         )
+  );

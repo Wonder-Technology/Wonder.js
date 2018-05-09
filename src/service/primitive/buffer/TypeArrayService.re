@@ -2,6 +2,9 @@ open Js.Typed_array;
 
 let getUInt8_1 = (index: int, typeArray: Uint8Array.t) => Uint8Array.unsafe_get(typeArray, index);
 
+let getUInt16_1 = (index: int, typeArray: Uint16Array.t) =>
+  Uint16Array.unsafe_get(typeArray, index);
+
 let getUInt32_1 = (index: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_get(typeArray, index);
 

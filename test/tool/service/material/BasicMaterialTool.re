@@ -25,7 +25,7 @@ let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
 let getDefaultColor = (state) => getRecord(state).defaultColor;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
-  let {index, disposedIndexArray, shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray} = RecordBasicMaterialMainService.getRecord(state);
   InitInitBasicMaterialService.init(
     gl,
     (
@@ -37,7 +37,7 @@ let initMaterials = (gl, {gameObjectRecord} as state) => {
       JudgeInstanceMainService.isSupportInstance(state)
     ),
     CreateInitBasicMaterialStateMainService.createInitMaterialState(
-      (index, disposedIndexArray, shaderIndices),
+      (index, disposedIndexArray),
       state
     )
   )

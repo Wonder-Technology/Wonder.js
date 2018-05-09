@@ -43,12 +43,28 @@ let _convertShaderMapData = (json) =>
     )
   );
 
+let _convertDynamicBranchData = (json) =>
+  Json.(
+    Decode.(
+      json
+      |> array(
+           (json) => {
+             name: json |> field("name", string),
+             condition: json |> field("condition", string),
+             pass: json |> optional(field("pass", string)),
+             fail: json |> optional(field("fail", string))
+           }
+         )
+    )
+  );
+
 let convertShadersToRecord = (shaders) => {
   open Json;
   open Decode;
   let json = shaders;
   {
     staticBranchs: json |> field("static_branchs", (json) => _convertShaderMapData(json)),
+    dynamicBranchs: json |> field("dynamic_branchs", (json) => _convertDynamicBranchData(json)),
     groups: json |> field("groups", (json) => _convertShaderMapData(json)),
     materialShaders:
       json

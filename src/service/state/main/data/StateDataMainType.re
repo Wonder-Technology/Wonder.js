@@ -32,6 +32,8 @@ open BasicMaterialType;
 
 open LightMaterialType;
 
+open TextureType;
+
 open AmbientLightType;
 
 open DirectionLightType;
@@ -116,6 +118,7 @@ and state = {
   mutable perspectiveCameraProjectionRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
+  mutable textureRecord: option(textureRecord),
   mutable ambientLightRecord,
   mutable directionLightRecord,
   mutable pointLightRecord,

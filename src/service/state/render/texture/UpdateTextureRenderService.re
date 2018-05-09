@@ -2,7 +2,7 @@ open StateRenderType;
 
 open RenderTextureType;
 
-let _setFlipY = (gl, flipY) => gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl, flipY);
+let _setFlipY = (gl, flipY) => gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl(gl), flipY);
 
 let _isPowerOfTwo = (value) => value land (value - 1) === 0 && value !== 0;
 
@@ -44,15 +44,15 @@ let _setTextureParameters = (gl, target, isSourcePowerOfTwo, (wrapS, wrapT, magF
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, _filterFallback(minFilter, gl))
     };
 
-let _allocateSourceToTexture = (gl, paramTuple, source) =>
-  _drawNoMipmapTwoDTexture(gl, paramTuple, source);
+let _drawTexture = (gl, (target, index, source, format, type_)) =>
+  gl
+  |> Gl.texImage2D(target, index, format, format, type_, source |> Gl.imageElementToTextureSource);
 
 let _drawNoMipmapTwoDTexture = (gl, (target, format, type_), source) =>
   _drawTexture(gl, (target, 0, source, format, type_));
 
-let _drawTexture = (gl, (target, index, source, format, type_)) =>
-  gl
-  |> Gl.texImage2D(target, index, format, format, type_, source |> Gl.imageElementToTextureSource);
+let _allocateSourceToTexture = (gl, paramTuple, source) =>
+  _drawNoMipmapTwoDTexture(gl, paramTuple, source);
 
 let update = (gl, texture, {textureRecord} as state) => {
   let {sourceMap, widths, heights, isNeedUpdates} = textureRecord;
@@ -98,4 +98,5 @@ let update = (gl, texture, {textureRecord} as state) => {
 };
 
 let isNeedUpdate = (texture, {textureRecord}) =>
-  OperateTypeArrayTextureService.getIsNeedUpdate(texture, textureRecord.isNeedUpdates);
+  OperateTypeArrayTextureService.getIsNeedUpdate(texture, textureRecord.isNeedUpdates)
+  === BufferTextureService.getDefaultIsNeedUpdate();

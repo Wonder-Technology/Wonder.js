@@ -19,7 +19,7 @@ let setDefaultTypeArrData =
       defaultColor,
       (shaderIndices, colors, textureIndices, mapUnits)
     ) => {
-  let defaultUnit = getDefaultUnit();
+  let defaultUnit = MapUnitService.getDefaultUnit();
   WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
@@ -47,13 +47,13 @@ let _setDefaultTypeArrData =
     basicMaterialCount,
     defaultShaderIndex,
     defaultColor,
-    (shaderIndices, colors, textureIndices, mapUnits )
+    (shaderIndices, colors, textureIndices, mapUnits)
   )
 );
 
 let _initBufferData =
     (basicMaterialCount, textureCountPerBasicMaterial, defaultShaderIndex, defaultColor) => {
-  let buffer = createBuffer(basicMaterialCount);
+  let buffer = createBuffer(basicMaterialCount, textureCountPerBasicMaterial);
   let (shaderIndices, colors, textureIndices, mapUnits) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
@@ -70,7 +70,7 @@ let create = ({settingRecord} as state) => {
   let (buffer, (shaderIndices, colors, textureIndices, mapUnits)) =
     _initBufferData(
       BufferSettingService.getBasicMaterialDataBufferCount(settingRecord),
-      BufferSettingService.getMapUnitPerBasicMaterial(settingRecord),
+      BufferSettingService.getTextureCountPerBasicMaterial(settingRecord),
       defaultShaderIndex,
       defaultColor
     );
@@ -93,7 +93,7 @@ let create = ({settingRecord} as state) => {
   state
 };
 
-let deepCopyForRestore = (state) => {
+let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
         buffer,
@@ -127,12 +127,11 @@ let deepCopyForRestore = (state) => {
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
                index
                * getTextureIndicesSize(
-                   BufferSettingService.getMapUnitPerBasicMaterial(settingRecord)
+                   BufferSettingService.getTextureCountPerBasicMaterial(settingRecord)
                  )
              ),
         mapUnits:
-          mapUnits
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
+          mapUnits |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
         defaultShaderIndex,
         defaultColor,
         /* TODO test */

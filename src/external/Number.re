@@ -1,0 +1,1 @@
+external intToFloat : int => float = "%identity";

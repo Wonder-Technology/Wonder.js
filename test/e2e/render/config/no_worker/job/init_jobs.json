@@ -31,5 +31,8 @@
     },
     {
         "name": "init_light_material"
+    },
+    {
+        "name": "init_texture"
     }
 ]

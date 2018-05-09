@@ -8,11 +8,12 @@ let _restoreTypeArrays = (currentCustomGeometryRecord, targetCustomGeometryRecor
   && currentCustomGeometryRecord.indices === targetCustomGeometryRecord.indices ?
     (currentCustomGeometryRecord, targetCustomGeometryRecord) :
     {
-      let (vertices, normals, indices) =
+      let (vertices, texCoords, normals, indices) =
         RecordCustomGeometryMainService.setDefaultTypeArrData(
           currentCustomGeometryRecord.index,
           (
             currentCustomGeometryRecord.vertices,
+            currentCustomGeometryRecord.texCoords,
             currentCustomGeometryRecord.normals,
             currentCustomGeometryRecord.indices
           )
@@ -21,6 +22,12 @@ let _restoreTypeArrays = (currentCustomGeometryRecord, targetCustomGeometryRecor
         (currentCustomGeometryRecord.vertices, 0),
         (targetCustomGeometryRecord.vertices, 0),
         Js.Typed_array.Float32Array.length(targetCustomGeometryRecord.vertices)
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentCustomGeometryRecord.texCoords, 0),
+        (targetCustomGeometryRecord.texCoords, 0),
+        Js.Typed_array.Float32Array.length(targetCustomGeometryRecord.texCoords)
       )
       |> ignore;
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
@@ -38,6 +45,7 @@ let _restoreTypeArrays = (currentCustomGeometryRecord, targetCustomGeometryRecor
       (currentCustomGeometryRecord, targetCustomGeometryRecord)
     };
 
+/* TODO test texCoords */
 let restore = (currentState, targetState) => {
   let currentCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(currentState);
   let targetCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(targetState);
@@ -50,6 +58,7 @@ let restore = (currentState, targetState) => {
         ...targetCustomGeometryRecord,
         buffer: currentCustomGeometryRecord.buffer,
         vertices: currentCustomGeometryRecord.vertices,
+        texCoords: currentCustomGeometryRecord.texCoords,
         normals: currentCustomGeometryRecord.normals,
         indices: currentCustomGeometryRecord.indices
       })

@@ -20,6 +20,8 @@ open RenderBasicMaterialType;
 
 open RenderLightMaterialType;
 
+open RenderTextureType;
+
 open RenderAmbientLightType;
 
 open RenderDirectionLightType;
@@ -147,6 +149,7 @@ and renderState = {
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
   lightMaterialRecord,
+  textureRecord,
   ambientLightRecord,
   directionLightRecord,
   pointLightRecord,

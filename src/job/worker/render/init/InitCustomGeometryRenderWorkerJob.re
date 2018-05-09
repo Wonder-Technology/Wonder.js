@@ -3,10 +3,28 @@ open StateDataRenderWorkerType;
 open RenderWorkerCustomGeometryType;
 
 let _createTypeArrays = (buffer, count, state) => {
-  let (vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos) =
+  let (
+    vertices,
+    texCoords,
+    normals,
+    indices,
+    verticesInfos,
+    texCoordsInfos,
+    normalsInfos,
+    indicesInfos
+  ) =
     CreateTypeArrayCustomGeometryService.createTypeArrays(buffer, count);
   state.customGeometryRecord =
-    Some({vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos});
+    Some({
+      vertices,
+      texCoords,
+      normals,
+      indices,
+      verticesInfos,
+      texCoordsInfos,
+      normalsInfos,
+      indicesInfos
+    });
   state
 };
 

@@ -49,7 +49,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     ) =>
   switch name {
   | "modelMatrix_instance" =>
-    let {value} =
+    let {value}: shaderMapData =
       JobConfigService.unsafeFindFirst(
         staticBranchs,
         name,
@@ -79,11 +79,9 @@ let _getMaterialShaderLibDataArrByStaticBranch =
 let _isPass = (materialIndex, condition, {materialRecord} as state) =>
   switch condition {
   | "basic_has_map" =>
-    TextureCountMapBasicMaterialService.unsafeGetCount(
-      materialIndex,
-      materialRecord.textureCountMap
+    MapUnitService.hasMap(
+      OperateTypeArrayBasicMaterialService.getMapUnit(materialIndex, materialRecord.mapUnits)
     )
-    > 0
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -105,14 +103,17 @@ let _getMaterialShaderLibDataArrByDynamicBranch =
     ) =>
   switch name {
   | "basic_map" =>
-    let {condition, pass} =
+    let ({condition}: dynamicBranchData) as dynamicBranchData =
       JobConfigService.unsafeFindFirst(
         dynamicBranchs,
         name,
         (item) => JobConfigService.filterTargetName(item.name, name)
       );
     _isPass(materialIndex, condition, state) ?
-      resultDataArr |> ArrayService.push(_findFirstShaderData(pass.value, shaderLibs)) :
+      resultDataArr
+      |> ArrayService.push(
+           _findFirstShaderData(GetDataRenderConfigService.getPass(dynamicBranchData), shaderLibs)
+         ) :
       resultDataArr
   | _ =>
     WonderLog.Log.debugJson(
@@ -176,27 +177,30 @@ let _getMaterialShaderLibDataArrByType =
   };
 
 let getMaterialShaderLibDataArr =
+  [@bs]
+  (
     (
       materialIndex,
       (isSourceInstance, isSupportInstance),
       ({staticBranchs, dynamicBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
       state
     ) =>
-  shaderLibItems
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (resultDataArr, {type_, name}: shaderLibItem) =>
-           switch type_ {
-           | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
-           | Some(type_) =>
-             _getMaterialShaderLibDataArrByType(
-               (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
-               (shaderLibs, staticBranchs, dynamicBranchs),
-               state,
-               resultDataArr
-             )
-           }
-       ),
-       WonderCommonlib.ArrayService.createEmpty()
-     );
+      shaderLibItems
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           [@bs]
+           (
+             (resultDataArr, {type_, name}: shaderLibItem) =>
+               switch type_ {
+               | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
+               | Some(type_) =>
+                 _getMaterialShaderLibDataArrByType(
+                   (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
+                   (shaderLibs, staticBranchs, dynamicBranchs),
+                   state,
+                   resultDataArr
+                 )
+               }
+           ),
+           WonderCommonlib.ArrayService.createEmpty()
+         )
+  );

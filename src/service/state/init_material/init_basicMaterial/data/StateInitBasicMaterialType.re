@@ -12,13 +12,11 @@ open StateRenderType;
 
 open GLSLLocationType;
 
-open MaterialType;
-
 open GeometryType;
 
 open ShaderChunkType;
 
-open InitMaterialMaterialType;
+open InitMaterialBasicMaterialType;
 
 type initBasicMaterialState = {
   materialRecord,

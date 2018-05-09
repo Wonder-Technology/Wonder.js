@@ -20,15 +20,15 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
   currentBasicMaterialRecord.shaderIndices === targetBasicMaterialRecord.shaderIndices
   && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors
   && currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.textureIndices
-  && currentBasicMaterialRecord.textureCounts === targetBasicMaterialRecord.textureCounts ?
+  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (shaderIndices, colors, textureIndices, textureCounts) =
+      let (shaderIndices, colors, textureIndices, mapUnits) =
         (
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
           currentBasicMaterialRecord.textureIndices,
-          currentBasicMaterialRecord.textureCounts
+          currentBasicMaterialRecord.mapUnits
         )
         |> RecordBasicMaterialMainService.setDefaultTypeArrData(
              currentBasicMaterialRecord.index,
@@ -54,9 +54,9 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
       )
       |> ignore;
       TypeArrayService.fillUint8ArrayWithUint8Array(
-        (currentBasicMaterialRecord.textureCounts, 0),
-        (targetBasicMaterialRecord.textureCounts, 0),
-        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.textureCounts)
+        (currentBasicMaterialRecord.mapUnits, 0),
+        (targetBasicMaterialRecord.mapUnits, 0),
+        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits)
       )
       |> ignore;
       (currentBasicMaterialRecord, targetBasicMaterialRecord)
@@ -86,7 +86,7 @@ let restore = (gl, currentState, targetState) => {
         colors: currentBasicMaterialRecord.colors,
         /* TODO test */
         textureIndices: currentBasicMaterialRecord.textureIndices,
-        textureCounts: currentBasicMaterialRecord.textureCounts
+        mapUnits: currentBasicMaterialRecord.mapUnits
       })
   }
 };

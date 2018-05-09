@@ -61,7 +61,7 @@ let _detectPrecision = (gl, record) => {
 /* TODO checkout maxTextureUnit should >= textureCountPerBasicMaterial in settingRecord */
 let _getTextureCapabilty = (gl, record) => {
   ...record,
-  maxTextureUnit: gl |> getParameter(gl |> getMaxTextureImageUnits)
+  maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits))
 };
 
 let _detectCapabilty = (gl, record) =>

@@ -3,12 +3,12 @@ open Js.Typed_array;
 open BufferTextureService;
 
 let createTypeArrays = (buffer, count) => (
-  Float32Array.fromBufferRange(
+  Uint16Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getWidthsOffset(count),
     ~length=getWidthsLength(count)
   ),
-  Float32Array.fromBufferRange(
+  Uint16Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getHeightsOffset(count),
     ~length=getHeightsLength(count)

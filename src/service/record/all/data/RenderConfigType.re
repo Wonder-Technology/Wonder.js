@@ -3,15 +3,11 @@ type shaderMapData = {
   value: array(string)
 };
 
-type pass = {value: option(string)};
-
-type fail = {value: option(string)};
-
 type dynamicBranchData = {
   name: string,
   condition: string,
-  pass: array(pass),
-  fail: array(fail)
+  pass: option(string),
+  fail: option(string)
 };
 
 /* type shaderStaticBranch = {

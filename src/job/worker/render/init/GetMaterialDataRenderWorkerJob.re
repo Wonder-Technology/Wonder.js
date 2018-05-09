@@ -11,6 +11,8 @@ let execJob = (_, e, stateData) =>
           buffer: basicMaterialData##buffer,
           shaderIndices: None,
           colors: None,
+          textureIndices: None,
+          mapUnits: None,
           index: basicMaterialData##index,
           disposedIndexArray: basicMaterialData##disposedIndexArray,
           isSourceInstanceMap: basicMaterialData##isSourceInstanceMap

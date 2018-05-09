@@ -18,6 +18,7 @@ let createState = () => {
   perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
   basicMaterialRecord: None,
   lightMaterialRecord: None,
+  textureRecord: None,
   ambientLightRecord: RecordAmbientLightMainService.create(),
   directionLightRecord: RecordDirectionLightMainService.create(),
   pointLightRecord: RecordPointLightMainService.create(),

@@ -1,5 +1,3 @@
-open InitMaterialMaterialType;
-
 let _initMaterialShader =
     (
       gl,
@@ -11,7 +9,7 @@ let _initMaterialShader =
         getShaderLibItemsFunc,
         getMaterialShaderLibDataArrFunc
       ),
-      (materialRecord, renderConfigRecord, state)
+      (shaderIndices, renderConfigRecord, state)
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
   [@bs]
@@ -36,7 +34,7 @@ let _initMaterialShader =
       buildGLSLSourceFunc,
       state
     ),
-    materialRecord.shaderIndices
+    shaderIndices
   )
   |> ignore;
   state
@@ -46,7 +44,7 @@ let initMaterial = (gl, dataTuple, funcTuple, stateTuple) =>
   _initMaterialShader(gl, dataTuple, funcTuple, stateTuple);
 
 let init =
-    (gl, (isSourceInstanceMap, isSupportInstance), initMaterialFunc, (materialRecord, state)) => {
+    (gl, (isSourceInstanceMap, isSupportInstance), initMaterialFunc, (index, disposedIndexArray, state)) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -58,7 +56,7 @@ let init =
                 ~actual={j|do|j}
               ),
               () =>
-                DisposeMaterialService.isNotDisposed(materialRecord.disposedIndexArray)
+                DisposeMaterialService.isNotDisposed(disposedIndexArray)
                 |> assertTrue
             )
           )
@@ -66,7 +64,7 @@ let init =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  ArrayService.range(0, materialRecord.index - 1)
+  ArrayService.range(0, index - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
