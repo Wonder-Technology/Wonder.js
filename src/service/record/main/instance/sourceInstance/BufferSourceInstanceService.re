@@ -16,10 +16,14 @@ let getIsTransformStaticsLength = (sourceInstanceCount) =>
   sourceInstanceCount * getIsTransformStaticsSize();
 
 let getIsTransformStaticsOffset = (sourceInstanceCount, objectInstanceCountPerSourceInstance) =>
-  getObjectInstanceTransformCollectionsLength(
+  getObjectInstanceTransformCollectionsOffset(
     sourceInstanceCount,
     objectInstanceCountPerSourceInstance
   )
+  + getObjectInstanceTransformCollectionsLength(
+      sourceInstanceCount,
+      objectInstanceCountPerSourceInstance
+    )
   * Uint32Array._BYTES_PER_ELEMENT;
 
 let getObjectInstanceTransformCollectionsIndex =

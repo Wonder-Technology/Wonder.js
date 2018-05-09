@@ -289,7 +289,7 @@ let _ =
                            );
                       let state = state |> RenderJobsTool.init;
                       let state = state |> DirectorTool.runWithDefaultTime;
-                      vertexAttribPointer |> getCallCount |> expect == 1 * 1
+                      vertexAttribPointer |> getCallCount |> expect == 1
                     }
                   );
                   test(

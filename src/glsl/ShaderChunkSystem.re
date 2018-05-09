@@ -793,7 +793,21 @@ precision highp int;
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 |}))
 
-|> set("webgl1_basic_fragment", _buildChunk(({|
+|> set("webgl1_basic_end_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_FragColor = vec4(totalColor.rgb, totalColor.a);
+|}))
+
+|> set("webgl1_basic_color_fragment", _buildChunk(({|
 
 |},{|
 
@@ -807,18 +821,36 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 vec4 totalColor = vec4(u_color, 1.0);
 |}))
 
-|> set("webgl1_basic_end_fragment", _buildChunk(({|
+|> set("webgl1_basic_map_vertex", _buildChunk(({|
 
 |},{|
 
 |}),{|
-
+varying vec2 v_mapCoord0;
 |},({|
 
 |},{|
 
 |}),{|
-gl_FragColor = vec4(totalColor.rgb, totalColor.a);
+//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;
+//
+//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;
+
+    v_mapCoord0 = a_texCoord;
+|}))
+
+|> set("webgl1_basic_map_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec2 v_mapCoord0;
+|},({|
+
+|},{|
+
+|}),{|
+vec4 totalColor *= texture2D(u_sampler2D, v_mapCoord0);
 |}))
 
     };

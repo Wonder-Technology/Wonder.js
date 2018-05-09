@@ -26,6 +26,9 @@ let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
         },
         {
           "name": "init_light_material"
+        },
+        {
+          "name": "init_texture"
         }
         ]
     }
@@ -51,7 +54,10 @@ let buildNoWorkerInitJobConfigWithoutInitMain = () => {|
     },
     {
         "name": "init_light_material"
-    }
+    },
+        {
+          "name": "init_texture"
+        }
 ]
         |};
 
@@ -171,85 +177,92 @@ let buildNoWorkerJobConfig =
 }
 |},
       ~initPipelines={|
-[
-    {
-      "name": "default",
-      "jobs": [
-        {
-          "name": "create_canvas"
-        },
-        {
-          "name": "create_gl"
-        },
-        {
-          "name": "set_full_screen"
-        },
-        {
-          "name": "set_viewport"
-        },
-        {
-          "name": "detect_gl"
-        },
-        {
-          "name": "init_camera"
-        },
-        {
-          "name": "start_time"
-        },
-        {
-          "name": "preget_glslData"
-        },
-        {
-          "name": "init_state"
-        },
-        {
-          "name": "init_basic_material"
-        },
-        {
-          "name": "init_light_material"
-        }
-      ]
-    }
-  ]
-        |},
+         [
+             {
+               "name": "default",
+               "jobs": [
+                 {
+                   "name": "create_canvas"
+                 },
+                 {
+                   "name": "create_gl"
+                 },
+                 {
+                   "name": "set_full_screen"
+                 },
+                 {
+                   "name": "set_viewport"
+                 },
+                 {
+                   "name": "detect_gl"
+                 },
+                 {
+                   "name": "init_camera"
+                 },
+                 {
+                   "name": "start_time"
+                 },
+                 {
+                   "name": "preget_glslData"
+                 },
+                 {
+                   "name": "init_state"
+                 },
+                 {
+                   "name": "init_basic_material"
+                 },
+                 {
+                   "name": "init_light_material"
+                 },
+                 {
+                     "name":"init_texture"
+                 }
+               ]
+             }
+           ]
+                 |},
+      /* buildNoWorkerInitPipelineConfigWithoutInitMain(), */
       ~loopPipelines=buildNoWorkerLoopPipelineConfig(),
       ~initJobs={|
-[
-    {
-        "name": "create_canvas"
-    },
-    {
-        "name": "create_gl"
-    },
-    {
-        "name": "set_full_screen"
-    },
-    {
-        "name": "set_viewport"
-    },
-    {
-        "name": "detect_gl"
-    },
-    {
-        "name": "init_camera"
-    },
-    {
-        "name": "start_time"
-    },
-    {
-        "name": "preget_glslData"
-    },
-    {
-        "name": "init_state"
-    },
-    {
-        "name": "init_basic_material"
-    },
-    {
-        "name": "init_light_material"
-    }
-]
-        |},
+         [
+             {
+                 "name": "create_canvas"
+             },
+             {
+                 "name": "create_gl"
+             },
+             {
+                 "name": "set_full_screen"
+             },
+             {
+                 "name": "set_viewport"
+             },
+             {
+                 "name": "detect_gl"
+             },
+             {
+                 "name": "init_camera"
+             },
+             {
+                 "name": "start_time"
+             },
+             {
+                 "name": "preget_glslData"
+             },
+             {
+                 "name": "init_state"
+             },
+             {
+                 "name": "init_basic_material"
+             },
+             {
+                 "name": "init_light_material"
+             },
+             {
+                 "name": "init_texture"
+             }
+         ]
+                 |},
       ~loopJobs=buildNoWorkerLoopJobConfig(),
       ()
     ) => (

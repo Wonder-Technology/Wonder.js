@@ -17,6 +17,7 @@ let buildFakeGl = (sandbox) => {
   "HIGH_FLOAT": 2,
   "MEDIUM_FLOAT": 3,
   "viewport": createEmptyStub(refJsObjToSandbox(sandbox^)),
+  "getParameter": createEmptyStub(refJsObjToSandbox(sandbox^)),
   "getShaderPrecisionFormat":
     createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns({"precision": 1}),
   "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0))
@@ -84,6 +85,8 @@ let buildBufferConfigStr =
       ~transformDataBufferCount=50,
       ~basicMaterialDataBufferCount=50,
       ~lightMaterialDataBufferCount=50,
+      ~textureCountPerBasicMaterial=3,
+      ~textureDataBufferCount=50,
       ~sourceInstanceCount=2,
       ~objectInstanceCountPerSourceInstance=100,
       ()
@@ -93,9 +96,12 @@ let buildBufferConfigStr =
   "transform_data_buffer_count": $transformDataBufferCount,
   "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
   "light_material_data_buffer_count": $lightMaterialDataBufferCount,
+  "texture_data_buffer_count": $textureDataBufferCount,
+  "texture_count_per_basic_material": $textureCountPerBasicMaterial,
+
   "instanceBuffer": {
-    "sourceInstanceCount": $sourceInstanceCount,
-"objectInstanceCountPerSourceInstance": $objectInstanceCountPerSourceInstance
+    "sourceInstance_count": $sourceInstanceCount,
+"objectInstance_count_per_source_instance": $objectInstanceCountPerSourceInstance
   }
        }
         |j};

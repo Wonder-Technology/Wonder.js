@@ -11,15 +11,19 @@ let getMapUnitsSize = () => 1;
 let getColorsLength = (basicMaterialCount) => basicMaterialCount * getColorsSize();
 
 let getColorsOffset = (basicMaterialCount) =>
-  ShaderIndicesService.getShaderIndicesLength(basicMaterialCount) * Uint32Array._BYTES_PER_ELEMENT;
+  ShaderIndicesService.getShaderIndicesOffset(basicMaterialCount)
+  + ShaderIndicesService.getShaderIndicesLength(basicMaterialCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
 
 let getColorIndex = (index) => index * getColorsSize();
 
 let getTextureIndicesLength = (basicMaterialCount, textureCountPerBasicMaterial) =>
   basicMaterialCount * getTextureIndicesSize(textureCountPerBasicMaterial);
 
-let getTextureIndicesOffset = (basicMaterialCount) =>
-  getColorsLength(basicMaterialCount) * Float32Array._BYTES_PER_ELEMENT;
+let getTextureIndicesOffset = (basicMaterialCount, textureCountPerBasicMaterial) =>
+  getColorsOffset(basicMaterialCount)
+  + getColorsLength(basicMaterialCount)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getTextureIndicesIndex = (index, textureCountPerBasicMaterial) =>
   index * getTextureIndicesSize(textureCountPerBasicMaterial);
@@ -30,7 +34,8 @@ let getTextureIndexIndex = (index, textureIndex, textureCountPerBasicMaterial) =
 let getMapUnitsLength = (basicMaterialCount) => basicMaterialCount * getMapUnitsSize();
 
 let getMapUnitsOffset = (basicMaterialCount, textureCountPerBasicMaterial) =>
-  getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
+  getTextureIndicesOffset(basicMaterialCount, textureCountPerBasicMaterial)
+  + getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
   * Uint32Array._BYTES_PER_ELEMENT;
 
 let getMapUnitIndex = (index) => index * getMapUnitsSize();

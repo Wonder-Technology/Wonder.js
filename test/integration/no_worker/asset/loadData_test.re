@@ -113,7 +113,7 @@ let _ =
                 "parse job record and set to state",
                 () =>
                   testPromise(
-                    "test parse noWorker setting, init pipeline, noWorker pipeleint, init job, noWorker job",
+                    "test parse noWorker setting, init pipeline, noWorker pipeline, init job, noWorker job",
                     () => {
                       let fetchFunc = _buildFakeFetch(sandbox);
                       LoadDataTool.load(~jsonPathArr=[||], ~fetchFunc, ())
@@ -144,7 +144,8 @@ let _ =
                                                {name: "preget_glslData"},
                                                {name: "init_state"},
                                                {name: "init_basic_material"},
-                                               {name: "init_light_material"}
+                                               {name: "init_light_material"},
+                                               {name: "init_texture"}
                                              |]
                                            }
                                          |],
@@ -180,7 +181,8 @@ let _ =
                                            {name: "preget_glslData", flags: None},
                                            {name: "init_state", flags: None},
                                            {name: "init_basic_material", flags: None},
-                                           {name: "init_light_material", flags: None}
+                                           {name: "init_light_material", flags: None},
+                                           {name: "init_texture", flags: None}
                                          |],
                                          [|
                                            {name: "tick", flags: None},

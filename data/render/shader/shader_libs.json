@@ -117,10 +117,15 @@
       {
         "type": "vs",
         "name": "webgl1_basic_vertex"
-      },
+      }
+    ]
+  },
+  {
+    "name": "basic_color",
+    "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_basic_fragment"
+        "name": "webgl1_basic_color_fragment"
       }
     ],
     "variables": {

@@ -132,6 +132,8 @@ let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
 
 let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
 
+let getBoxGeometryTexCoords = BoxGeometryAPI.getBoxGeometryTexCoords;
+
 let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
 
 let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
@@ -147,6 +149,10 @@ let getCustomGeometryIndices = CustomGeometryAPI.getCustomGeometryIndices;
 let setCustomGeometryNormals = CustomGeometryAPI.setCustomGeometryNormals;
 
 let getCustomGeometryNormals = CustomGeometryAPI.getCustomGeometryNormals;
+
+let setCustomGeometryTexCoords = CustomGeometryAPI.setCustomGeometryTexCoords;
+
+let getCustomGeometryTexCoords = CustomGeometryAPI.getCustomGeometryTexCoords;
 
 let setCustomGeometryVertices = CustomGeometryAPI.setCustomGeometryVertices;
 

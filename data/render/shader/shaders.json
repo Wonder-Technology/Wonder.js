@@ -55,6 +55,9 @@
           "name": "basic"
         },
         {
+          "name": "basic_color"
+        },
+        {
           "type": "dynamic_branch",
           "name": "basic_map"
         },

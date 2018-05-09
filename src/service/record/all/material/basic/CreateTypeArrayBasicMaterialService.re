@@ -15,7 +15,7 @@ let createTypeArrays = (buffer, basicMaterialCount, textureCountPerBasicMaterial
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getTextureIndicesOffset(basicMaterialCount),
+    ~offset=getTextureIndicesOffset(basicMaterialCount, textureCountPerBasicMaterial),
     ~length=getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
   ),
   Uint8Array.fromBufferRange(

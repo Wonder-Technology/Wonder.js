@@ -17,8 +17,8 @@
         "basic_material_data_buffer_count": 3000,
         "light_material_data_buffer_count": 3000,
         "instanceBuffer": {
-            "sourceInstanceCount": 10,
-            "objectInstanceCountPerSourceInstance": 2000
+            "sourceInstance_count": 10,
+            "objectInstance_count_per_source_instance": 2000
         }
     },
     "worker": {

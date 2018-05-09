@@ -26,6 +26,13 @@ let buildRenderConfig =
       ]
     }
   ],
+  "dynamic_branchs": [
+    {
+      "name": "basic_map",
+      "condition": "basic_has_map",
+      "pass": "basic_map"
+    }
+  ],
   "groups": [
     {
       "name": "top",
@@ -55,6 +62,13 @@ let buildRenderConfig =
         },
         {
           "name": "basic"
+        },
+        {
+          "name": "basic_color"
+        },
+        {
+          "type": "dynamic_branch",
+          "name": "basic_map"
         },
         {
           "name": "basic_end"
@@ -251,10 +265,15 @@ let buildRenderConfig =
       {
         "type": "vs",
         "name": "webgl1_basic_vertex"
-      },
+      }
+    ]
+  },
+  {
+    "name": "basic_color",
+    "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_basic_fragment"
+        "name": "webgl1_basic_color_fragment"
       }
     ],
     "variables": {
@@ -263,6 +282,36 @@ let buildRenderConfig =
           "name": "u_color",
           "field": "color",
           "type": "float3",
+          "from": "basicMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "basic_map",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_basic_map_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_basic_map_fragment"
+      }
+    ],
+    "variables": {
+      "attributes": [
+        {
+          "name": "a_texCoord",
+          "buffer": "texCoord",
+          "type": "vec2"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "u_sampler2D",
+          "field": "map",
+          "type": "sampler2D",
           "from": "basicMaterial"
         }
       ]

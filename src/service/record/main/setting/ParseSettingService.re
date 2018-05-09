@@ -32,16 +32,16 @@ let convertToRecord = (setting) => {
                transformDataBufferCount: json |> field("transform_data_buffer_count", int),
                basicMaterialDataBufferCount: json |> field("basic_material_data_buffer_count", int),
                lightMaterialDataBufferCount: json |> field("light_material_data_buffer_count", int),
-               textureCountPerBasicMaterial: json |> field("textureCountPerBasicMaterial", int),
-               textureDataBufferCount: json |> field("textureDataBufferCount", int),
+               textureCountPerBasicMaterial: json |> field("texture_count_per_basic_material", int),
+               textureDataBufferCount: json |> field("texture_data_buffer_count", int),
                instanceBuffer:
                  json
                  |> field(
                       "instanceBuffer",
                       (json) => {
-                        sourceInstanceCount: json |> field("sourceInstanceCount", int),
+                        sourceInstanceCount: json |> field("sourceInstance_count", int),
                         objectInstanceCountPerSourceInstance:
-                          json |> field("objectInstanceCountPerSourceInstance", int)
+                          json |> field("objectInstance_count_per_source_instance", int)
                       }
                     )
              }

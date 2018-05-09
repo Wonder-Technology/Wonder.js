@@ -14,8 +14,8 @@
         "basic_material_data_buffer_count": 30000,
         "light_material_data_buffer_count": 30000,
         "instanceBuffer": {
-            "sourceInstanceCount": 410,
-            "objectInstanceCountPerSourceInstance": 2100
+            "sourceInstance_count": 410,
+            "objectInstance_count_per_source_instance": 2100
         }
     },
     "gpu": {

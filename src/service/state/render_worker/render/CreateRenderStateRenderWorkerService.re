@@ -94,9 +94,8 @@ let createRenderState =
     basicMaterialRecord: {
       shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       colors: basicMaterialRecord.colors |> OptionService.unsafeGet,
-      /* TODO finish */
-      textureIndices: Obj.magic(1),
-      mapUnits: Obj.magic(1)
+      textureIndices: basicMaterialRecord.textureIndices |> OptionService.unsafeGet,
+      mapUnits: RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state)
     },
     lightMaterialRecord: {
       shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
