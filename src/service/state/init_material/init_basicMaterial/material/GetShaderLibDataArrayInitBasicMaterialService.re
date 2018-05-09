@@ -1,4 +1,5 @@
-open StateRenderType;
+/* TODO refactor: duplicate with GetShaderLibDataArrayInitLightMaterialService */
+open StateInitBasicMaterialType;
 
 open RenderConfigType;
 
@@ -47,8 +48,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
       resultDataArr
     ) =>
   switch name {
-  | "modelMatrix_instance"
-  | "normalMatrix_instance" =>
+  | "modelMatrix_instance" =>
     let {value} =
       JobConfigService.unsafeFindFirst(
         staticBranchs,
@@ -76,9 +76,14 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     )
   };
 
-let _isPass = (materialIndex, condition, state) =>
+let _isPass = (materialIndex, condition, {materialRecord} as state) =>
   switch condition {
-  | "basic_has_map" => MapManagerRenderService.getMapCount(materialIndex, state) === 1
+  | "basic_has_map" =>
+    TextureCountMapBasicMaterialService.unsafeGetCount(
+      materialIndex,
+      materialRecord.textureCountMap
+    )
+    > 0
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

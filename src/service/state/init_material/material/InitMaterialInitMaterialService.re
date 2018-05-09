@@ -1,12 +1,16 @@
-open StateInitBasicMaterialType;
-
 open InitMaterialMaterialType;
 
 let _initMaterialShader =
     (
       gl,
       (materialIndex: int, isSourceInstance, isSupportInstance),
-      (initMaterialShaderFunc, buildGLSLSourceFunc, setShaderIndexFunc, getShaderLibItemsFunc),
+      (
+        initMaterialShaderFunc,
+        buildGLSLSourceFunc,
+        setShaderIndexFunc,
+        getShaderLibItemsFunc,
+        getMaterialShaderLibDataArrFunc
+      ),
       (materialRecord, renderConfigRecord, state)
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
@@ -17,7 +21,8 @@ let _initMaterialShader =
       materialIndex,
       (
         gl,
-        GetDataRenderConfigService.getMaterialShaderLibDataArr(
+        [@bs]
+        getMaterialShaderLibDataArrFunc(
           materialIndex,
           (isSourceInstance, isSupportInstance),
           (

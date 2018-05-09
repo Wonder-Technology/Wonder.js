@@ -18,8 +18,12 @@ let setTextureIndex = ((index, textureIndex, textureCountPerBasicMaterial), data
     typeArr
   );
 
-let getTextureCount = (index, typeArr) =>
-  TypeArrayService.getUInt8_1(getTextureCountIndex(index), typeArr);
+/* let getTextureCount = (index, typeArr) =>
+     TypeArrayService.getUInt8_1(getTextureCountIndex(index), typeArr);
 
-let setTextureCount = (index, data, typeArr) =>
-  TypeArrayService.setUInt8_1(getTextureCountIndex(index), data, typeArr);
+   let setTextureCount = (index, data, typeArr) =>
+     TypeArrayService.setUInt8_1(getTextureCountIndex(index), data, typeArr); */
+let getMapUnit = (index, typeArr) => TypeArrayService.getUInt8_1(getMapUnitIndex(index), typeArr);
+
+let setMapUnit = (index, data, typeArr) =>
+  TypeArrayService.setUInt8_1(getMapUnitIndex(index), data, typeArr);

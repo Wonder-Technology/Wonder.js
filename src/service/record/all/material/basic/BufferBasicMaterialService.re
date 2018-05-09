@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let getDefaultTextureCount = () => 0;
+let getDefaultUnit = () => 255;
 
 let getShaderIndicesSize = () => 1;
 
@@ -8,7 +8,7 @@ let getColorsSize = () => 3;
 
 let getTextureIndicesSize = (textureCountPerBasicMaterial) => textureCountPerBasicMaterial;
 
-let getTextureCountsSize = () => 1;
+let getMapUnitsSize = () => 1;
 
 let getColorsLength = (basicMaterialCount) => basicMaterialCount * getColorsSize();
 
@@ -29,13 +29,13 @@ let getTextureIndicesIndex = (index, textureCountPerBasicMaterial) =>
 let getTextureIndexIndex = (index, textureIndex, textureCountPerBasicMaterial) =>
   getTextureIndicesIndex(index, textureCountPerBasicMaterial) + textureIndex;
 
-let getTextureCountsLength = (basicMaterialCount) => basicMaterialCount * getTextureCountsSize();
+let getMapUnitsLength = (basicMaterialCount) => basicMaterialCount * getMapUnitsSize();
 
-let getTextureCountsOffset = (basicMaterialCount, textureCountPerBasicMaterial) =>
+let getMapUnitsOffset = (basicMaterialCount, textureCountPerBasicMaterial) =>
   getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
   * Uint32Array._BYTES_PER_ELEMENT;
 
-let getTextureCountIndex = (index) => index * getTextureCountsSize();
+let getMapUnitIndex = (index) => index * getMapUnitsSize();
 
 let getTotalByteLength = (basicMaterialCount, textureCountPerBasicMaterial) =>
   basicMaterialCount
@@ -47,7 +47,7 @@ let getTotalByteLength = (basicMaterialCount, textureCountPerBasicMaterial) =>
     + Uint32Array._BYTES_PER_ELEMENT
     * getTextureIndicesSize(textureCountPerBasicMaterial)
     + Uint8Array._BYTES_PER_ELEMENT
-    * getTextureCountsSize()
+    * getMapUnitsSize()
   );
 
 let createBuffer = (basicMaterialCount, textureCountPerBasicMaterial) =>

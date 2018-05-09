@@ -91,6 +91,11 @@ let update = (gl, texture, {textureRecord} as state) => {
       texture,
       BufferTextureService.getNotNeedUpdate(),
       isNeedUpdates
-    ) |> ignore;
+    )
+    |> ignore;
+    state
   }
 };
+
+let isNeedUpdate = (texture, {textureRecord}) =>
+  OperateTypeArrayTextureService.getIsNeedUpdate(texture, textureRecord.isNeedUpdates);

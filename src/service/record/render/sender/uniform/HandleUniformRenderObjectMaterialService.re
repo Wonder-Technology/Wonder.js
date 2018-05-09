@@ -54,7 +54,8 @@ let addUniformTextureSendDataByType =
          shaderCacheMap,
          name,
          pos,
-         sendDataFunc: SendTextureRenderService.sendData |> Obj.magic,
+         /* sendDataFunc: SendTextureRenderService.sendData |> Obj.magic, */
+         sendDataFunc: SendGLSLDataService.sendInt |> Obj.magic,
          getDataFunc: getDataFunc |> Obj.magic
        }: uniformRenderObjectSendMaterialData
      ),

@@ -10,7 +10,7 @@ let addBasicMaterialSendData = ((field, pos, name, type_, uniformCacheMap), send
     HandleUniformRenderObjectMaterialService.addUniformTextureSendDataByType(
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
-      GetBasicMaterialDataRenderService.getMap
+      GetBasicMaterialDataRenderService.getMapUnit
     )
   | _ =>
     WonderLog.Log.fatal(

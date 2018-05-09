@@ -17,21 +17,21 @@ let setDefaultTypeArrData =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (shaderIndices, colors, textureIndices, textureCounts)
+      (shaderIndices, colors, textureIndices, mapUnits)
     ) => {
-  let defaultTextureCount = getDefaultTextureCount();
+  let defaultUnit = getDefaultUnit();
   WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         ((shaderIndices, colors, textureIndices, textureCounts), index) => (
+         ((shaderIndices, colors, textureIndices, mapUnits), index) => (
            [@bs] ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
            setColor(index, defaultColor, colors),
            textureIndices,
-           setTextureCount(index, defaultTextureCount, textureCounts)
+           setMapUnit(index, defaultUnit, mapUnits)
          )
        ),
-       (shaderIndices, colors, textureIndices, textureCounts)
+       (shaderIndices, colors, textureIndices, mapUnits)
      )
 };
 
@@ -40,37 +40,37 @@ let _setDefaultTypeArrData =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (buffer, shaderIndices, colors, textureIndices, textureCounts)
+      (buffer, shaderIndices, colors, textureIndices, mapUnits)
     ) => (
   buffer,
   setDefaultTypeArrData(
     basicMaterialCount,
     defaultShaderIndex,
     defaultColor,
-    (shaderIndices, colors)
+    (shaderIndices, colors, textureIndices, mapUnits )
   )
 );
 
 let _initBufferData =
     (basicMaterialCount, textureCountPerBasicMaterial, defaultShaderIndex, defaultColor) => {
   let buffer = createBuffer(basicMaterialCount);
-  let (shaderIndices, colors, textureIndices, textureCounts) =
+  let (shaderIndices, colors, textureIndices, mapUnits) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
       textureCountPerBasicMaterial
     );
-  (buffer, shaderIndices, colors, textureIndices, textureCounts)
+  (buffer, shaderIndices, colors, textureIndices, mapUnits)
   |> _setDefaultTypeArrData(basicMaterialCount, defaultShaderIndex, defaultColor)
 };
 
 let create = ({settingRecord} as state) => {
   let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultColor = [|1., 1., 1.|];
-  let (buffer, (shaderIndices, colors, textureIndices, textureCounts)) =
+  let (buffer, (shaderIndices, colors, textureIndices, mapUnits)) =
     _initBufferData(
       BufferSettingService.getBasicMaterialDataBufferCount(settingRecord),
-      BufferSettingService.getTextureCountPerBasicMaterial(settingRecord),
+      BufferSettingService.getMapUnitPerBasicMaterial(settingRecord),
       defaultShaderIndex,
       defaultColor
     );
@@ -81,10 +81,10 @@ let create = ({settingRecord} as state) => {
       shaderIndices,
       colors,
       textureIndices,
-      textureCounts,
+      mapUnits,
       defaultShaderIndex,
       defaultColor,
-      mapTextureIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
+      textureCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -100,9 +100,10 @@ let deepCopyForRestore = (state) => {
         shaderIndices,
         colors,
         textureIndices,
-        textureCounts,
+        mapUnits,
         defaultShaderIndex,
         defaultColor,
+        textureCountMap,
         groupCountMap,
         gameObjectMap,
         disposedIndexArray,
@@ -118,7 +119,7 @@ let deepCopyForRestore = (state) => {
         shaderIndices:
           shaderIndices
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(index * getShaderIndicesSize()),
-          /* TODO test */
+        /* TODO test */
         colors:
           colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
         textureIndices:
@@ -126,16 +127,16 @@ let deepCopyForRestore = (state) => {
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
                index
                * getTextureIndicesSize(
-                   BufferSettingService.getTextureCountPerBasicMaterial(settingRecord)
+                   BufferSettingService.getMapUnitPerBasicMaterial(settingRecord)
                  )
              ),
-        textureCounts:
-          textureCounts
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getTextureCountsSize()),
+        mapUnits:
+          mapUnits
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
         defaultShaderIndex,
         defaultColor,
-          /* TODO test */
-        mapTextureIndexMap: mapTextureIndexMap |> SparseMapService.copy,
+        /* TODO test */
+        textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,

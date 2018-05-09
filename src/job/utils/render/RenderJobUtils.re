@@ -146,7 +146,7 @@ let render =
       record.lastSendMaterial = Some(materialIndex);
       state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
     };
-  state
+  state |> BindAndUpdateMapBasicMaterialRenderService.bindAndUpdate(gl, materialIndex)
 };
 
 let draw = (gl, geometryIndex, geometryType, state) => {
