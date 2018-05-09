@@ -21,3 +21,6 @@ let getObjectInstanceCountPerSourceInstance = (record) =>
 
 let getTextureCountPerBasicMaterial = (record) =>
   (record |> unsafeGetBuffer).textureCountPerBasicMaterial;
+
+let getTextureDataBufferCount = (record) =>
+  (record |> unsafeGetBuffer).textureDataBufferCount;

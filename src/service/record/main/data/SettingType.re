@@ -24,6 +24,7 @@ type buffer = {
   basicMaterialDataBufferCount: int,
   lightMaterialDataBufferCount: int,
   textureCountPerBasicMaterial: int,
+  textureDataBufferCount: int,
   instanceBuffer
 };
 

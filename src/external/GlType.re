@@ -6,6 +6,10 @@ type shader;
 
 type buffer;
 
+type texture;
+
+type textureSource;
+
 type attributeLocation = int;
 
 type uniformLocation;
