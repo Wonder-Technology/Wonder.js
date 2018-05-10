@@ -20,7 +20,7 @@ let createGameObjectWithMaterial = (material, state) => {
   (state, gameObject, material)
 };
 
-let getDefaultShaderIndex = (state) => getRecord(state).defaultShaderIndex;
+let getDefaultShaderIndex = (state) => DefaultTypeArrayValueService.getDefaultShaderIndex();
 
 let getDefaultDiffuseColor = (state) => getRecord(state).defaultDiffuseColor;
 

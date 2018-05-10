@@ -15,7 +15,6 @@ let _disposeData =
         diffuseColors,
         specularColors,
         shininess,
-        defaultShaderIndex,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
@@ -27,7 +26,7 @@ let _disposeData =
     DisposeMaterialService.disposeData(
       material,
       (shaderIndices, groupCountMap, gameObjectMap),
-      defaultShaderIndex
+      DefaultTypeArrayValueService.getDefaultShaderIndex()
     );
   {
     ...record,

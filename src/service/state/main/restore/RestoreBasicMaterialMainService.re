@@ -3,15 +3,18 @@ open StateDataMainType;
 open BasicMaterialType;
 
 let _resetShaderIndices = (state) => {
-  let {index, shaderIndices, defaultShaderIndex} as record =
-    RecordBasicMaterialMainService.getRecord(state);
+  let {index, shaderIndices} as record = RecordBasicMaterialMainService.getRecord(state);
   {
     ...state,
     basicMaterialRecord:
       Some({
         ...record,
         shaderIndices:
-          RestoreMaterialService.resetShaderIndices(index, defaultShaderIndex, shaderIndices)
+          RestoreMaterialService.resetShaderIndices(
+            index,
+            DefaultTypeArrayValueService.getDefaultShaderIndex(),
+            shaderIndices
+          )
       })
   }
 };
@@ -32,7 +35,7 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
         )
         |> RecordBasicMaterialMainService.setDefaultTypeArrData(
              currentBasicMaterialRecord.index,
-             currentBasicMaterialRecord.defaultShaderIndex,
+             DefaultTypeArrayValueService.getDefaultShaderIndex(),
              currentBasicMaterialRecord.defaultColor
            );
       TypeArrayService.fillUint32ArrayWithUint32Array(

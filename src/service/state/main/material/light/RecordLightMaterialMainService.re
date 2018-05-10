@@ -61,7 +61,6 @@ let _initBufferData =
 let create = ({settingRecord} as state) => {
   let lightMaterialDataBufferCount =
     BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
-  /* let defaultShaderIndex = 0; */
   let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultDiffuseColor = [|1., 1., 1.|];
   let defaultSpecularColor = [|1., 1., 1.|];
@@ -79,7 +78,6 @@ let create = ({settingRecord} as state) => {
       diffuseColors,
       specularColors,
       shininess,
-      defaultShaderIndex,
       defaultDiffuseColor,
       defaultSpecularColor,
       defaultShininess,
@@ -98,7 +96,6 @@ let deepCopyForRestore = (state) => {
         diffuseColors,
         specularColors,
         shininess,
-        defaultShaderIndex,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
@@ -126,7 +123,6 @@ let deepCopyForRestore = (state) => {
         shininess:
           shininess
           |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getShininessSize()),
-        defaultShaderIndex,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,

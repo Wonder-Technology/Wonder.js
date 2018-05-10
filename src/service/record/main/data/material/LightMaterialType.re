@@ -9,7 +9,6 @@ type lightMaterialRecord = {
   diffuseColors: Js.Typed_array.Float32Array.t,
   specularColors: Js.Typed_array.Float32Array.t,
   shininess: Js.Typed_array.Float32Array.t,
-  defaultShaderIndex: int,
   defaultDiffuseColor: array(float),
   defaultSpecularColor: array(float),
   defaultShininess: float,

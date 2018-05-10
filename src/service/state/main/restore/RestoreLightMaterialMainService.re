@@ -3,15 +3,18 @@ open StateDataMainType;
 open LightMaterialType;
 
 let _resetShaderIndices = (state) => {
-  let {index, shaderIndices, defaultShaderIndex} as record =
-    RecordLightMaterialMainService.getRecord(state);
+  let {index, shaderIndices} as record = RecordLightMaterialMainService.getRecord(state);
   {
     ...state,
     lightMaterialRecord:
       Some({
         ...record,
         shaderIndices:
-          RestoreMaterialService.resetShaderIndices(index, defaultShaderIndex, shaderIndices)
+          RestoreMaterialService.resetShaderIndices(
+            index,
+            DefaultTypeArrayValueService.getDefaultShaderIndex(),
+            shaderIndices
+          )
       })
   }
 };
@@ -32,7 +35,7 @@ let _restoreTypeArrays = (currentLightMaterialRecord, targetLightMaterialRecord)
         |> RecordLightMaterialMainService.setDefaultTypeArrData(
              currentLightMaterialRecord.index,
              (
-               currentLightMaterialRecord.defaultShaderIndex,
+               DefaultTypeArrayValueService.getDefaultShaderIndex(),
                currentLightMaterialRecord.defaultDiffuseColor,
                currentLightMaterialRecord.defaultSpecularColor,
                currentLightMaterialRecord.defaultShininess

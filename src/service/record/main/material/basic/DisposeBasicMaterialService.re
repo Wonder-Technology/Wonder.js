@@ -8,15 +8,12 @@ let isAlive = (material, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(material, disposedIndexArray);
 
 let _disposeData =
-    (
-      material,
-      {shaderIndices, colors, defaultShaderIndex, defaultColor, groupCountMap, gameObjectMap} as record
-    ) => {
+    (material, {shaderIndices, colors, defaultColor, groupCountMap, gameObjectMap} as record) => {
   let (shaderIndices, groupCountMap, gameObjectMap) =
     DisposeMaterialService.disposeData(
       material,
       (shaderIndices, groupCountMap, gameObjectMap),
-      defaultShaderIndex
+      DefaultTypeArrayValueService.getDefaultShaderIndex()
     );
   {
     ...record,
