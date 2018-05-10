@@ -1,5 +1,5 @@
 {
-    "is_debug": false,
+    "is_debug": true,
     "context": {
         "alpha": true,
         "depth": true,
@@ -13,6 +13,8 @@
         "transform_data_buffer_count": 30000,
         "basic_material_data_buffer_count": 30000,
         "light_material_data_buffer_count": 30000,
+        "texture_data_buffer_count": 30000,
+        "texture_count_per_basic_material": 16,
         "instanceBuffer": {
             "sourceInstance_count": 410,
             "objectInstance_count_per_source_instance": 2100

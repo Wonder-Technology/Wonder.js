@@ -89,6 +89,28 @@ var BasicBoxesTool = (function () {
 
             return [state, obj];
         },
+
+        createBoxWithMap: function (source, state) {
+            var record = BasicBoxesTool.createBox(state);
+            var state = record[0];
+            var obj = record[1];
+
+
+            var material = wd.unsafeGetGameObjectBasicMaterialComponent(obj, state);
+
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture = record[1];
+
+            var state = wd.setTextureSource(texture, source, state);
+
+
+            var state = wd.setBasicMaterialMap(material, texture, state);
+            return [state, obj];
+        },
+
+
+
         createBoxesByClone: function (count, state) {
             var boxes = [];
 

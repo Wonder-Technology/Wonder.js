@@ -296,7 +296,7 @@ let _ =
                             GLSLTool.getFsSource(shaderSource),
                             [
                               {|varying vec2 v_mapCoord0;|},
-                              {|vec4 totalColor *= texture2D(u_sampler2D, v_mapCoord0);|}
+                              {|totalColor *= texture2D(u_sampler2D, v_mapCoord0);|}
                             ]
                           )
                           |> expect == true

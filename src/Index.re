@@ -232,6 +232,10 @@ let loadToData = LoaderManagerAPI.loadToData;
 
 let load = LoaderManagerAPI.load;
 
+let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
+
+let getBasicMaterialMap = BasicMaterialAPI.getBasicMaterialMap;
+
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
@@ -315,6 +319,20 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let setTextureHeight = TextureAPI.setTextureHeight;
+
+let getTextureHeight = TextureAPI.getTextureHeight;
+
+let setTextureWidth = TextureAPI.setTextureWidth;
+
+let getTextureWidth = TextureAPI.getTextureWidth;
+
+let setTextureSource = TextureAPI.setTextureSource;
+
+let unsafeGetTextureSource = TextureAPI.unsafeGetTextureSource;
+
+let createTexture = TextureAPI.createTexture;
 
 let getFps = TimeControllerAPI.getFps;
 
@@ -547,6 +565,20 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let setTextureHeight = TextureAPI.setTextureHeight;
+
+let getTextureHeight = TextureAPI.getTextureHeight;
+
+let setTextureWidth = TextureAPI.setTextureWidth;
+
+let getTextureWidth = TextureAPI.getTextureWidth;
+
+let setTextureSource = TextureAPI.setTextureSource;
+
+let unsafeGetTextureSource = TextureAPI.unsafeGetTextureSource;
+
+let createTexture = TextureAPI.createTexture;
 
 let getFps = TimeControllerAPI.getFps;
 
