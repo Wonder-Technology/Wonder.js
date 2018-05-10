@@ -36,6 +36,7 @@ let _ =
                      FakeGlWorkerTool.buildFakeGl(~sandbox, ())
                    );
               WorkerJobWorkerTool.execRenderWorkerJob(
+                ~e=Some({"data": {"bufferData": {"textureCountPerMaterial": 16}}}),
                 ~execJobFunc=DetectGlRenderWorkerJob.execJob,
                 ~completeFunc=
                   (state) => {

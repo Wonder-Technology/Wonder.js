@@ -4,5 +4,8 @@ let execJob = (_, state) => {
   ...state,
   gpuDetectRecord:
     state.gpuDetectRecord
-    |> GPUDetectService.detect([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord))
+    |> GPUDetectService.detect(
+         [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+         BufferSettingService.getTextureCountPerBasicMaterial(state.settingRecord)
+       )
 };

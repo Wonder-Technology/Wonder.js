@@ -163,7 +163,7 @@ let createRenderState =
           objectInstanceCountPerSourceInstance:
             BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
         }),
-      textureCountPerBasicMaterial:
+      textureCountPerMaterial:
         Some(BufferSettingService.getTextureCountPerBasicMaterial(settingRecord))
     },
     workerDetectRecord: {isUseWorker: isUseWorker}

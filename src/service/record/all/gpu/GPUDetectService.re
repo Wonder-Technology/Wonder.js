@@ -58,16 +58,30 @@ let _detectPrecision = (gl, record) => {
   }
 };
 
-/* TODO checkout maxTextureUnit should >= textureCountPerBasicMaterial in settingRecord */
-let _getTextureCapability = (gl, record) => {
-  ...record,
-  maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits))
-};
+let _getTextureCapability = (gl, textureCountPerMaterial, record) =>
+  {...record, maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits))}
+  |> WonderLog.Contract.ensureCheck(
+       ({maxTextureUnit}) => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+         let maxTextureUnit = maxTextureUnit |> OptionService.unsafeGet;
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|maxTextureUnit:$maxTextureUnit >= textureCountPerMaterial:$textureCountPerMaterial|j},
+             ~actual={j|not|j}
+           ),
+           () => maxTextureUnit >= textureCountPerMaterial
+         )
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     );
 
-let _detectCapability = (gl, record) =>
-  record |> _getTextureCapability(gl) |> _detectPrecision(gl);
+let _detectCapability = (gl, textureCountPerMaterial, record) =>
+  record |> _getTextureCapability(gl, textureCountPerMaterial) |> _detectPrecision(gl);
 
-let detect = (gl, record) => record |> _detectExtension(gl) |> _detectCapability(gl);
+let detect = (gl, textureCountPerMaterial, record) =>
+  record |> _detectExtension(gl) |> _detectCapability(gl, textureCountPerMaterial);
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 

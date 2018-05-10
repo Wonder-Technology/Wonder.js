@@ -23,7 +23,7 @@ type buffer = {
   transformDataBufferCount: int,
   basicMaterialDataBufferCount: int,
   lightMaterialDataBufferCount: int,
-  textureCountPerBasicMaterial: int,
+  textureCountPerMaterial: int,
   textureDataBufferCount: int,
   instanceBuffer
 };

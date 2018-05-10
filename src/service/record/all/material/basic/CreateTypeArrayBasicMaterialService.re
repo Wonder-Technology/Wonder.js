@@ -2,7 +2,7 @@ open Js.Typed_array;
 
 open BufferBasicMaterialService;
 
-let createTypeArrays = (buffer, basicMaterialCount, textureCountPerBasicMaterial) => (
+let createTypeArrays = (buffer, basicMaterialCount, textureCountPerMaterial) => (
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=ShaderIndicesService.getShaderIndicesOffset(basicMaterialCount),
@@ -15,12 +15,12 @@ let createTypeArrays = (buffer, basicMaterialCount, textureCountPerBasicMaterial
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getTextureIndicesOffset(basicMaterialCount, textureCountPerBasicMaterial),
-    ~length=getTextureIndicesLength(basicMaterialCount, textureCountPerBasicMaterial)
+    ~offset=getTextureIndicesOffset(basicMaterialCount, textureCountPerMaterial),
+    ~length=getTextureIndicesLength(basicMaterialCount, textureCountPerMaterial)
   ),
   Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getMapUnitsOffset(basicMaterialCount, textureCountPerBasicMaterial),
+    ~offset=getMapUnitsOffset(basicMaterialCount, textureCountPerMaterial),
     ~length=getMapUnitsLength(basicMaterialCount)
   )
 );

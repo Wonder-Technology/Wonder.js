@@ -68,24 +68,54 @@ let _ =
         () => {
           describe(
             "detect texture capability",
-            () =>
+            () => {
+              let _prepare = () => {
+                open GPUDetectType;
+                let (_, fakeGl, _, _) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
+                let maxTextureImageUnits = 4;
+                let fakeGl =
+                  fakeGl |> _setFakeGlData("MAX_TEXTURE_IMAGE_UNITS", maxTextureImageUnits);
+                let maxTextureUnit = 16;
+                fakeGl##getParameter
+                |> withOneArg(maxTextureImageUnits)
+                |> returns(maxTextureUnit)
+                |> ignore;
+                (maxTextureUnit, fakeGl)
+              };
               test(
                 "detect max texture unit",
                 () => {
-                  open GPUDetectType;
-                  let (_, fakeGl, _, _) = SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
-                  let maxTextureImageUnits = 4;
-                  let fakeGl =
-                    fakeGl |> _setFakeGlData("MAX_TEXTURE_IMAGE_UNITS", maxTextureImageUnits);
-                  let maxTextureUnit = 16;
-                  fakeGl##getParameter
-                  |> withOneArg(maxTextureImageUnits)
-                  |> returns(maxTextureUnit)
-                  |> ignore;
+                  let (maxTextureUnit, fakeGl) = _prepare();
                   let state = _exec(fakeGl);
                   GPUDetectTool.getRecord(state).maxTextureUnit |> expect == Some(maxTextureUnit)
                 }
+              );
+              describe(
+                "contract check",
+                () =>
+                  test(
+                    "maxTextureUnit should >= textureCountPerMaterial",
+                    () => {
+                      let (maxTextureUnit, fakeGl) = _prepare();
+                      expect(
+                        () =>
+                          TestTool.initWithJobConfigWithoutBuildFakeDom(
+                            ~sandbox,
+                            ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
+                            ~buffer=
+                              SettingTool.buildBufferConfigStr(~textureCountPerMaterial=17, ()),
+                            ()
+                          )
+                          |> FakeGlTool.setFakeGl(fakeGl)
+                          |> DirectorTool.init
+                      )
+                      |> toThrowMessage(
+                           "expect maxTextureUnit:16 >= textureCountPerMaterial:17, but actual not"
+                         )
+                    }
+                  )
               )
+            }
           );
           describe(
             "detect precision",

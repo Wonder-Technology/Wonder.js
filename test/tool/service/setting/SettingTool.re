@@ -81,7 +81,7 @@ let buildBufferConfigStr =
       ~transformDataBufferCount=50,
       ~basicMaterialDataBufferCount=50,
       ~lightMaterialDataBufferCount=50,
-      ~textureCountPerBasicMaterial=3,
+      ~textureCountPerMaterial=3,
       ~textureDataBufferCount=50,
       ~sourceInstanceCount=2,
       ~objectInstanceCountPerSourceInstance=100,
@@ -93,7 +93,7 @@ let buildBufferConfigStr =
   "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
   "light_material_data_buffer_count": $lightMaterialDataBufferCount,
   "texture_data_buffer_count": $textureDataBufferCount,
-  "texture_count_per_basic_material": $textureCountPerBasicMaterial,
+  "texture_count_per_material": $textureCountPerMaterial,
 
   "instanceBuffer": {
     "sourceInstance_count": $sourceInstanceCount,

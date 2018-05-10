@@ -27,7 +27,7 @@ let execMainWorkerJob = (~execJobFunc, ~completeFunc, ~flag=Some([|""|]), ()) =>
   |> then_(() => completeFunc(MainStateTool.unsafeGetState()));
 
 let execRenderWorkerJob =
-    (~execJobFunc, ~completeFunc, ~e=Some({"data": {}}), ~flag=Some([|""|]), ()) =>
+    (~execJobFunc, ~completeFunc, ~e=Some({"data": Obj.magic(1)}), ~flag=Some([|""|]), ()) =>
   execJobFunc(flag, e, RenderWorkerStateTool.getStateData())
   |> Most.drain
   |> then_(() => completeFunc(RenderWorkerStateTool.unsafeGetState()));

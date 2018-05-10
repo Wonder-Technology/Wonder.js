@@ -52,13 +52,13 @@ let _setDefaultTypeArrData =
 );
 
 let _initBufferData =
-    (basicMaterialCount, textureCountPerBasicMaterial, defaultShaderIndex, defaultColor) => {
-  let buffer = createBuffer(basicMaterialCount, textureCountPerBasicMaterial);
+    (basicMaterialCount, textureCountPerMaterial, defaultShaderIndex, defaultColor) => {
+  let buffer = createBuffer(basicMaterialCount, textureCountPerMaterial);
   let (shaderIndices, colors, textureIndices, mapUnits) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
-      textureCountPerBasicMaterial
+      textureCountPerMaterial
     );
   (buffer, shaderIndices, colors, textureIndices, mapUnits)
   |> _setDefaultTypeArrData(basicMaterialCount, defaultShaderIndex, defaultColor)

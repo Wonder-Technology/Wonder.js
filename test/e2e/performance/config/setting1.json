@@ -14,7 +14,7 @@
         "basic_material_data_buffer_count": 30000,
         "light_material_data_buffer_count": 30000,
         "texture_data_buffer_count": 30000,
-        "texture_count_per_basic_material": 16,
+        "texture_count_per_material": 16,
         "instanceBuffer": {
             "sourceInstance_count": 410,
             "objectInstance_count_per_source_instance": 2100
