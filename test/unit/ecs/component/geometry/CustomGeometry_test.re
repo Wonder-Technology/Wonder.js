@@ -365,17 +365,17 @@ let _ =
                                   let {verticesInfos, texCoordsInfos, normalsInfos, indicesInfos} =
                                     state |> CustomGeometryTool.getRecord;
                                   (
-                                    verticesInfos |> Uint8Array.slice(~start=0, ~end_=6),
-                                    texCoordsInfos |> Uint8Array.slice(~start=0, ~end_=6),
-                                    normalsInfos |> Uint8Array.slice(~start=0, ~end_=6),
-                                    indicesInfos |> Uint8Array.slice(~start=0, ~end_=6)
+                                    verticesInfos |> Uint32Array.slice(~start=0, ~end_=6),
+                                    texCoordsInfos |> Uint32Array.slice(~start=0, ~end_=6),
+                                    normalsInfos |> Uint32Array.slice(~start=0, ~end_=6),
+                                    indicesInfos |> Uint32Array.slice(~start=0, ~end_=6)
                                   )
                                   |>
                                   expect == (
-                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|]),
-                                              Uint8Array.make([|0, 2, 0, 2, 2, 4|]),
-                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|]),
-                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|])
+                                              Uint32Array.make([|0, 3, 0, 3, 3, 6|]),
+                                              Uint32Array.make([|0, 2, 0, 2, 2, 4|]),
+                                              Uint32Array.make([|0, 3, 0, 3, 3, 6|]),
+                                              Uint32Array.make([|0, 3, 0, 3, 3, 6|])
                                             )
                                 }
                               )

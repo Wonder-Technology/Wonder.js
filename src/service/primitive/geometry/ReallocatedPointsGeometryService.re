@@ -6,8 +6,8 @@ open TypeArrayService;
 
 let getInfo = (infoIndex, infos) =>
   (
-    TypeArrayService.getUint8_1(infoIndex, infos),
-    TypeArrayService.getUint8_1(infoIndex + 1, infos)
+    TypeArrayService.getUint32_1(infoIndex, infos),
+    TypeArrayService.getUint32_1(infoIndex + 1, infos)
   )
   |> WonderLog.Contract.ensureCheck(
        ((startIndex, endIndex)) =>
@@ -45,8 +45,8 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   infos
-  |> TypeArrayService.setUint8_1(infoIndex, startIndex)
-  |> TypeArrayService.setUint8_1(infoIndex + 1, endIndex)
+  |> TypeArrayService.setUint32_1(infoIndex, startIndex)
+  |> TypeArrayService.setUint32_1(infoIndex + 1, endIndex)
 };
 
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {

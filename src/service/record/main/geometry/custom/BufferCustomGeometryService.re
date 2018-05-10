@@ -29,17 +29,17 @@ let getVerticesInfosOffset = (count) =>
 let getTexCoordsInfosLength = (count) => count * getInfoSize();
 
 let getTexCoordsInfosOffset = (count) =>
-  getVerticesInfosOffset(count) + getVerticesInfosLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+  getVerticesInfosOffset(count) + getVerticesInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
 
 let getNormalsInfosLength = (count) => count * getInfoSize();
 
 let getNormalsInfosOffset = (count) =>
-  getTexCoordsInfosOffset(count) + getTexCoordsInfosLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+  getTexCoordsInfosOffset(count) + getTexCoordsInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
 
 let getIndicesInfosLength = (count) => count * getInfoSize();
 
 let getIndicesInfosOffset = (count) =>
-  getNormalsInfosOffset(count) + getNormalsInfosLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+  getNormalsInfosOffset(count) + getNormalsInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
 
 let getVertexIndex = (index) => index * getVertexSize();
 
@@ -55,7 +55,7 @@ let getTotalByteLength = (count) =>
     * 3
     + Uint16Array._BYTES_PER_ELEMENT
     * getIndexSize()
-    + Uint8Array._BYTES_PER_ELEMENT
+    + Uint32Array._BYTES_PER_ELEMENT
     * (getInfoSize() * 4)
   );
 

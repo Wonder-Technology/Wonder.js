@@ -23,22 +23,22 @@ let createTypeArrays = (buffer, count) => (
     ~offset=getIndicesOffset(count),
     ~length=getIndicesLength(count)
   ),
-  Uint8Array.fromBufferRange(
+  Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getVerticesInfosOffset(count),
     ~length=getVerticesInfosLength(count)
   ),
-  Uint8Array.fromBufferRange(
+  Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getTexCoordsInfosOffset(count),
     ~length=getTexCoordsInfosLength(count)
   ),
-  Uint8Array.fromBufferRange(
+  Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getNormalsInfosOffset(count),
     ~length=getNormalsInfosLength(count)
   ),
-  Uint8Array.fromBufferRange(
+  Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getIndicesInfosOffset(count),
     ~length=getIndicesInfosLength(count)
