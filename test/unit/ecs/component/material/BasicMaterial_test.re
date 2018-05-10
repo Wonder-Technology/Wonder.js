@@ -20,14 +20,26 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "createBasicMaterial",
-        () =>
+        () => {
           test(
             "create a new material which is just index(int)",
             () => {
               let (_, material) = createBasicMaterial(state^);
               expect(material) == 0
             }
+          );
+          describe(
+            "set default value",
+            () =>
+              test(
+                "set texture count to be 0",
+                () => {
+                  let (state, material) = createBasicMaterial(state^);
+                  BasicMaterialTool.getTextureCount(material, state) |> expect == 0
+                }
+              )
           )
+        }
       );
       describe(
         "init",
@@ -109,6 +121,52 @@ let _ =
                   |> expect == color
                 }
               )
+          );
+          describe(
+            "getBasicMaterialMap",
+            () =>
+              test(
+                "test default value",
+                () => {
+                  let (state, material) = createBasicMaterial(state^);
+                  BasicMaterialAPI.getBasicMaterialMap(material, state)
+                  |> Obj.magic
+                  |> expect == Js.Undefined.empty
+                }
+              )
+          );
+          describe(
+            "setBasicMaterialMap",
+            () => {
+              let _prepare = (state) => {
+                let (state, material) = createBasicMaterial(state);
+                let (state, map1) = TextureAPI.createTexture(state);
+                let (state, map2) = TextureAPI.createTexture(state);
+                let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map2);
+                (state, material, map2)
+              };
+              test(
+                "texture count + 1",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  BasicMaterialTool.getTextureCount(material, state) |> expect == 1
+                }
+              );
+              test(
+                "set map unit to 0",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  BasicMaterialTool.getMapUnit(material, state) |> expect == 0
+                }
+              );
+              test(
+                "save texture index",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  BasicMaterialAPI.getBasicMaterialMap(material, state) |> expect == map
+                }
+              )
+            }
           )
         }
       );

@@ -75,10 +75,7 @@ module JudgeSendUniformData = {
                              ()
                            )
                          );
-                    let state =
-                      state
-                      |> RenderJobsTool.init
-                      |> DirectorTool.runWithDefaultTime;
+                    let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
                        |> expect
@@ -142,10 +139,7 @@ module JudgeSendUniformData = {
                              ()
                            )
                          );
-                    let state =
-                      state
-                      |> RenderJobsTool.init
-                      |> DirectorTool.runWithDefaultTime;
+                    let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                     /* uniformMatrix4fv
                        |> getArgs
                        |> expect
@@ -205,8 +199,7 @@ module JudgeSendUniformData = {
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
@@ -278,8 +271,7 @@ module JudgeSendUniformData = {
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform3f, ~getUniformLocation, ())
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform3f)
                 };
                 beforeEach(
@@ -362,8 +354,7 @@ module JudgeSendUniformData = {
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~uniform1f, ~getUniformLocation, ())
                        );
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   (state, pos, uniform1f)
                 };
                 beforeEach(

@@ -70,3 +70,9 @@ let isMaterialDisposed = (material, state) => {
 
 let getGroupCount = (material, state) =>
   GroupBasicMaterialService.getGroupCount(material, getRecord(state));
+
+let getTextureCount = (material, state) =>
+  TextureCountMapBasicMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
+
+let getMapUnit = (material, state) =>
+  OperateTypeArrayBasicMaterialService.getMapUnit(material, getRecord(state).mapUnits);

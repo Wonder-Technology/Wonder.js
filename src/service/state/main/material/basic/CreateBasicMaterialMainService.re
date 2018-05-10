@@ -2,7 +2,6 @@ open StateDataMainType;
 
 open BasicMaterialType;
 
-/* TODO test */
 let _initDataWhenCreate = (index: int, {textureCountMap} as basicMaterialRecord) => {
   ...basicMaterialRecord,
   textureCountMap:

@@ -68,3 +68,41 @@ let setBasicMaterialColor = (material, color, state: StateDataMainType.state) =>
   );
   setColor(material, color, state)
 };
+
+let getBasicMaterialMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  getMap(material, state)
+};
+
+let setBasicMaterialMap = (material, texture, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  setMap(material, texture, state)
+};

@@ -16,7 +16,7 @@ let getIsNeedUpdate = (index, typeArr) =>
 let setIsNeedUpdate = (index, data, typeArr) =>
   TypeArrayService.setUInt8_1(getIsNeedUpdateIndex(index), data, typeArr);
 
-/* TODO add typeArrays */
+/* TODO get from typeArrays */
 let getWrapS = (gl) => gl |> Gl.getClampToEdge;
 
 let getWrapT = (gl) => gl |> Gl.getClampToEdge;
@@ -29,4 +29,4 @@ let getFormat = (gl) => gl |> Gl.getRgba;
 
 let getType = (gl) => gl |> Gl.getUnsignedByte;
 
-let getFlipY = () => true;
+let getFlipY = () => Js.true_;

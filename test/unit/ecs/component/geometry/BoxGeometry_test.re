@@ -42,6 +42,12 @@ let _ =
           |> expect == BoxGeometryTool.getDefaultVertices()
       );
       test(
+        "test texCoords",
+        () =>
+          BoxGeometryAPI.getBoxGeometryTexCoords(state^)
+          |> expect == BoxGeometryTool.getDefaultTexCoords()
+      );
+      test(
         "test normals",
         () =>
           BoxGeometryAPI.getBoxGeometryNormals(state^)

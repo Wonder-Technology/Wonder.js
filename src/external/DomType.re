@@ -1,5 +1,5 @@
 type htmlElement;
 
-type imageElement;
+type imageElement = {. "width": int, "height": int};
 
 type document;

@@ -6,6 +6,8 @@ let execJob = (configData, state) =>
     state
   );
 
+
+
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
@@ -23,6 +25,16 @@ let prepareGameObject = (sandbox, state) => {
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
+
+let prepareGameObjectWithMap = (sandbox, state) => {
+  let (state, gameObject, geometry, material, meshRenderer) = prepareGameObject (sandbox, state);
+
+  let (state, map) = TextureAPI.createTexture(state);
+  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+  (state, gameObject, geometry, material, meshRenderer, map)
+};
+
+
 
 let prepareGameObjectWithCustomGeometry = (sandbox, state) => {
   open GameObjectAPI;

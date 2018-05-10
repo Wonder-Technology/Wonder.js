@@ -33,7 +33,7 @@ let _setTextureParameters = (gl, target, isSourcePowerOfTwo, (wrapS, wrapT, magF
   isSourcePowerOfTwo ?
     {
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, wrapS);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, wrapS);
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, wrapT);
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureMagFilter, magFilter);
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, minFilter)
     } :
@@ -56,7 +56,7 @@ let _allocateSourceToTexture = (gl, paramTuple, source) =>
 
 let update = (gl, texture, {textureRecord} as state) => {
   let {sourceMap, widths, heights, isNeedUpdates} = textureRecord;
-  switch (TextureSourceMapService.getSourceMap(texture, sourceMap)) {
+  switch (TextureSourceMapService.getSource(texture, sourceMap)) {
   | None => state
   | Some(source) =>
     let width = OperateTypeArrayTextureService.getWidth(texture, widths);

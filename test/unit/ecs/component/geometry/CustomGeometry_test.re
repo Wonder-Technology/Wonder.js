@@ -63,6 +63,15 @@ let _ =
               )
           );
           describe(
+            "set texCoords with type array",
+            () =>
+              _testSetVertexDataWithTypeArray(
+                "texCoords",
+                getCustomGeometryTexCoords,
+                setCustomGeometryTexCoords
+              )
+          );
+          describe(
             "set normals with type array",
             () =>
               _testSetVertexDataWithTypeArray(
@@ -609,6 +618,10 @@ let _ =
                     () => _testGetFunc(getCustomGeometryVertices)
                   );
                   test(
+                    "getCustomGeometryTexCoords should error",
+                    () => _testGetFunc(getCustomGeometryTexCoords)
+                  );
+                  test(
                     "getCustomGeometryNormals should error",
                     () => _testGetFunc(getCustomGeometryNormals)
                   );
@@ -623,6 +636,10 @@ let _ =
                   test(
                     "setCustomGeometryVertices should error",
                     () => _testSetFunc(setCustomGeometryVertices)
+                  );
+                  test(
+                    "setCustomGeometryTexCoords should error",
+                    () => _testSetFunc(setCustomGeometryTexCoords)
                   );
                   test(
                     "setCustomGeometryNormals should error",

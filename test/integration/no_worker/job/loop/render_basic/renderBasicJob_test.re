@@ -100,7 +100,9 @@ let _ =
         "send attribute data",
         () => {
           let _prepare = (sandbox, state) => {
-            let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
+            /* let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state); */
+            let (state, gameObject, geometry, _, _, _) =
+              RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             state
           };
@@ -108,10 +110,33 @@ let _ =
             "init vbo buffers when first send",
             () => {
               let _prepare = (sandbox, state) => {
-                let (state, gameObject, geometry, _, _) =
-                  RenderBasicJobTool.prepareGameObject(sandbox, state);
+                let (state, gameObject, geometry, _, _, _) =
+                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
                 let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                 (state, geometry)
+              };
+              let _prepareForBufferData = (state, getBoxGeometryPointsFunc) => {
+                let (state, geometry) = _prepare(sandbox, state^);
+                let array_buffer = 1;
+                let static_draw = 2;
+                let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~array_buffer,
+                         ~static_draw,
+                         ~bufferData,
+                         ()
+                       )
+                     );
+                let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                let points = getBoxGeometryPointsFunc(state);
+                bufferData
+                |> withThreeArgs(array_buffer, points, static_draw)
+                |> expect
+                |> toCalledOnce
               };
               test(
                 "create buffer",
@@ -122,7 +147,7 @@ let _ =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  getCallCount(createBuffer) |> expect == 2
+                  getCallCount(createBuffer) |> expect == 3
                 }
               );
               describe(
@@ -130,29 +155,7 @@ let _ =
                 () => {
                   test(
                     "bufferData",
-                    () => {
-                      let (state, geometry) = _prepare(sandbox, state^);
-                      let array_buffer = 1;
-                      let static_draw = 2;
-                      let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~array_buffer,
-                               ~static_draw,
-                               ~bufferData,
-                               ()
-                             )
-                           );
-                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
-                      bufferData
-                      |> withThreeArgs(array_buffer, vertices, static_draw)
-                      |> expect
-                      |> toCalledOnce
-                    }
+                    () => _prepareForBufferData(state, BoxGeometryAPI.getBoxGeometryVertices)
                   );
                   test(
                     "bind buffer and unbind buffer",
@@ -188,6 +191,14 @@ let _ =
                     }
                   )
                 }
+              );
+              describe(
+                "init texCoord buffer",
+                () =>
+                  test(
+                    "bufferData",
+                    () => _prepareForBufferData(state, BoxGeometryAPI.getBoxGeometryTexCoords)
+                  )
               );
               describe(
                 "init index buffer",
@@ -435,6 +446,36 @@ let _ =
                     }
                   )
                 }
+              );
+              describe(
+                "send a_texCoord",
+                () =>
+                  test(
+                    "attach buffer to attribute",
+                    () => {
+                      let state = _prepare(sandbox, state^);
+                      let float = 1;
+                      let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
+                      let pos = 0;
+                      let getAttribLocation =
+                        GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_texCoord");
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~float,
+                               ~vertexAttribPointer,
+                               ~getAttribLocation,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      vertexAttribPointer
+                      |> expect
+                      |> toCalledWith([|pos, 2, float, Obj.magic(Js.false_), 0, 0|])
+                    }
+                  )
               )
             }
           )
@@ -656,6 +697,417 @@ let _ =
                     )
                 ),
             ()
+          );
+          describe(
+            "send u_sampler2D",
+            () => {
+              let _prepare = (state) => {
+                let (state, gameObject, _, _, _, _) =
+                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+                let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
+                let pos = 0;
+                let getUniformLocation =
+                  GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_sampler2D");
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ~uniform1i, ~getUniformLocation, ())
+                     );
+                (state, pos, uniform1i)
+              };
+              test(
+                "if cached, not send",
+                () => {
+                  let (state, pos, uniform1i) = _prepare(state^);
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> DirectorTool.runWithDefaultTime;
+                  uniform1i |> withTwoArgs(pos, 0) |> expect |> toCalledOnce
+                }
+              );
+              test(
+                "else, send",
+                () => {
+                  let (state, pos, uniform1i) = _prepare(state^);
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  uniform1i |> withOneArg(pos) |> expect |> toCalledWith([|pos, 0|])
+                }
+              )
+            }
+          )
+        }
+      );
+      describe(
+        "bind map",
+        () => {
+          /*
+           TODO test cache
+           it("if texture of the specific unit is cached, not bind and active it again", function () {
+               directorTool.init(state);
+
+               directorTool.loopBody(state);
+
+
+               expect(gl.activeTexture).toCalledOnce();
+               expect(gl.bindTexture).toCalledOnce();
+
+
+               directorTool.loopBody(state);
+
+
+               expect(gl.activeTexture).toCalledOnce();
+               expect(gl.bindTexture).toCalledOnce();
+           }); */
+          test(
+            "if not has map, not bind",
+            () => {
+              let (state, gameObject, _, _, _) =
+                RenderBasicJobTool.prepareGameObject(sandbox, state^);
+              let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+              let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~bindTexture, ()));
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              bindTexture |> expect |> not_ |> toCalled
+            }
+          );
+          describe(
+            "else",
+            () => {
+              let _prepare = (state) => {
+                let (state, gameObject, _, _, _, _) =
+                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+                let textureUnit0 = 0;
+                let texture2D = Obj.magic(8);
+                let glTexture = Obj.magic(11);
+                let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                createTexture |> onCall(0) |> returns(glTexture);
+                let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~textureUnit0,
+                         ~texture2D,
+                         ~createTexture,
+                         ~activeTexture,
+                         ~bindTexture,
+                         ()
+                       )
+                     );
+                (state, (texture2D, glTexture), (activeTexture, bindTexture))
+              };
+              test(
+                "active texture unit 0",
+                () => {
+                  let (state, _, (activeTexture, _)) = _prepare(state^);
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  activeTexture |> expect |> toCalledWith([|0|])
+                }
+              );
+              test(
+                "bind gl texture to TEXTURE_2D target",
+                () => {
+                  let (state, (texture2D, glTexture), (_, bindTexture)) = _prepare(state^);
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  bindTexture |> expect |> toCalledWith([|texture2D, glTexture|])
+                }
+              )
+            }
+          )
+        }
+      );
+      describe(
+        "update map",
+        () => {
+          let _prepare = (state) => {
+            let (state, gameObject, _, _, _, map) =
+              RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            let source = Obj.magic(100);
+            let state = state |> TextureAPI.setTextureSource(map, source);
+            (state, map)
+          };
+          test(
+            "if is updated before, not update",
+            () => {
+              let (state, map) = _prepare(state^);
+              let unpackFlipYWebgl = Obj.magic(2);
+              let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~unpackFlipYWebgl, ~pixelStorei, ())
+                   );
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              let state = state |> DirectorTool.runWithDefaultTime;
+              let state = state |> DirectorTool.runWithDefaultTime;
+              pixelStorei |> withOneArg(unpackFlipYWebgl) |> expect |> toCalledOnce
+            }
+          );
+          test(
+            "if source not exist, not update",
+            () => {
+              let (state, gameObject, _, _, _, map) =
+                RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
+              let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+              let unpackFlipYWebgl = Obj.magic(2);
+              let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~unpackFlipYWebgl, ~pixelStorei, ())
+                   );
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              pixelStorei |> withOneArg(unpackFlipYWebgl) |> expect |> not_ |> toCalled
+            }
+          );
+          test(
+            "set flipY true",
+            () => {
+              let (state, map) = _prepare(state^);
+              let unpackFlipYWebgl = Obj.magic(2);
+              let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~unpackFlipYWebgl, ~pixelStorei, ())
+                   );
+              let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              pixelStorei |> withTwoArgs(unpackFlipYWebgl, Js.true_) |> expect |> toCalledOnce
+            }
+          );
+          describe(
+            "set texture parameters",
+            () => {
+              describe(
+                "if source is power of two",
+                () => {
+                  let _prepare = (state) => {
+                    let (state, map) = _prepare(state);
+                    let state =
+                      state
+                      |> TextureAPI.setTextureWidth(map, 2)
+                      |> TextureAPI.setTextureHeight(map, 4);
+                    (state, map)
+                  };
+                  test(
+                    "set wrap",
+                    () => {
+                      let (state, map) = _prepare(state^);
+                      let texture2D = Obj.magic(1);
+                      let textureWrapS = Obj.magic(2);
+                      let textureWrapT = Obj.magic(3);
+                      let clampToEdge = Obj.magic(4);
+                      let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~texture2D,
+                               ~textureWrapS,
+                               ~textureWrapT,
+                               ~clampToEdge,
+                               ~texParameteri,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      (
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureWrapS, clampToEdge)
+                        |> getCallCount,
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureWrapT, clampToEdge)
+                        |> getCallCount
+                      )
+                      |> expect == (1, 1)
+                    }
+                  );
+                  test(
+                    "set filter",
+                    () => {
+                      let (state, map) = _prepare(state^);
+                      let texture2D = Obj.magic(1);
+                      let nearest = Obj.magic(2);
+                      let linear = Obj.magic(3);
+                      let textureMagFilter = Obj.magic(4);
+                      let textureMinFilter = Obj.magic(5);
+                      let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~texture2D,
+                               ~nearest,
+                               ~linear,
+                               ~textureMagFilter,
+                               ~textureMinFilter,
+                               ~texParameteri,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      (
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureMagFilter, linear)
+                        |> getCallCount,
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureMinFilter, nearest)
+                        |> getCallCount
+                      )
+                      |> expect == (1, 1)
+                    }
+                  )
+                }
+              );
+              describe(
+                "else",
+                () => {
+                  let _prepare = (state) => {
+                    let (state, map) = _prepare(state);
+                    let state =
+                      state
+                      |> TextureAPI.setTextureWidth(map, 3)
+                      |> TextureAPI.setTextureHeight(map, 4);
+                    (state, map)
+                  };
+                  test(
+                    "set wrap to CLAMP_TO_EDGE",
+                    () => {
+                      let (state, map) = _prepare(state^);
+                      let texture2D = Obj.magic(1);
+                      let textureWrapS = Obj.magic(2);
+                      let textureWrapT = Obj.magic(3);
+                      let clampToEdge = Obj.magic(4);
+                      let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~texture2D,
+                               ~textureWrapS,
+                               ~textureWrapT,
+                               ~clampToEdge,
+                               ~texParameteri,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      (
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureWrapS, clampToEdge)
+                        |> getCallCount,
+                        texParameteri
+                        |> withThreeArgs(texture2D, textureWrapT, clampToEdge)
+                        |> getCallCount
+                      )
+                      |> expect == (1, 1)
+                    }
+                  );
+                  describe(
+                    "set filter with fallback",
+                    () =>
+                      test(
+                        "if filter === NEAREST or NEAREST_MIPMAP_MEAREST or NEAREST_MIPMAP_LINEAR, set NEAREST",
+                        () => {
+                          /* TODO set filter data */
+                          let (state, map) = _prepare(state^);
+                          let texture2D = Obj.magic(1);
+                          let nearest = Obj.magic(2);
+                          let linear = Obj.magic(3);
+                          let textureMagFilter = Obj.magic(4);
+                          let textureMinFilter = Obj.magic(5);
+                          let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(
+                                   ~sandbox,
+                                   ~texture2D,
+                                   ~nearest,
+                                   ~linear,
+                                   ~textureMagFilter,
+                                   ~textureMinFilter,
+                                   ~texParameteri,
+                                   ()
+                                 )
+                               );
+                          let state =
+                            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                          (
+                            texParameteri
+                            |> withThreeArgs(texture2D, textureMagFilter, linear)
+                            |> getCallCount,
+                            texParameteri
+                            |> withThreeArgs(texture2D, textureMinFilter, nearest)
+                            |> getCallCount
+                          )
+                          |> expect == (1, 1)
+                        }
+                      )
+                  )
+                  /*
+                   TODO set filter data
+                   test(
+                   "else, set LINEAR",
+                   (
+                   () => {
+
+                   })
+                   ); */
+                }
+              )
+            }
+          );
+          describe(
+            "allocate source to texture",
+            () =>
+              describe(
+                "draw no mipmap twoD texture",
+                () =>
+                  test(
+                    "test",
+                    () => {
+                      /* TODO set format,type */
+                      let (state, map) = _prepare(state^);
+                      let source = TextureAPI.unsafeGetTextureSource(map, state);
+                      let texture2D = Obj.magic(1);
+                      let rgba = Obj.magic(2);
+                      let unsignedByte = Obj.magic(3);
+                      let texImage2D = createEmptyStubWithJsObjSandbox(sandbox);
+                      let state =
+                        state
+                        |> FakeGlTool.setFakeGl(
+                             FakeGlTool.buildFakeGl(
+                               ~sandbox,
+                               ~texture2D,
+                               ~rgba,
+                               ~unsignedByte,
+                               ~texImage2D,
+                               ()
+                             )
+                           );
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      texImage2D
+                      |> expect
+                      |> toCalledWith([|
+                           texture2D,
+                           0,
+                           rgba,
+                           rgba,
+                           unsignedByte,
+                           source |> Obj.magic
+                         |])
+                    }
+                  )
+              )
           )
         }
       );

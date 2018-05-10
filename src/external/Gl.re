@@ -147,7 +147,7 @@ external imageElementToTextureSource : imageElement => textureSource = "%identit
 
 [@bs.send.pipe : webgl1Context] external cullFace : int => unit = "";
 
-[@bs.send.pipe : webgl1Context] external pixelStorei : (int, bool) => unit = "";
+[@bs.send.pipe : webgl1Context] external pixelStorei : (int, Js.boolean) => unit = "";
 
 [@bs.send] external commit : webgl1Context => unit = "";
 

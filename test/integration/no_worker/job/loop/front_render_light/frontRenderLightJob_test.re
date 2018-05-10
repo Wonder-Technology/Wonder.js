@@ -48,8 +48,7 @@ let _ =
         "send attribute data",
         () => {
           let _prepare = (sandbox, state) => {
-            let (state, _, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
             let (state, _, _) = AmbientLightTool.createGameObject(state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             state
@@ -62,6 +61,29 @@ let _ =
                   FrontRenderLightJobTool.prepareGameObject(sandbox, state);
                 let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                 (state, geometry)
+              };
+              let _prepareForBufferData = (state, getBoxGeometryPointsFunc) => {
+                let (state, geometry) = _prepare(sandbox, state^);
+                let array_buffer = 1;
+                let static_draw = 2;
+                let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~array_buffer,
+                         ~static_draw,
+                         ~bufferData,
+                         ()
+                       )
+                     );
+                let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                let points = getBoxGeometryPointsFunc(state);
+                bufferData
+                |> withThreeArgs(array_buffer, points, static_draw)
+                |> expect
+                |> toCalledOnce
               };
               test(
                 "create buffers",
@@ -80,29 +102,7 @@ let _ =
                 () => {
                   test(
                     "bufferData",
-                    () => {
-                      let (state, geometry) = _prepare(sandbox, state^);
-                      let array_buffer = 1;
-                      let static_draw = 2;
-                      let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~array_buffer,
-                               ~static_draw,
-                               ~bufferData,
-                               ()
-                             )
-                           );
-                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
-                      bufferData
-                      |> withThreeArgs(array_buffer, vertices, static_draw)
-                      |> expect
-                      |> toCalledOnce
-                    }
+                    () => _prepareForBufferData(state, BoxGeometryAPI.getBoxGeometryVertices)
                   );
                   test(
                     "bind buffer and unbind buffer",
@@ -144,29 +144,7 @@ let _ =
                 () =>
                   test(
                     "bufferData",
-                    () => {
-                      let (state, geometry) = _prepare(sandbox, state^);
-                      let array_buffer = 1;
-                      let static_draw = 2;
-                      let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                      let state =
-                        state
-                        |> FakeGlTool.setFakeGl(
-                             FakeGlTool.buildFakeGl(
-                               ~sandbox,
-                               ~array_buffer,
-                               ~static_draw,
-                               ~bufferData,
-                               ()
-                             )
-                           );
-                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                      let normals = BoxGeometryAPI.getBoxGeometryNormals(state);
-                      bufferData
-                      |> withThreeArgs(array_buffer, normals, static_draw)
-                      |> expect
-                      |> toCalledOnce
-                    }
+                    () => _prepareForBufferData(state, BoxGeometryAPI.getBoxGeometryNormals)
                   )
               );
               describe(
@@ -600,7 +578,10 @@ let _ =
                     "test send direction light record",
                     () => {
                       let _prepareOne = (sandbox, state) =>
-                        FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(sandbox, state);
+                        FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                          sandbox,
+                          state
+                        );
                       let _prepareFour = (sandbox, state) => {
                         let (state, gameObject, _, material, _) =
                           FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -623,7 +604,11 @@ let _ =
                         )
                       };
                       let _setFakeGl = (sandbox, nameArr, state) =>
-                        FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(sandbox, nameArr, state);
+                        FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                          sandbox,
+                          nameArr,
+                          state
+                        );
                       describe(
                         "send structure record",
                         () => {
@@ -805,9 +790,16 @@ let _ =
                         (state, lightGameObject, material, light, cameraTransform)
                       };
                       let _prepareFour = (sandbox, state) =>
-                        FrontRenderLightForNoWorkerAndWorkerJobTool.prepareFourForPointLight(sandbox, state);
+                        FrontRenderLightForNoWorkerAndWorkerJobTool.prepareFourForPointLight(
+                          sandbox,
+                          state
+                        );
                       let _setFakeGl = (sandbox, nameArr, state) =>
-                        FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(sandbox, nameArr, state);
+                        FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                          sandbox,
+                          nameArr,
+                          state
+                        );
                       describe(
                         "send structure record",
                         () => {

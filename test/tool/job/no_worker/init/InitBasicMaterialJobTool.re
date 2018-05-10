@@ -25,11 +25,28 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
+let prepareGameObjectWithMap = (sandbox, state) => {
+  open GameObjectAPI;
+  open BasicMaterialAPI;
+  open BoxGeometryAPI;
+  open Sinon;
+  let (state, material) = createBasicMaterial(state);
+  let (state, map) = TextureAPI.createTexture(state);
+  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+  let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+  let (state, gameObject) = state |> createGameObject;
+  let state =
+    state
+    |> addGameObjectBasicMaterialComponent(gameObject, material)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+  (state, gameObject, geometry, material)
+};
+
 let exec = (state: StateDataMainType.state) => InitRenderJobTool.exec(state);
 
-let prepareForJudgeGLSLNotExec = (sandbox, state) => {
+let _prepareForJudgeGLSLNotExec = (sandbox, prepareGameObjectFunc, state) => {
   open Sinon;
-  let (state, gameObject, _, _) = prepareGameObject(sandbox, state);
+  let (state, gameObject, _, _) = prepareGameObjectFunc(sandbox, state);
   let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
@@ -38,8 +55,20 @@ let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   (state, shaderSource, gameObject)
 };
 
+let prepareForJudgeGLSLNotExec = (sandbox, state) =>
+  _prepareForJudgeGLSLNotExec(sandbox, prepareGameObject, state);
+
 let prepareForJudgeGLSL = (sandbox, state) => {
   let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(sandbox, state);
+  let state = state |> exec;
+  shaderSource
+};
+
+let prepareForJudgeGLSLNotExecWithMap = (sandbox, state) =>
+  _prepareForJudgeGLSLNotExec(sandbox, prepareGameObjectWithMap, state);
+
+let prepareForJudgeGLSLWithMap = (sandbox, state) => {
+  let (state, shaderSource, _) = prepareForJudgeGLSLNotExecWithMap(sandbox, state);
   let state = state |> exec;
   shaderSource
 };

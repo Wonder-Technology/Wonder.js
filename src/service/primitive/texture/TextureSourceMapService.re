@@ -1,2 +1,8 @@
-let getSourceMap = (texture, sourceMap) =>
+let getSource = (texture, sourceMap) =>
   sourceMap |> WonderCommonlib.SparseMapService.get(texture);
+
+let unsafeGetSource = (texture, sourceMap) =>
+  sourceMap |> WonderCommonlib.SparseMapService.unsafeGet(texture);
+
+let setSource = (texture, source, sourceMap) =>
+  sourceMap |> WonderCommonlib.SparseMapService.set(texture, source);

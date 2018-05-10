@@ -33,7 +33,9 @@ let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullab
 
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
-  let state = state |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, geometry);
+  let state =
+    state
+    |> GameObjectTool.disposeGameObjectBoxGeometryComponentWithoutVboBuffer(gameObject, geometry);
   TestTool.openContractCheck();
   state
 };
@@ -58,11 +60,10 @@ let isGeometryDisposed = (geometry, state) =>
     );
 
 /* let computeData = (geometry, state: StateDataMainType.state) =>
-  InitBoxGeometryInitBoxGeometryService._computeData(
-    geometry,
-    CreateInitBoxGeometryStateMainService.createInitBoxGeometryState(state).boxGeometryRecord
-  ); */
-
+   InitBoxGeometryInitBoxGeometryService._computeData(
+     geometry,
+     CreateInitBoxGeometryStateMainService.createInitBoxGeometryState(state).boxGeometryRecord
+   ); */
 let getDefaultIndicesArray = () => [|
   0,
   2,
@@ -180,6 +181,58 @@ let getDefaultVertices = () =>
     5.
   |]);
 
+let getDefaultTexCoords = () =>
+  Js.Typed_array.Float32Array.make([|
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.,
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.,
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.,
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.,
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.,
+    0.,
+    0.,
+    0.,
+    1.,
+    1.,
+    0.,
+    1.,
+    1.
+  |]);
+
 let getDefaultNormals = () =>
   Js.Typed_array.Float32Array.make([|
     0.,
@@ -271,17 +324,16 @@ let createGameObject = (state: StateDataMainType.state) => {
 };
 
 /* let setVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
-  VerticesBoxGeometryMainService.setVerticesByTypeArray(geometry, data, state);
+       (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
+     VerticesBoxGeometryMainService.setVerticesByTypeArray(geometry, data, state);
 
-let setNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
-  NormalsBoxGeometryMainService.setNormalsByTypeArray(geometry, data, state);
+   let setNormals =
+       (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) =>
+     NormalsBoxGeometryMainService.setNormalsByTypeArray(geometry, data, state);
 
-let setIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) =>
-  IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state); */
-
+   let setIndices =
+       (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) =>
+     IndicesBoxGeometryMainService.setIndicesByTypeArray(geometry, data, state); */
 let getGroupCount = (geometry, state) =>
   GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
