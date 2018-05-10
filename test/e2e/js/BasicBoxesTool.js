@@ -26,13 +26,38 @@ var BasicBoxesTool = (function () {
         return state;
     };
 
-    // var createAndDisposeGameObjects = function (count, boxes, schedulLoopFunc, state) {
     var createAndDisposeGameObjects = function (count, boxes, state) {
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
         var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
         var state = record[0];
         var newBoxes = record[1];
+
+
+
+        var record = BasicBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+        window.boxes = newBoxes;
+
+
+        for (var i = 0, len = newBoxes.length; i < len; i++) {
+            var box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+    };
+
+
+
+    var createAndDisposeGameObjectsWithMap = function (count, boxes, source, state) {
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+        var record = BasicBoxesTool.createBoxWithMap(source, state);
+        var state = record[0];
+        var newBoxes = [record[1]];
 
 
 
@@ -244,6 +269,14 @@ var BasicBoxesTool = (function () {
             return ScheduleTool.scheduleLoop(function (state) {
                 return createAndDisposeGameObjects(count, boxes,
                     state
+                )
+            }, state);
+        },
+        createAndDisposeGameObjectsWithMap: function (count, boxes, source, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleLoop(function (state) {
+                return createAndDisposeGameObjectsWithMap(count, boxes, source, state
                 )
             }, state);
         },

@@ -24,31 +24,31 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       /* describe(
-        "defer dispose and create operations should all be mutable.(because custom main worker job which has these operation shouldn't set the result main state to main stateData)",
-        () => {
-          let _prepare = (state) => {
-            let (state, gameObject1, _, _, _) =
-              RenderBasicJobTool.prepareGameObject(sandbox, state^);
-            (state, gameObject1)
-          };
-          let _disposeAndCreate = (disposedGameObject, preparedState) => {
-            let state =
-              preparedState |> GameObjectAPI.batchDisposeGameObject([|disposedGameObject|]);
-            let (state, gameObject, _, _, _) =
-              RenderBasicJobTool.prepareGameObject(sandbox, state);
-            gameObject
-          };
-          test(
-            "test",
-            () => {
-              let (preparedState, gameObject1) = _prepare(state);
-              let gameObject2 = _disposeAndCreate(gameObject1, preparedState);
-              let gameObject3 = _disposeAndCreate(gameObject2, preparedState);
-              gameObject3 |> expect == gameObject2 + 1
-            }
-          )
-        }
-      ); */
+           "defer dispose and create operations should all be mutable.(because custom main worker job which has these operation shouldn't set the result main state to main stateData)",
+           () => {
+             let _prepare = (state) => {
+               let (state, gameObject1, _, _, _) =
+                 RenderBasicJobTool.prepareGameObject(sandbox, state^);
+               (state, gameObject1)
+             };
+             let _disposeAndCreate = (disposedGameObject, preparedState) => {
+               let state =
+                 preparedState |> GameObjectAPI.batchDisposeGameObject([|disposedGameObject|]);
+               let (state, gameObject, _, _, _) =
+                 RenderBasicJobTool.prepareGameObject(sandbox, state);
+               gameObject
+             };
+             test(
+               "test",
+               () => {
+                 let (preparedState, gameObject1) = _prepare(state);
+                 let gameObject2 = _disposeAndCreate(gameObject1, preparedState);
+                 let gameObject3 = _disposeAndCreate(gameObject2, preparedState);
+                 gameObject3 |> expect == gameObject2 + 1
+               }
+             )
+           }
+         ); */
       describe(
         "the material data send to render worker for init should remove the disposed ones",
         () => {

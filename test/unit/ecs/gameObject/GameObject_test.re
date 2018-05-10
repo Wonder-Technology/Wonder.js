@@ -1661,6 +1661,30 @@ let _ =
                   let state = state |> initGameObject(gameObject);
                   getCallCount(attachShader) |> expect == 2
                 }
+              );
+              describe(
+                "init maps",
+                () =>
+                  describe(
+                    "init basic material->map",
+                    () =>
+                      test(
+                        "init map",
+                        () => {
+                          let (state, gameObject, _, _) =
+                            InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
+                               );
+                          let state = AllMaterialTool.prepareForInit(state);
+                          let state = state |> initGameObject(gameObject);
+                          getCallCount(createTexture) |> expect == 1
+                        }
+                      )
+                  )
               )
             }
           )
