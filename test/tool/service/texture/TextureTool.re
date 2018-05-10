@@ -10,3 +10,5 @@ let unsafeGetTexture = (texture, state) =>
 let isNeedUpdate = (texture, state) =>
   OperateTypeArrayTextureService.getIsNeedUpdate(texture, getRecord(state).isNeedUpdates)
   === BufferTextureService.getDefaultIsNeedUpdate();
+
+let getDefaultUnit = () => MapUnitService.getDefaultUnit();

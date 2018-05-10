@@ -22,7 +22,6 @@ let disposeBoxGeometryBufferData =
     ) => {
       ...record,
       boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
-      /* TODO test */
       boxGeometryTexCoordBufferMap: disposeSparseMapData(geometry, boxGeometryTexCoordBufferMap),
       boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
       boxGeometryElementArrayBufferMap:
@@ -44,7 +43,6 @@ let disposeCustomGeometryBufferData =
     ) => {
       ...record,
       customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
-      /* TODO test */
       customGeometryTexCoordBufferMap:
         disposeSparseMapData(geometry, customGeometryTexCoordBufferMap),
       customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),

@@ -66,7 +66,7 @@ let _allocateNewData =
            (
              succ(newIndex),
              _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
-             _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
+             _updateInfos(texCoordsInfos, infoIndex, texCoordsInfo, newTexCoordsOffset),
              _updateInfos(normalsInfos, infoIndex, normalsInfo, newNormalsOffset),
              _updateInfos(indicesInfos, infoIndex, indicesInfo, newIndicesOffset),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
@@ -75,7 +75,7 @@ let _allocateNewData =
                verticesEndIndex
              ),
              TypeArrayService.fillFloat32ArrayWithFloat32Array(
-               (texCoords, newVerticesOffset),
+               (texCoords, newTexCoordsOffset),
                (texCoords, texCoordsStartIndex),
                texCoordsEndIndex
              ),

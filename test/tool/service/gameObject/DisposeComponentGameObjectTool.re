@@ -238,17 +238,8 @@ let batchDisposeCustomGeometryComponent =
     ({settingRecord} as state, componentArray: array(component)) =>
   [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, state);
 
-let batchDisposeBasicMaterialComponent = (state, componentArray: array(component)) => {
-  ...state,
-  basicMaterialRecord:
-    Some(
-      ComponentMapService.batchDisposeComponent(
-        RecordBasicMaterialMainService.getRecord(state),
-        DisposeBasicMaterialService.handleBatchDisposeComponent,
-        componentArray
-      )
-    )
-};
+let batchDisposeBasicMaterialComponent = (state, componentArray: array(component)) =>
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(state, componentArray);
 
 let batchDisposeLightMaterialComponent = (state, componentArray: array(component)) => {
   ...state,

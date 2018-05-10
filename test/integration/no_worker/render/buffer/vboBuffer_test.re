@@ -34,7 +34,6 @@ let _ =
               let _prepare = (state) => {
                 let state = SettingTool.setMemory(state, ~maxDisposeCount=1, ());
                 let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
-                /*let state = state |> BoxGeometryTool.initGeometrys;*/
                 (state, gameObject1, geometry1)
               };
               test(
@@ -42,22 +41,16 @@ let _ =
                 () => {
                   open StateDataMainType;
                   let (state, gameObject1, geometry1) = _prepare(state^);
-                  /* let arrayBuffer1 = Obj.magic(20);
-                     let arrayBuffer2 = Obj.magic(21);
-                     let arrayBuffer3 = Obj.magic(22);
-                     let arrayBuffer4 = Obj.magic(23);
-                     let elementArrayBuffer1 = Obj.magic(12);
-                     let elementArrayBuffer2 = Obj.magic(13);
-                     let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                     createBuffer |> onCall(0) |> returns(arrayBuffer1);
-                     createBuffer |> onCall(1) |> returns(arrayBuffer2);
-                     createBuffer |> onCall(2) |> returns(elementArrayBuffer1);
-                     createBuffer |> onCall(3) |> returns(arrayBuffer3);
-                     createBuffer |> onCall(4) |> returns(arrayBuffer4);
-                     createBuffer |> onCall(5) |> returns(elementArrayBuffer2); */
                   let (
                     state,
-                    (arrayBuffer1, arrayBuffer2, arrayBuffer3, arrayBuffer4),
+                    (
+                      arrayBuffer1,
+                      arrayBuffer2,
+                      arrayBuffer3,
+                      arrayBuffer4,
+                      arrayBuffer5,
+                      arrayBuffer6
+                    ),
                     (elementArrayBuffer1, elementArrayBuffer2),
                     createBuffer
                   ) =
@@ -65,6 +58,7 @@ let _ =
                   VboBufferTool.getOrCreateAllBoxGeometryBuffers(geometry1, state);
                   let (
                     resultVertexArrayBuffer1,
+                    resultTexCoordArrayBuffer1,
                     resultNormalArrayBuffer1,
                     resultElementArrayBuffer1
                   ) =
@@ -77,6 +71,7 @@ let _ =
                   let state = state |> DisposeJob.execJob(None);
                   let (
                     resultVertexArrayBuffer2,
+                    resultTexCoordArrayBuffer2,
                     resultNormalArrayBuffer2,
                     resultElementArrayBuffer2
                   ) =
@@ -84,10 +79,11 @@ let _ =
                   (
                     createBuffer |> getCallCount,
                     resultVertexArrayBuffer2,
+                    resultTexCoordArrayBuffer2,
                     resultNormalArrayBuffer2,
                     resultElementArrayBuffer2
                   )
-                  |> expect == (3, arrayBuffer2, arrayBuffer1, elementArrayBuffer1)
+                  |> expect == (4, arrayBuffer3, arrayBuffer2, arrayBuffer1, elementArrayBuffer1)
                 }
               )
             }

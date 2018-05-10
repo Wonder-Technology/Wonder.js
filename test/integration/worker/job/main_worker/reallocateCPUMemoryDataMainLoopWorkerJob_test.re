@@ -60,6 +60,7 @@ let _ =
                 (gameObject1, gameObject2, gameObject3),
                 (geometry1, geometry2, geometry3),
                 (vertices1, vertices2, vertices3),
+                (texCoords1, texCoords2, texCoords3),
                 (normals1, normals2, normals3),
                 (indices1, indices2, indices3)
               ) =
@@ -78,6 +79,7 @@ let _ =
                       (gameObject1, gameObject2, gameObject3),
                       (geometry1, geometry2, geometry3),
                       (vertices1, vertices2, vertices3),
+                      (texCoords1, texCoords2, texCoords3),
                       (normals1, normals2, normals3),
                       (indices1, indices2, indices3)
                     )

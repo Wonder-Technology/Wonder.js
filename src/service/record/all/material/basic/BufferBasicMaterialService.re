@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let getDefaultTextureIndex = () => 0;
+
 let getShaderIndicesSize = () => 1;
 
 let getColorsSize = () => 3;

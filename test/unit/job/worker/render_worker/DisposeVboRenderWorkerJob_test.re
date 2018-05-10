@@ -78,7 +78,7 @@ let _ =
                        elementArrayBufferPool |> SparseMapService.length,
                        matrixInstanceBufferPool |> SparseMapService.length
                      )
-                     |> expect == (2 * 3, 1 * 3, 1)
+                     |> expect == (3 * 3, 1 * 3, 1)
                      |> resolve
                    }
                  )

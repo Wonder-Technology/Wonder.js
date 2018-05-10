@@ -220,6 +220,7 @@ let _ =
                                         (gameObject1, gameObject2, gameObject3),
                                         (geometry1, geometry2, geometry3),
                                         (vertices1, vertices2, vertices3),
+                                        (texCoords1, texCoords2, texCoords3),
                                         (normals1, normals2, normals3),
                                         (indices1, indices2, indices3)
                                       ) =
@@ -232,18 +233,22 @@ let _ =
                                            );
                                       (
                                         getCustomGeometryVertices(geometry2, state),
+                                        getCustomGeometryTexCoords(geometry2, state),
                                         getCustomGeometryNormals(geometry2, state),
                                         getCustomGeometryIndices(geometry2, state),
                                         getCustomGeometryVertices(geometry3, state),
+                                        getCustomGeometryTexCoords(geometry3, state),
                                         getCustomGeometryNormals(geometry3, state),
                                         getCustomGeometryIndices(geometry3, state)
                                       )
                                       |>
                                       expect == (
                                                   vertices2,
+                                                  texCoords2,
                                                   normals2,
                                                   indices2,
                                                   vertices3,
+                                                  texCoords3,
                                                   normals3,
                                                   indices3
                                                 )
@@ -259,6 +264,7 @@ let _ =
                                         (gameObject1, gameObject2, gameObject3),
                                         (geometry1, geometry2, geometry3),
                                         (vertices1, vertices2, vertices3),
+                                        (texCoords1, texCoords2, texCoords3),
                                         (normals1, normals2, normals3),
                                         (indices1, indices2, indices3)
                                       ) =
@@ -269,10 +275,11 @@ let _ =
                                              gameObject2,
                                              geometry2
                                            );
-                                      let {vertices, normals, indices} =
+                                      let {vertices, texCoords, normals, indices} =
                                         state |> CustomGeometryTool.getRecord;
                                       (
                                         vertices |> Float32Array.slice(~start=0, ~end_=10),
+                                        texCoords |> Float32Array.slice(~start=0, ~end_=10),
                                         normals |> Float32Array.slice(~start=0, ~end_=10),
                                         indices |> Uint16Array.slice(~start=0, ~end_=10)
                                       )
@@ -280,11 +287,23 @@ let _ =
                                       expect == (
                                                   Float32Array.make([|
                                                     10.,
+                                                    10.,
+                                                    11.,
                                                     5.,
                                                     3.,
                                                     2.,
+                                                    5.,
                                                     3.,
                                                     2.,
+                                                    0.
+                                                  |]),
+                                                  Float32Array.make([|
+                                                    0.5,
+                                                    0.5,
+                                                    0.,
+                                                    0.5,
+                                                    0.,
+                                                    0.5,
                                                     0.,
                                                     0.,
                                                     0.,
@@ -292,26 +311,26 @@ let _ =
                                                   |]),
                                                   Float32Array.make([|
                                                     1.,
+                                                    2.,
+                                                    3.,
                                                     5.,
                                                     1.,
                                                     2.,
+                                                    5.,
                                                     1.,
                                                     2.,
-                                                    0.,
-                                                    0.,
-                                                    0.,
                                                     0.
                                                   |]),
                                                   Uint16Array.make([|
                                                     2,
-                                                    3,
-                                                    3,
+                                                    1,
+                                                    0,
+                                                    0,
+                                                    1,
                                                     2,
-                                                    3,
+                                                    0,
+                                                    1,
                                                     2,
-                                                    0,
-                                                    0,
-                                                    0,
                                                     0
                                                   |])
                                                 )
@@ -332,6 +351,7 @@ let _ =
                                     (gameObject1, gameObject2, gameObject3),
                                     (geometry1, geometry2, geometry3),
                                     (vertices1, vertices2, vertices3),
+                                    (texCoords1, texCoords2, texCoords3),
                                     (normals1, normals2, normals3),
                                     (indices1, indices2, indices3)
                                   ) =
@@ -342,18 +362,20 @@ let _ =
                                          gameObject1,
                                          geometry1
                                        );
-                                  let {verticesInfos, normalsInfos, indicesInfos} =
+                                  let {verticesInfos, texCoordsInfos, normalsInfos, indicesInfos} =
                                     state |> CustomGeometryTool.getRecord;
                                   (
                                     verticesInfos |> Uint8Array.slice(~start=0, ~end_=6),
+                                    texCoordsInfos |> Uint8Array.slice(~start=0, ~end_=6),
                                     normalsInfos |> Uint8Array.slice(~start=0, ~end_=6),
                                     indicesInfos |> Uint8Array.slice(~start=0, ~end_=6)
                                   )
                                   |>
                                   expect == (
-                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|]),
-                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|]),
-                                              Uint8Array.make([|0, 1, 0, 2, 2, 5|])
+                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|]),
+                                              Uint8Array.make([|0, 2, 0, 2, 2, 4|]),
+                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|]),
+                                              Uint8Array.make([|0, 3, 0, 3, 3, 6|])
                                             )
                                 }
                               )
@@ -367,6 +389,7 @@ let _ =
                                 (gameObject1, gameObject2, gameObject3),
                                 (geometry1, geometry2, geometry3),
                                 (vertices1, vertices2, vertices3),
+                                (texCoords1, texCoords2, texCoords3),
                                 (normals1, normals2, normals3),
                                 (indices1, indices2, indices3)
                               ) =
@@ -383,12 +406,13 @@ let _ =
                                      gameObject3,
                                      geometry3
                                    );
-                              let {verticesOffset, normalsOffset, indicesOffset} =
+                              let {verticesOffset, texCoordsOffset, normalsOffset, indicesOffset} =
                                 state |> CustomGeometryTool.getRecord;
-                              (verticesOffset, normalsOffset, indicesOffset)
+                              (verticesOffset, texCoordsOffset, normalsOffset, indicesOffset)
                               |>
                               expect == (
                                           vertices2 |> Float32Array.length,
+                                          texCoords2 |> Float32Array.length,
                                           normals2 |> Float32Array.length,
                                           indices2 |> Uint16Array.length
                                         )
@@ -403,6 +427,7 @@ let _ =
                                 (gameObject1, gameObject2, gameObject3),
                                 (geometry1, geometry2, geometry3),
                                 (vertices1, vertices2, vertices3),
+                                (texCoords1, texCoords2, texCoords3),
                                 (normals1, normals2, normals3),
                                 (indices1, indices2, indices3)
                               ) =
@@ -427,6 +452,7 @@ let _ =
                                 (gameObject1, gameObject2, gameObject3),
                                 (geometry1, geometry2, geometry3),
                                 (vertices1, vertices2, vertices3),
+                                (texCoords1, texCoords2, texCoords3),
                                 (normals1, normals2, normals3),
                                 (indices1, indices2, indices3)
                               ) =
@@ -455,6 +481,7 @@ let _ =
                                         (gameObject1, gameObject2, gameObject3),
                                         (geometry1, geometry2, geometry3),
                                         (vertices1, vertices2, vertices3),
+                                        (texCoords1, texCoords2, texCoords3),
                                         (normals1, normals2, normals3),
                                         (indices1, indices2, indices3)
                                       ) =
@@ -493,6 +520,7 @@ let _ =
                                     (gameObject1, gameObject2, gameObject3),
                                     (geometry1, geometry2, geometry3),
                                     (vertices1, vertices2, vertices3),
+                                    (texCoords1, texCoords2, texCoords3),
                                     (normals1, normals2, normals3),
                                     (indices1, indices2, indices3)
                                   ) =
@@ -517,6 +545,7 @@ let _ =
                                 (gameObject1, gameObject2, gameObject3),
                                 (geometry1, geometry2, geometry3),
                                 (vertices1, vertices2, vertices3),
+                                (texCoords1, texCoords2, texCoords3),
                                 (normals1, normals2, normals3),
                                 (indices1, indices2, indices3)
                               ) =
@@ -526,6 +555,7 @@ let _ =
                                 (gameObject1, gameObject2, gameObject3),
                                 (geometry1, geometry2, geometry3),
                                 (vertices1, vertices2, vertices3),
+                                (texCoords1, texCoords2, texCoords3),
                                 (normals1, normals2, normals3),
                                 (indices1, indices2, indices3)
                               )

@@ -8,7 +8,7 @@ open GameObjectBasicMaterialService;
 
 open OperateBasicMaterialMainService;
 
-open DisposeBasicMaterialService;
+open DisposeBasicMaterialMainService;
 
 let createBasicMaterial = (state) => [@bs] create(state);
 

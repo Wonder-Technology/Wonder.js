@@ -211,6 +211,21 @@ let _ =
                 "test dispose not shared material",
                 () => {
                   test(
+                    "reset textureCount to 0 from textureCountMap",
+                    () => {
+                      open BasicMaterialType;
+                      let (state, gameObject1, (material1, _)) =
+                        BasicMaterialTool.createGameObjectWithMap(state^);
+                      let state =
+                        state
+                        |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
+                             gameObject1,
+                             material1
+                           );
+                      BasicMaterialTool.getTextureCount(material1, state) |> expect == 0
+                    }
+                  );
+                  test(
                     "remove from gameObjectMap",
                     () => {
                       open BasicMaterialType;
@@ -286,6 +301,94 @@ let _ =
                                 )
                               )
                           )
+                      );
+                      describe(
+                        "test map typeArrays",
+                        () => {
+                          let _testRemoveFromTypeArr =
+                              (
+                                state,
+                                valueTuple,
+                                defaultValue,
+                                (createGameObjectFunc, getValueFunc, setValueFunc)
+                              ) =>
+                            AllMaterialTool.testRemoveFromTypeArrWithMap(
+                              state,
+                              valueTuple,
+                              defaultValue,
+                              (
+                                GameObjectTool.disposeGameObjectBasicMaterialComponent,
+                                createGameObjectFunc,
+                                getValueFunc,
+                                setValueFunc
+                              )
+                            );
+                          describe(
+                            "remove from textureIndices",
+                            () =>
+                              test(
+                                "reset material's all texture indices",
+                                () => {
+                                  open Js.Typed_array;
+                                  open BasicMaterialType;
+                                  let state =
+                                    TestTool.initWithoutBuildFakeDom(
+                                      ~sandbox,
+                                      ~buffer=
+                                        SettingTool.buildBufferConfigStr(
+                                          ~textureCountPerMaterial=2,
+                                          ()
+                                        ),
+                                      ()
+                                    );
+                                  let (state, gameObject1, (material1, _)) =
+                                    BasicMaterialTool.createGameObjectWithMap(state);
+                                  let {textureIndices} = BasicMaterialTool.getRecord(state);
+                                  let sourceIndex =
+                                    BasicMaterialTool.getTextureIndicesIndex(material1, state);
+                                  Uint32Array.unsafe_set(textureIndices, sourceIndex, 1);
+                                  Uint32Array.unsafe_set(textureIndices, sourceIndex + 1, 2);
+                                  Uint32Array.unsafe_set(textureIndices, sourceIndex + 2, 3);
+                                  let defaultTextureIndex =
+                                    BasicMaterialTool.getDefaultTextureIndex();
+                                  let state =
+                                    state
+                                    |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
+                                         gameObject1,
+                                         material1
+                                       );
+                                  textureIndices
+                                  |> Uint32Array.slice(~start=0, ~end_=5)
+                                  |>
+                                  expect == Uint32Array.make([|
+                                              defaultTextureIndex,
+                                              defaultTextureIndex,
+                                              3,
+                                              0,
+                                              0
+                                            |])
+                                }
+                              )
+                          );
+                          describe(
+                            "remove from mapUnits",
+                            () =>
+                              test(
+                                "reset removed one's value",
+                                () =>
+                                  _testRemoveFromTypeArr(
+                                    state,
+                                    (1, 2),
+                                    TextureTool.getDefaultUnit(),
+                                    (
+                                      BasicMaterialTool.createGameObjectWithMap,
+                                      BasicMaterialTool.getMapUnit,
+                                      BasicMaterialTool.setMapUnit
+                                    )
+                                  )
+                              )
+                          )
+                        }
                       )
                     }
                   )

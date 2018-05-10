@@ -13,6 +13,13 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
+let createGameObjectWithMap = (state) => {
+  let (state, gameObject, material) = createGameObject(state);
+  let (state, texture) = TextureAPI.createTexture(state);
+  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
+  (state, gameObject, (material, texture))
+};
+
 let createGameObjectWithMaterial = (material, state) => {
   open GameObjectAPI;
   let (state, gameObject) = state |> createGameObject;
@@ -76,3 +83,17 @@ let getTextureCount = (material, state) =>
 
 let getMapUnit = (material, state) =>
   OperateTypeArrayBasicMaterialService.getMapUnit(material, getRecord(state).mapUnits);
+
+let setMapUnit = (material, unit, state) => {
+  OperateTypeArrayBasicMaterialService.setMapUnit(material, unit, getRecord(state).mapUnits)
+  |> ignore;
+  state
+};
+
+let getTextureIndicesIndex = (material, state) =>
+  BufferBasicMaterialService.getTextureIndicesIndex(
+    material,
+    BufferSettingService.getTextureCountPerBasicMaterial(state.settingRecord)
+  );
+
+let getDefaultTextureIndex = () => BufferBasicMaterialService.getDefaultTextureIndex();

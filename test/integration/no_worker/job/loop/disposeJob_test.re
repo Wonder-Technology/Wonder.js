@@ -353,12 +353,10 @@ let _ =
                               let {vertexArrayBufferPool, elementArrayBufferPool} =
                                 VboBufferTool.getVboBufferRecord(state);
                               (
-                                vertexArrayBufferPool
-                                |> WonderCommonlib.SparseMapService.has(geometry1),
-                                elementArrayBufferPool
-                                |> WonderCommonlib.SparseMapService.has(geometry1)
+                                vertexArrayBufferPool |> SparseMapService.length,
+                                elementArrayBufferPool |> SparseMapService.length
                               )
-                              |> expect == (true, true)
+                              |> expect == (3, 1)
                             }
                           );
                           test(
@@ -372,6 +370,7 @@ let _ =
                               let state = state |> DisposeJob.execJob(None);
                               let {
                                 boxGeometryVertexBufferMap,
+                                boxGeometryTexCoordBufferMap,
                                 boxGeometryNormalBufferMap,
                                 boxGeometryElementArrayBufferMap
                               } =
@@ -379,12 +378,14 @@ let _ =
                               (
                                 boxGeometryVertexBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1),
+                                boxGeometryTexCoordBufferMap
+                                |> WonderCommonlib.SparseMapService.has(geometry1),
                                 boxGeometryNormalBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1),
                                 boxGeometryElementArrayBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1)
                               )
-                              |> expect == (false, false, false)
+                              |> expect == (false, false, false, false)
                             }
                           )
                         }
@@ -423,7 +424,7 @@ let _ =
                                 vertexArrayBufferPool |> SparseMapService.length,
                                 elementArrayBufferPool |> SparseMapService.length
                               )
-                              |> expect == (2 * 1, 1 * 1)
+                              |> expect == (3 * 1, 1 * 1)
                             }
                           );
                           test(
@@ -434,6 +435,7 @@ let _ =
                               let state = state |> DisposeJob.execJob(None);
                               let {
                                 customGeometryVertexBufferMap,
+                                customGeometryTexCoordBufferMap,
                                 customGeometryNormalBufferMap,
                                 customGeometryElementArrayBufferMap
                               } =
@@ -441,12 +443,14 @@ let _ =
                               (
                                 customGeometryVertexBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1),
+                                customGeometryTexCoordBufferMap
+                                |> WonderCommonlib.SparseMapService.has(geometry1),
                                 customGeometryNormalBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1),
                                 customGeometryElementArrayBufferMap
                                 |> WonderCommonlib.SparseMapService.has(geometry1)
                               )
-                              |> expect == (false, false, false)
+                              |> expect == (false, false, false, false)
                             }
                           )
                         }
