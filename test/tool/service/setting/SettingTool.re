@@ -12,10 +12,6 @@ let createGetContextStub = (fakeGl, sandbox) =>
   createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(fakeGl);
 
 let buildFakeGl = (sandbox) => {
-  "VERTEX_SHADER": 0,
-  "FRAGMENT_SHADER": 1,
-  "HIGH_FLOAT": 2,
-  "MEDIUM_FLOAT": 3,
   "viewport": createEmptyStub(refJsObjToSandbox(sandbox^)),
   "getParameter": createEmptyStub(refJsObjToSandbox(sandbox^)),
   "getShaderPrecisionFormat":

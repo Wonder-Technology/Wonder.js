@@ -59,16 +59,15 @@ let _detectPrecision = (gl, record) => {
 };
 
 /* TODO checkout maxTextureUnit should >= textureCountPerBasicMaterial in settingRecord */
-let _getTextureCapabilty = (gl, record) => {
+let _getTextureCapability = (gl, record) => {
   ...record,
   maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits))
 };
 
-let _detectCapabilty = (gl, record) =>
-  /* TODO test */
-  record |> _getTextureCapabilty(gl) |> _detectPrecision(gl);
+let _detectCapability = (gl, record) =>
+  record |> _getTextureCapability(gl) |> _detectPrecision(gl);
 
-let detect = (gl, record) => record |> _detectExtension(gl) |> _detectCapabilty(gl);
+let detect = (gl, record) => record |> _detectExtension(gl) |> _detectCapability(gl);
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 
