@@ -65,7 +65,7 @@ let reduceObjectInstanceTransformCollection =
     );
   for (i in startIndex to endIndex) {
     result :=
-      [@bs] reduceFunc(result^, TypeArrayService.getUInt32_1(i, objectInstanceTransformCollections))
+      [@bs] reduceFunc(result^, TypeArrayService.getUint32_1(i, objectInstanceTransformCollections))
   };
   result^
 };
@@ -107,7 +107,7 @@ let addObjectInstanceTransform =
   (
     objectInstanceTransformIndexMap
     |> WonderCommonlib.SparseMapService.set(sourceInstance, objectInstanceTransformIndex |> succ),
-    TypeArrayService.setUInt32_1(
+    TypeArrayService.setUint32_1(
       BufferSourceInstanceService.getObjectInstanceTransformIndex(
         sourceInstance,
         objectInstanceTransformIndex,

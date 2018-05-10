@@ -1,11 +1,11 @@
 open Js.Typed_array;
 
-let getUInt8_1 = (index: int, typeArray: Uint8Array.t) => Uint8Array.unsafe_get(typeArray, index);
+let getUint8_1 = (index: int, typeArray: Uint8Array.t) => Uint8Array.unsafe_get(typeArray, index);
 
-let getUInt16_1 = (index: int, typeArray: Uint16Array.t) =>
+let getUint16_1 = (index: int, typeArray: Uint16Array.t) =>
   Uint16Array.unsafe_get(typeArray, index);
 
-let getUInt32_1 = (index: int, typeArray: Uint32Array.t) =>
+let getUint32_1 = (index: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_get(typeArray, index);
 
 let getFloat1 = (index: int, typeArray: Float32Array.t) =>
@@ -28,17 +28,17 @@ let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index + 2)
 );
 
-let setUInt8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
+let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
   Uint8Array.unsafe_set(typeArray, index, value);
   typeArray
 };
 
-let setUInt16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
+let setUint16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
   Uint16Array.unsafe_set(typeArray, index, value);
   typeArray
 };
 
-let setUInt32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
+let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
   Uint32Array.unsafe_set(typeArray, index, value);
   typeArray
 };

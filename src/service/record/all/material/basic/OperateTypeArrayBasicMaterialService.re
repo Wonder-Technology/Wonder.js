@@ -6,24 +6,24 @@ let setColor = (index, data, typeArr) =>
   TypeArrayService.setFloat3(getColorIndex(index), data, typeArr);
 
 let getTextureIndex = ((index, textureIndex, textureCountPerBasicMaterial), typeArr) =>
-  TypeArrayService.getUInt32_1(
+  TypeArrayService.getUint32_1(
     getTextureIndexIndex(index, textureIndex, textureCountPerBasicMaterial),
     typeArr
   );
 
 let setTextureIndex = ((index, textureIndex, textureCountPerBasicMaterial), data, typeArr) =>
-  TypeArrayService.setUInt32_1(
+  TypeArrayService.setUint32_1(
     getTextureIndexIndex(index, textureIndex, textureCountPerBasicMaterial),
     data,
     typeArr
   );
 
 /* let getTextureCount = (index, typeArr) =>
-     TypeArrayService.getUInt8_1(getTextureCountIndex(index), typeArr);
+     TypeArrayService.getUint8_1(getTextureCountIndex(index), typeArr);
 
    let setTextureCount = (index, data, typeArr) =>
-     TypeArrayService.setUInt8_1(getTextureCountIndex(index), data, typeArr); */
-let getMapUnit = (index, typeArr) => TypeArrayService.getUInt8_1(getMapUnitIndex(index), typeArr);
+     TypeArrayService.setUint8_1(getTextureCountIndex(index), data, typeArr); */
+let getMapUnit = (index, typeArr) => TypeArrayService.getUint8_1(getMapUnitIndex(index), typeArr);
 
 let setMapUnit = (index, data, typeArr) =>
-  TypeArrayService.setUInt8_1(getMapUnitIndex(index), data, typeArr);
+  TypeArrayService.setUint8_1(getMapUnitIndex(index), data, typeArr);

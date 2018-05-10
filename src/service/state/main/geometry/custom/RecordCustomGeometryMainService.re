@@ -17,7 +17,7 @@ let setDefaultTypeArrData = (count: int, (vertices, texCoords, normals, indices)
            TypeArrayService.setFloat1(getVertexIndex(index), 0., vertices),
            TypeArrayService.setFloat1(getVertexIndex(index), 0., texCoords),
            TypeArrayService.setFloat1(getVertexIndex(index), 0., normals),
-           TypeArrayService.setUInt16_1(getIndexIndex(index), 0, indices)
+           TypeArrayService.setUint16_1(getIndexIndex(index), 0, indices)
          )
        ),
        (vertices, texCoords, normals, indices)
