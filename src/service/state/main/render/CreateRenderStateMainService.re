@@ -105,7 +105,8 @@ let createRenderState =
       heights: textureRecord.heights,
       isNeedUpdates: textureRecord.isNeedUpdates,
       sourceMap: textureRecord.sourceMap,
-      glTextureMap: textureRecord.glTextureMap
+      glTextureMap: textureRecord.glTextureMap,
+      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {

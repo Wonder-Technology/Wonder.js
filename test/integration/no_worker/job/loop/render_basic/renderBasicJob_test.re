@@ -740,24 +740,6 @@ let _ =
       describe(
         "bind map",
         () => {
-          /*
-           TODO test cache
-           it("if texture of the specific unit is cached, not bind and active it again", function () {
-               directorTool.init(state);
-
-               directorTool.loopBody(state);
-
-
-               expect(gl.activeTexture).toCalledOnce();
-               expect(gl.bindTexture).toCalledOnce();
-
-
-               directorTool.loopBody(state);
-
-
-               expect(gl.activeTexture).toCalledOnce();
-               expect(gl.bindTexture).toCalledOnce();
-           }); */
           test(
             "if not has map, not bind",
             () => {
@@ -801,19 +783,33 @@ let _ =
                 (state, (texture2D, glTexture), (activeTexture, bindTexture))
               };
               test(
-                "active texture unit 0",
+                "if texture of the specific unit is cached, not bind and active it again",
                 () => {
                   let (state, _, (activeTexture, _)) = _prepare(state^);
                   let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  activeTexture |> expect |> toCalledWith([|0|])
+                  let state = state |> DirectorTool.runWithDefaultTime;
+                  activeTexture |> expect |> toCalledOnce
                 }
               );
-              test(
-                "bind gl texture to TEXTURE_2D target",
+              describe(
+                "else",
                 () => {
-                  let (state, (texture2D, glTexture), (_, bindTexture)) = _prepare(state^);
-                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                  bindTexture |> expect |> toCalledWith([|texture2D, glTexture|])
+                  test(
+                    "active texture unit 0",
+                    () => {
+                      let (state, _, (activeTexture, _)) = _prepare(state^);
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      activeTexture |> expect |> toCalledWith([|0|])
+                    }
+                  );
+                  test(
+                    "bind gl texture to TEXTURE_2D target",
+                    () => {
+                      let (state, (texture2D, glTexture), (_, bindTexture)) = _prepare(state^);
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                      bindTexture |> expect |> toCalledWith([|texture2D, glTexture|])
+                    }
+                  )
                 }
               )
             }

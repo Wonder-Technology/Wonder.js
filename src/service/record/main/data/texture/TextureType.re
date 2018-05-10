@@ -6,5 +6,6 @@ type textureRecord = {
   isNeedUpdates: Js.Typed_array.Uint8Array.t,
   sourceMap: WonderCommonlib.SparseMapService.t(DomType.imageElement),
   glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
+  bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
   disposedIndexArray: array(int)
 };

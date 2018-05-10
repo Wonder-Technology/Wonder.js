@@ -52,6 +52,7 @@ let create = ({settingRecord} as state) => {
       isNeedUpdates,
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
+      bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
     });
   state
