@@ -33,6 +33,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
+  let textureRecord = RecordTextureMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
     "operateType": operateType,
@@ -46,7 +47,8 @@ let _buildData = (operateType, canvas, stateData) => {
       "transformDataBufferCount": buffer.transformDataBufferCount,
       "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
       "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount,
-      "textureCountPerMaterial": buffer.textureCountPerMaterial
+      "textureCountPerMaterial": buffer.textureCountPerMaterial,
+      "textureDataBufferCount": buffer.textureDataBufferCount
     },
     "gpuData": {"useHardwareInstance": useHardwareInstance},
     "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},
@@ -97,6 +99,13 @@ let _buildData = (operateType, canvas, stateData) => {
     "sourceInstanceData": {
       "buffer": sourceInstanceRecord.buffer,
       "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
+    },
+    "textureData": {
+      "buffer": textureRecord.buffer,
+      "index": textureRecord.index,
+      /* TODO perf: add needAddedImageDataArr->arrayBuffer to transfer list */
+      "needAddedImageDataArr":
+        OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(textureRecord.needAddedSourceArray)
     }
   }
 };
@@ -120,6 +129,12 @@ let execJob = (flags, stateData) =>
            _buildData(operateType, offscreen, stateData),
            [|offscreen|]
          );
+      /* TODO test */
+      let state =
+        state
+        |> OperateTextureMainService.clearNeedAddedSourceArr
+        |> InitTextureMainService.clearNeedInitedTextureIndexArray;
+      StateDataMainService.setState(stateData, state);
       Some(operateType)
     }
   );

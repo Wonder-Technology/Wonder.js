@@ -2,10 +2,10 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerLightMaterialType;
 
-let _createTypeArrays = (count, state) => {
-  let {buffer} as lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
+let _createTypeArrays = (buffer, count, state) => {
   let (shaderIndices, diffuseColors, specularColors, shininess) =
     CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
+  let lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
   state.lightMaterialRecord =
     Some({
       ...lightMaterialRecord,
@@ -25,7 +25,7 @@ let execJob = (_, e, stateData) =>
       let lightMaterialData = data##lightMaterialData;
       let count = data##bufferData##lightMaterialDataBufferCount;
       state
-      |> _createTypeArrays(count)
+      |> _createTypeArrays(lightMaterialData##buffer, count)
       |> InitMaterialRenderWorkerJobUtils.initMaterials(
            (
              CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState,

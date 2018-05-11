@@ -1,7 +1,12 @@
+open TextureType;
+
 let initTexture = (texture, state) =>
   WorkerDetectMainService.isUseWorker(state) ?
-    /* TODO finish */
-    state :
+    {
+      let {needInitedTextureIndexArray} = RecordTextureMainService.getRecord(state);
+      needInitedTextureIndexArray |> ArrayService.push(texture) |> ignore;
+      state
+    } :
     (
       switch texture {
       | None => state
@@ -15,3 +20,9 @@ let initTexture = (texture, state) =>
         state
       }
     );
+
+let clearNeedInitedTextureIndexArray = (state) => {
+  ...state,
+  textureRecord:
+    Some({...RecordTextureMainService.getRecord(state), needInitedTextureIndexArray: [||]})
+};

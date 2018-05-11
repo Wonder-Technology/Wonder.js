@@ -29,6 +29,7 @@ let _buildData = (operateType, stateData) => {
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let lightRenderObjectRecord = OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
+  let textureRecord = RecordTextureMainService.getRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
@@ -77,6 +78,13 @@ let _buildData = (operateType, stateData) => {
               lightMaterialRecord.gameObjectMap,
               gameObjectRecord
             )
+        },
+        "textureData": {
+          "needAddedImageDataArr":
+            OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+              textureRecord.needAddedSourceArray
+            ),
+          "needInitedTextureIndexArr": textureRecord.needInitedTextureIndexArr
         }
       }
     },
@@ -100,6 +108,17 @@ let _buildData = (operateType, stateData) => {
   }
 };
 
+let _clearData = (state) => {
+  InitBasicMaterialService.clearDataForWorkerInit(RecordBasicMaterialMainService.getRecord(state))
+  |> ignore;
+  InitLightMaterialService.clearDataForWorkerInit(RecordLightMaterialMainService.getRecord(state))
+  |> ignore;
+  /* TODO test */
+  state
+  |> OperateTextureMainService.clearNeedAddedSourceArr
+  |> InitTextureMainService.clearNeedInitedTextureIndexArray
+};
+
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
@@ -107,14 +126,7 @@ let execJob = (flags, stateData) =>
       let operateType = JobConfigUtils.getOperateType(flags);
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessage(_buildData(operateType, stateData));
-      InitBasicMaterialService.clearDataForWorkerInit(
-        RecordBasicMaterialMainService.getRecord(state)
-      )
-      |> ignore;
-      InitLightMaterialService.clearDataForWorkerInit(
-        RecordLightMaterialMainService.getRecord(state)
-      )
-      |> ignore;
+      let state = state |> _clearData;
       StateDataMainService.setState(stateData, state);
       Some(operateType)
     }

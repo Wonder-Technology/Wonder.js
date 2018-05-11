@@ -7,11 +7,45 @@ let unsafeGetSource = (texture, state) => {
   TextureSourceMapService.unsafeGetSource(texture, sourceMap)
 };
 
-let setSource = (texture, source, state) => {
-  let {sourceMap} = RecordTextureMainService.getRecord(state);
-  TextureSourceMapService.setSource(texture, source, sourceMap) |> ignore;
-  state
+let setSource = (texture, source, state) =>
+  WorkerDetectMainService.isUseWorker(state) ?
+    {
+      let {sourceMap, needAddedSourceArray} = RecordTextureMainService.getRecord(state);
+      TextureSourceMapService.setSource(texture, source, sourceMap) |> ignore;
+      needAddedSourceArray |> ArrayService.push((texture, source)) |> ignore;
+      state
+    } :
+    {
+      let {sourceMap} = RecordTextureMainService.getRecord(state);
+      TextureSourceMapService.setSource(texture, source, sourceMap) |> ignore;
+      state
+    };
+
+let clearNeedAddedSourceArr = (state) => {
+  ...state,
+  textureRecord: Some({...RecordTextureMainService.getRecord(state), needAddedSourceArray: [||]})
 };
+
+let convertNeedAddedSourceArrayToImageDataArr = (needAddedSourceArray) =>
+  needAddedSourceArray
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
+       (
+         (imageDataArr, (texture, source)) => {
+           let width = source##width;
+           let height = source##height;
+           imageDataArr
+           |> ArrayService.push((
+                ImageDataService.getImageData(source, width, height)
+                |> ImageDataService.getArrayBuffer,
+                width,
+                height,
+                texture
+              ))
+         }
+       ),
+       [||]
+     );
 
 let getWrapS = (texture, state) => {
   let {wrapSs} = RecordTextureMainService.getRecord(state);

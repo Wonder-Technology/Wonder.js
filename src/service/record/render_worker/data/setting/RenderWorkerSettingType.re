@@ -10,5 +10,6 @@ type instanceBuffer = {
 type settingRecord = {
   gpu: option(gpu),
   instanceBuffer: option(instanceBuffer),
+  textureCountPerMaterial: option(int),
   memory: option(memory)
 };

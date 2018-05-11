@@ -69,6 +69,9 @@
         "name": "init_light_material"
     },
     {
+        "name": "init_texture"
+    },
+    {
         "name": "send_finish_init_render_data",
         "flags": [
             "FINISH_INIT_RENDER"
@@ -105,6 +108,9 @@
     },
     {
         "name": "init_material_for_render"
+    },
+    {
+        "name": "init_texture_for_render"
     },
     {
         "name": "clear_last_send_component"

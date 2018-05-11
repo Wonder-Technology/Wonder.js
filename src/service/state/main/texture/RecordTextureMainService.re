@@ -61,7 +61,9 @@ let create = ({settingRecord} as state) => {
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
       bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needAddedSourceArray: [||],
+      needInitedTextureIndexArray: [||]
     });
   state
 };

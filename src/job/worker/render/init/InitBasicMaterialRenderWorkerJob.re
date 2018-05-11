@@ -2,14 +2,14 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerBasicMaterialType;
 
-let _createTypeArrays = (basicMaterialCount, textureCountPerMaterial, state) => {
-  let {buffer} as basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
+let _createTypeArrays = (buffer, basicMaterialCount, textureCountPerMaterial, state) => {
   let (shaderIndices, colors, textureIndices, mapUnits) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
       textureCountPerMaterial
     );
+  let basicMaterialRecord = RecordBasicMaterialRenderWorkerService.getRecord(state);
   state.basicMaterialRecord =
     Some({
       ...basicMaterialRecord,
@@ -30,7 +30,7 @@ let execJob = (_, e, stateData) =>
       let basicMaterialCount = data##bufferData##basicMaterialDataBufferCount;
       let textureCountPerMaterial = data##bufferData##textureCountPerMaterial;
       state
-      |> _createTypeArrays(basicMaterialCount, textureCountPerMaterial)
+      |> _createTypeArrays(basicMaterialData##buffer, basicMaterialCount, textureCountPerMaterial)
       |> InitMaterialRenderWorkerJobUtils.initMaterials(
            (
              CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState,

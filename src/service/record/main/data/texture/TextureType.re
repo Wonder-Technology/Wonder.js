@@ -9,5 +9,7 @@ type textureRecord = {
   sourceMap: WonderCommonlib.SparseMapService.t(DomType.imageElement),
   glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
-  disposedIndexArray: array(int)
+  disposedIndexArray: array(int),
+  needAddedSourceArray: array((int, DomType.imageElement)),
+  needInitedTextureIndexArray: array(int)
 };

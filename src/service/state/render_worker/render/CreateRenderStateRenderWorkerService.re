@@ -14,6 +14,8 @@ open RenderWorkerDirectionLightType;
 
 open RenderWorkerPointLightType;
 
+open RenderWorkerTextureType;
+
 open RenderWorkerSourceInstanceType;
 
 open RenderWorkerTransformType;
@@ -53,6 +55,7 @@ let createRenderState =
   let ambientLightRecord = RecordAmbientLightRenderWorkerService.getRecord(state);
   let directionLightRecord = RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
+  let textureRecord = RecordTextureRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
   let {
     objectInstanceTransformCollections,
@@ -69,8 +72,8 @@ let createRenderState =
           objectInstanceCountPerSourceInstance:
             BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
         }),
-      /* TODO finish */
-      textureCountPerMaterial: Some(Obj.magic(1))
+      textureCountPerMaterial:
+        BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
     },
     glslSenderRecord,
     programRecord,
@@ -103,8 +106,16 @@ let createRenderState =
       specularColors: lightMaterialRecord.specularColors |> OptionService.unsafeGet,
       shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet
     },
-    /* TODO finish */
-    textureRecord: Obj.magic(1),
+    textureRecord: {
+      wrapSs: textureRecord.wrapSs |> OptionService.unsafeGet,
+      wrapTs: textureRecord.wrapTs |> OptionService.unsafeGet,
+      magFilters: textureRecord.magFilters |> OptionService.unsafeGet,
+      minFilters: textureRecord.minFilters |> OptionService.unsafeGet,
+      isNeedUpdates: textureRecord.isNeedUpdates |> OptionService.unsafeGet,
+      sourceMap: textureRecord.sourceMap |> Obj.magic,
+      glTextureMap: textureRecord.glTextureMap,
+      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap
+    },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
       index: directionLightRecord.index,
