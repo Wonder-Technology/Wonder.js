@@ -8,14 +8,14 @@ open BufferCustomGeometryService;
 
 let getRecord = ({customGeometryRecord}) => customGeometryRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData = (count: int, (vertices, texCoords, normals, indices)) =>
-  WonderCommonlib.ArrayService.range(0, count - 1)
+let setDefaultTypeArrData = (geometryCount: int, (vertices, texCoords, normals, indices)) =>
+  WonderCommonlib.ArrayService.range(0, geometryCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          ((vertices, texCoords, normals, indices), index) => (
            TypeArrayService.setFloat1(getVertexIndex(index), 0., vertices),
-           TypeArrayService.setFloat1(getVertexIndex(index), 0., texCoords),
+           TypeArrayService.setFloat1(getTexCoordsIndex(index), 0., texCoords),
            TypeArrayService.setFloat1(getVertexIndex(index), 0., normals),
            TypeArrayService.setUint16_1(getIndexIndex(index), 0, indices)
          )
@@ -23,8 +23,8 @@ let setDefaultTypeArrData = (count: int, (vertices, texCoords, normals, indices)
        (vertices, texCoords, normals, indices)
      );
 
-let _initBufferData = (count) => {
-  let buffer = createBuffer(count);
+let _initBufferData = (geometryPointDataBufferCount, geometryDataBufferCount) => {
+  let buffer = createBuffer(geometryPointDataBufferCount, geometryDataBufferCount);
   let (
     vertices,
     texCoords,
@@ -35,7 +35,11 @@ let _initBufferData = (count) => {
     normalsInfos,
     indicesInfos
   ) =
-    CreateTypeArrayCustomGeometryService.createTypeArrays(buffer, count);
+    CreateTypeArrayCustomGeometryService.createTypeArrays(
+      buffer,
+      geometryPointDataBufferCount,
+      geometryDataBufferCount
+    );
   (
     buffer,
     vertices,
@@ -50,10 +54,22 @@ let _initBufferData = (count) => {
 };
 
 let create = ({settingRecord} as state) => {
-  let geometryDataBufferCount =
+  let geometryPointDataBufferCount =
     BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
-  let (buffer, vertices, texCoords, normals, indices, verticesInfos, texCoordsInfos, normalsInfos, indicesInfos) =
-    _initBufferData(geometryDataBufferCount);
+  let geometryDataBufferCount =
+    BufferSettingService.getCustomGeometryDataBufferCount(settingRecord);
+  let (
+    buffer,
+    vertices,
+    texCoords,
+    normals,
+    indices,
+    verticesInfos,
+    texCoordsInfos,
+    normalsInfos,
+    indicesInfos
+  ) =
+    _initBufferData(geometryPointDataBufferCount, geometryDataBufferCount);
   state.customGeometryRecord =
     Some({
       index: 0,
@@ -110,9 +126,9 @@ let deepCopyForRestore = (state) => {
         index,
         vertices:
           vertices |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
-          /* TODO test */
+        /* TODO test */
         texCoords:
-          texCoords |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
+          texCoords |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getTexCoordsSize()),
         normals:
           normals |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
         indices:

@@ -13,6 +13,7 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
     | None =>
       Some({
         customGeometryPointDataBufferCount: 1000 * 1000,
+        customGeometryDataBufferCount: 1000,
         transformDataBufferCount: 10 * 1000,
         basicMaterialDataBufferCount: 10 * 1000,
         lightMaterialDataBufferCount: 10 * 1000,

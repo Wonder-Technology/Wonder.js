@@ -2,61 +2,94 @@ open Js.Typed_array;
 
 let getVertexSize = () => 3;
 
-let getVertexLength = (count) => count * getVertexSize();
+let getTexCoordsSize = () => 2;
 
-let getVerticesOffset = (count) => 0;
+let getVertexLength = (customGeometryPointDataBufferCount) =>
+  customGeometryPointDataBufferCount * getVertexSize();
 
-let getTexCoordsOffset = (count) =>
-  getVerticesOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
+let getTexCoordsLength = (customGeometryPointDataBufferCount) =>
+  customGeometryPointDataBufferCount * getTexCoordsSize();
 
-let getNormalsOffset = (count) =>
-  getTexCoordsOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
+let getVerticesOffset = (customGeometryPointDataBufferCount) => 0;
+
+let getTexCoordsOffset = (customGeometryPointDataBufferCount) =>
+  getVerticesOffset(customGeometryPointDataBufferCount)
+  + getVertexLength(customGeometryPointDataBufferCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getNormalsOffset = (customGeometryPointDataBufferCount) =>
+  getTexCoordsOffset(customGeometryPointDataBufferCount)
+  + getTexCoordsLength(customGeometryPointDataBufferCount)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getIndexSize = () => 1;
 
-let getIndicesLength = (count) => count * getIndexSize();
+let getIndicesLength = (customGeometryPointDataBufferCount) =>
+  customGeometryPointDataBufferCount * getIndexSize();
 
-let getIndicesOffset = (count) =>
-  getNormalsOffset(count) + getVertexLength(count) * Float32Array._BYTES_PER_ELEMENT;
+let getIndicesOffset = (customGeometryPointDataBufferCount) =>
+  getNormalsOffset(customGeometryPointDataBufferCount)
+  + getVertexLength(customGeometryPointDataBufferCount)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getInfoSize = () => 2;
 
-let getVerticesInfosLength = (count) => count * getInfoSize();
+let getVerticesInfosLength = (customGeometryDataBufferCount) =>
+  customGeometryDataBufferCount * getInfoSize();
 
-let getVerticesInfosOffset = (count) =>
-  getIndicesOffset(count) + getIndicesLength(count) * Uint16Array._BYTES_PER_ELEMENT;
+let getVerticesInfosOffset = (customGeometryPointDataBufferCount) =>
+  getIndicesOffset(customGeometryPointDataBufferCount)
+  + getIndicesLength(customGeometryPointDataBufferCount)
+  * Uint16Array._BYTES_PER_ELEMENT;
 
-let getTexCoordsInfosLength = (count) => count * getInfoSize();
+let getTexCoordsInfosLength = (customGeometryDataBufferCount) =>
+  customGeometryDataBufferCount * getInfoSize();
 
-let getTexCoordsInfosOffset = (count) =>
-  getVerticesInfosOffset(count) + getVerticesInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
+let getTexCoordsInfosOffset = (customGeometryPointDataBufferCount, customGeometryDataBufferCount) =>
+  getVerticesInfosOffset(customGeometryPointDataBufferCount)
+  + getVerticesInfosLength(customGeometryDataBufferCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
 
-let getNormalsInfosLength = (count) => count * getInfoSize();
+let getNormalsInfosLength = (customGeometryDataBufferCount) =>
+  customGeometryDataBufferCount * getInfoSize();
 
-let getNormalsInfosOffset = (count) =>
-  getTexCoordsInfosOffset(count) + getTexCoordsInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
+let getNormalsInfosOffset = (customGeometryPointDataBufferCount, customGeometryDataBufferCount) =>
+  getTexCoordsInfosOffset(customGeometryPointDataBufferCount, customGeometryDataBufferCount)
+  + getTexCoordsInfosLength(customGeometryDataBufferCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
 
-let getIndicesInfosLength = (count) => count * getInfoSize();
+let getIndicesInfosLength = (customGeometryDataBufferCount) =>
+  customGeometryDataBufferCount * getInfoSize();
 
-let getIndicesInfosOffset = (count) =>
-  getNormalsInfosOffset(count) + getNormalsInfosLength(count) * Uint32Array._BYTES_PER_ELEMENT;
+let getIndicesInfosOffset = (customGeometryPointDataBufferCount, customGeometryDataBufferCount) =>
+  getNormalsInfosOffset(customGeometryPointDataBufferCount, customGeometryDataBufferCount)
+  + getNormalsInfosLength(customGeometryDataBufferCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
 
 let getVertexIndex = (index) => index * getVertexSize();
+
+let getTexCoordsIndex = (index) => index * getTexCoordsSize();
 
 let getIndexIndex = (index) => index * getIndexSize();
 
 let getInfoIndex = (index) => index * getInfoSize();
 
-let getTotalByteLength = (count) =>
-  count
+let getTotalByteLength = (customGeometryPointDataBufferCount, customGeometryDataBufferCount) =>
+  customGeometryPointDataBufferCount
   * (
     Float32Array._BYTES_PER_ELEMENT
     * getVertexSize()
-    * 3
+    * 2
+    + Float32Array._BYTES_PER_ELEMENT
+    * getTexCoordsSize()
     + Uint16Array._BYTES_PER_ELEMENT
     * getIndexSize()
-    + Uint32Array._BYTES_PER_ELEMENT
-    * (getInfoSize() * 4)
-  );
+  )
+  + customGeometryDataBufferCount
+  * Uint32Array._BYTES_PER_ELEMENT
+  * (getInfoSize() * 4);
 
-let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));
+let createBuffer = (customGeometryPointDataBufferCount, customGeometryDataBufferCount) =>
+  Worker.newSharedArrayBuffer(
+    getTotalByteLength(customGeometryPointDataBufferCount, customGeometryDataBufferCount)
+  );

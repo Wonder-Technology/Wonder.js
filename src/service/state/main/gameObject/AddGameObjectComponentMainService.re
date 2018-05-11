@@ -160,7 +160,6 @@ let addCustomGeometryComponent = (uid: int, component: component, {gameObjectRec
            (
              uid,
              component,
-             /* gameObjectRecord.customGeometryMap, */
              GameObjectCustomGeometryService.getGameObject(component, customGeometryRecord)
            ),
            (

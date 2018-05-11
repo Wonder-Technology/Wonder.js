@@ -7,6 +7,9 @@ let getTransformDataBufferCount = (record) => (record |> unsafeGetBuffer).transf
 let getCustomGeometryPointDataBufferCount = (record) =>
   (record |> unsafeGetBuffer).customGeometryPointDataBufferCount;
 
+let getCustomGeometryDataBufferCount = (record) =>
+  (record |> unsafeGetBuffer).customGeometryDataBufferCount;
+
 let getBasicMaterialDataBufferCount = (record) =>
   (record |> unsafeGetBuffer).basicMaterialDataBufferCount;
 
@@ -22,5 +25,4 @@ let getObjectInstanceCountPerSourceInstance = (record) =>
 let getTextureCountPerBasicMaterial = (record) =>
   (record |> unsafeGetBuffer).textureCountPerMaterial;
 
-let getTextureDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).textureDataBufferCount;
+let getTextureDataBufferCount = (record) => (record |> unsafeGetBuffer).textureDataBufferCount;

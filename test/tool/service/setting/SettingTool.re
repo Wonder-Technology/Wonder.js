@@ -78,6 +78,7 @@ let buildSetting = (isDebug, canvasId, buffer, context, useHardwareInstance, use
 let buildBufferConfigStr =
     (
       ~customGeometryPointDataBufferCount=300,
+      ~customGeometryDataBufferCount=30,
       ~transformDataBufferCount=50,
       ~basicMaterialDataBufferCount=50,
       ~lightMaterialDataBufferCount=50,
@@ -89,6 +90,7 @@ let buildBufferConfigStr =
     ) => {j|
        {
             "custom_geometry_point_data_buffer_count": $customGeometryPointDataBufferCount,
+            "custom_geometry_data_buffer_count": $customGeometryDataBufferCount,
   "transform_data_buffer_count": $transformDataBufferCount,
   "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
   "light_material_data_buffer_count": $lightMaterialDataBufferCount,

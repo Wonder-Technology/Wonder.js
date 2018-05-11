@@ -42,6 +42,7 @@ let _buildData = (operateType, canvas, stateData) => {
     "viewportData": [|x, y, width, height|],
     "bufferData": {
       "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
+      "customGeometryDataBufferCount": buffer.customGeometryDataBufferCount,
       "transformDataBufferCount": buffer.transformDataBufferCount,
       "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
       "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount,

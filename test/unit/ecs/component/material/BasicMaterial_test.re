@@ -126,12 +126,11 @@ let _ =
             "unsafeGetBasicMaterialMap",
             () =>
               test(
-                "test default value",
+                "if has no map, error",
                 () => {
                   let (state, material) = createBasicMaterial(state^);
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state)
-                  |> Obj.magic
-                  |> expect == Js.Undefined.empty
+                  expect(() => BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state))
+                  |> toThrowMessage("expect data exist")
                 }
               )
           );
