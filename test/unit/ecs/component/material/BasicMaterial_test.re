@@ -123,13 +123,13 @@ let _ =
               )
           );
           describe(
-            "getBasicMaterialMap",
+            "unsafeGetBasicMaterialMap",
             () =>
               test(
                 "test default value",
                 () => {
                   let (state, material) = createBasicMaterial(state^);
-                  BasicMaterialAPI.getBasicMaterialMap(material, state)
+                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state)
                   |> Obj.magic
                   |> expect == Js.Undefined.empty
                 }
@@ -163,7 +163,7 @@ let _ =
                 "save texture index",
                 () => {
                   let (state, material, map) = _prepare(state^);
-                  BasicMaterialAPI.getBasicMaterialMap(material, state) |> expect == map
+                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state) |> expect == map
                 }
               )
             }

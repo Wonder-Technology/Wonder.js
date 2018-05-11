@@ -1667,9 +1667,25 @@ let _ =
                 () =>
                   describe(
                     "init basic material->map",
-                    () =>
+                    () => {
                       test(
-                        "init map",
+                        "if has no map, not init map",
+                        () => {
+                          let (state, gameObject, _, _) =
+                            InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
+                               );
+                          let state = AllMaterialTool.prepareForInit(state);
+                          let state = state |> initGameObject(gameObject);
+                          getCallCount(createTexture) |> expect == 0
+                        }
+                      );
+                      test(
+                        "else, init map",
                         () => {
                           let (state, gameObject, _, _) =
                             InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
@@ -1684,6 +1700,7 @@ let _ =
                           getCallCount(createTexture) |> expect == 1
                         }
                       )
+                    }
                   )
               )
             }

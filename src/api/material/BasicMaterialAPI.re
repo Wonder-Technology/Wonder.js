@@ -69,7 +69,7 @@ let setBasicMaterialColor = (material, color, state: StateDataMainType.state) =>
   setColor(material, color, state)
 };
 
-let getBasicMaterialMap = (material, state) => {
+let unsafeGetBasicMaterialMap = (material, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -85,7 +85,7 @@ let getBasicMaterialMap = (material, state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  getMap(material, state)
+  unsafeGetMap(material, state)
 };
 
 let setBasicMaterialMap = (material, texture, state) => {

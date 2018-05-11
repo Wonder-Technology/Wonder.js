@@ -234,7 +234,7 @@ let load = LoaderManagerAPI.load;
 
 let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
 
-let getBasicMaterialMap = BasicMaterialAPI.getBasicMaterialMap;
+let unsafeGetBasicMaterialMap = BasicMaterialAPI.unsafeGetBasicMaterialMap;
 
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
