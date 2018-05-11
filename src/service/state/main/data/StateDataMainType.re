@@ -82,6 +82,8 @@ open WorkerInstanceType;
 
 open WorkerDetectType;
 
+open BrowserDetectType;
+
 open ViewType;
 
 type stateData = {
@@ -137,7 +139,8 @@ and state = {
   globalTempRecord,
   typeArrayPoolRecord,
   mutable workerInstanceRecord,
-  workerDetectRecord
+  workerDetectRecord,
+  browserDetectRecord
 };
 
 type sharedDataForRestoreState = {

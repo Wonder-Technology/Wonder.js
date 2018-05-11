@@ -43,7 +43,8 @@ let createRenderState =
         globalTempRecord,
         deviceManagerRecord,
         sourceInstanceRecord,
-        shaderRecord
+        shaderRecord,
+        browserDetectRecord
       } as state: StateDataRenderWorkerType.renderWorkerState
     ) => {
   let {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
@@ -114,7 +115,8 @@ let createRenderState =
       isNeedUpdates: textureRecord.isNeedUpdates |> OptionService.unsafeGet,
       sourceMap: textureRecord.sourceMap |> Obj.magic,
       glTextureMap: textureRecord.glTextureMap,
-      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap
+      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateTextureRenderWorkerService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
@@ -160,6 +162,7 @@ let createRenderState =
     globalTempRecord,
     deviceManagerRecord,
     shaderRecord: {index: shaderRecord.index},
-    workerDetectRecord: {isUseWorker: workerDetectRecord.isUseWorker}
+    workerDetectRecord: {isUseWorker: workerDetectRecord.isUseWorker},
+    browserDetectRecord: {browser: browserDetectRecord.browser}
   }
 };

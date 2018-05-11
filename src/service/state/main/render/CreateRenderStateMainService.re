@@ -22,6 +22,8 @@ open RenderShaderType;
 
 open RenderSettingType;
 
+open BrowserDetectType;
+
 let createRenderState =
     (
       {
@@ -36,7 +38,8 @@ let createRenderState =
         typeArrayPoolRecord,
         globalTempRecord,
         deviceManagerRecord,
-        shaderRecord
+        shaderRecord,
+        browserDetectRecord
       } as state: StateDataMainType.state
     ) => {
   let {
@@ -108,7 +111,8 @@ let createRenderState =
       isNeedUpdates: textureRecord.isNeedUpdates,
       sourceMap: textureRecord.sourceMap,
       glTextureMap: textureRecord.glTextureMap,
-      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap
+      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateTextureMainService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
@@ -169,6 +173,7 @@ let createRenderState =
       textureCountPerMaterial:
         Some(BufferSettingService.getTextureCountPerBasicMaterial(settingRecord))
     },
-    workerDetectRecord: {isUseWorker: isUseWorker}
+    workerDetectRecord: {isUseWorker: isUseWorker},
+    browserDetectRecord: {browser: browserDetectRecord.browser}
   }
 };

@@ -10,10 +10,32 @@ let _createImageBitmapForChrome: (CanvasType.imageData, Js.t({..})) => imageBitm
     |}
 ];
 
-/* TODO handle firefox, chrome */
+let _createImageBitmapForFirefox: CanvasType.imageData => imageBitmap = [%bs.raw
+  {|
+    function(imageData){
+        return createImageBitmap(imageData)
+    }
+    |}
+];
+
 let _createImageBitmap = (texture, imageData, state) => {
-  let flipY = OperateTypeArrayTextureService.getFlipY();
-  _createImageBitmapForChrome(imageData, {"imageOrientation": flipY ? "flipY" : "none"})
+  let {browser} = RecordBrowserDetectRenderWorkerService.getRecord(state);
+  DetectBrowserService.isChrome(browser) ?
+    {
+      let flipY = OperateTypeArrayTextureService.getFlipY();
+      _createImageBitmapForChrome(imageData, {"imageOrientation": flipY ? "flipY" : "none"})
+    } :
+    DetectBrowserService.isFirefox(browser) ?
+      _createImageBitmapForFirefox(imageData) :
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="_createImageBitmap",
+          ~description={j|unknown browser|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j}
+        )
+      )
 };
 
 let _addSource = (texture, imageBitmap, state) => {

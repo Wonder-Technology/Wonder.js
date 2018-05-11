@@ -2,7 +2,7 @@ open StateRenderType;
 
 open RenderTextureType;
 
-let _setFlipY = (gl, flipY) => gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl(gl), flipY);
+open BrowserDetectType;
 
 let _isPowerOfTwo = (value) => value land (value - 1) === 0 && value !== 0;
 
@@ -60,8 +60,8 @@ let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), source) =>
 let _allocateSourceToTexture = (gl, paramTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, source);
 
-let update = (gl, texture, {textureRecord} as state) => {
-  let {sourceMap, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates} = textureRecord;
+let update = (gl, texture, {textureRecord, browserDetectRecord} as state) => {
+  let {sourceMap, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates, setFlipYFunc} = textureRecord;
   switch (TextureSourceMapService.getSource(texture, sourceMap)) {
   | None => state
   | Some(source) =>
@@ -78,7 +78,7 @@ let update = (gl, texture, {textureRecord} as state) => {
     let flipY = OperateTypeArrayTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
     let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
-    _setFlipY(gl, flipY);
+    setFlipYFunc(gl, flipY, browserDetectRecord);
     /* TODO handle _needClampMaxSize
        if(_needClampMaxSize(source, width, height)){
            this.clampToMaxSize();

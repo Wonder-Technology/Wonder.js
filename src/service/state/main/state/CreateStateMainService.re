@@ -37,5 +37,6 @@ let createState = () => {
   globalTempRecord: RecordGlobalTempService.create(),
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceRecord: RecordWorkerInstanceService.create(),
-  workerDetectRecord: RecordWorkerDetectService.create()
+  workerDetectRecord: RecordWorkerDetectService.create(),
+  browserDetectRecord: RecordBrowserDetectAllService.create()
 };

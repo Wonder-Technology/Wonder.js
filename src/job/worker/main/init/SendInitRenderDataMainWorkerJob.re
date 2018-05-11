@@ -6,6 +6,8 @@ open SettingType;
 
 open SettingGPUType;
 
+open BrowserDetectType;
+
 let _buildMaterialData = (buffer, index, disposedIndexArray, isSourceInstanceMap) => {
   "buffer": buffer,
   "index": index,
@@ -20,7 +22,8 @@ let _buildData = (operateType, canvas, stateData) => {
         gameObjectRecord,
         ambientLightRecord,
         directionLightRecord,
-        pointLightRecord
+        pointLightRecord,
+        browserDetectRecord
       } as state =
     StateDataMainService.unsafeGetState(stateData);
   let {useHardwareInstance} = OperateSettingService.unsafeGetGPU(settingRecord);
@@ -58,6 +61,7 @@ let _buildData = (operateType, canvas, stateData) => {
         BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
     },
     "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
+    "browserDetectData": {"browser": browserDetectRecord.browser},
     "renderConfigData": {
       "shaders":
         GetDataRenderConfigService.getShaders(renderConfigRecord) |> Obj.magic |> Js.Json.stringify,
@@ -105,7 +109,9 @@ let _buildData = (operateType, canvas, stateData) => {
       "index": textureRecord.index,
       /* TODO perf: add needAddedImageDataArr->arrayBuffer to transfer list */
       "needAddedImageDataArr":
-        OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(textureRecord.needAddedSourceArray)
+        OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          textureRecord.needAddedSourceArray
+        )
     }
   }
 };

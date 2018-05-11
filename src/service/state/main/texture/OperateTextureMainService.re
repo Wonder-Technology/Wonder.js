@@ -124,3 +124,6 @@ let getHeight = (texture, state) => {
   | Some(source) => TextureSizeService.getHeight(source)
   }
 };
+
+let setFlipY = (gl, flipY, browserRecord) =>
+  gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl(gl), flipY);

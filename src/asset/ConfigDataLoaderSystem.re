@@ -175,6 +175,7 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
          ParseSettingService.convertToRecord(json)
          |> _setSetting(stateData, StateDataMainService.unsafeGetState(stateData))
          |> WorkerDetectMainService.detect
+         |> BrowserDetectMainService.detect
          |> _createRecordWithState
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
          |> Most.concatMap(

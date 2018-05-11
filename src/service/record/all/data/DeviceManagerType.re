@@ -8,9 +8,6 @@ type side =
   | FRONT
   | BACK;
 
-
-
-
 type deviceManagerRecord = {
   gl: option(webgl1Context),
   colorWrite: option((Js.boolean, Js.boolean, Js.boolean, Js.boolean)),

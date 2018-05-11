@@ -48,6 +48,8 @@ open TypeArrayPoolType;
 
 open GlobalTempType;
 
+open BrowserDetectType;
+
 type renderWorkerState = {
   mutable settingRecord,
   mutable renderConfigRecord: option(RenderConfigType.renderConfigRecord),
@@ -73,7 +75,8 @@ type renderWorkerState = {
   mutable typeArrayPoolRecord,
   mutable vboBufferRecord,
   mutable globalTempRecord,
-  mutable workerDetectRecord: option(workerDetectRecord)
+  mutable workerDetectRecord: option(workerDetectRecord),
+  mutable browserDetectRecord: option(browserDetectRecord)
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

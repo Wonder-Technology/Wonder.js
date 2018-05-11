@@ -48,6 +48,8 @@ open RenderShaderType;
 
 open RenderSettingType;
 
+open BrowserDetectType;
+
 type attributeSendData = {
   pos: attributeLocation,
   size: int,
@@ -160,5 +162,6 @@ and renderState = {
   deviceManagerRecord,
   shaderRecord,
   settingRecord,
-  workerDetectRecord
+  workerDetectRecord,
+  browserDetectRecord
 };
