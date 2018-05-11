@@ -26,6 +26,9 @@
                         "name": "get_material_data"
                     },
                     {
+                        "name": "get_browserDetect_data"
+                    },
+                    {
                         "name": "create_gl"
                     },
                     {

@@ -34,7 +34,8 @@ let _ =
               "materialData": {
                 "basicMaterialData": {"materialDataForWorkerInit": basicMaterialDataForWorkerInit},
                 "lightMaterialData": {"materialDataForWorkerInit": lightMaterialDataForWorkerInit}
-              }
+              },
+              "textureData": Sinon.matchAny
             },
             "renderData": Sinon.matchAny
           };
@@ -83,7 +84,8 @@ let _ =
                                          |]
                                        },
                                        "lightMaterialData": Sinon.matchAny
-                                     }
+                                     },
+                                     "textureData": Sinon.matchAny
                                    },
                                    "renderData": Sinon.matchAny
                                  }

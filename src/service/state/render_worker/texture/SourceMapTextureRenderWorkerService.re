@@ -69,13 +69,12 @@ let _convertImageSrcToImageBitmapStream = (imageArrayBufferIndexSizeDataArr, sta
   Most.from(imageArrayBufferIndexSizeDataArr)
   |> Most.flatMap(
        ((arrayBuffer, width, height, texture)) =>
-         Most.fromPromise(
-           _createImageBitmap(
-             texture,
-             Canvas.newImageData(Canvas.newUint8ClampedArray(arrayBuffer), width, height),
-             state
-           )
+         _createImageBitmap(
+           texture,
+           Canvas.newImageData(Canvas.newUint8ClampedArray(arrayBuffer), width, height),
+           state
          )
+         |> Most.fromPromise
          |> Most.map(
               (imageBitmap) =>
                 /* TODO must check: texture is correct? */

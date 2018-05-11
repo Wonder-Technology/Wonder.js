@@ -2,6 +2,8 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerTextureType;
 
+open Js.Promise;
+
 let _createTypeArrays = (buffer, count, state) => {
   let (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates) =
     CreateTypeArrayTextureService.createTypeArrays(buffer, count);
@@ -19,54 +21,52 @@ let _createTypeArrays = (buffer, count, state) => {
   state
 };
 
-let execJob = (_, e, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let state = StateRenderWorkerService.unsafeGetState(stateData);
-      let data = MessageService.getRecord(e);
-      let textureData = data##textureData;
-      let count = data##bufferData##textureDataBufferCount;
+let execJob = (_, e, stateData) => {
+  let state = StateRenderWorkerService.unsafeGetState(stateData);
+  let data = MessageService.getRecord(e);
+  let textureData = data##textureData;
+  [|
+    MostUtils.callFunc(
+      () => {
+        let state = StateRenderWorkerService.unsafeGetState(stateData);
+        let data = MessageService.getRecord(e);
+        let textureData = data##textureData;
+        let count = data##bufferData##textureDataBufferCount;
+        state
+        |> _createTypeArrays(textureData##buffer, count)
+        |> StateRenderWorkerService.setState(stateData)
+      }
+    ),
+    SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
+      textureData##needAddedImageDataArray,
       state
-      |> _createTypeArrays(textureData##buffer, count)
-      |> StateRenderWorkerService.setState(stateData)
-      |> ignore;
-      e
-    }
-  )
-  |> Most.concatMap(
-       (e) => {
-         let state = StateRenderWorkerService.unsafeGetState(stateData);
-         let data = MessageService.getRecord(e);
-         let textureData = data##textureData;
-         SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
-           textureData##needAddedImageDataArray,
-           state
-         )
-         |> Most.map(
-              (state) => {
-                state |> StateRenderWorkerService.setState(stateData) |> ignore;
-                e
-              }
-            )
+    ),
+    MostUtils.callFunc(
+      () => {
+        let state = StateRenderWorkerService.unsafeGetState(stateData);
+        let data = MessageService.getRecord(e);
+        let textureData = data##textureData;
+        let {glTextureMap} as textureRecord = RecordTextureRenderWorkerService.getRecord(state);
+        state.textureRecord =
+          Some({
+            ...textureRecord,
+            glTextureMap:
+              InitTextureService.initTextures(
+                [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+                textureData##index,
+                glTextureMap
+              )
+          });
+        state
+      }
+    )
+  |]
+  |> MostUtils.concatArray
+  |> Most.forEach(
+       (state) => {
+         state |> StateRenderWorkerService.setState(stateData) |> ignore
        }
      )
-  |> Most.concatMap(
-       (e) => {
-         let state = StateRenderWorkerService.unsafeGetState(stateData);
-         let data = MessageService.getRecord(e);
-         let textureData = data##textureData;
-         let {glTextureMap} as textureRecord = RecordTextureRenderWorkerService.getRecord(state);
-         state.textureRecord =
-           Some({
-             ...textureRecord,
-             glTextureMap:
-               InitTextureService.initTextures(
-                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                 textureData##index,
-                 glTextureMap
-               )
-           });
-         state |> StateRenderWorkerService.setState(stateData) |> ignore;
-         Most.just(e)
-       }
-     );
+  |> then_(() => e |> resolve)
+  |> Most.fromPromise
+};

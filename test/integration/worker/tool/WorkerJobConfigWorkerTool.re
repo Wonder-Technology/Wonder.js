@@ -48,9 +48,7 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstance = () => {|
   ]
     |};
 
-
-
-let buildMainLoopPipelinesConfig= () => {|
+let buildMainLoopPipelinesConfig = () => {|
 [
     {
         "name": "default",
@@ -81,12 +79,6 @@ let buildMainLoopPipelinesConfig= () => {|
 ]
     |};
 
-
-
-
-
-
-
 let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 [
     {
@@ -116,8 +108,7 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
 ]
     |};
 
-
-let buildMainLoopJobConfig= () => {|
+let buildMainLoopJobConfig = () => {|
 [
     {
         "name": "tick"
@@ -151,13 +142,6 @@ let buildMainLoopJobConfig= () => {|
     }
 ]
     |};
-
-
-
-
-
-
-
 
 let buildWorkerJobConfig =
     (
@@ -278,7 +262,15 @@ let buildWorkerJobConfig =
 
 let create =
     (
-      (workerSetting, mainInitPipelines, mainLoopPipelines, workerPipelines, mainInitJobs, mainLoopJobs, workerJobs),
+      (
+        workerSetting,
+        mainInitPipelines,
+        mainLoopPipelines,
+        workerPipelines,
+        mainInitJobs,
+        mainLoopJobs,
+        workerJobs
+      ),
       state: StateDataMainType.state
     ) => {
   ...state,

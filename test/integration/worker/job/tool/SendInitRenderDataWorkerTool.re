@@ -1,4 +1,12 @@
-let buildInitRenderData = (~isDebug=true, ~viewportData=Sinon.matchAny, ~workerDetectData=Sinon.matchAny, ()) => {
+let buildInitRenderData =
+    (
+      ~isDebug=true,
+      ~viewportData=Sinon.matchAny,
+      ~workerDetectData=Sinon.matchAny,
+      ~browserDetectData=Sinon.matchAny,
+      ~textureData=Sinon.matchAny,
+      ()
+    ) => {
   "operateType": "INIT_RENDER",
   "canvas": Sinon.matchAny,
   "contextConfig": Sinon.matchAny,
@@ -10,6 +18,8 @@ let buildInitRenderData = (~isDebug=true, ~viewportData=Sinon.matchAny, ~workerD
   "memoryData": Sinon.matchAny,
   "renderConfigData": Sinon.matchAny,
   "workerDetectData": workerDetectData,
+  "browserDetectData": browserDetectData,
+  "textureData": textureData,
   "transformData": Sinon.matchAny,
   "basicMaterialData": Sinon.matchAny,
   "lightMaterialData": Sinon.matchAny,

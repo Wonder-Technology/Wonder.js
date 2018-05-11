@@ -78,14 +78,14 @@ let _buildData = (operateType, stateData) => {
               lightMaterialRecord.gameObjectMap,
               gameObjectRecord
             )
-        },
-        "textureData": {
-          "needAddedImageDataArray":
-            OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-              textureRecord.needAddedSourceArray
-            ),
-          "needInitedTextureIndexArray": textureRecord.needInitedTextureIndexArray
         }
+      },
+      "textureData": {
+        "needAddedImageDataArray":
+          OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+            textureRecord.needAddedSourceArray
+          ),
+        "needInitedTextureIndexArray": textureRecord.needInitedTextureIndexArray
       }
     },
     "renderData": {

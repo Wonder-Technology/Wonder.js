@@ -62,6 +62,7 @@ let init = (completeFunc, state) => {
            GetRenderConfigDataRenderWorkerJob.execJob(None),
            GetSettingDataRenderWorkerJob.execJob(None),
            GetMaterialDataRenderWorkerJob.execJob(None),
+           GetBrowserDetectDataRenderWorkerJob.execJob(None),
            PregetGLSLDataRenderWorkerJob.execJob(None),
            InitInstanceRenderWorkerJob.execJob(None),
            InitCustomGeometryRenderWorkerJob.execJob(None),
@@ -69,7 +70,8 @@ let init = (completeFunc, state) => {
            InitAmbientLightRenderWorkerJob.execJob(None),
            InitDirectionLightRenderWorkerJob.execJob(None),
            InitPointLightRenderWorkerJob.execJob(None),
-           InitLightMaterialRenderWorkerJob.execJob(None)
+           InitLightMaterialRenderWorkerJob.execJob(None),
+           InitTextureRenderWorkerJob.execJob(None)
          |]
          |> concatStreamFuncArray(initData, RenderWorkerStateTool.getStateData())
          |> Most.drain
@@ -103,6 +105,7 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     GetPointLightDataRenderWorkerJob.execJob(None),
     GetInstanceDataRenderWorkerJob.execJob(None),
     InitMaterialForRenderRenderWorkerJob.execJob(None),
+    InitTextureForRenderRenderWorkerJob.execJob(None),
     CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob(None),
     GetCameraDataRenderWorkerJob.execJob(None),
