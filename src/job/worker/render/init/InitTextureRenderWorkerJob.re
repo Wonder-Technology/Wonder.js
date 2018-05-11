@@ -39,7 +39,7 @@ let execJob = (_, e, stateData) =>
          let data = MessageService.getRecord(e);
          let textureData = data##textureData;
          SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
-           textureData##needAddedImageDataArr,
+           textureData##needAddedImageDataArray,
            state
          )
          |> Most.map(
@@ -67,6 +67,6 @@ let execJob = (_, e, stateData) =>
                )
            });
          state |> StateRenderWorkerService.setState(stateData) |> ignore;
-         e
+         Most.just(e)
        }
      );

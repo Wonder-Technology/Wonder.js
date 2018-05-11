@@ -5,5 +5,5 @@ type uint8ClampedArray;
 type canvasContext = {
   .
   "drawImage": (DomType.imageElement, float, float) => unit,
-  "getImageData": (float, float, float, float) => imageData
+  "getImageData": (float, float, int, int) => imageData
 };

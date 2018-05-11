@@ -2,7 +2,9 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerTextureType;
 
-let _createImageBitmapForChrome: (CanvasType.imageData, Js.t({..})) => imageBitmap = [%bs.raw
+open BrowserDetectType;
+
+let _createImageBitmapForChrome: (CanvasType.imageData, Js.t({..})) => Js.Promise.t(imageBitmap) = [%bs.raw
   {|
     function(imageData, config){
         return createImageBitmap(imageData, config)
@@ -10,7 +12,7 @@ let _createImageBitmapForChrome: (CanvasType.imageData, Js.t({..})) => imageBitm
     |}
 ];
 
-let _createImageBitmapForFirefox: CanvasType.imageData => imageBitmap = [%bs.raw
+let _createImageBitmapForFirefox: CanvasType.imageData => Js.Promise.t(imageBitmap) = [%bs.raw
   {|
     function(imageData){
         return createImageBitmap(imageData)
@@ -23,7 +25,10 @@ let _createImageBitmap = (texture, imageData, state) => {
   DetectBrowserService.isChrome(browser) ?
     {
       let flipY = OperateTypeArrayTextureService.getFlipY();
-      _createImageBitmapForChrome(imageData, {"imageOrientation": flipY ? "flipY" : "none"})
+      _createImageBitmapForChrome(
+        imageData,
+        {"imageOrientation": flipY === Js.true_ ? "flipY" : "none"}
+      )
     } :
     DetectBrowserService.isFirefox(browser) ?
       _createImageBitmapForFirefox(imageData) :
@@ -50,7 +55,7 @@ let _addSource = (texture, imageBitmap, state) => {
           ~expect={j|sourceMap shouldn't has source before|j},
           ~actual={j|has|j}
         ),
-        () => TextureSourceMapService.hasSource(texture, sourceMap) |> assertFalsy
+        () => TextureSourceMapService.hasSource(texture, sourceMap) |> assertFalse
       )
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData)

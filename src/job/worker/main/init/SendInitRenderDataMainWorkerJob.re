@@ -107,8 +107,8 @@ let _buildData = (operateType, canvas, stateData) => {
     "textureData": {
       "buffer": textureRecord.buffer,
       "index": textureRecord.index,
-      /* TODO perf: add needAddedImageDataArr->arrayBuffer to transfer list */
-      "needAddedImageDataArr":
+      /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
+      "needAddedImageDataArray":
         OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
           textureRecord.needAddedSourceArray
         )

@@ -8,7 +8,6 @@ let execJob = (_, e, stateData) =>
       let basicMaterialData = data##basicMaterialData;
       state.basicMaterialRecord =
         Some({
-          buffer: basicMaterialData##buffer,
           shaderIndices: None,
           colors: None,
           textureIndices: None,
@@ -20,7 +19,6 @@ let execJob = (_, e, stateData) =>
       let lightMaterialData = data##lightMaterialData;
       state.lightMaterialRecord =
         Some({
-          buffer: lightMaterialData##buffer,
           shaderIndices: None,
           diffuseColors: None,
           specularColors: None,

@@ -58,6 +58,7 @@ let createRenderState =
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
   let textureRecord = RecordTextureRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
+  let browserDetectRecord = RecordBrowserDetectRenderWorkerService.getRecord(state);
   let {
     objectInstanceTransformCollections,
     matrixInstanceBufferCapacityMap,
@@ -74,7 +75,7 @@ let createRenderState =
             BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
         }),
       textureCountPerMaterial:
-        BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+        BufferRenderWorkerSettingService.getTextureCountPerBasicMaterial(settingRecord)
     },
     glslSenderRecord,
     programRecord,

@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open BrowserDetectType;
+
 let _isFirefox: unit => Js.boolean = [%bs.raw
   {|
     function(){
@@ -18,5 +20,7 @@ let _isChrome: unit => Js.boolean = [%bs.raw
 
 let detect = (state) => {
   ...state,
-  browser: _isFirefox() === Js.true_ ? Firefox : _isChrome() === Js.true_ ? Chrome : Unknown
+  browserDetectRecord: {
+    browser: _isFirefox() === Js.true_ ? Firefox : _isChrome() === Js.true_ ? Chrome : Unknown
+  }
 };

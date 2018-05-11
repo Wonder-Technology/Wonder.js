@@ -1,8 +1,12 @@
+open StateDataMainType;
+
 open TextureType;
 
 let initTexture = (texture, state) =>
   WorkerDetectMainService.isUseWorker(state) ?
-    {
+    switch texture {
+    | None => state
+    | Some(texture) =>
       let {needInitedTextureIndexArray} = RecordTextureMainService.getRecord(state);
       needInitedTextureIndexArray |> ArrayService.push(texture) |> ignore;
       state

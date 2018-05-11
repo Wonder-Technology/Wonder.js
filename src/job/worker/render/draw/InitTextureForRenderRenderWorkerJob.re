@@ -3,25 +3,41 @@ open StateDataRenderWorkerType;
 open RenderWorkerTextureType;
 
 let execJob = (flags, e, stateData) =>
-  Most.empty()
-  |> Most.concatMap(
-       (e) => {
-         let state = StateRenderWorkerService.unsafeGetState(stateData);
-         let data = MessageService.getRecord(e);
-         let initData = data##initData;
-         let textureData = initData##textureData;
-         SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
-           textureData##needAddedImageDataArr,
-           state
-         )
-         |> Most.map(
-              (state) => {
-                state |> StateRenderWorkerService.setState(stateData) |> ignore;
-                e
-              }
+  {
+    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    let data = MessageService.getRecord(e);
+    let initData = data##initData;
+    let textureData = initData##textureData;
+    SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
+      textureData##needAddedImageDataArray,
+      state
+    )
+    |> Most.map(
+         (state) => {
+           state |> StateRenderWorkerService.setState(stateData) |> ignore;
+           e
+         }
+       )
+  }
+  /* Most.empty()
+     |> Most.concat(
+          () => {
+            let state = StateRenderWorkerService.unsafeGetState(stateData);
+            let data = MessageService.getRecord(e);
+            let initData = data##initData;
+            let textureData = initData##textureData;
+            SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
+              textureData##needAddedImageDataArray,
+              state
             )
-       }
-     )
+            |> Most.map(
+                 (state) => {
+                   state |> StateRenderWorkerService.setState(stateData) |> ignore;
+                   e
+                 }
+               )
+          }
+        ) */
   |> Most.concatMap(
        (e) => {
          let state = StateRenderWorkerService.unsafeGetState(stateData);
@@ -35,11 +51,11 @@ let execJob = (flags, e, stateData) =>
              glTextureMap:
                InitTextureService.initTexturesWithIndexArray(
                  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                 textureData##needInitedTextureIndexArr,
+                 textureData##needInitedTextureIndexArray,
                  glTextureMap
                )
            });
          state |> StateRenderWorkerService.setState(stateData) |> ignore;
-         e
+         Most.just(e)
        }
      );

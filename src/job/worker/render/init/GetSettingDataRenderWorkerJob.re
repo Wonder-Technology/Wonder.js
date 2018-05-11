@@ -13,7 +13,8 @@ let execJob = (_, e, stateData) =>
           Some({
             sourceInstanceCount: instanceBufferData##sourceInstanceCount,
             objectInstanceCountPerSourceInstance: instanceBufferData##objectInstanceCountPerSourceInstance
-          })
+          }),
+        textureCountPerMaterial: data##bufferData##instanceBufferData
       };
       StateRenderWorkerService.setState(stateData, state);
       e

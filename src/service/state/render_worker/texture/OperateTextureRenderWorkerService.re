@@ -2,7 +2,7 @@ open BrowserDetectType;
 
 let setFlipY = (gl, flipY, {browser}) =>
   DetectBrowserService.isChrome(browser) ?
-    {/* set it when createImageBitmap in render worker */} :
+    () /* set it when createImageBitmap in render worker */ :
     DetectBrowserService.isFirefox(browser) ?
       gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl(gl), flipY) :
       WonderLog.Log.fatal(

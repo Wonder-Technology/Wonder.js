@@ -80,11 +80,11 @@ let _buildData = (operateType, stateData) => {
             )
         },
         "textureData": {
-          "needAddedImageDataArr":
+          "needAddedImageDataArray":
             OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
               textureRecord.needAddedSourceArray
             ),
-          "needInitedTextureIndexArr": textureRecord.needInitedTextureIndexArr
+          "needInitedTextureIndexArray": textureRecord.needInitedTextureIndexArray
         }
       }
     },
