@@ -1,8 +1,12 @@
 open Js.Typed_array;
 
-let getDefaultWidth = () => 0;
+let getDefaultWrapS = () => TextureWrapService.getWrapClampToEdge();
 
-let getDefaultHeight = () => 0;
+let getDefaultWrapT = () => TextureWrapService.getWrapClampToEdge();
+
+let getDefaultMagFilter = () => TextureFilterService.getFilterLinear();
+
+let getDefaultMinFilter = () => TextureFilterService.getFilterNearest();
 
 let getNeedUpdate = () => 1;
 
@@ -10,39 +14,61 @@ let getNotNeedUpdate = () => 0;
 
 let getDefaultIsNeedUpdate = () => getNeedUpdate();
 
-let getWidthsSize = () => 1;
+let getWrapSsSize = () => 1;
 
-let getHeightsSize = () => 1;
+let getWrapTsSize = () => 1;
+
+let getMagFiltersSize = () => 1;
+
+let getMinFiltersSize = () => 1;
 
 let getIsNeedUpdatesSize = () => 1;
 
-let getWidthsLength = (count) => count * getWidthsSize();
+let getWrapSsLength = (count) => count * getWrapSsSize();
 
-let getWidthsOffset = (count) => 0;
+let getWrapSsOffset = (count) => 0;
 
-let getWidthIndex = (index) => index * getWidthsSize();
+let getWrapSIndex = (index) => index * getWrapSsSize();
 
-let getHeightsLength = (count) => count * getHeightsSize();
+let getWrapTsLength = (count) => count * getWrapTsSize();
 
-let getHeightsOffset = (count) =>
-  getWidthsOffset(count) + getWidthsLength(count) * Uint16Array._BYTES_PER_ELEMENT;
+let getWrapTsOffset = (count) =>
+  getWrapSsOffset(count) + getWrapSsLength(count) * Uint8Array._BYTES_PER_ELEMENT;
 
-let getHeightIndex = (index) => index * getHeightsSize();
+let getWrapTIndex = (index) => index * getWrapTsSize();
+
+let getMagFiltersLength = (count) => count * getMagFiltersSize();
+
+let getMagFiltersOffset = (count) =>
+  getWrapTsOffset(count) + getWrapTsLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+
+let getMagFilterIndex = (index) => index * getMagFiltersSize();
+
+let getMinFiltersLength = (count) => count * getMinFiltersSize();
+
+let getMinFiltersOffset = (count) =>
+  getMagFiltersOffset(count) + getMagFiltersLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+
+let getMinFilterIndex = (index) => index * getMinFiltersSize();
 
 let getIsNeedUpdatesLength = (count) => count * getIsNeedUpdatesSize();
 
 let getIsNeedUpdatesOffset = (count) =>
-  getHeightsOffset(count) + getHeightsLength(count) * Uint16Array._BYTES_PER_ELEMENT;
+  getMinFiltersOffset(count) + getMinFiltersLength(count) * Uint8Array._BYTES_PER_ELEMENT;
 
 let getIsNeedUpdateIndex = (index) => index * getIsNeedUpdatesSize();
 
 let getTotalByteLength = (count) =>
   count
   * (
-    Uint16Array._BYTES_PER_ELEMENT
-    * (getWidthsSize() + getHeightsSize())
-    + Uint8Array._BYTES_PER_ELEMENT
-    * getIsNeedUpdatesSize()
+    Uint8Array._BYTES_PER_ELEMENT
+    * (
+      getWrapSsSize()
+      + getWrapTsSize()
+      + getMagFiltersSize()
+      + getMinFiltersSize()
+      + getIsNeedUpdatesSize()
+    )
   );
 
 let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));

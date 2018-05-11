@@ -6,17 +6,21 @@ open BufferTextureService;
 
 let getRecord = ({textureRecord}) => textureRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData = (count: int, (widths, heights, isNeedUpdates)) => {
-  let defaultWidth = getDefaultWidth();
-  let defaultHeight = getDefaultHeight();
+let setDefaultTypeArrData = (count: int, (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates)) => {
+  let defaultWrapS = getDefaultWrapS();
+  let defaultWrapT = getDefaultWrapT();
+  let defaultMagFilter = getDefaultMagFilter();
+  let defaultMinFilter = getDefaultMinFilter();
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         ((widths, heights, isNeedUpdates), index) => (
-           OperateTypeArrayTextureService.setWidth(index, defaultWidth, widths),
-           OperateTypeArrayTextureService.setHeight(index, defaultHeight, heights),
+         ((wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates), index) => (
+           OperateTypeArrayTextureService.setWrapS(index, defaultWrapS, wrapSs),
+           OperateTypeArrayTextureService.setWrapT(index, defaultWrapT, wrapTs),
+           OperateTypeArrayTextureService.setMagFilter(index, defaultMagFilter, magFilters),
+           OperateTypeArrayTextureService.setMinFilter(index, defaultMinFilter, minFilters),
            OperateTypeArrayTextureService.setIsNeedUpdate(
              index,
              defaultIsNeedUpdate,
@@ -24,31 +28,35 @@ let setDefaultTypeArrData = (count: int, (widths, heights, isNeedUpdates)) => {
            )
          )
        ),
-       (widths, heights, isNeedUpdates)
+       (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates)
      )
 };
 
-let _setDefaultTypeArrData = (count: int, (buffer, widths, heights, isNeedUpdates)) => (
+let _setDefaultTypeArrData =
+    (count: int, (buffer, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates)) => (
   buffer,
-  setDefaultTypeArrData(count, (widths, heights, isNeedUpdates))
+  setDefaultTypeArrData(count, (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates))
 );
 
 let _initBufferData = (count) => {
   let buffer = createBuffer(count);
-  let (widths, heights, isNeedUpdates) =
+  let (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates) =
     CreateTypeArrayTextureService.createTypeArrays(buffer, count);
-  (buffer, widths, heights, isNeedUpdates) |> _setDefaultTypeArrData(count)
+  (buffer, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates) |> _setDefaultTypeArrData(count)
 };
 
 let create = ({settingRecord} as state) => {
   let textureDataBufferCount = BufferSettingService.getTextureDataBufferCount(settingRecord);
-  let (buffer, (widths, heights, isNeedUpdates)) = _initBufferData(textureDataBufferCount);
+  let (buffer, (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates)) =
+    _initBufferData(textureDataBufferCount);
   state.textureRecord =
     Some({
       index: 0,
       buffer,
-      widths,
-      heights,
+      wrapSs,
+      wrapTs,
+      magFilters,
+      minFilters,
       isNeedUpdates,
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),

@@ -13,38 +13,80 @@ let setSource = (texture, source, state) => {
   state
 };
 
-let getWidth = (texture, state) => {
-  let {widths, sourceMap} = RecordTextureMainService.getRecord(state);
-  switch (OperateTypeArrayTextureService.getWidth(texture, widths)) {
-  | 0 =>
-    switch (TextureSourceMapService.getSource(texture, sourceMap)) {
-    | None => 0
-    | Some(source) => source##width
-    }
-  | width => width
-  }
+let getWrapS = (texture, state) => {
+  let {wrapSs} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getWrapS(texture, wrapSs)
 };
 
-let setWidth = (texture, width, state) => {
-  let {widths} = RecordTextureMainService.getRecord(state);
-  OperateTypeArrayTextureService.setWidth(texture, width, widths) |> ignore;
+let setWrapS = (texture, wrapS, state) => {
+  let {wrapSs} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setWrapS(texture, wrapS, wrapSs) |> ignore;
   state
+};
+
+let getWrapT = (texture, state) => {
+  let {wrapTs} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getWrapT(texture, wrapTs)
+};
+
+let setWrapT = (texture, wrapT, state) => {
+  let {wrapTs} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setWrapT(texture, wrapT, wrapTs) |> ignore;
+  state
+};
+
+let getMagFilter = (texture, state) => {
+  let {magFilters} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getMagFilter(texture, magFilters)
+};
+
+let setMagFilter = (texture, filter, state) => {
+  let {magFilters} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setMagFilter(texture, filter, magFilters) |> ignore;
+  state
+};
+
+let getMinFilter = (texture, state) => {
+  let {minFilters} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getMinFilter(texture, minFilters)
+};
+
+let setMinFilter = (texture, filter, state) => {
+  let {minFilters} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setMinFilter(texture, filter, minFilters) |> ignore;
+  state
+};
+
+let getWidth = (texture, state) => {
+  let {sourceMap} = RecordTextureMainService.getRecord(state);
+  switch (TextureSourceMapService.getSource(texture, sourceMap)) {
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getWidth",
+        ~description={j|source should exist|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  | Some(source) => TextureSizeService.getWidth(source)
+  }
 };
 
 let getHeight = (texture, state) => {
-  let {heights, sourceMap} = RecordTextureMainService.getRecord(state);
-  switch (OperateTypeArrayTextureService.getHeight(texture, heights)) {
-  | 0 =>
-    switch (TextureSourceMapService.getSource(texture, sourceMap)) {
-    | None => 0
-    | Some(source) => source##height
-    }
-  | height => height
+  let {sourceMap} = RecordTextureMainService.getRecord(state);
+  switch (TextureSourceMapService.getSource(texture, sourceMap)) {
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getHeight",
+        ~description={j|source should exist|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  | Some(source) => TextureSizeService.getHeight(source)
   }
-};
-
-let setHeight = (texture, height, state) => {
-  let {heights} = RecordTextureMainService.getRecord(state);
-  OperateTypeArrayTextureService.setHeight(texture, height, heights) |> ignore;
-  state
 };

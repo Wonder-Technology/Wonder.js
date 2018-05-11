@@ -320,11 +320,7 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
-let setTextureHeight = TextureAPI.setTextureHeight;
-
 let getTextureHeight = TextureAPI.getTextureHeight;
-
-let setTextureWidth = TextureAPI.setTextureWidth;
 
 let getTextureWidth = TextureAPI.getTextureWidth;
 
@@ -566,11 +562,7 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
-let setTextureHeight = TextureAPI.setTextureHeight;
-
 let getTextureHeight = TextureAPI.getTextureHeight;
-
-let setTextureWidth = TextureAPI.setTextureWidth;
 
 let getTextureWidth = TextureAPI.getTextureWidth;
 

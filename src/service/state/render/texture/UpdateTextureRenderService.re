@@ -8,34 +8,33 @@ let _isPowerOfTwo = (value) => value land (value - 1) === 0 && value !== 0;
 
 let _isSourcePowerOfTwo = (width, height) => _isPowerOfTwo(width) && _isPowerOfTwo(height);
 
-/* export const needUpdate = (textureIndex: number, TextureDataFromSystem: any) => {
-       return getIsNeedUpdate(textureIndex, TextureDataFromSystem) === 0;
-   }
-
-   export const markNeedUpdate = (textureIndex, value: boolean, TextureDataFromSystem) => {
-       if (value === false) {
-           setIsNeedUpdate(textureIndex, 1, TextureDataFromSystem);
-       }
-       else {
-           setIsNeedUpdate(textureIndex, 0, TextureDataFromSystem);
-       }
-   } */
 let _filterFallback = (filter, gl) =>
-  if (filter === Gl.getNearest(gl)
-      || filter === Gl.getNearestMipmapNearest(gl)
-      || filter === Gl.getNearestMipmapLinear(gl)) {
+  if (filter === TextureFilterService.getFilterNearest()
+      || filter === TextureFilterService.getFilterNearestMipmapNearest()
+      || filter === TextureFilterService.getFilterNearestMipmapLinear()) {
     Gl.getNearest(gl)
   } else {
     Gl.getLinear(gl)
   };
 
-let _setTextureParameters = (gl, target, isSourcePowerOfTwo, (wrapS, wrapT, magFilter, minFilter)) =>
+let _setTextureParameters =
+    (gl, target, isSourcePowerOfTwo, (glWrapS, glWrapT, magFilter, minFilter)) =>
   isSourcePowerOfTwo ?
     {
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, wrapS);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, wrapT);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMagFilter, magFilter);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, minFilter)
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, glWrapS);
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, glWrapT);
+      gl
+      |> Gl.texParameteri(
+           target,
+           gl |> Gl.getTextureMagFilter,
+           magFilter |> TextureFilterService.getGlFilter(gl)
+         );
+      gl
+      |> Gl.texParameteri(
+           target,
+           gl |> Gl.getTextureMinFilter,
+           minFilter |> TextureFilterService.getGlFilter(gl)
+         )
     } :
     {
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, gl |> Gl.getClampToEdge);
@@ -44,29 +43,38 @@ let _setTextureParameters = (gl, target, isSourcePowerOfTwo, (wrapS, wrapT, magF
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, _filterFallback(minFilter, gl))
     };
 
-let _drawTexture = (gl, (target, index, source, format, type_)) =>
+let _drawTexture = (gl, (target, index, source, glFormat, glType)) =>
   gl
-  |> Gl.texImage2D(target, index, format, format, type_, source |> Gl.imageElementToTextureSource);
+  |> Gl.texImage2D(
+       target,
+       index,
+       glFormat,
+       glFormat,
+       glType,
+       source |> Gl.imageElementToTextureSource
+     );
 
-let _drawNoMipmapTwoDTexture = (gl, (target, format, type_), source) =>
-  _drawTexture(gl, (target, 0, source, format, type_));
+let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), source) =>
+  _drawTexture(gl, (target, 0, source, glFormat, glType));
 
 let _allocateSourceToTexture = (gl, paramTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, source);
 
 let update = (gl, texture, {textureRecord} as state) => {
-  let {sourceMap, widths, heights, isNeedUpdates} = textureRecord;
+  let {sourceMap, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates} = textureRecord;
   switch (TextureSourceMapService.getSource(texture, sourceMap)) {
   | None => state
   | Some(source) =>
-    let width = OperateTypeArrayTextureService.getWidth(texture, widths);
-    let height = OperateTypeArrayTextureService.getHeight(texture, heights);
-    let wrapS = OperateTypeArrayTextureService.getWrapS(gl);
-    let wrapT = OperateTypeArrayTextureService.getWrapT(gl);
-    let magFilter = OperateTypeArrayTextureService.getMagFilter(gl);
-    let minFilter = OperateTypeArrayTextureService.getMinFilter(gl);
-    let format = OperateTypeArrayTextureService.getFormat(gl);
-    let type_ = OperateTypeArrayTextureService.getType(gl);
+    let width = TextureSizeService.getWidth(source);
+    let height = TextureSizeService.getHeight(source);
+    let glWrapS =
+      OperateTypeArrayTextureService.getWrapS(texture, wrapSs) |> TextureWrapService.getGlWrap(gl);
+    let glWrapT =
+      OperateTypeArrayTextureService.getWrapT(texture, wrapTs) |> TextureWrapService.getGlWrap(gl);
+    let magFilter = OperateTypeArrayTextureService.getMagFilter(texture, magFilters);
+    let minFilter = OperateTypeArrayTextureService.getMinFilter(texture, minFilters);
+    let glFormat = OperateTypeArrayTextureService.getFormat(gl);
+    let glType = OperateTypeArrayTextureService.getType(gl);
     let flipY = OperateTypeArrayTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
     let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
@@ -81,8 +89,13 @@ let update = (gl, texture, {textureRecord} as state) => {
                Log.warn("texture size is not power of two after clampToMaxSize()");
            }
        } */
-    _setTextureParameters(gl, target, isSourcePowerOfTwo, (wrapS, wrapT, magFilter, minFilter));
-    _allocateSourceToTexture(gl, (target, format, type_), source);
+    _setTextureParameters(
+      gl,
+      target,
+      isSourcePowerOfTwo,
+      (glWrapS, glWrapT, magFilter, minFilter)
+    );
+    _allocateSourceToTexture(gl, (target, glFormat, glType), source);
     /* TODO generateMipmaps
        if (this.generateMipmaps && isSourcePowerOfTwo) {
            gl.generateMipmap(gl[this.target]);

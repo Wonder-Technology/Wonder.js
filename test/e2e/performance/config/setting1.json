@@ -10,7 +10,7 @@
     },
     "buffer": {
         "custom_geometry_point_data_buffer_count": 200000,
-        "customGeometryDataBufferCount": 10000,
+        "custom_geometry_data_buffer_count": 1000,
         "transform_data_buffer_count": 30000,
         "basic_material_data_buffer_count": 30000,
         "light_material_data_buffer_count": 30000,

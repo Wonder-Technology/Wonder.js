@@ -59,24 +59,6 @@ let getTextureWidth = (texture, state: StateDataMainType.state) =>
      ); */
   OperateTextureMainService.getWidth(texture, state);
 
-let setTextureWidth = (texture, width, state: StateDataMainType.state) =>
-  /* WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               AliveComponentService.checkComponentShouldAlive(
-                 texture,
-                 isAlive,
-                 RecordTextureMainService.getRecord(state)
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     ); */
-  OperateTextureMainService.setWidth(texture, width, state);
-
 let getTextureHeight = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
@@ -95,7 +77,7 @@ let getTextureHeight = (texture, state: StateDataMainType.state) =>
      ); */
   OperateTextureMainService.getHeight(texture, state);
 
-let setTextureHeight = (texture, height, state: StateDataMainType.state) =>
+let getTextureWrapS = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -111,4 +93,130 @@ let setTextureHeight = (texture, height, state: StateDataMainType.state) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateTextureMainService.setHeight(texture, height, state);
+  OperateTextureMainService.getWrapS(texture, state);
+
+let setTextureWrapS = (texture, wrapS, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateTextureMainService.setWrapS(texture, wrapS, state);
+
+let getTextureWrapT = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentThouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(TtateDataMain.stateData)
+     ); */
+  OperateTextureMainService.getWrapT(texture, state);
+
+let setTextureWrapT = (texture, wrapT, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentThouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(TtateDataMain.stateData)
+     ); */
+  OperateTextureMainService.setWrapT(texture, wrapT, state);
+
+let getTextureMagFilter = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateTextureMainService.getMagFilter(texture, state);
+
+let setTextureMagFilter = (texture, filter, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateTextureMainService.setMagFilter(texture, filter, state);
+
+let getTextureMinFilter = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateTextureMainService.getMinFilter(texture, state);
+
+let setTextureMinFilter = (texture, filter, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateTextureMainService.setMinFilter(texture, filter, state);

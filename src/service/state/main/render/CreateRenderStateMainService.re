@@ -101,8 +101,10 @@ let createRenderState =
       shininess: lightMaterialRecord.shininess
     },
     textureRecord: {
-      widths: textureRecord.widths,
-      heights: textureRecord.heights,
+      wrapSs: textureRecord.wrapSs,
+      wrapTs: textureRecord.wrapTs,
+      magFilters: textureRecord.magFilters,
+      minFilters: textureRecord.minFilters,
       isNeedUpdates: textureRecord.isNeedUpdates,
       sourceMap: textureRecord.sourceMap,
       glTextureMap: textureRecord.glTextureMap,

@@ -15,7 +15,7 @@ let setDefaultTypeArrData = (geometryCount: int, (vertices, texCoords, normals, 
        (
          ((vertices, texCoords, normals, indices), index) => (
            TypeArrayService.setFloat1(getVertexIndex(index), 0., vertices),
-           TypeArrayService.setFloat1(getTexCoordsIndex(index), 0., texCoords),
+           TypeArrayService.setFloat1(getTexCoordIndex(index), 0., texCoords),
            TypeArrayService.setFloat1(getVertexIndex(index), 0., normals),
            TypeArrayService.setUint16_1(getIndexIndex(index), 0, indices)
          )

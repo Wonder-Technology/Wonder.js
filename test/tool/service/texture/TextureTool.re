@@ -12,3 +12,15 @@ let isNeedUpdate = (texture, state) =>
   === BufferTextureService.getDefaultIsNeedUpdate();
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
+
+let getFilterNearest = () => TextureFilterService.getFilterNearest();
+
+let getFilterNearestMipmapNearest = () => TextureFilterService.getFilterNearestMipmapNearest();
+
+let getFilterNearestMipmapLinear = () => TextureFilterService.getFilterNearestMipmapLinear();
+
+let getFilterLinear = () => TextureFilterService.getFilterLinear();
+
+let getFilterLinearMipmapNearest = () => TextureFilterService.getFilterLinearMipmapNearest();
+
+let getFilterLinearMipmapLinear = () => TextureFilterService.getFilterLinearMipmapLinear();

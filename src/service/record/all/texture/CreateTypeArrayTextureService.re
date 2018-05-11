@@ -3,15 +3,25 @@ open Js.Typed_array;
 open BufferTextureService;
 
 let createTypeArrays = (buffer, count) => (
-  Uint16Array.fromBufferRange(
+  Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getWidthsOffset(count),
-    ~length=getWidthsLength(count)
+    ~offset=getWrapSsOffset(count),
+    ~length=getWrapSsLength(count)
   ),
-  Uint16Array.fromBufferRange(
+  Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getHeightsOffset(count),
-    ~length=getHeightsLength(count)
+    ~offset=getWrapTsOffset(count),
+    ~length=getWrapTsLength(count)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getMagFiltersOffset(count),
+    ~length=getMagFiltersLength(count)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getMinFiltersOffset(count),
+    ~length=getMinFiltersLength(count)
   ),
   Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),

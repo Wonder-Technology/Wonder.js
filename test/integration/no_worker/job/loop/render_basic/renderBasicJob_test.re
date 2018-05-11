@@ -819,18 +819,18 @@ let _ =
       describe(
         "update map",
         () => {
-          let _prepare = (state) => {
+          let _prepare = (~state, ~width=2, ~height=4, ()) => {
             let (state, gameObject, _, _, _, map) =
               RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            let source = Obj.magic(100);
+            let source = Obj.magic({"width": width, "height": height});
             let state = state |> TextureAPI.setTextureSource(map, source);
             (state, map)
           };
           test(
             "if is updated before, not update",
             () => {
-              let (state, map) = _prepare(state^);
+              let (state, map) = _prepare(~state=state^, ());
               let unpackFlipYWebgl = Obj.magic(2);
               let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
@@ -864,7 +864,7 @@ let _ =
           test(
             "set flipY true",
             () => {
-              let (state, map) = _prepare(state^);
+              let (state, map) = _prepare(~state=state^, ());
               let unpackFlipYWebgl = Obj.magic(2);
               let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
@@ -883,11 +883,7 @@ let _ =
                 "if source is power of two",
                 () => {
                   let _prepare = (state) => {
-                    let (state, map) = _prepare(state);
-                    let state =
-                      state
-                      |> TextureAPI.setTextureWidth(map, 2)
-                      |> TextureAPI.setTextureHeight(map, 4);
+                    let (state, map) = _prepare(~state, ~width=2, ~height=4, ());
                     (state, map)
                   };
                   test(
@@ -966,11 +962,7 @@ let _ =
                 "else",
                 () => {
                   let _prepare = (state) => {
-                    let (state, map) = _prepare(state);
-                    let state =
-                      state
-                      |> TextureAPI.setTextureWidth(map, 3)
-                      |> TextureAPI.setTextureHeight(map, 4);
+                    let (state, map) = _prepare(~state, ~width=3, ~height=4, ());
                     (state, map)
                   };
                   test(
@@ -1009,37 +1001,64 @@ let _ =
                   );
                   describe(
                     "set filter with fallback",
-                    () =>
+                    () => {
+                      let _setFakeGl = (sandbox, state) => {
+                        let texture2D = Obj.magic(1);
+                        let nearest = Obj.magic(2);
+                        let linear = Obj.magic(3);
+                        let textureMagFilter = Obj.magic(4);
+                        let textureMinFilter = Obj.magic(5);
+                        let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~texture2D,
+                                 ~nearest,
+                                 ~linear,
+                                 ~textureMagFilter,
+                                 ~textureMinFilter,
+                                 ~texParameteri,
+                                 ()
+                               )
+                             );
+                        (
+                          state,
+                          texture2D,
+                          nearest,
+                          linear,
+                          textureMagFilter,
+                          textureMinFilter,
+                          texParameteri
+                        )
+                      };
                       test(
                         "if filter === NEAREST or NEAREST_MIPMAP_MEAREST or NEAREST_MIPMAP_LINEAR, set NEAREST",
                         () => {
-                          /* TODO set filter data */
                           let (state, map) = _prepare(state^);
-                          let texture2D = Obj.magic(1);
-                          let nearest = Obj.magic(2);
-                          let linear = Obj.magic(3);
-                          let textureMagFilter = Obj.magic(4);
-                          let textureMinFilter = Obj.magic(5);
-                          let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(
-                                   ~sandbox,
-                                   ~texture2D,
-                                   ~nearest,
-                                   ~linear,
-                                   ~textureMagFilter,
-                                   ~textureMinFilter,
-                                   ~texParameteri,
-                                   ()
-                                 )
-                               );
+                            |> TextureAPI.setTextureMagFilter(
+                                 map,
+                                 TextureTool.getFilterNearestMipmapLinear()
+                               )
+                            |> TextureAPI.setTextureMinFilter(map, TextureTool.getFilterNearest());
+                          let (
+                            state,
+                            texture2D,
+                            nearest,
+                            linear,
+                            textureMagFilter,
+                            textureMinFilter,
+                            texParameteri
+                          ) =
+                            _setFakeGl(sandbox, state);
                           let state =
                             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                           (
                             texParameteri
-                            |> withThreeArgs(texture2D, textureMagFilter, linear)
+                            |> withThreeArgs(texture2D, textureMagFilter, nearest)
                             |> getCallCount,
                             texParameteri
                             |> withThreeArgs(texture2D, textureMinFilter, nearest)
@@ -1047,17 +1066,43 @@ let _ =
                           )
                           |> expect == (1, 1)
                         }
+                      );
+                      test(
+                        "else, set LINEAR",
+                        () => {
+                          let (state, map) = _prepare(state^);
+                          let state =
+                            state
+                            |> TextureAPI.setTextureMagFilter(
+                                 map,
+                                 TextureTool.getFilterLinearMipmapNearest()
+                               )
+                            |> TextureAPI.setTextureMinFilter(map, TextureTool.getFilterLinear());
+                          let (
+                            state,
+                            texture2D,
+                            nearest,
+                            linear,
+                            textureMagFilter,
+                            textureMinFilter,
+                            texParameteri
+                          ) =
+                            _setFakeGl(sandbox, state);
+                          let state =
+                            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                          (
+                            texParameteri
+                            |> withThreeArgs(texture2D, textureMagFilter, linear)
+                            |> getCallCount,
+                            texParameteri
+                            |> withThreeArgs(texture2D, textureMinFilter, linear)
+                            |> getCallCount
+                          )
+                          |> expect == (1, 1)
+                        }
                       )
+                    }
                   )
-                  /*
-                   TODO set filter data
-                   test(
-                   "else, set LINEAR",
-                   (
-                   () => {
-
-                   })
-                   ); */
                 }
               )
             }
@@ -1072,7 +1117,7 @@ let _ =
                     "test",
                     () => {
                       /* TODO set format,type */
-                      let (state, map) = _prepare(state^);
+                      let (state, map) = _prepare(~state=state^, ());
                       let source = TextureAPI.unsafeGetTextureSource(map, state);
                       let texture2D = Obj.magic(1);
                       let rgba = Obj.magic(2);

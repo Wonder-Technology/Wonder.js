@@ -68,7 +68,7 @@ let getIndicesInfosOffset = (customGeometryPointDataBufferCount, customGeometryD
 
 let getVertexIndex = (index) => index * getVertexSize();
 
-let getTexCoordsIndex = (index) => index * getTexCoordsSize();
+let getTexCoordIndex = (index) => index * getTexCoordsSize();
 
 let getIndexIndex = (index) => index * getIndexSize();
 
