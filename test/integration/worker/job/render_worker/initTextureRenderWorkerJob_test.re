@@ -16,42 +16,15 @@ let _ =
       describe(
         "init all textures",
         () => {
-          let _buildFakeContext = (imageDataArrayBuffer1, imageDataArrayBuffer2) => {
-            let getImageData =
-              createEmptyStubWithJsObjSandbox(sandbox)
-              |> onCall(0)
-              |> returns({"data": {"buffer": imageDataArrayBuffer1}})
-              |> onCall(1)
-              |> returns({"data": {"buffer": imageDataArrayBuffer2}});
-            {"drawImage": createEmptyStubWithJsObjSandbox(sandbox), "getImageData": getImageData}
-          };
-          let _buildFakeCanvas = (context) =>
-            {
-              "width": 0.,
-              "height": 0.,
-              "style": {"left": "", "top": "", "width": "", "height": "", "position": "static"},
-              "getContext": createEmptyStubWithJsObjSandbox(sandbox) |> returns(context)
-            }
-            |> SettingWorkerTool.addTransferControlToOffscreen;
-          let _prepareState = (imageDataArrayBuffer1, imageDataArrayBuffer2) => {
-            let context = _buildFakeContext(imageDataArrayBuffer1, imageDataArrayBuffer2);
-            let canvas =
-              SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
-                sandbox,
-                _buildFakeCanvas(context)
-              );
-            let state =
-              TestMainWorkerTool.initWithJobConfig(
-                ~sandbox,
-                ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
-                ()
-              );
-            (state, context)
-          };
           let _prepare = () => {
             let imageDataArrayBuffer1 = Obj.magic(11);
             let imageDataArrayBuffer2 = Obj.magic(12);
-            let (state, context) = _prepareState(imageDataArrayBuffer1, imageDataArrayBuffer2);
+            let (state, context) =
+              InitTextureRenderWorkerTool.prepareState(
+                sandbox,
+                imageDataArrayBuffer1,
+                imageDataArrayBuffer2
+              );
             let (state, map1) = TextureAPI.createTexture(state);
             let (state, map2) = TextureAPI.createTexture(state);
             let source1 = TextureTool.buildSource(100, 200);

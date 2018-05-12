@@ -84,8 +84,13 @@ let _buildData = (operateType, stateData) => {
         "needAddedImageDataArray":
           OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
             textureRecord.needAddedSourceArray
+            |> ArrayService.removeDuplicateItems(
+                 [@bs] (((texture, source)) => Js.Int.toString(texture))
+               )
           ),
-        "needInitedTextureIndexArray": textureRecord.needInitedTextureIndexArray
+        "needInitedTextureIndexArray":
+          textureRecord.needInitedTextureIndexArray
+          |> WonderCommonlib.ArrayService.removeDuplicateItems
       }
     },
     "renderData": {

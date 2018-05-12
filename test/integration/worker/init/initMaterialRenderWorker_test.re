@@ -4,7 +4,7 @@ open Js.Promise;
 
 let _ =
   describe(
-    "test init material with render worker",
+    "test init material for render worker",
     () => {
       open Expect;
       open Expect.Operators;
@@ -26,7 +26,7 @@ let _ =
       describe(
         "test render data->init material which is sended to render worker",
         () => {
-          let _buildDisposeData = (basicMaterialDataForWorkerInit, lightMaterialDataForWorkerInit) => {
+          let _buildRenderData = (basicMaterialDataForWorkerInit, lightMaterialDataForWorkerInit) => {
             "operateType": Sinon.matchAny,
             "directionLightData": Sinon.matchAny,
             "pointLightData": Sinon.matchAny,
@@ -71,24 +71,10 @@ let _ =
                             postMessageToRenderWorker
                             |> expect
                             |> toCalledWith([|
-                                 {
-                                   "operateType": Sinon.matchAny,
-                                   "directionLightData": Sinon.matchAny,
-                                   "pointLightData": Sinon.matchAny,
-                                   "initData": {
-                                     "materialData": {
-                                       "basicMaterialData": {
-                                         "materialDataForWorkerInit": [|
-                                           (material1, false),
-                                           (material2, false)
-                                         |]
-                                       },
-                                       "lightMaterialData": Sinon.matchAny
-                                     },
-                                     "textureData": Sinon.matchAny
-                                   },
-                                   "renderData": Sinon.matchAny
-                                 }
+                                 _buildRenderData(
+                                   [|(material1, false), (material2, false)|],
+                                   Sinon.matchAny
+                                 )
                                |])
                             |> resolve,
                         ()
@@ -110,6 +96,7 @@ let _ =
                         |> GameObjectAPI.initGameObject(gameObject2)
                         |> GameObjectAPI.initGameObject(gameObject3)
                         |> GameObjectAPI.initGameObject(gameObject4);
+                      MainStateTool.setState(state) |> ignore;
                       let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
                       let postMessageToRenderWorker =
                         WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
@@ -120,10 +107,7 @@ let _ =
                             postMessageToRenderWorker
                             |> expect
                             |> toCalledWith([|
-                                 _buildDisposeData(
-                                   [|(material1, false), (material2, false)|],
-                                   [||]
-                                 )
+                                 _buildRenderData([|(material1, false), (material2, false)|], [||])
                                |])
                             |> resolve,
                         ()
@@ -171,6 +155,7 @@ let _ =
                         state
                         |> GameObjectAPI.initGameObject(gameObject1)
                         |> GameObjectAPI.initGameObject(gameObject2);
+                      MainStateTool.setState(state) |> ignore;
                       let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
                       let postMessageToRenderWorker =
                         WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
@@ -181,10 +166,7 @@ let _ =
                             postMessageToRenderWorker
                             |> expect
                             |> toCalledWith([|
-                                 _buildDisposeData(
-                                   [||],
-                                   [|(material1, false), (material2, false)|]
-                                 )
+                                 _buildRenderData([||], [|(material1, false), (material2, false)|])
                                |])
                             |> resolve,
                         ()
@@ -206,6 +188,7 @@ let _ =
                         |> GameObjectAPI.initGameObject(gameObject3)
                         |> GameObjectAPI.initGameObject(gameObject2)
                         |> GameObjectAPI.initGameObject(gameObject4);
+                      MainStateTool.setState(state) |> ignore;
                       let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
                       let postMessageToRenderWorker =
                         WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
@@ -216,10 +199,7 @@ let _ =
                             postMessageToRenderWorker
                             |> expect
                             |> toCalledWith([|
-                                 _buildDisposeData(
-                                   [||],
-                                   [|(material1, false), (material2, false)|]
-                                 )
+                                 _buildRenderData([||], [|(material1, false), (material2, false)|])
                                |])
                             |> resolve,
                         ()
