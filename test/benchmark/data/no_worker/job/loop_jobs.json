@@ -42,5 +42,11 @@
     },
     {
         "name": "front_render_light"
+    },
+    {
+        "name": "dispose"
+    },
+    {
+        "name": "reallocate_cpu_memory"
     }
 ]

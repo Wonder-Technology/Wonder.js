@@ -22,6 +22,12 @@
               "name": "transfer_job_data"
             },
             {
+              "name": "create_canvas"
+            },
+            {
+              "name": "set_full_screen"
+            },
+            {
               "name": "send_init_render_data"
             }
           ]

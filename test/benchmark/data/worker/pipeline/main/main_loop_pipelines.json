@@ -7,6 +7,12 @@
                 "link": "concat",
                 "jobs": [
                     {
+                        "name": "create_basic_render_object_buffer"
+                    },
+                    {
+                        "name": "create_light_render_object_buffer"
+                    },
+                    {
                         "name": "send_render_data"
                     },
                     {
@@ -17,15 +23,6 @@
                     },
                     {
                         "name": "update_camera"
-                    },
-                    {
-                        "name": "get_camera_data"
-                    },
-                    {
-                        "name": "create_basic_render_object_buffer"
-                    },
-                    {
-                        "name": "copy_arraybuffer"
                     }
                 ]
             },
@@ -39,9 +36,33 @@
                 ]
             },
             {
+                "name": "begin_sync",
+                "link": "merge",
+                "jobs": [
+                    {
+                        "name": "sync"
+                    },
+                    {
+                        "name": "get_finish_dispose_data"
+                    }
+                ]
+            },
+            {
                 "name": "sync",
                 "link": "concat",
                 "jobs": [
+                    {
+                        "name": "dispose_and_send_dispose_data"
+                    },
+                    {
+                        "name": "reallocate_cpu_memory"
+                    },
+                    {
+                        "name": "get_camera_data"
+                    },
+                    {
+                        "name": "copy_arraybuffer"
+                    }
                 ]
             },
             {
@@ -64,7 +85,7 @@
                         "name": "begin_loop"
                     },
                     {
-                        "name": "sync"
+                        "name": "begin_sync"
                     }
                 ]
             }

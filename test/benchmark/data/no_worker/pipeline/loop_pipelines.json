@@ -6,6 +6,12 @@
                 "name": "tick"
             },
             {
+                "name": "dispose"
+            },
+            {
+                "name": "reallocate_cpu_memory"
+            },
+            {
                 "name": "update_transform"
             },
             {
