@@ -117,7 +117,6 @@ let _buildData = (operateType, canvas, stateData) => {
 };
 
 let _clearData = (state) =>
-  /* TODO test */
   state
   |> OperateTextureMainService.clearNeedAddedSourceArr
   |> InitTextureMainService.clearNeedInitedTextureIndexArray;

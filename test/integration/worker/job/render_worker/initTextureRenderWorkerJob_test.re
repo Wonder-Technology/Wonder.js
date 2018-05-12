@@ -46,7 +46,7 @@ let _ =
             () => {
               describe(
                 "test send init data to render worker",
-                () =>
+                () => {
                   describe(
                     "send needAddedImageDataArray",
                     () =>
@@ -108,7 +108,37 @@ let _ =
                              )
                         }
                       )
+                  );
+                  testPromise(
+                    "clear textureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
+                    () => {
+                      open TextureType;
+                      let (
+                        state,
+                        context,
+                        (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                        (map1, map2),
+                        (source1, source2)
+                      ) =
+                        _prepare();
+                      MainInitJobMainWorkerTool.prepare()
+                      |> MainInitJobMainWorkerTool.test(
+                           sandbox,
+                           (state) => WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
+                           (postMessageToRenderWorker) => {
+                             let state = MainStateTool.unsafeGetState();
+                             let {needAddedSourceArray, needInitedTextureIndexArray} =
+                               TextureTool.getRecord(state);
+                             (
+                               needAddedSourceArray |> Js.Array.length,
+                               needInitedTextureIndexArray |> Js.Array.length
+                             )
+                             |> expect == (0, 0)
+                           }
+                         )
+                    }
                   )
+                }
               );
               describe(
                 "test render worker job",
