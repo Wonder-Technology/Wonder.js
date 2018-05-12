@@ -110,7 +110,7 @@ let handleBatchDisposeComponent =
       let {disposedIndexArray} as basicMaterialRecord =
         RecordBasicMaterialMainService.getRecord(state);
       let textureCountPerMaterial =
-        BufferSettingService.getTextureCountPerBasicMaterial(settingRecord);
+        BufferSettingService.getTextureCountPerMaterial(settingRecord);
       materialArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs]

@@ -113,40 +113,8 @@ let _ =
               describe(
                 "test render worker job",
                 () => {
-                  let _buildFakeCreateImageBitmapFunc = [%bs.raw
-                    {|
-  function(){
-    window.createImageBitmap = function(imageData, config){
-
-    return new Promise(function(resolve, reject){
-      resolve([imageData.uint8ClampedArray.arrayBuffer, imageData.width, imageData.height, config ]);
-    }) ;
-  }
-
-
-window.ImageData = function(uint8ClampedArray, width, height){
-  this.uint8ClampedArray = uint8ClampedArray;
-  this.width = width;
-  this.height = height;
-}
-
-
-window.Uint8ClampedArray = function(arrayBuffer){
-  this.arrayBuffer = arrayBuffer;
-}
-
-  }
-  |}
-                  ];
-                  let _clearFakeCreateImageBitmapFunc = [%bs.raw
-                    {|
-  function(){
-    window.createImageBitmap = undefined;
-  }
-  |}
-                  ];
-                  beforeAllPromise(() => _buildFakeCreateImageBitmapFunc());
-                  afterAllPromise(() => _clearFakeCreateImageBitmapFunc());
+                  beforeAllPromise(() => TextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
+                  afterAllPromise(() => TextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
                   describe(
                     "add source to sourceMap",
                     () => {

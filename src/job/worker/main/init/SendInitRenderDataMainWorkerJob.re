@@ -116,6 +116,12 @@ let _buildData = (operateType, canvas, stateData) => {
   }
 };
 
+let _clearData = (state) =>
+  /* TODO test */
+  state
+  |> OperateTextureMainService.clearNeedAddedSourceArr
+  |> InitTextureMainService.clearNeedInitedTextureIndexArray;
+
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(
     () => {
@@ -135,11 +141,7 @@ let execJob = (flags, stateData) =>
            _buildData(operateType, offscreen, stateData),
            [|offscreen|]
          );
-      /* TODO test */
-      let state =
-        state
-        |> OperateTextureMainService.clearNeedAddedSourceArr
-        |> InitTextureMainService.clearNeedInitedTextureIndexArray;
+      let state = state |> _clearData;
       StateDataMainService.setState(stateData, state);
       Some(operateType)
     }

@@ -93,7 +93,7 @@ let setMapUnit = (material, unit, state) => {
 let getTextureIndicesIndex = (material, state) =>
   BufferBasicMaterialService.getTextureIndicesIndex(
     material,
-    BufferSettingService.getTextureCountPerBasicMaterial(state.settingRecord)
+    BufferSettingService.getTextureCountPerMaterial(state.settingRecord)
   );
 
 let getDefaultTextureIndex = () => BufferBasicMaterialService.getDefaultTextureIndex();

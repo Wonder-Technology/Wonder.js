@@ -75,7 +75,13 @@ let init = (completeFunc, state) => {
          |]
          |> concatStreamFuncArray(initData, RenderWorkerStateTool.getStateData())
          |> Most.drain
-         |> then_((_) => completeFunc(MainStateTool.unsafeGetState()))
+         |> then_(
+              (_) =>
+                MainStateTool.unsafeGetState()
+                |> SendInitRenderDataMainWorkerJob._clearData
+                |> MainStateTool.setState
+                |> completeFunc
+            )
      )
 };
 

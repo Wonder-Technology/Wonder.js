@@ -2,11 +2,7 @@ open StateRenderType;
 
 let _getTextureIndex = (material, mapUnit, textureIndices, settingRecord) =>
   OperateTypeArrayBasicMaterialService.getTextureIndex(
-    (
-      material,
-      mapUnit,
-      OperateRenderSettingService.getTextureCountPerBasicMaterial(settingRecord)
-    ),
+    (material, mapUnit, OperateRenderSettingService.getTextureCountPerMaterial(settingRecord)),
     textureIndices
   );
 

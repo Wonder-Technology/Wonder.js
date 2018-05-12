@@ -5,7 +5,7 @@ open BasicMaterialType;
 let getMap = (material, {settingRecord} as state) => {
   let {textureIndices, mapUnits} = RecordBasicMaterialMainService.getRecord(state);
   let textureCountPerMaterial =
-    BufferSettingService.getTextureCountPerBasicMaterial(settingRecord);
+    BufferSettingService.getTextureCountPerMaterial(settingRecord);
   let mapUnit = OperateTypeArrayBasicMaterialService.getMapUnit(material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
     Some(
@@ -24,7 +24,7 @@ let setMap = (material, texture, {settingRecord} as state) => {
   let {textureIndices, mapUnits, textureCountMap} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
   let textureCountPerMaterial =
-    BufferSettingService.getTextureCountPerBasicMaterial(settingRecord);
+    BufferSettingService.getTextureCountPerMaterial(settingRecord);
   let mapCount = TextureCountMapBasicMaterialService.unsafeGetCount(material, textureCountMap);
   {
     ...state,

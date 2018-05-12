@@ -390,7 +390,7 @@ let _ =
                            ()
                          )
                        );
-                  let state = MainStateTool.setState(state);
+                  /* let state = MainStateTool.setState(state); */
                   RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                     ~state,
                     ~sandbox,
@@ -462,7 +462,7 @@ let _ =
                                ()
                              )
                            );
-                      let state = MainStateTool.setState(state);
+                      /* let state = MainStateTool.setState(state); */
                       RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                         ~state,
                         ~sandbox,
@@ -479,6 +479,118 @@ let _ =
                                    TransformTool.getDefaultLocalToWorldMatrixTypeArray(state)
                                  )
                                |])
+                            |> resolve,
+                        ()
+                      )
+                    }
+                  )
+              )
+            }
+          )
+      );
+      describe(
+        "update map",
+        () =>
+          describe(
+            "set flipY",
+            () => {
+              let _prepare = () => {
+                let imageDataArrayBuffer1 = Obj.magic(11);
+                let imageDataArrayBuffer2 = Obj.magic(12);
+                let (state, context) =
+                  InitTextureRenderWorkerTool.prepareState(
+                    sandbox,
+                    imageDataArrayBuffer1,
+                    imageDataArrayBuffer2
+                  );
+                let (state, gameObject1, _, _, _, map1) =
+                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                let (state, gameObject2, _, _, _, map2) =
+                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                let source1 = TextureTool.buildSource(100, 200);
+                let source2 = TextureTool.buildSource(110, 210);
+                let state = state |> TextureAPI.setTextureSource(map1, source1);
+                let state = state |> TextureAPI.setTextureSource(map2, source2);
+                let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
+                let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+                let unpackFlipYWebgl = Obj.magic(2);
+                let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlWorkerTool.setFakeGl(
+                       FakeGlWorkerTool.buildFakeGl(~sandbox, ~unpackFlipYWebgl, ~pixelStorei, ())
+                     );
+                (
+                  state,
+                  context,
+                  (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                  (gameObject1, gameObject2),
+                  (map1, map2),
+                  (source1, source2),
+                  (unpackFlipYWebgl, pixelStorei)
+                )
+              };
+              beforeAllPromise(() => TextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
+              afterAllPromise(() => TextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
+              describe(
+                "test for chrome",
+                () =>
+                  testPromise(
+                    "not flip",
+                    () => {
+                      let (
+                        state,
+                        context,
+                        (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                        (gameObject1, gameObject2),
+                        (map1, map2),
+                        (source1, source2),
+                        (unpackFlipYWebgl, pixelStorei)
+                      ) =
+                        _prepare();
+                      BrowserDetectTool.setChrome();
+                      RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                        ~state,
+                        ~sandbox,
+                        ~completeFunc=
+                          (_) =>
+                            pixelStorei
+                            |> withTwoArgs(unpackFlipYWebgl, Js.true_)
+                            |> expect
+                            |> not_
+                            |> toCalled
+                            |> resolve,
+                        ()
+                      )
+                    }
+                  )
+              );
+              describe(
+                "test for firefox",
+                () =>
+                  testPromise(
+                    "flip y",
+                    () => {
+                      let (
+                        state,
+                        context,
+                        (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                        (gameObject1, gameObject2),
+                        (map1, map2),
+                        (source1, source2),
+                        (unpackFlipYWebgl, pixelStorei)
+                      ) =
+                        _prepare();
+                      BrowserDetectTool.setFirefox();
+                      RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                        ~state,
+                        ~sandbox,
+                        ~completeFunc=
+                          (_) =>
+                            pixelStorei
+                            |> withTwoArgs(unpackFlipYWebgl, Js.true_)
+                            |> expect
+                            |> toCalledTwice
                             |> resolve,
                         ()
                       )

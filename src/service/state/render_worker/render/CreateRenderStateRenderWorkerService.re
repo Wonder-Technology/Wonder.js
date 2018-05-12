@@ -75,7 +75,7 @@ let createRenderState =
             BufferRenderWorkerSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
         }),
       textureCountPerMaterial:
-        BufferRenderWorkerSettingService.getTextureCountPerBasicMaterial(settingRecord)
+        BufferRenderWorkerSettingService.getTextureCountPerMaterial(settingRecord)
     },
     glslSenderRecord,
     programRecord,

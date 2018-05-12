@@ -70,7 +70,7 @@ let create = ({settingRecord} as state) => {
   let (buffer, (shaderIndices, colors, textureIndices, mapUnits)) =
     _initBufferData(
       BufferSettingService.getBasicMaterialDataBufferCount(settingRecord),
-      BufferSettingService.getTextureCountPerBasicMaterial(settingRecord),
+      BufferSettingService.getTextureCountPerMaterial(settingRecord),
       defaultShaderIndex,
       defaultColor
     );
@@ -125,7 +125,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
                index
                * getTextureIndicesSize(
-                   BufferSettingService.getTextureCountPerBasicMaterial(settingRecord)
+                   BufferSettingService.getTextureCountPerMaterial(settingRecord)
                  )
              ),
         mapUnits:

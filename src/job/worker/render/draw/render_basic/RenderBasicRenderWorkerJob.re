@@ -2,7 +2,8 @@ open StateDataRenderWorkerType;
 
 let _render = (gl, state) =>
   switch (state |> OperateRenderRenderWorkerService.getBasicRenderObjectRecord) {
-  | None => state
+  | None =>
+  state
   | Some({
       count,
       transformIndices,
