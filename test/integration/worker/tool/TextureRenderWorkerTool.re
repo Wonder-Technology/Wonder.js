@@ -40,3 +40,67 @@ let clearFakeCreateImageBitmapFunc = [%bs.raw
   }
   |}
 ];
+
+let prepareStateAndCreateTwoMaps = (sandbox) => {
+  let imageDataArrayBuffer1 = Obj.magic(11);
+  let imageDataArrayBuffer2 = Obj.magic(12);
+  let (state, context) =
+    InitTextureRenderWorkerTool.prepareState(
+      sandbox,
+      imageDataArrayBuffer1,
+      imageDataArrayBuffer2
+    );
+  let (state, map1) = TextureAPI.createTexture(state);
+  let (state, map2) = TextureAPI.createTexture(state);
+  let source1 = TextureTool.buildSource(100, 200);
+  let source2 = TextureTool.buildSource(110, 210);
+  let state = state |> TextureAPI.setTextureSource(map1, source1);
+  let state = state |> TextureAPI.setTextureSource(map2, source2);
+  (
+    state,
+    context,
+    (imageDataArrayBuffer1, imageDataArrayBuffer2),
+    (map1, map2),
+    (source1, source2)
+  )
+};
+
+let prepareStateAndCreateTwoGameObjects = (sandbox) => {
+  let imageDataArrayBuffer1 = Obj.magic(11);
+  let imageDataArrayBuffer2 = Obj.magic(12);
+  let (state, context) =
+    InitTextureRenderWorkerTool.prepareState(
+      sandbox,
+      imageDataArrayBuffer1,
+      imageDataArrayBuffer2
+    );
+  /* let (state, gameObject1, (_, map1)) = BasicMaterialTool.createGameObjectWithMap(state);
+  let (state, gameObject2, (_, map2)) = BasicMaterialTool.createGameObjectWithMap(state); */
+
+
+                    let (state, gameObject1, _, _, _, map1) =
+                      RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                    let (state, gameObject2, _, _, _, map2) =
+                      RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+
+  let source1 = TextureTool.buildSource(100, 200);
+  let source2 = TextureTool.buildSource(110, 210);
+  let state = state |> TextureAPI.setTextureSource(map1, source1);
+  let state = state |> TextureAPI.setTextureSource(map2, source2);
+
+
+
+                    let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
+                    let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+
+
+
+  (
+    state,
+    context,
+    (imageDataArrayBuffer1, imageDataArrayBuffer2),
+    (gameObject1, gameObject2),
+    (map1, map2),
+    (source1, source2)
+  )
+};

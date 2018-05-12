@@ -17,20 +17,14 @@ let _ =
         "init all textures",
         () => {
           let _prepare = () => {
-            let imageDataArrayBuffer1 = Obj.magic(11);
-            let imageDataArrayBuffer2 = Obj.magic(12);
-            let (state, context) =
-              InitTextureRenderWorkerTool.prepareState(
-                sandbox,
-                imageDataArrayBuffer1,
-                imageDataArrayBuffer2
-              );
-            let (state, map1) = TextureAPI.createTexture(state);
-            let (state, map2) = TextureAPI.createTexture(state);
-            let source1 = TextureTool.buildSource(100, 200);
-            let source2 = TextureTool.buildSource(110, 210);
-            let state = state |> TextureAPI.setTextureSource(map1, source1);
-            let state = state |> TextureAPI.setTextureSource(map2, source2);
+            let (
+              state,
+              context,
+              (imageDataArrayBuffer1, imageDataArrayBuffer2),
+              (map1, map2),
+              (source1, source2)
+            ) =
+              TextureRenderWorkerTool.prepareStateAndCreateTwoMaps(sandbox);
             let state =
               state |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
             (
