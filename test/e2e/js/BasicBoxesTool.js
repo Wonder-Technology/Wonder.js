@@ -291,6 +291,16 @@ var BasicBoxesTool = (function () {
                 wd.setState(state);
             }, state);
         },
+        createAndDisposeGameObjectsWorkerWithMap: function (count, boxes, source, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = createAndDisposeGameObjectsWithMap(count, boxes, source, wd.getStateFromData(stateData)
+                );
+
+                wd.setState(state);
+            }, state);
+        },
         createCamera: function (state) {
             return CameraTool.createCamera(state)
         }

@@ -320,6 +320,22 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
+let setTextureMinFilter = TextureAPI.setTextureMinFilter;
+
+let getTextureMinFilter = TextureAPI.getTextureMinFilter;
+
+let setTextureMagFilter = TextureAPI.setTextureMagFilter;
+
+let getTextureMagFilter = TextureAPI.getTextureMagFilter;
+
+let setTextureWrapT = TextureAPI.setTextureWrapT;
+
+let getTextureWrapT = TextureAPI.getTextureWrapT;
+
+let setTextureWrapS = TextureAPI.setTextureWrapS;
+
+let getTextureWrapS = TextureAPI.getTextureWrapS;
+
 let getTextureHeight = TextureAPI.getTextureHeight;
 
 let getTextureWidth = TextureAPI.getTextureWidth;
@@ -561,6 +577,22 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let setTextureMinFilter = TextureAPI.setTextureMinFilter;
+
+let getTextureMinFilter = TextureAPI.getTextureMinFilter;
+
+let setTextureMagFilter = TextureAPI.setTextureMagFilter;
+
+let getTextureMagFilter = TextureAPI.getTextureMagFilter;
+
+let setTextureWrapT = TextureAPI.setTextureWrapT;
+
+let getTextureWrapT = TextureAPI.getTextureWrapT;
+
+let setTextureWrapS = TextureAPI.setTextureWrapS;
+
+let getTextureWrapS = TextureAPI.getTextureWrapS;
 
 let getTextureHeight = TextureAPI.getTextureHeight;
 
