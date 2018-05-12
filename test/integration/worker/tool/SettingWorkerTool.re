@@ -24,8 +24,7 @@ let buildFakeDiv = (canvasDom) => {
   div
 };
 
-let buildFakeCanvasForNotPassCanvasId = (sandbox) => {
-  let canvasDom = buildFakeCanvas();
+let buildFakeCanvasForNotPassCanvasIdWithCanvas = (sandbox, canvasDom) => {
   let div = buildFakeDiv(canvasDom);
   let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^)), "style": {"cssText": ""}};
   let createElementStub =
@@ -35,8 +34,12 @@ let buildFakeCanvasForNotPassCanvasId = (sandbox) => {
   createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "querySelectorAll")
   |> withOneArg("body")
   |> returns([body])
-  |> ignore
+  |> ignore;
+  canvasDom
 };
+
+let buildFakeCanvasForNotPassCanvasId = (sandbox) =>
+  buildFakeCanvasForNotPassCanvasIdWithCanvas(sandbox, buildFakeCanvas());
 
 let createStateAndSetToStateData =
     (

@@ -37,7 +37,7 @@ let execJob = (_, e, stateData) => {
         |> StateRenderWorkerService.setState(stateData)
       }
     ),
-    SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
+    SourceMapTextureRenderWorkerService.addSourceFromImageDataStream(
       textureData##needAddedImageDataArray,
       state
     ),

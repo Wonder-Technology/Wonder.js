@@ -40,7 +40,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "init all created textures",
+        "init all textures",
         () => {
           describe(
             "test init one texture",

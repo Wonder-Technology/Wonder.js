@@ -38,7 +38,7 @@ let _createImageBitmap = (texture, imageData, state) => {
           ~description={j|unknown browser|j},
           ~reason="",
           ~solution={j||j},
-          ~params={j||j}
+          ~params={j|browser: $browser|j}
         )
       )
 };
@@ -82,5 +82,5 @@ let _convertImageSrcToImageBitmapStream = (imageArrayBufferIndexSizeDataArr, sta
             )
      );
 
-let addSourceMapFromImageDataStream = (imageArrayBufferIndexSizeDataArr, state) =>
+let addSourceFromImageDataStream = (imageArrayBufferIndexSizeDataArr, state) =>
   _convertImageSrcToImageBitmapStream(imageArrayBufferIndexSizeDataArr, state);

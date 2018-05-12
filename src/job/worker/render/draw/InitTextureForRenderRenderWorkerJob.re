@@ -10,7 +10,7 @@ let execJob = (flags, e, stateData) => {
   let initData = data##initData;
   let textureData = initData##textureData;
   [|
-    SourceMapTextureRenderWorkerService.addSourceMapFromImageDataStream(
+    SourceMapTextureRenderWorkerService.addSourceFromImageDataStream(
       textureData##needAddedImageDataArray,
       state
     ),

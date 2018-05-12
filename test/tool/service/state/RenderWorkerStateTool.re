@@ -12,10 +12,9 @@ let getState = () => {
   }
 };
 
-let setState = (state) =>
-  StateRenderWorkerService.setState(StateDataRenderWorker.renderWorkerStateData, state);
+let setState = (state) => StateRenderWorkerService.setState(getStateData(), state);
 
 let createState = () => CreateStateRenderWorkerService.createState();
 
 let createStateAndSetToStateData = () =>
-  StateRenderWorkerService.setState(StateDataRenderWorker.renderWorkerStateData, createState());
+  StateRenderWorkerService.setState(getStateData(), createState());

@@ -24,3 +24,5 @@ let getFilterLinear = () => TextureFilterService.getFilterLinear();
 let getFilterLinearMipmapNearest = () => TextureFilterService.getFilterLinearMipmapNearest();
 
 let getFilterLinearMipmapLinear = () => TextureFilterService.getFilterLinearMipmapLinear();
+
+let buildSource = (width, height) => {"width": width, "height": height};
