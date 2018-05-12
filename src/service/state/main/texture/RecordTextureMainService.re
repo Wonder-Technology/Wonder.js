@@ -46,9 +46,9 @@ let _initBufferData = (count) => {
 };
 
 let create = ({settingRecord} as state) => {
-  let textureDataBufferCount = BufferSettingService.getTextureDataBufferCount(settingRecord);
+  let textureCount = BufferSettingService.getTextureCount(settingRecord);
   let (buffer, (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates)) =
-    _initBufferData(textureDataBufferCount);
+    _initBufferData(textureCount);
   state.textureRecord =
     Some({
       index: 0,

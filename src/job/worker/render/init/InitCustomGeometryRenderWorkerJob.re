@@ -2,7 +2,7 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerCustomGeometryType;
 
-let _createTypeArrays = (buffer, geometryPointDataBufferCount, geometryDataBufferCount, state) => {
+let _createTypeArrays = (buffer, geometryPointCount, geometryCount, state) => {
   let (
     vertices,
     texCoords,
@@ -15,8 +15,8 @@ let _createTypeArrays = (buffer, geometryPointDataBufferCount, geometryDataBuffe
   ) =
     CreateTypeArrayCustomGeometryService.createTypeArrays(
       buffer,
-      geometryPointDataBufferCount,
-      geometryDataBufferCount
+      geometryPointCount,
+      geometryCount
     );
   state.customGeometryRecord =
     Some({
@@ -39,13 +39,13 @@ let execJob = (_, e, stateData) =>
       let data = MessageService.getRecord(e);
       let customGeometryData = data##customGeometryData;
       let buffer = customGeometryData##buffer;
-      let customGeometryPointDataBufferCount = data##bufferData##customGeometryPointDataBufferCount;
-      let customGeometryDataBufferCount = data##bufferData##customGeometryDataBufferCount;
+      let customGeometryPointCount = data##bufferData##customGeometryPointCount;
+      let customGeometryCount = data##bufferData##customGeometryCount;
       state
       |> _createTypeArrays(
            buffer,
-           customGeometryPointDataBufferCount,
-           customGeometryDataBufferCount
+           customGeometryPointCount,
+           customGeometryCount
          )
       |> StateRenderWorkerService.setState(stateData);
       e

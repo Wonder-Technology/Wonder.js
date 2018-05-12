@@ -23,7 +23,7 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let lightMaterialData = data##lightMaterialData;
-      let count = data##bufferData##lightMaterialDataBufferCount;
+      let count = data##bufferData##lightMaterialCount;
       state
       |> _createTypeArrays(lightMaterialData##buffer, count)
       |> InitMaterialRenderWorkerJobUtils.initMaterials(

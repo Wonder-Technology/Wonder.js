@@ -22,7 +22,7 @@ let execJob = (_, e, stateData) =>
       let data = MessageService.getRecord(e);
       let transformData = data##transformData;
       let buffer = transformData##buffer;
-      let count = data##bufferData##transformDataBufferCount;
+      let count = data##bufferData##transformCount;
       state |> _createTypeArrays(buffer, count) |> StateRenderWorkerService.setState(stateData);
       e
     }

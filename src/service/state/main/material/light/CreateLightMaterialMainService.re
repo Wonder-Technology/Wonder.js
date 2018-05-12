@@ -15,7 +15,7 @@ let create =
       state.lightMaterialRecord = Some({...lightMaterialRecord, index: newIndex});
       (state, index)
       |> BufferService.checkNotExceedMaxCount(
-           BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+           BufferSettingService.getBasicMaterialCount(settingRecord)
          )
     }
   );

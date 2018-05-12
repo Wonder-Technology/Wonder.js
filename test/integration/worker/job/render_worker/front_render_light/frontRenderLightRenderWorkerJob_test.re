@@ -19,8 +19,8 @@ let _ =
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
-                  ~transformDataBufferCount=10,
-                  ~basicMaterialDataBufferCount=10,
+                  ~transformCount=10,
+                  ~basicMaterialCount=10,
                   ()
                 ),
               ()

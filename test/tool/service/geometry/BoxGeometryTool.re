@@ -29,7 +29,7 @@ let buildBoxGeometryConfigDataJsObj =
 let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
   [@bs] GetBoxGeometryIndicesRenderService.getIndicesCount(index, state);
 
-let buildBufferConfig = (count) => {"boxGeometryPointDataBufferCount": Js.Nullable.return(count)};
+let buildBufferConfig = (count) => {"boxGeometryPointCount": Js.Nullable.return(count)};
 
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();

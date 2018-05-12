@@ -99,12 +99,12 @@ let _buildData = (operateType, stateData) => {
       "basic": {
         "buffer": basicRenderObjectRecord.buffer,
         "count": basicRenderObjectRecord.count,
-        "bufferCount": BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+        "bufferCount": BufferSettingService.getBasicMaterialCount(settingRecord)
       },
       "light": {
         "buffer": lightRenderObjectRecord.buffer,
         "count": lightRenderObjectRecord.count,
-        "bufferCount": BufferSettingService.getLightMaterialDataBufferCount(settingRecord)
+        "bufferCount": BufferSettingService.getLightMaterialCount(settingRecord)
       },
       "sourceInstance": {
         "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap

@@ -74,13 +74,13 @@ let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) =
 
 let _createForWorker =
     (
-      transformDataBufferCount,
+      transformCount,
       (defaultLocalToWorldMatrix, defaultLocalPosition),
       (buffer, localToWorldMatrices, localPositions),
       state
     ) => {
   let (copiedBuffer, (copiedLocalToWorldMatrices, copiedLocalPositions)) =
-    _initBufferData(transformDataBufferCount, defaultLocalToWorldMatrix, defaultLocalPosition);
+    _initBufferData(transformCount, defaultLocalToWorldMatrix, defaultLocalPosition);
   state.transformRecord =
     Some({
       index: 0,
@@ -132,7 +132,7 @@ let _createForNoWorker =
 };
 
 let create = ({settingRecord} as state) => {
-  let transformDataBufferCount = BufferSettingService.getTransformDataBufferCount(settingRecord);
+  let transformCount = BufferSettingService.getTransformCount(settingRecord);
   let defaultLocalToWorldMatrix = [|
     1.,
     0.,
@@ -153,11 +153,11 @@ let create = ({settingRecord} as state) => {
   |];
   let defaultLocalPosition = [|0., 0., 0.|];
   let (buffer, (localToWorldMatrices, localPositions)) =
-    _initBufferData(transformDataBufferCount, defaultLocalToWorldMatrix, defaultLocalPosition);
+    _initBufferData(transformCount, defaultLocalToWorldMatrix, defaultLocalPosition);
   /* TODO use conditional compile */
   WorkerDetectMainService.isUseWorker(state) ?
     _createForWorker(
-      transformDataBufferCount,
+      transformCount,
       (defaultLocalToWorldMatrix, defaultLocalPosition),
       (buffer, localToWorldMatrices, localPositions),
       state

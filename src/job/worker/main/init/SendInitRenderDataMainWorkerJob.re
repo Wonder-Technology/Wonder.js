@@ -45,13 +45,13 @@ let _buildData = (operateType, canvas, stateData) => {
     "isDebug": IsDebugMainService.getIsDebug(stateData),
     "viewportData": [|x, y, width, height|],
     "bufferData": {
-      "customGeometryPointDataBufferCount": buffer.customGeometryPointDataBufferCount,
-      "customGeometryDataBufferCount": buffer.customGeometryDataBufferCount,
-      "transformDataBufferCount": buffer.transformDataBufferCount,
-      "basicMaterialDataBufferCount": buffer.basicMaterialDataBufferCount,
-      "lightMaterialDataBufferCount": buffer.lightMaterialDataBufferCount,
+      "customGeometryPointCount": buffer.customGeometryPointCount,
+      "customGeometryCount": buffer.customGeometryCount,
+      "transformCount": buffer.transformCount,
+      "basicMaterialCount": buffer.basicMaterialCount,
+      "lightMaterialCount": buffer.lightMaterialCount,
       "textureCountPerMaterial": buffer.textureCountPerMaterial,
-      "textureDataBufferCount": buffer.textureDataBufferCount
+      "textureCount": buffer.textureCount
     },
     "gpuData": {"useHardwareInstance": useHardwareInstance},
     "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},

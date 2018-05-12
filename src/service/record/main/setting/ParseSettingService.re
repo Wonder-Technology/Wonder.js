@@ -27,19 +27,19 @@ let convertToRecord = (setting) => {
            field(
              "buffer",
              (json) => {
-               customGeometryPointDataBufferCount:
-                 json |> field("custom_geometry_point_data_buffer_count", int),
-               customGeometryDataBufferCount:
-                 json |> field("custom_geometry_data_buffer_count", int),
-               transformDataBufferCount: json |> field("transform_data_buffer_count", int),
-               basicMaterialDataBufferCount: json |> field("basic_material_data_buffer_count", int),
-               lightMaterialDataBufferCount: json |> field("light_material_data_buffer_count", int),
+               customGeometryPointCount:
+                 json |> field("custom_geometry_point_count", int),
+               customGeometryCount:
+                 json |> field("custom_geometry_count", int),
+               transformCount: json |> field("transform_count", int),
+               basicMaterialCount: json |> field("basic_material_count", int),
+               lightMaterialCount: json |> field("light_material_count", int),
                textureCountPerMaterial: json |> field("texture_count_per_material", int),
-               textureDataBufferCount: json |> field("texture_data_buffer_count", int),
+               textureCount: json |> field("texture_count", int),
                instanceBuffer:
                  json
                  |> field(
-                      "instanceBuffer",
+                      "instance_buffer",
                       (json) => {
                         sourceInstanceCount: json |> field("sourceInstance_count", int),
                         objectInstanceCountPerSourceInstance:

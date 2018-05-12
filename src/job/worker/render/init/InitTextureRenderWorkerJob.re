@@ -31,7 +31,7 @@ let execJob = (_, e, stateData) => {
         let state = StateRenderWorkerService.unsafeGetState(stateData);
         let data = MessageService.getRecord(e);
         let textureData = data##textureData;
-        let count = data##bufferData##textureDataBufferCount;
+        let count = data##bufferData##textureCount;
         state
         |> _createTypeArrays(textureData##buffer, count)
         |> StateRenderWorkerService.setState(stateData)

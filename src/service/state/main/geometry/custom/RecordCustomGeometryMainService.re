@@ -23,8 +23,8 @@ let setDefaultTypeArrData = (geometryCount: int, (vertices, texCoords, normals, 
        (vertices, texCoords, normals, indices)
      );
 
-let _initBufferData = (geometryPointDataBufferCount, geometryDataBufferCount) => {
-  let buffer = createBuffer(geometryPointDataBufferCount, geometryDataBufferCount);
+let _initBufferData = (geometryPointCount, geometryCount) => {
+  let buffer = createBuffer(geometryPointCount, geometryCount);
   let (
     vertices,
     texCoords,
@@ -37,8 +37,8 @@ let _initBufferData = (geometryPointDataBufferCount, geometryDataBufferCount) =>
   ) =
     CreateTypeArrayCustomGeometryService.createTypeArrays(
       buffer,
-      geometryPointDataBufferCount,
-      geometryDataBufferCount
+      geometryPointCount,
+      geometryCount
     );
   (
     buffer,
@@ -54,10 +54,10 @@ let _initBufferData = (geometryPointDataBufferCount, geometryDataBufferCount) =>
 };
 
 let create = ({settingRecord} as state) => {
-  let geometryPointDataBufferCount =
-    BufferSettingService.getCustomGeometryPointDataBufferCount(settingRecord);
-  let geometryDataBufferCount =
-    BufferSettingService.getCustomGeometryDataBufferCount(settingRecord);
+  let geometryPointCount =
+    BufferSettingService.getCustomGeometryPointCount(settingRecord);
+  let geometryCount =
+    BufferSettingService.getCustomGeometryCount(settingRecord);
   let (
     buffer,
     vertices,
@@ -69,7 +69,7 @@ let create = ({settingRecord} as state) => {
     normalsInfos,
     indicesInfos
   ) =
-    _initBufferData(geometryPointDataBufferCount, geometryDataBufferCount);
+    _initBufferData(geometryPointCount, geometryCount);
   state.customGeometryRecord =
     Some({
       index: 0,

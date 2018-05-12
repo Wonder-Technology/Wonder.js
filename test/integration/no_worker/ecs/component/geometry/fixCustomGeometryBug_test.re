@@ -23,7 +23,7 @@ let _ =
           state :=
             TestTool.init(
               ~sandbox,
-              ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointDataBufferCount=10, ()),
+              ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointCount=10, ()),
               ()
             )
         }

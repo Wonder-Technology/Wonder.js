@@ -13,7 +13,7 @@ let create =
       state.textureRecord = Some({...textureRecord, index: newIndex});
       (state, index)
       |> BufferService.checkNotExceedMaxCount(
-           BufferSettingService.getTextureDataBufferCount(settingRecord)
+           BufferSettingService.getTextureCount(settingRecord)
          )
     }
   );

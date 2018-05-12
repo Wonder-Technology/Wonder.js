@@ -34,7 +34,7 @@ let _ =
               let state =
                 TestTool.initWithoutBuildFakeDom(
                   ~sandbox,
-                  ~buffer=SettingTool.buildBufferConfigStr(~textureDataBufferCount=1, ()),
+                  ~buffer=SettingTool.buildBufferConfigStr(~textureCount=1, ()),
                   ()
                 );
               let (_, texture) = createTexture(state);

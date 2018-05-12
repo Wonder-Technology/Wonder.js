@@ -25,7 +25,7 @@ let _disposeFromParentAndChildMap = (transform, isKeepOrder, record) => {
 let _disposeData =
     (
       transform: transform,
-      (transformDataBufferCount, maxTypeArrayPoolSize, isKeepOrder),
+      (transformCount, maxTypeArrayPoolSize, isKeepOrder),
       {
         localToWorldMatrices,
         localPositions,
@@ -91,9 +91,9 @@ let handleBatchDisposeComponent =
            ...transformRecord,
            disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
          }; */
-      let transformDataBufferCount =
-        BufferSettingService.getTransformDataBufferCount(settingRecord);
-      let dataTuple = (transformDataBufferCount, maxTypeArrayPoolSize, isKeepOrder);
+      let transformCount =
+        BufferSettingService.getTransformCount(settingRecord);
+      let dataTuple = (transformCount, maxTypeArrayPoolSize, isKeepOrder);
       /* TODO optimize: batch remove parent,child? */
       let transformRecord =
         transformArray

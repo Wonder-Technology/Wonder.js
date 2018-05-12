@@ -74,7 +74,7 @@ let createWithoutMarkNotDirtyWithRecord =
   transformRecord.disposedIndexArray = disposedIndexArray;
   (transformRecord, index)
   |> BufferService.checkNotExceedMaxCount(
-       BufferSettingService.getTransformDataBufferCount(settingRecord)
+       BufferSettingService.getTransformCount(settingRecord)
      )
 };
 

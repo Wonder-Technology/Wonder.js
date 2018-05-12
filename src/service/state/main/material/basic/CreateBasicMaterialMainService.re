@@ -24,7 +24,7 @@ let create =
       state.basicMaterialRecord = Some({...basicMaterialRecord, index: newIndex});
       (state, index)
       |> BufferService.checkNotExceedMaxCount(
-           BufferSettingService.getBasicMaterialDataBufferCount(settingRecord)
+           BufferSettingService.getBasicMaterialCount(settingRecord)
          )
     }
   );

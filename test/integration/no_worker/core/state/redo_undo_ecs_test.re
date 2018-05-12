@@ -772,7 +772,7 @@ let _ =
                      state :=
                        TestTool.initWithJobConfigWithoutBuildFakeDom(
                          ~sandbox,
-                         ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointDataBufferCount=500, ()),
+                         ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointCount=500, ()),
                          ()
                        );
                      });
@@ -1625,7 +1625,7 @@ let _ =
                   state :=
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
-                      ~buffer=SettingTool.buildBufferConfigStr(~transformDataBufferCount=5, ()),
+                      ~buffer=SettingTool.buildBufferConfigStr(~transformCount=5, ()),
                       ()
                     );
                   let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
@@ -1658,7 +1658,7 @@ let _ =
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
                           ~buffer=
-                            SettingTool.buildBufferConfigStr(~transformDataBufferCount=5, ()),
+                            SettingTool.buildBufferConfigStr(~transformCount=5, ()),
                           ()
                         );
                       let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
@@ -1686,7 +1686,7 @@ let _ =
                       ~sandbox,
                       ~buffer=
                         SettingTool.buildBufferConfigStr(
-                          ~customGeometryPointDataBufferCount=2,
+                          ~customGeometryPointCount=2,
                           ()
                         ),
                       ()
@@ -1724,7 +1724,7 @@ let _ =
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
                           ~buffer=
-                            SettingTool.buildBufferConfigStr(~basicMaterialDataBufferCount=4, ()),
+                            SettingTool.buildBufferConfigStr(~basicMaterialCount=4, ()),
                           ()
                         );
                       let (
@@ -1781,7 +1781,7 @@ let _ =
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
                           ~buffer=
-                            SettingTool.buildBufferConfigStr(~lightMaterialDataBufferCount=3, ()),
+                            SettingTool.buildBufferConfigStr(~lightMaterialCount=3, ()),
                           ()
                         );
                       let (

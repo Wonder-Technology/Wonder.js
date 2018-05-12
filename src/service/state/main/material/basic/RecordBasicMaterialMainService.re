@@ -69,7 +69,7 @@ let create = ({settingRecord} as state) => {
   let defaultColor = [|1., 1., 1.|];
   let (buffer, (shaderIndices, colors, textureIndices, mapUnits)) =
     _initBufferData(
-      BufferSettingService.getBasicMaterialDataBufferCount(settingRecord),
+      BufferSettingService.getBasicMaterialCount(settingRecord),
       BufferSettingService.getTextureCountPerMaterial(settingRecord),
       defaultShaderIndex,
       defaultColor

@@ -19,13 +19,13 @@ type instanceBuffer = {
 };
 
 type buffer = {
-  customGeometryPointDataBufferCount: int,
-  customGeometryDataBufferCount: int,
-  transformDataBufferCount: int,
-  basicMaterialDataBufferCount: int,
-  lightMaterialDataBufferCount: int,
+  customGeometryPointCount: int,
+  customGeometryCount: int,
+  transformCount: int,
+  basicMaterialCount: int,
+  lightMaterialCount: int,
   textureCountPerMaterial: int,
-  textureDataBufferCount: int,
+  textureCount: int,
   instanceBuffer
 };
 

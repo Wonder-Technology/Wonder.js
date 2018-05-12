@@ -26,7 +26,7 @@ let _ =
               let state =
                 SettingTool.createStateAndSetToStateData(
                   ~useWorker="true",
-                  ~buffer=SettingTool.buildBufferConfigStr(~basicMaterialDataBufferCount=5, ()),
+                  ~buffer=SettingTool.buildBufferConfigStr(~basicMaterialCount=5, ()),
                   ()
                 );
               let (state, _, _, _, _) = RenderBasicJobTool.prepareGameObject(sandbox, state);
@@ -55,7 +55,7 @@ let _ =
                                "buffer": buffer,
                                "count": count,
                                "bufferCount":
-                                 BufferSettingTool.getBasicMaterialDataBufferCount(state)
+                                 BufferSettingTool.getBasicMaterialCount(state)
                              }
                            }
                          }

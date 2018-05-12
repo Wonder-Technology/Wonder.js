@@ -27,16 +27,16 @@ let _initBufferData = (count) => {
 };
 
 let create = ({settingRecord} as state) => {
-  let lightMaterialDataBufferCount =
-    BufferSettingService.getLightMaterialDataBufferCount(settingRecord);
+  let lightMaterialCount =
+    BufferSettingService.getLightMaterialCount(settingRecord);
   let (
     buffer,
     (transformIndices, materialIndices, geometryIndices, sourceInstanceIndices, geometryTypes)
   ) =
-    _initBufferData(lightMaterialDataBufferCount);
+    _initBufferData(lightMaterialCount);
   Some({
     buffer,
-    count: lightMaterialDataBufferCount,
+    count: lightMaterialCount,
     transformIndices,
     materialIndices,
     geometryIndices,

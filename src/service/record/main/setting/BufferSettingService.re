@@ -2,19 +2,19 @@ open SettingType;
 
 let unsafeGetBuffer = ({buffer}) => buffer |> OptionService.unsafeGet;
 
-let getTransformDataBufferCount = (record) => (record |> unsafeGetBuffer).transformDataBufferCount;
+let getTransformCount = (record) => (record |> unsafeGetBuffer).transformCount;
 
-let getCustomGeometryPointDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).customGeometryPointDataBufferCount;
+let getCustomGeometryPointCount = (record) =>
+  (record |> unsafeGetBuffer).customGeometryPointCount;
 
-let getCustomGeometryDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).customGeometryDataBufferCount;
+let getCustomGeometryCount = (record) =>
+  (record |> unsafeGetBuffer).customGeometryCount;
 
-let getBasicMaterialDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).basicMaterialDataBufferCount;
+let getBasicMaterialCount = (record) =>
+  (record |> unsafeGetBuffer).basicMaterialCount;
 
-let getLightMaterialDataBufferCount = (record) =>
-  (record |> unsafeGetBuffer).lightMaterialDataBufferCount;
+let getLightMaterialCount = (record) =>
+  (record |> unsafeGetBuffer).lightMaterialCount;
 
 let getSourceInstanceCount = (record) =>
   (record |> unsafeGetBuffer).instanceBuffer.sourceInstanceCount;
@@ -25,4 +25,4 @@ let getObjectInstanceCountPerSourceInstance = (record) =>
 let getTextureCountPerMaterial = (record) =>
   (record |> unsafeGetBuffer).textureCountPerMaterial;
 
-let getTextureDataBufferCount = (record) => (record |> unsafeGetBuffer).textureDataBufferCount;
+let getTextureCount = (record) => (record |> unsafeGetBuffer).textureCount;

@@ -19,9 +19,9 @@ let _ =
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
-                  ~transformDataBufferCount=500,
-                  ~lightMaterialDataBufferCount=50,
-                  ~customGeometryPointDataBufferCount=300,
+                  ~transformCount=500,
+                  ~lightMaterialCount=50,
+                  ~customGeometryPointCount=300,
                   ()
                 ),
               ()

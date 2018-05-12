@@ -77,27 +77,27 @@ let buildSetting = (isDebug, canvasId, buffer, context, useHardwareInstance, use
 
 let buildBufferConfigStr =
     (
-      ~customGeometryPointDataBufferCount=300,
-      ~customGeometryDataBufferCount=30,
-      ~transformDataBufferCount=50,
-      ~basicMaterialDataBufferCount=50,
-      ~lightMaterialDataBufferCount=50,
+      ~customGeometryPointCount=300,
+      ~customGeometryCount=30,
+      ~transformCount=50,
+      ~basicMaterialCount=50,
+      ~lightMaterialCount=50,
       ~textureCountPerMaterial=3,
-      ~textureDataBufferCount=50,
+      ~textureCount=50,
       ~sourceInstanceCount=2,
       ~objectInstanceCountPerSourceInstance=100,
       ()
     ) => {j|
        {
-            "custom_geometry_point_data_buffer_count": $customGeometryPointDataBufferCount,
-            "custom_geometry_data_buffer_count": $customGeometryDataBufferCount,
-  "transform_data_buffer_count": $transformDataBufferCount,
-  "basic_material_data_buffer_count": $basicMaterialDataBufferCount,
-  "light_material_data_buffer_count": $lightMaterialDataBufferCount,
-  "texture_data_buffer_count": $textureDataBufferCount,
+            "custom_geometry_point_count": $customGeometryPointCount,
+            "custom_geometry_count": $customGeometryCount,
+  "transform_count": $transformCount,
+  "basic_material_count": $basicMaterialCount,
+  "light_material_count": $lightMaterialCount,
+  "texture_count": $textureCount,
   "texture_count_per_material": $textureCountPerMaterial,
 
-  "instanceBuffer": {
+  "instance_buffer": {
     "sourceInstance_count": $sourceInstanceCount,
 "objectInstance_count_per_source_instance": $objectInstanceCountPerSourceInstance
   }
@@ -152,14 +152,14 @@ let setMemory = (state: StateDataMainType.state, ~maxDisposeCount=1000, ()) => {
   }
 };
 
-let setBufferSize = (state: StateDataMainType.state, ~customGeometryPointDataBufferCount=100, ()) => {
+let setBufferSize = (state: StateDataMainType.state, ~customGeometryPointCount=100, ()) => {
   ...state,
   settingRecord: {
     ...state.settingRecord,
     buffer:
       Some({
         ...BufferSettingService.unsafeGetBuffer(state.settingRecord),
-        customGeometryPointDataBufferCount
+        customGeometryPointCount
       })
   }
 };

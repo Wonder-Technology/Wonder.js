@@ -1,4 +1,4 @@
 open StateDataMainType;
 
-let getBasicMaterialDataBufferCount = (state) =>
-  BufferSettingService.getBasicMaterialDataBufferCount(state.settingRecord);
+let getBasicMaterialCount = (state) =>
+  BufferSettingService.getBasicMaterialCount(state.settingRecord);

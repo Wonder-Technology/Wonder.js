@@ -2,48 +2,48 @@ open Js.Typed_array;
 
 open BufferCustomGeometryService;
 
-let createTypeArrays = (buffer, customGeometryPointDataBufferCount, customGeometryDataBufferCount) => (
+let createTypeArrays = (buffer, customGeometryPointCount, customGeometryCount) => (
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getVerticesOffset(customGeometryPointDataBufferCount),
-    ~length=getVertexLength(customGeometryPointDataBufferCount)
+    ~offset=getVerticesOffset(customGeometryPointCount),
+    ~length=getVertexLength(customGeometryPointCount)
   ),
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getTexCoordsOffset(customGeometryPointDataBufferCount),
-    ~length=getVertexLength(customGeometryPointDataBufferCount)
+    ~offset=getTexCoordsOffset(customGeometryPointCount),
+    ~length=getVertexLength(customGeometryPointCount)
   ),
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getNormalsOffset(customGeometryPointDataBufferCount),
-    ~length=getVertexLength(customGeometryPointDataBufferCount)
+    ~offset=getNormalsOffset(customGeometryPointCount),
+    ~length=getVertexLength(customGeometryPointCount)
   ),
   Uint16Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getIndicesOffset(customGeometryPointDataBufferCount),
-    ~length=getIndicesLength(customGeometryPointDataBufferCount)
+    ~offset=getIndicesOffset(customGeometryPointCount),
+    ~length=getIndicesLength(customGeometryPointCount)
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getVerticesInfosOffset(customGeometryPointDataBufferCount),
-    ~length=getVerticesInfosLength(customGeometryDataBufferCount)
-  ),
-  Uint32Array.fromBufferRange(
-    Worker.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=
-      getTexCoordsInfosOffset(customGeometryPointDataBufferCount, customGeometryDataBufferCount),
-    ~length=getTexCoordsInfosLength(customGeometryDataBufferCount)
+    ~offset=getVerticesInfosOffset(customGeometryPointCount),
+    ~length=getVerticesInfosLength(customGeometryCount)
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=
-      getNormalsInfosOffset(customGeometryPointDataBufferCount, customGeometryDataBufferCount),
-    ~length=getNormalsInfosLength(customGeometryDataBufferCount)
+      getTexCoordsInfosOffset(customGeometryPointCount, customGeometryCount),
+    ~length=getTexCoordsInfosLength(customGeometryCount)
   ),
   Uint32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=
-      getIndicesInfosOffset(customGeometryPointDataBufferCount, customGeometryDataBufferCount),
-    ~length=getIndicesInfosLength(customGeometryDataBufferCount)
+      getNormalsInfosOffset(customGeometryPointCount, customGeometryCount),
+    ~length=getNormalsInfosLength(customGeometryCount)
+  ),
+  Uint32Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=
+      getIndicesInfosOffset(customGeometryPointCount, customGeometryCount),
+    ~length=getIndicesInfosLength(customGeometryCount)
   )
 );

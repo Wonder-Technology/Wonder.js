@@ -27,8 +27,8 @@ let _initBufferData = (count) => {
 };
 
 let create = ({settingRecord} as state) => {
-  let basicMaterialDataBufferCount =
-    BufferSettingService.getBasicMaterialDataBufferCount(settingRecord);
+  let basicMaterialCount =
+    BufferSettingService.getBasicMaterialCount(settingRecord);
   let (
     buffer,
     (
@@ -39,10 +39,10 @@ let create = ({settingRecord} as state) => {
       geometryTypes
     )
   ) =
-    _initBufferData(basicMaterialDataBufferCount);
+    _initBufferData(basicMaterialCount);
   Some({
     buffer,
-    count: basicMaterialDataBufferCount,
+    count: basicMaterialCount,
     transformIndices,
     materialIndices,
     geometryIndices,
