@@ -61,3 +61,21 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
+
+let prepareGameObjectWithSharedMaterial = (sandbox, material, state) => {
+  open GameObjectAPI;
+  open BasicMaterialAPI;
+  open BoxGeometryAPI;
+  open MeshRendererAPI;
+  open Sinon;
+  /* let (state, material) = createBasicMaterial(state); */
+  let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+  let (state, meshRenderer) = createMeshRenderer(state);
+  let (state, gameObject) = state |> createGameObject;
+  let state =
+    state
+    |> addGameObjectBasicMaterialComponent(gameObject, material)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+  (state, gameObject, geometry, material, meshRenderer)
+};

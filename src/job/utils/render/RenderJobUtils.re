@@ -139,14 +139,14 @@ let render =
     |> _sendAttributeData(gl, (shaderIndex, geometryIndex, geometryType))
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
   let {lastSendMaterial} as record = state.glslSenderRecord;
-  let state =
-    switch lastSendMaterial {
-    | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
-    | _ =>
-      record.lastSendMaterial = Some(materialIndex);
-      state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
-    };
-  state |> BindAndUpdateMapBasicMaterialRenderService.bindAndUpdate(gl, materialIndex)
+  switch lastSendMaterial {
+  | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
+  | _ =>
+    record.lastSendMaterial = Some(materialIndex);
+    state
+    |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
+    |> BindAndUpdateMapBasicMaterialRenderService.bindAndUpdate(gl, materialIndex)
+  }
 };
 
 let draw = (gl, geometryIndex, geometryType, state) => {
