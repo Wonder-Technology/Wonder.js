@@ -15,9 +15,9 @@ let convertToRecord = (setting) => {
            field(
              "memory",
              (json) => {
-               maxDisposeCount: json |> field("maxDisposeCount", int),
-               maxTypeArrayPoolSize: json |> field("maxTypeArrayPoolSize", int),
-               maxBigTypeArrayPoolSize: json |> field("maxBigTypeArrayPoolSize", int)
+               maxDisposeCount: json |> field("max_dispose_count", int),
+               maxTypeArrayPoolSize: json |> field("max_type_array_pool_size", int),
+               maxBigTypeArrayPoolSize: json |> field("max_big_type_array_pool_size", int)
              }
            )
          ),
@@ -27,10 +27,8 @@ let convertToRecord = (setting) => {
            field(
              "buffer",
              (json) => {
-               customGeometryPointCount:
-                 json |> field("custom_geometry_point_count", int),
-               customGeometryCount:
-                 json |> field("custom_geometry_count", int),
+               customGeometryPointCount: json |> field("custom_geometry_point_count", int),
+               customGeometryCount: json |> field("custom_geometry_count", int),
                transformCount: json |> field("transform_count", int),
                basicMaterialCount: json |> field("basic_material_count", int),
                lightMaterialCount: json |> field("light_material_count", int),
