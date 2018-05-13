@@ -91,6 +91,28 @@ let setMinFilter = (texture, filter, state) => {
   state
 };
 
+let getFormat = (texture, state) => {
+  let {formats} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getFormat(texture, formats)
+};
+
+let setFormat = (texture, filter, state) => {
+  let {formats} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setFormat(texture, filter, formats) |> ignore;
+  state
+};
+
+let getType = (texture, state) => {
+  let {types} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.getType(texture, types)
+};
+
+let setType = (texture, filter, state) => {
+  let {types} = RecordTextureMainService.getRecord(state);
+  OperateTypeArrayTextureService.setType(texture, filter, types) |> ignore;
+  state
+};
+
 let getWidth = (texture, state) => {
   let {sourceMap} = RecordTextureMainService.getRecord(state);
   switch (TextureSourceMapService.getSource(texture, sourceMap)) {

@@ -25,6 +25,16 @@ let createTypeArrays = (buffer, count) => (
   ),
   Uint8Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getFormatsOffset(count),
+    ~length=getFormatsLength(count)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTypesOffset(count),
+    ~length=getTypesLength(count)
+  ),
+  Uint8Array.fromBufferRange(
+    Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getIsNeedUpdatesOffset(count),
     ~length=getIsNeedUpdatesLength(count)
   )

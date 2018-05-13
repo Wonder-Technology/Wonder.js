@@ -9,9 +9,9 @@ let _isPowerOfTwo = (value) => value land (value - 1) === 0 && value !== 0;
 let _isSourcePowerOfTwo = (width, height) => _isPowerOfTwo(width) && _isPowerOfTwo(height);
 
 let _filterFallback = (filter, gl) =>
-  if (filter === TextureFilterService.getFilterNearest()
-      || filter === TextureFilterService.getFilterNearestMipmapNearest()
-      || filter === TextureFilterService.getFilterNearestMipmapLinear()) {
+  if (filter === TextureFilterService.getNearest()
+      || filter === TextureFilterService.getNearestMipmapNearest()
+      || filter === TextureFilterService.getNearestMipmapLinear()) {
     Gl.getNearest(gl)
   } else {
     Gl.getLinear(gl)
@@ -61,20 +61,22 @@ let _allocateSourceToTexture = (gl, paramTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, source);
 
 let update = (gl, texture, {textureRecord, browserDetectRecord} as state) => {
-  let {sourceMap, wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates, setFlipYFunc} = textureRecord;
+  let {sourceMap, wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, setFlipYFunc} = textureRecord;
   switch (TextureSourceMapService.getSource(texture, sourceMap)) {
   | None => state
   | Some(source) =>
     let width = TextureSizeService.getWidth(source);
     let height = TextureSizeService.getHeight(source);
     let glWrapS =
-      OperateTypeArrayTextureService.getWrapS(texture, wrapSs) |> TextureWrapService.getGlWrap(gl);
+      OperateTypeArrayTextureService.getWrapS(texture, wrapSs)
+      |> TextureWrapService.getGlWrap(gl);
     let glWrapT =
       OperateTypeArrayTextureService.getWrapT(texture, wrapTs) |> TextureWrapService.getGlWrap(gl);
     let magFilter = OperateTypeArrayTextureService.getMagFilter(texture, magFilters);
     let minFilter = OperateTypeArrayTextureService.getMinFilter(texture, minFilters);
-    let glFormat = OperateTypeArrayTextureService.getFormat(gl);
-    let glType = OperateTypeArrayTextureService.getType(gl);
+    let glFormat =
+      OperateTypeArrayTextureService.getFormat(texture, formats) |> TextureFormatService.getGlFormat(gl);
+    let glType = OperateTypeArrayTextureService.getType(texture, types) |> TextureTypeService.getGlType(gl);
     let flipY = OperateTypeArrayTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
     let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);

@@ -199,6 +199,32 @@ let _ =
               getTextureMinFilter(texture, state) |> expect == filter
             }
           )
+      );
+      describe(
+        "setTextureFormat",
+        () =>
+          test(
+            "test",
+            () => {
+              let (state, texture) = createTexture(state^);
+              let format = 1;
+              let state = state |> setTextureFormat(texture, format);
+              getTextureFormat(texture, state) |> expect == format
+            }
+          )
+      );
+      describe(
+        "setTextureType",
+        () =>
+          test(
+            "test",
+            () => {
+              let (state, texture) = createTexture(state^);
+              let type_ = 1;
+              let state = state |> setTextureType(texture, type_);
+              getTextureType(texture, state) |> expect == type_
+            }
+          )
       )
     }
   );

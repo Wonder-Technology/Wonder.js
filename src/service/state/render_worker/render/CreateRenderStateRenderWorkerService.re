@@ -113,6 +113,8 @@ let createRenderState =
       wrapTs: textureRecord.wrapTs |> OptionService.unsafeGet,
       magFilters: textureRecord.magFilters |> OptionService.unsafeGet,
       minFilters: textureRecord.minFilters |> OptionService.unsafeGet,
+      formats: textureRecord.formats |> OptionService.unsafeGet,
+      types: textureRecord.types |> OptionService.unsafeGet,
       isNeedUpdates: textureRecord.isNeedUpdates |> OptionService.unsafeGet,
       sourceMap: textureRecord.sourceMap |> Obj.magic,
       glTextureMap: textureRecord.glTextureMap,

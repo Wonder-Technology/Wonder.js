@@ -1,12 +1,16 @@
 open Js.Typed_array;
 
-let getDefaultWrapS = () => TextureWrapService.getWrapClampToEdge();
+let getDefaultWrapS = () => TextureWrapService.getClampToEdge();
 
-let getDefaultWrapT = () => TextureWrapService.getWrapClampToEdge();
+let getDefaultWrapT = () => TextureWrapService.getClampToEdge();
 
-let getDefaultMagFilter = () => TextureFilterService.getFilterLinear();
+let getDefaultMagFilter = () => TextureFilterService.getLinear();
 
-let getDefaultMinFilter = () => TextureFilterService.getFilterNearest();
+let getDefaultMinFilter = () => TextureFilterService.getNearest();
+
+let getDefaultFormat = () => TextureFormatService.getRgba();
+
+let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
 let getNeedUpdate = () => 1;
 
@@ -21,6 +25,10 @@ let getWrapTsSize = () => 1;
 let getMagFiltersSize = () => 1;
 
 let getMinFiltersSize = () => 1;
+
+let getFormatsSize = () => 1;
+
+let getTypesSize = () => 1;
 
 let getIsNeedUpdatesSize = () => 1;
 
@@ -51,10 +59,24 @@ let getMinFiltersOffset = (count) =>
 
 let getMinFilterIndex = (index) => index * getMinFiltersSize();
 
+let getFormatsLength = (count) => count * getFormatsSize();
+
+let getFormatsOffset = (count) =>
+  getMinFiltersOffset(count) + getMinFiltersLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+
+let getFormatIndex = (index) => index * getFormatsSize();
+
+let getTypesLength = (count) => count * getTypesSize();
+
+let getTypesOffset = (count) =>
+  getFormatsOffset(count) + getFormatsLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+
+let getTypeIndex = (index) => index * getTypesSize();
+
 let getIsNeedUpdatesLength = (count) => count * getIsNeedUpdatesSize();
 
 let getIsNeedUpdatesOffset = (count) =>
-  getMinFiltersOffset(count) + getMinFiltersLength(count) * Uint8Array._BYTES_PER_ELEMENT;
+  getTypesOffset(count) + getTypesLength(count) * Uint8Array._BYTES_PER_ELEMENT;
 
 let getIsNeedUpdateIndex = (index) => index * getIsNeedUpdatesSize();
 
@@ -67,6 +89,8 @@ let getTotalByteLength = (count) =>
       + getWrapTsSize()
       + getMagFiltersSize()
       + getMinFiltersSize()
+      + getFormatsSize()
+      + getTypesSize()
       + getIsNeedUpdatesSize()
     )
   );

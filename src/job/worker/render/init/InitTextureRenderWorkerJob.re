@@ -5,7 +5,7 @@ open RenderWorkerTextureType;
 open Js.Promise;
 
 let _createTypeArrays = (buffer, count, state) => {
-  let (wrapSs, wrapTs, magFilters, minFilters, isNeedUpdates) =
+  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
     CreateTypeArrayTextureService.createTypeArrays(buffer, count);
   state.textureRecord =
     Some({
@@ -13,6 +13,8 @@ let _createTypeArrays = (buffer, count, state) => {
       wrapTs: Some(wrapTs),
       magFilters: Some(magFilters),
       minFilters: Some(minFilters),
+      formats: Some(formats),
+      types: Some(types),
       isNeedUpdates: Some(isNeedUpdates),
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -62,11 +64,7 @@ let execJob = (_, e, stateData) => {
     )
   |]
   |> MostUtils.concatArray
-  |> Most.forEach(
-       (state) => {
-         state |> StateRenderWorkerService.setState(stateData) |> ignore
-       }
-     )
+  |> Most.forEach((state) => state |> StateRenderWorkerService.setState(stateData) |> ignore)
   |> then_(() => e |> resolve)
   |> Most.fromPromise
 };

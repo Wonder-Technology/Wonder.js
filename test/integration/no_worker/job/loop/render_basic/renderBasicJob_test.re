@@ -1051,12 +1051,9 @@ let _ =
                                 state
                                 |> TextureAPI.setTextureMagFilter(
                                      map,
-                                     TextureTool.getFilterNearestMipmapLinear()
+                                     TextureTool.getNearestMipmapLinear()
                                    )
-                                |> TextureAPI.setTextureMinFilter(
-                                     map,
-                                     TextureTool.getFilterNearest()
-                                   );
+                                |> TextureAPI.setTextureMinFilter(map, TextureTool.getNearest());
                               let (
                                 state,
                                 texture2D,
@@ -1088,12 +1085,9 @@ let _ =
                                 state
                                 |> TextureAPI.setTextureMagFilter(
                                      map,
-                                     TextureTool.getFilterLinearMipmapNearest()
+                                     TextureTool.getLinearMipmapNearest()
                                    )
-                                |> TextureAPI.setTextureMinFilter(
-                                     map,
-                                     TextureTool.getFilterLinear()
-                                   );
+                                |> TextureAPI.setTextureMinFilter(map, TextureTool.getLinear());
                               let (
                                 state,
                                 texture2D,
@@ -1128,11 +1122,10 @@ let _ =
                 () =>
                   describe(
                     "draw no mipmap twoD texture",
-                    () =>
+                    () => {
                       test(
-                        "test",
+                        "test draw",
                         () => {
-                          /* TODO set format,type */
                           let (state, map) = _prepare(~state=state^, ());
                           let source = TextureAPI.unsafeGetTextureSource(map, state);
                           let texture2D = Obj.magic(1);
@@ -1164,7 +1157,48 @@ let _ =
                                source |> Obj.magic
                              |])
                         }
+                      );
+                      test(
+                        "test different format,type",
+                        () => {
+                          let (state, map) = _prepare(~state=state^, ());
+                          let state =
+                            state |> TextureAPI.setTextureFormat(map, TextureTool.getAlpha());
+                          let state =
+                            state
+                            |> TextureAPI.setTextureType(map, TextureTool.getUnsignedShort565());
+                          let source = TextureAPI.unsafeGetTextureSource(map, state);
+                          let texture2D = Obj.magic(1);
+                          let alpha = Obj.magic(2);
+                          let unsignedShort565 = Obj.magic(3);
+                          let texImage2D = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(
+                                   ~sandbox,
+                                   ~texture2D,
+                                   ~alpha,
+                                   ~unsignedShort565,
+                                   ~texImage2D,
+                                   ()
+                                 )
+                               );
+                          let state =
+                            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                          texImage2D
+                          |> expect
+                          |> toCalledWith([|
+                               texture2D,
+                               0,
+                               alpha,
+                               alpha,
+                               unsignedShort565,
+                               source |> Obj.magic
+                             |])
+                        }
                       )
+                    }
                   )
               )
             }

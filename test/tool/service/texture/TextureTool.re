@@ -13,16 +13,26 @@ let isNeedUpdate = (texture, state) =>
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
 
-let getFilterNearest = () => TextureFilterService.getFilterNearest();
+let getNearest = () => TextureFilterService.getNearest();
 
-let getFilterNearestMipmapNearest = () => TextureFilterService.getFilterNearestMipmapNearest();
+let getNearestMipmapNearest = () => TextureFilterService.getNearestMipmapNearest();
 
-let getFilterNearestMipmapLinear = () => TextureFilterService.getFilterNearestMipmapLinear();
+let getNearestMipmapLinear = () => TextureFilterService.getNearestMipmapLinear();
 
-let getFilterLinear = () => TextureFilterService.getFilterLinear();
+let getLinear = () => TextureFilterService.getLinear();
 
-let getFilterLinearMipmapNearest = () => TextureFilterService.getFilterLinearMipmapNearest();
+let getLinearMipmapNearest = () => TextureFilterService.getLinearMipmapNearest();
 
-let getFilterLinearMipmapLinear = () => TextureFilterService.getFilterLinearMipmapLinear();
+let getLinearMipmapLinear = () => TextureFilterService.getLinearMipmapLinear();
+
+let getRgb = () => TextureFormatService.getRgb();
+
+let getRgba = () => TextureFormatService.getRgba();
+
+let getAlpha = () => TextureFormatService.getAlpha();
+
+let getUnsignedByte = () => TextureTypeService.getUnsignedByte();
+
+let getUnsignedShort565 = () => TextureTypeService.getUnsignedShort565();
 
 let buildSource = (width, height) => {"width": width, "height": height};

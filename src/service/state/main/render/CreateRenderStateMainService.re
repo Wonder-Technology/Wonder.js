@@ -108,6 +108,8 @@ let createRenderState =
       wrapTs: textureRecord.wrapTs,
       magFilters: textureRecord.magFilters,
       minFilters: textureRecord.minFilters,
+      formats: textureRecord.formats,
+      types: textureRecord.types,
       isNeedUpdates: textureRecord.isNeedUpdates,
       sourceMap: textureRecord.sourceMap,
       glTextureMap: textureRecord.glTextureMap,

@@ -28,17 +28,15 @@ let getIsNeedUpdate = (index, typeArr) =>
 let setIsNeedUpdate = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getIsNeedUpdateIndex(index), data, typeArr);
 
+let getFormat = (index, typeArr) => TypeArrayService.getUint8_1(getFormatIndex(index), typeArr);
+
+let setFormat = (index, data, typeArr) =>
+  TypeArrayService.setUint8_1(getFormatIndex(index), data, typeArr);
+
+let getType = (index, typeArr) => TypeArrayService.getUint8_1(getTypeIndex(index), typeArr);
+
+let setType = (index, data, typeArr) =>
+  TypeArrayService.setUint8_1(getTypeIndex(index), data, typeArr);
+
 /* TODO get from typeArrays */
-/* let getWrapS = (gl) => gl |> Gl.getClampToEdge;
-
-let getWrapT = (gl) => gl |> Gl.getClampToEdge;
-
-let getMagFilter = (gl) => gl |> Gl.getLinear;
-
-let getMinFilter = (gl) => gl |> Gl.getNearest; */
-
-let getFormat = (gl) => gl |> Gl.getRgba;
-
-let getType = (gl) => gl |> Gl.getUnsignedByte;
-
 let getFlipY = () => Js.true_;

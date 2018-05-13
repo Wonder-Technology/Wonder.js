@@ -1,25 +1,25 @@
-let getFilterNearest = () => 0;
+let getNearest = () => 0;
 
-let getFilterNearestMipmapNearest = () => 1;
+let getNearestMipmapNearest = () => 1;
 
-let getFilterNearestMipmapLinear = () => 2;
+let getNearestMipmapLinear = () => 2;
 
-let getFilterLinear = () => 3;
+let getLinear = () => 3;
 
-let getFilterLinearMipmapNearest = () => 4;
+let getLinearMipmapNearest = () => 4;
 
-let getFilterLinearMipmapLinear = () => 5;
+let getLinearMipmapLinear = () => 5;
 
 let getGlFilter = (gl, filter) =>
-  if (filter === getFilterNearest()) {
+  if (filter === getNearest()) {
     gl |> Gl.getNearest
-  } else if (filter === getFilterNearestMipmapNearest()) {
+  } else if (filter === getNearestMipmapNearest()) {
     gl |> Gl.getNearestMipmapNearest
-  } else if (filter === getFilterNearestMipmapLinear()) {
+  } else if (filter === getNearestMipmapLinear()) {
     gl |> Gl.getNearestMipmapLinear
-  } else if (filter === getFilterLinear()) {
+  } else if (filter === getLinear()) {
     gl |> Gl.getLinear
-  } else if (filter === getFilterLinearMipmapNearest()) {
+  } else if (filter === getLinearMipmapNearest()) {
     gl |> Gl.getLinearMipmapNearest
   } else {
     gl |> Gl.getLinearMipmapLinear
