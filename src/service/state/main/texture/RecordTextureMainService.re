@@ -78,4 +78,52 @@ let create = ({settingRecord} as state) => {
     });
   state
 };
-/* TODO add deepCopy, restore */
+
+let deepCopyForRestore = ({settingRecord} as state) => {
+  let {
+        index,
+        buffer,
+        wrapSs,
+        wrapTs,
+        magFilters,
+        minFilters,
+        formats,
+        types,
+        isNeedUpdates,
+        sourceMap,
+        glTextureMap,
+        bindTextureUnitCacheMap,
+        disposedIndexArray,
+        needAddedSourceArray,
+        needInitedTextureIndexArray
+      } as record =
+    state |> getRecord;
+  {
+    ...state,
+    textureRecord:
+      Some({
+        ...record,
+        index,
+        wrapSs: wrapSs |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getWrapSsSize()),
+        wrapTs: wrapTs |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getWrapTsSize()),
+        magFilters:
+          magFilters
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMagFiltersSize()),
+        minFilters:
+          minFilters
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMinFiltersSize()),
+        formats:
+          formats |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getFormatsSize()),
+        types: types |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getTypesSize()),
+        isNeedUpdates:
+          isNeedUpdates
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsNeedUpdatesSize()),
+        sourceMap: sourceMap |> SparseMapService.copy,
+        glTextureMap: glTextureMap |> SparseMapService.copy,
+        bindTextureUnitCacheMap: bindTextureUnitCacheMap |> SparseMapService.copy,
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+        needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
+        needInitedTextureIndexArray: needInitedTextureIndexArray |> Js.Array.copy
+      })
+  }
+};

@@ -36,3 +36,17 @@ let getUnsignedByte = () => TextureTypeService.getUnsignedByte();
 let getUnsignedShort565 = () => TextureTypeService.getUnsignedShort565();
 
 let buildSource = (width, height) => {"width": width, "height": height};
+
+let getDefaultWrapS = () => TextureWrapService.getClampToEdge();
+
+let getDefaultWrapT = () => TextureWrapService.getClampToEdge();
+
+let getDefaultMagFilter = () => TextureFilterService.getLinear();
+
+let getDefaultMinFilter = () => TextureFilterService.getNearest();
+
+let getDefaultFormat = () => TextureFormatService.getRgba();
+
+let getDefaultType = () => TextureTypeService.getUnsignedByte();
+
+let getDefaultIsNeedUpdate = () => BufferTextureService.getDefaultIsNeedUpdate();

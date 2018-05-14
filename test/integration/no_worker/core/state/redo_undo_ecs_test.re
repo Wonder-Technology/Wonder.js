@@ -128,6 +128,21 @@ let _ =
         /* let state = state |> setLightMaterialSpecularColor(material2, specularColor2); */
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
+      let _prepareTextureData = (state) => {
+        open TextureAPI;
+        open Js.Typed_array;
+        let (state, texture1) = createTexture(state);
+        let (state, texture2) = createTexture(state);
+        let (state, texture3) = createTexture(state);
+        let state = AllMaterialTool.prepareForInit(state);
+        let state = state |> setTextureWrapS(texture2, 1);
+        let state = state |> setTextureWrapT(texture2, 1);
+        let state = state |> setTextureMagFilter(texture2, 1);
+        let state = state |> setTextureMinFilter(texture2, 1);
+        let state = state |> setTextureType(texture2, 1);
+        let state = state |> setTextureFormat(texture2, 2);
+        (state, texture1, texture2, texture3)
+      };
       beforeEach(
         () => {
           sandbox := createSandbox();
@@ -862,27 +877,73 @@ let _ =
             () => {
               describe(
                 "test basic material",
-                () =>
+                () => {
                   test(
-                    "shadow copy materialArrayForWorkerInit",
+                    "shadow copy textureCountMap,materialArrayForWorkerInit",
                     () =>
                       StateDataMainType.(
                         BasicMaterialType.(
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
-                              let {materialArrayForWorkerInit} =
+                              let {textureCountMap, materialArrayForWorkerInit} =
                                 BasicMaterialTool.getRecord(state);
-                              [|materialArrayForWorkerInit |> Obj.magic |> Obj.magic|]
+                              [|
+                                textureCountMap |> Obj.magic,
+                                materialArrayForWorkerInit |> Obj.magic
+                              |]
                             },
                             state^
                           )
                         )
                       )
+                  );
+                  test(
+                    "copy colors",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            BasicMaterialAPI.getBasicMaterialColor(material, state)
+                            |> TypeArrayTool.truncateArray,
+                          BasicMaterialAPI.setBasicMaterialColor,
+                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy textureIndices",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state),
+                          BasicMaterialAPI.setBasicMaterialMap,
+                          () => (1, 2)
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy mapUnits",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) => BasicMaterialTool.getMapUnit(material, state),
+                          BasicMaterialTool.setMapUnit,
+                          () => (1, 2)
+                        ),
+                        state
+                      )
                   )
+                }
               );
               describe(
                 "test light material",
-                () =>
+                () => {
                   test(
                     "shadow copy materialArrayForWorkerInit",
                     () =>
@@ -898,35 +959,7 @@ let _ =
                           )
                         )
                       )
-                  )
-              )
-            }
-          );
-          describe(
-            "deep copy material record",
-            () => {
-              describe(
-                "test basic material",
-                () =>
-                  test(
-                    "copy colors",
-                    () =>
-                      _testCopyTypeArraySingleValue(
-                        (
-                          GameObjectTool.createGameObject,
-                          (material, state) =>
-                            BasicMaterialAPI.getBasicMaterialColor(material, state)
-                            |> TypeArrayTool.truncateArray,
-                          BasicMaterialAPI.setBasicMaterialColor,
-                          () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|])
-                        ),
-                        state
-                      )
-                  )
-              );
-              describe(
-                "test light material",
-                () => {
+                  );
                   test(
                     "copy diffuseColors",
                     () =>
@@ -972,6 +1005,55 @@ let _ =
                   )
                 }
               )
+            }
+          );
+          describe(
+            "deep copy texture record",
+            () => {
+              test(
+                "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+                () =>
+                  StateDataMainType.(
+                    TextureType.(
+                      MainStateTool.testShadowCopyArrayLikeMapData(
+                        (state) => {
+                          let {
+                            sourceMap,
+                            glTextureMap,
+                            bindTextureUnitCacheMap,
+                            disposedIndexArray,
+                            needAddedSourceArray,
+                            needInitedTextureIndexArray
+                          } =
+                            TextureTool.getRecord(state);
+                          [|
+                            sourceMap |> Obj.magic,
+                            glTextureMap |> Obj.magic,
+                            bindTextureUnitCacheMap |> Obj.magic,
+                            disposedIndexArray |> Obj.magic,
+                            needAddedSourceArray |> Obj.magic,
+                            needInitedTextureIndexArray |> Obj.magic
+                          |]
+                        },
+                        state^
+                      )
+                    )
+                  )
+              );
+              test(
+                "copy wrapSs",
+                () =>
+                  _testCopyTypeArraySingleValue(
+                    (
+                      GameObjectTool.createGameObject,
+                      (material, state) => TextureAPI.getTextureWrapS(material, state),
+                      TextureAPI.setTextureWrapS,
+                      () => (1, 2)
+                    ),
+                    state
+                  )
+              )
+              /* TODO test more */
             }
           );
           describe(
@@ -1657,8 +1739,7 @@ let _ =
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
-                          ~buffer=
-                            SettingTool.buildBufferConfigStr(~transformCount=5, ()),
+                          ~buffer=SettingTool.buildBufferConfigStr(~transformCount=5, ()),
                           ()
                         );
                       let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
@@ -1684,11 +1765,7 @@ let _ =
                   state :=
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
-                      ~buffer=
-                        SettingTool.buildBufferConfigStr(
-                          ~customGeometryPointCount=2,
-                          ()
-                        ),
+                      ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointCount=2, ()),
                       ()
                     );
                   let (state, gameObject1, geometry1, (vertices1, normals1, indices1)) =
@@ -1724,7 +1801,11 @@ let _ =
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
                           ~buffer=
-                            SettingTool.buildBufferConfigStr(~basicMaterialCount=4, ()),
+                            SettingTool.buildBufferConfigStr(
+                              ~basicMaterialCount=4,
+                              ~textureCountPerMaterial=1,
+                              ()
+                            ),
                           ()
                         );
                       let (
@@ -1748,25 +1829,40 @@ let _ =
                           [|1., 0.1, 1.|],
                           currentState
                         );
+                      let (currentState, map1) = TextureAPI.createTexture(currentState);
+                      let (currentState, map2) = TextureAPI.createTexture(currentState);
+                      let currentState =
+                        currentState |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let {colors} = MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
-                      colors
+                      let defaultUnit = TextureTool.getDefaultUnit();
+                      let {colors, textureIndices, mapUnits} =
+                        MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
+                      (colors, textureIndices, mapUnits)
                       |>
-                      expect == Float32Array.make([|
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  0.5,
-                                  0.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.,
-                                  1.
-                                |])
+                      expect == (
+                                  Float32Array.make([|
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    0.5,
+                                    0.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.
+                                  |]),
+                                  Uint32Array.make([|0, 0, 0, 0|]),
+                                  Uint8Array.make([|
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit
+                                  |])
+                                )
                     }
                   )
               );
@@ -1780,8 +1876,7 @@ let _ =
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
-                          ~buffer=
-                            SettingTool.buildBufferConfigStr(~lightMaterialCount=3, ()),
+                          ~buffer=SettingTool.buildBufferConfigStr(~lightMaterialCount=3, ()),
                           ()
                         );
                       let (
@@ -1972,6 +2067,83 @@ let _ =
                   )
               )
             }
+          );
+          describe(
+            "restore texture record to target state",
+            () =>
+              test(
+                "test restore typeArrays",
+                () => {
+                  open TextureType;
+                  state :=
+                    TestTool.initWithJobConfigWithoutBuildFakeDom(
+                      ~sandbox,
+                      ~buffer=SettingTool.buildBufferConfigStr(~textureCount=4, ()),
+                      ()
+                    );
+                  let (state, texture1, texture2, texture3) = _prepareTextureData(state^);
+                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                  let copiedState = MainStateTool.deepCopyForRestore(state);
+                  let (currentState, texture4) = TextureAPI.createTexture(state);
+                  let currentState = TextureAPI.setTextureWrapT(texture4, 1, currentState);
+                  /* let (state, map1) = TextureAPI.createTexture(state);
+                     let (state, map2) = TextureAPI.createTexture(state);
+                     let state = state |> BasicMaterialAPI.setBasicMaterialMap(material4, map2); */
+                  let currentState = AllMaterialTool.pregetGLSLData(currentState);
+                  let _ = MainStateTool.restore(currentState, copiedState);
+                  /* let defaultUnit = TextureTool.getDefaultUnit(); */
+                  let defaultWrapS = TextureTool.getDefaultWrapS();
+                  let defaultWrapT = TextureTool.getDefaultWrapT();
+                  let defaultMagFilter = TextureTool.getDefaultMagFilter();
+                  let defaultMinFilter = TextureTool.getDefaultMinFilter();
+                  let defaultFormat = TextureTool.getDefaultFormat();
+                  let defaultType = TextureTool.getDefaultType();
+                  let defaultIsNeedUpdate = TextureTool.getDefaultIsNeedUpdate();
+                  let {wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates} =
+                    MainStateTool.unsafeGetState() |> TextureTool.getRecord;
+                  (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
+                  |>
+                  expect == (
+                              Uint8Array.make([|
+                                defaultWrapS,
+                                1,
+                                defaultWrapS,
+                                defaultWrapS
+                              |]),
+                              Uint8Array.make([|defaultWrapT, 1, defaultWrapT, defaultWrapT|]),
+                              Uint8Array.make([|
+                                defaultMagFilter,
+                                1,
+                                defaultMagFilter,
+                                defaultMagFilter
+                              |]),
+                              Uint8Array.make([|
+                                defaultMinFilter,
+                                1,
+                                defaultMinFilter,
+                                defaultMinFilter
+                              |]),
+                              Uint8Array.make([|
+                                defaultFormat,
+                                2,
+                                defaultFormat,
+                                defaultFormat
+                              |]),
+                              Uint8Array.make([|
+                                defaultType,
+                                1,
+                                defaultType,
+                                defaultType
+                              |]),
+                              Uint8Array.make([|
+                                defaultIsNeedUpdate,
+                                defaultIsNeedUpdate,
+                                defaultIsNeedUpdate,
+                                defaultIsNeedUpdate
+                              |])
+                            )
+                }
+              )
           );
           describe(
             "restore sourceInstance record to target state",

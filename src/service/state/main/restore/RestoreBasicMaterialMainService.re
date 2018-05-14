@@ -87,7 +87,6 @@ let restore = (gl, currentState, targetState) => {
         buffer: currentBasicMaterialRecord.buffer,
         shaderIndices: currentBasicMaterialRecord.shaderIndices,
         colors: currentBasicMaterialRecord.colors,
-        /* TODO test */
         textureIndices: currentBasicMaterialRecord.textureIndices,
         mapUnits: currentBasicMaterialRecord.mapUnits
       })

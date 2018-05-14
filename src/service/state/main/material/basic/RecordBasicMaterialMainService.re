@@ -20,19 +20,20 @@ let setDefaultTypeArrData =
       (shaderIndices, colors, textureIndices, mapUnits)
     ) => {
   let defaultUnit = MapUnitService.getDefaultUnit();
-  WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         ((shaderIndices, colors, textureIndices, mapUnits), index) => (
-           [@bs] ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
-           setColor(index, defaultColor, colors),
-           textureIndices,
-           setMapUnit(index, defaultUnit, mapUnits)
-         )
-       ),
-       (shaderIndices, colors, textureIndices, mapUnits)
-     )
+  let (shaderIndices, colors, mapUnits) =
+    WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         [@bs]
+         (
+           ((shaderIndices, colors, mapUnits), index) => (
+             [@bs] ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
+             setColor(index, defaultColor, colors),
+             setMapUnit(index, defaultUnit, mapUnits)
+           )
+         ),
+         (shaderIndices, colors, mapUnits)
+       );
+  (shaderIndices, colors, textureIndices |> Js.Typed_array.Uint32Array.fillInPlace(0), mapUnits)
 };
 
 let _setDefaultTypeArrData =
@@ -117,7 +118,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         shaderIndices:
           shaderIndices
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(index * getShaderIndicesSize()),
-        /* TODO test */
         colors:
           colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
         textureIndices:
@@ -131,7 +131,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         mapUnits:
           mapUnits |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
         defaultColor,
-        /* TODO test */
         textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
