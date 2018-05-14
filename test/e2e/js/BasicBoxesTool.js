@@ -160,6 +160,31 @@ var BasicBoxesTool = (function () {
             return [state, newBoxes];
 
         },
+
+        createBoxesByCloneWithMap: function (count, source, state) {
+            var boxes = [];
+
+            var record = BasicBoxesTool.createBoxWithMap(source, state);
+            var state = record[0];
+            var box = record[1];
+
+
+            var record = wd.cloneGameObject(box, count, true, state);
+            var state = record[0];
+            var newBoxes = record[1];
+
+
+            var flatten = (arr) => {
+                return arr.reduce((a, b) => {
+                    var arr = a.concat(b);
+                    return arr;
+                }, []);
+            };
+            newBoxes = flatten(newBoxes);
+
+            return [state, newBoxes];
+
+        },
         createBoxesWithoutClone: function (count, state) {
             var boxes = [];
 

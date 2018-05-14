@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>run test</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+
+                var image1 = new Image();
+                image1.src = "./1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./2.jpg";
+
+                    image2.onload = function () {
+                        return initSample(image1, image2, wd.unsafeGetState());
+                    }
+                }
+            });
+
+
+
+            function initSample(image1, image2, state) {
+                var data = InstanceBasicBoxesTool.createBoxWithMap(2, false, image1, state);
+                var state = data[0];
+                var box = data[1];
+
+
+
+
+                var data = InstanceBasicBoxesTool.setPosition([box], state);
+                var state = data[0];
+                var boxes = data[1];
+
+
+
+
+                var data = RedoUndoTool.createCamera(state);
+                var state = data[0];
+
+
+
+                var state = RedoUndoTool.redoUndoShaderWithMap(2, image1, state);
+
+
+
+                wd.startDirector(state)
+
+
+
+
+
+
+            }
+
+        };
+    </script>
+</body>
+
+</html>
