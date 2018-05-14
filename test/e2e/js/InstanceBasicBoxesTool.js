@@ -158,12 +158,28 @@ var InstanceBasicBoxesTool = (function () {
             }
 
 
+            return [state, obj, objectInstanceGameObjectArr];
+        },
+        createBoxWithMap: function (count, isStatic, source, state) {
+            var record = InstanceBasicBoxesTool.createBox(count, isStatic, state);
+
+            var state = record[0];
+            var obj = record[1];
+            var objectInstanceGameObjectArr = record[2];
 
 
+            var material = wd.unsafeGetGameObjectBasicMaterialComponent(obj, state);
 
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture = record[1];
+
+            var state = wd.setTextureSource(texture, source, state);
+
+
+            var state = wd.setBasicMaterialMap(material, texture, state);
 
             return [state, obj, objectInstanceGameObjectArr];
-
         },
         createBoxes: function (sourceInstanceGameObjectCount, objectInstanceGameObjectCount, isStatic, state) {
             var boxes = [];

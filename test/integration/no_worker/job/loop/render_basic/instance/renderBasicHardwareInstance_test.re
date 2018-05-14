@@ -68,6 +68,35 @@ let _ =
         }
       );
       describe(
+        "bind and update sourceInstance's gameObject's map",
+        () => {
+          test(
+            "bind map",
+            () => {
+              let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
+              let (state, map) = TextureAPI.createTexture(state);
+              let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+              RenderTextureTool.testBindMap(sandbox, state)
+            }
+          );
+          test(
+            "update map",
+            () => {
+              let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
+              let (state, map) = TextureAPI.createTexture(state);
+              let source = TextureTool.buildSource(2, 4);
+              let state = state |> TextureAPI.setTextureSource(map, source);
+              let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+              RenderTextureTool.testUpdateMap(sandbox, state)
+            }
+          )
+        }
+      );
+      describe(
         "send instance data",
         () => {
           describe(
