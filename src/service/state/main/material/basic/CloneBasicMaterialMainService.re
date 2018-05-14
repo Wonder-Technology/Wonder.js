@@ -7,15 +7,22 @@ open BasicMaterialType;
 let _getData =
   [@bs]
   (
-    (sourceComponent, state: StateDataMainType.state) =>
-      OperateBasicMaterialMainService.getColor(sourceComponent, state)
+    (sourceComponent, state: StateDataMainType.state) => (
+      OperateBasicMaterialMainService.getColor(sourceComponent, state),
+      OperateBasicMaterialMainService.getMap(sourceComponent, state)
+    )
   );
 
 let _setData =
   [@bs]
   (
-    (sourceComponent, color, state: StateDataMainType.state) =>
-      OperateBasicMaterialMainService.(state |> setColor(sourceComponent, color))
+    (sourceComponent, (color, mapOption), state: StateDataMainType.state) => {
+      let state = state |> OperateBasicMaterialMainService.setColor(sourceComponent, color);
+      switch mapOption {
+      | None => state
+      | Some(map) => state |> OperateBasicMaterialMainService.setMap(sourceComponent, map)
+      }
+    }
   );
 
 let handleCloneComponent =

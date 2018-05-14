@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>run test</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+
+                var image1 = new Image();
+                image1.src = "./1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./2.jpg";
+
+                    image2.onload = function () {
+                        return initSample(image1, image2, wd.unsafeGetState());
+                    }
+                }
+            });
+
+
+
+            function initSample(image1, image2, state) {
+                var n1 = performance.now();
+
+
+
+
+                var record = wd.createTexture(state)
+                var state = record[0];
+                var texture2 = record[1];
+
+                var state = wd.setTextureSource(texture2, image2, state);
+
+
+
+
+                var data = BasicBoxesTool.createBoxWithMap(image1, state);
+                var state = data[0];
+                var box = data[1];
+
+
+
+
+
+                var record = wd.cloneGameObject(box, 5, true, state);
+                var state = record[0];
+                var newBoxes = record[1];
+
+
+                var flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        var arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                newBoxes = flatten(newBoxes);
+
+
+
+                var record = BasicBoxesTool.setPosition(newBoxes, state);
+                 var state = record[0];
+
+
+
+
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                // setTimeout(function () {
+                //     var state = wd.unsafeGetState();
+
+                //     var box = boxes[0];
+
+                //     var material = wd.unsafeGetGameObjectBasicMaterialComponent(box, state);
+
+
+                //     var state = wd.setBasicMaterialMap(material, texture2, state);
+
+
+
+
+                //     wd.setState(state);
+
+                // }, 1000);
+
+                // var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+
+                // var state = wd.setTransformLocalPosition(transform, [0, 10, 40], state);
+
+
+                // var state = BasicBoxesTool.createAndDisposeGameObjectsWorkerWithMap(1, boxes, image, state);
+
+
+                // setTimeout(() => {
+                //   var state = wd.unsafeGetState();
+
+                // var state = wd.batchDisposeGameObject(boxes, state);
+
+
+
+                // var record = BasicBoxesTool.createBoxWithMap(image, state);
+                // var state = record[0];
+                // var newBoxes = [record[1]];
+
+
+
+
+
+                // for (var i = 0, len = newBoxes.length; i < len; i++) {
+                //     var box = newBoxes[i];
+                //     state = wd.initGameObject(box, state);
+                // }
+
+
+
+
+
+                // wd.setState(state);
+                // }, 300)
+
+
+
+
+
+
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>
