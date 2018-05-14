@@ -16,7 +16,11 @@ let _getData =
 let _setData =
   [@bs]
   (
-    (sourceComponent, (color, mapOption), state: StateDataMainType.state) => {
+    (
+      sourceComponent: int,
+      (color: array(float), mapOption: option(int)),
+      state: StateDataMainType.state
+    ) => {
       let state = state |> OperateBasicMaterialMainService.setColor(sourceComponent, color);
       switch mapOption {
       | None => state

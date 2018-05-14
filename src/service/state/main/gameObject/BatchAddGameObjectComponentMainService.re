@@ -264,12 +264,12 @@ let batchAddCustomGeometryComponentForClone =
 
 let _batchAddMaterialComponentForClone =
     (
-      isShareBasicMaterial,
+      isShareMaterial,
       (uidArr: array(int), componentArr: array(component), componentMap),
       (increaseGroupCountFunc, handleAddComponentFunc),
       record
     ) =>
-  isShareBasicMaterial ?
+  isShareMaterial ?
     _batchAddSharableComponent(
       (uidArr, componentArr, componentMap),
       increaseGroupCountFunc,

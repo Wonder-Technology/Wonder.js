@@ -12,7 +12,8 @@ let getShaderIndex = (index, typeArr) =>
 let setShaderIndex =
   [@bs]
   (
-    (index, data, typeArr) => TypeArrayService.setUint32_1(getShaderIndexIndex(index), data, typeArr)
+    (index, data, typeArr) =>
+      TypeArrayService.setUint32_1(getShaderIndexIndex(index), data, typeArr)
   );
 
 let hasShaderIndex = (materialIndex: int, shaderIndices) =>

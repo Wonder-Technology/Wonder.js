@@ -12,7 +12,7 @@ let _clone =
     ) =>
   switch component {
   | Some(component) =>
-    let (componentRecord, clonedComponentArr) =
+    let (state, clonedComponentArr) =
       cloneComponentFunc(component, countRangeArr, state);
     batchAddComponentFunc(clonedGameObjectArr, clonedComponentArr, state)
   | None => state
@@ -98,7 +98,9 @@ let _cloneComponentExceptTransform =
          clonedGameObjectArr
        ),
        (
-         CloneComponentGameObjectMainService.cloneBasicMaterialComponent(isShareMaterial),
+         CloneComponentGameObjectMainService.cloneBasicMaterialComponent(isShareMaterial)
+         
+         ,
          BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone(
            isShareMaterial
          )

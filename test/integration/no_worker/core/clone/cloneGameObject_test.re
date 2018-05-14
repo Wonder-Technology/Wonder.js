@@ -626,32 +626,23 @@ let _ =
                               |> expect == (1, 1)
                             }
                           )
+                      );
+                      describe(
+                        "fix bug",
+                        () =>
+                          test(
+                            "basicMaterialRecord.index should be correct after clone",
+                            () => {
+                              open BasicMaterialType;
+                              let (state, gameObject, _) =
+                                BasicMaterialTool.createGameObject(state^);
+                              let (state, clonedGameObjectArr) =
+                                _cloneGameObject(gameObject, false, 2, state);
+                              let {index} = state |> RecordBasicMaterialMainService.getRecord;
+                              index |> expect === 3
+                            }
+                          )
                       )
-                      /* describe(
-                           "fix bug",
-                           () =>
-                             test(
-                               "if source material's shaderIndex not exist, not set cloned material's shaderIndex",
-                               () => {
-                                 let (state, gameObject1, material1) =
-                                   BasicMaterialTool.createGameObject(state^);
-                                 let (state, clonedGameObjectArr) =
-                                   _cloneGameObject(gameObject1, false, 1, state);
-                                 let clonedMaterialArr =
-                                   clonedGameObjectArr
-                                   |> CloneTool.getFlattenClonedGameObjectArr
-                                   |> Js.Array.map(
-                                        (clonedGameObject) =>
-                                          unsafeGetGameObjectBasicMaterialComponent(
-                                            clonedGameObject,
-                                            state
-                                          )
-                                      );
-                                 BasicMaterialTool.hasShaderIndex(clonedMaterialArr[0], state)
-                                 |> expect == false
-                               }
-                             )
-                         ) */
                     }
                   )
                 }
