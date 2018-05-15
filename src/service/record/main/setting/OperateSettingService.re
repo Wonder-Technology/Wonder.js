@@ -17,7 +17,7 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
         transformCount: 10 * 1000,
         basicMaterialCount: 10 * 1000,
         lightMaterialCount: 10 * 1000,
-        textureCount: 10 * 1000,
+        textureCount: 64,
         textureCountPerMaterial: 32,
         instanceBuffer: {sourceInstanceCount: 2, objectInstanceCountPerSourceInstance: 10000}
       })
