@@ -1,45 +1,6 @@
-/* TODO refactor: duplicate with GetShaderLibDataArrayInitLightMaterialService */
 open StateInitBasicMaterialType;
 
 open RenderConfigType;
-
-let _findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
-  JobConfigService.unsafeFindFirst(
-    shaderLibs,
-    shaderLibName,
-    (item: shaderLib) => JobConfigService.filterTargetName(item.name, shaderLibName)
-  );
-
-let _getMaterialShaderLibDataArrByGroup =
-    (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
-  Js.Array.concat(
-    JobConfigService.unsafeFindFirst(
-      groups,
-      name,
-      (item) => JobConfigService.filterTargetName(item.name, name)
-    ).
-      value
-    |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs)),
-    resultDataArr
-  );
-
-let _getMaterialShaderLibDataArrByStaticBranchInstance =
-    ((isSourceInstance, isSupportInstance), (shaderLibs, value), resultDataArr) =>
-  resultDataArr
-  |> ArrayService.push(
-       _findFirstShaderData(
-         if (isSourceInstance) {
-           if (isSupportInstance) {
-             value[1]
-           } else {
-             value[2]
-           }
-         } else {
-           value[0]
-         },
-         shaderLibs
-       )
-     );
 
 let _getMaterialShaderLibDataArrByStaticBranch =
     (
@@ -55,24 +16,15 @@ let _getMaterialShaderLibDataArrByStaticBranch =
         name,
         (item) => JobConfigService.filterTargetName(item.name, name)
       );
-    _getMaterialShaderLibDataArrByStaticBranchInstance(
+    GetShaderLibDataArrayInitMaterialService.getMaterialShaderLibDataArrByStaticBranchInstance(
       (isSourceInstance, isSupportInstance),
       (shaderLibs, value),
       resultDataArr
     )
   | _ =>
-    WonderLog.Log.debugJson(
-      WonderLog.Log.buildDebugJsonMessage(~description={j|staticBranchs|j}, ~var=staticBranchs),
-      IsDebugMainService.getIsDebug(StateDataMain.stateData)
-    );
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getMaterialShaderLibDataArrByStaticBranch",
-        ~description={j|unknown name:$name|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
+    GetShaderLibDataArrayInitMaterialService.handleUnknownNameWhenGetMaterialShaderLibDataArrByStaticBranch(
+      name,
+      staticBranchs
     )
   };
 
@@ -112,7 +64,10 @@ let _getMaterialShaderLibDataArrByDynamicBranch =
     _isPass(materialIndex, condition, state) ?
       resultDataArr
       |> ArrayService.push(
-           _findFirstShaderData(GetDataRenderConfigService.getPass(dynamicBranchData), shaderLibs)
+           GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
+             GetDataRenderConfigService.getPass(dynamicBranchData),
+             shaderLibs
+           )
          ) :
       resultDataArr
   | _ =>
@@ -146,7 +101,13 @@ let _getMaterialShaderLibDataArrByType =
       resultDataArr
     ) =>
   switch type_ {
-  | "group" => _getMaterialShaderLibDataArrByGroup(groups, name, shaderLibs, resultDataArr)
+  | "group" =>
+    GetShaderLibDataArrayInitMaterialService.getMaterialShaderLibDataArrByGroup(
+      groups,
+      name,
+      shaderLibs,
+      resultDataArr
+    )
   | "static_branch" =>
     _getMaterialShaderLibDataArrByStaticBranch(
       (name, isSourceInstance, isSupportInstance),
@@ -191,7 +152,14 @@ let getMaterialShaderLibDataArr =
            (
              (resultDataArr, {type_, name}: shaderLibItem) =>
                switch type_ {
-               | None => resultDataArr |> ArrayService.push(_findFirstShaderData(name, shaderLibs))
+               | None =>
+                 resultDataArr
+                 |> ArrayService.push(
+                      GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
+                        name,
+                        shaderLibs
+                      )
+                    )
                | Some(type_) =>
                  _getMaterialShaderLibDataArrByType(
                    (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
