@@ -247,8 +247,7 @@ var InstanceBasicBoxesTool = (function () {
         },
 
         setPosition: function (boxes, state) {
-            // TODO fix
-            var playgroundSize = 30;
+            var playgroundSize = 300;
 
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
