@@ -50,17 +50,63 @@ var BasicBoxesTool = (function () {
         return state;
     };
 
+    var createAndDisposeGameObjectsByClone = function (count, boxes, state) {
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+        var record = BasicBoxesTool.createBoxesByClone(count, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+
+        var record = BasicBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+        window.boxes = newBoxes;
+
+
+        for (var i = 0, len = newBoxes.length; i < len; i++) {
+            var box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+    };
+
+
+
+
+
+
 
 
     var createAndDisposeGameObjectsWithMap = function (count, boxes, source, state) {
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
-        var record = BasicBoxesTool.createBoxWithMap(source, state);
+        // var record = BasicBoxesTool.createBoxWithMap(source, state);
+        // var state = record[0];
+        // var newBoxes = [record[1]];
+
+
+
+
+        var record = BasicBoxesTool.createBoxesByCloneWithMap(count, source, state);
         var state = record[0];
-        var newBoxes = [record[1]];
+        var newBoxes = record[1];
 
 
 
+        // var record = BasicBoxesTool.createBoxesByClone(count, state);
+        // var state = record[0];
+        // var newBoxes = record[1];
+
+
+
+
+        // var record = BasicBoxesTool.createBoxWithMap(source, state);
+        // var state = record[0];
+        // var newBoxes = [ record[1] ];
 
 
 
@@ -156,6 +202,8 @@ var BasicBoxesTool = (function () {
                 }, []);
             };
             newBoxes = flatten(newBoxes);
+
+            newBoxes.push(box);
 
             return [state, newBoxes];
 
@@ -297,6 +345,20 @@ var BasicBoxesTool = (function () {
                 )
             }, state);
         },
+
+
+
+        createAndDisposeGameObjectsByClone: function (count, boxes, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleLoop(function (state) {
+                return createAndDisposeGameObjectsByClone(count, boxes,
+                    state
+                )
+            }, state);
+        },
+
+
         createAndDisposeGameObjectsWithMap: function (count, boxes, source, state) {
             window.boxes = [];
 
