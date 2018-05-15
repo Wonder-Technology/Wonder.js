@@ -211,6 +211,19 @@ let _prepareData =
   )
 };
 
+let _unbind = (shaderIndex, extension, state) => {
+  state.glslSenderRecord
+  |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(shaderIndex)
+  |> WonderCommonlib.ArrayService.forEach(
+       [@bs]
+       (
+         ({pos}: instanceAttributeSendData) =>
+           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 0) |> ignore
+       )
+     );
+  state
+};
+
 let render =
     (
       gl,
@@ -266,8 +279,7 @@ let render =
     ),
     Obj.magic(extension)
   );
-  /* TODO unbind? */
-  state
+  _unbind(shaderIndex, extension, state)
 };
 
 let fillMatrixTypeArr = (transformIndex, matricesArrayForInstance, (state, offset)) =>

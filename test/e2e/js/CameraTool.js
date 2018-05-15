@@ -29,7 +29,8 @@ var CameraTool = (function () {
 
             var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
 
-            state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+            // TODO fix
+            state = wd.setTransformLocalPosition(transform, [0, 0, 150], state);
 
             return [state, obj];
         }

@@ -813,25 +813,52 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "unbind",
+        () => {
+          let _prepareForHandleInstanceData = (sandbox, state) => {
+            let (
+              state,
+              gameObject,
+              (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject)
+            ) =
+              _prepare(sandbox, state^);
+            RenderBasicHardwareInstanceForNoWorkerAndWorkerJobTool.prepareGetAttribLocationForHandleInstanceData(
+              sandbox,
+              state
+            )
+          };
+          test(
+            "reset instance data position divisor to 0",
+            () => {
+              let (state, pos1, pos2, pos3, pos4, getAttribLocation) =
+                _prepareForHandleInstanceData(sandbox, state);
+              let vertexAttribDivisorANGLE =
+                Obj.magic(
+                  InstanceTool.getExtensionInstancedArrays(state)##vertexAttribDivisorANGLE
+                );
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ()));
+              let state = state |> RenderJobsTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+              (
+                vertexAttribDivisorANGLE |> withTwoArgs(pos1, 0) |> getCallCount,
+                vertexAttribDivisorANGLE |> withTwoArgs(pos2, 0) |> getCallCount,
+                vertexAttribDivisorANGLE |> withTwoArgs(pos3, 0) |> getCallCount,
+                vertexAttribDivisorANGLE |> withTwoArgs(pos4, 0) |> getCallCount,
+                calledAfter(
+                  vertexAttribDivisorANGLE |> withTwoArgs(pos1, 0),
+                  Obj.magic(
+                    InstanceTool.getExtensionInstancedArrays(state)##drawElementsInstancedANGLE
+                  )
+                )
+              )
+              |> expect == (1, 1, 1, 1, true)
+            }
+          )
+        }
       )
-      /* test(
-           "not unbind instance buffer",
-           () => {
-             let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-               _prepare(sandbox, state^);
-             let array_buffer = 1;
-             let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-             let state =
-               state
-               |> FakeGlTool.setFakeGl(
-                    FakeGlTool.buildFakeGl(~sandbox, ~array_buffer, ~bindBuffer, ())
-                  );
-             let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-             bindBuffer
-             |> withTwoArgs(array_buffer, Js.Nullable.null)
-             |> expect
-             |> toCalledOnce
-           }
-         ) */
     }
   );

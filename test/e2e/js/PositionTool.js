@@ -2,7 +2,8 @@
 var PositionTool = (function () {
     return {
         setPosition: function (gameObjects, state) {
-            var playgroundSize = 500;
+            // TODO fix
+            var playgroundSize = 50;
 
             for (var i = 0, len = gameObjects.length; i < len; i++) {
                 var box = gameObjects[i];
