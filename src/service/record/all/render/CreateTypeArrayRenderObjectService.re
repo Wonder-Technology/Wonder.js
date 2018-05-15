@@ -32,7 +32,7 @@ let createTypeArrays = (buffer, count) => {
   )
 ) };
 
-let setDefaultTypeArrData = (count: int, typeArrTuple) => {
+let setAllTypeArrDataToDefault = (count: int, typeArrTuple) => {
   let defaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance();
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(

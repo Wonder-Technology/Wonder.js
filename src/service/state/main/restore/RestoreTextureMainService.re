@@ -22,7 +22,7 @@ let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
           currentTextureRecord.types,
           currentTextureRecord.isNeedUpdates
         )
-        |> RecordTextureMainService.setDefaultTypeArrData(currentTextureRecord.index);
+        |> RecordTextureMainService.setAllTypeArrDataToDefault(currentTextureRecord.index);
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentTextureRecord.wrapSs, 0),
         (targetTextureRecord.wrapSs, 0),

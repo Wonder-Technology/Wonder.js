@@ -27,7 +27,7 @@ let _ =
                 let sourceBuffer = TransformTool.createBuffer(count);
                 let (sourceLocalToWorldMatrices, sourceLocalPositions) =
                   TransformTool.createTypeArrays(sourceBuffer, count)
-                  |> TransformTool.setDefaultTypeArrData(count, state^);
+                  |> TransformTool.setAllTypeArrDataToDefault(count, state^);
                 let targetBuffer = TransformTool.createBuffer(count);
                 let (targetLocalToWorldMatrices, targetLocalPositions) =
                   TransformTool.createTypeArrays(targetBuffer, count);

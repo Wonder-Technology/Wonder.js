@@ -22,7 +22,7 @@ let _initBufferData = (count) => {
   (
     buffer,
     CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count)
-    |> CreateTypeArrayRenderObjectService.setDefaultTypeArrData(count)
+    |> CreateTypeArrayRenderObjectService.setAllTypeArrDataToDefault(count)
   )
 };
 

@@ -17,7 +17,7 @@ let _ =
         open MeshRendererAPI;
         open Sinon;
         let (state, gameObject1, boxGeometry) = BoxGeometryTool.createGameObject(state);
-        let (state, gameObject2, customGeometry, (vertices, normals, indices)) =
+        let (state, gameObject2, customGeometry, (vertices, texCoords, normals, indices)) =
           CustomGeometryTool.createGameObjectAndSetPointData(state);
         let (state, material1) = createBasicMaterial(state);
         let (state, material2) = createBasicMaterial(state);
@@ -34,7 +34,7 @@ let _ =
         (
           state,
           (gameObject1, gameObject2),
-          (boxGeometry, (customGeometry, vertices, normals, indices)),
+          (boxGeometry, (customGeometry, vertices, texCoords, normals, indices)),
           (material1, material2),
           (meshRenderer1, meshRenderer2)
         )
@@ -71,8 +71,7 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
-                  let state =
-                    state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+                  let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                   getCallCount(createBuffer) |> expect == 4
                 }
               );
@@ -82,7 +81,7 @@ let _ =
                   test(
                     "bufferData",
                     () => {
-                      let (state, (boxGeometry, (customGeometry, customVertices, _, _))) =
+                      let (state, (boxGeometry, (customGeometry, customVertices, _, _, _))) =
                         _prepare(sandbox, state^);
                       let array_buffer = 1;
                       let static_draw = 2;
@@ -98,10 +97,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
                       (
                         bufferData
@@ -125,10 +121,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~array_buffer, ~bindBuffer, ())
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       bindBuffer |> withOneArg(array_buffer) |> getCallCount |> expect == 3 * 2
                     }
                   )
@@ -140,7 +133,7 @@ let _ =
                   test(
                     "bufferData",
                     () => {
-                      let (state, (boxGeometry, (customGeometry, _, _, customIndices))) =
+                      let (state, (boxGeometry, (customGeometry, _, _, _, customIndices))) =
                         _prepare(sandbox, state^);
                       let element_array_buffer = 1;
                       let static_draw = 2;
@@ -156,10 +149,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
                       (
                         bufferData
@@ -188,10 +178,7 @@ let _ =
                                ()
                              )
                            );
-                      let state =
-                        state
-                        |> RenderJobsTool.init
-                        |> DirectorTool.runWithDefaultTime;
+                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       bindBuffer
                       |> withOneArg(element_array_buffer)
                       |> getCallCount

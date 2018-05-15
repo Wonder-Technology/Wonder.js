@@ -1757,35 +1757,100 @@ let _ =
           );
           describe(
             "restore customGeometry record to target state",
-            () =>
+            () => {
+              let _prepare = () => {
+                let state =
+                  TestTool.initWithJobConfigWithoutBuildFakeDom(
+                    ~sandbox,
+                    ~buffer=
+                      SettingTool.buildBufferConfigStr(
+                        ~customGeometryPointCount=4,
+                        ~customGeometryCount=3,
+                        ()
+                      ),
+                    ()
+                  );
+                let (state, gameObject1, geometry1, (vertices1, texCoords1, normals1, indices1)) =
+                  CustomGeometryTool.createGameObjectAndSetPointData(state);
+                let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                let copiedState = MainStateTool.deepCopyForRestore(state);
+                let (currentState, gameObject2, geometry2) =
+                  CustomGeometryTool.createGameObject(state);
+                let (currentState, gameObject3, geometry3) =
+                  CustomGeometryTool.createGameObject(state);
+                let vertices2 = Float32Array.make([|2., 3., 40., 1., 3., 5., 3., 4., 11.|]);
+                let texCoords2 = Float32Array.make([|1., 0.5, 0.2, 0.3, 0.3, 0.5|]);
+                let normals2 = Float32Array.make([|3., 2., 4., 5., 6., 7., 2.5, 1.5, 0.|]);
+                let indices2 = Uint16Array.make([|0, 1, 2|]);
+                let currentState =
+                  currentState
+                  |> CustomGeometryAPI.setCustomGeometryVertices(geometry2, vertices2)
+                  |> CustomGeometryAPI.setCustomGeometryTexCoords(geometry2, texCoords2)
+                  |> CustomGeometryAPI.setCustomGeometryNormals(geometry3, normals2)
+                  |> CustomGeometryAPI.setCustomGeometryIndices(geometry2, indices2);
+                ((currentState, copiedState), (geometry1, geometry2, geometry3))
+              };
               test(
                 "test restore typeArrays",
                 () => {
                   open CustomGeometryType;
-                  state :=
-                    TestTool.initWithJobConfigWithoutBuildFakeDom(
-                      ~sandbox,
-                      ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointCount=2, ()),
-                      ()
-                    );
-                  let (state, gameObject1, geometry1, (vertices1, normals1, indices1)) =
-                    CustomGeometryTool.createGameObjectAndSetPointData(state^);
-                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                  let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let (currentState, gameObject2, geometry2) =
-                    CustomGeometryTool.createGameObject(state);
-                  let vertices2 = Float32Array.make([|2., 3., 40.|]);
-                  let currentState =
-                    CustomGeometryAPI.setCustomGeometryVertices(
-                      geometry2,
-                      vertices2,
-                      currentState
-                    );
+                  let ((currentState, copiedState), _) = _prepare();
                   let _ = MainStateTool.restore(currentState, copiedState);
-                  let {vertices} = MainStateTool.unsafeGetState() |> CustomGeometryTool.getRecord;
-                  vertices |> expect == Float32Array.make([|10., 0., 0., 0., 0., 0.|])
+                  let {vertices, texCoords, normals, indices} =
+                    MainStateTool.unsafeGetState() |> CustomGeometryTool.getRecord;
+                  (vertices, texCoords, normals, indices)
+                  |>
+                  expect == (
+                              Float32Array.make([|
+                                10.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.
+                              |]),
+                              Float32Array.make([|0.5, 0., 0., 0., 0., 0., 0., 0.|]),
+                              Float32Array.make([|
+                                1.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.,
+                                0.
+                              |]),
+                              Uint16Array.make([|2, 0, 0, 0|])
+                            )
+                }
+              );
+              test(
+                "test set point after restore",
+                () => {
+                  open CustomGeometryType;
+                  let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+                    _prepare();
+                  let restoredState = MainStateTool.restore(currentState, copiedState);
+                  let vertices3 = Float32Array.make([|3., 4., 11.|]);
+                  let restoredState =
+                    restoredState
+                    |> CustomGeometryAPI.setCustomGeometryVertices(geometry3, vertices3);
+                  let vertices =
+                    restoredState |> CustomGeometryAPI.getCustomGeometryVertices(geometry3);
+                  vertices |> expect == vertices3
                 }
               )
+            }
           );
           describe(
             "restore material record to target state",
@@ -2104,12 +2169,7 @@ let _ =
                   (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
                   |>
                   expect == (
-                              Uint8Array.make([|
-                                defaultWrapS,
-                                1,
-                                defaultWrapS,
-                                defaultWrapS
-                              |]),
+                              Uint8Array.make([|defaultWrapS, 1, defaultWrapS, defaultWrapS|]),
                               Uint8Array.make([|defaultWrapT, 1, defaultWrapT, defaultWrapT|]),
                               Uint8Array.make([|
                                 defaultMagFilter,
@@ -2123,18 +2183,8 @@ let _ =
                                 defaultMinFilter,
                                 defaultMinFilter
                               |]),
-                              Uint8Array.make([|
-                                defaultFormat,
-                                2,
-                                defaultFormat,
-                                defaultFormat
-                              |]),
-                              Uint8Array.make([|
-                                defaultType,
-                                1,
-                                defaultType,
-                                defaultType
-                              |]),
+                              Uint8Array.make([|defaultFormat, 2, defaultFormat, defaultFormat|]),
+                              Uint8Array.make([|defaultType, 1, defaultType, defaultType|]),
                               Uint8Array.make([|
                                 defaultIsNeedUpdate,
                                 defaultIsNeedUpdate,

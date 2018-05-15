@@ -12,7 +12,7 @@ open OperateTypeArrayBasicMaterialService;
 
 let getRecord = ({basicMaterialRecord}) => basicMaterialRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (
       basicMaterialCount: int,
       defaultShaderIndex,
@@ -36,7 +36,7 @@ let setDefaultTypeArrData =
   (shaderIndices, colors, textureIndices |> Js.Typed_array.Uint32Array.fillInPlace(0), mapUnits)
 };
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (
       basicMaterialCount: int,
       defaultShaderIndex,
@@ -44,7 +44,7 @@ let _setDefaultTypeArrData =
       (buffer, shaderIndices, colors, textureIndices, mapUnits)
     ) => (
   buffer,
-  setDefaultTypeArrData(
+  setAllTypeArrDataToDefault(
     basicMaterialCount,
     defaultShaderIndex,
     defaultColor,
@@ -62,7 +62,7 @@ let _initBufferData =
       textureCountPerMaterial
     );
   (buffer, shaderIndices, colors, textureIndices, mapUnits)
-  |> _setDefaultTypeArrData(basicMaterialCount, defaultShaderIndex, defaultColor)
+  |> _setAllTypeArrDataToDefault(basicMaterialCount, defaultShaderIndex, defaultColor)
 };
 
 let create = ({settingRecord} as state) => {

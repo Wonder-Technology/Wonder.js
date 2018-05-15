@@ -6,7 +6,7 @@ open BufferTextureService;
 
 let getRecord = ({textureRecord}) => textureRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (count: int, (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)) => {
   let defaultWrapS = getDefaultWrapS();
   let defaultWrapT = getDefaultWrapT();
@@ -37,10 +37,10 @@ let setDefaultTypeArrData =
      )
 };
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (count: int, (buffer, wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)) => (
   buffer,
-  setDefaultTypeArrData(
+  setAllTypeArrDataToDefault(
     count,
     (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
   )
@@ -51,7 +51,7 @@ let _initBufferData = (count) => {
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
     CreateTypeArrayTextureService.createTypeArrays(buffer, count);
   (buffer, wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
-  |> _setDefaultTypeArrData(count)
+  |> _setAllTypeArrDataToDefault(count)
 };
 
 let create = ({settingRecord} as state) => {

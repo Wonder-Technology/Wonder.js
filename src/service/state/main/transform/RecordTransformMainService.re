@@ -29,7 +29,7 @@ let setLocalPosition = (index, data, typeArr) =>
 let setLocalPositionByTuple = (index, dataTuple, typeArr) =>
   TypeArrayService.setFloat3ByTuple(getLocalPositionIndex(index), dataTuple, typeArr);
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (
       count: int,
       defaultLocalToWorldMatrix,
@@ -48,7 +48,7 @@ let setDefaultTypeArrData =
        (localToWorldMatrices, localPositions)
      );
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (
       count: int,
       defaultLocalToWorldMatrix,
@@ -56,7 +56,7 @@ let _setDefaultTypeArrData =
       (buffer, localToWorldMatrices, localPositions)
     ) => (
   buffer,
-  setDefaultTypeArrData(
+  setAllTypeArrDataToDefault(
     count,
     defaultLocalToWorldMatrix,
     defaultLocalPosition,
@@ -69,7 +69,7 @@ let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) =
   let (localToWorldMatrices, localPositions) =
     CreateTypeArrayTransformService.createTypeArrays(buffer, count);
   (buffer, localToWorldMatrices, localPositions)
-  |> _setDefaultTypeArrData(count, defaultLocalToWorldMatrix, defaultLocalPosition)
+  |> _setAllTypeArrDataToDefault(count, defaultLocalToWorldMatrix, defaultLocalPosition)
 };
 
 let _createForWorker =

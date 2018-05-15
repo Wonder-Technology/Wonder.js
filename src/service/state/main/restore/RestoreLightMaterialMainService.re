@@ -32,7 +32,7 @@ let _restoreTypeArrays = (currentLightMaterialRecord, targetLightMaterialRecord)
           currentLightMaterialRecord.specularColors,
           currentLightMaterialRecord.shininess
         )
-        |> RecordLightMaterialMainService.setDefaultTypeArrData(
+        |> RecordLightMaterialMainService.setAllTypeArrDataToDefault(
              currentLightMaterialRecord.index,
              (
                DefaultTypeArrayValueService.getDefaultShaderIndex(),

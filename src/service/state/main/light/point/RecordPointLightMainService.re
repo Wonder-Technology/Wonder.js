@@ -69,7 +69,7 @@ let getDefaultQuadratic = () => 0.017;
 
 let getDefaultRange = () => 65.;
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (count: int, (colors, intensities, constants, linears, quadratics, ranges)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
@@ -94,10 +94,10 @@ let setDefaultTypeArrData =
      )
 };
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (count: int, (buffer, colors, intensities, constants, linears, quadratics, ranges)) => (
   buffer,
-  setDefaultTypeArrData(count, (colors, intensities, constants, linears, quadratics, ranges))
+  setAllTypeArrDataToDefault(count, (colors, intensities, constants, linears, quadratics, ranges))
 );
 
 let _initBufferData = () => {
@@ -106,7 +106,7 @@ let _initBufferData = () => {
   let (colors, intensities, constants, linears, quadratics, ranges) =
     CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities, constants, linears, quadratics, ranges)
-  |> _setDefaultTypeArrData(count)
+  |> _setAllTypeArrDataToDefault(count)
 };
 
 let create = () => {

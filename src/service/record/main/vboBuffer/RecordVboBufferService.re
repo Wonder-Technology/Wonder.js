@@ -17,12 +17,10 @@ let create = () => {
 
 let deepCopyForRestore = (record) => {
   boxGeometryVertexBufferMap: [||],
-  /* TODO test */
   boxGeometryTexCoordBufferMap: [||],
   boxGeometryNormalBufferMap: [||],
   boxGeometryElementArrayBufferMap: [||],
   customGeometryVertexBufferMap: [||],
-  /* TODO test */
   customGeometryTexCoordBufferMap: [||],
   customGeometryNormalBufferMap: [||],
   customGeometryElementArrayBufferMap: [||],

@@ -21,7 +21,7 @@ let _restoreTypeArrays = (currentSourceInstanceRecord, targetSourceInstanceRecor
           currentSourceInstanceRecord.objectInstanceTransformCollections,
           currentSourceInstanceRecord.isTransformStatics
         )
-        |> RecordSourceInstanceMainService.setDefaultTypeArrData(
+        |> RecordSourceInstanceMainService.setAllTypeArrDataToDefault(
              currentSourceInstanceRecord.index,
              StaticTransformService.getDefault()
            );

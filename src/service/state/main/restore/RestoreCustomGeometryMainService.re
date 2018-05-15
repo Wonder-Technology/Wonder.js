@@ -2,15 +2,17 @@ open StateDataMainType;
 
 open CustomGeometryType;
 
-let _restoreTypeArrays = (currentCustomGeometryRecord, targetCustomGeometryRecord) =>
+let _restoreTypeArrays =
+    (customGeometryPointCount, currentCustomGeometryRecord, targetCustomGeometryRecord) =>
   currentCustomGeometryRecord.vertices === targetCustomGeometryRecord.vertices
   && currentCustomGeometryRecord.normals === targetCustomGeometryRecord.normals
   && currentCustomGeometryRecord.indices === targetCustomGeometryRecord.indices ?
     (currentCustomGeometryRecord, targetCustomGeometryRecord) :
     {
       let (vertices, texCoords, normals, indices) =
-        RecordCustomGeometryMainService.setDefaultTypeArrData(
+        RecordCustomGeometryMainService.setAllTypeArrDataToDefault(
           currentCustomGeometryRecord.index,
+          customGeometryPointCount,
           (
             currentCustomGeometryRecord.vertices,
             currentCustomGeometryRecord.texCoords,
@@ -45,12 +47,15 @@ let _restoreTypeArrays = (currentCustomGeometryRecord, targetCustomGeometryRecor
       (currentCustomGeometryRecord, targetCustomGeometryRecord)
     };
 
-/* TODO test texCoords */
 let restore = (currentState, targetState) => {
   let currentCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(currentState);
   let targetCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(targetState);
   let (currentCustomGeometryRecord, targetCustomGeometryRecord) =
-    _restoreTypeArrays(currentCustomGeometryRecord, targetCustomGeometryRecord);
+    _restoreTypeArrays(
+      BufferSettingService.getCustomGeometryPointCount(currentState.settingRecord),
+      currentCustomGeometryRecord,
+      targetCustomGeometryRecord
+    );
   {
     ...targetState,
     customGeometryRecord:

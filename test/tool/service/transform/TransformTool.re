@@ -134,9 +134,9 @@ let createBuffer = BufferTransformService.createBuffer;
 
 let createTypeArrays = CreateTypeArrayTransformService.createTypeArrays;
 
-let setDefaultTypeArrData = (count: int, state, (localToWorldMatrices, localPositions)) => {
+let setAllTypeArrDataToDefault = (count: int, state, (localToWorldMatrices, localPositions)) => {
   let (_, (localToWorldMatrices, localPositions)) =
-    RecordTransformMainService._setDefaultTypeArrData(
+    RecordTransformMainService._setAllTypeArrDataToDefault(
       count,
       getDefaultLocalToWorldMatrix(state),
       getDefaultLocalPosition(state),

@@ -11,7 +11,7 @@ let setColor = (index, color, typeArr) =>
 
 let getDefaultColor = () => [|1., 1., 1.|];
 
-let setDefaultTypeArrData = (count: int, colors) => {
+let setAllTypeArrDataToDefault = (count: int, colors) => {
   let defaultColor = getDefaultColor();
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -20,9 +20,9 @@ let setDefaultTypeArrData = (count: int, colors) => {
      )
 };
 
-let _setDefaultTypeArrData = (count: int, (buffer, colors)) => (
+let _setAllTypeArrDataToDefault = (count: int, (buffer, colors)) => (
   buffer,
-  setDefaultTypeArrData(count, colors)
+  setAllTypeArrDataToDefault(count, colors)
 );
 
 let _initBufferData = () => {
@@ -33,7 +33,7 @@ let _initBufferData = () => {
   let typeArrayLength = count * getColorsSize();
   let colors = CreateTypeArrayAmbientLightService.createTypeArrays(buffer, count);
   offset := typeArrayLength * Float32Array._BYTES_PER_ELEMENT;
-  (buffer, colors) |> _setDefaultTypeArrData(count)
+  (buffer, colors) |> _setAllTypeArrDataToDefault(count)
 };
 
 let create = () => {

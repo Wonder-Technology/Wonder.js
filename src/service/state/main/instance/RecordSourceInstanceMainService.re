@@ -6,12 +6,13 @@ open BufferSourceInstanceService;
 
 let getRecord = ({sourceInstanceRecord}) => sourceInstanceRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (
       sourceInstanceCount: int,
       defaultIsTransformStatic,
       (objectInstanceTransformCollections, isTransformStatics)
     ) => (
+  /* TODO perf: only set sourceInstanceCount data(refer to custom geometry) */
   objectInstanceTransformCollections |> Js.Typed_array.Uint32Array.fillInPlace(0),
   WonderCommonlib.ArrayService.range(0, sourceInstanceCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -28,14 +29,14 @@ let setDefaultTypeArrData =
      )
 );
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (
       sourceInstanceCount: int,
       defaultIsTransformStatic,
       (buffer, objectInstanceTransformCollections, isTransformStatics)
     ) => (
   buffer,
-  setDefaultTypeArrData(
+  setAllTypeArrDataToDefault(
     sourceInstanceCount,
     defaultIsTransformStatic,
     (objectInstanceTransformCollections, isTransformStatics)
@@ -52,7 +53,7 @@ let _initBufferData =
       objectInstanceCountPerSourceInstance
     );
   (buffer, objectInstanceTransformCollections, isTransformStatics)
-  |> _setDefaultTypeArrData(sourceInstanceCount, defaultIsTransformStatic)
+  |> _setAllTypeArrDataToDefault(sourceInstanceCount, defaultIsTransformStatic)
 };
 
 let create = ({settingRecord} as state) => {

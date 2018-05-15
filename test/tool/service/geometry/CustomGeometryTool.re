@@ -24,14 +24,16 @@ let createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let state = state |> GameObjectAPI.addGameObjectCustomGeometryComponent(gameObject, geometry);
   let vertices1 = Float32Array.make([|10.|]);
+  let texCoords1 = Float32Array.make([|0.5|]);
   let normals1 = Float32Array.make([|1.|]);
   let indices1 = Uint16Array.make([|2|]);
   let state =
     state
     |> setCustomGeometryVertices(geometry, vertices1)
+    |> setCustomGeometryTexCoords(geometry, texCoords1)
     |> setCustomGeometryNormals(geometry, normals1)
     |> setCustomGeometryIndices(geometry, indices1);
-  (state, gameObject, geometry, (vertices1, normals1, indices1))
+  (state, gameObject, geometry, (vertices1, texCoords1, normals1, indices1))
 };
 
 let createThreeGameObjectsAndSetPointData = (state) => {

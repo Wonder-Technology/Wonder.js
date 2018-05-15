@@ -21,7 +21,10 @@ let _ =
         let depthTest = Some(true);
         let viewport = Some((1., 0.1, 10., 20.));
         (
-          {...state, deviceManagerRecord: {gl: Some(gl), colorWrite, clearColor, side, depthTest, viewport}},
+          {
+            ...state,
+            deviceManagerRecord: {gl: Some(gl), colorWrite, clearColor, side, depthTest, viewport}
+          },
           Some(gl),
           (colorWrite, clearColor, side, depthTest, viewport)
         )
@@ -39,9 +42,11 @@ let _ =
         open VboBufferType;
         let {
           boxGeometryVertexBufferMap,
+          boxGeometryTexCoordBufferMap,
           boxGeometryNormalBufferMap,
           boxGeometryElementArrayBufferMap,
           customGeometryVertexBufferMap,
+          customGeometryTexCoordBufferMap,
           customGeometryNormalBufferMap,
           customGeometryElementArrayBufferMap,
           matrixInstanceBufferMap,
@@ -54,25 +59,32 @@ let _ =
         let buffer2 = Obj.magic(1);
         let buffer3 = Obj.magic(2);
         let buffer4 = Obj.magic(3);
+        let buffer5 = Obj.magic(4);
+        /* let buffer6 = Obj.magic(5); */
         vertexArrayBufferPool |> Js.Array.push(buffer1) |> ignore;
         vertexArrayBufferPool |> Js.Array.push(buffer2) |> ignore;
-        elementArrayBufferPool |> Js.Array.push(buffer3) |> ignore;
-        matrixInstanceBufferPool |> Js.Array.push(buffer4) |> ignore;
+        vertexArrayBufferPool |> Js.Array.push(buffer3) |> ignore;
+        elementArrayBufferPool |> Js.Array.push(buffer4) |> ignore;
+        matrixInstanceBufferPool |> Js.Array.push(buffer5) |> ignore;
         let geometry1 = 0;
         let bufferInMap1 = Obj.magic(10);
         let bufferInMap2 = Obj.magic(11);
         let bufferInMap3 = Obj.magic(12);
         let bufferInMap4 = Obj.magic(13);
+        let bufferInMap5 = Obj.magic(14);
+        /* let bufferInMap6 = Obj.magic(15); */
         boxGeometryVertexBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap1);
-        boxGeometryNormalBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap2);
+        boxGeometryTexCoordBufferMap
+        |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap2);
+        boxGeometryNormalBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap3);
         boxGeometryElementArrayBufferMap
-        |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap3);
-        matrixInstanceBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap4);
+        |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap4);
+        matrixInstanceBufferMap |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap5);
         (
           state,
           geometry1,
-          (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4),
-          (buffer1, buffer2, buffer3, buffer4)
+          (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4, bufferInMap5),
+          (buffer1, buffer2, buffer3, buffer4, buffer5)
         )
       };
       beforeEach(
@@ -103,7 +115,7 @@ let _ =
                 "directly use readonly record",
                 () => {
                   open StateDataMainType;
-                  let (state, gl, (colorWrite, clearColor, side,depthTest, viewport)) =
+                  let (state, gl, (colorWrite, clearColor, side, depthTest, viewport)) =
                     _prepareDeviceManagerData(state^);
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let targetData = DeviceManagerTool.getDeviceManagerRecord(state);
@@ -138,9 +150,11 @@ let _ =
                   let copiedState = MainStateTool.deepCopyForRestore(state);
                   let {
                     boxGeometryVertexBufferMap,
+                    boxGeometryTexCoordBufferMap,
                     boxGeometryNormalBufferMap,
                     boxGeometryElementArrayBufferMap,
                     customGeometryVertexBufferMap,
+                    customGeometryTexCoordBufferMap,
                     customGeometryNormalBufferMap,
                     customGeometryElementArrayBufferMap,
                     matrixInstanceBufferMap,
@@ -151,9 +165,11 @@ let _ =
                     VboBufferTool.getVboBufferRecord(copiedState);
                   (
                     boxGeometryVertexBufferMap,
+                    boxGeometryTexCoordBufferMap,
                     boxGeometryNormalBufferMap,
                     boxGeometryElementArrayBufferMap,
                     customGeometryVertexBufferMap,
+                    customGeometryTexCoordBufferMap,
                     customGeometryNormalBufferMap,
                     customGeometryElementArrayBufferMap,
                     matrixInstanceBufferMap,
@@ -161,7 +177,21 @@ let _ =
                     elementArrayBufferPool,
                     matrixInstanceBufferPool
                   )
-                  |> expect == ([||], [||], [||], [||], [||], [||], [||], [||], [||], [||])
+                  |>
+                  expect == (
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||],
+                              [||]
+                            )
                 }
               )
           );
@@ -269,9 +299,11 @@ let _ =
                   let newState = MainStateTool.restore(currentState, state);
                   let {
                     boxGeometryVertexBufferMap,
+                    boxGeometryTexCoordBufferMap,
                     boxGeometryNormalBufferMap,
                     boxGeometryElementArrayBufferMap,
                     customGeometryVertexBufferMap,
+                    customGeometryTexCoordBufferMap,
                     customGeometryNormalBufferMap,
                     customGeometryElementArrayBufferMap,
                     matrixInstanceBufferMap
@@ -279,14 +311,16 @@ let _ =
                     newState |> VboBufferTool.getVboBufferRecord;
                   (
                     boxGeometryVertexBufferMap,
+                    boxGeometryTexCoordBufferMap,
                     boxGeometryNormalBufferMap,
                     boxGeometryElementArrayBufferMap,
                     customGeometryVertexBufferMap,
+                    customGeometryTexCoordBufferMap,
                     customGeometryNormalBufferMap,
                     customGeometryElementArrayBufferMap,
                     matrixInstanceBufferMap
                   )
-                  |> expect == ([||], [||], [||], [||], [||], [||], [||])
+                  |> expect == ([||], [||], [||], [||], [||], [||], [||], [||], [||])
                 }
               );
               test(
@@ -296,15 +330,15 @@ let _ =
                   let (
                     state,
                     geometry1,
-                    (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4),
-                    (buffer1, buffer2, buffer3, buffer4)
+                    (bufferInMap1, bufferInMap2, bufferInMap3, bufferInMap4, bufferInMap5),
+                    (buffer1, buffer2, buffer3, buffer4, buffer5)
                   ) =
                     _prepareVboBufferData(state^);
                   let (
                     currentState,
                     _,
-                    (bufferInMap4, bufferInMap5, bufferInMap6, bufferInMap7),
-                    (buffer4, buffer5, buffer6, buffer7)
+                    (bufferInMap6, bufferInMap7, bufferInMap8, bufferInMap9, bufferInMap10),
+                    (buffer6, buffer7, buffer8, buffer9, buffer10)
                   ) =
                     _prepareVboBufferData(MainStateTool.createNewCompleteState(sandbox));
                   let _ = MainStateTool.restore(currentState, state);
@@ -313,9 +347,16 @@ let _ =
                   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
                   |>
                   expect == (
-                              [|buffer4, buffer5, bufferInMap4, bufferInMap5|],
-                              [|buffer6, bufferInMap6|],
-                              [|buffer7, bufferInMap7|]
+                              [|
+                                buffer6,
+                                buffer7,
+                                buffer8,
+                                bufferInMap6,
+                                bufferInMap7,
+                                bufferInMap8
+                              |],
+                              [|buffer9, bufferInMap9|],
+                              [|buffer10, bufferInMap10|]
                             )
                 }
               )

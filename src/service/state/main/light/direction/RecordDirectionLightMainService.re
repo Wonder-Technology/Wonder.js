@@ -21,7 +21,7 @@ let getIntensity = (index, typeArr) =>
 let setIntensity = (index, intensity, typeArr) =>
   TypeArrayService.setFloat1(getIntensityIndex(index), intensity, typeArr);
 
-let setDefaultTypeArrData = (count: int, (colors, intensities)) => {
+let setAllTypeArrDataToDefault = (count: int, (colors, intensities)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
   WonderCommonlib.ArrayService.range(0, count - 1)
@@ -37,17 +37,17 @@ let setDefaultTypeArrData = (count: int, (colors, intensities)) => {
      )
 };
 
-let _setDefaultTypeArrData = (count: int, (buffer, colors, intensities)) => {
+let _setAllTypeArrDataToDefault = (count: int, (buffer, colors, intensities)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
-  (buffer, setDefaultTypeArrData(count, (colors, intensities)))
+  (buffer, setAllTypeArrDataToDefault(count, (colors, intensities)))
 };
 
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer = createBuffer(count);
   let (colors, intensities) = CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
-  (buffer, colors, intensities) |> _setDefaultTypeArrData(count)
+  (buffer, colors, intensities) |> _setAllTypeArrDataToDefault(count)
 };
 
 let create = () => {

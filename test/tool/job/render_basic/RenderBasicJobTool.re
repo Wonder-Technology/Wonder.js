@@ -34,7 +34,7 @@ let prepareGameObjectWithCustomGeometry = (sandbox, state) => {
   open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
-  let (state, gameObject, customGeometry, (vertices, normals, indices)) =
+  let (state, gameObject, customGeometry, (vertices, texCoords, normals, indices)) =
     CustomGeometryTool.createGameObjectAndSetPointData(state);
   let (state, meshRenderer) = createMeshRenderer(state);
   let state =

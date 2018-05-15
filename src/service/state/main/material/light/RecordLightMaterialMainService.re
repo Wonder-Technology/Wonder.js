@@ -12,7 +12,7 @@ open OperateTypeArrayLightMaterialService;
 
 let getRecord = ({lightMaterialRecord}) => lightMaterialRecord |> OptionService.unsafeGet;
 
-let setDefaultTypeArrData =
+let setAllTypeArrDataToDefault =
     (
       count: int,
       (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
@@ -32,14 +32,14 @@ let setDefaultTypeArrData =
        (shaderIndices, diffuseColors, specularColors, shininess)
      );
 
-let _setDefaultTypeArrData =
+let _setAllTypeArrDataToDefault =
     (
       count: int,
       (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
       (buffer, shaderIndices, diffuseColors, specularColors, shininess)
     ) => (
   buffer,
-  setDefaultTypeArrData(
+  setAllTypeArrDataToDefault(
     count,
     (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
     (shaderIndices, diffuseColors, specularColors, shininess)
@@ -52,7 +52,7 @@ let _initBufferData =
   let (shaderIndices, diffuseColors, specularColors, shininess) =
     CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
   (buffer, shaderIndices, diffuseColors, specularColors, shininess)
-  |> _setDefaultTypeArrData(
+  |> _setAllTypeArrDataToDefault(
        count,
        (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness)
      )

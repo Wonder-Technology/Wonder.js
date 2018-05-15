@@ -33,7 +33,7 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
           currentBasicMaterialRecord.textureIndices,
           currentBasicMaterialRecord.mapUnits
         )
-        |> RecordBasicMaterialMainService.setDefaultTypeArrData(
+        |> RecordBasicMaterialMainService.setAllTypeArrDataToDefault(
              currentBasicMaterialRecord.index,
              DefaultTypeArrayValueService.getDefaultShaderIndex(),
              currentBasicMaterialRecord.defaultColor

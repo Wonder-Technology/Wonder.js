@@ -45,7 +45,6 @@ let addAllBufferToPool =
   |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
      );
-  /* TODO test */
   boxGeometryTexCoordBufferMap
   |> SparseMapService.forEachValid(
        [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
@@ -108,7 +107,6 @@ let addBoxGeometryBufferToPool =
       vertexArrayBufferPool:
         vertexArrayBufferPool
         |> _addBufferToPool(geometryIndex, boxGeometryVertexBufferMap)
-        /* TODO test */
         |> _addBufferToPool(geometryIndex, boxGeometryTexCoordBufferMap)
         |> _addBufferToPool(geometryIndex, boxGeometryNormalBufferMap),
       elementArrayBufferPool:
@@ -134,7 +132,6 @@ let addCustomGeometryBufferToPool =
       vertexArrayBufferPool:
         vertexArrayBufferPool
         |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
-        /* TODO test */
         |> _addBufferToPool(geometryIndex, customGeometryTexCoordBufferMap)
         |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
       elementArrayBufferPool:

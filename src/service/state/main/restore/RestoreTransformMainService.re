@@ -9,7 +9,7 @@ let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord) =>
     {
       let (localToWorldMatrices, localPositions) =
         (currentTransformRecord.localToWorldMatrices, currentTransformRecord.localPositions)
-        |> RecordTransformMainService.setDefaultTypeArrData(
+        |> RecordTransformMainService.setAllTypeArrDataToDefault(
              currentTransformRecord.index,
              currentTransformRecord.defaultLocalToWorldMatrix,
              currentTransformRecord.defaultLocalPosition

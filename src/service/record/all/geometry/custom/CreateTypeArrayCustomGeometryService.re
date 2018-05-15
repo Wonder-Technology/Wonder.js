@@ -11,7 +11,7 @@ let createTypeArrays = (buffer, customGeometryPointCount, customGeometryCount) =
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getTexCoordsOffset(customGeometryPointCount),
-    ~length=getVertexLength(customGeometryPointCount)
+    ~length=getTexCoordsLength(customGeometryPointCount)
   ),
   Float32Array.fromBufferRange(
     Worker.sharedArrayBufferToArrayBuffer(buffer),
