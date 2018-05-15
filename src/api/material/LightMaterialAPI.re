@@ -144,3 +144,79 @@ let setLightMaterialShininess = (material, shininess, state: StateDataMainType.s
   );
   setShininess(material, shininess, state)
 };
+
+let unsafeGetLightMaterialDiffuseMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  unsafeGetDiffuseMap(material, state)
+};
+
+let setLightMaterialDiffuseMap = (material, texture, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  setDiffuseMap(material, texture, state)
+};
+
+let unsafeGetLightMaterialSpecularMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  unsafeGetSpecularMap(material, state)
+};
+
+let setLightMaterialSpecularMap = (material, texture, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  setSpecularMap(material, texture, state)
+};

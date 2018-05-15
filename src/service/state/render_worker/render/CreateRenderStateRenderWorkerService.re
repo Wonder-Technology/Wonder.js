@@ -106,7 +106,10 @@ let createRenderState =
       shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       diffuseColors: lightMaterialRecord.diffuseColors |> OptionService.unsafeGet,
       specularColors: lightMaterialRecord.specularColors |> OptionService.unsafeGet,
-      shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet
+      shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet,
+      textureIndices: lightMaterialRecord.textureIndices |> OptionService.unsafeGet,
+      diffuseMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetDiffuseMapUnits(state),
+      specularMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(state)
     },
     textureRecord: {
       wrapSs: textureRecord.wrapSs |> OptionService.unsafeGet,

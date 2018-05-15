@@ -2,9 +2,21 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerLightMaterialType;
 
-let _createTypeArrays = (buffer, count, state) => {
-  let (shaderIndices, diffuseColors, specularColors, shininess) =
-    CreateTypeArrayLightMaterialService.createTypeArrays(buffer, count);
+let _createTypeArrays = (buffer, lightMaterialCount, textureCountPerMaterial, state) => {
+  let (
+    shaderIndices,
+    diffuseColors,
+    specularColors,
+    shininess,
+    textureIndices,
+    diffuseMapUnits,
+    specularMapUnits
+  ) =
+    CreateTypeArrayLightMaterialService.createTypeArrays(
+      buffer,
+      lightMaterialCount,
+      textureCountPerMaterial
+    );
   let lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
   state.lightMaterialRecord =
     Some({
@@ -12,7 +24,10 @@ let _createTypeArrays = (buffer, count, state) => {
       shaderIndices: Some(shaderIndices),
       diffuseColors: Some(diffuseColors),
       specularColors: Some(specularColors),
-      shininess: Some(shininess)
+      shininess: Some(shininess),
+      textureIndices: Some(textureIndices),
+      diffuseMapUnits: Some(diffuseMapUnits),
+      specularMapUnits: Some(specularMapUnits)
     });
   state
 };
@@ -23,9 +38,10 @@ let execJob = (_, e, stateData) =>
       let state = StateRenderWorkerService.unsafeGetState(stateData);
       let data = MessageService.getRecord(e);
       let lightMaterialData = data##lightMaterialData;
-      let count = data##bufferData##lightMaterialCount;
+      let lightMaterialCount = data##bufferData##lightMaterialCount;
+      let textureCountPerMaterial = data##bufferData##textureCountPerMaterial;
       state
-      |> _createTypeArrays(lightMaterialData##buffer, count)
+      |> _createTypeArrays(lightMaterialData##buffer, lightMaterialCount, textureCountPerMaterial)
       |> InitMaterialRenderWorkerJobUtils.initMaterials(
            (
              CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState,

@@ -8,7 +8,9 @@ let _getData =
     (sourceComponent, state: StateDataMainType.state) => (
       OperateLightMaterialMainService.getDiffuseColor(sourceComponent, state),
       OperateLightMaterialMainService.getSpecularColor(sourceComponent, state),
-      OperateLightMaterialMainService.getShininess(sourceComponent, state)
+      OperateLightMaterialMainService.getShininess(sourceComponent, state),
+      OperateLightMaterialMainService.getDiffuseMap(sourceComponent, state),
+      OperateLightMaterialMainService.getSpecularMap(sourceComponent, state)
     )
   );
 
@@ -17,15 +19,33 @@ let _setData =
   (
     (
       sourceComponent,
-      (diffuseColor, specularColor: array(float), shininess: float),
+      (
+        diffuseColor,
+        specularColor: array(float),
+        shininess: float,
+        diffuseMapOption,
+        specularMapOption
+      ),
       state: StateDataMainType.state
-    ) =>
-      OperateLightMaterialMainService.(
+    ) => {
+      let state =
         state
-        |> setDiffuseColor(sourceComponent, diffuseColor)
-        |> setSpecularColor(sourceComponent, specularColor)
-        |> setShininess(sourceComponent, shininess)
-      )
+        |> OperateLightMaterialMainService.setDiffuseColor(sourceComponent, diffuseColor)
+        |> OperateLightMaterialMainService.setSpecularColor(sourceComponent, specularColor)
+        |> OperateLightMaterialMainService.setShininess(sourceComponent, shininess);
+      let state =
+        switch diffuseMapOption {
+        | None => state
+        | Some(map) => state |> OperateLightMaterialMainService.setDiffuseMap(sourceComponent, map)
+        };
+      let state =
+        switch specularMapOption {
+        | None => state
+        | Some(map) =>
+          state |> OperateLightMaterialMainService.setSpecularMap(sourceComponent, map)
+        };
+      state
+    }
   );
 
 let handleCloneComponent =

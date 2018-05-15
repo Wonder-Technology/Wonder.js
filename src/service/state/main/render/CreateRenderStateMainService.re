@@ -101,7 +101,10 @@ let createRenderState =
       shaderIndices: lightMaterialRecord.shaderIndices,
       diffuseColors: lightMaterialRecord.diffuseColors,
       specularColors: lightMaterialRecord.specularColors,
-      shininess: lightMaterialRecord.shininess
+      shininess: lightMaterialRecord.shininess,
+      textureIndices: lightMaterialRecord.textureIndices,
+      diffuseMapUnits: lightMaterialRecord.diffuseMapUnits,
+      specularMapUnits: lightMaterialRecord.specularMapUnits
     },
     textureRecord: {
       wrapSs: textureRecord.wrapSs,

@@ -59,3 +59,21 @@ let setShininess = (material, value, state) => {
       })
   }
 };
+
+let getDiffuseMap = (material, state) =>
+  ManageMapLightMaterialMainService.getDiffuseMap(material, state);
+
+let unsafeGetDiffuseMap = (material, state) =>
+  ManageMapLightMaterialMainService.unsafeGetDiffuseMap(material, state);
+
+let setDiffuseMap = (material, texture, state) =>
+  ManageMapLightMaterialMainService.setDiffuseMap(material, texture, state);
+
+let getSpecularMap = (material, state) =>
+  ManageMapLightMaterialMainService.getSpecularMap(material, state);
+
+let unsafeGetSpecularMap = (material, state) =>
+  ManageMapLightMaterialMainService.unsafeGetSpecularMap(material, state);
+
+let setSpecularMap = (material, texture, state) =>
+  ManageMapLightMaterialMainService.setSpecularMap(material, texture, state);

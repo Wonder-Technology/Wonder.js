@@ -24,6 +24,9 @@ let execJob = (_, e, stateData) =>
           specularColors: None,
           shininess: None,
           index: lightMaterialData##index,
+          textureIndices: None,
+          diffuseMapUnits: None,
+          specularMapUnits: None,
           disposedIndexArray: lightMaterialData##disposedIndexArray,
           isSourceInstanceMap: lightMaterialData##isSourceInstanceMap
         });

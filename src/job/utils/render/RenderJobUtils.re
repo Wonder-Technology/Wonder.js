@@ -130,6 +130,7 @@ let render =
     (
       gl,
       (transformIndex, materialIndex, shaderIndex, geometryIndex, geometryType),
+      bindAndUpdateFunc,
       {programRecord} as state
     ) => {
   let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
@@ -143,9 +144,8 @@ let render =
   | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
   | _ =>
     record.lastSendMaterial = Some(materialIndex);
-    state
-    |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex)
-    |> BindAndUpdateMapBasicMaterialRenderService.bindAndUpdate(gl, materialIndex)
+    let state = state |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex);
+    [@bs] bindAndUpdateFunc(gl, materialIndex, state)
   }
 };
 

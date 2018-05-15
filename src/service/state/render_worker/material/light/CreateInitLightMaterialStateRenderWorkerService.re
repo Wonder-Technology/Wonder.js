@@ -22,7 +22,9 @@ let createInitMaterialState =
     materialRecord: {
       index,
       disposedIndexArray,
-      shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state)
+      shaderIndices: RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
+      diffuseMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetDiffuseMapUnits(state),
+      specularMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(state)
     },
     renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
     shaderRecord,

@@ -4,30 +4,32 @@ let getShaderIndicesSize = () => 1;
 
 let getDiffuseColorsSize = () => 3;
 
-let getDiffuseColorsLength = (count) => count * getDiffuseColorsSize();
+let getTextureIndicesSize = (textureCountPerMaterial) => textureCountPerMaterial;
 
-let getDiffuseColorsOffset = (count) =>
-  ShaderIndicesService.getShaderIndicesLength(count) * Uint32Array._BYTES_PER_ELEMENT;
+let getMapUnitsSize = () => 1;
+
+let getDiffuseColorsLength = (lightMaterialCount) => lightMaterialCount * getDiffuseColorsSize();
+
+let getDiffuseColorsOffset = (lightMaterialCount) =>
+  ShaderIndicesService.getShaderIndicesLength(lightMaterialCount) * Uint32Array._BYTES_PER_ELEMENT;
 
 let getSpecularColorsSize = () => 3;
 
-let getSpecularColorsLength = (count) => count * getSpecularColorsSize();
+let getSpecularColorsLength = (lightMaterialCount) => lightMaterialCount * getSpecularColorsSize();
 
-let getSpecularColorsOffset = (count) =>
-  /* ShaderIndicesService.getShaderIndicesLength(count)
-   * Uint32Array._BYTES_PER_ELEMENT */
-  getDiffuseColorsOffset(count) + getDiffuseColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
+let getSpecularColorsOffset = (lightMaterialCount) =>
+  getDiffuseColorsOffset(lightMaterialCount)
+  + getDiffuseColorsLength(lightMaterialCount)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getShininessSize = () => 1;
 
-let getShininessLength = (count) => count * getShininessSize();
+let getShininessLength = (lightMaterialCount) => lightMaterialCount * getShininessSize();
 
-let getShininessOffset = (count) =>
-  /* ShaderIndicesService.getShaderIndicesLength(count)
-   * Uint32Array._BYTES_PER_ELEMENT
-   + getDiffuseColorsLength(count)
-   * Float32Array._BYTES_PER_ELEMENT */
-  getSpecularColorsOffset(count) + getSpecularColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
+let getShininessOffset = (lightMaterialCount) =>
+  getSpecularColorsOffset(lightMaterialCount)
+  + getSpecularColorsLength(lightMaterialCount)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getDiffuseColorIndex = (index) => index * getDiffuseColorsSize();
 
@@ -35,12 +37,51 @@ let getSpecularColorIndex = (index) => index * getSpecularColorsSize();
 
 let getShininessIndex = (index) => index * getShininessSize();
 
-let getTotalByteLength = (count) =>
-  count
-  * Uint32Array._BYTES_PER_ELEMENT
-  * ShaderIndicesService.getShaderIndicesSize()
-  + count
-  * Float32Array._BYTES_PER_ELEMENT
-  * (getDiffuseColorsSize() + getSpecularColorsSize() + getShininessSize());
+/* TODO duplicate */
+let getTextureIndicesLength = (lightMaterialCount, textureCountPerMaterial) =>
+  lightMaterialCount * getTextureIndicesSize(textureCountPerMaterial);
 
-let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));
+let getTextureIndicesOffset = (lightMaterialCount, textureCountPerMaterial) =>
+  getSpecularColorsOffset(lightMaterialCount)
+  + getSpecularColorsLength(lightMaterialCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getTextureIndicesIndex = (index, textureCountPerMaterial) =>
+  index * getTextureIndicesSize(textureCountPerMaterial);
+
+let getTextureIndexIndex = (index, textureIndex, textureCountPerMaterial) =>
+  getTextureIndicesIndex(index, textureCountPerMaterial) + textureIndex;
+
+let getDiffuseMapUnitsLength = (lightMaterialCount) => lightMaterialCount * getMapUnitsSize();
+
+let getDiffuseMapUnitsOffset = (lightMaterialCount, textureCountPerMaterial) =>
+  getTextureIndicesOffset(lightMaterialCount, textureCountPerMaterial)
+  + getTextureIndicesLength(lightMaterialCount, textureCountPerMaterial)
+  * Uint32Array._BYTES_PER_ELEMENT;
+
+let getDiffuseMapUnitIndex = (index) => index * getMapUnitsSize();
+
+let getSpecularMapUnitsLength = (lightMaterialCount) => lightMaterialCount * getMapUnitsSize();
+
+let getSpecularMapUnitsOffset = (lightMaterialCount, textureCountPerMaterial) =>
+  getTextureIndicesOffset(lightMaterialCount, textureCountPerMaterial)
+  + getTextureIndicesLength(lightMaterialCount, textureCountPerMaterial)
+  * Uint32Array._BYTES_PER_ELEMENT;
+
+let getSpecularMapUnitIndex = (index) => index * getMapUnitsSize();
+
+let getTotalByteLength = (lightMaterialCount, textureCountPerMaterial) =>
+  lightMaterialCount
+  * (
+    Uint32Array._BYTES_PER_ELEMENT
+    * ShaderIndicesService.getShaderIndicesSize()
+    + Float32Array._BYTES_PER_ELEMENT
+    * (getDiffuseColorsSize() + getSpecularColorsSize() + getShininessSize())
+    + Uint32Array._BYTES_PER_ELEMENT
+    * getTextureIndicesSize(textureCountPerMaterial)
+    + Uint8Array._BYTES_PER_ELEMENT
+    * (getMapUnitsSize() * 2)
+  );
+
+let createBuffer = (lightMaterialCount, textureCountPerMaterial) =>
+  Worker.newSharedArrayBuffer(getTotalByteLength(lightMaterialCount, textureCountPerMaterial));

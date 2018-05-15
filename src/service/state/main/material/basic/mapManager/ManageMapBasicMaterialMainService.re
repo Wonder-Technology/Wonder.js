@@ -42,7 +42,7 @@ let setMap = (material, texture, {settingRecord} as state) => {
         })
     } :
     {
-      let mapCount = TextureCountMapBasicMaterialService.unsafeGetCount(material, textureCountMap);
+      let mapCount = TextureCountMapMaterialService.unsafeGetCount(material, textureCountMap);
       {
         ...state,
         basicMaterialRecord:
@@ -57,7 +57,7 @@ let setMap = (material, texture, {settingRecord} as state) => {
             mapUnits: OperateTypeArrayBasicMaterialService.setMapUnit(material, mapCount, mapUnits),
             textureCountMap:
               textureCountMap
-              |> TextureCountMapBasicMaterialService.setCount(material, mapCount |> succ)
+              |> TextureCountMapMaterialService.setCount(material, mapCount |> succ)
           })
       }
     }

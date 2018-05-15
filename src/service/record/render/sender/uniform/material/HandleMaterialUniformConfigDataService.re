@@ -49,6 +49,18 @@ let addLightMaterialSendData =
       sendDataArrTuple,
       GetLightMaterialDataRenderService.getShininess
     )
+  | "diffuseMap" =>
+    HandleUniformRenderObjectMaterialService.addUniformTextureSendDataByType(
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+      GetLightMaterialDataRenderService.getDiffuseMapUnit
+    )
+  | "specularMap" =>
+    HandleUniformRenderObjectMaterialService.addUniformTextureSendDataByType(
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+      GetLightMaterialDataRenderService.getSpecularMapUnit
+    )
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

@@ -128,7 +128,7 @@ let _disposeGameObjects =
     |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrForKeepOrder)
   )
 };
-
+ 
 let execJob =
     (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc, state) => {
   let (

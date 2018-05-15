@@ -29,6 +29,72 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     )
   };
 
+let _isPass = (materialIndex, condition, {materialRecord} as state) =>
+  switch condition {
+  | "common_light_map" =>
+    MapUnitService.hasMap(
+      OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
+        materialIndex,
+        materialRecord.diffuseMapUnits
+      )
+    )
+    || MapUnitService.hasMap(
+         OperateTypeArrayLightMaterialService.getSpecularMapUnit(
+           materialIndex,
+           materialRecord.specularMapUnits
+         )
+       )
+  | "diffuse_map" =>
+    MapUnitService.hasMap(
+      OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
+        materialIndex,
+        materialRecord.diffuseMapUnits
+      )
+    )
+  | "specular_map" =>
+    MapUnitService.hasMap(
+      OperateTypeArrayLightMaterialService.getSpecularMapUnit(
+        materialIndex,
+        materialRecord.specularMapUnits
+      )
+    )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="unknown condition:$condition",
+        ~description={j||j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  };
+
+/* TODO duplicate */
+let _getMaterialShaderLibDataArrByDynamicBranch =
+    (
+      (materialIndex, name),
+      (dynamicBranchs: array(dynamicBranchData), shaderLibs),
+      state,
+      resultDataArr
+    ) => {
+  let ({condition}: dynamicBranchData) as dynamicBranchData =
+    JobConfigService.unsafeFindFirst(
+      dynamicBranchs,
+      name,
+      (item) => JobConfigService.filterTargetName(item.name, name)
+    );
+  _isPass(materialIndex, condition, state) ?
+    resultDataArr
+    |> ArrayService.push(
+         GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
+           GetDataRenderConfigService.getPass(dynamicBranchData),
+           shaderLibs
+         )
+       ) :
+    resultDataArr
+};
+
 let _getMaterialShaderLibDataArrByType =
     (
       (
@@ -39,7 +105,7 @@ let _getMaterialShaderLibDataArrByType =
         isSourceInstance,
         isSupportInstance
       ),
-      (shaderLibs, staticBranchs: array(shaderMapData)),
+      (shaderLibs, staticBranchs: array(shaderMapData), dynamicBranchs),
       state,
       resultDataArr
     ) =>
@@ -55,6 +121,13 @@ let _getMaterialShaderLibDataArrByType =
     _getMaterialShaderLibDataArrByStaticBranch(
       (name, isSourceInstance, isSupportInstance),
       (staticBranchs: array(shaderMapData), shaderLibs),
+      resultDataArr
+    )
+  | "dynamic_branch" =>
+    _getMaterialShaderLibDataArrByDynamicBranch(
+      (materialIndex, name),
+      (dynamicBranchs, shaderLibs),
+      state,
       resultDataArr
     )
   | _ =>
@@ -79,7 +152,7 @@ let getMaterialShaderLibDataArr =
     (
       materialIndex: int,
       (isSourceInstance, isSupportInstance),
-      ({staticBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
+      ({staticBranchs, dynamicBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
       state: initLightMaterialState
     ) =>
       shaderLibItems
@@ -99,7 +172,7 @@ let getMaterialShaderLibDataArr =
                | Some(type_) =>
                  _getMaterialShaderLibDataArrByType(
                    (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
-                   (shaderLibs, staticBranchs),
+                   (shaderLibs, staticBranchs, dynamicBranchs),
                    state,
                    resultDataArr
                  )

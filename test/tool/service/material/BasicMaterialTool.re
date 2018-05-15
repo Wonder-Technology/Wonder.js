@@ -79,7 +79,7 @@ let getGroupCount = (material, state) =>
   GroupBasicMaterialService.getGroupCount(material, getRecord(state));
 
 let getTextureCount = (material, state) =>
-  TextureCountMapBasicMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
+  TextureCountMapMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
 
 let getMapUnit = (material, state) =>
   OperateTypeArrayBasicMaterialService.getMapUnit(material, getRecord(state).mapUnits);

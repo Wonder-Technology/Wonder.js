@@ -14,3 +14,15 @@ let getSpecularColor = (material, {lightMaterialRecord}) =>
 
 let getShininess = (material, {lightMaterialRecord}) =>
   OperateTypeArrayLightMaterialService.getShininess(material, lightMaterialRecord.shininess);
+
+let getDiffuseMapUnit = (material, {lightMaterialRecord}) =>
+  OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
+    material,
+    lightMaterialRecord.diffuseMapUnits
+  );
+
+let getSpecularMapUnit = (material, {lightMaterialRecord}) =>
+  OperateTypeArrayLightMaterialService.getSpecularMapUnit(
+    material,
+    lightMaterialRecord.specularMapUnits
+  );

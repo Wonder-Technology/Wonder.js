@@ -17,11 +17,12 @@ let createInitMaterialState =
       } as state: StateDataMainType.state
     )
     : StateInitLightMaterialType.initLightMaterialState => {
-  let {shaderIndices} = RecordLightMaterialMainService.getRecord(state);
+  let {shaderIndices, diffuseMapUnits, specularMapUnits} =
+    RecordLightMaterialMainService.getRecord(state);
   {
     directionLightRecord: {index: directionLightRecord.index},
     pointLightRecord: {index: pointLightRecord.index},
-    materialRecord: {index, disposedIndexArray, shaderIndices},
+    materialRecord: {index, disposedIndexArray, shaderIndices, diffuseMapUnits, specularMapUnits},
     renderConfigRecord: RecordRenderConfigMainService.getRecord(state),
     shaderRecord,
     programRecord,

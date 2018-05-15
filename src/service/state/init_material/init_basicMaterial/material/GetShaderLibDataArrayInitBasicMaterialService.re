@@ -52,39 +52,23 @@ let _getMaterialShaderLibDataArrByDynamicBranch =
       (dynamicBranchs: array(dynamicBranchData), shaderLibs),
       state,
       resultDataArr
-    ) =>
-  switch name {
-  | "basic_map" =>
-    let ({condition}: dynamicBranchData) as dynamicBranchData =
-      JobConfigService.unsafeFindFirst(
-        dynamicBranchs,
-        name,
-        (item) => JobConfigService.filterTargetName(item.name, name)
-      );
-    _isPass(materialIndex, condition, state) ?
-      resultDataArr
-      |> ArrayService.push(
-           GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
-             GetDataRenderConfigService.getPass(dynamicBranchData),
-             shaderLibs
-           )
-         ) :
-      resultDataArr
-  | _ =>
-    WonderLog.Log.debugJson(
-      WonderLog.Log.buildDebugJsonMessage(~description={j|dynamicBranchs|j}, ~var=dynamicBranchs),
-      IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    ) => {
+  let ({condition}: dynamicBranchData) as dynamicBranchData =
+    JobConfigService.unsafeFindFirst(
+      dynamicBranchs,
+      name,
+      (item) => JobConfigService.filterTargetName(item.name, name)
     );
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getMaterialShaderLibDataArrByDynamicBranch",
-        ~description={j|unknown name:$name|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j}
-      )
-    )
-  };
+  _isPass(materialIndex, condition, state) ?
+    resultDataArr
+    |> ArrayService.push(
+         GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
+           GetDataRenderConfigService.getPass(dynamicBranchData),
+           shaderLibs
+         )
+       ) :
+    resultDataArr
+};
 
 let _getMaterialShaderLibDataArrByType =
     (

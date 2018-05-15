@@ -70,9 +70,9 @@ let _disposeData =
       ),
     textureCountMap:
       textureCountMap
-      |> TextureCountMapBasicMaterialService.setCount(
+      |> TextureCountMapMaterialService.setCount(
            material,
-           TextureCountMapBasicMaterialService.getDefaultCount()
+           TextureCountMapMaterialService.getDefaultCount()
          ),
     groupCountMap,
     gameObjectMap

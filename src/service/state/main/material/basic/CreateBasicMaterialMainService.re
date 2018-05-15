@@ -6,9 +6,9 @@ let _initDataWhenCreate = (index: int, {textureCountMap} as basicMaterialRecord)
   ...basicMaterialRecord,
   textureCountMap:
     textureCountMap
-    |> TextureCountMapBasicMaterialService.setCount(
+    |> TextureCountMapMaterialService.setCount(
          index,
-         TextureCountMapBasicMaterialService.getDefaultCount()
+         TextureCountMapMaterialService.getDefaultCount()
        )
 };
 
