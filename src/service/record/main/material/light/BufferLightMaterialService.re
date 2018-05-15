@@ -42,8 +42,8 @@ let getTextureIndicesLength = (lightMaterialCount, textureCountPerMaterial) =>
   lightMaterialCount * getTextureIndicesSize(textureCountPerMaterial);
 
 let getTextureIndicesOffset = (lightMaterialCount, textureCountPerMaterial) =>
-  getSpecularColorsOffset(lightMaterialCount)
-  + getSpecularColorsLength(lightMaterialCount)
+  getShininessOffset(lightMaterialCount)
+  + getShininessLength(lightMaterialCount)
   * Float32Array._BYTES_PER_ELEMENT;
 
 let getTextureIndicesIndex = (index, textureCountPerMaterial) =>
