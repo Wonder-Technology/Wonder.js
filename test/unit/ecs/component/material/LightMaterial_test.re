@@ -20,14 +20,26 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "createLightMaterial",
-        () =>
+        () => {
           test(
             "create a new material which is just index(int)",
             () => {
               let (_, material) = createLightMaterial(state^);
               expect(material) == 0
             }
+          );
+          describe(
+            "set default value",
+            () =>
+              test(
+                "set texture count to be 0",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  LightMaterialTool.getTextureCount(material, state) |> expect == 0
+                }
+              )
           )
+        }
       );
       /* describe(
            "init",
@@ -156,6 +168,98 @@ let _ =
                   getLightMaterialShininess(material, state) |> expect == shininess
                 }
               )
+          );
+          describe(
+            "unsafeGetLightMaterialDiffuseMap",
+            () =>
+              test(
+                "if has no map, error",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  expect(() => LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state))
+                  |> toThrowMessage("expect data exist")
+                }
+              )
+          );
+          describe(
+            "unsafeGetLightMaterialSpecularMap",
+            () =>
+              test(
+                "if has no map, error",
+                () => {
+                  let (state, material) = createLightMaterial(state^);
+                  expect(() => LightMaterialAPI.unsafeGetLightMaterialSpecularMap(material, state))
+                  |> toThrowMessage("expect data exist")
+                }
+              )
+          );
+          describe(
+            "setLightMaterialDiffuseMap",
+            () => {
+              let _prepare = (state) => {
+                let (state, material) = createLightMaterial(state);
+                let (state, map1) = TextureAPI.createTexture(state);
+                let (state, map2) = TextureAPI.createTexture(state);
+                let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
+                (state, material, map2)
+              };
+              test(
+                "texture count + 1",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialTool.getTextureCount(material, state) |> expect == 1
+                }
+              );
+              test(
+                "set map unit to 0",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialTool.getDiffuseMapUnit(material, state) |> expect == 0
+                }
+              );
+              test(
+                "save texture index",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state)
+                  |> expect == map
+                }
+              )
+            }
+          );
+          describe(
+            "setLightMaterialSpecularMap",
+            () => {
+              let _prepare = (state) => {
+                let (state, material) = createLightMaterial(state);
+                let (state, map1) = TextureAPI.createTexture(state);
+                let (state, map2) = TextureAPI.createTexture(state);
+                let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, map2);
+                (state, material, map2)
+              };
+              test(
+                "texture count + 1",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialTool.getTextureCount(material, state) |> expect == 1
+                }
+              );
+              test(
+                "set map unit to 0",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialTool.getSpecularMapUnit(material, state) |> expect == 0
+                }
+              );
+              test(
+                "save texture index",
+                () => {
+                  let (state, material, map) = _prepare(state^);
+                  LightMaterialAPI.unsafeGetLightMaterialSpecularMap(material, state)
+                  |> expect == map
+                }
+              )
+            }
           )
         }
       );
@@ -165,6 +269,21 @@ let _ =
           describe(
             "dispose data",
             () => {
+              test(
+                "reset textureCount to 0 from textureCountMap",
+                () => {
+                  open LightMaterialType;
+                  let (state, gameObject1, (material1, _)) =
+                    LightMaterialTool.createGameObjectWithMap(state^);
+                  let state =
+                    state
+                    |> GameObjectTool.disposeGameObjectLightMaterialComponent(
+                         gameObject1,
+                         material1
+                       );
+                  LightMaterialTool.getTextureCount(material1, state) |> expect == 0
+                }
+              );
               test(
                 "remove from gameObjectMap",
                 () => {
@@ -278,6 +397,111 @@ let _ =
                             )
                           )
                       )
+                  );
+                  describe(
+                    "test map typeArrays",
+                    () => {
+                      let _testRemoveFromTypeArr =
+                          (
+                            state,
+                            valueTuple,
+                            defaultValue,
+                            (createGameObjectFunc, getValueFunc, setValueFunc)
+                          ) =>
+                        AllMaterialTool.testRemoveFromTypeArrWithMap(
+                          state,
+                          valueTuple,
+                          defaultValue,
+                          (
+                            GameObjectTool.disposeGameObjectLightMaterialComponent,
+                            createGameObjectFunc,
+                            getValueFunc,
+                            setValueFunc
+                          )
+                        );
+                      describe(
+                        "remove from textureIndices",
+                        () =>
+                          test(
+                            "reset material's all texture indices",
+                            () => {
+                              open Js.Typed_array;
+                              open LightMaterialType;
+                              let state =
+                                TestTool.initWithoutBuildFakeDom(
+                                  ~sandbox,
+                                  ~buffer=
+                                    SettingTool.buildBufferConfigStr(
+                                      ~textureCountPerMaterial=2,
+                                      ()
+                                    ),
+                                  ()
+                                );
+                              let (state, gameObject1, (material1, _)) =
+                                LightMaterialTool.createGameObjectWithMap(state);
+                              let {textureIndices} = LightMaterialTool.getRecord(state);
+                              let sourceIndex =
+                                LightMaterialTool.getTextureIndicesIndex(material1, state);
+                              Uint32Array.unsafe_set(textureIndices, sourceIndex, 1);
+                              Uint32Array.unsafe_set(textureIndices, sourceIndex + 1, 2);
+                              Uint32Array.unsafe_set(textureIndices, sourceIndex + 2, 3);
+                              let defaultTextureIndex = LightMaterialTool.getDefaultTextureIndex();
+                              let state =
+                                state
+                                |> GameObjectTool.disposeGameObjectLightMaterialComponent(
+                                     gameObject1,
+                                     material1
+                                   );
+                              textureIndices
+                              |> Uint32Array.slice(~start=0, ~end_=5)
+                              |>
+                              expect == Uint32Array.make([|
+                                          defaultTextureIndex,
+                                          defaultTextureIndex,
+                                          3,
+                                          0,
+                                          0
+                                        |])
+                            }
+                          )
+                      );
+                      describe(
+                        "remove from diffuseMapUnits",
+                        () =>
+                          test(
+                            "reset removed one's value",
+                            () =>
+                              _testRemoveFromTypeArr(
+                                state,
+                                (1, 2),
+                                TextureTool.getDefaultUnit(),
+                                (
+                                  LightMaterialTool.createGameObjectWithMap,
+                                  LightMaterialTool.getDiffuseMapUnit,
+                                  LightMaterialTool.setDiffuseMapUnit
+                                )
+                              )
+                          )
+                      );
+                      describe(
+                        "remove from specularMapUnits",
+                        () =>
+                          test(
+                            "reset removed one's value",
+                            () =>
+                              _testRemoveFromTypeArr(
+                                state,
+                                (1, 2),
+                                TextureTool.getDefaultUnit(),
+                                (
+                                  LightMaterialTool.createGameObjectWithMap,
+                                  LightMaterialTool.getSpecularMapUnit,
+                                  LightMaterialTool.setSpecularMapUnit
+                                )
+                              )
+                          )
+                      )
+                    }
                   )
                 }
               );

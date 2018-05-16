@@ -8,7 +8,7 @@ open GameObjectLightMaterialService;
 
 open OperateLightMaterialMainService;
 
-open DisposeLightMaterialService;
+open DisposeLightMaterialMainService;
 
 let createLightMaterial = (state) => [@bs] create(state);
 
