@@ -80,6 +80,32 @@ let _ =
         }
       );
       describe(
+        "bind and update sourceInstance's gameObject's map",
+        () => {
+          test(
+            "bind map",
+            () => {
+              let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(gameObject, state);
+              let (state, _) = state |> LightMaterialTool.createAndSetMaps(material);
+              RenderLightMaterialMapTool.testBindMap(sandbox, state)
+            }
+          );
+          test(
+            "update map",
+            () => {
+              let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(gameObject, state);
+              let (state, (map1, map2)) = state |> LightMaterialTool.createAndSetMaps(material);
+              let state = state |> RenderMaterialMapTool.setSource([map1, map2]);
+              RenderLightMaterialMapTool.testUpdateMap(sandbox, state)
+            }
+          )
+        }
+      );
+      describe(
         "send instance data",
         () => {
           describe(

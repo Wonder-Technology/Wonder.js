@@ -147,6 +147,34 @@ let _ =
         }
       );
       describe(
+        "bind and update sourceInstance's gameObject's map",
+        () => {
+          test(
+            "bind map",
+            () => {
+              let (state, gameObject, _, _) =
+                FrontRenderLightBatchInstanceTool.prepare(sandbox, 2, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(gameObject, state);
+              let (state, (map1, map2)) = state |> LightMaterialTool.createAndSetMaps(material);
+              RenderLightMaterialMapTool.testBindMap(sandbox, state)
+            }
+          );
+          test(
+            "update map",
+            () => {
+              let (state, gameObject, _, _) =
+                FrontRenderLightBatchInstanceTool.prepare(sandbox, 2, state^);
+              let material =
+                GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(gameObject, state);
+              let (state, (map1, map2)) = state |> LightMaterialTool.createAndSetMaps(material);
+              let state = state |> RenderMaterialMapTool.setSource([map1, map2]);
+              RenderLightMaterialMapTool.testUpdateMap(sandbox, state)
+            }
+          )
+        }
+      );
+      describe(
         "draw",
         () =>
           RenderBatchInstanceTool.testDrawElements(

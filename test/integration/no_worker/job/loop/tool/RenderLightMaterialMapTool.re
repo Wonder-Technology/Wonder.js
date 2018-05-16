@@ -1,4 +1,4 @@
-/* let testBindMap = (sandbox, state) => {
+let testBindMap = (sandbox, state) => {
   open Wonder_jest;
   open Expect;
   open Expect.Operators;
@@ -6,8 +6,8 @@
   let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
   let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~bindTexture, ()));
   let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-  bindTexture |> expect |> toCalledOnce
-}; */
+  bindTexture |> expect |> toCalledTwice
+};
 
 let testUpdateMap = (sandbox, state) => {
   open Wonder_jest;
