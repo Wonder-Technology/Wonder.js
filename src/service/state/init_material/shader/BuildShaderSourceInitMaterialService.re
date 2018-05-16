@@ -127,7 +127,7 @@ let _createEmptyChunk = () => {
   body: ""
 };
 
-let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRecord) =>{
+let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRecord) =>
   switch type_ {
   | "vs" => (_setSource(vs, getChunk(name, glslChunkRecord)), fs)
   | "vs_function" => (_setSource(vs, execHandleFunc(name)), fs)
@@ -144,7 +144,6 @@ let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRec
       )
     )
   };
-};
 
 let _buildVsAndFs = ((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord) =>
   shaderLibDataArr

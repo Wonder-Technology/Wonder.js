@@ -92,6 +92,43 @@ var LightBoxesTool = (function () {
             return [state, obj];
 
         },
+
+
+        createBoxWithMap: function (source1, source2, state) {
+            var record = LightBoxesTool.createBox(state);
+            var state = record[0];
+            var obj = record[1];
+
+
+            var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
+
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture1 = record[1];
+
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture2 = record[1];
+
+
+
+
+            var state = wd.setTextureSource(texture1, source1, state);
+            var state = wd.setTextureSource(texture2, source2, state);
+
+
+            var state = wd.setLightMaterialDiffuseMap(material, texture1, state);
+
+
+            var state = wd.setLightMaterialSpecularMap(material, texture2, state);
+
+
+
+            return [state, obj];
+        },
+
+
+
         createBoxesByClone: function (count, state) {
             var boxes = [];
 

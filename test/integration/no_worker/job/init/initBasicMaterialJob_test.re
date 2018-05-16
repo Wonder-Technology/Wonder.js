@@ -184,7 +184,7 @@ let _ =
             }
           );
           test("test get u_color location", () => _testGetLocation("u_color"));
-          test("test get u_sampler2D location", () => _testGetLocation("u_sampler2D"))
+          test("test get u_mapSampler location", () => _testGetLocation("u_mapSampler"))
         }
       );
       describe(
@@ -295,8 +295,9 @@ let _ =
                           GLSLTool.containMultiline(
                             GLSLTool.getFsSource(shaderSource),
                             [
+                              {|uniform sampler2D u_mapSampler;|},
                               {|varying vec2 v_mapCoord0;|},
-                              {|totalColor *= texture2D(u_sampler2D, v_mapCoord0);|}
+                              {|totalColor *= texture2D(u_mapSampler, v_mapCoord0);|}
                             ]
                           )
                           |> expect == true

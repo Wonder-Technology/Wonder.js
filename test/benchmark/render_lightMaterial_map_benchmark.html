@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>instance basic map</title>
+    <title>benchmark</title>
 </head>
 
 <body>
@@ -55,50 +55,34 @@
 
 
 
-                // var record = wd.createTexture(state)
-                // var state = record[0];
-                // var texture2 = record[1];
+                var count = 2;
+                var boxes = [];
 
-                // var state = wd.setTextureSource(texture2, image2, state);
+                for (var i = 0; i < count; i++) {
+                    var record = LightBoxesTool.createBoxWithMap(image1, image2, state);
+                    
+                    var state = record[0];
+                    var box = record[1];
 
-
-
-
-                var data = InstanceBasicBoxesTool.createBoxWithMap(20, true, image1, state);
-                var state = data[0];
-                var boxes = [ data[1] ];
-
-                var data = InstanceBasicBoxesTool.setPosition(boxes, state);
-                var state = data[0];
-                var boxes = data[1];
+                    boxes.push(box);
+                }
 
 
-                var data = InstanceBasicBoxesTool.createCamera(state);
+
+                var record = LightBoxesTool.setPosition(boxes, state);
+                var state = record[0];
+
+
+
+
+                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                var data = LightBoxesTool.createCamera(state);
                 var state = data[0];
                 var camera = data[1];
 
 
-                // setTimeout(function(){
-                //     var state = wd.unsafeGetState();
-
-                //     var box = boxes[0];
-
-                //     var material = wd.unsafeGetGameObjectBasicMaterialComponent(box, state);
-
-
-                //     var state = wd.setBasicMaterialMap(material,  texture2, state);
-
-
-
-
-                //     wd.setState(state);
-
-                // }, 1000);
-
-                // var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
-
-
-                // var state = wd.setTransformLocalPosition(transform, [0, 10, 40], state);
 
 
                 wd.startDirector(state);

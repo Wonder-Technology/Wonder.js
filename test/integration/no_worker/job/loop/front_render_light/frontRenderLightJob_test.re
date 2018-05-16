@@ -1125,7 +1125,7 @@ let _ =
                 "test send map data",
                 () =>
                   describe(
-                    "send u_diffuseMapSampler2D, u_specularMapSampler2D",
+                    "send u_diffuseMapSampler, u_specularMapSampler",
                     () => {
                       let _prepare = (state) => {
                         let (state, gameObject, _, _, _, _) =
@@ -1138,14 +1138,14 @@ let _ =
                           GLSLLocationTool.getUniformLocation(
                             ~pos=pos1,
                             sandbox,
-                            "u_diffuseMapSampler2D"
+                            "u_diffuseMapSampler"
                           );
                         let getUniformLocation =
                           GLSLLocationTool.stubLocation(
                             getUniformLocation,
                             pos2,
                             sandbox,
-                            "u_specularMapSampler2D"
+                            "u_specularMapSampler"
                           );
                         let state =
                           state

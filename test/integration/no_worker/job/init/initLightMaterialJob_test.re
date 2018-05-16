@@ -187,18 +187,18 @@ let _ =
           test("test get u_specular location", () => _testGetLocation("u_specular"));
           test("test get u_shininess location", () => _testGetLocation("u_shininess"));
           test(
-            "test get u_diffuseMapSampler2D location",
+            "test get u_diffuseMapSampler location",
             () =>
               _testGetLocationWithPrepareGameObjectFunc(
-                "u_diffuseMapSampler2D",
+                "u_diffuseMapSampler",
                 InitLightMaterialJobTool.prepareGameObjectWithMap
               )
           );
           test(
-            "test get u_specularMapSampler2D location",
+            "test get u_specularMapSampler location",
             () =>
               _testGetLocationWithPrepareGameObjectFunc(
-                "u_specularMapSampler2D",
+                "u_specularMapSampler",
                 InitLightMaterialJobTool.prepareGameObjectWithMap
               )
           )
@@ -574,6 +574,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                               GLSLTool.containMultiline(
                                 GLSLTool.getFsSource(shaderSource),
                                 [
+                                  {|uniform sampler2D u_diffuseMapSampler;|},
                                   {|varying vec2 v_diffuseMapTexCoord;|},
                                   {|vec3 getMaterialDiffuse() {
         return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;
@@ -651,6 +652,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                               GLSLTool.containMultiline(
                                 GLSLTool.getFsSource(shaderSource),
                                 [
+                                  {|uniform sampler2D u_specularMapSampler;|},
                                   {|varying vec2 v_specularMapTexCoord;|},
                                   {|float getSpecularStrength() {
         return texture2D(u_specularMapSampler, v_specularMapTexCoord).r;

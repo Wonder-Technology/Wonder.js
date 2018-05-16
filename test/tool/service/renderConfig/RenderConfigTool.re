@@ -167,7 +167,6 @@ let buildRenderConfig =
     }
   ]
 }
-
         |},
       ~shaderLibs={|
 [
@@ -333,7 +332,7 @@ let buildRenderConfig =
       ],
       "uniforms": [
         {
-          "name": "u_sampler2D",
+          "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
           "from": "basicMaterial"
@@ -439,7 +438,17 @@ let buildRenderConfig =
         "type": "fs",
         "name": "webgl1_frontLight_common_fragment"
       }
-    ]
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_specular",
+          "field": "specularColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        }
+      ]
+    }
   },
   {
     "name": "light_setWorldPosition",
@@ -477,7 +486,7 @@ let buildRenderConfig =
     "variables": {
       "uniforms": [
         {
-          "name": "u_diffuseMapSampler2D",
+          "name": "u_diffuseMapSampler",
           "field": "diffuseMap",
           "type": "sampler2D",
           "from": "lightMaterial"
@@ -500,7 +509,7 @@ let buildRenderConfig =
     "variables": {
       "uniforms": [
         {
-          "name": "u_specularMapSampler2D",
+          "name": "u_specularMapSampler",
           "field": "specularMap",
           "type": "sampler2D",
           "from": "lightMaterial"
@@ -534,17 +543,7 @@ let buildRenderConfig =
         "type": "fs",
         "name": "webgl1_no_specular_map_fragment"
       }
-    ],
-    "variables": {
-      "uniforms": [
-        {
-          "name": "u_specular",
-          "field": "specularColor",
-          "type": "float3",
-          "from": "lightMaterial"
-        }
-      ]
-    }
+    ]
   },
   {
     "name": "noLightMap",
@@ -688,6 +687,7 @@ let buildRenderConfig =
     }
   }
 ]
+
 
         |},
       ()

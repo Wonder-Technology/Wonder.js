@@ -699,7 +699,7 @@ let _ =
             ()
           );
           describe(
-            "send u_sampler2D",
+            "send u_mapSampler",
             () => {
               let _prepare = (state) => {
                 let (state, gameObject, _, _, _, _) =
@@ -708,7 +708,7 @@ let _ =
                 let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
                 let pos = 0;
                 let getUniformLocation =
-                  GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_sampler2D");
+                  GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_mapSampler");
                 let state =
                   state
                   |> FakeGlTool.setFakeGl(
