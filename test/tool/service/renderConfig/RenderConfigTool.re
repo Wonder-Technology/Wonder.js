@@ -133,16 +133,16 @@ let buildRenderConfig =
           "name": "specular_map"
         },
         {
-          "name": "noLightMap"
+          "name": "no_light_map"
         },
         {
-          "name": "noEmissionMap"
+          "name": "no_emission_map"
         },
         {
-          "name": "noNormalMap"
+          "name": "no_normal_map"
         },
         {
-          "name": "noShadowMap"
+          "name": "no_shadow_map"
         },
         {
           "name": "light"
@@ -546,42 +546,42 @@ let buildRenderConfig =
     ]
   },
   {
-    "name": "noLightMap",
+    "name": "no_light_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noLightMap_fragment"
+        "name": "webgl1_no_light_map_fragment"
       }
     ]
   },
   {
-    "name": "noEmissionMap",
+    "name": "no_emission_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noEmissionMap_fragment"
+        "name": "webgl1_no_emission_map_fragment"
       }
     ]
   },
   {
-    "name": "noNormalMap",
+    "name": "no_normal_map",
     "glsls": [
       {
         "type": "vs",
-        "name": "webgl1_noNormalMap_vertex"
+        "name": "webgl1_no_normal_map_vertex"
       },
       {
         "type": "fs",
-        "name": "webgl1_noNormalMap_fragment"
+        "name": "webgl1_no_normal_map_fragment"
       }
     ]
   },
   {
-    "name": "noShadowMap",
+    "name": "no_shadow_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noShadowMap_fragment"
+        "name": "webgl1_no_shadow_map_fragment"
       }
     ]
   },

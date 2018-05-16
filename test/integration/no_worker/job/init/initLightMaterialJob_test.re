@@ -689,7 +689,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                     }
                   );
                   test(
-                    "test noLightMap shader lib",
+                    "test no_light_map shader lib",
                     () => {
                       let shaderSource =
                         InitLightMaterialJobTool.prepareForJudgeGLSL(
@@ -711,7 +711,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                     }
                   );
                   test(
-                    "test noEmissionMap shader lib",
+                    "test no_emission_map shader lib",
                     () => {
                       let shaderSource =
                         InitLightMaterialJobTool.prepareForJudgeGLSL(
@@ -733,7 +733,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                     }
                   );
                   describe(
-                    "test noNormalMap shader lib",
+                    "test no_normal_map shader lib",
                     () => {
                       test(
                         "test vs glsl",
@@ -806,7 +806,7 @@ vec3 getViewDir(){
                     }
                   );
                   test(
-                    "test noShadowMap shader lib",
+                    "test no_shadow_map shader lib",
                     () => {
                       let shaderSource =
                         InitLightMaterialJobTool.prepareForJudgeGLSL(

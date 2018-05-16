@@ -415,7 +415,23 @@ float getSpecularStrength() {
 
 |}))
 
-|> set("webgl1_noShadowMap_fragment", _buildChunk(({|
+|> set("webgl1_no_specular_map_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+float getSpecularStrength() {
+        return 1.0;
+    }
+|}),{|
+
+|}))
+
+|> set("webgl1_no_shadow_map_fragment", _buildChunk(({|
 
 |},{|
 
@@ -431,7 +447,7 @@ float getShadowVisibility() {
 
 |}))
 
-|> set("webgl1_noNormalMap_vertex", _buildChunk(({|
+|> set("webgl1_no_normal_map_vertex", _buildChunk(({|
 
 |},{|
 
@@ -445,7 +461,7 @@ varying vec3 v_normal;
 v_normal = normalize(normalMatrix * a_normal);
 |}))
 
-|> set("webgl1_noNormalMap_fragment", _buildChunk(({|
+|> set("webgl1_no_normal_map_fragment", _buildChunk(({|
 
 |},{|
 
@@ -501,7 +517,7 @@ vec3 getViewDir(){
 
 |}))
 
-|> set("webgl1_noLightMap_fragment", _buildChunk(({|
+|> set("webgl1_no_light_map_fragment", _buildChunk(({|
 
 |},{|
 
@@ -517,7 +533,7 @@ vec3 getMaterialLight() {
 
 |}))
 
-|> set("webgl1_noEmissionMap_fragment", _buildChunk(({|
+|> set("webgl1_no_emission_map_fragment", _buildChunk(({|
 
 |},{|
 
@@ -528,22 +544,6 @@ vec3 getMaterialLight() {
 |},{|
 vec3 getMaterialEmission() {
         return vec3(0.0);
-    }
-|}),{|
-
-|}))
-
-|> set("webgl1_no_specular_map_fragment", _buildChunk(({|
-
-|},{|
-
-|}),{|
-
-|},({|
-
-|},{|
-float getSpecularStrength() {
-        return 1.0;
     }
 |}),{|
 

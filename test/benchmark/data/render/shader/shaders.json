@@ -124,16 +124,16 @@
           "name": "specular_map"
         },
         {
-          "name": "noLightMap"
+          "name": "no_light_map"
         },
         {
-          "name": "noEmissionMap"
+          "name": "no_emission_map"
         },
         {
-          "name": "noNormalMap"
+          "name": "no_normal_map"
         },
         {
-          "name": "noShadowMap"
+          "name": "no_shadow_map"
         },
         {
           "name": "light"
