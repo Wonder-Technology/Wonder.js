@@ -137,6 +137,35 @@ var InstanceLightBoxesTool = (function () {
             return [state, obj, objectInstanceGameObjectArr];
 
         },
+        createBoxWithMap: function (count, isStatic, source1, source2, state) {
+            var record = InstanceLightBoxesTool.createBox(count, isStatic, state);
+
+            var state = record[0];
+            var obj = record[1];
+            var objectInstanceGameObjectArr = record[2];
+
+
+            var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
+
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture1 = record[1];
+
+            var record = wd.createTexture(state)
+            var state = record[0];
+            var texture2 = record[1];
+
+            var state = wd.setTextureSource(texture1, source1, state);
+
+            var state = wd.setTextureSource(texture2, source2, state);
+
+
+            var state = wd.setLightMaterialDiffuseMap(material, texture1, state);
+
+            var state = wd.setLightMaterialSpecularMap(material, texture2, state);
+
+            return [state, obj, objectInstanceGameObjectArr];
+        },
         createBoxes: function (sourceInstanceGameObjectCount, objectInstanceGameObjectCount, isStatic, state) {
             var boxes = [];
 
