@@ -11,18 +11,6 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(material, disposedIndexArray);
 
-/* TODO duplicate */
-let _disposeTextureIndices = (material, textureCountPerMaterial, textureIndices) => {
-  open Js.Typed_array;
-  let sourceIndex =
-    BufferLightMaterialService.getTextureIndicesIndex(material, textureCountPerMaterial);
-  let defaultIndex = BufferLightMaterialService.getDefaultTextureIndex();
-  for (i in 0 to BufferLightMaterialService.getTextureIndicesSize(textureCountPerMaterial) - 1) {
-    Uint32Array.unsafe_set(textureIndices, sourceIndex + i, defaultIndex)
-  };
-  textureIndices
-};
-
 /*!
   not dispose texture when dispose material!
   */
@@ -78,7 +66,12 @@ let _disposeData =
         defaultShininess,
         shininess
       ),
-    textureIndices: _disposeTextureIndices(material, textureCountPerMaterial, textureIndices),
+    textureIndices:
+      DisposeMaterialMainService.disposeTextureIndices(
+        material,
+        textureCountPerMaterial,
+        textureIndices
+      ),
     diffuseMapUnits:
       [@bs]
       DisposeTypeArrayService.deleteAndResetUint8(

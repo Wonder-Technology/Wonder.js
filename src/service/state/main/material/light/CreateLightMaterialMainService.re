@@ -4,7 +4,6 @@ open StateDataMainType;
 
 open LightMaterialType;
 
-/* TODO duplicate */
 let _initDataWhenCreate = (index: int, {textureCountMap} as lightMaterialRecord) => {
   ...lightMaterialRecord,
   textureCountMap:

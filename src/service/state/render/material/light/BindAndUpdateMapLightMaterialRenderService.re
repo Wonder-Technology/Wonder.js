@@ -2,25 +2,6 @@ open StateRenderType;
 
 open RenderLightMaterialType;
 
-/* TODO duplicate */
-let _getTextureIndex = (material, mapUnit, textureIndices, settingRecord) =>
-  OperateTypeArrayLightMaterialService.getTextureIndex(
-    (material, mapUnit, OperateRenderSettingService.getTextureCountPerMaterial(settingRecord)),
-    textureIndices
-  );
-
-let _update = (gl, material, mapUnit, (textureIndices, settingRecord, state) as stateDataTuple) =>
-  MapUnitService.hasMap(mapUnit) ?
-    {
-      let texture = _getTextureIndex(material, mapUnit, textureIndices, settingRecord);
-      let state = state |> BindTextureRenderService.bind(gl, mapUnit, texture);
-      let state =
-        UpdateTextureRenderService.isNeedUpdate(texture, state) ?
-          UpdateTextureRenderService.update(gl, texture, state) : state;
-      stateDataTuple
-    } :
-    stateDataTuple;
-
 let bindAndUpdate =
   [@bs]
   (
@@ -32,8 +13,14 @@ let bindAndUpdate =
         OperateTypeArrayLightMaterialService.getSpecularMapUnit(material, specularMapUnits);
       let (textureIndices, settingRecord, state) =
         (textureIndices, settingRecord, state)
-        |> _update(gl, material, diffuseMapUnit)
-        |> _update(gl, material, specularMapUnit);
+        |> BindAndUpdateMapMaterialRenderService.update(
+             (gl, material, diffuseMapUnit),
+             OperateTypeArrayLightMaterialService.getTextureIndex
+           )
+        |> BindAndUpdateMapMaterialRenderService.update(
+             (gl, material, specularMapUnit),
+             OperateTypeArrayLightMaterialService.getTextureIndex
+           );
       state
     }
   );

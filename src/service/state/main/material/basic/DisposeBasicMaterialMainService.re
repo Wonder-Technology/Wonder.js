@@ -11,17 +11,6 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(material, disposedIndexArray);
 
-let _disposeTextureIndices = (material, textureCountPerMaterial, textureIndices) => {
-  open Js.Typed_array;
-  let sourceIndex =
-    BufferBasicMaterialService.getTextureIndicesIndex(material, textureCountPerMaterial);
-  let defaultIndex = BufferBasicMaterialService.getDefaultTextureIndex();
-  for (i in 0 to BufferBasicMaterialService.getTextureIndicesSize(textureCountPerMaterial) - 1) {
-    Uint32Array.unsafe_set(textureIndices, sourceIndex + i, defaultIndex)
-  };
-  textureIndices
-};
-
 /*!
   not dispose texture when dispose material!
   because different materials may use same texture, if dispose one material's texture which is shared, then will affect other materials!
@@ -60,7 +49,12 @@ let _disposeData =
         defaultColor,
         colors
       ),
-    textureIndices: _disposeTextureIndices(material, textureCountPerMaterial, textureIndices),
+    textureIndices:
+      DisposeMaterialMainService.disposeTextureIndices(
+        material,
+        textureCountPerMaterial,
+        textureIndices
+      ),
     mapUnits:
       [@bs]
       DisposeTypeArrayService.deleteAndResetUint8(
@@ -109,8 +103,7 @@ let handleBatchDisposeComponent =
       );
       let {disposedIndexArray} as basicMaterialRecord =
         RecordBasicMaterialMainService.getRecord(state);
-      let textureCountPerMaterial =
-        BufferSettingService.getTextureCountPerMaterial(settingRecord);
+      let textureCountPerMaterial = BufferSettingService.getTextureCountPerMaterial(settingRecord);
       materialArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            [@bs]

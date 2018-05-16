@@ -130,4 +130,4 @@ let getTextureIndicesIndex = (material, state) =>
     BufferSettingService.getTextureCountPerMaterial(state.settingRecord)
   );
 
-let getDefaultTextureIndex = () => BufferLightMaterialService.getDefaultTextureIndex();
+let getDefaultTextureIndex = () => BufferMaterialService.getDefaultTextureIndex();

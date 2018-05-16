@@ -7,7 +7,7 @@ let findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
     (item: shaderLib) => JobConfigService.filterTargetName(item.name, shaderLibName)
   );
 
-let getMaterialShaderLibDataArrByGroup =
+let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
   Js.Array.concat(
     JobConfigService.unsafeFindFirst(
@@ -54,3 +54,73 @@ let getMaterialShaderLibDataArrByStaticBranchInstance =
          shaderLibs
        )
      );
+
+let getMaterialShaderLibDataArrByDynamicBranch =
+    (
+      (materialIndex, name),
+      (dynamicBranchs: array(dynamicBranchData), shaderLibs, state),
+      isPassFunc,
+      resultDataArr
+    ) => {
+  let ({condition}: dynamicBranchData) as dynamicBranchData =
+    JobConfigService.unsafeFindFirst(
+      dynamicBranchs,
+      name,
+      (item) => JobConfigService.filterTargetName(item.name, name)
+    );
+  let dynamicBranchShaderLibNameOption =
+    [@bs] isPassFunc(materialIndex, condition, state) ?
+      GetDataRenderConfigService.getPass(dynamicBranchData) :
+      GetDataRenderConfigService.getFail(dynamicBranchData);
+  switch dynamicBranchShaderLibNameOption {
+  | None => resultDataArr
+  | Some(dynamicBranchShaderLibName) =>
+    resultDataArr |> ArrayService.push(findFirstShaderData(dynamicBranchShaderLibName, shaderLibs))
+  }
+};
+
+let getMaterialShaderLibDataArrByType =
+    (
+      (
+        materialIndex,
+        type_,
+        groups: array(shaderMapData),
+        name,
+        isSourceInstance,
+        isSupportInstance
+      ),
+      (shaderLibs, staticBranchs: array(shaderMapData), dynamicBranchs, state),
+      (getMaterialShaderLibDataArrByStaticBranchFunc, isPassFunc),
+      resultDataArr
+    ) =>
+  switch type_ {
+  | "group" => _getMaterialShaderLibDataArrByGroup(groups, name, shaderLibs, resultDataArr)
+  | "static_branch" =>
+    [@bs]
+    getMaterialShaderLibDataArrByStaticBranchFunc(
+      (name, isSourceInstance, isSupportInstance),
+      (staticBranchs: array(shaderMapData), shaderLibs),
+      resultDataArr
+    )
+  | "dynamic_branch" =>
+    getMaterialShaderLibDataArrByDynamicBranch(
+      (materialIndex, name),
+      (dynamicBranchs, shaderLibs, state),
+      isPassFunc,
+      resultDataArr
+    )
+  | _ =>
+    WonderLog.Log.debugJson(
+      WonderLog.Log.buildDebugJsonMessage(~description={j|shaderLibs|j}, ~var=shaderLibs),
+      IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    );
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getMaterialShaderLibDataArrByType",
+        ~description={j|unknown type_:$type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j}
+      )
+    )
+  };

@@ -1,12 +1,8 @@
 open Js.Typed_array;
 
-let getDefaultTextureIndex = () => 0;
-
 let getShaderIndicesSize = () => 1;
 
 let getDiffuseColorsSize = () => 3;
-
-let getTextureIndicesSize = (textureCountPerMaterial) => textureCountPerMaterial;
 
 let getMapUnitsSize = () => 1;
 
@@ -39,20 +35,16 @@ let getSpecularColorIndex = (index) => index * getSpecularColorsSize();
 
 let getShininessIndex = (index) => index * getShininessSize();
 
-/* TODO duplicate */
-let getTextureIndicesLength = (lightMaterialCount, textureCountPerMaterial) =>
-  lightMaterialCount * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesLength = BufferMaterialService.getTextureIndicesLength;
 
 let getTextureIndicesOffset = (lightMaterialCount, textureCountPerMaterial) =>
   getShininessOffset(lightMaterialCount)
   + getShininessLength(lightMaterialCount)
   * Float32Array._BYTES_PER_ELEMENT;
 
-let getTextureIndicesIndex = (index, textureCountPerMaterial) =>
-  index * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesIndex = BufferMaterialService.getTextureIndicesIndex;
 
-let getTextureIndexIndex = (index, textureIndex, textureCountPerMaterial) =>
-  getTextureIndicesIndex(index, textureCountPerMaterial) + textureIndex;
+let getTextureIndexIndex = BufferMaterialService.getTextureIndexIndex;
 
 let getDiffuseMapUnitsLength = (lightMaterialCount) => lightMaterialCount * getMapUnitsSize();
 
@@ -80,7 +72,7 @@ let getTotalByteLength = (lightMaterialCount, textureCountPerMaterial) =>
     + Float32Array._BYTES_PER_ELEMENT
     * (getDiffuseColorsSize() + getSpecularColorsSize() + getShininessSize())
     + Uint32Array._BYTES_PER_ELEMENT
-    * getTextureIndicesSize(textureCountPerMaterial)
+    * BufferMaterialService.getTextureIndicesSize(textureCountPerMaterial)
     + Uint8Array._BYTES_PER_ELEMENT
     * (getMapUnitsSize() * 2)
   );

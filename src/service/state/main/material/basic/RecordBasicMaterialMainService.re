@@ -124,7 +124,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           textureIndices
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
                index
-               * getTextureIndicesSize(
+               * BufferMaterialService.getTextureIndicesSize(
                    BufferSettingService.getTextureCountPerMaterial(settingRecord)
                  )
              ),

@@ -1,13 +1,11 @@
 open Js.Typed_array;
 
-let getDefaultTextureIndex = () => 0;
-
+/* let getDefaultTextureIndex = () => 0; */
 let getShaderIndicesSize = () => 1;
 
 let getColorsSize = () => 3;
 
-let getTextureIndicesSize = (textureCountPerMaterial) => textureCountPerMaterial;
-
+/* let getTextureIndicesSize = BufferMaterialService.getTextureIndicesSize; */
 let getMapUnitsSize = () => 1;
 
 let getColorsLength = (basicMaterialCount) => basicMaterialCount * getColorsSize();
@@ -19,19 +17,16 @@ let getColorsOffset = (basicMaterialCount) =>
 
 let getColorIndex = (index) => index * getColorsSize();
 
-let getTextureIndicesLength = (basicMaterialCount, textureCountPerMaterial) =>
-  basicMaterialCount * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesLength = BufferMaterialService.getTextureIndicesLength;
 
 let getTextureIndicesOffset = (basicMaterialCount, textureCountPerMaterial) =>
   getColorsOffset(basicMaterialCount)
   + getColorsLength(basicMaterialCount)
   * Float32Array._BYTES_PER_ELEMENT;
 
-let getTextureIndicesIndex = (index, textureCountPerMaterial) =>
-  index * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesIndex = BufferMaterialService.getTextureIndicesIndex;
 
-let getTextureIndexIndex = (index, textureIndex, textureCountPerMaterial) =>
-  getTextureIndicesIndex(index, textureCountPerMaterial) + textureIndex;
+let getTextureIndexIndex = BufferMaterialService.getTextureIndexIndex;
 
 let getMapUnitsLength = (basicMaterialCount) => basicMaterialCount * getMapUnitsSize();
 
@@ -50,12 +45,10 @@ let getTotalByteLength = (basicMaterialCount, textureCountPerMaterial) =>
     + Float32Array._BYTES_PER_ELEMENT
     * getColorsSize()
     + Uint32Array._BYTES_PER_ELEMENT
-    * getTextureIndicesSize(textureCountPerMaterial)
+    * BufferMaterialService.getTextureIndicesSize(textureCountPerMaterial)
     + Uint8Array._BYTES_PER_ELEMENT
     * getMapUnitsSize()
   );
 
 let createBuffer = (basicMaterialCount, textureCountPerMaterial) =>
-  Worker.newSharedArrayBuffer(
-    getTotalByteLength(basicMaterialCount, textureCountPerMaterial)
-  );
+  Worker.newSharedArrayBuffer(getTotalByteLength(basicMaterialCount, textureCountPerMaterial));
