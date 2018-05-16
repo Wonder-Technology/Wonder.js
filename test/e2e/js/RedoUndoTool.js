@@ -14,7 +14,7 @@ var RedoUndoTool = (function () {
                     var boxes = record[1];
 
 
-                    var record = RedoUndoTool.setPosition(boxes, state);
+                    var record = BasicBoxesTool.setPosition(boxes, state);
                     var state = record[0];
                     var boxes = record[1];
 
@@ -57,7 +57,6 @@ var RedoUndoTool = (function () {
                     var boxes = record[1];
 
 
-                    // var record = RedoUndoTool.setPosition(boxes, state);
                     var record = BasicBoxesTool.setPosition(boxes, state);
                     var state = record[0];
                     var boxes = record[1];
@@ -90,25 +89,12 @@ var RedoUndoTool = (function () {
         createBoxesByInstance: function (count, state) {
             return InstanceBasicBoxesTool.createBox(count, false, state);
         },
+        setPosition: function (boxes, state) {
+            return InstanceBasicBoxesTool.setPosition(boxes, state)
+        },
         createBoxesByInstanceWithMap: function (count, source, state) {
             return InstanceBasicBoxesTool.createBoxWithMap(count, false, source, state);
         },
-        // setPosition: function (boxes, state) {
-        //     return InstanceBasicBoxesTool.setPosition(boxes, state);
-        //     // var playgroundSize = 500;
-
-        //     // for (let i = 0, len = boxes.length; i < len; i++) {
-        //     //     let box = boxes[i];
-
-        //     //     var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
-
-        //     //     var localPos = wd.getTransformLocalPosition(transform, state);
-
-        //     //     state = wd.setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-        //     // }
-
-        //     // return [state, boxes];
-        // },
         createCamera: function (state) {
             return CameraTool.createCamera(state)
         }

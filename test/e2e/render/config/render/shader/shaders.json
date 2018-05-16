@@ -17,6 +17,30 @@
       ]
     }
   ],
+  "dynamic_branchs": [
+    {
+      "name": "basic_map",
+      "condition": "basic_has_map",
+      "pass": "basic_map"
+    },
+    {
+      "name": "common_light_map",
+      "condition": "light_has_map",
+      "pass": "common_light_map"
+    },
+    {
+      "name": "diffuse_map",
+      "condition": "has_diffuse_map",
+      "pass": "diffuse_map",
+      "fail": "no_diffuse_map"
+    },
+    {
+      "name": "specular_map",
+      "condition": "has_specular_map",
+      "pass": "specular_map",
+      "fail": "no_specular_map"
+    }
+  ],
   "groups": [
     {
       "name": "top",
@@ -46,6 +70,13 @@
         },
         {
           "name": "basic"
+        },
+        {
+          "name": "basic_color"
+        },
+        {
+          "type": "dynamic_branch",
+          "name": "basic_map"
         },
         {
           "name": "basic_end"
@@ -81,10 +112,16 @@
           "name": "light_setWorldPosition"
         },
         {
-          "name": "noDiffuseMap"
+          "type": "dynamic_branch",
+          "name": "common_light_map"
         },
         {
-          "name": "noSpecularMap"
+          "type": "dynamic_branch",
+          "name": "diffuse_map"
+        },
+        {
+          "type": "dynamic_branch",
+          "name": "specular_map"
         },
         {
           "name": "no_light_map"
