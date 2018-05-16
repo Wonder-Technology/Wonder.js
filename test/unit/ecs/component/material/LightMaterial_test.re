@@ -194,69 +194,43 @@ let _ =
               )
           );
           describe(
-            "setLightMaterialDiffuseMap",
+            "setLightMaterialDiffuseMap, setLightMaterialSpecularMap",
             () => {
               let _prepare = (state) => {
                 let (state, material) = createLightMaterial(state);
                 let (state, map1) = TextureAPI.createTexture(state);
                 let (state, map2) = TextureAPI.createTexture(state);
+                let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, map1);
                 let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
-                (state, material, map2)
+                (state, material, (map1, map2))
               };
               test(
                 "texture count + 1",
                 () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialTool.getTextureCount(material, state) |> expect == 1
+                  let (state, material, (map1, map2)) = _prepare(state^);
+                  LightMaterialTool.getTextureCount(material, state) |> expect == 2
                 }
               );
               test(
-                "set map unit to 0",
+                "set map unit",
                 () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialTool.getDiffuseMapUnit(material, state) |> expect == 0
+                  let (state, material, (map1, map2)) = _prepare(state^);
+                  (
+LightMaterialAPI. unsafeGetLightMaterialDiffuseMap(material, state),
+LightMaterialAPI. unsafeGetLightMaterialSpecularMap(material, state)
+                  )
+                  |> expect == (1, 0)
                 }
               );
               test(
                 "save texture index",
                 () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state)
-                  |> expect == map
-                }
-              )
-            }
-          );
-          describe(
-            "setLightMaterialSpecularMap",
-            () => {
-              let _prepare = (state) => {
-                let (state, material) = createLightMaterial(state);
-                let (state, map1) = TextureAPI.createTexture(state);
-                let (state, map2) = TextureAPI.createTexture(state);
-                let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, map2);
-                (state, material, map2)
-              };
-              test(
-                "texture count + 1",
-                () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialTool.getTextureCount(material, state) |> expect == 1
-                }
-              );
-              test(
-                "set map unit to 0",
-                () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialTool.getSpecularMapUnit(material, state) |> expect == 0
-                }
-              );
-              test(
-                "save texture index",
-                () => {
-                  let (state, material, map) = _prepare(state^);
-                  LightMaterialAPI.unsafeGetLightMaterialSpecularMap(material, state)
-                  |> expect == map
+                  let (state, material, (map1, map2)) = _prepare(state^);
+                  (
+                    LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state),
+                    LightMaterialAPI.unsafeGetLightMaterialSpecularMap(material, state)
+                  )
+                  |> expect == (map2, map1)
                 }
               )
             }

@@ -23,10 +23,7 @@ let prepareGameObjectWithMap = (sandbox, state) => {
   open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createLightMaterial(state);
-  let (state, diffuseMap) = TextureAPI.createTexture(state);
-  let (state, specularMap) = TextureAPI.createTexture(state);
-  let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
-  let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, specularMap);
+  let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =

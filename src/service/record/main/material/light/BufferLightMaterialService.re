@@ -66,9 +66,9 @@ let getDiffuseMapUnitIndex = (index) => index * getMapUnitsSize();
 let getSpecularMapUnitsLength = (lightMaterialCount) => lightMaterialCount * getMapUnitsSize();
 
 let getSpecularMapUnitsOffset = (lightMaterialCount, textureCountPerMaterial) =>
-  getTextureIndicesOffset(lightMaterialCount, textureCountPerMaterial)
-  + getTextureIndicesLength(lightMaterialCount, textureCountPerMaterial)
-  * Uint32Array._BYTES_PER_ELEMENT;
+  getDiffuseMapUnitsOffset(lightMaterialCount, textureCountPerMaterial)
+  + getDiffuseMapUnitsLength(lightMaterialCount)
+  * Uint8Array._BYTES_PER_ELEMENT;
 
 let getSpecularMapUnitIndex = (index) => index * getMapUnitsSize();
 

@@ -13,12 +13,17 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
-let createGameObjectWithMap = (state) => {
-  let (state, gameObject, material) = createGameObject(state);
+let createAndSetMaps = (material, state) => {
   let (state, texture1) = TextureAPI.createTexture(state);
   let (state, texture2) = TextureAPI.createTexture(state);
   let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, texture1);
   let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, texture2);
+  (state, (texture1, texture2))
+};
+
+let createGameObjectWithMap = (state) => {
+  let (state, gameObject, material) = createGameObject(state);
+  let (state, (texture1, texture2)) = createAndSetMaps(material, state);
   (state, gameObject, (material, (texture1, texture2)))
 };
 
@@ -106,14 +111,14 @@ let setDiffuseMapUnit = (material, unit, state) => {
 let getSpecularMapUnit = (material, state) =>
   OperateTypeArrayLightMaterialService.getSpecularMapUnit(
     material,
-    getRecord(state).diffuseMapUnits
+    getRecord(state).specularMapUnits
   );
 
 let setSpecularMapUnit = (material, unit, state) => {
   OperateTypeArrayLightMaterialService.setSpecularMapUnit(
     material,
     unit,
-    getRecord(state).diffuseMapUnits
+    getRecord(state).specularMapUnits
   )
   |> ignore;
   state

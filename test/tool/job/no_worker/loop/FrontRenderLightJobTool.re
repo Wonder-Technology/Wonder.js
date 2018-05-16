@@ -1,5 +1,6 @@
 let prepareGameObject = (sandbox, state) => {
-  open GameObjectAPI; open GameObjectAPI;
+  open GameObjectAPI;
+  open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;
   open MeshRendererAPI;
@@ -16,8 +17,15 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer)
 };
 
+let prepareGameObjectWithMap = (sandbox, state) => {
+  let (state, gameObject, geometry, material, meshRenderer) = prepareGameObject(sandbox, state);
+  let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
+  (state, gameObject, geometry, material, meshRenderer, (texture1, texture2))
+};
+
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
-  open GameObjectAPI; open GameObjectAPI;
+  open GameObjectAPI;
+  open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;
   open MeshRendererAPI;

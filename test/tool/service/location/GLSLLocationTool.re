@@ -2,11 +2,13 @@ open StateDataMainType;
 
 let getGLSLLocationRecord = (state) => state.glslLocationRecord;
 
-let _getLocation = (~pos=10, sandbox, name: string) => {
-  let stub = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+let stubLocation = (stub, pos, sandbox, name: string) => {
   stub |> Sinon.withTwoArgs(Sinon.matchAny, name) |> Sinon.returns(pos) |> ignore;
   stub
 };
+
+let _getLocation = (~pos=10, sandbox, name: string) =>
+  stubLocation(Sinon.createEmptyStubWithJsObjSandbox(sandbox), pos, sandbox, name);
 
 let getAttribLocation = _getLocation;
 

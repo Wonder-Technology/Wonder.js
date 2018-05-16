@@ -78,7 +78,7 @@ let _ =
                 GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
               let (state, map) = TextureAPI.createTexture(state);
               let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
-              RenderTextureTool.testBindMap(sandbox, state)
+              RenderBasicMaterialMapTool.testBindMap(sandbox, state)
             }
           );
           test(
@@ -91,7 +91,7 @@ let _ =
               let source = TextureTool.buildSource(2, 4);
               let state = state |> TextureAPI.setTextureSource(map, source);
               let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
-              RenderTextureTool.testUpdateMap(sandbox, state)
+              RenderBasicMaterialMapTool.testUpdateMap(sandbox, state)
             }
           )
         }
