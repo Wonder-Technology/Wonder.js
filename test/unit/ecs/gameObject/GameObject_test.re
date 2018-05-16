@@ -1664,7 +1664,8 @@ let _ =
               );
               describe(
                 "init maps",
-                () =>
+                () =>{
+
                   describe(
                     "init basic material->map",
                     () => {
@@ -1701,7 +1702,45 @@ let _ =
                         }
                       )
                     }
+                  );
+                  describe(
+                    "init light material->map",
+                    () => {
+                      test(
+                        "if has no map, not init map",
+                        () => {
+                          let (state, gameObject, _, _) =
+                            InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
+                               );
+                          let state = AllMaterialTool.prepareForInit(state);
+                          let state = state |> initGameObject(gameObject);
+                          getCallCount(createTexture) |> expect == 0
+                        }
+                      );
+                      test(
+                        "else, init map",
+                        () => {
+                          let (state, gameObject, _, _) =
+                            InitLightMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
+                               );
+                          let state = AllMaterialTool.prepareForInit(state);
+                          let state = state |> initGameObject(gameObject);
+                          getCallCount(createTexture) |> expect == 2
+                        }
+                      )
+                    }
                   )
+                }
               )
             }
           )

@@ -13,7 +13,17 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     };
   let state =
     switch ([@bs] GetComponentGameObjectService.getLightMaterialComponent(uid, gameObjectRecord)) {
-    | Some(material) => InitLightMaterialMainService.handleInitComponent(material, state)
+    | Some(material) =>
+      let state = state |> InitLightMaterialMainService.handleInitComponent(material);
+      let state =
+        state
+        |> InitTextureMainService.initTexture(
+             OperateLightMaterialMainService.getDiffuseMap(material, state)
+           );
+      state
+      |> InitTextureMainService.initTexture(
+           OperateLightMaterialMainService.getSpecularMap(material, state)
+         )
     | None => state
     };
   state
