@@ -81,7 +81,7 @@ var BasicBoxesTool = (function () {
 
 
 
-    var createAndDisposeGameObjectsWithMap = function (count, boxes, source, state) {
+    var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, source, state) {
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
         // var record = BasicBoxesTool.createBoxWithMap(source, state);
@@ -359,11 +359,11 @@ var BasicBoxesTool = (function () {
         },
 
 
-        createAndDisposeGameObjectsWithMap: function (count, boxes, source, state) {
+        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, source, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                return createAndDisposeGameObjectsWithMap(count, boxes, source, state
+                return createAndDisposeGameObjectsWithMapByClone(count, boxes, source, state
                 )
             }, state);
         },
@@ -378,11 +378,11 @@ var BasicBoxesTool = (function () {
                 wd.setState(state);
             }, state);
         },
-        createAndDisposeGameObjectsWorkerWithMap: function (count, boxes, source, state) {
+        createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, source, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjectsWithMap(count, boxes, source, wd.getStateFromData(stateData)
+                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, source, wd.getStateFromData(stateData)
                 );
 
                 wd.setState(state);

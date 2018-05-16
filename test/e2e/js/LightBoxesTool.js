@@ -57,6 +57,34 @@ var LightBoxesTool = (function () {
     };
 
 
+    var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, source1, source2, state) {
+        var state = wd.batchDisposeGameObject(window.boxes, state);
+
+
+        var record = LightBoxesTool.createBoxesByCloneWithMap(count, source1, source2, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+
+
+        var record = LightBoxesTool.setPosition(newBoxes, state);
+        var state = record[0];
+        var newBoxes = record[1];
+
+        window.boxes = newBoxes;
+
+
+        for (var i = 0, len = newBoxes.length; i < len; i++) {
+            var box = newBoxes[i];
+            state = wd.initGameObject(box, state);
+        }
+
+        return state;
+    };
+
+
+
+
 
 
     return {
@@ -156,7 +184,39 @@ var LightBoxesTool = (function () {
 
 
 
-        
+        createBoxesByCloneWithMap: function (count, source1, source2, state) {
+            var boxes = [];
+
+            var record = LightBoxesTool.createBoxWithMap(source1, source2, state);
+            var state = record[0];
+            var box = record[1];
+
+
+            var record = wd.cloneGameObject(box, count, true, state);
+            var state = record[0];
+            var newBoxes = record[1];
+
+
+
+            var flatten = (arr) => {
+                return arr.reduce((a, b) => {
+                    var arr = a.concat(b);
+                    return arr;
+                }, []);
+            };
+            newBoxes = flatten(newBoxes);
+
+
+            newBoxes.push(box);
+
+
+            return [state, newBoxes];
+
+        },
+
+
+
+
         createBoxesWithoutClone: function (count, state) {
             var boxes = [];
 
@@ -228,6 +288,22 @@ var LightBoxesTool = (function () {
                 )
             }, state);
         },
+
+
+        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, source1, source2, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleLoop(function (state) {
+                return createAndDisposeGameObjectsWithMapByClone(count, boxes, source1, source2, state)
+            }, state);
+        },
+
+
+
+
+
+
+
         createAndDisposeGameObjectsWorker: function (count, boxes, state) {
             window.boxes = [];
 
@@ -242,6 +318,16 @@ var LightBoxesTool = (function () {
 
 
 
+        createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, source1, source2, state) {
+            window.boxes = [];
+
+            return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
+                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, source1, source2, wd.getStateFromData(stateData)
+                );
+
+                wd.setState(state);
+            }, state);
+        },
 
 
 

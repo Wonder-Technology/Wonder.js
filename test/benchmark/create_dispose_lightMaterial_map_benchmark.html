@@ -10,15 +10,15 @@
     <script src="../e2e/js/AssetTool.js"></script>
     <script src="../e2e/js/ReplaceFetchTool.js"></script>
     <script src="../e2e/js/ScheduleTool.js"></script>
-    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
     <script src="../e2e/js/LightBoxesTool.js"></script>
     <script src="../e2e/js/PositionTool.js"></script>
     <script src="../e2e/js/LightTool.js"></script>
     <script src="../e2e/js/CameraTool.js"></script>
     <script src="../e2e/js/CustomGeometryTool.js"></script>
-    <script src="../e2e/js/BasicMaterialTool.js"></script>
     <script src="../e2e/js/LightMaterialTool.js"></script>
-    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
     <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
     <script src="../e2e/js/RedoUndoTool.js"></script>
     <script src="../e2e/js/RandomTool.js"></script>
@@ -54,31 +54,45 @@
 
 
 
-                var data = BasicBoxesTool.createBoxWithMap(image1, state);
+                var data = LightBoxesTool.createBoxWithMap(image1, image2, state);
                 var state = data[0];
                 var boxes = [data[1]];
 
 
 
 
-                var record = BasicBoxesTool.setPosition(boxes, state);
+                // var data = LightBoxesTool.createBoxesByCloneWithMap(2, image1, image2, state);
+                // var state = data[0];
+                // var boxes = data[1];
+
+
+
+
+                var record = LightBoxesTool.setPosition(boxes, state);
                 var state = record[0];
 
 
 
 
 
-                var state = BasicBoxesTool.createAndDisposeGameObjectsWithMapByClone(
-                    5000, boxes, image1, state
+                var state = LightBoxesTool.createAndDisposeGameObjectsWithMapByClone(
+                    1000, boxes, image1, image2, state
                 );
 
 
+                // var state = LightBoxesTool.createAndDisposeGameObjectsWorkerWithMapByClone(
+                //     1000, boxes, image1, image2, state
+                // );
 
 
 
 
+                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
-                var data = BasicBoxesTool.createCamera(state);
+
+
+
+                var data = LightBoxesTool.createCamera(state);
                 var state = data[0];
                 var camera = data[1];
 
