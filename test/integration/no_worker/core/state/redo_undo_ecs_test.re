@@ -123,9 +123,9 @@ let _ =
         /* let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
            let state = LightMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state), state); */
         let diffuseColor2 = [|1., 0.5, 0.0|];
-        /* let specularColor2 = [|0., 0.1, 0.2|]; */
+        let specularColor2 = [|0., 1.0, 0.5|];
         let state = state |> setLightMaterialDiffuseColor(material2, diffuseColor2);
-        /* let state = state |> setLightMaterialSpecularColor(material2, specularColor2); */
+        let state = state |> setLightMaterialSpecularColor(material2, specularColor2);
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
       let _prepareTextureData = (state) => {
@@ -945,15 +945,18 @@ let _ =
                 "test light material",
                 () => {
                   test(
-                    "shadow copy materialArrayForWorkerInit",
+                    "shadow copy textureCountMap,materialArrayForWorkerInit",
                     () =>
                       StateDataMainType.(
                         LightMaterialType.(
                           MainStateTool.testShadowCopyArrayLikeMapData(
                             (state) => {
-                              let {materialArrayForWorkerInit} =
+                              let {textureCountMap, materialArrayForWorkerInit} =
                                 LightMaterialTool.getRecord(state);
-                              [|materialArrayForWorkerInit |> Obj.magic |> Obj.magic|]
+                              [|
+                                textureCountMap |> Obj.magic,
+                                materialArrayForWorkerInit |> Obj.magic
+                              |]
                             },
                             state^
                           )
@@ -999,6 +1002,48 @@ let _ =
                           LightMaterialAPI.getLightMaterialShininess,
                           LightMaterialAPI.setLightMaterialShininess,
                           () => (1., 2.)
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy textureIndices",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state),
+                          LightMaterialAPI.setLightMaterialDiffuseMap,
+                          () => (1, 2)
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy diffuseMapUnits",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialTool.getDiffuseMapUnit(material, state),
+                          LightMaterialTool.setDiffuseMapUnit,
+                          () => (1, 2)
+                        ),
+                        state
+                      )
+                  );
+                  test(
+                    "copy specularMapUnits",
+                    () =>
+                      _testCopyTypeArraySingleValue(
+                        (
+                          GameObjectTool.createGameObject,
+                          (material, state) =>
+                            LightMaterialTool.getSpecularMapUnit(material, state),
+                          LightMaterialTool.setSpecularMapUnit,
+                          () => (1, 2)
                         ),
                         state
                       )
@@ -1941,7 +1986,12 @@ let _ =
                       state :=
                         TestTool.initWithJobConfigWithoutBuildFakeDom(
                           ~sandbox,
-                          ~buffer=SettingTool.buildBufferConfigStr(~lightMaterialCount=3, ()),
+                          ~buffer=
+                            SettingTool.buildBufferConfigStr(
+                              ~lightMaterialCount=4,
+                              ~textureCountPerMaterial=1,
+                              ()
+                            ),
                           ()
                         );
                       let (
@@ -1966,17 +2016,74 @@ let _ =
                           currentState
                         );
                       let currentState =
-                        LightMaterialAPI.setLightMaterialDiffuseColor(
-                          material1,
-                          [|0.5, 0.5, 0.5|],
+                        LightMaterialAPI.setLightMaterialSpecularColor(
+                          material4,
+                          [|0.5, 0.2, 0.|],
                           currentState
                         );
+                      let state = state |> LightMaterialTool.createAndSetMaps(material4);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let {diffuseColors} =
+                      let defaultUnit = TextureTool.getDefaultUnit();
+                      let {
+                        diffuseColors,
+                        specularColors,
+                        textureIndices,
+                        diffuseMapUnits,
+                        specularMapUnits
+                      } =
                         MainStateTool.unsafeGetState() |> LightMaterialTool.getRecord;
-                      diffuseColors
-                      |> expect == Float32Array.make([|1., 1., 1., 1., 0.5, 0., 1., 1., 1.|])
+                      (
+                        diffuseColors,
+                        specularColors,
+                        textureIndices,
+                        diffuseMapUnits,
+                        specularMapUnits
+                      )
+                      |>
+                      expect == (
+                                  Float32Array.make([|
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    0.5,
+                                    0.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.
+                                  |]),
+                                  Float32Array.make([|
+                                    1.,
+                                    1.,
+                                    1.,
+                                    0.,
+                                    1.,
+                                    0.5,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.,
+                                    1.
+                                  |]),
+                                  Uint32Array.make([|0, 0, 0, 0|]),
+                                  Uint8Array.make([|
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit
+                                  |]),
+                                  Uint8Array.make([|
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit,
+                                    defaultUnit
+                                  |])
+                                )
                     }
                   )
               )
