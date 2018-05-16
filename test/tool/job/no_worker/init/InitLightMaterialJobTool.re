@@ -1,18 +1,32 @@
-/* let initWithJobConfigWithoutBuildFakeDom = (sandbox) =>
-   TestTool.initWithJobConfigWithoutBuildFakeDom(
-     ~sandbox,
-     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-     ()
-   ); */
 let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfig(~sandbox, ~noWorkerJobRecord, ());
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObjectAPI; open GameObjectAPI;
+  open GameObjectAPI;
+  open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createLightMaterial(state);
+  let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+  let (state, gameObject) = state |> createGameObject;
+  let state =
+    state
+    |> addGameObjectLightMaterialComponent(gameObject, material)
+    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+  (state, gameObject, geometry, material)
+};
+
+let prepareGameObjectWithMap = (sandbox, state) => {
+  open GameObjectAPI;
+  open LightMaterialAPI;
+  open BoxGeometryAPI;
+  open Sinon;
+  let (state, material) = createLightMaterial(state);
+  let (state, diffuseMap) = TextureAPI.createTexture(state);
+  let (state, specularMap) = TextureAPI.createTexture(state);
+  let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
+  let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, specularMap);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =
@@ -35,7 +49,7 @@ let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc, sandbox, state) => {
   (state, shaderSource, gameObject)
 };
 
-let prepareForJudgeGLSL = (~prepareGameObjectFunc=prepareGameObject, sandbox, state) => {
+let prepareForJudgeGLSL = (prepareGameObjectFunc, sandbox, state) => {
   let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(prepareGameObjectFunc, sandbox, state);
   let state = state |> exec;
   shaderSource

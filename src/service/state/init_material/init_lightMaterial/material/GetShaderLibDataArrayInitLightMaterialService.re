@@ -31,7 +31,7 @@ let _getMaterialShaderLibDataArrByStaticBranch =
 
 let _isPass = (materialIndex, condition, {materialRecord} as state) =>
   switch condition {
-  | "common_light_map" =>
+  | "light_has_map" =>
     MapUnitService.hasMap(
       OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
         materialIndex,
@@ -44,14 +44,14 @@ let _isPass = (materialIndex, condition, {materialRecord} as state) =>
            materialRecord.specularMapUnits
          )
        )
-  | "diffuse_map" =>
+  | "has_diffuse_map" =>
     MapUnitService.hasMap(
       OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
         materialIndex,
         materialRecord.diffuseMapUnits
       )
     )
-  | "specular_map" =>
+  | "has_specular_map" =>
     MapUnitService.hasMap(
       OperateTypeArrayLightMaterialService.getSpecularMapUnit(
         materialIndex,
@@ -61,8 +61,8 @@ let _isPass = (materialIndex, condition, {materialRecord} as state) =>
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
-        ~title="unknown condition:$condition",
-        ~description={j||j},
+        ~title="_isPass",
+        ~description={j|unknown condition:$condition|j},
         ~reason="",
         ~solution={j||j},
         ~params={j||j}
@@ -84,15 +84,21 @@ let _getMaterialShaderLibDataArrByDynamicBranch =
       name,
       (item) => JobConfigService.filterTargetName(item.name, name)
     );
-  _isPass(materialIndex, condition, state) ?
+  let dynamicBranchShaderLibNameOption =
+    _isPass(materialIndex, condition, state) ?
+      GetDataRenderConfigService.getPass(dynamicBranchData) :
+      GetDataRenderConfigService.getFail(dynamicBranchData);
+  switch dynamicBranchShaderLibNameOption {
+  | None => resultDataArr
+  | Some(dynamicBranchShaderLibName) =>
     resultDataArr
     |> ArrayService.push(
          GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
-           GetDataRenderConfigService.getPass(dynamicBranchData),
+           dynamicBranchShaderLibName,
            shaderLibs
          )
-       ) :
-    resultDataArr
+       )
+  }
 };
 
 let _getMaterialShaderLibDataArrByType =
@@ -180,4 +186,5 @@ let getMaterialShaderLibDataArr =
            ),
            WonderCommonlib.ArrayService.createEmpty()
          )
+      /* |>WonderLog.Log.print */
   );

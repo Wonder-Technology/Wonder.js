@@ -31,6 +31,23 @@ let buildRenderConfig =
       "name": "basic_map",
       "condition": "basic_has_map",
       "pass": "basic_map"
+    },
+    {
+      "name": "common_light_map",
+      "condition": "light_has_map",
+      "pass": "common_light_map"
+    },
+    {
+      "name": "diffuse_map",
+      "condition": "has_diffuse_map",
+      "pass": "diffuse_map",
+      "fail": "no_diffuse_map"
+    },
+    {
+      "name": "specular_map",
+      "condition": "has_specular_map",
+      "pass": "specular_map",
+      "fail": "no_specular_map"
     }
   ],
   "groups": [
@@ -104,10 +121,16 @@ let buildRenderConfig =
           "name": "light_setWorldPosition"
         },
         {
-          "name": "noDiffuseMap"
+          "type": "dynamic_branch",
+          "name": "common_light_map"
         },
         {
-          "name": "noSpecularMap"
+          "type": "dynamic_branch",
+          "name": "diffuse_map"
+        },
+        {
+          "type": "dynamic_branch",
+          "name": "specular_map"
         },
         {
           "name": "noLightMap"
@@ -144,6 +167,7 @@ let buildRenderConfig =
     }
   ]
 }
+
         |},
       ~shaderLibs={|
 [
@@ -427,11 +451,69 @@ let buildRenderConfig =
     ]
   },
   {
-    "name": "noDiffuseMap",
+    "name": "common_light_map",
+    "variables": {
+      "attributes": [
+        {
+          "name": "a_texCoord",
+          "buffer": "texCoord",
+          "type": "vec2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "diffuse_map",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_diffuse_map_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_diffuse_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_diffuseMapSampler2D",
+          "field": "diffuseMap",
+          "type": "sampler2D",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "specular_map",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_specular_map_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_specular_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_specularMapSampler2D",
+          "field": "specularMap",
+          "type": "sampler2D",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "no_diffuse_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noDiffuseMap_fragment"
+        "name": "webgl1_no_diffuse_map_fragment"
       }
     ],
     "variables": {
@@ -446,11 +528,11 @@ let buildRenderConfig =
     }
   },
   {
-    "name": "noSpecularMap",
+    "name": "no_specular_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noSpecularMap_fragment"
+        "name": "webgl1_no_specular_map_fragment"
       }
     ],
     "variables": {
@@ -606,6 +688,7 @@ let buildRenderConfig =
     }
   }
 ]
+
         |},
       ()
     ) => (

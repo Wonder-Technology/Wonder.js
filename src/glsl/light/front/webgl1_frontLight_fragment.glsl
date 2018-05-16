@@ -68,7 +68,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 #if POINT_LIGHTS_COUNT > 0
-        vec3 calcPointLight(vec3 lightDir, PointLightAPI light, vec3 normal, vec3 viewDir)
+        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
 {
         //lightDir is not normalize computing distance
         float distance = length(lightDir);
@@ -89,7 +89,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-        vec3 calcDirectionLight(vec3 lightDir, DirectionLightAPI light, vec3 normal, vec3 viewDir)
+        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
 {
         float attenuation = 1.0;
 

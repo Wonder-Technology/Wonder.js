@@ -37,8 +37,8 @@ let _isPass = (materialIndex, condition, {materialRecord} as state) =>
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
-        ~title="unknown condition:$condition",
-        ~description={j||j},
+        ~title="_isPass",
+        ~description={j|unknown condition:$condition|j},
         ~reason="",
         ~solution={j||j},
         ~params={j||j}
@@ -59,15 +59,21 @@ let _getMaterialShaderLibDataArrByDynamicBranch =
       name,
       (item) => JobConfigService.filterTargetName(item.name, name)
     );
-  _isPass(materialIndex, condition, state) ?
+  let dynamicBranchShaderLibNameOption =
+    _isPass(materialIndex, condition, state) ?
+      GetDataRenderConfigService.getPass(dynamicBranchData) :
+      GetDataRenderConfigService.getFail(dynamicBranchData);
+  switch dynamicBranchShaderLibNameOption {
+  | None => resultDataArr
+  | Some(dynamicBranchShaderLibName) =>
     resultDataArr
     |> ArrayService.push(
          GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
-           GetDataRenderConfigService.getPass(dynamicBranchData),
+           dynamicBranchShaderLibName,
            shaderLibs
          )
-       ) :
-    resultDataArr
+       )
+  }
 };
 
 let _getMaterialShaderLibDataArrByType =

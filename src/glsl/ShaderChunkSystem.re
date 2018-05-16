@@ -1,74 +1,92 @@
+open ShaderChunkType;
 
-  open ShaderChunkType;
+open StateDataMainType;
 
-  open StateDataMainType;
+let _getGLSLChunkMap = ({chunkMap}) => chunkMap;
 
-  let _getGLSLChunkMap = ({chunkMap}) => chunkMap;
+let getChunk = (name: string, glslChunkRecord) =>
+  glslChunkRecord
+  |> _getGLSLChunkMap
+  |> WonderCommonlib.HashMapService.get(name)
+  |> Js.Option.getExn;
 
-  let getChunk = (name: string, glslChunkRecord) =>
-    glslChunkRecord
-    |> _getGLSLChunkMap
-    |> WonderCommonlib.HashMapService.get(name)
-    |> Js.Option.getExn;
+let _buildChunk =
+    (
+      (top: string, define: string),
+      varDeclare: string,
+      (funcDeclare: string, funcDefine: string),
+      body: string
+    ) => {
+  top,
+  define,
+  varDeclare,
+  funcDeclare,
+  funcDefine,
+  body
+};
 
-  let _buildChunk =
-      (
-        (top: string, define: string),
-        varDeclare: string,
-        (funcDeclare: string, funcDefine: string),
-        body: string
-      ) => {
-    top,
-    define,
-    varDeclare,
-    funcDeclare,
-    funcDefine,
-    body
-  };
+let create = () =>
+  WonderCommonlib.HashMapService.{
+    chunkMap:
+      createEmpty()
+      |> set(
+           "webgl1_frontLight_vertex",
+           _buildChunk(
+             ({|
 
-  let create = () =>
-  
-    WonderCommonlib.HashMapService.{
-      chunkMap:
-        createEmpty()
-        
-|> set("webgl1_frontLight_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_setWorldPosition_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_setWorldPosition_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             (
+               {|
 
-|},({|
-
-|},{|
+|},
+               {|
 float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
         vec3 halfAngle = normalize(lightDir + viewDir);
 
@@ -138,7 +156,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 #if POINT_LIGHTS_COUNT > 0
-        vec3 calcPointLight(vec3 lightDir, PointLightAPI light, vec3 normal, vec3 viewDir)
+        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
 {
         //lightDir is not normalize computing distance
         float distance = length(lightDir);
@@ -159,7 +177,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-        vec3 calcDirectionLight(vec3 lightDir, DirectionLightAPI light, vec3 normal, vec3 viewDir)
+        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
 {
         float attenuation = 1.0;
 
@@ -188,7 +206,9 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 
         return totalLight;
 }
-|}),{|
+|}
+             ),
+             {|
 vec3 normal = normalize(getNormal());
 
 // #ifdef BOTH_SIdE
@@ -202,31 +222,43 @@ vec4 totalColor = calcTotalLight(normal, viewDir);
 // totalColor.a *= u_opacity;
 
 totalColor.rgb = totalColor.rgb * getShadowVisibility();
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_end_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_end_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 gl_FragColor = totalColor;
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_common",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_common", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLightAPI {
+struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
@@ -236,26 +268,29 @@ struct PointLightAPI {
     float linear;
     float quadratic;
 };
-uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLightAPI {
+struct DirectionLight {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
-|},({|
+|},
+             (
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
-|},{|
+|},
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos){
     return lightPos - vec3(0.0);
 }
@@ -265,19 +300,26 @@ vec3 getPointLightDirByLightPos(vec3 lightPos){
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
     return lightPos - worldPosition;
 }
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_common_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_common_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLightAPI {
+struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
@@ -287,26 +329,29 @@ struct PointLightAPI {
     float linear;
     float quadratic;
 };
-uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLightAPI {
+struct DirectionLight {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
-|},({|
+|},
+             (
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
-|},{|
+|},
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos){
     return lightPos - vec3(0.0);
 }
@@ -316,19 +361,26 @@ vec3 getPointLightDirByLightPos(vec3 lightPos){
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
     return lightPos - worldPosition;
 }
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_frontLight_common_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_frontLight_common_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec3 v_worldPosition;
 
 #if POINT_LIGHTS_COUNT > 0
-struct PointLightAPI {
+struct PointLight {
     vec3 position;
     vec3 color;
     float intensity;
@@ -338,26 +390,29 @@ struct PointLightAPI {
     float linear;
     float quadratic;
 };
-uniform PointLightAPI u_pointLights[POINT_LIGHTS_COUNT];
+uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #endif
 
 
 #if DIRECTION_LIGHTS_COUNT > 0
-struct DirectionLightAPI {
+struct DirectionLight {
     vec3 position;
 
     float intensity;
 
     vec3 color;
 };
-uniform DirectionLightAPI u_directionLights[DIRECTION_LIGHTS_COUNT];
+uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
-|},({|
+|},
+             (
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
-|},{|
+|},
+               {|
 vec3 getDirectionLightDirByLightPos(vec3 lightPos){
     return lightPos - vec3(0.0);
 }
@@ -367,79 +422,136 @@ vec3 getPointLightDirByLightPos(vec3 lightPos){
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
     return lightPos - worldPosition;
 }
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_ambientLight_fragment",
+           _buildChunk(({|
 
-|> set("webgl1_ambientLight_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}), {|
 uniform vec3 u_ambient;
-|},({|
+|}, ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}), {|
 
-|}))
+|})
+         )
+      |> set(
+           "webgl1_specular_map_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noSpecularMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
+varying vec2 v_specularMapTexCoord;
+|},
+             ({|
 
-|}),{|
+|}, {|
 
-|},({|
+|}),
+             {|
+v_specularMapTexCoord = a_texCoord;
+|}
+           )
+         )
+      |> set(
+           "webgl1_specular_map_fragment",
+           _buildChunk(
+             ({|
 
-|},{|
+|}, {|
+
+|}),
+             {|
+varying vec2 v_specularMapTexCoord;
+|},
+             (
+               {|
+
+|},
+               {|
 float getSpecularStrength() {
-        return 1.0;
+        return texture2D(u_specularMapSampler, v_specularMapTexCoord).r;
     }
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_noShadowMap_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noShadowMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
-
-|},{|
+|}, {|
 float getShadowVisibility() {
         return 1.0;
     }
-|}),{|
+|}),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_noNormalMap_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noNormalMap_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec3 v_normal;
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 v_normal = normalize(normalMatrix * a_normal);
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_noNormalMap_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noNormalMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec3 v_normal;
-|},({|
+|},
+             (
+               {|
 vec3 getNormal();
-|},{|
+|},
+               {|
 vec3 getNormal(){
     return v_normal;
 }
@@ -483,207 +595,371 @@ vec3 getDirectionLightDir(int index){
 vec3 getViewDir(){
     return normalize(u_cameraPos - v_worldPosition);
 }
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_noLightMap_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noLightMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
-
-|},{|
+|}, {|
 vec3 getMaterialLight() {
         return vec3(0.0);
     }
-|}),{|
+|}),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_noEmissionMap_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noEmissionMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
-
-|},{|
+|}, {|
 vec3 getMaterialEmission() {
         return vec3(0.0);
     }
-|}),{|
+|}),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_no_specular_map_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_noDiffuseMap_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
+float getSpecularStrength() {
+        return 1.0;
+    }
+|}),
+             {|
 
-|},{|
+|}
+           )
+         )
+      |> set(
+           "webgl1_no_diffuse_map_fragment",
+           _buildChunk(
+             ({|
+
+|}, {|
+
+|}),
+             {|
+
+|},
+             ({|
+
+|}, {|
 vec3 getMaterialDiffuse() {
         return u_diffuse;
     }
-|}),{|
+|}),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_diffuse_map_vertex",
+           _buildChunk(
+             ({|
 
-|> set("normalMatrix_noInstance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
+varying vec2 v_diffuseMapTexCoord;
+|},
+             ({|
 
-|}),{|
+|}, {|
 
-|},({|
+|}),
+             {|
+//TODO optimize(combine, reduce compute numbers)
+    //TODO BasicTexture extract textureMatrix
+//    vec2 sourceTexCoord = a_texCoord * u_diffuseMapSourceRegion.zw + u_diffuseMapSourceRegion.xy;
+//    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseMapRepeatRegion.zw + u_diffuseMapRepeatRegion.xy;
 
-|},{|
+    v_diffuseMapTexCoord = a_texCoord;
+|}
+           )
+         )
+      |> set(
+           "webgl1_diffuse_map_fragment",
+           _buildChunk(
+             ({|
 
-|}),{|
+|}, {|
+
+|}),
+             {|
+varying vec2 v_diffuseMapTexCoord;
+|},
+             (
+               {|
+
+|},
+               {|
+vec3 getMaterialDiffuse() {
+        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;
+    }
+|}
+             ),
+             {|
+
+|}
+           )
+         )
+      |> set(
+           "normalMatrix_noInstance_vertex",
+           _buildChunk(
+             ({|
+
+|}, {|
+
+|}),
+             {|
+
+|},
+             ({|
+
+|}, {|
+
+|}),
+             {|
 mat3 normalMatrix = u_normalMatrix;
-|}))
+|}
+           )
+         )
+      |> set(
+           "modelMatrix_noInstance_vertex",
+           _buildChunk(({|
 
-|> set("modelMatrix_noInstance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}), {|
 
-|}),{|
+|}, ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}), {|
 mat4 mMatrix = u_mMatrix;
-|}))
+|})
+         )
+      |> set(
+           "normalMatrix_hardware_instance_vertex",
+           _buildChunk(
+             ({|
 
-|> set("normalMatrix_hardware_instance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 mat3 normalMatrix = mat3(a_normalVec3_0, a_normalVec3_1, a_normalVec3_2);
-|}))
+|}
+           )
+         )
+      |> set(
+           "modelMatrix_hardware_instance_vertex",
+           _buildChunk(
+             ({|
 
-|> set("modelMatrix_hardware_instance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);
-|}))
+|}
+           )
+         )
+      |> set(
+           "normalMatrix_batch_instance_vertex",
+           _buildChunk(
+             ({|
 
-|> set("normalMatrix_batch_instance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 mat3 normalMatrix = u_normalMatrix;
-|}))
+|}
+           )
+         )
+      |> set(
+           "modelMatrix_batch_instance_vertex",
+           _buildChunk(({|
 
-|> set("modelMatrix_batch_instance_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}), {|
 
-|}),{|
+|}, ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}), {|
 mat4 mMatrix = u_mMatrix;
-|}))
+|})
+         )
+      |> set(
+           "webgl1_setPos_mvp",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_setPos_mvp", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
-|}))
-
-|> set("mediump_fragment", _buildChunk(({|
+|}
+           )
+         )
+      |> set(
+           "mediump_fragment",
+           _buildChunk(
+             ({|
 precision mediump float;
 precision mediump int;
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|}))
-
-|> set("lowp_fragment", _buildChunk(({|
+|}
+           )
+         )
+      |> set(
+           "lowp_fragment",
+           _buildChunk(
+             ({|
 precision lowp float;
 precision lowp int;
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|}))
-
-|> set("highp_fragment", _buildChunk(({|
+|}
+           )
+         )
+      |> set(
+           "highp_fragment",
+           _buildChunk(
+             ({|
 precision highp float;
 precision highp int;
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "common_vertex",
+           _buildChunk(
+             (
+               {|
 
-|> set("common_vertex", _buildChunk(({|
+|},
+               {|
 
-|},{|
 
-
-// #export 
+// #export
 
 // ##name
 // aaaa
@@ -696,11 +972,16 @@ precision highp int;
 
 
 // #end
-|}),{|
+|}
+             ),
+             {|
 
-|},({|
+|},
+             (
+               {|
 
-|},{|
+|},
+               {|
 // #import * from "common_function"
 // mat2 transpose(mat2 m) {
 //   return mat2(  m[0][0], m[1][0],   // new col 0
@@ -718,19 +999,29 @@ precision highp int;
 //bool isRenderArrayEmpty(int isRenderArrayEmpty){
 //  return isRenderArrayEmpty == 1;
 //}
-|}),{|
+|}
+             ),
+             {|
 
-|}))
+|}
+           )
+         )
+      |> set(
+           "common_function",
+           _buildChunk(
+             ({|
 
-|> set("common_function", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             (
+               {|
 
-|},({|
-
-|},{|
+|},
+               {|
 // mat2 transpose(mat2 m) {
 //   return mat2(  m[0][0], m[1][0],   // new col 0
 //                 m[0][1], m[1][1]    // new col 1
@@ -747,111 +1038,146 @@ precision highp int;
 //bool isRenderArrayEmpty(int isRenderArrayEmpty){
 //  return isRenderArrayEmpty == 1;
 //}
-|}),{|
+|}
+             ),
+             {|
+
+|}
+           )
+         )
+      |> set("common_fragment", _buildChunk(({|
+
+|}, {|
+
+|}), {|
+
+|}, ({|
+
+|}, {|
+
+|}), {|
 
 |}))
+      |> set("common_define", _buildChunk(({|
 
-|> set("common_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}), {|
 
-|}),{|
+|}, ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
-
-|}))
-
-|> set("common_define", _buildChunk(({|
-
-|},{|
-
-|}),{|
-
-|},({|
-
-|},{|
-
-|}),{|
+|}), {|
 
 |}))
+      |> set(
+           "webgl1_basic_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_basic_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_basic_end_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_basic_end_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 gl_FragColor = vec4(totalColor.rgb, totalColor.a);
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_basic_color_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_basic_color_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
+|}),
+             {|
 
-|}),{|
+|},
+             ({|
 
-|},({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 vec4 totalColor = vec4(u_color, 1.0);
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_basic_map_vertex",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_basic_map_vertex", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec2 v_mapCoord0;
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 //    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;
 //
 //    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;
 
     v_mapCoord0 = a_texCoord;
-|}))
+|}
+           )
+         )
+      |> set(
+           "webgl1_basic_map_fragment",
+           _buildChunk(
+             ({|
 
-|> set("webgl1_basic_map_fragment", _buildChunk(({|
+|}, {|
 
-|},{|
-
-|}),{|
+|}),
+             {|
 varying vec2 v_mapCoord0;
-|},({|
+|},
+             ({|
 
-|},{|
+|}, {|
 
-|}),{|
+|}),
+             {|
 totalColor *= texture2D(u_sampler2D, v_mapCoord0);
-|}))
-
-    };
-  
+|}
+           )
+         )
+  };

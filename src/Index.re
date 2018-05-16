@@ -244,6 +244,14 @@ let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGa
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
+let setLightMaterialSpecularMap = LightMaterialAPI.setLightMaterialSpecularMap;
+
+let unsafeGetLightMaterialSpecularMap = LightMaterialAPI.unsafeGetLightMaterialSpecularMap;
+
+let setLightMaterialDiffuseMap = LightMaterialAPI.setLightMaterialDiffuseMap;
+
+let unsafeGetLightMaterialDiffuseMap = LightMaterialAPI.unsafeGetLightMaterialDiffuseMap;
+
 let setLightMaterialShininess = LightMaterialAPI.setLightMaterialShininess;
 
 let getLightMaterialShininess = LightMaterialAPI.getLightMaterialShininess;
@@ -319,6 +327,14 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let setTextureType = TextureAPI.setTextureType;
+
+let getTextureType = TextureAPI.getTextureType;
+
+let setTextureFormat = TextureAPI.setTextureFormat;
+
+let getTextureFormat = TextureAPI.getTextureFormat;
 
 let setTextureMinFilter = TextureAPI.setTextureMinFilter;
 
@@ -577,6 +593,14 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let setTextureType = TextureAPI.setTextureType;
+
+let getTextureType = TextureAPI.getTextureType;
+
+let setTextureFormat = TextureAPI.setTextureFormat;
+
+let getTextureFormat = TextureAPI.getTextureFormat;
 
 let setTextureMinFilter = TextureAPI.setTextureMinFilter;
 
