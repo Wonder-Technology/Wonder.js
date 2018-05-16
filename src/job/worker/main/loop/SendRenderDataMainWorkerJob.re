@@ -118,7 +118,6 @@ let _clearData = (state) => {
   |> ignore;
   InitLightMaterialService.clearDataForWorkerInit(RecordLightMaterialMainService.getRecord(state))
   |> ignore;
-  /* TODO test */
   state
   |> OperateTextureMainService.clearNeedAddedSourceArr
   |> InitTextureMainService.clearNeedInitedTextureIndexArray

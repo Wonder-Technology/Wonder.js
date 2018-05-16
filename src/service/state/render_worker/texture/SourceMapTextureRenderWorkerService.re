@@ -75,11 +75,7 @@ let _convertImageSrcToImageBitmapStream = (imageArrayBufferIndexSizeDataArr, sta
            state
          )
          |> Most.fromPromise
-         |> Most.map(
-              (imageBitmap) =>
-                /* TODO must check: texture is correct? */
-                _addSource(texture, imageBitmap, state)
-            )
+         |> Most.map((imageBitmap) => _addSource(texture, imageBitmap, state))
      );
 
 let addSourceFromImageDataStream = (imageArrayBufferIndexSizeDataArr, state) =>

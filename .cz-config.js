@@ -63,6 +63,7 @@ module.exports = {
     chore: [
       { name: "ci" },
       { name: "merge" },
+      { name: "todo" },
       { name: "gulp" },
       { name: "package.json" },
       { name: "publish" },

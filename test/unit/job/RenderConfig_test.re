@@ -16,7 +16,6 @@ let _ =
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-      /* TODO test getLightMaterialShaderLibRecordArr */
       describe(
         "getBasicMaterialShaderLibRecordArr",
         () =>

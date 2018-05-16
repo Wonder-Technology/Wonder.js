@@ -19,7 +19,6 @@ let deepCopyForRestore =
       }
     ) => {
   index,
-  /* TODO test */
   basicMaterialRenderGameObjectArray: basicMaterialRenderGameObjectArray |> Js.Array.copy,
   lightMaterialRenderGameObjectArray: lightMaterialRenderGameObjectArray |> Js.Array.copy,
   gameObjectMap: gameObjectMap |> SparseMapService.copy,
