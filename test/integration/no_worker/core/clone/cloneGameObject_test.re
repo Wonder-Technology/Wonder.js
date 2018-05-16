@@ -770,6 +770,66 @@ let _ =
                               )
                               |> expect == (color, color)
                             }
+                          );
+                          test(
+                            "test shininess",
+                            () => {
+                              let (state, gameObject, material) = _prepare();
+                              let shininess = 28.5;
+                              let state =
+                                state
+                                |> LightMaterialAPI.setLightMaterialShininess(material, shininess);
+                              let (state, _, clonedMaterialArr) = _clone(gameObject, state);
+                              let state =
+                                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                              let state = AllMaterialTool.prepareForInit(state);
+                              (
+                                LightMaterialAPI.getLightMaterialShininess(
+                                  clonedMaterialArr[0],
+                                  state
+                                ),
+                                LightMaterialAPI.getLightMaterialShininess(
+                                  clonedMaterialArr[1],
+                                  state
+                                )
+                              )
+                              |> expect == (shininess, shininess)
+                            }
+                          );
+                          test(
+                            "test diffuse map + specular map",
+                            () => {
+                              let (state, gameObject, (material, (map1, map2))) =
+                                LightMaterialTool.createGameObjectWithMap(state^);
+                              let (state, _, clonedMaterialArr) = _clone(gameObject, state);
+                              let state =
+                                state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                              let state = AllMaterialTool.prepareForInit(state);
+                              (
+                                LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(material, state),
+                                LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                                  clonedMaterialArr[0],
+                                  state
+                                ),
+                                LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                                  clonedMaterialArr[1],
+                                  state
+                                ),
+                                LightMaterialAPI.unsafeGetLightMaterialSpecularMap(
+                                  material,
+                                  state
+                                ),
+                                LightMaterialAPI.unsafeGetLightMaterialSpecularMap(
+                                  clonedMaterialArr[0],
+                                  state
+                                ),
+                                LightMaterialAPI.unsafeGetLightMaterialSpecularMap(
+                                  clonedMaterialArr[1],
+                                  state
+                                )
+                              )
+                              |> expect == (map1, map1, map1, map2, map2, map2)
+                            }
                           )
                         }
                       )
