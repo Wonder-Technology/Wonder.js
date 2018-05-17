@@ -43,7 +43,7 @@ var RedoUndoTool = (function () {
 
             return state;
         },
-        redoUndoShaderWithMap: function (count, source, state) {
+        redoUndoShaderWithMap: function (count, source, range, state) {
             var index = 1;
 
             var state = ScheduleTool.scheduleLoop(function (state) {
@@ -57,7 +57,7 @@ var RedoUndoTool = (function () {
                     var boxes = record[1];
 
 
-                    var record = BasicBoxesTool.setPosition(boxes, state);
+                    var record = BasicBoxesTool.setPositionWithRange(boxes, range, state);
                     var state = record[0];
                     var boxes = record[1];
 

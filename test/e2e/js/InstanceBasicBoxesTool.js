@@ -246,9 +246,10 @@ var InstanceBasicBoxesTool = (function () {
             return [state, boxes];
         },
 
-        setPosition: function (boxes, state) {
-            var playgroundSize = 300;
 
+
+
+        setPositionWithRange: function (boxes,playgroundSize, state) {
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
 
@@ -273,6 +274,9 @@ var InstanceBasicBoxesTool = (function () {
 
         },
 
+        setPosition: function (boxes, state) {
+            return InstanceBasicBoxesTool.setPositionWithRange(boxes, 300, state)
+        },
 
         setData: function (boxes, state) {
             return ScheduleTool.scheduleLoop(function (state) {

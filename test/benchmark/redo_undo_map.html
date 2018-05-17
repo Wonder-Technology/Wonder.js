@@ -29,35 +29,40 @@
             ReplaceFetchTool.replaceFetchForTest();
 
 
+            return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
 
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
 
                 var image1 = new Image();
-                image1.src = "./1.jpg";
+                image1.src = "./test/e2e/asset/1.jpg";
 
 
 
                 image1.onload = function () {
                     var image2 = new Image();
-                    image2.src = "./2.jpg";
+                    image2.src = "./test/e2e/asset/2.jpg";
 
                     image2.onload = function () {
                         return initSample(image1, image2, wd.unsafeGetState());
                     }
                 }
+
+
             });
 
 
 
+
             function initSample(image1, image2, state) {
-                var data = InstanceBasicBoxesTool.createBoxWithMap(2, false, image1, state);
+                RandomTool.stubMathRandom(10000);
+
+                var data = InstanceBasicBoxesTool.createBoxWithMap(1, false, image1, state);
                 var state = data[0];
                 var box = data[1];
 
 
 
 
-                var data = InstanceBasicBoxesTool.setPosition([box], state);
+                var data = InstanceBasicBoxesTool.setPositionWithRange([box], 20, state);
                 var state = data[0];
                 var boxes = data[1];
 
@@ -66,10 +71,14 @@
 
                 var data = RedoUndoTool.createCamera(state);
                 var state = data[0];
+                var camera = data[1];
+
+
+                var staet = PositionTool.setGameObjectPosition(camera, [0, 10, 200], state);
 
 
 
-                var state = RedoUndoTool.redoUndoShaderWithMap(2, image1, state);
+                var state = RedoUndoTool.redoUndoShaderWithMap(2, image2, 30, state);
 
 
 
@@ -81,7 +90,6 @@
 
 
             }
-
         };
     </script>
 </body>

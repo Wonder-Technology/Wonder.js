@@ -258,6 +258,9 @@ var BasicBoxesTool = (function () {
         setPosition: function (boxes, state) {
             return PositionTool.setPosition(boxes, state);
         },
+        setPositionWithRange: function (boxes, range, state) {
+            return PositionTool.setPositionWithRange(boxes, range, state);
+        },
 
 
         setData: function (boxes, state) {

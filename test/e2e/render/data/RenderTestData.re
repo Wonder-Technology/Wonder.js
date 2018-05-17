@@ -196,7 +196,6 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}]
     },
-
     {
       name: "custom_geometry_basic_material",
       bodyFuncStr: {|
@@ -208,7 +207,7 @@ let renderTestData = {
 
                     function initSample(state) {
                         var data = CustomGeometryTool.createTriangle(1, state);
-                        
+
 
                         var state = data[0];
                         var box = data[1];
@@ -261,7 +260,7 @@ let renderTestData = {
 
                     function initSample(state) {
                         var data = CustomGeometryTool.createTriangle(1, state);
-                        
+
 
                         var state = data[0];
                         var box = data[1];
@@ -309,7 +308,6 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}]
     },
-
     {
       name: "redo_undo",
       bodyFuncStr: {|
@@ -345,6 +343,155 @@ let renderTestData = {
 
                           return wd.startDirector(state);
                           }
+          |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
+    },
+    {
+      name: "redo_undo_map",
+      bodyFuncStr: {|
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+            return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
+
+
+                var image1 = new Image();
+                image1.src = "./test/e2e/asset/1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./test/e2e/asset/2.jpg";
+
+                    image2.onload = function () {
+                        return initSample(image1, image2, wd.unsafeGetState());
+                    }
+                }
+
+
+            });
+
+
+
+
+            function initSample(image1, image2, state) {
+                RandomTool.stubMathRandom(10000);
+
+                var data = InstanceBasicBoxesTool.createBoxWithMap(1, false, image1, state);
+                var state = data[0];
+                var box = data[1];
+
+
+
+
+                var data = InstanceBasicBoxesTool.setPositionWithRange([box], 20, state);
+                var state = data[0];
+                var boxes = data[1];
+
+
+
+
+                var data = RedoUndoTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                var staet = PositionTool.setGameObjectPosition(camera, [0, 10, 200], state);
+
+
+
+                var state = RedoUndoTool.redoUndoShaderWithMap(2, image2, 30, state);
+
+
+
+                wd.startDirector(state)
+            }
+          |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
+    },
+    {
+      name: "basic_box_map+light_box_map",
+      bodyFuncStr: {|
+                       ReplaceFetchTool.replaceFetchForTest();
+
+
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+
+
+                var image1 = new Image();
+                image1.src = "./test/e2e/asset/1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./test/e2e/asset/2.jpg";
+
+                    image2.onload = function () {
+                        return initSample(image1, image2, wd.unsafeGetState());
+                    }
+                }
+
+
+                    });
+
+
+                        function initSample(image1, image2, state) {
+                          RandomTool.stubMathRandom(10000);
+
+
+                          var boxes = [];
+
+                          var record = BasicBoxesTool.createBoxWithMap(image1, state);
+
+                          var state = record[0];
+                          var box = record[1];
+
+                          var state = PositionTool.setGameObjectPosition(box, [10, 0, 0], state);
+
+
+                          boxes.push(box);
+
+
+                          var record = LightBoxesTool.createBoxWithMap(image1, image2, state);
+
+                          var state = record[0];
+                          var box = record[1];
+
+
+                          var state = PositionTool.setGameObjectPosition(box, [-10, 0, 0], state);
+
+
+                          boxes.push(box);
+
+
+
+                          var data = CameraTool.createCamera(state);
+                          var state = data[0];
+                          var camera = data[1];
+
+
+                          var state = LightTool.createLights([-10, 20, 20], [5, 20, 25], state);
+
+
+                          var state = PositionTool.setGameObjectPosition(camera, [0, 20, 100], state);
+
+
+
+
+
+                          return wd.startDirector(state);
+                        }
           |},
       scriptFilePathList: None,
       distance: None,

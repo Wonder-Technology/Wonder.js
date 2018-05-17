@@ -1,8 +1,7 @@
 
 var PositionTool = (function () {
     return {
-        setPosition: function (gameObjects, state) {
-            var playgroundSize = 500;
+        setPositionWithRange: function (gameObjects, playgroundSize, state) {
 
             for (var i = 0, len = gameObjects.length; i < len; i++) {
                 var box = gameObjects[i];
@@ -17,6 +16,14 @@ var PositionTool = (function () {
             }
 
             return [state, gameObjects];
+        },
+        setPosition: function (gameObjects, state) {
+            return PositionTool.setPositionWithRange(gameObjects, 500, state);
+        },
+        setGameObjectPosition: function (gameObject, positionArr, state) {
+            var transform = wd.unsafeGetGameObjectTransformComponent(gameObject, state);
+
+            return wd.setTransformLocalPosition(transform, positionArr, state);
         }
     }
 })();
