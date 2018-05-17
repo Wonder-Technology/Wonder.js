@@ -120,7 +120,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsNeedUpdatesSize()),
         sourceMap: sourceMap |> SparseMapService.copy,
         glTextureMap: glTextureMap |> SparseMapService.copy,
-        bindTextureUnitCacheMap: bindTextureUnitCacheMap |> SparseMapService.copy,
+        bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray: needInitedTextureIndexArray |> Js.Array.copy
