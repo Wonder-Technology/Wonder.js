@@ -1,15 +1,7 @@
 open StateDataMainType;
 
-let _isSupportSharedArrayBuffer = [%bs.raw
-  {|
-    function(){
-        return typeof SharedArrayBuffer !== "undefined"
-    }
-    |}
-];
-
 let detect = (state: StateDataMainType.state) => {
-  let isSupportSharedArrayBuffer = _isSupportSharedArrayBuffer();
+  let isSupportSharedArrayBuffer = Worker.isSupportSharedArrayBuffer();
   {
     ...state,
     workerDetectRecord: {
