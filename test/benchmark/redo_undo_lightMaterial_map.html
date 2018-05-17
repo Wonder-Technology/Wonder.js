@@ -56,10 +56,10 @@
 
 
 
-
-                var data = InstanceLightBoxesTool.setPosition([box], state);
+                var data = InstanceLightBoxesTool.setPositionWithRange([box], 20, state);
                 var state = data[0];
                 var boxes = data[1];
+
 
 
 
@@ -68,10 +68,12 @@
 
                 var data = RedoUndoTool.createCamera(state);
                 var state = data[0];
+                var camera = data[1];
+
+                var staet = PositionTool.setGameObjectPosition(camera, [0, 10, 200], state);
 
 
-
-                var state = RedoUndoTool.redoUndoShaderWithMap(2, image1, state);
+                var state = RedoUndoTool.redoUndoShaderWithMap(2, image1, 30, state);
 
 
 

@@ -231,20 +231,18 @@ var InstanceLightBoxesTool = (function () {
             return [state, boxes];
         },
 
-        setPosition: function (boxes, state) {
-            var playgroundSize = 300;
-
+        setPositionWithRange: function (boxes, playgroundSize, state) {
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
 
                 let sourceInstance = wd.unsafeGetGameObjectSourceInstanceComponent(box, state);
 
-                let objectInstanceTransformArray = wd.getSourceInstanceObjectInstanceTransformArray(sourceInstance, state);
+                let objectInstanceTransforTransformArray = wd.getSourceInstanceObjectInstanceTransformArray(sourceInstance, state);
 
 
 
-                for (let i = 0, len = objectInstanceTransformArray.length; i < len; i++) {
-                    let transform = objectInstanceTransformArray[i];
+                for (let i = 0, len = objectInstanceTransforTransformArray.length; i < len; i++) {
+                    let transform = objectInstanceTransforTransformArray[i];
 
 
                     var localPos = wd.getTransformLocalPosition(transform, state);
@@ -258,6 +256,9 @@ var InstanceLightBoxesTool = (function () {
 
         },
 
+        setPosition: function (boxes, state) {
+            return InstanceLightBoxesTool.setPositionWithRange(boxes, 300, state)
+        },
 
         setData: function (boxes, state) {
             return ScheduleTool.scheduleLoop(function (state) {
