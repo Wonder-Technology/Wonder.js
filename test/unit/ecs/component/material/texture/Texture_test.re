@@ -34,9 +34,10 @@ let _ =
               let state =
                 TestTool.initWithoutBuildFakeDom(
                   ~sandbox,
-                  ~buffer=SettingTool.buildBufferConfigStr(~basicSourceTextureCount=1, ()),
+                  ~buffer=SettingTool.buildBufferConfigStr(~basicSourceTextureCount=2, ()),
                   ()
                 );
+              let (_, texture) = createBasicSourceTexture(state);
               let (_, texture) = createBasicSourceTexture(state);
               expect(
                 () => {
@@ -44,7 +45,7 @@ let _ =
                   ()
                 }
               )
-              |> toThrowMessage("expect index: 1 <= maxIndex: 0, but actual not")
+              |> toThrowMessage("expect index: 2 <= maxIndex: 1, but actual not")
             }
           )
         }

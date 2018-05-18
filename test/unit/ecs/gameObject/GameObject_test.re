@@ -1674,15 +1674,15 @@ let _ =
                         () => {
                           let (state, gameObject, _, _) =
                             InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
                                );
                           let state = AllMaterialTool.prepareForInit(state);
                           let state = state |> initGameObject(gameObject);
-                          getCallCount(createBasicSourceTexture) |> expect == 0
+                          getCallCount(createTexture) |> expect == 0
                         }
                       );
                       test(
@@ -1690,15 +1690,15 @@ let _ =
                         () => {
                           let (state, gameObject, _, _) =
                             InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
-                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
                                );
                           let state = AllMaterialTool.prepareForInit(state);
                           let state = state |> initGameObject(gameObject);
-                          getCallCount(createBasicSourceTexture) |> expect == 1
+                          getCallCount(createTexture) |> expect == 1
                         }
                       )
                     }
@@ -1711,15 +1711,15 @@ let _ =
                         () => {
                           let (state, gameObject, _, _) =
                             InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
-                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
                                );
                           let state = AllMaterialTool.prepareForInit(state);
                           let state = state |> initGameObject(gameObject);
-                          getCallCount(createBasicSourceTexture) |> expect == 0
+                          getCallCount(createTexture) |> expect == 0
                         }
                       );
                       test(
@@ -1727,15 +1727,15 @@ let _ =
                         () => {
                           let (state, gameObject, _, _) =
                             InitLightMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
-                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
+                                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ())
                                );
                           let state = AllMaterialTool.prepareForInit(state);
                           let state = state |> initGameObject(gameObject);
-                          getCallCount(createBasicSourceTexture) |> expect == 2
+                          getCallCount(createTexture) |> expect == 2
                         }
                       )
                     }

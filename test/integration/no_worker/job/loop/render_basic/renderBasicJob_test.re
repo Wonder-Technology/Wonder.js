@@ -767,8 +767,8 @@ let _ =
                     let textureUnit0 = 0;
                     let texture2D = Obj.magic(8);
                     let glTexture = Obj.magic(11);
-                    let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
-                    createBasicSourceTexture |> onCall(0) |> returns(glTexture);
+                    let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                    createTexture |> onCall(0) |> returns(glTexture);
                     let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =
@@ -778,7 +778,7 @@ let _ =
                              ~sandbox,
                              ~textureUnit0,
                              ~texture2D,
-                             ~createBasicSourceTexture,
+                             ~createTexture,
                              ~activeTexture,
                              ~bindTexture,
                              ()

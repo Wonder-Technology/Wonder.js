@@ -33,8 +33,11 @@ let _ =
             "initData": {
               "materialData": Sinon.matchAny,
               "textureData": {
-                "needAddedImageDataArray": needAddedImageDataArray,
-                "needInitedTextureIndexArray": needInitedTextureIndexArray
+                "basicSourceTextureData": {
+                  "needAddedImageDataArray": needAddedImageDataArray,
+                  "needInitedTextureIndexArray": needInitedTextureIndexArray
+                },
+                "arrayBufferViewSourceTextureData": Sinon.matchAny
               }
             },
             "renderData": Sinon.matchAny
@@ -116,7 +119,8 @@ let _ =
                       ) =
                         _prepare();
                       let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
-                      let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
+                      let state =
+                        state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
                       let state =
                         state
                         |> GameObjectAPI.initGameObject(gameObject1)

@@ -14,7 +14,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
             [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
             (
               basicSourceTextureRecord.index,
-              CreateSourceTextureMainService.getBasicSourceTextureIndexOffset(state)
+              CreateSourceTextureMainService.getBasicSourceTextureIndexOffset()
             ),
             basicSourceTextureRecord.glTextureMap
           )

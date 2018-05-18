@@ -4,37 +4,40 @@ open BasicSourceTextureType;
 
 open ArrayBufferViewSourceTextureType;
 
-let initTexture = (texture, state) =>
+let initTexture = (texture, {settingRecord} as state) =>
   WorkerDetectMainService.isUseWorker(state) ?
     switch texture {
     | None => state
     | Some(texture) =>
-      /* let {needInitedTextureIndexArray} = RecordBasicSourceTextureMainService.getRecord(state); */
-      RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-      |> ArrayService.push(texture)
-      |> ignore;
-      /* let {needInitedTextureIndexArray} = RecordArrayBufferViewSourceTextureMainService.getRecord(state); */
-      RecordArrayBufferViewSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-      |> ArrayService.push(texture)
-      |> ignore;
+      let basicSourceTextureCount = BufferSettingService.getBasicSourceTextureCount(settingRecord);
+      IndexSourceTextureService.isBasicSourceTextureIndex(texture, basicSourceTextureCount) ?
+        RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
+        |> ArrayService.push(texture)
+        |> ignore :
+        RecordArrayBufferViewSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
+        |> ArrayService.push(texture)
+        |> ignore;
       state
     } :
     (
       switch texture {
       | None => state
       | Some(texture) =>
-        InitTextureService.initTexture(
-          [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-          texture,
-          RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
-        )
-        |> ignore;
-        InitTextureService.initTexture(
-          [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-          texture,
-          RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
-        )
-        |> ignore;
+        let basicSourceTextureCount =
+          BufferSettingService.getBasicSourceTextureCount(settingRecord);
+        IndexSourceTextureService.isBasicSourceTextureIndex(texture, basicSourceTextureCount) ?
+          InitTextureService.initTexture(
+            [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+            texture,
+            RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
+          )
+          |> ignore :
+          InitTextureService.initTexture(
+            [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+            texture,
+            RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
+          )
+          |> ignore;
         state
       }
     );

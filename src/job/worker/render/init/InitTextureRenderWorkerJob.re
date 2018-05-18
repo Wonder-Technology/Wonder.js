@@ -55,7 +55,9 @@ let execJob = (_, e, stateData) => {
         let basicSourceTextureCount =
           BufferRenderWorkerSettingService.unsafeGetBasicSourceTextureCount(settingRecord);
         let arrayBufferViewSourceTextureCount =
-          BufferRenderWorkerSettingService.unsafeGetArrayBufferViewSourceTextureCount(settingRecord);
+          BufferRenderWorkerSettingService.unsafeGetArrayBufferViewSourceTextureCount(
+            settingRecord
+          );
         state
         |> _createTypeArrays(
              textureData##buffer,
@@ -98,7 +100,7 @@ let execJob = (_, e, stateData) => {
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
                 (
                   textureData##basicSourceTextureData##index,
-                  CreateSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset(state)
+                  CreateSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset()
                 ),
                 basicSourceTextureRecord.glTextureMap
               )

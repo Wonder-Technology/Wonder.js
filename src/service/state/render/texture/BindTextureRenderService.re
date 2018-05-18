@@ -1,6 +1,6 @@
 open StateRenderType;
 
-let _bind = (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap)) => {
+let _bind = (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap) as dataTuple) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -15,17 +15,20 @@ let _bind = (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap)) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  CacheTextureService.isCached(unit, texture, bindTextureUnitCacheMap) ?
-    (bindTextureUnitCacheMap, glTextureMap) :
-    {
-      let bindTextureUnitCacheMap =
-        CacheTextureService.addActiveTexture(unit, texture, bindTextureUnitCacheMap);
-      let target = Gl.getTexture2D(gl);
-      gl |> Gl.activeTexture(Gl.getTextureUnit0(gl) + unit);
-      gl
-      |> Gl.bindTexture(target, OperateGlTextureMapService.unsafeGetTexture(texture, glTextureMap));
-      (bindTextureUnitCacheMap, glTextureMap)
-    }
+  switch (OperateGlTextureMapService.getTexture(texture, glTextureMap)) {
+  | None => dataTuple
+  | Some(glTexture) =>
+    CacheTextureService.isCached(unit, texture, bindTextureUnitCacheMap) ?
+      dataTuple :
+      {
+        let bindTextureUnitCacheMap =
+          CacheTextureService.addActiveTexture(unit, texture, bindTextureUnitCacheMap);
+        let target = Gl.getTexture2D(gl);
+        gl |> Gl.activeTexture(Gl.getTextureUnit0(gl) + unit);
+        gl |> Gl.bindTexture(target, glTexture);
+        (bindTextureUnitCacheMap, glTextureMap)
+      }
+  }
 };
 
 let bind =

@@ -21,7 +21,7 @@ let execJob = (flags, e, stateData) => {
         let state = StateRenderWorkerService.unsafeGetState(stateData);
         let data = MessageService.getRecord(e);
         let initData = data##initData;
-        let textureData = data##textureData;
+        let textureData = initData##textureData;
         SourceMapArrayBufferViewSourceTextureRenderWorkerService.addSourceArray(
           textureData##arrayBufferViewSourceTextureData##needAddedSourceArray,
           state

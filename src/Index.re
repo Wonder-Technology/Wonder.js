@@ -328,6 +328,40 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
+let setArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureType;
+
+let getArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureType;
+
+let setArrayBufferViewSourceTextureFormat = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureFormat;
+
+let getArrayBufferViewSourceTextureFormat = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureFormat;
+
+let setArrayBufferViewSourceTextureMinFilter = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureMinFilter;
+
+let getArrayBufferViewSourceTextureMinFilter = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMinFilter;
+
+let setArrayBufferViewSourceTextureMagFilter = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureMagFilter;
+
+let getArrayBufferViewSourceTextureMagFilter = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMagFilter;
+
+let setArrayBufferViewSourceTextureWrapT = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT;
+
+let getArrayBufferViewSourceTextureWrapT = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapT;
+
+let setArrayBufferViewSourceTextureWrapS = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapS;
+
+let getArrayBufferViewSourceTextureWrapS = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapS;
+
+let getArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureHeight;
+
+let getArrayBufferViewSourceTextureWidth = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWidth;
+
+let setArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource;
+
+let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureSource;
+
+let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
+
 let setBasicSourceTextureType = BasicSourceTextureAPI.setBasicSourceTextureType;
 
 let getBasicSourceTextureType = BasicSourceTextureAPI.getBasicSourceTextureType;
@@ -593,40 +627,6 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
-
-let setBasicSourceTextureType = BasicSourceTextureAPI.setBasicSourceTextureType;
-
-let getBasicSourceTextureType = BasicSourceTextureAPI.getBasicSourceTextureType;
-
-let setBasicSourceTextureFormat = BasicSourceTextureAPI.setBasicSourceTextureFormat;
-
-let getBasicSourceTextureFormat = BasicSourceTextureAPI.getBasicSourceTextureFormat;
-
-let setBasicSourceTextureMinFilter = BasicSourceTextureAPI.setBasicSourceTextureMinFilter;
-
-let getBasicSourceTextureMinFilter = BasicSourceTextureAPI.getBasicSourceTextureMinFilter;
-
-let setBasicSourceTextureMagFilter = BasicSourceTextureAPI.setBasicSourceTextureMagFilter;
-
-let getBasicSourceTextureMagFilter = BasicSourceTextureAPI.getBasicSourceTextureMagFilter;
-
-let setBasicSourceTextureWrapT = BasicSourceTextureAPI.setBasicSourceTextureWrapT;
-
-let getBasicSourceTextureWrapT = BasicSourceTextureAPI.getBasicSourceTextureWrapT;
-
-let setBasicSourceTextureWrapS = BasicSourceTextureAPI.setBasicSourceTextureWrapS;
-
-let getBasicSourceTextureWrapS = BasicSourceTextureAPI.getBasicSourceTextureWrapS;
-
-let getBasicSourceTextureHeight = BasicSourceTextureAPI.getBasicSourceTextureHeight;
-
-let getBasicSourceTextureWidth = BasicSourceTextureAPI.getBasicSourceTextureWidth;
-
-let setBasicSourceTextureSource = BasicSourceTextureAPI.setBasicSourceTextureSource;
-
-let unsafeGetBasicSourceTextureSource = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource;
-
-let createBasicSourceTexture = BasicSourceTextureAPI.createBasicSourceTexture;
 
 let getFps = TimeControllerAPI.getFps;
 

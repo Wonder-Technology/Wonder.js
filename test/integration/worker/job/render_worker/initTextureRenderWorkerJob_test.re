@@ -69,21 +69,24 @@ let _ =
                                         SendInitRenderDataWorkerTool.buildInitRenderData(
                                           ~textureData={
                                             "buffer": Sinon.matchAny,
-                                            "index": 2,
-                                            "needAddedImageDataArray": [|
-                                              (
-                                                imageDataArrayBuffer1,
-                                                source1##width,
-                                                source1##height,
-                                                0
-                                              ),
-                                              (
-                                                imageDataArrayBuffer2,
-                                                source2##width,
-                                                source2##height,
-                                                1
-                                              )
-                                            |]
+                                            "basicSourceTextureData": {
+                                              "index": 2,
+                                              "needAddedImageDataArray": [|
+                                                (
+                                                  imageDataArrayBuffer1,
+                                                  source1##width,
+                                                  source1##height,
+                                                  0
+                                                ),
+                                                (
+                                                  imageDataArrayBuffer2,
+                                                  source2##width,
+                                                  source2##height,
+                                                  1
+                                                )
+                                              |]
+                                            },
+                                            "arrayBufferViewSourceTextureData": Sinon.matchAny
                                           },
                                           ()
                                         )
@@ -251,15 +254,16 @@ let _ =
                             (source1, source2)
                           ) =
                             _prepare();
-                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlWorkerTool.setFakeGl(
-                                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
+                                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~createTexture, ())
                                );
                           BrowserDetectTool.setChrome();
                           RenderJobsRenderWorkerTool.init(
-                            (state) => createBasicSourceTexture |> expect |> toCalledTwice |> resolve,
+                            (state) =>
+                              createTexture |> expect |> toCalledTwice |> resolve,
                             state
                           )
                         }
