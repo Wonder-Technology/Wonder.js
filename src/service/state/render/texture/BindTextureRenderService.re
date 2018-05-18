@@ -47,17 +47,23 @@ let bind =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
+  let basicSourceTextureInTypeArray = texture;
+  let arrayBufferViewTextureInTypeArray =
+    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+      texture,
+      arrayBufferViewSourceTextureRecord.textureIndexOffset
+    );
   _bind(
     gl,
     unit,
-    texture,
+    basicSourceTextureInTypeArray,
     (basicSourceTextureRecord.bindTextureUnitCacheMap, basicSourceTextureRecord.glTextureMap)
   )
   |> ignore;
   _bind(
     gl,
     unit,
-    texture,
+    arrayBufferViewTextureInTypeArray,
     (
       arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       arrayBufferViewSourceTextureRecord.glTextureMap

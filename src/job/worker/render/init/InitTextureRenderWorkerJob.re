@@ -100,7 +100,7 @@ let execJob = (_, e, stateData) => {
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
                 (
                   textureData##basicSourceTextureData##index,
-                  CreateSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset()
+                  IndexSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset()
                 ),
                 basicSourceTextureRecord.glTextureMap
               )
@@ -113,7 +113,7 @@ let execJob = (_, e, stateData) => {
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
                 (
                   textureData##arrayBufferViewSourceTextureData##index,
-                  CreateSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
+                  IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
                     state
                   )
                 ),

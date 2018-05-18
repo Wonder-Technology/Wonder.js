@@ -10,14 +10,15 @@ let create =
         state |> RecordArrayBufferViewSourceTextureMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-        /* TODO test */
-      let index =
-        CreateSourceTextureMainService.getArrayBufferViewSourceTextureIndex(index, state);
+      /* TODO test */
+      let index = IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndex(index, state);
       state.arrayBufferViewSourceTextureRecord =
         Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
       (state, index)
       |> BufferService.checkNotExceedMaxCount(
-           BufferSettingService.getArrayBufferViewSourceTextureCount(settingRecord)
+           BufferArrayBufferViewSourceTextureMainService.getMaxArrayBufferViewSourceTextureIndex(
+             state
+           )
          )
     }
   );

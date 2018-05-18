@@ -1,0 +1,1 @@
+let buildRangeIndex = (index, offset) => ArrayService.range(offset + 0, offset + index - 1);

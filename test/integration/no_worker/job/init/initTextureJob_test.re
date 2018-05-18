@@ -63,7 +63,7 @@ let _ =
                     () => {
                       let (state, map, glTexture, _) = _prepare(state^);
                       let state = state |> InitRenderJobTool.exec;
-                      TextureTool.unsafeGetTexture(map, state) |> expect == glTexture
+                      BasicSourceTextureTool.unsafeGetTexture(map, state) |> expect == glTexture
                     }
                   );
                   test(
@@ -96,8 +96,8 @@ let _ =
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()));
                   let state = state |> InitRenderJobTool.exec;
                   (
-                    TextureTool.unsafeGetTexture(map1, state),
-                    TextureTool.unsafeGetTexture(map2, state)
+                    BasicSourceTextureTool.unsafeGetTexture(map1, state),
+                    BasicSourceTextureTool.unsafeGetTexture(map2, state)
                   )
                   |> expect == (glTexture1, glTexture2)
                 }

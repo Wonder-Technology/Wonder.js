@@ -6,22 +6,31 @@ let handleUpdate =
       texture,
       {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
     ) => {
+  let basicSourceTextureInTypeArray = texture;
   let (basicSourceTextureRecord, browserDetectRecord) =
-    UpdateBasicSourceTextureRenderService.isNeedUpdate(texture, basicSourceTextureRecord) ?
+    UpdateBasicSourceTextureRenderService.isNeedUpdate(
+      basicSourceTextureInTypeArray,
+      basicSourceTextureRecord
+    ) ?
       UpdateBasicSourceTextureRenderService.update(
         gl,
-        texture,
+        basicSourceTextureInTypeArray,
         (basicSourceTextureRecord, browserDetectRecord)
       ) :
       (basicSourceTextureRecord, browserDetectRecord);
+  let arrayBufferViewTextureInTypeArray =
+    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+      texture,
+      arrayBufferViewSourceTextureRecord.textureIndexOffset
+    );
   let (arrayBufferViewSourceTextureRecord, browserDetectRecord) =
     UpdateArrayBufferViewSourceTextureRenderService.isNeedUpdate(
-      texture,
+      arrayBufferViewTextureInTypeArray,
       arrayBufferViewSourceTextureRecord
     ) ?
       UpdateArrayBufferViewSourceTextureRenderService.update(
         gl,
-        texture,
+        arrayBufferViewTextureInTypeArray,
         (arrayBufferViewSourceTextureRecord, browserDetectRecord)
       ) :
       (arrayBufferViewSourceTextureRecord, browserDetectRecord);

@@ -1070,7 +1070,7 @@ let _ =
                             needAddedSourceArray,
                             needInitedTextureIndexArray
                           } =
-                            TextureTool.getRecord(state);
+                            BasicSourceTextureTool.getRecord(state);
                           [|
                             sourceMap |> Obj.magic,
                             glTextureMap |> Obj.magic,
@@ -1945,7 +1945,7 @@ let _ =
                         currentState |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let defaultUnit = TextureTool.getDefaultUnit();
+                      let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
                       let {colors, textureIndices, mapUnits} =
                         MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
                       (colors, textureIndices, mapUnits)
@@ -2024,7 +2024,7 @@ let _ =
                       let state = state |> LightMaterialTool.createAndSetMaps(material4);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
                       let _ = MainStateTool.restore(currentState, copiedState);
-                      let defaultUnit = TextureTool.getDefaultUnit();
+                      let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
                       let {
                         diffuseColors,
                         specularColors,
@@ -2263,16 +2263,16 @@ let _ =
                      let state = state |> BasicMaterialAPI.setBasicMaterialMap(material4, map2); */
                   let currentState = AllMaterialTool.pregetGLSLData(currentState);
                   let _ = MainStateTool.restore(currentState, copiedState);
-                  /* let defaultUnit = TextureTool.getDefaultUnit(); */
-                  let defaultWrapS = TextureTool.getDefaultWrapS();
-                  let defaultWrapT = TextureTool.getDefaultWrapT();
-                  let defaultMagFilter = TextureTool.getDefaultMagFilter();
-                  let defaultMinFilter = TextureTool.getDefaultMinFilter();
-                  let defaultFormat = TextureTool.getDefaultFormat();
-                  let defaultType = TextureTool.getDefaultType();
-                  let defaultIsNeedUpdate = TextureTool.getDefaultIsNeedUpdate();
+                  /* let defaultUnit = BasicSourceTextureTool.getDefaultUnit(); */
+                  let defaultWrapS = BasicSourceTextureTool.getDefaultWrapS();
+                  let defaultWrapT = BasicSourceTextureTool.getDefaultWrapT();
+                  let defaultMagFilter = BasicSourceTextureTool.getDefaultMagFilter();
+                  let defaultMinFilter = BasicSourceTextureTool.getDefaultMinFilter();
+                  let defaultFormat = BasicSourceTextureTool.getDefaultFormat();
+                  let defaultType = BasicSourceTextureTool.getDefaultType();
+                  let defaultIsNeedUpdate = BasicSourceTextureTool.getDefaultIsNeedUpdate();
                   let {wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates} =
-                    MainStateTool.unsafeGetState() |> TextureTool.getRecord;
+                    MainStateTool.unsafeGetState() |> BasicSourceTextureTool.getRecord;
                   (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
                   |>
                   expect == (

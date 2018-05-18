@@ -168,7 +168,7 @@ let _ =
                     ~completeFunc=
                       (state) => {
                         let {needAddedSourceArray, needInitedTextureIndexArray} =
-                          TextureTool.getRecord(state);
+                          BasicSourceTextureTool.getRecord(state);
                         (
                           needAddedSourceArray |> Js.Array.length,
                           needInitedTextureIndexArray |> Js.Array.length

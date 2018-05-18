@@ -12,4 +12,8 @@ let initTexturesWithIndexArray = (gl, indexArray, glTextureMap) =>
      );
 
 let initTextures = (gl, (index, offset), glTextureMap) =>
-  initTexturesWithIndexArray(gl, ArrayService.range(offset + 0, offset + index - 1), glTextureMap);
+  initTexturesWithIndexArray(
+    gl,
+    SourceTextureIndexService.buildRangeIndex(index, offset),
+    glTextureMap
+  );

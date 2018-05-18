@@ -13,11 +13,11 @@ let bindAndUpdate =
         OperateTypeArrayLightMaterialService.getSpecularMapUnit(material, specularMapUnits);
       let (textureIndices, settingRecord, state) =
         (textureIndices, settingRecord, state)
-        |> BindAndUpdateMapMaterialRenderService.update(
+        |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
              (gl, material, diffuseMapUnit),
              OperateTypeArrayLightMaterialService.getTextureIndex
            )
-        |> BindAndUpdateMapMaterialRenderService.update(
+        |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
              (gl, material, specularMapUnit),
              OperateTypeArrayLightMaterialService.getTextureIndex
            );

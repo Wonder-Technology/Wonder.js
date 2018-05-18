@@ -11,7 +11,7 @@ let bindAndUpdate =
         OperateTypeArrayBasicMaterialService.getMapUnit(material, basicMaterialRecord.mapUnits);
       let (textureIndices, settingRecord, state) =
         (textureIndices, settingRecord, state)
-        |> BindAndUpdateMapMaterialRenderService.update(
+        |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
              (gl, material, mapUnit),
              OperateTypeArrayBasicMaterialService.getTextureIndex
            );

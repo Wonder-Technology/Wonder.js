@@ -1394,8 +1394,8 @@ let _ =
               FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             /* let source = Obj.magic({"width": width, "height": height}); */
-            let source1 = TextureTool.buildSource(width, height);
-            let source2 = TextureTool.buildSource(width, height);
+            let source1 = BasicSourceTextureTool.buildSource(width, height);
+            let source2 = BasicSourceTextureTool.buildSource(width, height);
             let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(diffuseMap, source1);
             let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source2);
             (state, (diffuseMap, specularMap))

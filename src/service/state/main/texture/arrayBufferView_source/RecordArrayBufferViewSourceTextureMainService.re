@@ -15,6 +15,7 @@ let getRecord = ({arrayBufferViewSourceTextureRecord}) =>
 let setAllTypeArrDataToDefault =
     (
       arrayBufferViewSourceTextureCount: int,
+      arrayBufferViewSourceTextureIndexOffset,
       (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
     ) => {
   let defaultWrapS = getDefaultWrapS();
@@ -26,56 +27,70 @@ let setAllTypeArrDataToDefault =
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
   let defaultWidth = getDefaultWidth();
   let defaultHeight = getDefaultHeight();
-  WonderCommonlib.ArrayService.range(0, arrayBufferViewSourceTextureCount - 1)
+  SourceTextureIndexService.buildRangeIndex(
+    arrayBufferViewSourceTextureCount - 1,
+    arrayBufferViewSourceTextureIndexOffset
+  )
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (
            (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights),
            index
-         ) => (
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
-             index,
-             defaultWrapS,
-             wrapSs
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
-             index,
-             defaultWrapT,
-             wrapTs
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
-             index,
-             defaultMagFilter,
-             magFilters
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
-             index,
-             defaultMinFilter,
-             minFilters
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
-             index,
-             defaultFormat,
-             formats
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setType(index, defaultType, types),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
-             index,
-             defaultIsNeedUpdate,
-             isNeedUpdates
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
-             index,
-             defaultWidth,
-             widths
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
-             index,
-             defaultHeight,
-             heights
+         ) => {
+           let indexInTypeArray =
+             IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+               index,
+               arrayBufferViewSourceTextureIndexOffset
+             );
+           (
+             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
+               indexInTypeArray,
+               defaultWrapS,
+               wrapSs
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
+               indexInTypeArray,
+               defaultWrapT,
+               wrapTs
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
+               indexInTypeArray,
+               defaultMagFilter,
+               magFilters
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
+               indexInTypeArray,
+               defaultMinFilter,
+               minFilters
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
+               indexInTypeArray,
+               defaultFormat,
+               formats
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setType(
+               indexInTypeArray,
+               defaultType,
+               types
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
+               indexInTypeArray,
+               defaultIsNeedUpdate,
+               isNeedUpdates
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
+               indexInTypeArray,
+               defaultWidth,
+               widths
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
+               indexInTypeArray,
+               defaultHeight,
+               heights
+             )
            )
-         )
+         }
        ),
        (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
      )
@@ -84,14 +99,22 @@ let setAllTypeArrDataToDefault =
 let _setAllTypeArrDataToDefault =
     (
       arrayBufferViewSourceTextureCount: int,
+      arrayBufferViewSourceTextureIndexOffset,
       (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
     ) =>
   setAllTypeArrDataToDefault(
     arrayBufferViewSourceTextureCount,
+    arrayBufferViewSourceTextureIndexOffset,
     (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
   );
 
-let _initBufferData = (basicSourceTextureCount, arrayBufferViewSourceTextureCount, buffer) => {
+let _initBufferData =
+    (
+      basicSourceTextureCount,
+      arrayBufferViewSourceTextureCount,
+      buffer,
+      arrayBufferViewSourceTextureIndexOffset
+    ) => {
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
     CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
       buffer,
@@ -99,7 +122,10 @@ let _initBufferData = (basicSourceTextureCount, arrayBufferViewSourceTextureCoun
       arrayBufferViewSourceTextureCount
     );
   (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
-  |> _setAllTypeArrDataToDefault(arrayBufferViewSourceTextureCount)
+  |> _setAllTypeArrDataToDefault(
+       arrayBufferViewSourceTextureCount,
+       arrayBufferViewSourceTextureIndexOffset
+     )
 };
 
 let create = ({settingRecord} as state) => {
@@ -108,7 +134,12 @@ let create = ({settingRecord} as state) => {
     BufferSettingService.getArrayBufferViewSourceTextureCount(settingRecord);
   let {buffer} = RecordSourceTextureMainService.getRecord(state);
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
-    _initBufferData(basicSourceTextureCount, arrayBufferViewSourceTextureCount, buffer);
+    _initBufferData(
+      basicSourceTextureCount,
+      arrayBufferViewSourceTextureCount,
+      buffer,
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+    );
   state.arrayBufferViewSourceTextureRecord =
     Some({
       index: 0,

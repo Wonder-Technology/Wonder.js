@@ -448,7 +448,7 @@ LightMaterialAPI. unsafeGetLightMaterialSpecularMap(material, state)
                               _testRemoveFromTypeArr(
                                 state,
                                 (1, 2),
-                                TextureTool.getDefaultUnit(),
+                                BasicSourceTextureTool.getDefaultUnit(),
                                 (
                                   LightMaterialTool.createGameObjectWithMap,
                                   LightMaterialTool.getDiffuseMapUnit,
@@ -466,7 +466,7 @@ LightMaterialAPI. unsafeGetLightMaterialSpecularMap(material, state)
                               _testRemoveFromTypeArr(
                                 state,
                                 (1, 2),
-                                TextureTool.getDefaultUnit(),
+                                BasicSourceTextureTool.getDefaultUnit(),
                                 (
                                   LightMaterialTool.createGameObjectWithMap,
                                   LightMaterialTool.getSpecularMapUnit,

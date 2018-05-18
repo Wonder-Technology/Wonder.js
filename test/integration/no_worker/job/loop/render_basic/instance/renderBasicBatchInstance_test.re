@@ -107,7 +107,7 @@ let _ =
               let material =
                 GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
               let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-              let source = TextureTool.buildSource(2, 4);
+              let source = BasicSourceTextureTool.buildSource(2, 4);
               let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map, source);
               let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
               RenderBasicMaterialMapTool.testUpdateMap(sandbox, state)

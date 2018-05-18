@@ -38,30 +38,10 @@ let _setTextureParameters =
          )
     } :
     {
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureWrapS,
-           gl |> Gl.getClampToEdge
-         );
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureWrapT,
-           gl |> Gl.getClampToEdge
-         );
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureMagFilter,
-           _filterFallback(magFilter, gl)
-         );
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureMinFilter,
-           _filterFallback(minFilter, gl)
-         )
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, gl |> Gl.getClampToEdge);
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, gl |> Gl.getClampToEdge);
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMagFilter, _filterFallback(magFilter, gl));
+      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, _filterFallback(minFilter, gl))
     };
 
 let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, height)) => {
@@ -106,7 +86,7 @@ let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), sizeTuple, sourc
 let _allocateSourceToTexture = (gl, paramTuple, sizeTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, sizeTuple, source);
 
-let update = (gl, texture, (arrayBufferViewSourceTextureRecord, browserDetectRecord)) => {
+let update = (gl, textureInTypeArray, (arrayBufferViewSourceTextureRecord, browserDetectRecord)) => {
   let {
     sourceMap,
     wrapSs,
@@ -120,26 +100,34 @@ let update = (gl, texture, (arrayBufferViewSourceTextureRecord, browserDetectRec
     heights,
     setFlipYFunc
   } = arrayBufferViewSourceTextureRecord;
-  switch (TextureSourceMapService.getSource(texture, sourceMap)) {
+  switch (TextureSourceMapService.getSource(textureInTypeArray, sourceMap)) {
   | None => (arrayBufferViewSourceTextureRecord, browserDetectRecord)
   | Some(source) =>
-    let width = OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(texture, widths);
-    let height = OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(texture, heights);
+    let width =
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(textureInTypeArray, widths);
+    let height =
+      OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(textureInTypeArray, heights);
     let glWrapS =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(texture, wrapSs)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(textureInTypeArray, wrapSs)
       |> TextureWrapService.getGlWrap(gl);
     let glWrapT =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(texture, wrapTs)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(textureInTypeArray, wrapTs)
       |> TextureWrapService.getGlWrap(gl);
     let magFilter =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getMagFilter(texture, magFilters);
+      OperateTypeArrayArrayBufferViewSourceTextureService.getMagFilter(
+        textureInTypeArray,
+        magFilters
+      );
     let minFilter =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getMinFilter(texture, minFilters);
+      OperateTypeArrayArrayBufferViewSourceTextureService.getMinFilter(
+        textureInTypeArray,
+        minFilters
+      );
     let glFormat =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(texture, formats)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(textureInTypeArray, formats)
       |> TextureFormatService.getGlFormat(gl);
     let glType =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getType(texture, types)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getType(textureInTypeArray, types)
       |> TextureTypeService.getGlType(gl);
     let flipY = OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
@@ -152,7 +140,7 @@ let update = (gl, texture, (arrayBufferViewSourceTextureRecord, browserDetectRec
            isSourcePowerOfTwo = this.isSourcePowerOfTwo();
 
            if(!isSourcePowerOfTwo){
-               Log.warn("texture size is not power of two after clampToMaxSize()");
+               Log.warn("textureInTypeArray size is not power of two after clampToMaxSize()");
            }
        } */
     _setTextureParameters(
@@ -167,7 +155,7 @@ let update = (gl, texture, (arrayBufferViewSourceTextureRecord, browserDetectRec
            gl.generateMipmap(gl[this.target]);
        } */
     OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
-      texture,
+      textureInTypeArray,
       BufferArrayBufferViewSourceTextureService.getNotNeedUpdate(),
       isNeedUpdates
     )
@@ -176,9 +164,9 @@ let update = (gl, texture, (arrayBufferViewSourceTextureRecord, browserDetectRec
   }
 };
 
-let isNeedUpdate = (texture, arrayBufferViewSourceTextureRecord) =>
+let isNeedUpdate = (textureInTypeArray, arrayBufferViewSourceTextureRecord) =>
   OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(
-    texture,
+    textureInTypeArray,
     arrayBufferViewSourceTextureRecord.isNeedUpdates
   )
   === BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();

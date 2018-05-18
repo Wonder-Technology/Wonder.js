@@ -139,6 +139,8 @@ let createRenderState =
       sourceMap: arrayBufferViewSourceTextureRecord.sourceMap |> Obj.magic,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
       bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+      textureIndexOffset:
+        IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(state),
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},

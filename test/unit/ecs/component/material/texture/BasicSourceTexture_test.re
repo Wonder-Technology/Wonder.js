@@ -4,7 +4,7 @@ open Wonder_jest;
 
 let _ =
   describe(
-    "Texture",
+    "BasicSourceTexture",
     () => {
       open Expect;
       open Expect.Operators;
@@ -82,7 +82,7 @@ let _ =
                 "default is need update",
                 () => {
                   let (state, texture) = createBasicSourceTexture(state^);
-                  TextureTool.isNeedUpdate(texture, state) |> expect == true
+                  BasicSourceTextureTool.isNeedUpdate(texture, state) |> expect == true
                 }
               )
           )

@@ -6,7 +6,7 @@ let getTextureIndex = (material, mapUnit, getTextureIndexFunc, (textureIndices, 
     textureIndices
   );
 
-let update =
+let bindAndUpdate =
     (
       (gl, material, mapUnit),
       getTextureIndexFunc,

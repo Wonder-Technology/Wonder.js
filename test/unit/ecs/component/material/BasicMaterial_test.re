@@ -378,7 +378,7 @@ let _ =
                                   _testRemoveFromTypeArr(
                                     state,
                                     (1, 2),
-                                    TextureTool.getDefaultUnit(),
+                                    BasicSourceTextureTool.getDefaultUnit(),
                                     (
                                       BasicMaterialTool.createGameObjectWithMap,
                                       BasicMaterialTool.getMapUnit,

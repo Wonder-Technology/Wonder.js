@@ -52,8 +52,8 @@ let prepareStateAndCreateTwoMaps = (sandbox) => {
     );
   let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let source1 = TextureTool.buildSource(100, 200);
-  let source2 = TextureTool.buildSource(110, 210);
+  let source1 = BasicSourceTextureTool.buildSource(100, 200);
+  let source2 = BasicSourceTextureTool.buildSource(110, 210);
   let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
   let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
   (
@@ -83,8 +83,8 @@ let prepareStateAndCreateTwoGameObjects = (sandbox) => {
                     let (state, gameObject2, _, _, _, map2) =
                       RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
 
-  let source1 = TextureTool.buildSource(100, 200);
-  let source2 = TextureTool.buildSource(110, 210);
+  let source1 = BasicSourceTextureTool.buildSource(100, 200);
+  let source2 = BasicSourceTextureTool.buildSource(110, 210);
   let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
   let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
 

@@ -2,7 +2,8 @@ open StateDataMainType;
 
 open ArrayBufferViewSourceTextureType;
 
-let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
+let _restoreTypeArrays =
+    (currentTextureRecord, targetTextureRecord, arrayBufferViewSourceTextureIndexOffset) =>
   currentTextureRecord.wrapSs === targetTextureRecord.wrapSs
   && currentTextureRecord.wrapTs === targetTextureRecord.wrapTs
   && currentTextureRecord.magFilters === targetTextureRecord.magFilters
@@ -27,7 +28,8 @@ let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
           currentTextureRecord.heights
         )
         |> RecordArrayBufferViewSourceTextureMainService.setAllTypeArrDataToDefault(
-             currentTextureRecord.index
+             currentTextureRecord.index,
+             arrayBufferViewSourceTextureIndexOffset
            );
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentTextureRecord.wrapSs, 0),
@@ -90,7 +92,11 @@ let restore = (currentState, targetState) => {
   let currentTextureRecord = RecordArrayBufferViewSourceTextureMainService.getRecord(currentState);
   let targetTextureRecord = RecordArrayBufferViewSourceTextureMainService.getRecord(targetState);
   let (currentTextureRecord, targetTextureRecord) =
-    _restoreTypeArrays(currentTextureRecord, targetTextureRecord);
+    _restoreTypeArrays(
+      currentTextureRecord,
+      targetTextureRecord,
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(currentState)
+    );
   {
     ...targetState,
     arrayBufferViewSourceTextureRecord:
