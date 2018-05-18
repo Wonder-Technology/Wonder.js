@@ -16,6 +16,8 @@ open PointLightType;
 
 open RenderSourceInstanceType;
 
+open RenderArrayBufferViewSourceTextureType;
+
 open DeviceManagerType;
 
 open RenderShaderType;
@@ -58,7 +60,9 @@ let createRenderState =
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  let textureRecord = RecordTextureMainService.getRecord(state);
+  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let isUseWorker = WorkerDetectMainService.isUseWorker(state);
   let renderStateTransformRecord: RenderTransformType.transformRecord =
@@ -106,18 +110,33 @@ let createRenderState =
       diffuseMapUnits: lightMaterialRecord.diffuseMapUnits,
       specularMapUnits: lightMaterialRecord.specularMapUnits
     },
-    textureRecord: {
-      wrapSs: textureRecord.wrapSs,
-      wrapTs: textureRecord.wrapTs,
-      magFilters: textureRecord.magFilters,
-      minFilters: textureRecord.minFilters,
-      formats: textureRecord.formats,
-      types: textureRecord.types,
-      isNeedUpdates: textureRecord.isNeedUpdates,
-      sourceMap: textureRecord.sourceMap,
-      glTextureMap: textureRecord.glTextureMap,
-      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap,
-      setFlipYFunc: OperateTextureMainService.setFlipY
+    basicSourceTextureRecord: {
+      wrapSs: basicSourceTextureRecord.wrapSs,
+      wrapTs: basicSourceTextureRecord.wrapTs,
+      magFilters: basicSourceTextureRecord.magFilters,
+      minFilters: basicSourceTextureRecord.minFilters,
+      formats: basicSourceTextureRecord.formats,
+      types: basicSourceTextureRecord.types,
+      isNeedUpdates: basicSourceTextureRecord.isNeedUpdates,
+      sourceMap: basicSourceTextureRecord.sourceMap,
+      glTextureMap: basicSourceTextureRecord.glTextureMap,
+      bindTextureUnitCacheMap: basicSourceTextureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateSourceTextureMainService.setFlipY
+    },
+    arrayBufferViewSourceTextureRecord: {
+      wrapSs: arrayBufferViewSourceTextureRecord.wrapSs,
+      wrapTs: arrayBufferViewSourceTextureRecord.wrapTs,
+      magFilters: arrayBufferViewSourceTextureRecord.magFilters,
+      minFilters: arrayBufferViewSourceTextureRecord.minFilters,
+      formats: arrayBufferViewSourceTextureRecord.formats,
+      types: arrayBufferViewSourceTextureRecord.types,
+      isNeedUpdates: arrayBufferViewSourceTextureRecord.isNeedUpdates,
+      widths: arrayBufferViewSourceTextureRecord.widths,
+      heights: arrayBufferViewSourceTextureRecord.heights,
+      sourceMap: arrayBufferViewSourceTextureRecord.sourceMap,
+      glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
+      bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {
@@ -175,8 +194,7 @@ let createRenderState =
           objectInstanceCountPerSourceInstance:
             BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
         }),
-      textureCountPerMaterial:
-        Some(BufferSettingService.getTextureCountPerMaterial(settingRecord))
+      textureCountPerMaterial: Some(BufferSettingService.getTextureCountPerMaterial(settingRecord))
     },
     workerDetectRecord: {isUseWorker: isUseWorker},
     browserDetectRecord: {browser: browserDetectRecord.browser}

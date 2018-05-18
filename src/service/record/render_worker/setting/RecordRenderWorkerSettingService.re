@@ -1,3 +1,10 @@
 open RenderWorkerSettingType;
 
-let create = () => {gpu: None, memory: None, instanceBuffer: None, textureCountPerMaterial: None};
+let create = () => {
+  gpu: None,
+  memory: None,
+  instanceBuffer: None,
+  textureCountPerMaterial: None,
+  basicSourceTextureCount: None,
+  arrayBufferViewSourceTextureCount: None
+};

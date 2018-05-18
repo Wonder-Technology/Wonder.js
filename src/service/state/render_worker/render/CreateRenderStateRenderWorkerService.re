@@ -14,7 +14,7 @@ open RenderWorkerDirectionLightType;
 
 open RenderWorkerPointLightType;
 
-open RenderWorkerTextureType;
+open RenderWorkerBasicSourceTextureType;
 
 open RenderWorkerSourceInstanceType;
 
@@ -56,7 +56,9 @@ let createRenderState =
   let ambientLightRecord = RecordAmbientLightRenderWorkerService.getRecord(state);
   let directionLightRecord = RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
-  let textureRecord = RecordTextureRenderWorkerService.getRecord(state);
+  let basicSourceTextureRecord = RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
   let workerDetectRecord = RecordWorkerDetectRenderWorkerService.getRecord(state);
   let browserDetectRecord = RecordBrowserDetectRenderWorkerService.getRecord(state);
   let {
@@ -111,18 +113,33 @@ let createRenderState =
       diffuseMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetDiffuseMapUnits(state),
       specularMapUnits: RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(state)
     },
-    textureRecord: {
-      wrapSs: textureRecord.wrapSs |> OptionService.unsafeGet,
-      wrapTs: textureRecord.wrapTs |> OptionService.unsafeGet,
-      magFilters: textureRecord.magFilters |> OptionService.unsafeGet,
-      minFilters: textureRecord.minFilters |> OptionService.unsafeGet,
-      formats: textureRecord.formats |> OptionService.unsafeGet,
-      types: textureRecord.types |> OptionService.unsafeGet,
-      isNeedUpdates: textureRecord.isNeedUpdates |> OptionService.unsafeGet,
-      sourceMap: textureRecord.sourceMap |> Obj.magic,
-      glTextureMap: textureRecord.glTextureMap,
-      bindTextureUnitCacheMap: textureRecord.bindTextureUnitCacheMap,
-      setFlipYFunc: OperateTextureRenderWorkerService.setFlipY
+    basicSourceTextureRecord: {
+      wrapSs: basicSourceTextureRecord.wrapSs |> OptionService.unsafeGet,
+      wrapTs: basicSourceTextureRecord.wrapTs |> OptionService.unsafeGet,
+      magFilters: basicSourceTextureRecord.magFilters |> OptionService.unsafeGet,
+      minFilters: basicSourceTextureRecord.minFilters |> OptionService.unsafeGet,
+      formats: basicSourceTextureRecord.formats |> OptionService.unsafeGet,
+      types: basicSourceTextureRecord.types |> OptionService.unsafeGet,
+      isNeedUpdates: basicSourceTextureRecord.isNeedUpdates |> OptionService.unsafeGet,
+      sourceMap: basicSourceTextureRecord.sourceMap |> Obj.magic,
+      glTextureMap: basicSourceTextureRecord.glTextureMap,
+      bindTextureUnitCacheMap: basicSourceTextureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
+    },
+    arrayBufferViewSourceTextureRecord: {
+      wrapSs: arrayBufferViewSourceTextureRecord.wrapSs |> OptionService.unsafeGet,
+      wrapTs: arrayBufferViewSourceTextureRecord.wrapTs |> OptionService.unsafeGet,
+      magFilters: arrayBufferViewSourceTextureRecord.magFilters |> OptionService.unsafeGet,
+      minFilters: arrayBufferViewSourceTextureRecord.minFilters |> OptionService.unsafeGet,
+      formats: arrayBufferViewSourceTextureRecord.formats |> OptionService.unsafeGet,
+      types: arrayBufferViewSourceTextureRecord.types |> OptionService.unsafeGet,
+      isNeedUpdates: arrayBufferViewSourceTextureRecord.isNeedUpdates |> OptionService.unsafeGet,
+      widths: arrayBufferViewSourceTextureRecord.widths |> OptionService.unsafeGet,
+      heights: arrayBufferViewSourceTextureRecord.heights |> OptionService.unsafeGet,
+      sourceMap: arrayBufferViewSourceTextureRecord.sourceMap |> Obj.magic,
+      glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
+      bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {

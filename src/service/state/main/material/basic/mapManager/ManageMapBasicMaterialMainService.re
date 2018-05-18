@@ -19,7 +19,7 @@ let unsafeGetMap = (material, {settingRecord} as state) =>
   getMap(material, state) |> OptionService.unsafeGet;
 
 let setMap = (material, texture, {settingRecord} as state) => {
-  let {textureIndices, mapUnits, textureCountMap} as lightMaterialRecord =
+  let {textureIndices, mapUnits, textureCountMap} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
   let (textureIndices, mapUnits, textureCountMap) =
     ManagerMapMaterialMainService.setMap(
@@ -35,6 +35,6 @@ let setMap = (material, texture, {settingRecord} as state) => {
     );
   {
     ...state,
-    basicMaterialRecord: Some({...lightMaterialRecord, textureIndices, mapUnits, textureCountMap})
+    basicMaterialRecord: Some({...basicMaterialRecord, textureIndices, mapUnits, textureCountMap})
   }
 };

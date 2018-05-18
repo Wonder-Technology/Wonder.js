@@ -104,9 +104,9 @@ let _ =
                       )
                   );
                   testPromise(
-                    "clear textureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
+                    "clear basicSourceTextureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
                     () => {
-                      open TextureType;
+                      open BasicSourceTextureType;
                       let (
                         state,
                         context,
@@ -251,15 +251,15 @@ let _ =
                             (source1, source2)
                           ) =
                             _prepare();
-                          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                          let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlWorkerTool.setFakeGl(
-                                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~createTexture, ())
+                                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~createBasicSourceTexture, ())
                                );
                           BrowserDetectTool.setChrome();
                           RenderJobsRenderWorkerTool.init(
-                            (state) => createTexture |> expect |> toCalledTwice |> resolve,
+                            (state) => createBasicSourceTexture |> expect |> toCalledTwice |> resolve,
                             state
                           )
                         }

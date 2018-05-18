@@ -31,7 +31,7 @@ let prepareGameObjectWithMap = (sandbox, state) => {
   open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
-  let (state, map) = TextureAPI.createTexture(state);
+  let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;

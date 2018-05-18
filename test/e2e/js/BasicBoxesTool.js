@@ -169,11 +169,11 @@ var BasicBoxesTool = (function () {
 
             var material = wd.unsafeGetGameObjectBasicMaterialComponent(obj, state);
 
-            var record = wd.createTexture(state)
+            var record = wd.createBasicSourceTexture(state)
             var state = record[0];
             var texture = record[1];
 
-            var state = wd.setTextureSource(texture, source, state);
+            var state = wd.setBasicSourceTextureSource(texture, source, state);
 
 
             var state = wd.setBasicMaterialMap(material, texture, state);

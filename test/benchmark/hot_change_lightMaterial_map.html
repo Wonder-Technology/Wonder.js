@@ -55,16 +55,16 @@
 
 
 
-            var record = wd.createTexture(state)
+            var record = wd.createBasicSourceTexture(state)
             var state = record[0];
             var texture3 = record[1];
 
-            var record = wd.createTexture(state)
+            var record = wd.createBasicSourceTexture(state)
             var state = record[0];
             var texture4 = record[1];
 
-            var state = wd.setTextureSource(texture3, image1, state);
-            var state = wd.setTextureSource(texture4, image2, state);
+            var state = wd.setBasicSourceTextureSource(texture3, image1, state);
+            var state = wd.setBasicSourceTextureSource(texture4, image2, state);
 
 
 

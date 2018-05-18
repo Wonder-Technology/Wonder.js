@@ -41,8 +41,8 @@ let _ =
                     "should get the new texture",
                     () => {
                       let (state, material) = BasicMaterialAPI.createBasicMaterial(state^);
-                      let (state, map1) = TextureAPI.createTexture(state);
-                      let (state, map2) = TextureAPI.createTexture(state);
+                      let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map2);
                       let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map1);
                       BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state) |> expect == map1
@@ -53,7 +53,7 @@ let _ =
                     () => {
                       let (state, gameObject1, _, material1, _, map1) =
                         RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
-                      let (state, map2) = TextureAPI.createTexture(state);
+                      let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                       let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -79,7 +79,7 @@ let _ =
                         () => {
                           let (state, gameObject1, _, material1, _, map1) =
                             RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
-                          let (state, map2) = TextureAPI.createTexture(state);
+                          let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                           let (state, (map1, map2), (unpackFlipYWebgl, pixelStorei)) =
                             _prepare(map1, map2, state);
                           let state =
@@ -122,10 +122,10 @@ let _ =
                     "should get the new texture",
                     () => {
                       let (state, material) = LightMaterialAPI.createLightMaterial(state^);
-                      let (state, map1) = TextureAPI.createTexture(state);
-                      let (state, map2) = TextureAPI.createTexture(state);
-                      let (state, map3) = TextureAPI.createTexture(state);
-                      let (state, map4) = TextureAPI.createTexture(state);
+                      let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let (state, map3) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let (state, map4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let state =
                         state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
                       let state =
@@ -146,8 +146,8 @@ let _ =
                     () => {
                       let (state, gameObject1, _, material1, _, (map1, map2)) =
                         FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
-                      let (state, map3) = TextureAPI.createTexture(state);
-                      let (state, map4) = TextureAPI.createTexture(state);
+                      let (state, map3) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let (state, map4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                       let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -170,8 +170,8 @@ let _ =
                         () => {
                           let (state, gameObject1, _, material1, _, (map1, map2)) =
                             FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
-                          let (state, map3) = TextureAPI.createTexture(state);
-                          let (state, map4) = TextureAPI.createTexture(state);
+                          let (state, map3) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                          let (state, map4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                           let (state, (unpackFlipYWebgl, pixelStorei)) =
                             _prepareForUpdateTexture(state);
                           let state =

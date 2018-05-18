@@ -767,8 +767,8 @@ let _ =
                     let textureUnit0 = 0;
                     let texture2D = Obj.magic(8);
                     let glTexture = Obj.magic(11);
-                    let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-                    createTexture |> onCall(0) |> returns(glTexture);
+                    let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                    createBasicSourceTexture |> onCall(0) |> returns(glTexture);
                     let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =
@@ -778,7 +778,7 @@ let _ =
                              ~sandbox,
                              ~textureUnit0,
                              ~texture2D,
-                             ~createTexture,
+                             ~createBasicSourceTexture,
                              ~activeTexture,
                              ~bindTexture,
                              ()
@@ -831,7 +831,7 @@ let _ =
                 let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                 /* let source = Obj.magic({"width": width, "height": height}); */
                 let source = TextureTool.buildSource(width, height);
-                let state = state |> TextureAPI.setTextureSource(map, source);
+                let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map, source);
                 (state, map)
               };
               test(
@@ -1049,11 +1049,11 @@ let _ =
                               let (state, map) = _prepare(state^);
                               let state =
                                 state
-                                |> TextureAPI.setTextureMagFilter(
+                                |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
                                      map,
                                      TextureTool.getNearestMipmapLinear()
                                    )
-                                |> TextureAPI.setTextureMinFilter(map, TextureTool.getNearest());
+                                |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(map, TextureTool.getNearest());
                               let (
                                 state,
                                 texture2D,
@@ -1083,11 +1083,11 @@ let _ =
                               let (state, map) = _prepare(state^);
                               let state =
                                 state
-                                |> TextureAPI.setTextureMagFilter(
+                                |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
                                      map,
                                      TextureTool.getLinearMipmapNearest()
                                    )
-                                |> TextureAPI.setTextureMinFilter(map, TextureTool.getLinear());
+                                |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(map, TextureTool.getLinear());
                               let (
                                 state,
                                 texture2D,
@@ -1127,7 +1127,7 @@ let _ =
                         "test draw",
                         () => {
                           let (state, map) = _prepare(~state=state^, ());
-                          let source = TextureAPI.unsafeGetTextureSource(map, state);
+                          let source = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(map, state);
                           let texture2D = Obj.magic(1);
                           let rgba = Obj.magic(2);
                           let unsignedByte = Obj.magic(3);
@@ -1163,11 +1163,11 @@ let _ =
                         () => {
                           let (state, map) = _prepare(~state=state^, ());
                           let state =
-                            state |> TextureAPI.setTextureFormat(map, TextureTool.getAlpha());
+                            state |> BasicSourceTextureAPI.setBasicSourceTextureFormat(map, TextureTool.getAlpha());
                           let state =
                             state
-                            |> TextureAPI.setTextureType(map, TextureTool.getUnsignedShort565());
-                          let source = TextureAPI.unsafeGetTextureSource(map, state);
+                            |> BasicSourceTextureAPI.setBasicSourceTextureType(map, TextureTool.getUnsignedShort565());
+                          let source = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(map, state);
                           let texture2D = Obj.magic(1);
                           let alpha = Obj.magic(2);
                           let unsignedShort565 = Obj.magic(3);
@@ -1219,7 +1219,7 @@ let _ =
                     );
                   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                   let source1 = TextureTool.buildSource(10, 20);
-                  let state = state |> TextureAPI.setTextureSource(map1, source1);
+                  let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
                   let unpackFlipYWebgl = Obj.magic(2);
                   let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
                   let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);

@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open TextureType;
+open BasicSourceTextureType;
 
 let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
   currentTextureRecord.wrapSs === targetTextureRecord.wrapSs
@@ -22,7 +22,7 @@ let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
           currentTextureRecord.types,
           currentTextureRecord.isNeedUpdates
         )
-        |> RecordTextureMainService.setAllTypeArrDataToDefault(currentTextureRecord.index);
+        |> RecordBasicSourceTextureMainService.setAllTypeArrDataToDefault(currentTextureRecord.index);
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentTextureRecord.wrapSs, 0),
         (targetTextureRecord.wrapSs, 0),
@@ -69,16 +69,15 @@ let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
     };
 
 let restore = (currentState, targetState) => {
-  let currentTextureRecord = RecordTextureMainService.getRecord(currentState);
-  let targetTextureRecord = RecordTextureMainService.getRecord(targetState);
+  let currentTextureRecord = RecordBasicSourceTextureMainService.getRecord(currentState);
+  let targetTextureRecord = RecordBasicSourceTextureMainService.getRecord(targetState);
   let (currentTextureRecord, targetTextureRecord) =
     _restoreTypeArrays(currentTextureRecord, targetTextureRecord);
   {
     ...targetState,
-    textureRecord:
+    basicSourceTextureRecord:
       Some({
         ...targetTextureRecord,
-        buffer: currentTextureRecord.buffer,
         wrapSs: currentTextureRecord.wrapSs,
         wrapTs: currentTextureRecord.wrapTs,
         magFilters: currentTextureRecord.magFilters,

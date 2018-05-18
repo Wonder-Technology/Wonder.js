@@ -12,7 +12,7 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     |> RecordAmbientLightMainService.deepCopyForRestore
     |> RecordDirectionLightMainService.deepCopyForRestore
     |> RecordPointLightMainService.deepCopyForRestore
-    |> RecordTextureMainService.deepCopyForRestore;
+    |> RecordBasicSourceTextureMainService.deepCopyForRestore;
   {
     ...state,
     gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),

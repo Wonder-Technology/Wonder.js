@@ -1,6 +1,8 @@
 open StateDataRenderWorkerType;
 
-open RenderWorkerTextureType;
+open RenderWorkerBasicSourceTextureType;
+
+open RenderWorkerArrayBufferViewSourceTextureType;
 
 open Js.Promise;
 
@@ -10,8 +12,8 @@ let execJob = (flags, e, stateData) => {
   let initData = data##initData;
   let textureData = initData##textureData;
   [|
-    SourceMapTextureRenderWorkerService.addSourceFromImageDataStream(
-      textureData##needAddedImageDataArray,
+    SourceMapBasicSourceTextureRenderWorkerService.addSourceFromImageDataStream(
+      textureData##basicSourceTextureData##needAddedImageDataArray,
       state
     ),
     MostUtils.callFunc(
@@ -19,16 +21,42 @@ let execJob = (flags, e, stateData) => {
         let state = StateRenderWorkerService.unsafeGetState(stateData);
         let data = MessageService.getRecord(e);
         let initData = data##initData;
+        let textureData = data##textureData;
+        SourceMapArrayBufferViewSourceTextureRenderWorkerService.addSourceArray(
+          textureData##arrayBufferViewSourceTextureData##needAddedSourceArray,
+          state
+        )
+        |> StateRenderWorkerService.setState(stateData)
+      }
+    ),
+    MostUtils.callFunc(
+      () => {
+        let state = StateRenderWorkerService.unsafeGetState(stateData);
+        let data = MessageService.getRecord(e);
+        let initData = data##initData;
         let textureData = initData##textureData;
-        let {glTextureMap} as textureRecord = RecordTextureRenderWorkerService.getRecord(state);
-        state.textureRecord =
+        let basicSourceTextureRecord =
+          RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+        let arrayBufferViewSourceTextureRecord =
+          RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+        state.basicSourceTextureRecord =
           Some({
-            ...textureRecord,
+            ...basicSourceTextureRecord,
             glTextureMap:
               InitTextureService.initTexturesWithIndexArray(
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                textureData##needInitedTextureIndexArray,
-                glTextureMap
+                textureData##basicSourceTextureData##needInitedTextureIndexArray,
+                basicSourceTextureRecord.glTextureMap
+              )
+          });
+        state.arrayBufferViewSourceTextureRecord =
+          Some({
+            ...arrayBufferViewSourceTextureRecord,
+            glTextureMap:
+              InitTextureService.initTexturesWithIndexArray(
+                [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+                textureData##arrayBufferViewSourceTextureData##needInitedTextureIndexArray,
+                arrayBufferViewSourceTextureRecord.glTextureMap
               )
           });
         state

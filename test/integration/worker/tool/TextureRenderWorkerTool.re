@@ -1,9 +1,9 @@
 open StateDataRenderWorkerType;
 
-open RenderWorkerTextureType;
+open RenderWorkerBasicSourceTextureType;
 
 let unsafeGetSource = (texture, state) => {
-  let {sourceMap} = RecordTextureRenderWorkerService.getRecord(state);
+  let {sourceMap} = RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   TextureSourceMapService.unsafeGetSource(texture, sourceMap)
 };
 
@@ -50,12 +50,12 @@ let prepareStateAndCreateTwoMaps = (sandbox) => {
       imageDataArrayBuffer1,
       imageDataArrayBuffer2
     );
-  let (state, map1) = TextureAPI.createTexture(state);
-  let (state, map2) = TextureAPI.createTexture(state);
+  let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+  let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let source1 = TextureTool.buildSource(100, 200);
   let source2 = TextureTool.buildSource(110, 210);
-  let state = state |> TextureAPI.setTextureSource(map1, source1);
-  let state = state |> TextureAPI.setTextureSource(map2, source2);
+  let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
+  let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
   (
     state,
     context,
@@ -85,8 +85,8 @@ let prepareStateAndCreateTwoGameObjects = (sandbox) => {
 
   let source1 = TextureTool.buildSource(100, 200);
   let source2 = TextureTool.buildSource(110, 210);
-  let state = state |> TextureAPI.setTextureSource(map1, source1);
-  let state = state |> TextureAPI.setTextureSource(map2, source2);
+  let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
+  let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
 
 
 

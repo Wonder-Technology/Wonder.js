@@ -30,6 +30,25 @@
 
 
 
+            // return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
+
+
+            //     var image1 = new Image();
+            //     image1.src = "./test/e2e/asset/1.jpg";
+
+
+
+            //     image1.onload = function () {
+            //         var image2 = new Image();
+            //         image2.src = "./test/e2e/asset/2.jpg";
+
+            //         image2.onload = function () {
+            //             return initSample(image1, image2, wd.unsafeGetState());
+            //         }
+            //     }
+
+
+            // });
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
 
                 var image1 = new Image();
@@ -48,52 +67,33 @@
             });
 
 
-
             function initSample(image1, image2, state) {
-                var n1 = performance.now();
+                RandomTool.stubMathRandom(10000);
 
 
-
-
-                var count = 500;
                 var boxes = [];
 
-                for (var i = 0; i < count; i++) {
-                    var record = BasicBoxesTool.createBoxWithMap(image1, state);
-                    var state = record[0];
-                    var box = record[1];
+                var record = BasicBoxesTool.createBoxWithMap(image1, state);
 
-
-                    boxes.push(box);
-                }
-
-
-
-
-
-                var record = LightBoxesTool.createBoxesByCloneWithMap(5000, image1, image2, state);
                 var state = record[0];
-                var boxes = boxes.concat(record[1]);
+                var box = record[1];
+
+                var state = PositionTool.setGameObjectPosition(box, [10, 0, 0], state);
 
 
+                boxes.push(box);
 
 
+                var record = LightBoxesTool.createBoxWithMap(image1, image2, state);
 
-
-
-
-
-
-
-                var record = PositionTool.setPosition(boxes, state);
                 var state = record[0];
+                var box = record[1];
 
 
-
-                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
-
+                var state = PositionTool.setGameObjectPosition(box, [-10, 0, 0], state);
 
 
+                boxes.push(box);
 
 
 
@@ -102,11 +102,17 @@
                 var camera = data[1];
 
 
+                var state = LightTool.createLights([-10, 20, 20], [5, 20, 25], state);
 
 
-                wd.startDirector(state);
+                var state = PositionTool.setGameObjectPosition(camera, [0, 20, 100], state);
+
+
+
+
+
+                return wd.startDirector(state);
             }
-
         };
     </script>
 </body>

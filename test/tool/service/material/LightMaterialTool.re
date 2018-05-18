@@ -14,8 +14,8 @@ let createGameObject = (state) => {
 };
 
 let createAndSetMaps = (material, state) => {
-  let (state, texture1) = TextureAPI.createTexture(state);
-  let (state, texture2) = TextureAPI.createTexture(state);
+  let (state, texture1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+  let (state, texture2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, texture1);
   let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, texture2);
   (state, (texture1, texture2))
@@ -89,7 +89,7 @@ let isMaterialDisposed = (material, state) => {
 let getGroupCount = (material, state) =>
   GroupLightMaterialService.getGroupCount(material, getRecord(state));
 
-let getTextureCount = (material, state) =>
+let getBasicSourceTextureCount = (material, state) =>
   TextureCountMapMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
 
 let getDiffuseMapUnit = (material, state) =>

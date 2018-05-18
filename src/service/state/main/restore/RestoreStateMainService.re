@@ -39,7 +39,9 @@ let restore =
   |> RestoreAmbientLightMainService.restore(currentState)
   |> RestoreDirectionLightMainService.restore(currentState)
   |> RestorePointLightMainService.restore(currentState)
-  |> RestoreTextureMainService.restore(currentState)
+  |> RestoreSourceTextureMainService.restore(currentState)
+  |> RestoreBasicSourceTextureMainService.restore(currentState)
+  |> RestoreArrayBufferViewSourceTextureMainService.restore(currentState)
   |> setState(stateData)
   /* targetState */
 };

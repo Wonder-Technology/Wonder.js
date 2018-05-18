@@ -147,17 +147,17 @@ var InstanceLightBoxesTool = (function () {
 
             var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
 
-            var record = wd.createTexture(state)
+            var record = wd.createBasicSourceTexture(state)
             var state = record[0];
             var texture1 = record[1];
 
-            var record = wd.createTexture(state)
+            var record = wd.createBasicSourceTexture(state)
             var state = record[0];
             var texture2 = record[1];
 
-            var state = wd.setTextureSource(texture1, source1, state);
+            var state = wd.setBasicSourceTextureSource(texture1, source1, state);
 
-            var state = wd.setTextureSource(texture2, source2, state);
+            var state = wd.setBasicSourceTextureSource(texture2, source2, state);
 
 
             var state = wd.setLightMaterialDiffuseMap(material, texture1, state);

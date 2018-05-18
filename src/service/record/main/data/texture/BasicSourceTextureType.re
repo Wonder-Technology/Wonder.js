@@ -1,4 +1,6 @@
-type textureRecord = {
+type basicSourceTextureRecord = {
+  index: int,
+  /* buffer: WorkerType.sharedArrayBuffer, */
   wrapSs: Js.Typed_array.Uint8Array.t,
   wrapTs: Js.Typed_array.Uint8Array.t,
   magFilters: Js.Typed_array.Uint8Array.t,
@@ -9,5 +11,7 @@ type textureRecord = {
   sourceMap: WonderCommonlib.SparseMapService.t(DomType.imageElement),
   glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
-  setFlipYFunc: (GlType.webgl1Context, Js.boolean, BrowserDetectType.browserDetectRecord) => unit
+  disposedIndexArray: array(int),
+  needAddedSourceArray: array((int, DomType.imageElement)),
+  needInitedTextureIndexArray: array(int)
 };

@@ -3,7 +3,7 @@ let setSource = (mapList, state) =>
   |> List.fold_left(
        (state, map) => {
          let source = TextureTool.buildSource(10, 20);
-         state |> TextureAPI.setTextureSource(map, source)
+         state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map, source)
        },
        state
      );

@@ -129,18 +129,18 @@ let _ =
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
       let _prepareTextureData = (state) => {
-        open TextureAPI;
+        open BasicSourceTextureAPI;
         open Js.Typed_array;
-        let (state, texture1) = createTexture(state);
-        let (state, texture2) = createTexture(state);
-        let (state, texture3) = createTexture(state);
+        let (state, texture1) = createBasicSourceTexture(state);
+        let (state, texture2) = createBasicSourceTexture(state);
+        let (state, texture3) = createBasicSourceTexture(state);
         let state = AllMaterialTool.prepareForInit(state);
-        let state = state |> setTextureWrapS(texture2, 1);
-        let state = state |> setTextureWrapT(texture2, 1);
-        let state = state |> setTextureMagFilter(texture2, 1);
-        let state = state |> setTextureMinFilter(texture2, 1);
-        let state = state |> setTextureType(texture2, 1);
-        let state = state |> setTextureFormat(texture2, 2);
+        let state = state |> setBasicSourceTextureWrapS(texture2, 1);
+        let state = state |> setBasicSourceTextureWrapT(texture2, 1);
+        let state = state |> setBasicSourceTextureMagFilter(texture2, 1);
+        let state = state |> setBasicSourceTextureMinFilter(texture2, 1);
+        let state = state |> setBasicSourceTextureType(texture2, 1);
+        let state = state |> setBasicSourceTextureFormat(texture2, 2);
         (state, texture1, texture2, texture3)
       };
       beforeEach(
@@ -1059,7 +1059,7 @@ let _ =
                 "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
                 () =>
                   StateDataMainType.(
-                    TextureType.(
+                    BasicSourceTextureType.(
                       MainStateTool.testShadowCopyArrayLikeMapData(
                         (state) => {
                           let {
@@ -1091,8 +1091,8 @@ let _ =
                   _testCopyTypeArraySingleValue(
                     (
                       GameObjectTool.createGameObject,
-                      (material, state) => TextureAPI.getTextureWrapS(material, state),
-                      TextureAPI.setTextureWrapS,
+                      (material, state) => BasicSourceTextureAPI.getBasicSourceTextureWrapS(material, state),
+                      BasicSourceTextureAPI.setBasicSourceTextureWrapS,
                       () => (1, 2)
                     ),
                     state
@@ -1939,8 +1939,8 @@ let _ =
                           [|1., 0.1, 1.|],
                           currentState
                         );
-                      let (currentState, map1) = TextureAPI.createTexture(currentState);
-                      let (currentState, map2) = TextureAPI.createTexture(currentState);
+                      let (currentState, map1) = BasicSourceTextureAPI.createBasicSourceTexture(currentState);
+                      let (currentState, map2) = BasicSourceTextureAPI.createBasicSourceTexture(currentState);
                       let currentState =
                         currentState |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
@@ -2246,20 +2246,20 @@ let _ =
               test(
                 "test restore typeArrays",
                 () => {
-                  open TextureType;
+                  open BasicSourceTextureType;
                   state :=
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
-                      ~buffer=SettingTool.buildBufferConfigStr(~textureCount=4, ()),
+                      ~buffer=SettingTool.buildBufferConfigStr(~basicSourceTextureCount=4, ()),
                       ()
                     );
                   let (state, texture1, texture2, texture3) = _prepareTextureData(state^);
                   let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
                   let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let (currentState, texture4) = TextureAPI.createTexture(state);
-                  let currentState = TextureAPI.setTextureWrapT(texture4, 1, currentState);
-                  /* let (state, map1) = TextureAPI.createTexture(state);
-                     let (state, map2) = TextureAPI.createTexture(state);
+                  let (currentState, texture4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                  let currentState = BasicSourceTextureAPI.setBasicSourceTextureWrapT(texture4, 1, currentState);
+                  /* let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                     let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                      let state = state |> BasicMaterialAPI.setBasicMaterialMap(material4, map2); */
                   let currentState = AllMaterialTool.pregetGLSLData(currentState);
                   let _ = MainStateTool.restore(currentState, copiedState);

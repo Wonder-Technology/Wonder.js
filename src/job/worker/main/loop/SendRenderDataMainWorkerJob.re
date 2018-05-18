@@ -29,7 +29,9 @@ let _buildData = (operateType, stateData) => {
   let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let lightRenderObjectRecord = OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
-  let textureRecord = RecordTextureMainService.getRecord(state);
+  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
@@ -81,16 +83,24 @@ let _buildData = (operateType, stateData) => {
         }
       },
       "textureData": {
-        "needAddedImageDataArray":
-          OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-            textureRecord.needAddedSourceArray
-            |> ArrayService.removeDuplicateItems(
-                 [@bs] (((texture, source)) => Js.Int.toString(texture))
-               )
-          ),
-        "needInitedTextureIndexArray":
-          textureRecord.needInitedTextureIndexArray
-          |> WonderCommonlib.ArrayService.removeDuplicateItems
+        "basicSourceTextureData": {
+          "needAddedImageDataArray":
+            OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+              basicSourceTextureRecord.needAddedSourceArray
+              |> ArrayService.removeDuplicateItems(
+                   [@bs] (((texture, source)) => Js.Int.toString(texture))
+                 )
+            ),
+          "needInitedTextureIndexArray":
+            basicSourceTextureRecord.needInitedTextureIndexArray
+            |> WonderCommonlib.ArrayService.removeDuplicateItems
+        },
+        "arrayBufferViewSourceTextureData": {
+          "needAddedSourceArray": arrayBufferViewSourceTextureRecord.needAddedSourceArray,
+          "needInitedTextureIndexArray":
+            arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
+            |> WonderCommonlib.ArrayService.removeDuplicateItems
+        }
       }
     },
     "renderData": {
@@ -119,8 +129,8 @@ let _clearData = (state) => {
   InitLightMaterialService.clearDataForWorkerInit(RecordLightMaterialMainService.getRecord(state))
   |> ignore;
   state
-  |> OperateTextureMainService.clearNeedAddedSourceArr
-  |> InitTextureMainService.clearNeedInitedTextureIndexArray
+  |> OperateBasicSourceTextureMainService.clearNeedAddedSourceArr
+  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
 };
 
 let execJob = (flags, stateData) =>

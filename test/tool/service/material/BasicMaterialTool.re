@@ -15,7 +15,7 @@ let createGameObject = (state) => {
 
 let createGameObjectWithMap = (state) => {
   let (state, gameObject, material) = createGameObject(state);
-  let (state, texture) = TextureAPI.createTexture(state);
+  let (state, texture) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
   (state, gameObject, (material, texture))
 };
@@ -78,7 +78,7 @@ let isMaterialDisposed = (material, state) => {
 let getGroupCount = (material, state) =>
   GroupBasicMaterialService.getGroupCount(material, getRecord(state));
 
-let getTextureCount = (material, state) =>
+let getBasicSourceTextureCount = (material, state) =>
   TextureCountMapMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
 
 let getMapUnit = (material, state) =>

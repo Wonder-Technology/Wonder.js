@@ -1,13 +1,11 @@
 open StateDataRenderWorkerType;
 
-open RenderWorkerTextureType;
-
 open Js.Promise;
 
-let _createTypeArrays = (buffer, count, state) => {
+let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceTextureCount, state) => {
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
-    CreateTypeArrayTextureService.createTypeArrays(buffer, count);
-  state.textureRecord =
+    CreateTypeArrayBasicSourceTextureService.createTypeArrays(buffer, basicSourceTextureCount);
+  state.basicSourceTextureRecord =
     Some({
       wrapSs: Some(wrapSs),
       wrapTs: Some(wrapTs),
@@ -16,6 +14,27 @@ let _createTypeArrays = (buffer, count, state) => {
       formats: Some(formats),
       types: Some(types),
       isNeedUpdates: Some(isNeedUpdates),
+      sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
+      glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
+      bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty()
+    });
+  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
+    CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
+      buffer,
+      basicSourceTextureCount,
+      arrayBufferViewSourceTextureCount
+    );
+  state.arrayBufferViewSourceTextureRecord =
+    Some({
+      wrapSs: Some(wrapSs),
+      wrapTs: Some(wrapTs),
+      magFilters: Some(magFilters),
+      minFilters: Some(minFilters),
+      formats: Some(formats),
+      types: Some(types),
+      isNeedUpdates: Some(isNeedUpdates),
+      widths: Some(widths),
+      heights: Some(heights),
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
       bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty()
@@ -30,17 +49,24 @@ let execJob = (_, e, stateData) => {
   [|
     MostUtils.callFunc(
       () => {
-        let state = StateRenderWorkerService.unsafeGetState(stateData);
+        let {settingRecord} as state = StateRenderWorkerService.unsafeGetState(stateData);
         let data = MessageService.getRecord(e);
         let textureData = data##textureData;
-        let count = data##bufferData##textureCount;
+        let basicSourceTextureCount =
+          BufferRenderWorkerSettingService.unsafeGetBasicSourceTextureCount(settingRecord);
+        let arrayBufferViewSourceTextureCount =
+          BufferRenderWorkerSettingService.unsafeGetArrayBufferViewSourceTextureCount(settingRecord);
         state
-        |> _createTypeArrays(textureData##buffer, count)
+        |> _createTypeArrays(
+             textureData##buffer,
+             basicSourceTextureCount,
+             arrayBufferViewSourceTextureCount
+           )
         |> StateRenderWorkerService.setState(stateData)
       }
     ),
-    SourceMapTextureRenderWorkerService.addSourceFromImageDataStream(
-      textureData##needAddedImageDataArray,
+    SourceMapBasicSourceTextureRenderWorkerService.addSourceFromImageDataStream(
+      textureData##basicSourceTextureData##needAddedImageDataArray,
       state
     ),
     MostUtils.callFunc(
@@ -48,15 +74,48 @@ let execJob = (_, e, stateData) => {
         let state = StateRenderWorkerService.unsafeGetState(stateData);
         let data = MessageService.getRecord(e);
         let textureData = data##textureData;
-        let {glTextureMap} as textureRecord = RecordTextureRenderWorkerService.getRecord(state);
-        state.textureRecord =
+        SourceMapArrayBufferViewSourceTextureRenderWorkerService.addSourceMap(
+          textureData##arrayBufferViewSourceTextureData##sourceMap,
+          state
+        )
+        |> StateRenderWorkerService.setState(stateData)
+      }
+    ),
+    MostUtils.callFunc(
+      () => {
+        let state = StateRenderWorkerService.unsafeGetState(stateData);
+        let data = MessageService.getRecord(e);
+        let textureData = data##textureData;
+        let basicSourceTextureRecord =
+          RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+        let arrayBufferViewSourceTextureRecord =
+          RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+        state.basicSourceTextureRecord =
           Some({
-            ...textureRecord,
+            ...basicSourceTextureRecord,
             glTextureMap:
               InitTextureService.initTextures(
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                textureData##index,
-                glTextureMap
+                (
+                  textureData##basicSourceTextureData##index,
+                  CreateSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset(state)
+                ),
+                basicSourceTextureRecord.glTextureMap
+              )
+          });
+        state.arrayBufferViewSourceTextureRecord =
+          Some({
+            ...arrayBufferViewSourceTextureRecord,
+            glTextureMap:
+              InitTextureService.initTextures(
+                [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+                (
+                  textureData##arrayBufferViewSourceTextureData##index,
+                  CreateSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
+                    state
+                  )
+                ),
+                arrayBufferViewSourceTextureRecord.glTextureMap
               )
           });
         state

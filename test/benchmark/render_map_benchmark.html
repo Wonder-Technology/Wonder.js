@@ -38,18 +38,18 @@
 
 
                 image1.onload = function () {
-                    var image2 = new Image();
-                    image2.src = "./2.jpg";
+                    // var image2 = new Image();
+                    // image2.src = "./2.jpg";
 
-                    image2.onload = function () {
-                        return initSample(image1, image2, wd.unsafeGetState());
-                    }
+                    // image2.onload = function () {
+                        return initSample(image1, wd.unsafeGetState());
+                    // }
                 }
             });
 
 
 
-            function initSample(image1, image2, state) {
+            function initSample(image1, state) {
                 var n1 = performance.now();
 
 

@@ -1,15 +1,15 @@
 open StateDataMainType;
 
-open TextureType;
+open BasicSourceTextureType;
 
-let getRecord = (state) => state.textureRecord |> OptionService.unsafeGet;
+let getRecord = (state) => state.basicSourceTextureRecord |> OptionService.unsafeGet;
 
 let unsafeGetTexture = (texture, state) =>
   OperateGlTextureMapService.unsafeGetTexture(texture, getRecord(state).glTextureMap);
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayTextureService.getIsNeedUpdate(texture, getRecord(state).isNeedUpdates)
-  === BufferTextureService.getDefaultIsNeedUpdate();
+  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(texture, getRecord(state).isNeedUpdates)
+  === BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
 
@@ -49,4 +49,4 @@ let getDefaultFormat = () => TextureFormatService.getRgba();
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
-let getDefaultIsNeedUpdate = () => BufferTextureService.getDefaultIsNeedUpdate();
+let getDefaultIsNeedUpdate = () => BufferBasicSourceTextureService.getDefaultIsNeedUpdate();

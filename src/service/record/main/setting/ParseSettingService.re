@@ -33,7 +33,9 @@ let convertToRecord = (setting) => {
                basicMaterialCount: json |> field("basic_material_count", int),
                lightMaterialCount: json |> field("light_material_count", int),
                textureCountPerMaterial: json |> field("texture_count_per_material", int),
-               textureCount: json |> field("texture_count", int),
+               basicSourceTextureCount: json |> field("basic_source_texture_count", int),
+               arrayBufferViewSourceTextureCount:
+                 json |> field("arrayBuffer_view_source_texture_count", int),
                instanceBuffer:
                  json
                  |> field(

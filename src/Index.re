@@ -328,39 +328,39 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
-let setTextureType = TextureAPI.setTextureType;
+let setBasicSourceTextureType = BasicSourceTextureAPI.setBasicSourceTextureType;
 
-let getTextureType = TextureAPI.getTextureType;
+let getBasicSourceTextureType = BasicSourceTextureAPI.getBasicSourceTextureType;
 
-let setTextureFormat = TextureAPI.setTextureFormat;
+let setBasicSourceTextureFormat = BasicSourceTextureAPI.setBasicSourceTextureFormat;
 
-let getTextureFormat = TextureAPI.getTextureFormat;
+let getBasicSourceTextureFormat = BasicSourceTextureAPI.getBasicSourceTextureFormat;
 
-let setTextureMinFilter = TextureAPI.setTextureMinFilter;
+let setBasicSourceTextureMinFilter = BasicSourceTextureAPI.setBasicSourceTextureMinFilter;
 
-let getTextureMinFilter = TextureAPI.getTextureMinFilter;
+let getBasicSourceTextureMinFilter = BasicSourceTextureAPI.getBasicSourceTextureMinFilter;
 
-let setTextureMagFilter = TextureAPI.setTextureMagFilter;
+let setBasicSourceTextureMagFilter = BasicSourceTextureAPI.setBasicSourceTextureMagFilter;
 
-let getTextureMagFilter = TextureAPI.getTextureMagFilter;
+let getBasicSourceTextureMagFilter = BasicSourceTextureAPI.getBasicSourceTextureMagFilter;
 
-let setTextureWrapT = TextureAPI.setTextureWrapT;
+let setBasicSourceTextureWrapT = BasicSourceTextureAPI.setBasicSourceTextureWrapT;
 
-let getTextureWrapT = TextureAPI.getTextureWrapT;
+let getBasicSourceTextureWrapT = BasicSourceTextureAPI.getBasicSourceTextureWrapT;
 
-let setTextureWrapS = TextureAPI.setTextureWrapS;
+let setBasicSourceTextureWrapS = BasicSourceTextureAPI.setBasicSourceTextureWrapS;
 
-let getTextureWrapS = TextureAPI.getTextureWrapS;
+let getBasicSourceTextureWrapS = BasicSourceTextureAPI.getBasicSourceTextureWrapS;
 
-let getTextureHeight = TextureAPI.getTextureHeight;
+let getBasicSourceTextureHeight = BasicSourceTextureAPI.getBasicSourceTextureHeight;
 
-let getTextureWidth = TextureAPI.getTextureWidth;
+let getBasicSourceTextureWidth = BasicSourceTextureAPI.getBasicSourceTextureWidth;
 
-let setTextureSource = TextureAPI.setTextureSource;
+let setBasicSourceTextureSource = BasicSourceTextureAPI.setBasicSourceTextureSource;
 
-let unsafeGetTextureSource = TextureAPI.unsafeGetTextureSource;
+let unsafeGetBasicSourceTextureSource = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource;
 
-let createTexture = TextureAPI.createTexture;
+let createBasicSourceTexture = BasicSourceTextureAPI.createBasicSourceTexture;
 
 let getFps = TimeControllerAPI.getFps;
 
@@ -594,39 +594,39 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
-let setTextureType = TextureAPI.setTextureType;
+let setBasicSourceTextureType = BasicSourceTextureAPI.setBasicSourceTextureType;
 
-let getTextureType = TextureAPI.getTextureType;
+let getBasicSourceTextureType = BasicSourceTextureAPI.getBasicSourceTextureType;
 
-let setTextureFormat = TextureAPI.setTextureFormat;
+let setBasicSourceTextureFormat = BasicSourceTextureAPI.setBasicSourceTextureFormat;
 
-let getTextureFormat = TextureAPI.getTextureFormat;
+let getBasicSourceTextureFormat = BasicSourceTextureAPI.getBasicSourceTextureFormat;
 
-let setTextureMinFilter = TextureAPI.setTextureMinFilter;
+let setBasicSourceTextureMinFilter = BasicSourceTextureAPI.setBasicSourceTextureMinFilter;
 
-let getTextureMinFilter = TextureAPI.getTextureMinFilter;
+let getBasicSourceTextureMinFilter = BasicSourceTextureAPI.getBasicSourceTextureMinFilter;
 
-let setTextureMagFilter = TextureAPI.setTextureMagFilter;
+let setBasicSourceTextureMagFilter = BasicSourceTextureAPI.setBasicSourceTextureMagFilter;
 
-let getTextureMagFilter = TextureAPI.getTextureMagFilter;
+let getBasicSourceTextureMagFilter = BasicSourceTextureAPI.getBasicSourceTextureMagFilter;
 
-let setTextureWrapT = TextureAPI.setTextureWrapT;
+let setBasicSourceTextureWrapT = BasicSourceTextureAPI.setBasicSourceTextureWrapT;
 
-let getTextureWrapT = TextureAPI.getTextureWrapT;
+let getBasicSourceTextureWrapT = BasicSourceTextureAPI.getBasicSourceTextureWrapT;
 
-let setTextureWrapS = TextureAPI.setTextureWrapS;
+let setBasicSourceTextureWrapS = BasicSourceTextureAPI.setBasicSourceTextureWrapS;
 
-let getTextureWrapS = TextureAPI.getTextureWrapS;
+let getBasicSourceTextureWrapS = BasicSourceTextureAPI.getBasicSourceTextureWrapS;
 
-let getTextureHeight = TextureAPI.getTextureHeight;
+let getBasicSourceTextureHeight = BasicSourceTextureAPI.getBasicSourceTextureHeight;
 
-let getTextureWidth = TextureAPI.getTextureWidth;
+let getBasicSourceTextureWidth = BasicSourceTextureAPI.getBasicSourceTextureWidth;
 
-let setTextureSource = TextureAPI.setTextureSource;
+let setBasicSourceTextureSource = BasicSourceTextureAPI.setBasicSourceTextureSource;
 
-let unsafeGetTextureSource = TextureAPI.unsafeGetTextureSource;
+let unsafeGetBasicSourceTextureSource = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource;
 
-let createTexture = TextureAPI.createTexture;
+let createBasicSourceTexture = BasicSourceTextureAPI.createBasicSourceTexture;
 
 let getFps = TimeControllerAPI.getFps;
 

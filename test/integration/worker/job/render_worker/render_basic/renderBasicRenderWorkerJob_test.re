@@ -509,8 +509,8 @@ let _ =
                   RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
                 let source1 = TextureTool.buildSource(100, 200);
                 let source2 = TextureTool.buildSource(110, 210);
-                let state = state |> TextureAPI.setTextureSource(map1, source1);
-                let state = state |> TextureAPI.setTextureSource(map2, source2);
+                let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
+                let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
                 let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
                 let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                 let unpackFlipYWebgl = Obj.magic(2);

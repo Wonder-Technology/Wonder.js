@@ -76,7 +76,7 @@ let _ =
               let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
               let material =
                 GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
-              let (state, map) = TextureAPI.createTexture(state);
+              let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
               let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
               RenderBasicMaterialMapTool.testBindMap(sandbox, state)
             }
@@ -87,9 +87,9 @@ let _ =
               let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
               let material =
                 GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(gameObject, state);
-              let (state, map) = TextureAPI.createTexture(state);
+              let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
               let source = TextureTool.buildSource(2, 4);
-              let state = state |> TextureAPI.setTextureSource(map, source);
+              let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map, source);
               let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
               RenderBasicMaterialMapTool.testUpdateMap(sandbox, state)
             }

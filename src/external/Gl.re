@@ -231,6 +231,11 @@ external bufferSubFloat32Data : (int, int, Float32Array.t) => unit =
 external texImage2D : (int, int, int, int, int, textureSource) => unit =
   "";
 
+[@bs.send.pipe : webgl1Context]
+external texImage2DWithArrayBufferView :
+  (int, int, int, int, int, int, int, int, Js.Typed_array.Uint8Array.t) => unit =
+  "texImage2D";
+
 [@bs.send.pipe : webgl1Context] external texParameteri : (int, int, int) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external createTexture : texture = "";

@@ -35,7 +35,7 @@ let _ =
                 "set texture count to be 0",
                 () => {
                   let (state, material) = createLightMaterial(state^);
-                  LightMaterialTool.getTextureCount(material, state) |> expect == 0
+                  LightMaterialTool.getBasicSourceTextureCount(material, state) |> expect == 0
                 }
               )
           )
@@ -198,8 +198,8 @@ let _ =
             () => {
               let _prepare = (state) => {
                 let (state, material) = createLightMaterial(state);
-                let (state, map1) = TextureAPI.createTexture(state);
-                let (state, map2) = TextureAPI.createTexture(state);
+                let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                 let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, map1);
                 let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
                 (state, material, (map1, map2))
@@ -208,7 +208,7 @@ let _ =
                 "texture count + 1",
                 () => {
                   let (state, material, (map1, map2)) = _prepare(state^);
-                  LightMaterialTool.getTextureCount(material, state) |> expect == 2
+                  LightMaterialTool.getBasicSourceTextureCount(material, state) |> expect == 2
                 }
               );
               test(
@@ -244,7 +244,7 @@ LightMaterialAPI. unsafeGetLightMaterialSpecularMap(material, state)
             "dispose data",
             () => {
               test(
-                "reset textureCount to 0 from textureCountMap",
+                "reset basicSourceTextureCount to 0 from textureCountMap",
                 () => {
                   open LightMaterialType;
                   let (state, gameObject1, (material1, _)) =
@@ -255,7 +255,7 @@ LightMaterialAPI. unsafeGetLightMaterialSpecularMap(material, state)
                          gameObject1,
                          material1
                        );
-                  LightMaterialTool.getTextureCount(material1, state) |> expect == 0
+                  LightMaterialTool.getBasicSourceTextureCount(material1, state) |> expect == 0
                 }
               );
               test(

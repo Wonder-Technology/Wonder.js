@@ -1,4 +1,4 @@
-open BufferTextureService;
+open BufferBasicSourceTextureService;
 
 let getWrapS = (index, typeArr) => TypeArrayService.getUint8_1(getWrapSIndex(index), typeArr);
 

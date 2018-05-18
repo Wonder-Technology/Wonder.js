@@ -35,7 +35,7 @@ let _ =
                 "set texture count to be 0",
                 () => {
                   let (state, material) = createBasicMaterial(state^);
-                  BasicMaterialTool.getTextureCount(material, state) |> expect == 0
+                  BasicMaterialTool.getBasicSourceTextureCount(material, state) |> expect == 0
                 }
               )
           )
@@ -139,8 +139,8 @@ let _ =
             () => {
               let _prepare = (state) => {
                 let (state, material) = createBasicMaterial(state);
-                let (state, map1) = TextureAPI.createTexture(state);
-                let (state, map2) = TextureAPI.createTexture(state);
+                let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+                let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                 let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map2);
                 (state, material, map2)
               };
@@ -148,7 +148,7 @@ let _ =
                 "texture count + 1",
                 () => {
                   let (state, material, map) = _prepare(state^);
-                  BasicMaterialTool.getTextureCount(material, state) |> expect == 1
+                  BasicMaterialTool.getBasicSourceTextureCount(material, state) |> expect == 1
                 }
               );
               test(
@@ -210,7 +210,7 @@ let _ =
                 "test dispose not shared material",
                 () => {
                   test(
-                    "reset textureCount to 0 from textureCountMap",
+                    "reset basicSourceTextureCount to 0 from textureCountMap",
                     () => {
                       open BasicMaterialType;
                       let (state, gameObject1, (material1, _)) =
@@ -221,7 +221,7 @@ let _ =
                              gameObject1,
                              material1
                            );
-                      BasicMaterialTool.getTextureCount(material1, state) |> expect == 0
+                      BasicMaterialTool.getBasicSourceTextureCount(material1, state) |> expect == 0
                     }
                   );
                   test(

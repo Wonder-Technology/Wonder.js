@@ -36,7 +36,10 @@ let _buildData = (operateType, canvas, stateData) => {
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
-  let textureRecord = RecordTextureMainService.getRecord(state);
+  let sourceTextureRecord = RecordSourceTextureMainService.getRecord(state);
+  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
     "operateType": operateType,
@@ -51,7 +54,8 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicMaterialCount": buffer.basicMaterialCount,
       "lightMaterialCount": buffer.lightMaterialCount,
       "textureCountPerMaterial": buffer.textureCountPerMaterial,
-      "textureCount": buffer.textureCount
+      "basicSourceTextureCount": buffer.basicSourceTextureCount,
+      "arrayBufferViewSourceTextureCount": buffer.arrayBufferViewSourceTextureCount
     },
     "gpuData": {"useHardwareInstance": useHardwareInstance},
     "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},
@@ -105,21 +109,29 @@ let _buildData = (operateType, canvas, stateData) => {
       "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
     },
     "textureData": {
-      "buffer": textureRecord.buffer,
-      "index": textureRecord.index,
-      /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
-      "needAddedImageDataArray":
-        OperateTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-          textureRecord.needAddedSourceArray
-        )
+      "buffer": sourceTextureRecord.buffer,
+      "basicSourceTextureData": {
+        "index": basicSourceTextureRecord.index,
+        /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
+        "needAddedImageDataArray":
+          OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+            basicSourceTextureRecord.needAddedSourceArray
+          )
+      },
+      "arrayBufferViewSourceTextureData": {
+        "index": arrayBufferViewSourceTextureRecord.index,
+        /* TODO can postMessage send uint8array data? */
+        "sourceMap":
+          arrayBufferViewSourceTextureRecord.sourceMap
+      }
     }
   }
 };
 
 let _clearData = (state) =>
   state
-  |> OperateTextureMainService.clearNeedAddedSourceArr
-  |> InitTextureMainService.clearNeedInitedTextureIndexArray;
+  |> OperateBasicSourceTextureMainService.clearNeedAddedSourceArr
+  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
 
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(

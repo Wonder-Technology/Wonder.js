@@ -1,6 +1,6 @@
 open StateDataRenderWorkerType;
 
-open RenderWorkerTextureType;
+open RenderWorkerBasicSourceTextureType;
 
 open BrowserDetectType;
 
@@ -24,7 +24,7 @@ let _createImageBitmap = (texture, imageData, state) => {
   let {browser} = RecordBrowserDetectRenderWorkerService.getRecord(state);
   DetectBrowserService.isChrome(browser) ?
     {
-      let flipY = OperateTypeArrayTextureService.getFlipY();
+      let flipY = OperateTypeArrayBasicSourceTextureService.getFlipY();
       _createImageBitmapForChrome(
         imageData,
         {"imageOrientation": flipY === Js.true_ ? "flipY" : "none"}
@@ -49,7 +49,7 @@ let _addSource = (texture, imageBitmap, state) => {
       open WonderLog;
       open Contract;
       open Operators;
-      let {sourceMap} = RecordTextureRenderWorkerService.getRecord(state);
+      let {sourceMap} = RecordBasicSourceTextureRenderWorkerService.getRecord(state);
       test(
         Log.buildAssertMessage(
           ~expect={j|sourceMap shouldn't has source before|j},
@@ -60,7 +60,7 @@ let _addSource = (texture, imageBitmap, state) => {
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  let {sourceMap} = RecordTextureRenderWorkerService.getRecord(state);
+  let {sourceMap} = RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   TextureSourceMapService.setSource(texture, imageBitmap, sourceMap) |> ignore;
   state
 };

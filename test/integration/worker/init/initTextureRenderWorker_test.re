@@ -115,8 +115,8 @@ let _ =
                         (source1, source2)
                       ) =
                         _prepare();
-                      let state = state |> TextureAPI.setTextureSource(map1, source1);
-                      let state = state |> TextureAPI.setTextureSource(map2, source2);
+                      let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
+                      let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
                       let state =
                         state
                         |> GameObjectAPI.initGameObject(gameObject1)
@@ -147,9 +147,9 @@ let _ =
                 }
               );
               testPromise(
-                "clear textureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
+                "clear basicSourceTextureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
                 () => {
-                  open TextureType;
+                  open BasicSourceTextureType;
                   let (
                     state,
                     context,

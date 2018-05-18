@@ -11,5 +11,7 @@ type settingRecord = {
   gpu: option(gpu),
   instanceBuffer: option(instanceBuffer),
   textureCountPerMaterial: option(int),
+  basicSourceTextureCount: option(int),
+  arrayBufferViewSourceTextureCount: option(int),
   memory: option(memory)
 };

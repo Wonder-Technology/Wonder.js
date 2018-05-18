@@ -32,7 +32,11 @@ open BasicMaterialType;
 
 open LightMaterialType;
 
-open TextureType;
+open SourceTextureType;
+
+open BasicSourceTextureType;
+
+open ArrayBufferViewSourceTextureType;
 
 open AmbientLightType;
 
@@ -120,7 +124,9 @@ and state = {
   mutable perspectiveCameraProjectionRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
-  mutable textureRecord: option(textureRecord),
+  mutable sourceTextureRecord: option(sourceTextureRecord),
+  mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
+  mutable arrayBufferViewSourceTextureRecord: option(arrayBufferViewSourceTextureRecord),
   mutable ambientLightRecord,
   mutable directionLightRecord,
   mutable pointLightRecord,

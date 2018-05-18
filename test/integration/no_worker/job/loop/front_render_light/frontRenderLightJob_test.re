@@ -1320,9 +1320,9 @@ let _ =
                     let texture2D = Obj.magic(8);
                     let glTexture1 = Obj.magic(11);
                     let glTexture2 = Obj.magic(12);
-                    let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-                    createTexture |> onCall(0) |> returns(glTexture1);
-                    createTexture |> onCall(1) |> returns(glTexture2);
+                    let createBasicSourceTexture = createEmptyStubWithJsObjSandbox(sandbox);
+                    createBasicSourceTexture |> onCall(0) |> returns(glTexture1);
+                    createBasicSourceTexture |> onCall(1) |> returns(glTexture2);
                     let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =
@@ -1332,7 +1332,7 @@ let _ =
                              ~sandbox,
                              ~textureUnit0,
                              ~texture2D,
-                             ~createTexture,
+                             ~createBasicSourceTexture,
                              ~activeTexture,
                              ~bindTexture,
                              ()
@@ -1396,8 +1396,8 @@ let _ =
             /* let source = Obj.magic({"width": width, "height": height}); */
             let source1 = TextureTool.buildSource(width, height);
             let source2 = TextureTool.buildSource(width, height);
-            let state = state |> TextureAPI.setTextureSource(diffuseMap, source1);
-            let state = state |> TextureAPI.setTextureSource(specularMap, source2);
+            let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(diffuseMap, source1);
+            let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source2);
             (state, (diffuseMap, specularMap))
           };
           test(
