@@ -13,12 +13,16 @@ let createGameObject = (state) => {
   (state, gameObject, material)
 };
 
+let createAndSetMapsWithMap = (material, diffuseMap, specularMap, state) => {
+  let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
+  let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, specularMap);
+  (state, (diffuseMap, specularMap))
+};
+
 let createAndSetMaps = (material, state) => {
   let (state, texture1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let (state, texture2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let state = state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, texture1);
-  let state = state |> LightMaterialAPI.setLightMaterialSpecularMap(material, texture2);
-  (state, (texture1, texture2))
+  createAndSetMapsWithMap(material, texture1, texture2, state)
 };
 
 let createGameObjectWithMap = (state) => {

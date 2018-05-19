@@ -31,3 +31,22 @@ let isNeedUpdate = (texture, state) =>
   === BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();
 
 let buildSource = () => Js.Typed_array.Uint8Array.make([|1, 255, 255, 255|]);
+
+let getDefaultWrapS = () => TextureWrapService.getClampToEdge();
+
+let getDefaultWrapT = () => TextureWrapService.getClampToEdge();
+
+let getDefaultMagFilter = () => TextureFilterService.getLinear();
+
+let getDefaultMinFilter = () => TextureFilterService.getNearest();
+
+let getDefaultFormat = () => TextureFormatService.getRgba();
+
+let getDefaultType = () => TextureTypeService.getUnsignedByte();
+
+let getDefaultIsNeedUpdate = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();
+
+let getDefaultWidth = () => BufferArrayBufferViewSourceTextureService.getDefaultWidth();
+
+let getDefaultHeight = () => BufferArrayBufferViewSourceTextureService.getDefaultHeight();

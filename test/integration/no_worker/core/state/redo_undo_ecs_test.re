@@ -128,7 +128,7 @@ let _ =
         let state = state |> setLightMaterialSpecularColor(material2, specularColor2);
         (state, gameObject1, gameObject2, gameObject3, material1, material2, material3)
       };
-      let _prepareTextureData = (state) => {
+      let _prepareBasicSourceTextureData = (state) => {
         open BasicSourceTextureAPI;
         open Js.Typed_array;
         let (state, texture1) = createBasicSourceTexture(state);
@@ -141,6 +141,23 @@ let _ =
         let state = state |> setBasicSourceTextureMinFilter(texture2, 1);
         let state = state |> setBasicSourceTextureType(texture2, 1);
         let state = state |> setBasicSourceTextureFormat(texture2, 2);
+        (state, texture1, texture2, texture3)
+      };
+      let _prepareArrayBufferViewSourceTextureData = (state) => {
+        open ArrayBufferViewSourceTextureAPI;
+        open Js.Typed_array;
+        let (state, texture1) = createArrayBufferViewSourceTexture(state);
+        let (state, texture2) = createArrayBufferViewSourceTexture(state);
+        let (state, texture3) = createArrayBufferViewSourceTexture(state);
+        let state = AllMaterialTool.prepareForInit(state);
+        let state = state |> setArrayBufferViewSourceTextureWrapS(texture2, 1);
+        let state = state |> setArrayBufferViewSourceTextureWrapT(texture2, 1);
+        let state = state |> setArrayBufferViewSourceTextureMagFilter(texture2, 1);
+        let state = state |> setArrayBufferViewSourceTextureMinFilter(texture2, 1);
+        let state = state |> setArrayBufferViewSourceTextureType(texture2, 1);
+        let state = state |> setArrayBufferViewSourceTextureFormat(texture2, 2);
+        let state = state |> setArrayBufferViewSourceTextureWidth(texture2, 2);
+        let state = state |> setArrayBufferViewSourceTextureHeight(texture2, 4);
         (state, texture1, texture2, texture3)
       };
       beforeEach(
@@ -1055,50 +1072,74 @@ let _ =
           describe(
             "deep copy texture record",
             () => {
-              test(
-                "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+              describe(
+                "deep copy basic source texture record",
                 () =>
-                  StateDataMainType.(
-                    BasicSourceTextureType.(
-                      MainStateTool.testShadowCopyArrayLikeMapData(
-                        (state) => {
-                          let {
-                            sourceMap,
-                            glTextureMap,
-                            bindTextureUnitCacheMap,
-                            disposedIndexArray,
-                            needAddedSourceArray,
-                            needInitedTextureIndexArray
-                          } =
-                            BasicSourceTextureTool.getRecord(state);
-                          [|
-                            sourceMap |> Obj.magic,
-                            glTextureMap |> Obj.magic,
-                            bindTextureUnitCacheMap |> Obj.magic,
-                            disposedIndexArray |> Obj.magic,
-                            needAddedSourceArray |> Obj.magic,
-                            needInitedTextureIndexArray |> Obj.magic
-                          |]
-                        },
-                        state^
+                  test(
+                    "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+                    () =>
+                      StateDataMainType.(
+                        BasicSourceTextureType.(
+                          MainStateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {
+                                sourceMap,
+                                glTextureMap,
+                                bindTextureUnitCacheMap,
+                                disposedIndexArray,
+                                needAddedSourceArray,
+                                needInitedTextureIndexArray
+                              } =
+                                BasicSourceTextureTool.getRecord(state);
+                              [|
+                                sourceMap |> Obj.magic,
+                                glTextureMap |> Obj.magic,
+                                bindTextureUnitCacheMap |> Obj.magic,
+                                disposedIndexArray |> Obj.magic,
+                                needAddedSourceArray |> Obj.magic,
+                                needInitedTextureIndexArray |> Obj.magic
+                              |]
+                            },
+                            state^
+                          )
+                        )
                       )
-                    )
                   )
               );
-              test(
-                "copy wrapSs",
+              describe(
+                "deep copy arrayBufferView source texture record",
                 () =>
-                  _testCopyTypeArraySingleValue(
-                    (
-                      GameObjectTool.createGameObject,
-                      (material, state) => BasicSourceTextureAPI.getBasicSourceTextureWrapS(material, state),
-                      BasicSourceTextureAPI.setBasicSourceTextureWrapS,
-                      () => (1, 2)
-                    ),
-                    state
+                  test(
+                    "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+                    () =>
+                      StateDataMainType.(
+                        ArrayBufferViewSourceTextureType.(
+                          MainStateTool.testShadowCopyArrayLikeMapData(
+                            (state) => {
+                              let {
+                                sourceMap,
+                                glTextureMap,
+                                bindTextureUnitCacheMap,
+                                disposedIndexArray,
+                                needAddedSourceArray,
+                                needInitedTextureIndexArray
+                              } =
+                                ArrayBufferViewSourceTextureTool.getRecord(state);
+                              [|
+                                sourceMap |> Obj.magic,
+                                glTextureMap |> Obj.magic,
+                                bindTextureUnitCacheMap |> Obj.magic,
+                                disposedIndexArray |> Obj.magic,
+                                needAddedSourceArray |> Obj.magic,
+                                needInitedTextureIndexArray |> Obj.magic
+                              |]
+                            },
+                            state^
+                          )
+                        )
+                      )
                   )
               )
-              /* TODO test more */
             }
           );
           describe(
@@ -1939,8 +1980,10 @@ let _ =
                           [|1., 0.1, 1.|],
                           currentState
                         );
-                      let (currentState, map1) = BasicSourceTextureAPI.createBasicSourceTexture(currentState);
-                      let (currentState, map2) = BasicSourceTextureAPI.createBasicSourceTexture(currentState);
+                      let (currentState, map1) =
+                        BasicSourceTextureAPI.createBasicSourceTexture(currentState);
+                      let (currentState, map2) =
+                        BasicSourceTextureAPI.createBasicSourceTexture(currentState);
                       let currentState =
                         currentState |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
                       let currentState = AllMaterialTool.pregetGLSLData(currentState);
@@ -2242,65 +2285,192 @@ let _ =
           );
           describe(
             "restore texture record to target state",
-            () =>
-              test(
-                "test restore typeArrays",
-                () => {
-                  open BasicSourceTextureType;
-                  state :=
-                    TestTool.initWithJobConfigWithoutBuildFakeDom(
-                      ~sandbox,
-                      ~buffer=SettingTool.buildBufferConfigStr(~basicSourceTextureCount=4, ()),
-                      ()
-                    );
-                  let (state, texture1, texture2, texture3) = _prepareTextureData(state^);
-                  let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-                  let copiedState = MainStateTool.deepCopyForRestore(state);
-                  let (currentState, texture4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-                  let currentState = BasicSourceTextureAPI.setBasicSourceTextureWrapT(texture4, 1, currentState);
-                  /* let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-                     let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-                     let state = state |> BasicMaterialAPI.setBasicMaterialMap(material4, map2); */
-                  let currentState = AllMaterialTool.pregetGLSLData(currentState);
-                  let _ = MainStateTool.restore(currentState, copiedState);
-                  /* let defaultUnit = BasicSourceTextureTool.getDefaultUnit(); */
-                  let defaultWrapS = BasicSourceTextureTool.getDefaultWrapS();
-                  let defaultWrapT = BasicSourceTextureTool.getDefaultWrapT();
-                  let defaultMagFilter = BasicSourceTextureTool.getDefaultMagFilter();
-                  let defaultMinFilter = BasicSourceTextureTool.getDefaultMinFilter();
-                  let defaultFormat = BasicSourceTextureTool.getDefaultFormat();
-                  let defaultType = BasicSourceTextureTool.getDefaultType();
-                  let defaultIsNeedUpdate = BasicSourceTextureTool.getDefaultIsNeedUpdate();
-                  let {wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates} =
-                    MainStateTool.unsafeGetState() |> BasicSourceTextureTool.getRecord;
-                  (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
-                  |>
-                  expect == (
-                              Uint8Array.make([|defaultWrapS, 1, defaultWrapS, defaultWrapS|]),
-                              Uint8Array.make([|defaultWrapT, 1, defaultWrapT, defaultWrapT|]),
-                              Uint8Array.make([|
-                                defaultMagFilter,
-                                1,
-                                defaultMagFilter,
-                                defaultMagFilter
-                              |]),
-                              Uint8Array.make([|
-                                defaultMinFilter,
-                                1,
-                                defaultMinFilter,
-                                defaultMinFilter
-                              |]),
-                              Uint8Array.make([|defaultFormat, 2, defaultFormat, defaultFormat|]),
-                              Uint8Array.make([|defaultType, 1, defaultType, defaultType|]),
-                              Uint8Array.make([|
-                                defaultIsNeedUpdate,
-                                defaultIsNeedUpdate,
-                                defaultIsNeedUpdate,
-                                defaultIsNeedUpdate
-                              |])
-                            )
-                }
+            () => {
+              describe(
+                "test restore basic source texture record",
+                () =>
+                  test(
+                    "test restore typeArrays",
+                    () => {
+                      open BasicSourceTextureType;
+                      state :=
+                        TestTool.initWithJobConfigWithoutBuildFakeDom(
+                          ~sandbox,
+                          ~buffer=SettingTool.buildBufferConfigStr(~basicSourceTextureCount=4, ()),
+                          ()
+                        );
+                      let (state, texture1, texture2, texture3) =
+                        _prepareBasicSourceTextureData(state^);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let copiedState = MainStateTool.deepCopyForRestore(state);
+                      let (currentState, texture4) =
+                        BasicSourceTextureAPI.createBasicSourceTexture(state);
+                      let currentState =
+                        BasicSourceTextureAPI.setBasicSourceTextureWrapT(
+                          texture4,
+                          1,
+                          currentState
+                        );
+                      let currentState = AllMaterialTool.pregetGLSLData(currentState);
+                      let _ = MainStateTool.restore(currentState, copiedState);
+                      let defaultWrapS = BasicSourceTextureTool.getDefaultWrapS();
+                      let defaultWrapT = BasicSourceTextureTool.getDefaultWrapT();
+                      let defaultMagFilter = BasicSourceTextureTool.getDefaultMagFilter();
+                      let defaultMinFilter = BasicSourceTextureTool.getDefaultMinFilter();
+                      let defaultFormat = BasicSourceTextureTool.getDefaultFormat();
+                      let defaultType = BasicSourceTextureTool.getDefaultType();
+                      let defaultIsNeedUpdate = BasicSourceTextureTool.getDefaultIsNeedUpdate();
+                      let {wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates} =
+                        MainStateTool.unsafeGetState() |> BasicSourceTextureTool.getRecord;
+                      (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
+                      |>
+                      expect == (
+                                  Uint8Array.make([|defaultWrapS, 1, defaultWrapS, defaultWrapS|]),
+                                  Uint8Array.make([|defaultWrapT, 1, defaultWrapT, defaultWrapT|]),
+                                  Uint8Array.make([|
+                                    defaultMagFilter,
+                                    1,
+                                    defaultMagFilter,
+                                    defaultMagFilter
+                                  |]),
+                                  Uint8Array.make([|
+                                    defaultMinFilter,
+                                    1,
+                                    defaultMinFilter,
+                                    defaultMinFilter
+                                  |]),
+                                  Uint8Array.make([|
+                                    defaultFormat,
+                                    2,
+                                    defaultFormat,
+                                    defaultFormat
+                                  |]),
+                                  Uint8Array.make([|defaultType, 1, defaultType, defaultType|]),
+                                  Uint8Array.make([|
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate
+                                  |])
+                                )
+                    }
+                  )
+              );
+              describe(
+                "test restore arrayBufferView source texture record",
+                () =>
+                  test(
+                    "test restore typeArrays",
+                    () => {
+                      open ArrayBufferViewSourceTextureType;
+                      state :=
+                        TestTool.initWithJobConfigWithoutBuildFakeDom(
+                          ~sandbox,
+                          ~buffer=
+                            SettingTool.buildBufferConfigStr(
+                              ~arrayBufferViewSourceTextureCount=4,
+                              ()
+                            ),
+                          ()
+                        );
+                      let (state, texture1, texture2, texture3) =
+                        _prepareArrayBufferViewSourceTextureData(state^);
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let copiedState = MainStateTool.deepCopyForRestore(state);
+                      let (currentState, texture4) =
+                        ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+                      let currentState =
+                        ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT(
+                          texture4,
+                          1,
+                          currentState
+                        );
+                      let currentState = AllMaterialTool.pregetGLSLData(currentState);
+                      let _ = MainStateTool.restore(currentState, copiedState);
+                      let defaultWrapS = ArrayBufferViewSourceTextureTool.getDefaultWrapS();
+                      let defaultWrapT = ArrayBufferViewSourceTextureTool.getDefaultWrapT();
+                      let defaultMagFilter =
+                        ArrayBufferViewSourceTextureTool.getDefaultMagFilter();
+                      let defaultMinFilter =
+                        ArrayBufferViewSourceTextureTool.getDefaultMinFilter();
+                      let defaultFormat = ArrayBufferViewSourceTextureTool.getDefaultFormat();
+                      let defaultType = ArrayBufferViewSourceTextureTool.getDefaultType();
+                      let defaultIsNeedUpdate =
+                        ArrayBufferViewSourceTextureTool.getDefaultIsNeedUpdate();
+                      let defaultWidth = ArrayBufferViewSourceTextureTool.getDefaultWidth();
+                      let defaultHeight = ArrayBufferViewSourceTextureTool.getDefaultHeight();
+                      let {
+                        wrapSs,
+                        wrapTs,
+                        magFilters,
+                        minFilters,
+                        formats,
+                        types,
+                        isNeedUpdates,
+                        widths,
+                        heights
+                      } =
+                        MainStateTool.unsafeGetState()
+                        |> ArrayBufferViewSourceTextureTool.getRecord;
+                      (
+                        wrapSs,
+                        wrapTs,
+                        magFilters,
+                        minFilters,
+                        formats,
+                        types,
+                        isNeedUpdates,
+                        widths,
+                        heights
+                      )
+                      |>
+                      expect == (
+                                  Uint8Array.make([|defaultWrapS, 1, defaultWrapS, defaultWrapS|]),
+                                  Uint8Array.make([|defaultWrapT, 1, defaultWrapT, defaultWrapT|]),
+                                  Uint8Array.make([|
+                                    defaultMagFilter,
+                                    1,
+                                    defaultMagFilter,
+                                    defaultMagFilter
+                                  |]),
+                                  Uint8Array.make([|
+                                    defaultMinFilter,
+                                    1,
+                                    defaultMinFilter,
+                                    defaultMinFilter
+                                  |]),
+                                  Uint8Array.make([|
+                                    defaultFormat,
+                                    2,
+                                    defaultFormat,
+                                    defaultFormat
+                                  |]),
+                                  Uint8Array.make([|defaultType, 1, defaultType, defaultType|]),
+                                  Uint8Array.make([|
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate,
+                                    defaultIsNeedUpdate
+                                  |]),
+                                  Uint16Array.make([|
+                                    defaultWidth,
+                                    2,
+                                    defaultWidth,
+                                    defaultWidth
+                                  |]),
+                                  Uint16Array.make([|
+                                    defaultHeight,
+                                    4,
+                                    defaultHeight,
+                                    defaultHeight
+                                  |])
+                                )
+                    }
+                  )
               )
+            }
           );
           describe(
             "restore sourceInstance record to target state",
