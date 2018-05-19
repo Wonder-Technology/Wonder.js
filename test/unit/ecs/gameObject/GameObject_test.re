@@ -1689,7 +1689,7 @@ let _ =
                         "else, init map",
                         () => {
                           let (state, gameObject, _, _) =
-                            InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
@@ -1726,7 +1726,7 @@ let _ =
                         "else, init map",
                         () => {
                           let (state, gameObject, _, _) =
-                            InitLightMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            InitLightMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state

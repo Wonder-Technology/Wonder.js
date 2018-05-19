@@ -52,7 +52,7 @@ let _ =
                     "should bind the new texture",
                     () => {
                       let (state, gameObject1, _, material1, _, map1) =
-                        RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
+                        RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                       let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                       let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
@@ -78,7 +78,7 @@ let _ =
                         "should bind the new texture",
                         () => {
                           let (state, gameObject1, _, material1, _, map1) =
-                            RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                           let (state, (map1, map2), (unpackFlipYWebgl, pixelStorei)) =
                             _prepare(map1, map2, state);
@@ -94,9 +94,9 @@ let _ =
                         "if new texture has already updated before, not update",
                         () => {
                           let (state, gameObject1, _, material1, _, map1) =
-                            RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let (state, gameObject2, _, material2, _, map2) =
-                            RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                            RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                           let (state, (map1, map2), (unpackFlipYWebgl, pixelStorei)) =
                             _prepare(map1, map2, state);
                           let state =
@@ -145,7 +145,7 @@ let _ =
                     "should bind the new texture",
                     () => {
                       let (state, gameObject1, _, material1, _, (map1, map2)) =
-                        FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
+                        FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                       let (state, map3) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let (state, map4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                       let (state, _, _, _) = CameraTool.createCameraGameObject(state);
@@ -169,7 +169,7 @@ let _ =
                         "should bind the new texture",
                         () => {
                           let (state, gameObject1, _, material1, _, (map1, map2)) =
-                            FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let (state, map3) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                           let (state, map4) = BasicSourceTextureAPI.createBasicSourceTexture(state);
                           let (state, (unpackFlipYWebgl, pixelStorei)) =
@@ -193,9 +193,9 @@ let _ =
                         "if new texture has already updated before, not update",
                         () => {
                           let (state, gameObject1, _, material1, _, (map1, map2)) =
-                            FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
+                            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                           let (state, gameObject2, _, material2, _, (map3, map4)) =
-                            FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
+                            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                           let state =
                             state |> RenderMaterialMapTool.setSource([map1, map2, map3, map4]);
                           let (state, (unpackFlipYWebgl, pixelStorei)) =

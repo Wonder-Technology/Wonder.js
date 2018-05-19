@@ -12,10 +12,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
         glTextureMap:
           InitTextureService.initTextures(
             [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-            (
-              basicSourceTextureRecord.index,
-              IndexSourceTextureMainService.getBasicSourceTextureIndexOffset()
-            ),
+            ArrayService.range(0, basicSourceTextureRecord.index - 1),
             basicSourceTextureRecord.glTextureMap
           )
       }),
@@ -25,10 +22,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
         glTextureMap:
           InitTextureService.initTextures(
             [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-            (
-              arrayBufferViewSourceTextureRecord.index,
-              IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
-            ),
+            ArrayService.range(0, arrayBufferViewSourceTextureRecord.index - 1),
             arrayBufferViewSourceTextureRecord.glTextureMap
           )
       })

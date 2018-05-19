@@ -17,7 +17,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer)
 };
 
-let prepareGameObjectWithMap = (sandbox, state) => {
+let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let (state, gameObject, geometry, material, meshRenderer) = prepareGameObject(sandbox, state);
   let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
   (state, gameObject, geometry, material, meshRenderer, (texture1, texture2))

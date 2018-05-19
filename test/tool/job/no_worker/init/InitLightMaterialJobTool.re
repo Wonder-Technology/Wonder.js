@@ -17,7 +17,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let prepareGameObjectWithMap = (sandbox, state) => {
+let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;

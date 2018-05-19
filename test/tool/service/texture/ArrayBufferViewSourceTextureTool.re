@@ -4,15 +4,13 @@ open ArrayBufferViewSourceTextureType;
 
 let getRecord = (state) => state.arrayBufferViewSourceTextureRecord |> OptionService.unsafeGet;
 
-let getArrayBufferViewSourceTextureIndex =
+let generateArrayBufferViewSourceTextureIndex =
     (arrayBufferViewSourceTextureIndex, {settingRecord} as state) =>
-  IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndex(
+  IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(
     arrayBufferViewSourceTextureIndex,
     state
   );
 
-/* let unsafeGetTexture = (texture, state) =>
-   OperateGlTextureMapService.unsafeGetTexture(texture, getRecord(state).glTextureMap); */
 let isNeedUpdate = (texture, state) =>
   OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(

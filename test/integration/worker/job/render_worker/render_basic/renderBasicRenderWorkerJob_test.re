@@ -504,9 +504,9 @@ let _ =
                     imageDataArrayBuffer2
                   );
                 let (state, gameObject1, _, _, _, map1) =
-                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                  RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                 let (state, gameObject2, _, _, _, map2) =
-                  RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+                  RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                 let source1 = BasicSourceTextureTool.buildSource(100, 200);
                 let source2 = BasicSourceTextureTool.buildSource(110, 210);
                 let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);

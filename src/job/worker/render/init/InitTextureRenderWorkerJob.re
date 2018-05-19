@@ -98,10 +98,7 @@ let execJob = (_, e, stateData) => {
             glTextureMap:
               InitTextureService.initTextures(
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                (
-                  textureData##basicSourceTextureData##index,
-                  IndexSourceTextureRenderWorkerService.getBasicSourceTextureIndexOffset()
-                ),
+                ArrayService.range(0, textureData##basicSourceTextureData##index - 1),
                 basicSourceTextureRecord.glTextureMap
               )
           });
@@ -111,12 +108,7 @@ let execJob = (_, e, stateData) => {
             glTextureMap:
               InitTextureService.initTextures(
                 [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                (
-                  textureData##arrayBufferViewSourceTextureData##index,
-                  IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
-                    state
-                  )
-                ),
+                ArrayService.range(0, textureData##arrayBufferViewSourceTextureData##index - 1),
                 arrayBufferViewSourceTextureRecord.glTextureMap
               )
           });

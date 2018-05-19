@@ -10,12 +10,12 @@ let getArrayBufferViewSourceTextureIndexOffset = ({settingRecord} as state) =>
     BufferSettingService.getBasicSourceTextureCount(settingRecord)
   );
 
-let getBasicSourceTextureIndex = (basicSourceTextureIndex) =>
-  IndexSourceTextureService.getBasicSourceTextureIndex(basicSourceTextureIndex);
+let generateBasicSourceTextureIndex = (basicSourceTextureIndex) =>
+  IndexSourceTextureService.generateBasicSourceTextureIndex(basicSourceTextureIndex);
 
-let getArrayBufferViewSourceTextureIndex =
+let generateArrayBufferViewSourceTextureIndex =
     (arrayBufferViewSourceTextureIndex, {settingRecord} as state) =>
-  IndexSourceTextureService.getArrayBufferViewSourceTextureIndex(
+  IndexSourceTextureService.generateArrayBufferViewSourceTextureIndex(
     arrayBufferViewSourceTextureIndex,
     BufferSettingService.getBasicSourceTextureCount(settingRecord)
   );

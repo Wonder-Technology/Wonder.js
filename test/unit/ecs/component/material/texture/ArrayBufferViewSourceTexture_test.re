@@ -26,7 +26,7 @@ let _ =
             () => {
               let (state, texture) = createArrayBufferViewSourceTexture(state^);
               expect(texture)
-              == ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureIndex(0, state)
+              == ArrayBufferViewSourceTextureTool.generateArrayBufferViewSourceTextureIndex(0, state)
             }
           );
           test(

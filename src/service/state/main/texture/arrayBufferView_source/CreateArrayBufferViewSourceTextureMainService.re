@@ -11,7 +11,7 @@ let create =
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
       /* TODO test */
-      let index = IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndex(index, state);
+      let index = IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(index, state);
       state.arrayBufferViewSourceTextureRecord =
         Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
       (state, index)

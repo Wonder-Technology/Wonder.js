@@ -106,7 +106,7 @@ let _ =
                 "test get location",
                 () => {
                   let (state, gameObject, geometry, material) =
-                    InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                    InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                   let getAttribLocation =
                     GLSLLocationTool.getAttribLocation(sandbox, "a_texCoord");
                   let state =
@@ -128,9 +128,9 @@ let _ =
                     "if cached, not query gl location",
                     () => {
                       let (state, gameObject, geometry, material) =
-                        InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                        InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                       let (state, _, _, material2) =
-                        InitBasicMaterialJobTool.prepareGameObjectWithMap(sandbox, state);
+                        InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                       let getAttribLocation =
                         GLSLLocationTool.getAttribLocation(sandbox, "a_texCoord");
                       let state =
@@ -157,7 +157,7 @@ let _ =
             InitMaterialTool.testGetLocation(
               sandbox,
               name,
-              (InitBasicMaterialJobTool.prepareGameObjectWithMap, InitBasicMaterialJobTool.exec),
+              (InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap, InitBasicMaterialJobTool.exec),
               state
             );
           describe(

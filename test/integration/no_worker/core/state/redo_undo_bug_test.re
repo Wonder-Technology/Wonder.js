@@ -37,7 +37,7 @@ let _ =
             RenderJobsTool.initWithJobConfig(sandbox, LoopRenderJobTool.buildNoWorkerJobConfig());
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
           let (state, gameObject1, _, _, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+            RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
           let state = AllMaterialTool.pregetGLSLData(state);
           let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
@@ -45,7 +45,7 @@ let _ =
           let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           let copiedState = StateAPI.deepCopyForRestore(state);
           let (state, gameObject2, _, _, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithMap(sandbox, state);
+            RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
           let state = state |> GameObjectAPI.initGameObject(gameObject2);
           let state = state |> DirectorTool.runWithDefaultTime;
           let restoredState = MainStateTool.restore(state, copiedState);

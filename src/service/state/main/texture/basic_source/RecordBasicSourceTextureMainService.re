@@ -27,23 +27,35 @@ let setAllTypeArrDataToDefault =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         ((wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates), index) => (
-           OperateTypeArrayBasicSourceTextureService.setWrapS(index, defaultWrapS, wrapSs),
-           OperateTypeArrayBasicSourceTextureService.setWrapT(index, defaultWrapT, wrapTs),
+         ((wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates), indexInTypeArray) => (
+           OperateTypeArrayBasicSourceTextureService.setWrapS(
+             indexInTypeArray,
+             defaultWrapS,
+             wrapSs
+           ),
+           OperateTypeArrayBasicSourceTextureService.setWrapT(
+             indexInTypeArray,
+             defaultWrapT,
+             wrapTs
+           ),
            OperateTypeArrayBasicSourceTextureService.setMagFilter(
-             index,
+             indexInTypeArray,
              defaultMagFilter,
              magFilters
            ),
            OperateTypeArrayBasicSourceTextureService.setMinFilter(
-             index,
+             indexInTypeArray,
              defaultMinFilter,
              minFilters
            ),
-           OperateTypeArrayBasicSourceTextureService.setFormat(index, defaultFormat, formats),
-           OperateTypeArrayBasicSourceTextureService.setType(index, defaultType, types),
+           OperateTypeArrayBasicSourceTextureService.setFormat(
+             indexInTypeArray,
+             defaultFormat,
+             formats
+           ),
+           OperateTypeArrayBasicSourceTextureService.setType(indexInTypeArray, defaultType, types),
            OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
-             index,
+             indexInTypeArray,
              defaultIsNeedUpdate,
              isNeedUpdates
            )
@@ -146,4 +158,4 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         needInitedTextureIndexArray: needInitedTextureIndexArray |> Js.Array.copy
       })
   }
-};      
+};

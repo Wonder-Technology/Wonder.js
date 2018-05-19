@@ -80,7 +80,7 @@ let _ =
                 "test get location",
                 () => {
                   let (state, gameObject, geometry, material) =
-                    InitLightMaterialJobTool.prepareGameObjectWithMap(sandbox, state^);
+                    InitLightMaterialJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
                   let getAttribLocation =
                     GLSLLocationTool.getAttribLocation(sandbox, "a_texCoord");
                   let state =
@@ -191,7 +191,7 @@ let _ =
             () =>
               _testGetLocationWithPrepareGameObjectFunc(
                 "u_diffuseMapSampler",
-                InitLightMaterialJobTool.prepareGameObjectWithMap
+                InitLightMaterialJobTool.prepareGameObjectWithCreatedMap
               )
           );
           test(
@@ -199,7 +199,7 @@ let _ =
             () =>
               _testGetLocationWithPrepareGameObjectFunc(
                 "u_specularMapSampler",
-                InitLightMaterialJobTool.prepareGameObjectWithMap
+                InitLightMaterialJobTool.prepareGameObjectWithCreatedMap
               )
           )
         }
@@ -548,7 +548,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                             () => {
                               let shaderSource =
                                 InitLightMaterialJobTool.prepareForJudgeGLSL(
-                                  InitLightMaterialJobTool.prepareGameObjectWithMap,
+                                  InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                                   sandbox,
                                   state^
                                 );
@@ -567,7 +567,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                             () => {
                               let shaderSource =
                                 InitLightMaterialJobTool.prepareForJudgeGLSL(
-                                  InitLightMaterialJobTool.prepareGameObjectWithMap,
+                                  InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                                   sandbox,
                                   state^
                                 );
@@ -626,7 +626,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                             () => {
                               let shaderSource =
                                 InitLightMaterialJobTool.prepareForJudgeGLSL(
-                                  InitLightMaterialJobTool.prepareGameObjectWithMap,
+                                  InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                                   sandbox,
                                   state^
                                 );
@@ -645,7 +645,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                             () => {
                               let shaderSource =
                                 InitLightMaterialJobTool.prepareForJudgeGLSL(
-                                  InitLightMaterialJobTool.prepareGameObjectWithMap,
+                                  InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                                   sandbox,
                                   state^
                                 );

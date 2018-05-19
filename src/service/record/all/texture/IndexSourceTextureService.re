@@ -2,10 +2,10 @@ let getBasicSourceTextureIndexOffset = () => 0;
 
 let getArrayBufferViewSourceTextureIndexOffset = (basicSourceTextureCount) => basicSourceTextureCount;
 
-let getBasicSourceTextureIndex = (basicSourceTextureIndex) =>
+let generateBasicSourceTextureIndex = (basicSourceTextureIndex) =>
   getBasicSourceTextureIndexOffset() + basicSourceTextureIndex;
 
-let getArrayBufferViewSourceTextureIndex =
+let generateArrayBufferViewSourceTextureIndex =
     (arrayBufferViewSourceTextureIndex, basicSourceTextureCount) =>
   getArrayBufferViewSourceTextureIndexOffset(basicSourceTextureCount)
   + arrayBufferViewSourceTextureIndex;
@@ -29,8 +29,25 @@ let getArrayBufferViewSourceTextureIndexInTypeArray =
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
-let isBasicSourceTextureIndex = (textureIndex, basicSourceTextureCount) =>
-  textureIndex < getArrayBufferViewSourceTextureIndexOffset(basicSourceTextureCount);
+let isBasicSourceTextureIndex = (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
+  textureIndex < arrayBufferViewSourceTextureIndexOffset;
 
-let isArrayBufferViewSourceTextureIndex = (textureIndex, basicSourceTextureCount) =>
-  textureIndex >= getArrayBufferViewSourceTextureIndexOffset(basicSourceTextureCount);
+let isArrayBufferViewSourceTextureIndex = (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
+  textureIndex >= arrayBufferViewSourceTextureIndexOffset;
+
+let handleByJudgeSourceTextureIndex =
+    (
+      textureIndex,
+      arrayBufferViewSourceTextureIndexOffset,
+      funcDataTuple,
+      (handleBasicSourceTextureIndexFunc, handleArrayBufferViewSourceTextureIndexFunc)
+    ) =>
+  isBasicSourceTextureIndex(textureIndex, arrayBufferViewSourceTextureIndexOffset) ?
+    handleBasicSourceTextureIndexFunc(textureIndex, funcDataTuple) :
+    handleArrayBufferViewSourceTextureIndexFunc(
+      getArrayBufferViewSourceTextureIndexInTypeArray(
+        textureIndex,
+        arrayBufferViewSourceTextureIndexOffset
+      ),
+      funcDataTuple
+    );

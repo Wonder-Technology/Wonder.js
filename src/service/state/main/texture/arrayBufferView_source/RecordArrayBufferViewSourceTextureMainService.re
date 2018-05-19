@@ -27,70 +27,65 @@ let setAllTypeArrDataToDefault =
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
   let defaultWidth = getDefaultWidth();
   let defaultHeight = getDefaultHeight();
-  SourceTextureIndexService.buildRangeIndex(
-    arrayBufferViewSourceTextureCount - 1,
-    arrayBufferViewSourceTextureIndexOffset
-  )
+  ArrayService.range(0, arrayBufferViewSourceTextureCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
          (
            (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights),
-           index
-         ) => {
-           let indexInTypeArray =
-             IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-               index,
-               arrayBufferViewSourceTextureIndexOffset
-             );
-           (
-             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
-               indexInTypeArray,
-               defaultWrapS,
-               wrapSs
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
-               indexInTypeArray,
-               defaultWrapT,
-               wrapTs
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
-               indexInTypeArray,
-               defaultMagFilter,
-               magFilters
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
-               indexInTypeArray,
-               defaultMinFilter,
-               minFilters
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
-               indexInTypeArray,
-               defaultFormat,
-               formats
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setType(
-               indexInTypeArray,
-               defaultType,
-               types
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
-               indexInTypeArray,
-               defaultIsNeedUpdate,
-               isNeedUpdates
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
-               indexInTypeArray,
-               defaultWidth,
-               widths
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
-               indexInTypeArray,
-               defaultHeight,
-               heights
-             )
+           indexInTypeArray
+         ) => (
+           /* let indexInTypeArray =
+              IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+                index,
+                arrayBufferViewSourceTextureIndexOffset
+              ); */
+           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
+             indexInTypeArray,
+             defaultWrapS,
+             wrapSs
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
+             indexInTypeArray,
+             defaultWrapT,
+             wrapTs
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
+             indexInTypeArray,
+             defaultMagFilter,
+             magFilters
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
+             indexInTypeArray,
+             defaultMinFilter,
+             minFilters
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
+             indexInTypeArray,
+             defaultFormat,
+             formats
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setType(
+             indexInTypeArray,
+             defaultType,
+             types
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
+             indexInTypeArray,
+             defaultIsNeedUpdate,
+             isNeedUpdates
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
+             indexInTypeArray,
+             defaultWidth,
+             widths
+           ),
+           OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
+             indexInTypeArray,
+             defaultHeight,
+             heights
            )
-         }
+         )
        ),
        (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
      )

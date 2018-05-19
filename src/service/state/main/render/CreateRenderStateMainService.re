@@ -138,7 +138,7 @@ let createRenderState =
       bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:
         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
-      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
+      setFlipYFunc: OperateSourceTextureMainService.setFlipY
     },
     ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
     directionLightRecord: {

@@ -25,7 +25,7 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let prepareGameObjectWithMap = (sandbox, state) => {
+let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
   open BoxGeometryAPI;
@@ -65,7 +65,7 @@ let prepareForJudgeGLSL = (sandbox, state) => {
 };
 
 let prepareForJudgeGLSLNotExecWithMap = (sandbox, state) =>
-  _prepareForJudgeGLSLNotExec(sandbox, prepareGameObjectWithMap, state);
+  _prepareForJudgeGLSLNotExec(sandbox, prepareGameObjectWithCreatedMap, state);
 
 let prepareForJudgeGLSLWithMap = (sandbox, state) => {
   let (state, shaderSource, _) = prepareForJudgeGLSLNotExecWithMap(sandbox, state);

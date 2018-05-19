@@ -55,7 +55,7 @@ let _ =
           };
           let _prepareWithMap = (sandbox, state) => {
             let (state, _, geometry, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
+              FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
             let (state, _, _) = AmbientLightTool.createGameObject(state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             state
@@ -1129,7 +1129,7 @@ let _ =
                     () => {
                       let _prepare = (state) => {
                         let (state, gameObject, _, _, _, _) =
-                          FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
+                          FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                         let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
                         let pos1 = 0;
@@ -1314,7 +1314,7 @@ let _ =
                 () => {
                   let _prepare = (state) => {
                     let (state, gameObject, _, _, _, _) =
-                      FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
+                      FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                     let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                     let textureUnit0 = 0;
                     let texture2D = Obj.magic(8);
@@ -1391,7 +1391,7 @@ let _ =
         () => {
           let _prepare = (~state, ~width=2, ~height=4, ()) => {
             let (state, gameObject, _, _, _, (diffuseMap, specularMap)) =
-              FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state);
+              FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             /* let source = Obj.magic({"width": width, "height": height}); */
             let source1 = BasicSourceTextureTool.buildSource(width, height);
@@ -1421,7 +1421,7 @@ let _ =
             "if source not exist, not update",
             () => {
               let (state, gameObject, _, _, _, _) =
-                FrontRenderLightJobTool.prepareGameObjectWithMap(sandbox, state^);
+                FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
               let unpackFlipYWebgl = Obj.magic(2);
               let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);

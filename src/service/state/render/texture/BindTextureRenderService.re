@@ -47,28 +47,46 @@ let bind =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  let basicSourceTextureInTypeArray = texture;
-  let arrayBufferViewTextureInTypeArray =
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-      texture,
-      arrayBufferViewSourceTextureRecord.textureIndexOffset
-    );
-  _bind(
-    gl,
-    unit,
-    basicSourceTextureInTypeArray,
-    (basicSourceTextureRecord.bindTextureUnitCacheMap, basicSourceTextureRecord.glTextureMap)
-  )
-  |> ignore;
-  _bind(
-    gl,
-    unit,
-    arrayBufferViewTextureInTypeArray,
+  IndexSourceTextureService.handleByJudgeSourceTextureIndex(
+    texture,
+    arrayBufferViewSourceTextureRecord.textureIndexOffset,
+    (gl, state),
     (
-      arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
-      arrayBufferViewSourceTextureRecord.glTextureMap
+      (
+        basicSourceTextureInTypeArray,
+        (
+          gl,
+          {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
+        )
+      ) => {
+        _bind(
+          gl,
+          unit,
+          basicSourceTextureInTypeArray,
+          (basicSourceTextureRecord.bindTextureUnitCacheMap, basicSourceTextureRecord.glTextureMap)
+        )
+        |> ignore;
+        state
+      },
+      (
+        arrayBufferViewTextureInTypeArray,
+        (
+          gl,
+          {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
+        )
+      ) => {
+        _bind(
+          gl,
+          unit,
+          arrayBufferViewTextureInTypeArray,
+          (
+            arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+            arrayBufferViewSourceTextureRecord.glTextureMap
+          )
+        )
+        |> ignore;
+        state
+      }
     )
   )
-  |> ignore;
-  state
 };

@@ -4,16 +4,13 @@ let initTexture = (gl, texture, glTextureMap) =>
   | None => OperateGlTextureMapService.setTexture(texture, gl |> Gl.createTexture, glTextureMap)
   };
 
-let initTexturesWithIndexArray = (gl, indexArray, glTextureMap) =>
-  indexArray
+let initTexturesWithIndexArray = (gl, indexInTypeArrayRange, glTextureMap) =>
+  indexInTypeArrayRange
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((glTextureMap, texture) => initTexture(gl, texture, glTextureMap)),
+       [@bs]
+       ((glTextureMap, textureInTypeArray) => initTexture(gl, textureInTypeArray, glTextureMap)),
        glTextureMap
      );
 
-let initTextures = (gl, (index, offset), glTextureMap) =>
-  initTexturesWithIndexArray(
-    gl,
-    SourceTextureIndexService.buildRangeIndex(index, offset),
-    glTextureMap
-  );
+let initTextures = (gl, indexInTypeArrayRange, glTextureMap) =>
+  initTexturesWithIndexArray(gl, indexInTypeArrayRange, glTextureMap);
