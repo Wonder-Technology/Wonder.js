@@ -18,10 +18,14 @@ let getShininess = (index, typeArr) =>
 let setShininess = (index, data, typeArr) =>
   TypeArrayService.setFloat1(getShininessIndex(index), data, typeArr);
 
-let getTextureIndex = ((index, textureIndex, textureCountPerMaterial), typeArr) =>
-  TypeArrayService.getUint32_1(
-    getTextureIndexIndex(index, textureIndex, textureCountPerMaterial),
-    typeArr
+let getTextureIndex =
+  [@bs]
+  (
+    ((index, textureIndex, textureCountPerMaterial), typeArr) =>
+      TypeArrayService.getUint32_1(
+        getTextureIndexIndex(index, textureIndex, textureCountPerMaterial),
+        typeArr
+      )
   );
 
 let setTextureIndex = ((index, textureIndex, textureCountPerMaterial), data, typeArr) =>

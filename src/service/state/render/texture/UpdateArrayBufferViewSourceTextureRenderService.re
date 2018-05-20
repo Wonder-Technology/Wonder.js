@@ -44,6 +44,13 @@ let _setTextureParameters =
       gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, _filterFallback(minFilter, gl))
     };
 
+    let _fix = [%bs.raw{|
+      function(gl){
+
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      }
+      |}];
+
 let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, height)) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -66,6 +73,9 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, heigh
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
+
+_fix(gl);
+
   gl
   |> Gl.texImage2DWithArrayBufferView(
        target,

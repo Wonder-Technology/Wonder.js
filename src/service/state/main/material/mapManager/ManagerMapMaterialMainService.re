@@ -7,24 +7,24 @@ let getMap =
     ) => {
   let mapUnit = getMapUnitFunc(material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
-    Some(getTextureIndexFunc((material, mapUnit, textureCountPerMaterial), textureIndices)) : None
+    Some([@bs] getTextureIndexFunc((material, mapUnit, textureCountPerMaterial), textureIndices)) :
+    None
 };
 
 /* let unsafeGetMap =
-    (
-      material,
-      textureCountPerMaterial,
-      (getMapUnitFunc, getTextureIndexFunc),
-      (textureIndices, mapUnits)
-    ) =>
-  getMap(
-    material,
-    textureCountPerMaterial,
-    (getMapUnitFunc, getTextureIndexFunc),
-    (textureIndices, mapUnits)
-  )
-  |> OptionService.unsafeGet; */
-
+     (
+       material,
+       textureCountPerMaterial,
+       (getMapUnitFunc, getTextureIndexFunc),
+       (textureIndices, mapUnits)
+     ) =>
+   getMap(
+     material,
+     textureCountPerMaterial,
+     (getMapUnitFunc, getTextureIndexFunc),
+     (textureIndices, mapUnits)
+   )
+   |> OptionService.unsafeGet; */
 let setMap =
     (
       material,

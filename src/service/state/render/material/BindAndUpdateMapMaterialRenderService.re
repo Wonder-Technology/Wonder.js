@@ -1,6 +1,7 @@
 open StateRenderType;
 
 let getTextureIndex = (material, mapUnit, getTextureIndexFunc, (textureIndices, settingRecord)) =>
+  [@bs]
   getTextureIndexFunc(
     (material, mapUnit, OperateRenderSettingService.getTextureCountPerMaterial(settingRecord)),
     textureIndices

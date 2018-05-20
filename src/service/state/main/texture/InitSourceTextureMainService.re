@@ -16,19 +16,25 @@ let initTexture = (texture, {settingRecord} as state) =>
         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
         state,
         (
-          (basicSourceTextureInTypeArray, {settingRecord} as state) => {
-            RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-            |> ArrayService.push(texture)
-            |> ignore;
-            state
-          },
-          (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
-            RecordArrayBufferViewSourceTextureMainService.getRecord(state).
-              needInitedTextureIndexArray
-            |> ArrayService.push(texture)
-            |> ignore;
-            state
-          }
+          [@bs]
+          (
+            (basicSourceTextureInTypeArray, {settingRecord} as state) => {
+              RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
+              |> ArrayService.push(texture)
+              |> ignore;
+              state
+            }
+          ),
+          [@bs]
+          (
+            (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
+              RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+                needInitedTextureIndexArray
+              |> ArrayService.push(texture)
+              |> ignore;
+              state
+            }
+          )
         )
       )
     /* IndexSourceTextureService.isBasicSourceTextureIndex(
@@ -54,24 +60,30 @@ let initTexture = (texture, {settingRecord} as state) =>
           IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
           state,
           (
-            (basicSourceTextureInTypeArray, {settingRecord} as state) => {
-              InitTextureService.initTexture(
-                [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                basicSourceTextureInTypeArray,
-                RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
-              )
-              |> ignore;
-              state
-            },
-            (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
-              InitTextureService.initTexture(
-                [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-                arrayBufferViewTextureInTypeArray,
-                RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
-              )
-              |> ignore;
-              state
-            }
+            [@bs]
+            (
+              (basicSourceTextureInTypeArray, {settingRecord} as state) => {
+                InitTextureService.initTexture(
+                  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+                  basicSourceTextureInTypeArray,
+                  RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
+                )
+                |> ignore;
+                state
+              }
+            ),
+            [@bs]
+            (
+              (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
+                InitTextureService.initTexture(
+                  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+                  arrayBufferViewTextureInTypeArray,
+                  RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
+                )
+                |> ignore;
+                state
+              }
+            )
           )
         )
       /* IndexSourceTextureService.isBasicSourceTextureIndex(

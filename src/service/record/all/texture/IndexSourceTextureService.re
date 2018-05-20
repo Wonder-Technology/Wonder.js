@@ -43,7 +43,8 @@ let handleByJudgeSourceTextureIndex =
       (handleBasicSourceTextureIndexFunc, handleArrayBufferViewSourceTextureIndexFunc)
     ) =>
   isBasicSourceTextureIndex(textureIndex, arrayBufferViewSourceTextureIndexOffset) ?
-    handleBasicSourceTextureIndexFunc(textureIndex, funcDataTuple) :
+    [@bs] handleBasicSourceTextureIndexFunc(textureIndex, funcDataTuple) :
+    [@bs]
     handleArrayBufferViewSourceTextureIndexFunc(
       getArrayBufferViewSourceTextureIndexInTypeArray(
         textureIndex,

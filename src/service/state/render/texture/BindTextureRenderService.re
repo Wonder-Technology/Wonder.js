@@ -31,6 +31,45 @@ let _bind = (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap) as dataT
   }
 };
 
+let _bindBasicSourceTexture =
+  [@bs]
+  (
+    (
+      basicSourceTextureInTypeArray,
+      (gl, unit, {basicSourceTextureRecord, browserDetectRecord} as state)
+    ) => {
+      _bind(
+        gl,
+        unit,
+        basicSourceTextureInTypeArray,
+        (basicSourceTextureRecord.bindTextureUnitCacheMap, basicSourceTextureRecord.glTextureMap)
+      )
+      |> ignore;
+      state
+    }
+  );
+
+let _bindArrayBufferViewSourceTexture =
+  [@bs]
+  (
+    (
+      arrayBufferViewTextureInTypeArray,
+      (gl, unit, {arrayBufferViewSourceTextureRecord, browserDetectRecord} as state)
+    ) => {
+      _bind(
+        gl,
+        unit,
+        arrayBufferViewTextureInTypeArray,
+        (
+          arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+          arrayBufferViewSourceTextureRecord.glTextureMap
+        )
+      )
+      |> ignore;
+      state
+    }
+  );
+
 let bind =
     (gl, unit, texture, {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord} as state) => {
   WonderLog.Contract.requireCheck(
@@ -50,43 +89,7 @@ let bind =
   IndexSourceTextureService.handleByJudgeSourceTextureIndex(
     texture,
     arrayBufferViewSourceTextureRecord.textureIndexOffset,
-    (gl, state),
-    (
-      (
-        basicSourceTextureInTypeArray,
-        (
-          gl,
-          {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
-        )
-      ) => {
-        _bind(
-          gl,
-          unit,
-          basicSourceTextureInTypeArray,
-          (basicSourceTextureRecord.bindTextureUnitCacheMap, basicSourceTextureRecord.glTextureMap)
-        )
-        |> ignore;
-        state
-      },
-      (
-        arrayBufferViewTextureInTypeArray,
-        (
-          gl,
-          {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
-        )
-      ) => {
-        _bind(
-          gl,
-          unit,
-          arrayBufferViewTextureInTypeArray,
-          (
-            arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
-            arrayBufferViewSourceTextureRecord.glTextureMap
-          )
-        )
-        |> ignore;
-        state
-      }
-    )
+    (gl, unit, state),
+    (_bindBasicSourceTexture, _bindArrayBufferViewSourceTexture)
   )
 };

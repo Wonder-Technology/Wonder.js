@@ -5,10 +5,14 @@ let getColor = (index, typeArr) => TypeArrayService.getFloat3(getColorIndex(inde
 let setColor = (index, data, typeArr) =>
   TypeArrayService.setFloat3(getColorIndex(index), data, typeArr);
 
-let getTextureIndex = ((index, textureIndex, textureCountPerMaterial), typeArr) =>
-  TypeArrayService.getUint32_1(
-    getTextureIndexIndex(index, textureIndex, textureCountPerMaterial),
-    typeArr
+let getTextureIndex =
+  [@bs]
+  (
+    ((index, textureIndex, textureCountPerMaterial), typeArr) =>
+      TypeArrayService.getUint32_1(
+        getTextureIndexIndex(index, textureIndex, textureCountPerMaterial),
+        typeArr
+      )
   );
 
 let setTextureIndex = ((index, textureIndex, textureCountPerMaterial), data, typeArr) =>

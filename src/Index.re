@@ -328,6 +328,14 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
+let setArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureHeight;
+
+let getArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureHeight;
+
+let setArrayBufferViewSourceTextureWidth = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWidth;
+
+let getArrayBufferViewSourceTextureWidth = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWidth;
+
 let setArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureType;
 
 let getArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureType;
