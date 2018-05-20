@@ -4,7 +4,7 @@ open Js.Promise;
 
 let _ =
   describe(
-    "test init material for render worker",
+    "test init material for render render worker job",
     () => {
       open Expect;
       open Expect.Operators;
