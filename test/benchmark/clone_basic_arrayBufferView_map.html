@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>run test</title>
+</head>
+
+<body>
+
+    <canvas id="2d"></canvas>
+
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+
+
+
+
+
+                // fetch("./1.png")
+                //     .then((response) => {
+                //         // return response.arrayBuffer()
+                //         return response.blob();
+                //     })
+                //     .then((arrayBuffer) => {
+                //         var image1Data = new Uint8Array(arrayBuffer);
+
+                //         fetch("./2.png")
+                //             .then((response) => {
+                //                 return response.arrayBuffer()
+                //             })
+                //             .then((arrayBuffer) => {
+                //                 var image2Data = new Uint8Array(arrayBuffer);
+
+                //                 return initSample(image1Data, image2Data, wd.unsafeGetState());
+                //             })
+                //     })
+
+
+
+                // fetch("./1.png")
+                //     .then((response) => {
+                //         // return response.arrayBuffer()
+                //         return response.blob();
+                //     })
+                //     .then((blob) => {
+
+
+                //         var reader = new FileReader();
+                //         reader.readAsArrayBuffer(blob);
+                //         reader.onload = function (e) {
+                //             // console.info(reader.result); //ArrayBuffer {}
+                //             //经常会遇到的异常 Uncaught RangeError: byte length of Int16Array should be a multiple of 2
+                //             //var buf = new int16array(reader.result);
+                //             //console.info(buf);
+
+                //             //将 ArrayBufferView  转换成Blob
+                //             var buf = new Uint8Array(reader.result);
+
+
+
+
+                //             console.log(buf.byteLength)
+
+
+                //             // console.info(buf); //[228, 184, 173, 230, 150, 135, 229, 173, 151, 231, 172, 166, 228, 184, 178]
+                //             // reader.readAsText(new Blob([buf]), 'utf-8');
+                //             // reader.onload = function () {
+                //             //     console.info(reader.result); //中文字符串
+                //             // };
+
+                //             // //将 ArrayBufferView  转换成Blob
+                //             // var buf = new DataView(reader.result);
+                //             // console.info(buf); //DataView {}
+                //             // reader.readAsText(new Blob([buf]), 'utf-8');
+                //             // reader.onload = function () {
+                //             //     console.info(reader.result); //中文字符串
+                //             // };
+
+
+                //             // return initSample(buf, null, wd.unsafeGetState());
+
+
+
+
+                //         }
+                //     })
+
+
+
+
+
+
+
+                var image = new Image();
+
+                image.src = "./1.jpg";
+
+                image.onload = () => {
+                    var canvas = document.getElementById("2d");
+                    canvas.width = 256;
+                    canvas.height = 256;
+                    var context = canvas.getContext("2d");
+
+                    context.drawImage(image, 0, 0);
+
+                    var data = context.getImageData(0, 0, image.width, image.height);
+
+                    console.log(new Uint8Array(Array.from(data.data)))
+
+                    return initSample(new Uint8Array(Array.from(data.data)), null, wd.unsafeGetState());
+                }
+
+
+
+
+                //                 var oReq = new XMLHttpRequest();
+                //                 oReq.open("GET", "./1.png", true);
+                //                 oReq.responseType = "arraybuffer";
+
+                //                 oReq.onload = function (oEvent) {
+                //                     var arrayBuffer = oReq.response; // Note: not oReq.responseText
+                //                     if (arrayBuffer) {
+
+                // console.log(arrayBuffer.byteLength)
+                //                         var image1Data = new Uint8Array(arrayBuffer);
+                //                         // for (var i = 0; i < byteArray.byteLength; i++) {
+                //                         //   // do something with each byte in the array
+                //                         // }
+
+
+                // console.log(image1Data.byteLength)
+
+                //                         return initSample(image1Data, null, wd.unsafeGetState());
+
+
+                //                     }
+                //                 };
+
+                // oReq.send(null);
+
+
+
+
+
+
+
+
+
+            });
+
+
+
+            function initSample(image1, image2, state) {
+                var n1 = performance.now();
+
+
+                var data = BasicBoxesTool.createBoxWithArrayBufferViewMap(image1, 256, 256, state);
+                var state = data[0];
+                var box = data[1];
+
+
+
+
+
+                var record = wd.cloneGameObject(box, 1000, false, state);
+                var state = record[0];
+                var newBoxes = record[1];
+
+
+                var flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        var arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                newBoxes = flatten(newBoxes);
+
+
+
+                var record = BasicBoxesTool.setPosition(newBoxes, state);
+                var state = record[0];
+
+
+
+
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>
