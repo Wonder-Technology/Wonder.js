@@ -34,7 +34,7 @@ let _ =
                         let (
                           state,
                           context,
-                          (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                          (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4),
                           (gameObject1, gameObject2),
                           (map1, map2),
                           (source1, source2)
@@ -51,7 +51,7 @@ let _ =
                         (
                           state,
                           context,
-                          (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                          (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4),
                           (gameObject1, gameObject2),
                           (map1, map2),
                           (source1, source2),
@@ -70,7 +70,7 @@ let _ =
                           let (
                             state,
                             context,
-                            (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                            (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4),
                             (gameObject1, gameObject2),
                             (map1, map2),
                             (source1, source2),

@@ -21,11 +21,6 @@ let setSource = (texture, source, state) =>
       state
     };
 
-let clearNeedAddedSourceArr = (state) => {
-  ...state,
-  basicSourceTextureRecord: Some({...RecordBasicSourceTextureMainService.getRecord(state), needAddedSourceArray: [||]})
-};
-
 let convertNeedAddedSourceArrayToImageDataArr = (needAddedSourceArray) =>
   needAddedSourceArray
   |> WonderCommonlib.ArrayService.reduceOneParam(

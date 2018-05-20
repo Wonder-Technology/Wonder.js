@@ -21,6 +21,10 @@ let _buildMaterialData = (materialArrayForWorkerInit, gameObjectMap, gameObjectR
        [||]
      );
 
+let _removeAddedSourceDataDuplicateItems = (needAddedSourceDataArray) =>
+  needAddedSourceDataArray
+  |> ArrayService.removeDuplicateItems([@bs] (((texture, source)) => Js.Int.toString(texture)));
+
 let _buildData = (operateType, stateData) => {
   let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
     StateDataMainService.unsafeGetState(stateData);
@@ -86,17 +90,16 @@ let _buildData = (operateType, stateData) => {
         "basicSourceTextureData": {
           "needAddedImageDataArray":
             OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-              basicSourceTextureRecord.needAddedSourceArray
-              |> ArrayService.removeDuplicateItems(
-                   [@bs] (((texture, source)) => Js.Int.toString(texture))
-                 )
+              basicSourceTextureRecord.needAddedSourceArray |> _removeAddedSourceDataDuplicateItems
             ),
           "needInitedTextureIndexArray":
             basicSourceTextureRecord.needInitedTextureIndexArray
             |> WonderCommonlib.ArrayService.removeDuplicateItems
         },
         "arrayBufferViewSourceTextureData": {
-          "needAddedSourceArray": arrayBufferViewSourceTextureRecord.needAddedSourceArray,
+          "needAddedSourceArray":
+            arrayBufferViewSourceTextureRecord.needAddedSourceArray
+            |> _removeAddedSourceDataDuplicateItems,
           "needInitedTextureIndexArray":
             arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
             |> WonderCommonlib.ArrayService.removeDuplicateItems
@@ -129,7 +132,7 @@ let _clearData = (state) => {
   InitLightMaterialService.clearDataForWorkerInit(RecordLightMaterialMainService.getRecord(state))
   |> ignore;
   state
-  |> OperateBasicSourceTextureMainService.clearNeedAddedSourceArr
+  |> OperateSourceTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
 };
 

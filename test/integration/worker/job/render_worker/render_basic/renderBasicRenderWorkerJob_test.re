@@ -18,11 +18,7 @@ let _ =
             TestMainWorkerTool.initWithJobConfig(
               ~sandbox,
               ~buffer=
-                SettingTool.buildBufferConfigStr(
-                  ~transformCount=5,
-                  ~basicMaterialCount=5,
-                  ()
-                ),
+                SettingTool.buildBufferConfigStr(~transformCount=5, ~basicMaterialCount=5, ()),
               ()
             )
         }
@@ -497,11 +493,17 @@ let _ =
               let _prepare = () => {
                 let imageDataArrayBuffer1 = Obj.magic(11);
                 let imageDataArrayBuffer2 = Obj.magic(12);
+                let imageDataArrayBuffer3 = Obj.magic(13);
+                let imageDataArrayBuffer4 = Obj.magic(14);
                 let (state, context) =
                   InitBasicSourceTextureRenderWorkerTool.prepareState(
                     sandbox,
-                    imageDataArrayBuffer1,
-                    imageDataArrayBuffer2
+                    (
+                      imageDataArrayBuffer1,
+                      imageDataArrayBuffer2,
+                      imageDataArrayBuffer3,
+                      imageDataArrayBuffer4
+                    )
                   );
                 let (state, gameObject1, _, _, _, map1) =
                   RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
@@ -509,8 +511,10 @@ let _ =
                   RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
                 let source1 = BasicSourceTextureTool.buildSource(100, 200);
                 let source2 = BasicSourceTextureTool.buildSource(110, 210);
-                let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
-                let state = state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
+                let state =
+                  state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map1, source1);
+                let state =
+                  state |> BasicSourceTextureAPI.setBasicSourceTextureSource(map2, source2);
                 let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
                 let (state, _, _, _) = CameraTool.createCameraGameObject(state);
                 let unpackFlipYWebgl = Obj.magic(2);
@@ -523,15 +527,24 @@ let _ =
                 (
                   state,
                   context,
-                  (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                  (
+                    imageDataArrayBuffer1,
+                    imageDataArrayBuffer2,
+                    imageDataArrayBuffer3,
+                    imageDataArrayBuffer4
+                  ),
                   (gameObject1, gameObject2),
                   (map1, map2),
                   (source1, source2),
                   (unpackFlipYWebgl, pixelStorei)
                 )
               };
-              beforeAllPromise(() => BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
-              afterAllPromise(() => BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
+              beforeAllPromise(
+                () => BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc()
+              );
+              afterAllPromise(
+                () => BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
+              );
               describe(
                 "test for chrome",
                 () =>
@@ -541,7 +554,12 @@ let _ =
                       let (
                         state,
                         context,
-                        (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                        (
+                          imageDataArrayBuffer1,
+                          imageDataArrayBuffer2,
+                          imageDataArrayBuffer3,
+                          imageDataArrayBuffer4
+                        ),
                         (gameObject1, gameObject2),
                         (map1, map2),
                         (source1, source2),
@@ -574,7 +592,12 @@ let _ =
                       let (
                         state,
                         context,
-                        (imageDataArrayBuffer1, imageDataArrayBuffer2),
+                        (
+                          imageDataArrayBuffer1,
+                          imageDataArrayBuffer2,
+                          imageDataArrayBuffer3,
+                          imageDataArrayBuffer4
+                        ),
                         (gameObject1, gameObject2),
                         (map1, map2),
                         (source1, source2),

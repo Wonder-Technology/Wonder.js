@@ -41,7 +41,7 @@ let clearFakeCreateImageBitmapFunc = [%bs.raw
   |}
 ];
 
-let _createTwoMaps = (state) => {
+let createTwoMaps = (state) => {
   let (state, map1) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let (state, map2) = BasicSourceTextureAPI.createBasicSourceTexture(state);
   let source1 = BasicSourceTextureTool.buildSource(100, 200);
@@ -54,17 +54,18 @@ let _createTwoMaps = (state) => {
 let prepareStateAndCreateTwoMaps = (sandbox) => {
   let imageDataArrayBuffer1 = Obj.magic(11);
   let imageDataArrayBuffer2 = Obj.magic(12);
+  let imageDataArrayBuffer3 = Obj.magic(13);
+  let imageDataArrayBuffer4 = Obj.magic(14);
   let (state, context) =
     InitBasicSourceTextureRenderWorkerTool.prepareState(
       sandbox,
-      imageDataArrayBuffer1,
-      imageDataArrayBuffer2
+      (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4)
     );
-  let (state, (map1, map2), (source1, source2)) = _createTwoMaps(state);
+  let (state, (map1, map2), (source1, source2)) = createTwoMaps(state);
   (
     state,
     context,
-    (imageDataArrayBuffer1, imageDataArrayBuffer2),
+    (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4),
     (map1, map2),
     (source1, source2)
   )
@@ -73,23 +74,24 @@ let prepareStateAndCreateTwoMaps = (sandbox) => {
 let prepareStateAndCreateTwoGameObjects = (sandbox) => {
   let imageDataArrayBuffer1 = Obj.magic(11);
   let imageDataArrayBuffer2 = Obj.magic(12);
+  let imageDataArrayBuffer3 = Obj.magic(13);
+  let imageDataArrayBuffer4 = Obj.magic(14);
   let (state, context) =
     InitBasicSourceTextureRenderWorkerTool.prepareState(
       sandbox,
-      imageDataArrayBuffer1,
-      imageDataArrayBuffer2
+      (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4)
     );
-  let (state, (map1, map2), (source1, source2)) = _createTwoMaps(state);
+  let (state, (map1, map2), (source1, source2)) = createTwoMaps(state);
   let (state, gameObject1, _, _, _, map1) =
-    RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
+    RenderBasicJobTool.prepareGameObjectWithMap(sandbox, map1, state);
   let (state, gameObject2, _, _, _, map2) =
-    RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
+    RenderBasicJobTool.prepareGameObjectWithMap(sandbox, map2, state);
   let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (
     state,
     context,
-    (imageDataArrayBuffer1, imageDataArrayBuffer2),
+    (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4),
     (gameObject1, gameObject2),
     (map1, map2),
     (source1, source2)

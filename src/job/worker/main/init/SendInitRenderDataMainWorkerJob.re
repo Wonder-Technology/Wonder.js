@@ -161,7 +161,7 @@ let _buildData = (operateType, canvas, stateData) => {
 
 let _clearData = (state) =>
   state
-  |> OperateBasicSourceTextureMainService.clearNeedAddedSourceArr
+  |> OperateSourceTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
 
 let execJob = (flags, stateData) =>

@@ -15,7 +15,7 @@ let unsafeGetSource = (texture, state) => {
   )
 };
 
-let _createTwoMaps = (state) => {
+let createTwoMaps = (state) => {
   let (state, map1) = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
   let (state, map2) = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
   let source1 = ArrayBufferViewSourceTextureTool.buildSource();
@@ -37,12 +37,12 @@ let _createTwoMaps = (state) => {
 
 let prepareStateAndCreateTwoMaps = (sandbox) => {
   let state = InitArrayBufferViewTextureRenderWorkerTool.prepareState(sandbox);
-  _createTwoMaps(state)
+  createTwoMaps(state)
 };
 
 let prepareStateAndCreateTwoGameObjects = (sandbox) => {
   let state = InitArrayBufferViewTextureRenderWorkerTool.prepareState(sandbox);
-  let (state, (map1, map2), (source1, source2)) = _createTwoMaps(state);
+  let (state, (map1, map2), (source1, source2)) = createTwoMaps(state);
   let (state, gameObject1, _, _, _, map1) =
     RenderBasicJobTool.prepareGameObjectWithMap(sandbox, map1, state);
   let (state, gameObject2, _, _, _, map2) =

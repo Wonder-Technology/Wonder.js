@@ -61,7 +61,7 @@ let _addSource = (texture, imageBitmap, state) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   let {sourceMap} = RecordBasicSourceTextureRenderWorkerService.getRecord(state);
-  TextureSourceMapService.setSource(texture, imageBitmap, sourceMap) |> ignore;
+  TextureSourceMapService.addSource(texture, imageBitmap, sourceMap) |> ignore;
   state
 };
 

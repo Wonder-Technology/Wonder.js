@@ -44,15 +44,6 @@ let setSource = (texture, source, state) =>
       state
     };
 
-let clearNeedAddedSourceArr = (state) => {
-  ...state,
-  arrayBufferViewSourceTextureRecord:
-    Some({
-      ...RecordArrayBufferViewSourceTextureMainService.getRecord(state),
-      needAddedSourceArray: [||]
-    })
-};
-
 let getWrapS = (texture, state) => {
   let {wrapSs} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(
