@@ -121,7 +121,9 @@ let createRenderState =
       formats: basicSourceTextureRecord.formats |> OptionService.unsafeGet,
       types: basicSourceTextureRecord.types |> OptionService.unsafeGet,
       isNeedUpdates: basicSourceTextureRecord.isNeedUpdates |> OptionService.unsafeGet,
-      sourceMap: basicSourceTextureRecord.sourceMap |> Obj.magic,
+      sourceMap:
+        basicSourceTextureRecord.sourceMap
+        |> RenderWorkerBasicSourceTextureType.sparseMapImageBitmapToSparseMapImageElement,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
       bindTextureUnitCacheMap: basicSourceTextureRecord.bindTextureUnitCacheMap,
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY
@@ -136,7 +138,7 @@ let createRenderState =
       isNeedUpdates: arrayBufferViewSourceTextureRecord.isNeedUpdates |> OptionService.unsafeGet,
       widths: arrayBufferViewSourceTextureRecord.widths |> OptionService.unsafeGet,
       heights: arrayBufferViewSourceTextureRecord.heights |> OptionService.unsafeGet,
-      sourceMap: arrayBufferViewSourceTextureRecord.sourceMap |> Obj.magic,
+      sourceMap: arrayBufferViewSourceTextureRecord.sourceMap |> OptionService.unsafeGet,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
       bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:

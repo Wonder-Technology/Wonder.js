@@ -498,7 +498,7 @@ let _ =
                 let imageDataArrayBuffer1 = Obj.magic(11);
                 let imageDataArrayBuffer2 = Obj.magic(12);
                 let (state, context) =
-                  InitTextureRenderWorkerTool.prepareState(
+                  InitBasicSourceTextureRenderWorkerTool.prepareState(
                     sandbox,
                     imageDataArrayBuffer1,
                     imageDataArrayBuffer2
@@ -530,8 +530,8 @@ let _ =
                   (unpackFlipYWebgl, pixelStorei)
                 )
               };
-              beforeAllPromise(() => TextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
-              afterAllPromise(() => TextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
+              beforeAllPromise(() => BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
+              afterAllPromise(() => BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
               describe(
                 "test for chrome",
                 () =>

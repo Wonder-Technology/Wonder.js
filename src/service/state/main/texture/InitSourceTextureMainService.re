@@ -9,8 +9,6 @@ let initTexture = (texture, {settingRecord} as state) =>
     switch texture {
     | None => state
     | Some(texture) =>
-      /* let arrayBufferViewSourceTextureOffset =
-         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state); */
       IndexSourceTextureService.handleByJudgeSourceTextureIndex(
         texture,
         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
@@ -37,24 +35,11 @@ let initTexture = (texture, {settingRecord} as state) =>
           )
         )
       )
-    /* IndexSourceTextureService.isBasicSourceTextureIndex(
-         texture,
-         arrayBufferViewSourceTextureOffset
-       ) ?
-         RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-         |> ArrayService.push(texture)
-         |> ignore :
-         RecordArrayBufferViewSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-         |> ArrayService.push(texture)
-         |> ignore;
-       state */
     } :
     (
       switch texture {
       | None => state
       | Some(texture) =>
-        /* let arrayBufferViewSourceTextureOffset =
-           IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state); */
         IndexSourceTextureService.handleByJudgeSourceTextureIndex(
           texture,
           IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
@@ -86,23 +71,6 @@ let initTexture = (texture, {settingRecord} as state) =>
             )
           )
         )
-      /* IndexSourceTextureService.isBasicSourceTextureIndex(
-           texture,
-           arrayBufferViewSourceTextureOffset
-         ) ?
-           InitTextureService.initTexture(
-             [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-             texture,
-             RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
-           )
-           |> ignore :
-           InitTextureService.initTexture(
-             [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-             texture,
-             RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
-           )
-           |> ignore;
-         state */
       }
     );
 

@@ -1,5 +1,7 @@
 type imageBitmap;
 
+external sparseMapImageBitmapToSparseMapImageElement : WonderCommonlib.SparseMapService.t(imageBitmap) => WonderCommonlib.SparseMapService.t(DomType.imageElement) = "%identity";
+
 type basicSourceTextureRecord = {
   wrapSs: option(Js.Typed_array.Uint8Array.t),
   wrapTs: option(Js.Typed_array.Uint8Array.t),

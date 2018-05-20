@@ -54,7 +54,7 @@ let _ =
                   (map1, map2),
                   (source1, source2)
                 ) =
-                  TextureRenderWorkerTool.prepareStateAndCreateTwoGameObjects(sandbox);
+                  BasicSourceTextureRenderWorkerTool.prepareStateAndCreateTwoGameObjects(sandbox);
                 let state =
                   state
                   |> GameObjectAPI.initGameObject(gameObject1)

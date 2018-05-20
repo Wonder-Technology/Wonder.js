@@ -36,7 +36,7 @@ let _ =
                       (map1, map2),
                       (source1, source2)
                     ) =
-                      TextureRenderWorkerTool.prepareStateAndCreateTwoGameObjects(sandbox);
+                      BasicSourceTextureRenderWorkerTool.prepareStateAndCreateTwoGameObjects(sandbox);
                     let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =
                       state
@@ -53,8 +53,8 @@ let _ =
                       bindTexture
                     )
                   };
-                  beforeAllPromise(() => TextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
-                  afterAllPromise(() => TextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
+                  beforeAllPromise(() => BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc());
+                  afterAllPromise(() => BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc());
                   testPromise(
                     "if the new texture if cached before, not bind",
                     () => {

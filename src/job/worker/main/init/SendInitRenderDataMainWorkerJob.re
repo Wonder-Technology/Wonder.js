@@ -15,6 +15,57 @@ let _buildMaterialData = (buffer, index, disposedIndexArray, isSourceInstanceMap
   "isSourceInstanceMap": isSourceInstanceMap
 };
 
+let _buildTextureData = (state) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+      let needInitedTextureIndexArray = basicSourceTextureRecord.needInitedTextureIndexArray;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|basicSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
+          ~actual={j|is $needInitedTextureIndexArray|j}
+        ),
+        () => needInitedTextureIndexArray |> Js.Array.length == 0
+      );
+      let arrayBufferViewSourceTextureRecord =
+        RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+      let needInitedTextureIndexArray =
+        arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
+          ~actual={j|is $needInitedTextureIndexArray|j}
+        ),
+        () => needInitedTextureIndexArray |> Js.Array.length == 0
+      )
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  let sourceTextureRecord = RecordSourceTextureMainService.getRecord(state);
+  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  {
+    "buffer": sourceTextureRecord.buffer,
+    "basicSourceTextureData": {
+      "index": basicSourceTextureRecord.index,
+      /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
+      "needAddedImageDataArray":
+        OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          basicSourceTextureRecord.needAddedSourceArray
+        )
+    },
+    "arrayBufferViewSourceTextureData": {
+      "index": arrayBufferViewSourceTextureRecord.index,
+      /* TODO can postMessage send uint8array data? */
+      "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap
+    }
+  }
+};
+
 let _buildData = (operateType, canvas, stateData) => {
   let {
         settingRecord,
@@ -36,10 +87,6 @@ let _buildData = (operateType, canvas, stateData) => {
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
-  let sourceTextureRecord = RecordSourceTextureMainService.getRecord(state);
-  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
-  let arrayBufferViewSourceTextureRecord =
-    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
     "operateType": operateType,
@@ -108,23 +155,7 @@ let _buildData = (operateType, canvas, stateData) => {
       "buffer": sourceInstanceRecord.buffer,
       "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
     },
-    "textureData": {
-      "buffer": sourceTextureRecord.buffer,
-      "basicSourceTextureData": {
-        "index": basicSourceTextureRecord.index,
-        /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
-        "needAddedImageDataArray":
-          OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-            basicSourceTextureRecord.needAddedSourceArray
-          )
-      },
-      "arrayBufferViewSourceTextureData": {
-        "index": arrayBufferViewSourceTextureRecord.index,
-        /* TODO can postMessage send uint8array data? */
-        "sourceMap":
-          arrayBufferViewSourceTextureRecord.sourceMap
-      }
-    }
+    "textureData": _buildTextureData(state)
   }
 };
 
