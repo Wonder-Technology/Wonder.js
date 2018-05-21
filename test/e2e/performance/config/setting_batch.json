@@ -19,11 +19,11 @@
         "texture_count_per_material": 16,
         "instance_buffer": {
             "sourceInstance_count": 2,
-            "objectInstance_count_per_source_instance": 11000
+            "objectInstance_count_per_source_instance": 5100
         }
     },
     "gpu": {
-        "use_hardware_instance": true
+        "use_hardware_instance": false
     },
     "worker": {
         "use_worker": false

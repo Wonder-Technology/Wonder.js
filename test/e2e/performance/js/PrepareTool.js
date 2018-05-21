@@ -1,6 +1,9 @@
-
 var PrepareTool = (function () {
     var _prepareForMap = function () {
+        if (typeof window.loadImage !== "undefined") {
+            return;
+        }
+
         window.loadImage = function (imageSrc) {
             return new Promise(function (resolve, reject) {
                 var image = new Image();
@@ -8,12 +11,12 @@ var PrepareTool = (function () {
                 image.onload = function () {
                     resolve(image)
                 };
-                image.onerror=function(e){
+                image.onerror = function (e) {
                     reject(e)
                 }
             })
         }
-    }
+    };
 
 
     return {

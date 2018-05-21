@@ -18,8 +18,8 @@
         "arrayBuffer_view_source_texture_count": 30000,
         "texture_count_per_material": 16,
         "instance_buffer": {
-            "sourceInstance_count": 2,
-            "objectInstance_count_per_source_instance": 11000
+            "sourceInstance_count": 410,
+            "objectInstance_count_per_source_instance": 20
         }
     },
     "gpu": {
