@@ -1,4 +1,16 @@
 var TextureTool = (function () {
+
+    var _createBasicSourceTexture = function (source1, state) {
+        var record = wd.createBasicSourceTexture(state)
+        var state = record[0];
+        var map1 = record[1];
+
+        var state = wd.setBasicSourceTextureSource(map1, source1, state);
+
+
+        return [map1, state];
+    };
+
     var _createArrayBufferViewSourceTexture = function (source1, size1, state) {
         var record = wd.createArrayBufferViewSourceTexture(state)
         var state = record[0];
@@ -16,16 +28,30 @@ var TextureTool = (function () {
 
 
     return {
-        buildArrayBufferViewSourceTextureFromImageDataArr: function (imageDataArr) {
-            var [imagePixelDataArr, shapeArr] = imageDataArr;
-            var width = shapeArr[0];
-            var height = shapeArr[1];
+        buildArrayBufferViewSourceTextureFromImageDataArr: function (arg) {
+            if (!!arg.width && !!arg.height) {
+                var image = arg;
 
-            var [map, state] = _createArrayBufferViewSourceTexture(new Uint8Array(imagePixelDataArr), [width, height], wd.unsafeGetState());
+                var [map, state] = _createBasicSourceTexture(image, wd.unsafeGetState());
 
-            wd.setState(state);
 
-            return map;
+                wd.setState(state);
+
+                return map;
+            }
+            else {
+                var imageDataArr = arg;
+
+                var [imagePixelDataArr, shapeArr] = imageDataArr;
+                var width = shapeArr[0];
+                var height = shapeArr[1];
+
+                var [map, state] = _createArrayBufferViewSourceTexture(new Uint8Array(imagePixelDataArr), [width, height], wd.unsafeGetState());
+
+                wd.setState(state);
+
+                return map;
+            }
         },
         createTwoArrayBufferViewSourceTextures: function (source1, source2, size1, size2, state) {
             var [map1, state] = _createArrayBufferViewSourceTexture(source1, size1, state);
@@ -34,20 +60,8 @@ var TextureTool = (function () {
             return [map1, map2, state];
         },
         createTwoBasicSourceTextures: function (source1, source2, state) {
-            var record = wd.createBasicSourceTexture(state)
-            var state = record[0];
-            var map1 = record[1];
-
-            var state = wd.setBasicSourceTextureSource(map1, source1, state);
-
-
-
-            var record = wd.createBasicSourceTexture(state)
-            var state = record[0];
-            var map2 = record[1];
-
-            var state = wd.setBasicSourceTextureSource(map2, source2, state);
-
+            var [map1, state] = _createBasicSourceTexture(source1, state);
+            var [map2, state] = _createBasicSourceTexture(source2, state);
 
             return [map1, map2, state];
         },
