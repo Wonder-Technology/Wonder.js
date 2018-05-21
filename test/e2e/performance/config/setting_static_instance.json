@@ -9,17 +9,17 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "custom_geometry_point_count": 100000,
-        "custom_geometry_count": 5000,
-        "transform_count": 30000,
-        "basic_material_count": 30000,
-        "light_material_count": 30000,
-        "basic_source_texture_count": 30000,
-        "arrayBuffer_view_source_texture_count": 30000,
+        "custom_geometry_point_count": 10000,
+        "custom_geometry_count": 500,
+        "transform_count": 100000,
+        "basic_material_count": 3000,
+        "light_material_count": 3000,
+        "basic_source_texture_count": 3000,
+        "arrayBuffer_view_source_texture_count": 3000,
         "texture_count_per_material": 16,
         "instance_buffer": {
-            "sourceInstance_count": 2,
-            "objectInstance_count_per_source_instance": 110000
+            "sourceInstance_count": 1,
+            "objectInstance_count_per_source_instance": 100000
         }
     },
     "gpu": {
