@@ -108,8 +108,8 @@ let _generateFace =
       let segmentIndexTuple = (i, j);
       _generateVertex(directionDataTuple, (faceAxes, corners), segmentIndexTuple, vertices);
       _generateTexCoord(
-        Number.intToFloat(i) /. Number.intToFloat(uSegment),
-        Number.intToFloat(j) /. Number.intToFloat(vSegment),
+        NumberType.intToFloat(i) /. NumberType.intToFloat(uSegment),
+        NumberType.intToFloat(j) /. NumberType.intToFloat(vSegment),
         texCoords
       );
       _generateNormal(side, faceNormals, normals);

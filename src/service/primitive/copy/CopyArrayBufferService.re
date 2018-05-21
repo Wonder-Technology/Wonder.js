@@ -1,13 +1,14 @@
 open Js.Typed_array;
 
 let copyArrayBufferData = (sourceBuffer, targetBuffer) => {
-  let targetView = Uint8Array.fromBuffer(targetBuffer |> Worker.sharedArrayBufferToArrayBuffer);
+  let targetView =
+    Uint8Array.fromBuffer(targetBuffer |> WorkerType.sharedArrayBufferToArrayBuffer);
   TypeArrayService.setUint8Array(
-    Uint8Array.fromBuffer(sourceBuffer |> Worker.sharedArrayBufferToArrayBuffer),
+    Uint8Array.fromBuffer(sourceBuffer |> WorkerType.sharedArrayBufferToArrayBuffer),
     targetView
   )
   |> Uint8Array.buffer
-  |> Worker.arrayBufferToSharedArrayBuffer
+  |> WorkerType.arrayBufferToSharedArrayBuffer
 };
 
 let copyArrayBufferSpecificData = (sourceBuffer, targetBuffer, totalByteLength) => {
@@ -15,20 +16,20 @@ let copyArrayBufferSpecificData = (sourceBuffer, targetBuffer, totalByteLength) 
   let length = totalByteLength / 1;
   let targetView =
     Uint8Array.fromBufferRange(
-      targetBuffer |> Worker.sharedArrayBufferToArrayBuffer,
+      targetBuffer |> WorkerType.sharedArrayBufferToArrayBuffer,
       ~offset,
       ~length
     );
   TypeArrayService.setUint8Array(
     Uint8Array.fromBufferRange(
-      sourceBuffer |> Worker.sharedArrayBufferToArrayBuffer,
+      sourceBuffer |> WorkerType.sharedArrayBufferToArrayBuffer,
       ~offset,
       ~length
     ),
     targetView
   )
   |> Uint8Array.buffer
-  |> Worker.arrayBufferToSharedArrayBuffer
+  |> WorkerType.arrayBufferToSharedArrayBuffer
 };
 
 let copyArrayBuffer = (buffer, totalByteLength) =>
@@ -36,7 +37,7 @@ let copyArrayBuffer = (buffer, totalByteLength) =>
   | 0 => buffer
   | _ =>
     buffer
-    |> Worker.sharedArrayBufferToArrayBuffer
+    |> WorkerType.sharedArrayBufferToArrayBuffer
     |> ArrayBuffer.slice(~start=0, ~end_=totalByteLength)
-    |> Worker.arrayBufferToSharedArrayBuffer
+    |> WorkerType.arrayBufferToSharedArrayBuffer
   };

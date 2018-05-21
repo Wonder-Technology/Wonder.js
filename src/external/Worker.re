@@ -17,12 +17,6 @@ let isSupportSharedArrayBuffer = () => _isSupportSharedArrayBuffer() |> Js.to_bo
 
 [@bs.new] external _newArrayBufferToBeSharedArrayBuffer : int => sharedArrayBuffer = "ArrayBuffer";
 
-external sharedArrayBufferToArrayBuffer : sharedArrayBuffer => Js.Typed_array.ArrayBuffer.t =
-  "%identity";
-
-external arrayBufferToSharedArrayBuffer : Js.Typed_array.ArrayBuffer.t => sharedArrayBuffer =
-  "%identity";
-
 [@bs.send.pipe : worker] external postMessage : Js.t({..}) => unit = "";
 
 [@bs.send.pipe : worker]

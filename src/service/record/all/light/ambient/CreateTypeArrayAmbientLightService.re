@@ -4,7 +4,7 @@ open BufferAmbientLightService;
 
 let createTypeArrays = (buffer, count) => (
   Float32Array.fromBufferRange(
-    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getColorsOffset(),
     ~length=getColorsLength()
   )

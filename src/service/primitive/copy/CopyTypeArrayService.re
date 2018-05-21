@@ -46,21 +46,21 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
            Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
      );
 /* let copyFloat32TypeArrayFromSharedArrayBuffer = (buffer) =>
-     Js.Typed_array.Float32Array.fromBuffer(Worker.sharedArrayBufferToArrayBuffer(buffer));
+     Js.Typed_array.Float32Array.fromBuffer(WorkerType.sharedArrayBufferToArrayBuffer(buffer));
 
    let copyFloat32TypeArrayFromSharedArrayBufferRange = (buffer, offset, length) =>
      Js.Typed_array.Float32Array.fromBufferRange(
-       Worker.sharedArrayBufferToArrayBuffer(buffer),
+       WorkerType.sharedArrayBufferToArrayBuffer(buffer),
        ~offset,
        ~length
      );
 
    let copyUint16TypeArrayFromSharedArrayBufferRange = (buffer, offset, length) =>
      Js.Typed_array.Uint16Array.fromBufferRange(
-       Worker.sharedArrayBufferToArrayBuffer(buffer),
+       WorkerType.sharedArrayBufferToArrayBuffer(buffer),
        ~offset,
        ~length
      );
 
    let copyUint8TypeArrayFromSharedArrayBuffer = (buffer) =>
-     Js.Typed_array.Uint8Array.fromBuffer(Worker.sharedArrayBufferToArrayBuffer(buffer)); */
+     Js.Typed_array.Uint8Array.fromBuffer(WorkerType.sharedArrayBufferToArrayBuffer(buffer)); */

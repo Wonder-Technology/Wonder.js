@@ -10,11 +10,6 @@ external querySelectorAll : (document, string) => option(htmlElement) =
 
 [@bs.val] external requestAnimationFrame : (float => unit) => int = "";
 
-external htmlElementToJsObj : htmlElement => Js.t({..}) = "%identity";
-
-external jsObjToHtmlElement : Js.t({..}) => htmlElement = "%identity";
-
-/* external htmlElementToCanvasElement : htmlElement => canvasElement = "%identity"; */
 [@bs.send] external querySelectorAll : (document, string) => array(htmlElement) = "";
 
 let findFirstHtmlElement = (~document: document, str: string) : option(htmlElement) => {

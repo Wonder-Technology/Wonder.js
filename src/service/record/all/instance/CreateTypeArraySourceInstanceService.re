@@ -4,7 +4,7 @@ open BufferSourceInstanceService;
 
 let createTypeArrays = (buffer, sourceInstanceCount, objectInstanceCountPerSourceInstance) => (
   Uint32Array.fromBufferRange(
-    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=
       getObjectInstanceTransformCollectionsOffset(
         sourceInstanceCount,
@@ -17,7 +17,7 @@ let createTypeArrays = (buffer, sourceInstanceCount, objectInstanceCountPerSourc
       )
   ),
   Uint8Array.fromBufferRange(
-    Worker.sharedArrayBufferToArrayBuffer(buffer),
+    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getIsTransformStaticsOffset(sourceInstanceCount, objectInstanceCountPerSourceInstance),
     ~length=getIsTransformStaticsLength(sourceInstanceCount)
   )

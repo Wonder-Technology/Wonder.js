@@ -313,6 +313,6 @@ let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
 
    let makeUint16Array = [@bs] ((record) => Uint16Array.make(record)); */
 let setUint8Array = (sourceTypeArr, targetTypeArr) => {
-  targetTypeArr |> Uint8Array.setArray(sourceTypeArr |> TypeArray.uint8ToArrayUint8Elt);
+  targetTypeArr |> Uint8Array.setArray(sourceTypeArr |> TypeArrayType.uint8ToArrayUint8Elt);
   targetTypeArr
 };

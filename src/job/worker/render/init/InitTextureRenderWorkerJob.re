@@ -2,11 +2,6 @@ open StateDataRenderWorkerType;
 
 open Js.Promise;
 
-external arrayArrayBufferViewSourceToSparseMap :
-  array(Js.Typed_array.Uint8Array.t) =>
-  WonderCommonlib.SparseMapService.t(Js.Typed_array.Uint8Array.t) =
-  "%identity";
-
 let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceTextureCount, state) => {
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
     CreateTypeArrayBasicSourceTextureService.createTypeArrays(buffer, basicSourceTextureCount);
@@ -83,7 +78,7 @@ let execJob = (_, e, stateData) => {
         let textureData = data##textureData;
         let sourceMap = textureData##arrayBufferViewSourceTextureData##sourceMap;
         SourceMapArrayBufferViewSourceTextureRenderWorkerService.setSourceMap(
-          sourceMap |> arrayArrayBufferViewSourceToSparseMap,
+          sourceMap |> ArrayBufferViewSourceTextureType.arrayArrayBufferViewSourceToSparseMap,
           state
         )
         |> StateRenderWorkerService.setState(stateData)

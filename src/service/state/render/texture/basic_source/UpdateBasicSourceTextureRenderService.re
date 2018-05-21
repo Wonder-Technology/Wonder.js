@@ -12,7 +12,7 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType)) =>
        glFormat,
        glFormat,
        glType,
-       source |> Gl.imageElementToTextureSource
+       source |> GlType.imageElementToTextureSource
      );
 
 let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), source) =>

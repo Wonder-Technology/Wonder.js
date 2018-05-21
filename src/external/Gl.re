@@ -4,8 +4,6 @@ open GlType;
 
 open Js.Typed_array;
 
-external imageElementToTextureSource : imageElement => textureSource = "%identity";
-
 [@bs.get] external getTextureWrapS : webgl1Context => int = "TEXTURE_WRAP_S";
 
 [@bs.get] external getTextureWrapT : webgl1Context => int = "TEXTURE_WRAP_T";
