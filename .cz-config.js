@@ -17,6 +17,7 @@ module.exports = {
   scopes: [
     // { name: "exampleScope" },
     // { name: "changeMe" }
+    { name: "data-json" },
     { name: "texture" },
     { name: "shader" },
     { name: "glsl" },

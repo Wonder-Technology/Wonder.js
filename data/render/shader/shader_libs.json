@@ -161,7 +161,7 @@
       ],
       "uniforms": [
         {
-          "name": "u_sampler2D",
+          "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
           "from": "basicMaterial"
@@ -267,7 +267,17 @@
         "type": "fs",
         "name": "webgl1_frontLight_common_fragment"
       }
-    ]
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_specular",
+          "field": "specularColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        }
+      ]
+    }
   },
   {
     "name": "light_setWorldPosition",
@@ -279,11 +289,69 @@
     ]
   },
   {
-    "name": "noDiffuseMap",
+    "name": "common_light_map",
+    "variables": {
+      "attributes": [
+        {
+          "name": "a_texCoord",
+          "buffer": "texCoord",
+          "type": "vec2"
+        }
+      ]
+    }
+  },
+  {
+    "name": "diffuse_map",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_diffuse_map_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_diffuse_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_diffuseMapSampler",
+          "field": "diffuseMap",
+          "type": "sampler2D",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "specular_map",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_specular_map_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_specular_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_specularMapSampler",
+          "field": "specularMap",
+          "type": "sampler2D",
+          "from": "lightMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "no_diffuse_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noDiffuseMap_fragment"
+        "name": "webgl1_no_diffuse_map_fragment"
       }
     ],
     "variables": {
@@ -298,61 +366,51 @@
     }
   },
   {
-    "name": "noSpecularMap",
+    "name": "no_specular_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noSpecularMap_fragment"
-      }
-    ],
-    "variables": {
-      "uniforms": [
-        {
-          "name": "u_specular",
-          "field": "specularColor",
-          "type": "float3",
-          "from": "lightMaterial"
-        }
-      ]
-    }
-  },
-  {
-    "name": "noLightMap",
-    "glsls": [
-      {
-        "type": "fs",
-        "name": "webgl1_noLightMap_fragment"
+        "name": "webgl1_no_specular_map_fragment"
       }
     ]
   },
   {
-    "name": "noEmissionMap",
+    "name": "no_light_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noEmissionMap_fragment"
+        "name": "webgl1_no_light_map_fragment"
       }
     ]
   },
   {
-    "name": "noNormalMap",
+    "name": "no_emission_map",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_no_emission_map_fragment"
+      }
+    ]
+  },
+  {
+    "name": "no_normal_map",
     "glsls": [
       {
         "type": "vs",
-        "name": "webgl1_noNormalMap_vertex"
+        "name": "webgl1_no_normal_map_vertex"
       },
       {
         "type": "fs",
-        "name": "webgl1_noNormalMap_fragment"
+        "name": "webgl1_no_normal_map_fragment"
       }
     ]
   },
   {
-    "name": "noShadowMap",
+    "name": "no_shadow_map",
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_noShadowMap_fragment"
+        "name": "webgl1_no_shadow_map_fragment"
       }
     ]
   },

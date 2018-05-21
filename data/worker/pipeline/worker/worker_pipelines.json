@@ -26,6 +26,9 @@
                         "name": "get_material_data"
                     },
                     {
+                        "name": "get_browserDetect_data"
+                    },
+                    {
                         "name": "create_gl"
                     },
                     {
@@ -65,6 +68,9 @@
                         "name": "init_light_material"
                     },
                     {
+                        "name": "init_texture"
+                    },
+                    {
                         "name": "send_finish_init_render_data"
                     }
                 ],
@@ -83,6 +89,9 @@
                     },
                     {
                         "name": "init_material_for_render"
+                    },
+                    {
+                        "name": "init_texture_for_render"
                     },
                     {
                         "name": "clear_color"

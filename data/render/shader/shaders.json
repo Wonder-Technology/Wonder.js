@@ -22,6 +22,23 @@
       "name": "basic_map",
       "condition": "basic_has_map",
       "pass": "basic_map"
+    },
+    {
+      "name": "common_light_map",
+      "condition": "light_has_map",
+      "pass": "common_light_map"
+    },
+    {
+      "name": "diffuse_map",
+      "condition": "has_diffuse_map",
+      "pass": "diffuse_map",
+      "fail": "no_diffuse_map"
+    },
+    {
+      "name": "specular_map",
+      "condition": "has_specular_map",
+      "pass": "specular_map",
+      "fail": "no_specular_map"
     }
   ],
   "groups": [
@@ -95,22 +112,28 @@
           "name": "light_setWorldPosition"
         },
         {
-          "name": "noDiffuseMap"
+          "type": "dynamic_branch",
+          "name": "common_light_map"
         },
         {
-          "name": "noSpecularMap"
+          "type": "dynamic_branch",
+          "name": "diffuse_map"
         },
         {
-          "name": "noLightMap"
+          "type": "dynamic_branch",
+          "name": "specular_map"
         },
         {
-          "name": "noEmissionMap"
+          "name": "no_light_map"
         },
         {
-          "name": "noNormalMap"
+          "name": "no_emission_map"
         },
         {
-          "name": "noShadowMap"
+          "name": "no_normal_map"
+        },
+        {
+          "name": "no_shadow_map"
         },
         {
           "name": "light"
