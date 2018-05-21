@@ -1,30 +1,35 @@
 var TextureTool = (function () {
+    var _createArrayBufferViewSourceTexture = function (source1, size1, state) {
+        var record = wd.createArrayBufferViewSourceTexture(state)
+        var state = record[0];
+        var map1 = record[1];
+
+        var state = wd.setArrayBufferViewSourceTextureSource(map1, source1, state);
+
+
+
+        var state = wd.setArrayBufferViewSourceTextureWidth(map1, size1[0], state);
+        var state = wd.setArrayBufferViewSourceTextureHeight(map1, size1[1], state);
+
+        return [map1, state];
+    };
+
+
     return {
+        buildArrayBufferViewSourceTextureFromImageDataArr: function (imageDataArr) {
+            var [imagePixelDataArr, shapeArr] = imageDataArr;
+            var width = shapeArr[0];
+            var height = shapeArr[1];
+
+            var [map, state] = _createArrayBufferViewSourceTexture(new Uint8Array(imagePixelDataArr), [width, height], wd.unsafeGetState());
+
+            wd.setState(state);
+
+            return map;
+        },
         createTwoArrayBufferViewSourceTextures: function (source1, source2, size1, size2, state) {
-            var record = wd.createArrayBufferViewSourceTexture(state)
-            var state = record[0];
-            var map1 = record[1];
-
-            var state = wd.setArrayBufferViewSourceTextureSource(map1, source1, state);
-
-
-
-            var record = wd.createArrayBufferViewSourceTexture(state)
-            var state = record[0];
-            var map2 = record[1];
-
-            var state = wd.setArrayBufferViewSourceTextureSource(map2, source2, state);
-
-
-
-            var state = wd.setArrayBufferViewSourceTextureWidth(map1, size1[0], state);
-            var state = wd.setArrayBufferViewSourceTextureHeight(map1, size1[1], state);
-
-
-
-            var state = wd.setArrayBufferViewSourceTextureWidth(map2, size2[0], state);
-            var state = wd.setArrayBufferViewSourceTextureHeight(map2, size2[1], state);
-
+            var [map1, state] = _createArrayBufferViewSourceTexture(source1, size1, state);
+            var [map2, state] = _createArrayBufferViewSourceTexture(source2, size2, state);
 
             return [map1, map2, state];
         },
