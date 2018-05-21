@@ -122,42 +122,6 @@ var LightBoxesTool = (function () {
         },
 
 
-        // createBoxWithMap: function (source1, source2, state) {
-        //     var record = LightBoxesTool.createBox(state);
-        //     var state = record[0];
-        //     var obj = record[1];
-
-
-        //     var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
-
-        //     var record = wd.createBasicSourceTexture(state)
-        //     var state = record[0];
-        //     var texture1 = record[1];
-
-        //     var record = wd.createBasicSourceTexture(state)
-        //     var state = record[0];
-        //     var texture2 = record[1];
-
-
-
-
-        //     var state = wd.setBasicSourceTextureSource(texture1, source1, state);
-        //     var state = wd.setBasicSourceTextureSource(texture2, source2, state);
-
-
-        //     var state = wd.setLightMaterialDiffuseMap(material, texture1, state);
-
-
-        //     var state = wd.setLightMaterialSpecularMap(material, texture2, state);
-
-
-
-        //     return [state, obj];
-        // },
-
-
-
-
         createBoxWithMap: function (map1, map2, state) {
             var record = LightBoxesTool.createBox(state);
             var state = record[0];
@@ -165,20 +129,6 @@ var LightBoxesTool = (function () {
 
 
             var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
-
-            // var record = wd.createBasicSourceTexture(state)
-            // var state = record[0];
-            // var texture1 = record[1];
-
-            // var record = wd.createBasicSourceTexture(state)
-            // var state = record[0];
-            // var texture2 = record[1];
-
-
-
-
-            // var state = wd.setBasicSourceTextureSource(texture1, source1, state);
-            // var state = wd.setBasicSourceTextureSource(texture2, source2, state);
 
 
             var state = wd.setLightMaterialDiffuseMap(material, map1, state);
@@ -190,13 +140,6 @@ var LightBoxesTool = (function () {
 
             return [state, obj];
         },
-
-
-
-
-
-
-
 
 
 
@@ -333,11 +276,11 @@ var LightBoxesTool = (function () {
         },
 
 
-        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, source1, source2, state) {
+        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map1, map2, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                return createAndDisposeGameObjectsWithMapByClone(count, boxes, source1, source2, state)
+                return createAndDisposeGameObjectsWithMapByClone(count, boxes, map1, map2, state)
             }, state);
         },
 
@@ -372,54 +315,6 @@ var LightBoxesTool = (function () {
             }, state);
         },
 
-
-
-
-
-        // createAndDisposeGameObjects: function (count, boxes, state) {
-        //     window.sourceBox = boxes[0];
-        //     window.boxes = [];
-
-        //     return ScheduleTool.scheduleLoop(function (state) {
-        //         // for(var i = 0, len = window.boxes.length; i < len; i++){
-        //         //     var box = window.boxes[i];
-        //         //     state = disposeGameObject(box, state);
-        //         // }
-
-        //         var state = wd.batchDisposeGameObject(window.boxes, state);
-
-        //         // var [state, newBoxes] = wd.createBoxesWithoutClone(2000, state);
-
-        //         var record = wd.cloneGameObject(window.sourceBox, count, true, state);
-        //         var state = record[0];
-        //         var newBoxes = record[1];
-
-
-        //         var flatten = (arr) => {
-        //             return arr.reduce((a, b) => {
-        //                 var arr = a.concat(b);
-        //                 return arr;
-        //             }, []);
-        //         };
-        //         newBoxes = flatten(newBoxes);
-
-
-        //         var record = LightBoxesTool.setPosition(newBoxes, state);
-        //         var state = record[0];
-        //         var newBoxes = record[1];
-
-        //         window.boxes = newBoxes;
-
-
-        //         for (var i = 0, len = newBoxes.length; i < len; i++) {
-        //             var box = newBoxes[i];
-        //             state = wd.initGameObject(box, state);
-        //         }
-
-        //         return state;
-
-        //     }, state)
-        // },
         createCamera: function (state) {
             return CameraTool.createCamera(state)
         }

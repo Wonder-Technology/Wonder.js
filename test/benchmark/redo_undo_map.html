@@ -22,6 +22,7 @@
     <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
     <script src="../e2e/js/RedoUndoTool.js"></script>
     <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../e2e/js/TextureTool.js"></script>
     <script src="../../dist/wd.js"></script>
     <script>
         window.onload = function () {
@@ -30,23 +31,9 @@
 
 
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-
-
-                var image1 = new Image();
-                image1.src = "./1.jpg";
-
-
-
-                image1.onload = function () {
-                    var image2 = new Image();
-                    image2.src = "./2.jpg";
-
-                    image2.onload = function () {
-                        return initSample(image1, image2, wd.unsafeGetState());
-                    }
-                }
-
-
+                TextureTool.loadTwoImages("./1.jpg", "./2.jpg", (image1, image2) => {
+                    return initSample(image1, image2, wd.unsafeGetState());
+                })
             });
 
 
@@ -55,7 +42,12 @@
             function initSample(image1, image2, state) {
                 RandomTool.stubMathRandom(10000);
 
-                var data = InstanceBasicBoxesTool.createBoxWithMap(1, false, image1, state);
+
+                var [map1, map2, state] = TextureTool.createTwoBasicSourceTextures(image1, image2, state);
+
+
+
+                var data = InstanceBasicBoxesTool.createBoxWithMap(1, false, map1, state);
                 var state = data[0];
                 var box = data[1];
 
@@ -78,7 +70,7 @@
 
 
 
-                var state = RedoUndoTool.redoUndoShaderWithMap(2, image2, 30, state);
+                var state = RedoUndoTool.redoUndoShaderWithMap(2, map2, 30, state);
 
 
 

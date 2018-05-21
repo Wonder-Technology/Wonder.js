@@ -43,7 +43,7 @@ var RedoUndoTool = (function () {
 
             return state;
         },
-        redoUndoShaderWithMap: function (count, source, range, state) {
+        redoUndoShaderWithMap: function (count, map, range, state) {
             var index = 1;
 
             var state = ScheduleTool.scheduleLoop(function (state) {
@@ -52,7 +52,7 @@ var RedoUndoTool = (function () {
 
                     window.copyState1 = wd.deepCopyForRestore(state);
 
-                    var record = BasicBoxesTool.createBoxesByCloneWithMap(count, source, state);
+                    var record = BasicBoxesTool.createBoxesByCloneWithMap(count, map, state);
                     var state = record[0];
                     var boxes = record[1];
 
@@ -92,8 +92,8 @@ var RedoUndoTool = (function () {
         setPosition: function (boxes, state) {
             return InstanceBasicBoxesTool.setPosition(boxes, state)
         },
-        createBoxesByInstanceWithMap: function (count, source, state) {
-            return InstanceBasicBoxesTool.createBoxWithMap(count, false, source, state);
+        createBoxesByInstanceWithMap: function (count, map, state) {
+            return InstanceBasicBoxesTool.createBoxWithMap(count, false, map, state);
         },
         createCamera: function (state) {
             return CameraTool.createCamera(state)

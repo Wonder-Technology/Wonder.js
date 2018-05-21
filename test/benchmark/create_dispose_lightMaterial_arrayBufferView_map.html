@@ -26,6 +26,7 @@
     <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
     <script src="../e2e/js/RedoUndoTool.js"></script>
     <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../e2e/js/TextureTool.js"></script>
     <script src="../../dist/wd.js"></script>
     <script>
         window.onload = function () {
@@ -35,46 +36,9 @@
 
 
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                var image = new Image();
-
-                image.src = "./1.jpg";
-
-                image.onload = () => {
-                    var canvas = document.getElementById("2d");
-                    canvas.width = 256;
-                    canvas.height = 256;
-                    var context = canvas.getContext("2d");
-
-                    context.drawImage(image, 0, 0);
-
-                    var data = context.getImageData(0, 0, image.width, image.height);
-
-
-
-                    var image1Data = new Uint8Array(Array.from(data.data));
-
-
-
-                    var image2 = new Image();
-
-                    image2.src = "./2.jpg";
-
-                    image2.onload = () => {
-                        var canvas = document.getElementById("2d");
-                        canvas.width = 256;
-                        canvas.height = 256;
-                        var context = canvas.getContext("2d");
-
-                        context.drawImage(image2, 0, 0);
-
-                        var data = context.getImageData(0, 0, image2.width, image2.height);
-
-
-                        var image2Data = new Uint8Array(Array.from(data.data));
-
-                        return initSample(image1Data, image2Data, wd.unsafeGetState());
-                    }
-                }
+                TextureTool.loadTwoUint8ArrayImages("./1.jpg", "./2.jpg", (image1Data, image2Data) => {
+                    return initSample(image1Data, image2Data, wd.unsafeGetState());
+                })
             });
 
 
@@ -82,36 +46,9 @@
             function initSample(image1, image2, state) {
                 var n1 = performance.now();
 
-
-
-
-                var record = wd.createArrayBufferViewSourceTexture(state)
-                var state = record[0];
-                var map1 = record[1];
-
-                var state = wd.setArrayBufferViewSourceTextureSource(map1, image1, state);
-
-
-
-                var record = wd.createArrayBufferViewSourceTexture(state)
-                var state = record[0];
-                var map2 = record[1];
-
-                var state = wd.setArrayBufferViewSourceTextureSource(map2, image2, state);
-
-                var width = 256;
-                var height = 256;
-
-
-
-                var state = wd.setArrayBufferViewSourceTextureWidth(map1, width, state);
-                var state = wd.setArrayBufferViewSourceTextureHeight(map1, height, state);
-
-
-
-                var state = wd.setArrayBufferViewSourceTextureWidth(map2, width, state);
-                var state = wd.setArrayBufferViewSourceTextureHeight(map2, height, state);
-
+                var [map1, map2, state] = TextureTool.createTwoArrayBufferViewSourceTextures(
+                    image1, image2, [256, 256], [256, 256], state
+                );
 
 
 

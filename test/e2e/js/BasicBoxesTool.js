@@ -81,17 +81,17 @@ var BasicBoxesTool = (function () {
 
 
 
-    var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, source, state) {
+    var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, map, state) {
         var state = wd.batchDisposeGameObject(window.boxes, state);
 
-        // var record = BasicBoxesTool.createBoxWithMap(source, state);
+        // var record = BasicBoxesTool.createBoxWithMap(map, state);
         // var state = record[0];
         // var newBoxes = [record[1]];
 
 
 
 
-        var record = BasicBoxesTool.createBoxesByCloneWithMap(count, source, state);
+        var record = BasicBoxesTool.createBoxesByCloneWithMap(count, map, state);
         var state = record[0];
         var newBoxes = record[1];
 
@@ -104,7 +104,7 @@ var BasicBoxesTool = (function () {
 
 
 
-        // var record = BasicBoxesTool.createBoxWithMap(source, state);
+        // var record = BasicBoxesTool.createBoxWithMap(map, state);
         // var state = record[0];
         // var newBoxes = [ record[1] ];
 
@@ -161,7 +161,7 @@ var BasicBoxesTool = (function () {
             return [state, obj];
         },
 
-        createBoxWithMap: function (source, state) {
+        createBoxWithMap: function (map, state) {
             var record = BasicBoxesTool.createBox(state);
             var state = record[0];
             var obj = record[1];
@@ -169,16 +169,11 @@ var BasicBoxesTool = (function () {
 
             var material = wd.unsafeGetGameObjectBasicMaterialComponent(obj, state);
 
-            var record = wd.createBasicSourceTexture(state)
-            var state = record[0];
-            var texture = record[1];
+            var state = wd.setBasicMaterialMap(material, map, state);
 
-            var state = wd.setBasicSourceTextureSource(texture, source, state);
-
-
-            var state = wd.setBasicMaterialMap(material, texture, state);
             return [state, obj];
         },
+
 
 
 
@@ -209,10 +204,10 @@ var BasicBoxesTool = (function () {
 
         },
 
-        createBoxesByCloneWithMap: function (count, source, state) {
+        createBoxesByCloneWithMap: function (count, map, state) {
             var boxes = [];
 
-            var record = BasicBoxesTool.createBoxWithMap(source, state);
+            var record = BasicBoxesTool.createBoxWithMap(map, state);
             var state = record[0];
             var box = record[1];
 
@@ -296,13 +291,13 @@ var BasicBoxesTool = (function () {
             }, state)
         },
         createAndDisposeClonedGameObjects: function (count, boxes, state) {
-            window.sourceBox = boxes[0];
+            window.mapBox = boxes[0];
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
                 var state = wd.batchDisposeGameObject(window.boxes, state);
 
-                var record = wd.cloneGameObject(window.sourceBox, count, true, state);
+                var record = wd.cloneGameObject(window.mapBox, count, true, state);
                 var state = record[0];
                 var newBoxes = record[1];
 
@@ -362,11 +357,11 @@ var BasicBoxesTool = (function () {
         },
 
 
-        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, source, state) {
+        createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleLoop(function (state) {
-                return createAndDisposeGameObjectsWithMapByClone(count, boxes, source, state
+                return createAndDisposeGameObjectsWithMapByClone(count, boxes, map, state
                 )
             }, state);
         },
@@ -381,11 +376,11 @@ var BasicBoxesTool = (function () {
                 wd.setState(state);
             }, state);
         },
-        createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, source, state) {
+        createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, map, state) {
             window.boxes = [];
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, source, wd.getStateFromData(stateData)
+                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, map, wd.getStateFromData(stateData)
                 );
 
                 wd.setState(state);
