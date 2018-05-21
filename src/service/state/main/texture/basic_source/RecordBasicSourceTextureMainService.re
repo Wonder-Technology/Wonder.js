@@ -65,21 +65,11 @@ let setAllTypeArrDataToDefault =
      )
 };
 
-let _setAllTypeArrDataToDefault =
-    (
-      basicSourceTextureCount: int,
-      (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
-    ) =>
-  setAllTypeArrDataToDefault(
-    basicSourceTextureCount,
-    (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
-  );
-
 let _initBufferData = (basicSourceTextureCount, buffer) => {
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
     CreateTypeArrayBasicSourceTextureService.createTypeArrays(buffer, basicSourceTextureCount);
   (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
-  |> _setAllTypeArrDataToDefault(basicSourceTextureCount)
+  |> setAllTypeArrDataToDefault(basicSourceTextureCount)
 };
 
 let create = ({settingRecord} as state) => {

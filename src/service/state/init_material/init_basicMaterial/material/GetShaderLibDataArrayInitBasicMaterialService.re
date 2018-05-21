@@ -56,35 +56,11 @@ let _isPass =
 let getMaterialShaderLibDataArr =
   [@bs]
   (
-    (
-      materialIndex,
-      (isSourceInstance, isSupportInstance),
-      ({staticBranchs, dynamicBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
-      state
-    ) =>
-      shaderLibItems
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           [@bs]
-           (
-             (resultDataArr, {type_, name}: shaderLibItem) =>
-               switch type_ {
-               | None =>
-                 resultDataArr
-                 |> ArrayService.push(
-                      GetShaderLibDataArrayInitMaterialService.findFirstShaderData(
-                        name,
-                        shaderLibs
-                      )
-                    )
-               | Some(type_) =>
-                 GetShaderLibDataArrayInitMaterialService.getMaterialShaderLibDataArrByType(
-                   (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
-                   (shaderLibs, staticBranchs, dynamicBranchs, state),
-                   (_getMaterialShaderLibDataArrByStaticBranch, _isPass),
-                   resultDataArr
-                 )
-               }
-           ),
-           WonderCommonlib.ArrayService.createEmpty()
-         )
+    (materialIndex, (isSourceInstance, isSupportInstance), shaderLibTuple, state) =>
+      GetShaderLibDataArrayInitMaterialService.getMaterialShaderLibDataArr(
+        (materialIndex, isSourceInstance, isSupportInstance),
+        shaderLibTuple,
+        (_getMaterialShaderLibDataArrByStaticBranch, _isPass),
+        state
+      )
   );

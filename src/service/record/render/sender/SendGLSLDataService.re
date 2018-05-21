@@ -92,7 +92,7 @@ let _isNotCacheVector3AndSetCache = (shaderCacheMap, name: string, (x: float, y:
   | Some(cache) => _queryIsNotCacheWithCache(cache, x, y, z)
   };
 
-let _isNotCacheFloatAndSetCache = (shaderCacheMap, name: string, value: float) =>
+let _isNotCacheNumberAndSetCache = (shaderCacheMap, name: string, value) =>
   switch (_getCache(shaderCacheMap, name)) {
   | None =>
     _setCache(shaderCacheMap, name, value) |> ignore;
@@ -104,21 +104,13 @@ let sendFloat =
   [@bs]
   (
     (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
-      if (_isNotCacheFloatAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
+      if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
         /* WonderLog.Log.log(("send float1: ", name, value)) |> ignore; */
         uniform1f(pos, value, gl)
       } else {
         ()
       }
   );
-
-let _isNotCacheIntAndSetCache = (shaderCacheMap, name: string, value: int) =>
-  switch (_getCache(shaderCacheMap, name)) {
-  | None =>
-    _setCache(shaderCacheMap, name, value) |> ignore;
-    true
-  | Some(cache) => cache !== value
-  };
 
 let sendInt =
   [@bs]
@@ -129,7 +121,7 @@ let sendInt =
       (name: string, pos: uniformLocation),
       value: int
     ) =>
-      if (_isNotCacheIntAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
+      if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
         uniform1i(pos, value, gl)
       } else {
         ()

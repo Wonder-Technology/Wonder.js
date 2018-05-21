@@ -124,3 +124,31 @@ let getMaterialShaderLibDataArrByType =
       )
     )
   };
+
+let getMaterialShaderLibDataArr =
+  (
+    (
+      (materialIndex:int, isSourceInstance:bool, isSupportInstance:bool),
+      ({staticBranchs, dynamicBranchs, groups}, shaderLibItems, shaderLibs: shaderLibs),
+      (getMaterialShaderLibDataArrByStaticBranchFunc, isPassFunc),
+      state
+    ) =>
+      shaderLibItems
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           [@bs]
+           (
+             (resultDataArr, {type_, name}: shaderLibItem) =>
+               switch type_ {
+               | None => resultDataArr |> ArrayService.push(findFirstShaderData(name, shaderLibs))
+               | Some(type_) =>
+                 getMaterialShaderLibDataArrByType(
+                   (materialIndex, type_, groups, name, isSourceInstance, isSupportInstance),
+                   (shaderLibs, staticBranchs, dynamicBranchs, state),
+                   (getMaterialShaderLibDataArrByStaticBranchFunc, isPassFunc),
+                   resultDataArr
+                 )
+               }
+           ),
+           WonderCommonlib.ArrayService.createEmpty()
+         )
+  );

@@ -85,18 +85,6 @@ let setAllTypeArrDataToDefault =
      )
 };
 
-let _setAllTypeArrDataToDefault =
-    (
-      arrayBufferViewSourceTextureCount: int,
-      arrayBufferViewSourceTextureIndexOffset,
-      (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
-    ) =>
-  setAllTypeArrDataToDefault(
-    arrayBufferViewSourceTextureCount,
-    arrayBufferViewSourceTextureIndexOffset,
-    (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
-  );
-
 let _initBufferData =
     (
       basicSourceTextureCount,
@@ -111,7 +99,7 @@ let _initBufferData =
       arrayBufferViewSourceTextureCount
     );
   (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
-  |> _setAllTypeArrDataToDefault(
+  |> setAllTypeArrDataToDefault(
        arrayBufferViewSourceTextureCount,
        arrayBufferViewSourceTextureIndexOffset
      )
