@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark</title>
+</head>
+
+<body>
+    <canvas id="2d"></canvas>
+
+
+
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                var image = new Image();
+
+                image.src = "./1.jpg";
+
+                image.onload = () => {
+                    var canvas = document.getElementById("2d");
+                    canvas.width = 256;
+                    canvas.height = 256;
+                    var context = canvas.getContext("2d");
+
+                    context.drawImage(image, 0, 0);
+
+                    var data = context.getImageData(0, 0, image.width, image.height);
+
+
+
+                    var image1Data = new Uint8Array(Array.from(data.data));
+
+
+
+                    var image2 = new Image();
+
+                    image2.src = "./2.jpg";
+
+                    image2.onload = () => {
+                        var canvas = document.getElementById("2d");
+                        canvas.width = 256;
+                        canvas.height = 256;
+                        var context = canvas.getContext("2d");
+
+                        context.drawImage(image2, 0, 0);
+
+                        var data = context.getImageData(0, 0, image2.width, image2.height);
+
+
+                        var image2Data = new Uint8Array(Array.from(data.data));
+
+                        return initSample(image1Data, image2Data, wd.unsafeGetState());
+                    }
+                }
+            });
+
+
+
+            function initSample(image1, image2, state) {
+                var n1 = performance.now();
+
+
+
+
+                var record = wd.createArrayBufferViewSourceTexture(state)
+                var state = record[0];
+                var map1 = record[1];
+
+                var state = wd.setArrayBufferViewSourceTextureSource(map1, image1, state);
+
+
+
+                var record = wd.createArrayBufferViewSourceTexture(state)
+                var state = record[0];
+                var map2 = record[1];
+
+                var state = wd.setArrayBufferViewSourceTextureSource(map2, image2, state);
+
+                var width = 256;
+                var height = 256;
+
+
+
+                var state = wd.setArrayBufferViewSourceTextureWidth(map1, width, state);
+                var state = wd.setArrayBufferViewSourceTextureHeight(map1, height, state);
+
+
+
+                var state = wd.setArrayBufferViewSourceTextureWidth(map2, width, state);
+                var state = wd.setArrayBufferViewSourceTextureHeight(map2, height, state);
+
+
+
+
+
+                var data = LightBoxesTool.createBoxWithMap(map1, map2, state);
+                var state = data[0];
+                var boxes = [data[1]];
+
+
+
+
+
+
+
+                var record = LightBoxesTool.setPosition(boxes, state);
+                var state = record[0];
+
+
+
+
+
+                var state = LightBoxesTool.createAndDisposeGameObjectsWorkerWithMapByClone(
+                    1000, boxes, map1, map2, state
+                );
+
+
+
+
+                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>
