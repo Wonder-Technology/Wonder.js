@@ -1,4 +1,4 @@
-open BufferBasicSourceTextureService;
+open BufferArrayBufferViewSourceTextureService;
 
 let getWrapS = (index, typeArr) => TypeArrayService.getUint8_1(getWrapSIndex(index), typeArr);
 
@@ -22,8 +22,8 @@ let getMinFilter = (index, typeArr) =>
 let setMinFilter = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getMinFilterIndex(index), data, typeArr);
 
-let getIsNeedUpdate = (index, typeArr) =>
-  TypeArrayService.getUint8_1(getIsNeedUpdateIndex(index), typeArr);
+let getIsNeedUpdate =
+  [@bs] ((index, typeArr) => TypeArrayService.getUint8_1(getIsNeedUpdateIndex(index), typeArr));
 
 let setIsNeedUpdate = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getIsNeedUpdateIndex(index), data, typeArr);
@@ -37,6 +37,16 @@ let getType = (index, typeArr) => TypeArrayService.getUint8_1(getTypeIndex(index
 
 let setType = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getTypeIndex(index), data, typeArr);
+
+let getWidth = (index, typeArr) => TypeArrayService.getUint16_1(getWidthIndex(index), typeArr);
+
+let setWidth = (index, data, typeArr) =>
+  TypeArrayService.setUint16_1(getWidthIndex(index), data, typeArr);
+
+let getHeight = (index, typeArr) => TypeArrayService.getUint16_1(getHeightIndex(index), typeArr);
+
+let setHeight = (index, data, typeArr) =>
+  TypeArrayService.setUint16_1(getHeightIndex(index), data, typeArr);
 
 /* TODO get from typeArrays */
 let getFlipY = () => Js.true_;

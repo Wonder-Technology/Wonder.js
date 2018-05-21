@@ -21,6 +21,7 @@ let unsafeGetTexture = (texture, state) =>
   );
 
 let isNeedUpdate = (texture, state) =>
+  [@bs]
   OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,

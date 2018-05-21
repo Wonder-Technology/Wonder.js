@@ -1,60 +1,20 @@
-/* TODO duplicate */
 open StateRenderType;
 
 open RenderArrayBufferViewSourceTextureType;
 
 open BrowserDetectType;
 
-let _isPowerOfTwo = (value) => value land (value - 1) === 0 && value !== 0;
+/* let _setUnpackAlignmentaToOne = [%bs.raw
+     {|
+         function(gl){
 
-let _isSourcePowerOfTwo = (width, height) => _isPowerOfTwo(width) && _isPowerOfTwo(height);
-
-let _filterFallback = (filter, gl) =>
-  if (filter === TextureFilterService.getNearest()
-      || filter === TextureFilterService.getNearestMipmapNearest()
-      || filter === TextureFilterService.getNearestMipmapLinear()) {
-    Gl.getNearest(gl)
-  } else {
-    Gl.getLinear(gl)
-  };
-
-let _setTextureParameters =
-    (gl, target, isSourcePowerOfTwo, (glWrapS, glWrapT, magFilter, minFilter)) =>
-  isSourcePowerOfTwo ?
-    {
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, glWrapS);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, glWrapT);
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureMagFilter,
-           magFilter |> TextureFilterService.getGlFilter(gl)
-         );
-      gl
-      |> Gl.texParameteri(
-           target,
-           gl |> Gl.getTextureMinFilter,
-           minFilter |> TextureFilterService.getGlFilter(gl)
-         )
-    } :
-    {
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, gl |> Gl.getClampToEdge);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, gl |> Gl.getClampToEdge);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMagFilter, _filterFallback(magFilter, gl));
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureMinFilter, _filterFallback(minFilter, gl))
-    };
-
-    let _fix = [%bs.raw{|
-      function(gl){
-
-  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-      }
-      |}];
-
+     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+         }
+         |}
+   ]; */
 let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, height)) => {
   WonderLog.Contract.requireCheck(
     () =>
-      /* TODO test check */
       WonderLog.(
         Contract.(
           Operators.(
@@ -73,9 +33,7 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, heigh
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-
-_fix(gl);
-
+  /* _setUnpackAlignmentaToOne(gl); */
   gl
   |> Gl.texImage2DWithArrayBufferView(
        target,
@@ -93,7 +51,7 @@ _fix(gl);
 let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), sizeTuple, source) =>
   _drawTexture(gl, (target, 0, source, glFormat, glType), sizeTuple);
 
-let _allocateSourceToTexture = (gl, paramTuple, sizeTuple, source) =>
+let _allocateSourceToTexture = (sizeTuple, gl, paramTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, sizeTuple, source);
 
 let update = (gl, textureInTypeArray, (arrayBufferViewSourceTextureRecord, browserDetectRecord)) => {
@@ -141,42 +99,20 @@ let update = (gl, textureInTypeArray, (arrayBufferViewSourceTextureRecord, brows
       |> TextureTypeService.getGlType(gl);
     let flipY = OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
-    let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
-    setFlipYFunc(gl, flipY, browserDetectRecord);
-    /* TODO handle _needClampMaxSize
-       if(_needClampMaxSize(source, width, height)){
-           this.clampToMaxSize();
-
-           isSourcePowerOfTwo = this.isSourcePowerOfTwo();
-
-           if(!isSourcePowerOfTwo){
-               Log.warn("textureInTypeArray size is not power of two after clampToMaxSize()");
-           }
-       } */
-    _setTextureParameters(
-      gl,
-      target,
-      isSourcePowerOfTwo,
-      (glWrapS, glWrapT, magFilter, minFilter)
+    UpdateSourceTextureRenderService.update(
+      (gl, textureInTypeArray, source),
+      (width, height, glWrapS, glWrapT, magFilter, minFilter, glFormat, glType, flipY, target),
+      (isNeedUpdates, browserDetectRecord),
+      (_allocateSourceToTexture((width, height)), setFlipYFunc)
     );
-    _allocateSourceToTexture(gl, (target, glFormat, glType), (width, height), source);
-    /* TODO generateMipmaps
-       if (this.generateMipmaps && isSourcePowerOfTwo) {
-           gl.generateMipmap(gl[this.target]);
-       } */
-    OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
-      textureInTypeArray,
-      BufferArrayBufferViewSourceTextureService.getNotNeedUpdate(),
-      isNeedUpdates
-    )
-    |> ignore;
     (arrayBufferViewSourceTextureRecord, browserDetectRecord)
   }
 };
 
 let isNeedUpdate = (textureInTypeArray, arrayBufferViewSourceTextureRecord) =>
-  OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(
+  UpdateSourceTextureRenderService.isNeedUpdate(
     textureInTypeArray,
-    arrayBufferViewSourceTextureRecord.isNeedUpdates
-  )
-  === BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();
+    BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate(),
+    arrayBufferViewSourceTextureRecord.isNeedUpdates,
+    OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate
+  );

@@ -8,7 +8,11 @@ let unsafeGetTexture = (texture, state) =>
   OperateGlTextureMapService.unsafeGetTexture(texture, getRecord(state).glTextureMap);
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(texture, getRecord(state).isNeedUpdates)
+  [@bs]
+  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(
+    texture,
+    getRecord(state).isNeedUpdates
+  )
   === BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();

@@ -1,4 +1,3 @@
-/* TODO duplicate */
 open StateDataMainType;
 
 open SourceTextureType;
@@ -35,11 +34,6 @@ let setAllTypeArrDataToDefault =
            (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights),
            indexInTypeArray
          ) => (
-           /* let indexInTypeArray =
-              IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-                index,
-                arrayBufferViewSourceTextureIndexOffset
-              ); */
            OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
              indexInTypeArray,
              defaultWrapS,
@@ -199,7 +193,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         isNeedUpdates:
           isNeedUpdates
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsNeedUpdatesSize()),
-        /* TODO test */
         widths: widths |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getWidthsSize()),
         heights:
           heights |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getHeightsSize()),
