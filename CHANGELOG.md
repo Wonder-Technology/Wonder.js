@@ -1,3 +1,57 @@
+<a name="1.0.0-alpha.19"></a>
+# [1.0.0-alpha.19](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.18.4...v1.0.0-alpha.19) (2018-05-21)
+
+
+### Bug Fixes
+
+* **clone:** fix clone gameObject->basicMaterialRecord.index should be correct after clone ([0a26ff3](https://github.com/Wonder-Technology/Wonder.js/commit/0a26ff3))
+* **customGeometry:** change infos typeArray from Uint8 to Uint32 ([6efce9f](https://github.com/Wonder-Technology/Wonder.js/commit/6efce9f))
+* **customGeometry:** fix "RecordCustomGeometryMainService->set typeArray default data" bug; vbo->redo_undo add test cases ([1665314](https://github.com/Wonder-Technology/Wonder.js/commit/1665314))
+* **instance:** fix "basic material box with map + instance basic box, basic box not show map!" bug; add run test:"fix_bug.html"html ([42371ce](https://github.com/Wonder-Technology/Wonder.js/commit/42371ce))
+* **instance:** fix batch->"dispose error" ([3c8cbf5](https://github.com/Wonder-Technology/Wonder.js/commit/3c8cbf5))
+* **render-worker:** fix Worker->newSharedArrayBuffer ([53b2fb6](https://github.com/Wonder-Technology/Wonder.js/commit/53b2fb6))
+
+
+### Features
+
+* **arraybuffer:** fix "lightMaterial arrayBuffer typeArrays bug" ([4e4891a](https://github.com/Wonder-Technology/Wonder.js/commit/4e4891a))
+* **arraybuffer:** reduce setting->textureCountPerMaterial from 32 to 16 ([d2fabcc](https://github.com/Wonder-Technology/Wonder.js/commit/d2fabcc))
+* **data-json:** update data/ json files ([29d045b](https://github.com/Wonder-Technology/Wonder.js/commit/29d045b))
+* **detect:** add "detect browser" logic(draft) ([6402239](https://github.com/Wonder-Technology/Wonder.js/commit/6402239))
+* **redo-undo:** add "basic material->map,texture" related logic ([7ec46cb](https://github.com/Wonder-Technology/Wonder.js/commit/7ec46cb))
+* **render-worker:** add "setSourceMap" logic ([343e1af](https://github.com/Wonder-Technology/Wonder.js/commit/343e1af))
+* **render-worker:** add "texture" logic(draft) ([faa8d46](https://github.com/Wonder-Technology/Wonder.js/commit/faa8d46))
+* **render-worker:** pass compile ([de3cfdc](https://github.com/Wonder-Technology/Wonder.js/commit/de3cfdc))
+* **setting:** reduce default setting buffer count->texture count to 64 ([4167740](https://github.com/Wonder-Technology/Wonder.js/commit/4167740))
+* **texture:** "init gameObject" add "init light material->map" logic ([0996bd1](https://github.com/Wonder-Technology/Wonder.js/commit/0996bd1))
+* **texture:** add "arrayBufferViewSource texture" draft logic ([1708d05](https://github.com/Wonder-Technology/Wonder.js/commit/1708d05))
+* **texture:** add "diffuse map","specular map" for light material(pass compile) ([1f6f79a](https://github.com/Wonder-Technology/Wonder.js/commit/1f6f79a))
+* **texture:** add "dispose texture data" logic(not add "dispose texture" logic yet!) ([241e520](https://github.com/Wonder-Technology/Wonder.js/commit/241e520))
+* **texture:** add "init basic map shader" and "render->bind, update, send" logic(draft) ([fed1194](https://github.com/Wonder-Technology/Wonder.js/commit/fed1194))
+* **texture:** add formats, types type array data ([0224826](https://github.com/Wonder-Technology/Wonder.js/commit/0224826))
+* **texture:** add run test->render_lightMaterial_map_benchmark.html ([7f3bdcb](https://github.com/Wonder-Technology/Wonder.js/commit/7f3bdcb))
+* **texture:** add shader, texCoord, get/setMap logic(draft) ([6bb6935](https://github.com/Wonder-Technology/Wonder.js/commit/6bb6935))
+* **texture:** add texture->create, init, bind, update logic(draft) ([d2e35eb](https://github.com/Wonder-Technology/Wonder.js/commit/d2e35eb))
+* **texture:** detect gl->texture capability: add contract check->maxTextureUnit should >= textureCountPerMaterial ([f5d392f](https://github.com/Wonder-Technology/Wonder.js/commit/f5d392f))
+* **texture:** fix "redo_undo->map" bug ([7e42993](https://github.com/Wonder-Technology/Wonder.js/commit/7e42993))
+* **texture:** fix init gameObject->init texture: if has no map, not init ([9299805](https://github.com/Wonder-Technology/Wonder.js/commit/9299805))
+* **texture:** fix: "init gameObject" will init texture ([6ccc8d4](https://github.com/Wonder-Technology/Wonder.js/commit/6ccc8d4))
+* **texture:** optimize bind texture: add cache ([fc81863](https://github.com/Wonder-Technology/Wonder.js/commit/fc81863))
+* **texture:** optimize: if lastSendMaterial === materialIndex, not bind and not update texture ([361ede3](https://github.com/Wonder-Technology/Wonder.js/commit/361ede3))
+* **texture:** optimize: remove curry ([764f640](https://github.com/Wonder-Technology/Wonder.js/commit/764f640))
+* **texture:** pass clone ([3e95611](https://github.com/Wonder-Technology/Wonder.js/commit/3e95611))
+* **texture:** pass compile ([db7c118](https://github.com/Wonder-Technology/Wonder.js/commit/db7c118))
+* **texture:** pass instance->basic material map ([7b19cec](https://github.com/Wonder-Technology/Wonder.js/commit/7b19cec))
+* **texture:** remove widths, heights;remove setWidth, setHeight;add filter, wrap data ([1744f04](https://github.com/Wonder-Technology/Wonder.js/commit/1744f04))
+* **texture:** support change basic material->map ([c4564c1](https://github.com/Wonder-Technology/Wonder.js/commit/c4564c1))
+
+
+### Performance Improvements
+
+* **customGeometry:** optimize memory: reduce infos typeArray size ([cb82115](https://github.com/Wonder-Technology/Wonder.js/commit/cb82115))
+
+
+
 <a name="1.0.0-alpha.18.4"></a>
 # [1.0.0-alpha.18.4](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.18...v1.0.0-alpha.18.4) (2018-05-03)
 
