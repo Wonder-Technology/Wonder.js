@@ -25,13 +25,17 @@ let setMap = (material, texture, {settingRecord} as state) => {
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
-      BufferSettingService.getTextureCountPerMaterial(settingRecord),
       (
         OperateTypeArrayBasicMaterialService.getMapUnit,
         OperateTypeArrayBasicMaterialService.setMapUnit,
         OperateTypeArrayBasicMaterialService.setTextureIndex
       ),
-      (textureIndices, mapUnits, textureCountMap)
+      (
+        BufferSettingService.getTextureCountPerMaterial(settingRecord),
+        textureIndices,
+        mapUnits,
+        textureCountMap
+      )
     );
   {
     ...state,

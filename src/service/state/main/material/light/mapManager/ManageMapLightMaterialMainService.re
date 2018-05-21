@@ -25,13 +25,17 @@ let setDiffuseMap = (material, texture, {settingRecord} as state) => {
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
-      BufferSettingService.getTextureCountPerMaterial(settingRecord),
       (
         OperateTypeArrayLightMaterialService.getDiffuseMapUnit,
         OperateTypeArrayLightMaterialService.setDiffuseMapUnit,
         OperateTypeArrayLightMaterialService.setTextureIndex
       ),
-      (textureIndices, diffuseMapUnits, textureCountMap)
+      (
+        BufferSettingService.getTextureCountPerMaterial(settingRecord),
+        textureIndices,
+        diffuseMapUnits,
+        textureCountMap
+      )
     );
   {
     ...state,
@@ -63,13 +67,17 @@ let setSpecularMap = (material, texture, {settingRecord} as state) => {
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
-      BufferSettingService.getTextureCountPerMaterial(settingRecord),
       (
         OperateTypeArrayLightMaterialService.getSpecularMapUnit,
         OperateTypeArrayLightMaterialService.setSpecularMapUnit,
         OperateTypeArrayLightMaterialService.setTextureIndex
       ),
-      (textureIndices, specularMapUnits, textureCountMap)
+      (
+        BufferSettingService.getTextureCountPerMaterial(settingRecord),
+        textureIndices,
+        specularMapUnits,
+        textureCountMap
+      )
     );
   {
     ...state,

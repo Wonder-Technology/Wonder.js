@@ -840,7 +840,7 @@ let performanceTestData = {
                         return initSample(
                         TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
                         TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image2DataArr),
-                        
+
                         wd.unsafeGetState());
                    });
 
@@ -921,7 +921,7 @@ let performanceTestData = {
                         return initSample(
                         TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
                         TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image2DataArr),
-                        
+
                         wd.unsafeGetState());
                    });
 

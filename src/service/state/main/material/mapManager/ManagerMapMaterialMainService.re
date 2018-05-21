@@ -29,9 +29,8 @@ let setMap =
     (
       material,
       texture,
-      textureCountPerMaterial,
       (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
-      (textureIndices, mapUnits, textureCountMap)
+      (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap)
     ) => {
   let mapUnit = getMapUnitFunc(material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?

@@ -4,6 +4,8 @@ open RenderWorkerBasicSourceTextureType;
 
 open BrowserDetectType;
 
+open BrowserType;
+
 let _createImageBitmapForChrome: (CanvasType.imageData, Js.t({..})) => Js.Promise.t(imageBitmap) = [%bs.raw
   {|
     function(imageData, config){
@@ -22,25 +24,25 @@ let _createImageBitmapForFirefox: CanvasType.imageData => Js.Promise.t(imageBitm
 
 let _createImageBitmap = (texture, imageData, state) => {
   let {browser} = RecordBrowserDetectRenderWorkerService.getRecord(state);
-  DetectBrowserService.isChrome(browser) ?
-    {
-      let flipY = OperateTypeArrayBasicSourceTextureService.getFlipY();
-      _createImageBitmapForChrome(
-        imageData,
-        {"imageOrientation": flipY === Js.true_ ? "flipY" : "none"}
+  switch browser {
+  | Chrome =>
+    let flipY = OperateTypeArrayBasicSourceTextureService.getFlipY();
+    _createImageBitmapForChrome(
+      imageData,
+      {"imageOrientation": flipY === Js.true_ ? "flipY" : "none"}
+    )
+  | Firefox => _createImageBitmapForFirefox(imageData)
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_createImageBitmap",
+        ~description={j|unknown browser|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|browser: $browser|j}
       )
-    } :
-    DetectBrowserService.isFirefox(browser) ?
-      _createImageBitmapForFirefox(imageData) :
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_createImageBitmap",
-          ~description={j|unknown browser|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j|browser: $browser|j}
-        )
-      )
+    )
+  }
 };
 
 let _addSource = (texture, imageBitmap, state) => {
