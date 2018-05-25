@@ -19,6 +19,7 @@ module.exports = {
     // { name: "changeMe" }
     { name: "data-json" },
     { name: "texture" },
+    { name: "asset" },
     { name: "shader" },
     { name: "glsl" },
     { name: "render" },
