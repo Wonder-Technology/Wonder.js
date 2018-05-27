@@ -1,0 +1,1 @@
+[@bs.new] external newImage : unit => ImageType.image = "Image";

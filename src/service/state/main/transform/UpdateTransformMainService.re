@@ -136,4 +136,5 @@ let updateAndSetPositionByTuple =
        ) */
     }
   )
+  /* TODO optimize: not mark here! */
   |> markHierachyDirty(transform);

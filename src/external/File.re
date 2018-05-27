@@ -1,0 +1,1 @@
+[@bs.val] external atob : string => string = "";

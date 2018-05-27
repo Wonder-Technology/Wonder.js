@@ -20,6 +20,7 @@ module.exports = {
     { name: "data-json" },
     { name: "texture" },
     { name: "asset" },
+    { name: "convert" },
     { name: "shader" },
     { name: "glsl" },
     { name: "render" },

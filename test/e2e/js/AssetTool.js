@@ -11,6 +11,5 @@ var AssetTool = (function () {
                 }
             })
         }
-        // TODO add loadImage
     }
 })()

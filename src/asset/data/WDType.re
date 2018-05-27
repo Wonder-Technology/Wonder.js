@@ -34,12 +34,12 @@ type asset = {
 
 type scene = {gameObjects: array(gameObjectIndex)};
 
-type gameObject = {count: int};
+type gameObjects = {count: int};
 
 type transform = {
-  translation: option(array(float)),
-  rotation: option(array(float)),
-  scale: option(array(float))
+  translation: array(float),
+  rotation: array(float),
+  scale: array(float)
 };
 
 type geometry = {
@@ -50,18 +50,18 @@ type geometry = {
   /* TODO add mode */
 };
 
-type cameraProjection = {
-  near: option(float),
+type perspectiveCameraProjection = {
+  near: float,
   far: option(float),
-  fovy: option(float),
+  fovy: float,
   aspect: option(float)
 };
 
 type lightMaterial = {
   /* TODO add doubleSided: option(bool), */
-  diffuseColor: option(array(float)),
-  specularColor: option(array(float)),
-  shininess: option(float)
+  diffuseColor: option(array(float))
+  /* specularColor: option(array(float)),
+     shininess: option(float) */
 };
 
 /*
@@ -112,16 +112,13 @@ type bufferView = {
   buffer: bufferIndex,
   byteOffset: int,
   byteLength: int,
-  byteStride: int,
+  byteStride: option(int),
   target: bufferViewTarget
 };
 
 type image = {uri: string};
 
-type texture = {
-  sampler: samplerIndex
-  /* TODO add format, type_, ... */
-};
+type basicSourceTextures = {count: int};
 
 type magFilter =
   | NEAREST
@@ -141,6 +138,7 @@ type wrap =
   | REPEAT;
 
 type sampler = {
+  /* TODO add format, type_, ... */
   magFilter,
   minFilter,
   wrapS: wrap,
@@ -148,10 +146,11 @@ type sampler = {
 };
 
 type gameObjectIndices = {
-  parentGameObjectIndices: array(transformIndex),
+  /* parentGameObjectIndices: array(transformIndex), */
+  childrenTransformIndices: array(option(array(transformIndex))),
   transformGameObjectIndices: array(transformIndex),
-  cameraViewGameObjectIndices: array(cameraViewIndex),
-  cameraProjectionGameObjectIndices: array(cameraProjectionIndex),
+  basicCameraViewGameObjectIndices: array(cameraViewIndex),
+  perspectiveCameraProjectionGameObjectIndices: array(cameraProjectionIndex),
   lightMaterialGameObjectIndices: array(lightMaterialIndex),
   /* ambientLightGameObjectIndices: array(ambientLightIndex),
      directionLightGameObjectIndices: array(directionLightIndex),
@@ -160,31 +159,34 @@ type gameObjectIndices = {
 };
 
 type materialIndices = {
-  diffuseMapMaterialIndices: array(textureIndex),
-  specularMapMaterialIndices: array(textureIndex)
+  diffuseMapMaterialIndices: array(textureIndex)
+  /* specularMapMaterialIndices: array(textureIndex) */
 };
 
 type indices = {
   gameObjectIndices,
   materialIndices,
-  textureIndices: array(imageIndex)
+  imageTextureIndices: array(imageIndex),
+  samplerTextureIndices: array(samplerIndex)
 };
+
+type basicCameraViews = {count: int};
 
 type wd = {
   asset,
   scenes: array(scene),
   scene: int,
   indices,
-  gameObjects: array(gameObject),
+  gameObjects,
   images: array(image),
-  textures: array(texture),
+  basicSourceTextures,
   samplers: array(sampler),
   buffers: array(buffer),
   bufferViews: array(bufferView),
   accessors: array(accessor),
   /* TODO add ambientLights, directionLights, pointLights, */
-  /* cameraViews: array(cameraView), */
-  cameraProjections: array(cameraProjection),
+  basicCameraViews,
+  perspectiveCameraProjections: array(perspectiveCameraProjection),
   transforms: array(transform),
   geometrys: array(geometry),
   lightMaterials: array(lightMaterial)

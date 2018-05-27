@@ -60,7 +60,6 @@ let _buildTextureData = (state) => {
     },
     "arrayBufferViewSourceTextureData": {
       "index": arrayBufferViewSourceTextureRecord.index,
-      /* TODO can postMessage send uint8array data? */
       "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap
     }
   }
