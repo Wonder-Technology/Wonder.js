@@ -1051,7 +1051,7 @@ let _convertToGeometrys = ({meshes}: GLTFType.gltf) : array(WDType.geometry) =>
                   position,
                   normal,
                   texCoord: texCoord_0,
-                  indices: indices |> OptionService.unsafeGet
+                  index: indices |> OptionService.unsafeGet
                 }: WDType.geometry
               )
          }

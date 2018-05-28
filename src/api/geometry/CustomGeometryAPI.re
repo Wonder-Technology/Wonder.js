@@ -8,12 +8,7 @@ open DisposeCustomGeometryMainService;
 
 open RenderGeometryService;
 
-let createCustomGeometry = (state) => {
-  let (customGeometryRecord, index) =
-    CreateCustomGeometryService.create(state |> RecordCustomGeometryMainService.getRecord);
-  state.customGeometryRecord = Some(customGeometryRecord);
-  (state, index)
-};
+let createCustomGeometry = (state) => CreateCustomGeometryMainService.create(state);
 
 let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;

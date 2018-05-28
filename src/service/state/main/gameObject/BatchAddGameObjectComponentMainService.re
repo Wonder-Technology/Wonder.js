@@ -95,25 +95,6 @@ let batchAddPerspectiveCameraProjectionComponentForClone =
     )
 };
 
-
-
-/* TODO duplicate */
-let batchAddTransformComponentForCreate =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  ...state,
-  transformRecord:
-    Some(
-      _batchAddComponent(
-        (uidArr, componentArr, gameObjectRecord.transformMap),
-        AddTransformService.handleAddComponent,
-        state |> RecordTransformMainService.getRecord
-      )
-    )
-};
-
-
-
-
 let batchAddTransformComponentForClone =
     (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
   ...state,
@@ -376,5 +357,63 @@ let batchAddPointLightComponentForClone =
       (uidArr, componentArr, gameObjectRecord.pointLightMap),
       AddPointLightService.handleAddComponent,
       pointLightRecord
+    )
+};
+
+/* TODO duplicate */
+let batchAddTransformComponentForCreate =
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  ...state,
+  transformRecord:
+    Some(
+      _batchAddComponent(
+        (uidArr, componentArr, gameObjectRecord.transformMap),
+        AddTransformService.handleAddComponent,
+        state |> RecordTransformMainService.getRecord
+      )
+    )
+};
+
+let _batchAddCustomGeometryComponentDataForCreate =
+  [@bs]
+  (
+    ((currentGeometryDataMap, type_), component, uid) =>
+      /* let component = Array.unsafe_get(componentArr, index); */
+      CurrentComponentDataMapRenderService.addToMap(
+        uid,
+        (
+          component,
+          /* CurrentComponentDataMapRenderService.getCustomGeometryType(), */
+          type_
+          /* bufferMapTuple,
+             (
+               VerticesCustomGeometryMainService.getVertices,
+               NormalsCustomGeometryMainService.getNormals,
+               IndicesCustomGeometryMainService.getIndices,
+               IndicesCustomGeometryMainService.getIndicesCount
+             ) */
+        ),
+        currentGeometryDataMap
+      )
+  );
+
+let batchAddCustomGeometryComponentForCreate =
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  ...state,
+  customGeometryRecord:
+    Some(
+      _batchAddSharableGeometryComponent(
+        (
+          uidArr,
+          componentArr,
+          (
+            gameObjectRecord.currentGeometryDataMap,
+            CurrentComponentDataMapRenderService.getCustomGeometryType()
+          )
+        ),
+        GroupCustomGeometryService.increaseGroupCount,
+        _batchAddCustomGeometryComponentDataForCreate,
+        state |> RecordCustomGeometryMainService.getRecord
+      )
     )
 };

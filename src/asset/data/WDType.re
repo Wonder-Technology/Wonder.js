@@ -49,7 +49,7 @@ type geometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
-  indices: accessorIndex
+  index: accessorIndex
   /* TODO add mode */
 };
 

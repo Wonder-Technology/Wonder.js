@@ -21,7 +21,8 @@ let create =
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
       let basicMaterialRecord = _initDataWhenCreate(index, basicMaterialRecord);
-      state.basicMaterialRecord = Some({...basicMaterialRecord, index: newIndex});
+      state.basicMaterialRecord =
+        Some({...basicMaterialRecord, index: newIndex, disposedIndexArray});
       (state, index)
       |> BufferService.checkNotExceedMaxCount(
            BufferSettingService.getBasicMaterialCount(settingRecord)
