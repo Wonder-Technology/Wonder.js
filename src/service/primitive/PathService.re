@@ -163,6 +163,6 @@ function(args) {
 
     return (resolvedDevice + (resolvedAbsolute ? '\\' : '') + resolvedTail) ||
            '.';
-  };
+  }
     |}
 ];
