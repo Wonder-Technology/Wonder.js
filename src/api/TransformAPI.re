@@ -106,10 +106,8 @@ let setTransformParent =
   _setTransformParent(parent, child, setParent, state);
 
 let setTransformParentKeepOrder =
-    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) => {
-
+    (parent: Js.nullable(transform), child: transform, state: StateDataMainType.state) =>
   _setTransformParent(parent, child, setParentKeepOrder, state);
-};
 
 let unsafeGetTransformChildren = (transform: transform, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

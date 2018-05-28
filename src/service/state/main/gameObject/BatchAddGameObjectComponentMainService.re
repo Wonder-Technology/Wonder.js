@@ -95,6 +95,25 @@ let batchAddPerspectiveCameraProjectionComponentForClone =
     )
 };
 
+
+
+/* TODO duplicate */
+let batchAddTransformComponentForCreate =
+    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+  ...state,
+  transformRecord:
+    Some(
+      _batchAddComponent(
+        (uidArr, componentArr, gameObjectRecord.transformMap),
+        AddTransformService.handleAddComponent,
+        state |> RecordTransformMainService.getRecord
+      )
+    )
+};
+
+
+
+
 let batchAddTransformComponentForClone =
     (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
   ...state,

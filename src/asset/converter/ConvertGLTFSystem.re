@@ -1,5 +1,9 @@
 open Js.Promise;
 
+external arrayFloat3ToTuple : array(float) => (float, float, float) = "%identity";
+
+external arrayFloat4ToTuple : array(float) => (float, float, float, float) = "%identity";
+
 /* TODO duplicate */
 /* let _fetch = [@bs] ((filePath) => Fetch.fetch(filePath)); */
 let _convertGLTFJsonToRecord = (json) : GLTFType.gltf =>
@@ -459,9 +463,23 @@ let _buildBufferArray = (gltfFilePath, {buffers}: GLTFType.gltf) =>
   );
 
 /* let _getIndexMarkedNotHas = () => (-1); */
-let _convertToScenes = ({scenes, scene}: GLTFType.gltf) : array(WDType.scene) => [|
-  {gameObjects: scenes[scene].nodes |> OptionService.unsafeGet}
-|];
+let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(~expect={j|only has one scene|j}, ~actual={j|not|j}),
+              () => scenes |> Js.Array.length == 1
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  {gameObjects: Array.unsafe_get(scenes, scene).nodes |> OptionService.unsafeGet}
+};
 
 let _convertToTransformGameObjectIndices = (nodes) =>
   nodes
@@ -823,9 +841,9 @@ let _convertToIndices = (gltf: GLTFType.gltf) : WDType.indices => {
   }
 };
 
-let _getTranslationArray = (mat) => [|mat[12], mat[13], mat[14]|];
+let _getTranslationTuple = (mat) => (mat[12], mat[13], mat[14]);
 
-let _getScaleArray = (mat) => {
+let _getScaleTuple = (mat) => {
   let m11 = mat[0];
   let m12 = mat[1];
   let m13 = mat[2];
@@ -835,14 +853,14 @@ let _getScaleArray = (mat) => {
   let m31 = mat[8];
   let m32 = mat[9];
   let m33 = mat[10];
-  [|
+  (
     Js.Math.sqrt(m11 *. m11 +. m12 *. m12 +. m13 *. m13),
     Js.Math.sqrt(m21 *. m21 +. m22 *. m22 +. m23 *. m23),
     Js.Math.sqrt(m31 *. m31 +. m32 *. m32 +. m33 *. m33)
-  |]
+  )
 };
 
-let _getRotationArray = (mat) => {
+let _getRotationTuple = (mat) => {
   let trace = mat[0] +. mat[5] +. mat[10];
   let out = [||];
   if (trace > 0.) {
@@ -870,7 +888,7 @@ let _getRotationArray = (mat) => {
     out[1] = (mat[6] +. mat[9]) /. s;
     out[2] = 0.25 *. s
   };
-  out
+  out |> arrayFloat4ToTuple
 };
 
 let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
@@ -886,18 +904,18 @@ let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
                   {
                     translation:
                       switch translation {
-                      | None => [|0., 0., 0.|]
-                      | Some(translation) => translation
+                      | None => (0., 0., 0.)
+                      | Some(translation) => translation |> arrayFloat3ToTuple
                       },
                     rotation:
                       switch rotation {
-                      | None => [|0., 0., 0., 1.|]
-                      | Some(rotation) => rotation
+                      | None => (0., 0., 0., 1.)
+                      | Some(rotation) => rotation |> arrayFloat4ToTuple
                       },
                     scale:
                       switch scale {
-                      | None => [|1., 1., 1.|]
-                      | Some(scale) => scale
+                      | None => (1., 1., 1.)
+                      | Some(scale) => scale |> arrayFloat3ToTuple
                       }
                   }: WDType.transform
                 )
@@ -905,9 +923,9 @@ let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
              arr
              |> ArrayService.push(
                   {
-                    translation: _getTranslationArray(matrix),
-                    rotation: _getRotationArray(matrix),
-                    scale: _getScaleArray(matrix)
+                    translation: _getTranslationTuple(matrix),
+                    rotation: _getRotationTuple(matrix),
+                    scale: _getScaleTuple(matrix)
                   }: WDType.transform
                 )
            }
@@ -1349,8 +1367,7 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
     _convertMultiPrimitivesToNodes(gltf);
   {
     asset: {version: asset.version, generator: "GLTF2WD"},
-    scenes: _convertToScenes(gltf),
-    scene,
+    scene: _convertToScene(gltf),
     gameObjects: {count: _getCount(nodes)},
     indices: _convertToIndices(gltf),
     transforms: _convertToTransforms(gltf),

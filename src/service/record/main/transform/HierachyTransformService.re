@@ -67,7 +67,12 @@ let _addChild = (parent: int, child: transform, record) => {
   record
 };
 
-let _addToParent = (parent: transform, child: transform, record) => {
+
+
+
+
+
+let addToParent = (parent: transform, child: transform, record) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -100,10 +105,10 @@ let _isSame = (a: transform, b: transform) => a == b;
 
 let _setNewParent = (parent, child, isKeepOrder, record) =>
   switch (getParent(child, record)) {
-  | None => _addToParent(parent, child, record)
+  | None => addToParent(parent, child, record)
   | Some(currentParent) =>
     ! _isSame(currentParent, parent) ?
-      _removeFromParent(currentParent, child, isKeepOrder, record) |> _addToParent(parent, child) :
+      _removeFromParent(currentParent, child, isKeepOrder, record) |> addToParent(parent, child) :
       record
   };
 

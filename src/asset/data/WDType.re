@@ -37,9 +37,12 @@ type scene = {gameObjects: array(gameObjectIndex)};
 type gameObjects = {count: int};
 
 type transform = {
-  translation: array(float),
-  rotation: array(float),
-  scale: array(float)
+  /* translation: array(float),
+     rotation: array(float),
+     scale: array(float) */
+  translation: (float, float, float),
+  rotation: (float, float, float, float),
+  scale: (float, float, float)
 };
 
 type geometry = {
@@ -174,8 +177,9 @@ type basicCameraViews = {count: int};
 
 type wd = {
   asset,
-  scenes: array(scene),
-  scene: int,
+  /* scenes: array(scene), */
+  /* scene: int, */
+  scene,
   indices,
   gameObjects,
   images: array(image),
