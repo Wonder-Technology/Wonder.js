@@ -19,6 +19,14 @@ let getNormals =
     }
   );
 
+let hasNormals = (index, state) => {
+  let {normals, normalsInfos} = getRecord(state);
+  ReallocatedPointsGeometryService.hasPointData(
+    BufferCustomGeometryService.getInfoIndex(index),
+    normalsInfos
+  )
+};
+
 let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {normalsInfos, normals, normalsOffset} as record = getRecord(state);
   record.normalsOffset =

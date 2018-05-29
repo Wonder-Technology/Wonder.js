@@ -49,6 +49,11 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
   |> TypeArrayService.setUint32_1(infoIndex + 1, endIndex)
 };
 
+let hasPointData = (infoIndex, infos) => {
+  let (startIndex, endIndex) = getInfo(infoIndex, infos);
+  endIndex > startIndex
+};
+
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
   TypeArrayService.getFloat32ArraySubarray(points, startIndex, endIndex)
