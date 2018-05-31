@@ -62,8 +62,8 @@ type bufferView = {
   buffer: bufferIndex,
   byteOffset: option(int),
   byteLength: int,
-  byteStride: option(int),
-  target: option(int)
+  byteStride: option(int)
+  /* target: option(int) */
 };
 
 type perspective = {
@@ -119,12 +119,17 @@ type texture = {
   source: option(imageIndex)
 };
 
+type textureInfo = {
+  index: int,
+  texCoord: option(int)
+};
+
 type pbrMetallicRoughness = {
   baseColorFactor: option(array(float)),
-  baseColorTexture: option(textureIndex),
+  baseColorTexture: option(textureInfo),
   metallicFactor: option(float),
   roughnessFactor: option(float),
-  metallicRoughnessTexture: option(textureIndex)
+  metallicRoughnessTexture: option(textureInfo)
 };
 
 type material = {pbrMetallicRoughness: option(pbrMetallicRoughness)};

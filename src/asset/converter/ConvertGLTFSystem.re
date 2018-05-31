@@ -79,8 +79,8 @@ let _convertGLTFJsonToRecord = (json) : GLTFType.gltf =>
                    buffer: json |> field("buffer", int),
                    byteOffset: json |> optional(field("byteOffset", int)),
                    byteLength: json |> field("byteLength", int),
-                   byteStride: json |> optional(field("byteStride", int)),
-                   target: json |> optional(field("target", int))
+                   byteStride: json |> optional(field("byteStride", int))
+                   /* target: json |> optional(field("target", int)) */
                  }
                )
              ),
@@ -197,11 +197,30 @@ let _convertGLTFJsonToRecord = (json) : GLTFType.gltf =>
                             (json) => {
                               baseColorFactor:
                                 json |> optional(field("baseColorFactor", array(float))),
-                              baseColorTexture: json |> optional(field("baseColorTexture", int)),
+                              baseColorTexture:
+                                json
+                                |> optional(
+                                     field(
+                                       "baseColorTexture",
+                                       (json) => {
+                                         index: json |> field("index", int),
+                                         texCoord: json |> optional(field("texCoord", int))
+                                       }
+                                     )
+                                   ),
                               metallicFactor: json |> optional(field("metallicFactor", float)),
                               roughnessFactor: json |> optional(field("roughnessFactor", float)),
                               metallicRoughnessTexture:
-                                json |> optional(field("metallicRoughnessTexture", int))
+                                json
+                                |> optional(
+                                     field(
+                                       "metallicRoughnessTexture",
+                                       (json) => {
+                                         index: json |> field("index", int),
+                                         texCoord: json |> optional(field("texCoord", int))
+                                       }
+                                     )
+                                   )
                             }
                           )
                         )
@@ -424,7 +443,7 @@ let _decodeArrayBuffer = (base64Str: string) => {
   typeArr |> Uint8Array.buffer
 };
 
-let _buildBufferArray = (gltfFilePath, {buffers}: GLTFType.gltf) =>
+let _buildBufferArray = ({buffers}: GLTFType.gltf) =>
   GLTFType.(
     buffers
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -481,20 +500,47 @@ let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
   {gameObjects: Array.unsafe_get(scenes, scene).nodes |> OptionService.unsafeGet}
 };
 
-let _convertToTransformGameObjectIndices = (nodes) =>
-  nodes
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         /* (arr, {matrix, translation, rotation, scale}) =>
-            matrix |> Js.Option.isSome || translation |> Js.Option.isSome || rotation |> Js.Option.isSome || scale |> Js.Option.isSome  */
-         (arr, _, index) =>
-           arr |> ArrayService.push(index)
-       ),
-       [||]
-     )
+let _checkGameObjectAndComponentIndicesCountShouldEqual =
+    (
+      ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData) as componentGameObjectIndexData
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|gameObjectIndices' count === componentIndices' count|j},
+                ~actual={j|not|j}
+              ),
+              () => gameObjectIndices |> Js.Array.length == (componentIndices |> Js.Array.length)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  componentGameObjectIndexData
+};
+
+let _convertToTransformGameObjectIndexData = (nodes) => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((gameObjectIndices, componentIndices), _, index) => (
+             gameObjectIndices |> ArrayService.push(index),
+             componentIndices |> ArrayService.push(index)
+           )
+         ),
+         ([||], [||])
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual
   |> WonderLog.Contract.ensureCheck(
-       (transformGameObjectIndices) =>
+       ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData) =>
          WonderLog.(
            Contract.(
              Operators.(
@@ -503,15 +549,17 @@ let _convertToTransformGameObjectIndices = (nodes) =>
                    ~expect={j|every node should has one transform component|j},
                    ~actual={j|not|j}
                  ),
-                 () => transformGameObjectIndices |> Js.Array.length == (nodes |> Js.Array.length)
+                 () => gameObjectIndices |> Js.Array.length == (nodes |> Js.Array.length)
                )
              )
            )
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     );
+     )
+};
 
-let _convertToChildrenTransformIndices = (transformGameObjectIndices, nodes) => {
+let _convertToChildrenTransformIndexData =
+    (transformGameObjectIndexData: WDType.componentGameObjectIndexData, nodes) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -522,25 +570,57 @@ let _convertToChildrenTransformIndices = (transformGameObjectIndices, nodes) => 
                 ~expect={j|every node should has one transform component|j},
                 ~actual={j|not|j}
               ),
-              () => transformGameObjectIndices |> Js.Array.length == (nodes |> Js.Array.length)
+              () =>
+                transformGameObjectIndexData.gameObjectIndices
+                |> Js.Array.length == (nodes |> Js.Array.length)
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  /* nodes |> Js.Array.map(({children}: GLTFType.node) => children) */
-  nodes
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((arr, {children}: GLTFType.node) => arr |> ArrayService.push(children)),
-       [||]
+  let (parentTransformIndices, childrenTransformIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((parentTransformIndices, childrenTransformIndices), {children}: GLTFType.node, index) =>
+             switch children {
+             | None => (parentTransformIndices, childrenTransformIndices)
+             | Some(children) => (
+                 parentTransformIndices |> ArrayService.push(index),
+                 childrenTransformIndices |> ArrayService.push(children)
+               )
+             }
+         ),
+         ([||], [||])
+       );
+  ({parentTransformIndices, childrenTransformIndices}: WDType.childrenTransformIndexData)
+  |> WonderLog.Contract.ensureCheck(
+       ({parentTransformIndices, childrenTransformIndices}: WDType.childrenTransformIndexData) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|parentTransformIndices' count === childrenTransformIndices' count|j},
+                   ~actual={j|not|j}
+                 ),
+                 () =>
+                   parentTransformIndices
+                   |> Js.Array.length == (childrenTransformIndices |> Js.Array.length)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
      )
 };
 
 let _getCount = (arrs) => arrs |> Js.Array.length;
 
 /*
- let _convertToBasicCameraViewGameObjectIndices = (nodes) =>
+ let _convertToBasicCameraViewGameObjectIndexData = (nodes) =>
    nodes
    |> WonderCommonlib.ArrayService.reduceOneParami(
         [@bs]
@@ -553,10 +633,10 @@ let _getCount = (arrs) => arrs |> Js.Array.length;
         ),
         [||]
       ); */
-let _checkEveryComponentShouldHasGameObject = (nodes, componentGameObjectIndices) =>
-  componentGameObjectIndices
+let _checkEveryComponentShouldHasGameObject = (nodes, componentGameObjectIndexData) =>
+  componentGameObjectIndexData
   |> WonderLog.Contract.ensureCheck(
-       (componentGameObjectIndices) =>
+       (componentGameObjectIndexData) =>
          WonderLog.(
            Contract.(
              Operators.(
@@ -566,7 +646,7 @@ let _checkEveryComponentShouldHasGameObject = (nodes, componentGameObjectIndices
                    ~actual={j|not|j}
                  ),
                  () =>
-                   componentGameObjectIndices
+                   componentGameObjectIndexData
                    |> WonderCommonlib.ArrayService.forEach(
                         [@bs]
                         (
@@ -583,79 +663,104 @@ let _checkEveryComponentShouldHasGameObject = (nodes, componentGameObjectIndices
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      );
 
-let _convertToBasicCameraViewGameObjectIndices = (nodes, cameras) =>
+let _convertToBasicCameraViewGameObjectIndexData = (nodes, cameras) => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((gameObjectIndices, componentIndices), {camera}: GLTFType.node, index) =>
+             switch camera {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(camera) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(camera)
+               )
+             }
+         ),
+         ([||], [||])
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual
+};
+
+let _convertToPerspectiveCameraProjectionGameObjectIndexData =
+    (nodes, cameras)
+    : WDType.componentGameObjectIndexData =>
   switch cameras {
-  | None => [||]
+  | None => {gameObjectIndices: [||], componentIndices: [||]}
   | Some(cameras) =>
-    let (arr, _) =
-      nodes
+    let (perspectiveCameraActualIndexMap, _) =
+      cameras
       |> WonderCommonlib.ArrayService.reduceOneParami(
            [@bs]
            (
-             ((arr, basicCameraViewIndex), {camera}: GLTFType.node, index) =>
-               switch camera {
-               | None => (arr, basicCameraViewIndex)
-               | Some(camera) =>
-                 /* let {type_} : GLTFType.camera = Array.unsafe_get(cameras, camera);
-                    switch type_ {
-                    | "perspective" =>
-                      Array.unsafe_set(arr, basicCameraViewIndex, index);
-
-                      (arr, basicCameraViewIndex |> succ)
-                    } */
-                 Array.unsafe_set(arr, basicCameraViewIndex, index);
-                 (arr, basicCameraViewIndex |> succ)
+             (
+               (perspectiveCameraActualIndexMap, perspectiveCameraActualIndex),
+               {type_}: GLTFType.camera,
+               perspectiveCameraIndex
+             ) =>
+               switch type_ {
+               | "perspective" => (
+                   perspectiveCameraActualIndexMap
+                   |> WonderCommonlib.SparseMapService.set(
+                        perspectiveCameraIndex,
+                        perspectiveCameraActualIndex
+                      ),
+                   perspectiveCameraActualIndex |> succ
+                 )
+               | _ => (perspectiveCameraActualIndexMap, perspectiveCameraActualIndex)
                }
            ),
-           ([||], 0)
+           (WonderCommonlib.SparseMapService.createEmpty(), 0)
          );
-    arr |> _checkEveryComponentShouldHasGameObject(nodes)
-  };
-
-let _convertToPerspectiveCameraProjectionGameObjectIndices = (nodes, cameras) =>
-  switch cameras {
-  | None => [||]
-  | Some(cameras) =>
-    let (arr, _) =
+    let (gameObjectIndices, componentIndices) =
       nodes
       |> WonderCommonlib.ArrayService.reduceOneParami(
            [@bs]
            (
-             ((arr, perspectiveCameraProjectionIndex), {camera}: GLTFType.node, index) =>
+             ((gameObjectIndices, componentIndices), {camera}: GLTFType.node, index) =>
                switch camera {
-               | None => (arr, perspectiveCameraProjectionIndex)
+               | None => (gameObjectIndices, componentIndices)
                | Some(camera) =>
                  let {type_}: GLTFType.camera = Array.unsafe_get(cameras, camera);
                  switch type_ {
-                 | "perspective" =>
-                   Array.unsafe_set(arr, perspectiveCameraProjectionIndex, index);
-                   (arr, perspectiveCameraProjectionIndex |> succ)
+                 | "perspective" => (
+                     gameObjectIndices |> ArrayService.push(index),
+                     componentIndices
+                     |> ArrayService.push(
+                          perspectiveCameraActualIndexMap
+                          |> WonderCommonlib.SparseMapService.unsafeGet(camera)
+                        )
+                   )
+                 | _ => (gameObjectIndices, componentIndices)
                  }
                }
            ),
-           ([||], 0)
+           ([||], [||])
          );
-    arr |> _checkEveryComponentShouldHasGameObject(nodes)
+    ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+    |> _checkGameObjectAndComponentIndicesCountShouldEqual
   };
 
-let _getPrimitiveData = (primitives) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|primitives has only one primitive data|j},
-                ~actual={j|not|j}
-              ),
-              () => primitives |> Js.Array.length == 1
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
+let _getPrimitiveData = (primitives) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|primitives has only one primitive data|j},
+                   ~actual={j|not|j}
+                 ),
+                 () => primitives |> Js.Array.length == 1
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
   primitives[0]
   |> WonderLog.Contract.ensureCheck(
        ({attributes, indices}: GLTFType.primitive) => {
@@ -672,172 +777,188 @@ let _getPrimitiveData = (primitives) => {
          )
        },
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     )
+     );
+
+let _convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((gameObjectIndices, componentIndices), {mesh}: GLTFType.node, index) =>
+             switch mesh {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(mesh) =>
+               let {primitives}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
+               let {material}: GLTFType.primitive = _getPrimitiveData(primitives);
+               switch material {
+               | None => (gameObjectIndices, componentIndices)
+               | Some(material) => (
+                   gameObjectIndices |> ArrayService.push(index),
+                   componentIndices |> ArrayService.push(material)
+                 )
+               }
+             }
+         ),
+         ([||], [||])
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual
 };
 
-let _convertToLightMaterialGameObjectIndices = (nodes, meshes, materials) =>
-  nodes
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (arr, {mesh}: GLTFType.node, index) =>
-           switch mesh {
-           | None => arr
-           | Some(mesh) =>
-             let {primitives}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
-             let {material}: GLTFType.primitive = _getPrimitiveData(primitives);
-             switch material {
-             | None => arr
-             | Some(material) =>
-               Array.unsafe_set(arr, material, index);
-               arr
+let _convertToGeometryGameObjectIndexData = (nodes) => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((gameObjectIndices, componentIndices), {mesh}: GLTFType.node, index) =>
+             switch mesh {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(mesh) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(mesh)
+               )
              }
-           }
-       ),
-       [||]
-     )
-  |> _checkEveryComponentShouldHasGameObject(nodes);
+         ),
+         ([||], [||])
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual
+};
 
-let _convertToGeometryGameObjectIndices = (nodes) =>
-  nodes
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (arr, {mesh}: GLTFType.node, index) =>
-           switch mesh {
-           | None => arr
-           | Some(mesh) =>
-             Array.unsafe_set(arr, mesh, index);
-             arr
-           }
-       ),
-       [||]
-     )
-  |> _checkEveryComponentShouldHasGameObject(nodes);
-
-let _convertToGameObjectIndices =
+let _convertToGameObjectIndexData =
     ({nodes, meshes, cameras, materials}: GLTFType.gltf)
     : WDType.gameObjectIndices => {
-  let transformGameObjectIndices = _convertToTransformGameObjectIndices(nodes);
+  let transformGameObjectIndexData = _convertToTransformGameObjectIndexData(nodes);
   {
-    transformGameObjectIndices,
-    childrenTransformIndices: _convertToChildrenTransformIndices(transformGameObjectIndices, nodes),
-    basicCameraViewGameObjectIndices: _convertToBasicCameraViewGameObjectIndices(nodes, cameras),
-    perspectiveCameraProjectionGameObjectIndices:
-      _convertToPerspectiveCameraProjectionGameObjectIndices(nodes, cameras),
-    lightMaterialGameObjectIndices:
-      _convertToLightMaterialGameObjectIndices(nodes, meshes, materials),
-    geometryGameObjectIndices: _convertToGeometryGameObjectIndices(nodes)
+    transformGameObjectIndexData,
+    childrenTransformIndexData:
+      _convertToChildrenTransformIndexData(transformGameObjectIndexData, nodes),
+    basicCameraViewGameObjectIndexData:
+      _convertToBasicCameraViewGameObjectIndexData(nodes, cameras),
+    perspectiveCameraProjectionGameObjectIndexData:
+      _convertToPerspectiveCameraProjectionGameObjectIndexData(nodes, cameras),
+    lightMaterialGameObjectIndexData:
+      _convertToLightMaterialGameObjectIndexData(nodes, meshes, materials),
+    geometryGameObjectIndexData: _convertToGeometryGameObjectIndexData(nodes)
   }
 };
 
-let _setMapMaterialIndices = (materialMap, materialIndex, mapMaterialIndices) =>
+let _setMapMaterialIndices = (materialMap, materialIndex, (materialIndices, diffuseMapIndices)) =>
   switch materialMap {
-  | None => mapMaterialIndices
-  | Some(materialMap) =>
-    Array.unsafe_set(mapMaterialIndices, materialMap, materialIndex);
-    mapMaterialIndices
+  | None => (materialIndices, diffuseMapIndices)
+  | Some(({index}: GLTFType.textureInfo)) => (
+      materialIndices |> ArrayService.push(materialIndex),
+      diffuseMapIndices |> ArrayService.push(index)
+    )
   };
 
-/* let _convertToMaterialIndices = ({nodes, materials}: GLTFType.gltf) : WDType.materialIndices => {
-     let (diffuseMapMaterialIndices, specularMapMaterialIndices) =
-       materials
-       |> WonderCommonlib.ArrayService.reduceOneParami(
-            [@bs]
-            (
-              (
-                (diffuseMapMaterialIndices, specularMapMaterialIndices),
-                {pbrMetallicRoughness}: GLTFType.material,
-                index
-              ) =>
-                switch pbrMetallicRoughness {
-                | None => (diffuseMapMaterialIndices, specularMapMaterialIndices)
-                | Some(pbrMetallicRoughness) =>
-                  let {baseColorTexture, metallicRoughnessTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
-                  (
-                    _setMapMaterialIndices(baseColorTexture, index, diffuseMapMaterialIndices),
-                    _setMapMaterialIndices(
-                      metallicRoughnessTexture,
-                      index,
-                      specularMapMaterialIndices
-                    )
-                  )
-                }
-            ),
-            ([||], [||])
-          );
-     {
-       diffuseMapMaterialIndices:
-         diffuseMapMaterialIndices |> _checkEveryComponentShouldHasGameObject(nodes),
-       specularMapMaterialIndices:
-         specularMapMaterialIndices |> _checkEveryComponentShouldHasGameObject(nodes)
-     }
-   }; */
 let _convertToMaterialIndices = ({nodes, materials}: GLTFType.gltf) : WDType.materialIndices => {
-  let diffuseMapMaterialIndices =
+  let (materialIndices, diffuseMapIndices) =
     materials
     |> WonderCommonlib.ArrayService.reduceOneParami(
          [@bs]
          (
-           (diffuseMapMaterialIndices, {pbrMetallicRoughness}: GLTFType.material, index) =>
+           ((materialIndices, diffuseMapIndices), {pbrMetallicRoughness}: GLTFType.material, index) =>
              switch pbrMetallicRoughness {
-             | None => diffuseMapMaterialIndices
+             | None => (materialIndices, diffuseMapIndices)
              | Some(pbrMetallicRoughness) =>
                let {baseColorTexture, metallicRoughnessTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
-               _setMapMaterialIndices(baseColorTexture, index, diffuseMapMaterialIndices)
+               _setMapMaterialIndices(
+                 baseColorTexture,
+                 index,
+                 (materialIndices, diffuseMapIndices)
+               )
              }
          ),
-         [||]
+         ([||], [||])
        );
-  {
-    diffuseMapMaterialIndices:
-      diffuseMapMaterialIndices |> _checkEveryComponentShouldHasGameObject(nodes)
-  }
+  (
+    {diffuseMapMaterialIndices: {materialIndices, mapIndices: diffuseMapIndices}}: WDType.materialIndices
+  )
+  |> WonderLog.Contract.ensureCheck(
+       ({diffuseMapMaterialIndices: {materialIndices, mapIndices}}: WDType.materialIndices) =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|materialIndices' count === mapIndices' count|j},
+                   ~actual={j|not|j}
+                 ),
+                 () => materialIndices |> Js.Array.length == (mapIndices |> Js.Array.length)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     )
 };
 
 let _convertToImageAndSamplerTextureIndices = ({nodes, textures}: GLTFType.gltf) =>
   switch textures {
-  | None => ([||], [||])
+  | None => (([||], [||]), ([||], [||]))
   | Some(textures) =>
-    let (imageTextureIndices, samplerTextureIndices) =
-      textures
-      |> WonderCommonlib.ArrayService.reduceOneParami(
-           [@bs]
+    textures
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
            (
-             (
-               (imageTextureIndices, samplerTextureIndices),
-               {sampler, source}: GLTFType.texture,
-               index
-             ) => (
-               switch source {
-               | None => imageTextureIndices
-               | Some(source) =>
-                 Array.unsafe_set(imageTextureIndices, source, index);
-                 imageTextureIndices
-               },
-               switch sampler {
-               | None => samplerTextureIndices
-               | Some(sampler) =>
-                 Array.unsafe_set(samplerTextureIndices, sampler, index);
-                 samplerTextureIndices
-               }
-             )
-           ),
-           ([||], [||])
-         );
-    (
-      imageTextureIndices |> _checkEveryComponentShouldHasGameObject(nodes),
-      samplerTextureIndices |> _checkEveryComponentShouldHasGameObject(nodes)
-    )
+             ((imageTextureIndices, imageIndices), (samplerTextureIndices, samplerIndices)),
+             {sampler, source}: GLTFType.texture,
+             index
+           ) => (
+             switch source {
+             | None => (imageTextureIndices, imageIndices)
+             | Some(source) => (
+                 imageTextureIndices |> ArrayService.push(index),
+                 imageIndices |> ArrayService.push(source)
+               )
+             },
+             switch sampler {
+             | None => (samplerTextureIndices, samplerIndices)
+             | Some(sampler) => (
+                 samplerTextureIndices |> ArrayService.push(index),
+                 samplerIndices |> ArrayService.push(sampler)
+               )
+             }
+           )
+         ),
+         (([||], [||]), ([||], [||]))
+       )
+    |> WonderLog.Contract.ensureCheck(
+         (((imageTextureIndices, imageIndices), (samplerTextureIndices, samplerIndices))) => {
+           open WonderLog;
+           open Contract;
+           open Operators;
+           test(
+             Log.buildAssertMessage(
+               ~expect={j|imageTextureIndices' count == imageIndices' count|j},
+               ~actual={j|not|j}
+             ),
+             () => imageTextureIndices |> Js.Array.length == (imageIndices |> Js.Array.length)
+           );
+           test(
+             Log.buildAssertMessage(
+               ~expect={j|samplerTextureIndices' count == samplerIndices' count|j},
+               ~actual={j|not|j}
+             ),
+             () => samplerTextureIndices |> Js.Array.length == (samplerIndices |> Js.Array.length)
+           )
+         },
+         IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       )
   };
 
 let _convertToIndices = (gltf: GLTFType.gltf) : WDType.indices => {
-  let (imageTextureIndices, samplerTextureIndices) = _convertToImageAndSamplerTextureIndices(gltf);
+  let ((imageTextureIndices, imageIndices), (samplerTextureIndices, samplerIndices)) =
+    _convertToImageAndSamplerTextureIndices(gltf);
   {
-    gameObjectIndices: _convertToGameObjectIndices(gltf),
+    gameObjectIndices: _convertToGameObjectIndexData(gltf),
     materialIndices: _convertToMaterialIndices(gltf),
-    imageTextureIndices,
-    samplerTextureIndices
+    imageTextureIndices: {textureIndices: imageTextureIndices, imageIndices},
+    samplerTextureIndices: {textureIndices: samplerTextureIndices, samplerIndices}
   }
 };
 
@@ -862,33 +983,46 @@ let _getScaleTuple = (mat) => {
 
 let _getRotationTuple = (mat) => {
   let trace = mat[0] +. mat[5] +. mat[10];
-  let out = [||];
+  /* let out = [||];*/
+  /* if (trace > 0.) {
+       let s = Js.Math.sqrt(trace +. 1.0) *. 2.;
+       Array.unsafe_set(out, 3, 0.25 *. s);
+       Array.unsafe_set(out, 0, (mat[6] -. mat[9]) /. s);
+       Array.unsafe_set(out, 1, (mat[8] -. mat[2]) /. s);
+       Array.unsafe_set(out, 2, (mat[1] -. mat[4]) /. s)
+     } else if (mat[0] > mat[5] & mat[0] > mat[10]) {
+       let s = Js.Math.sqrt(1.0 +. mat[0] -. mat[5] -. mat[10]) *. 2.;
+       Array.unsafe_set(out, 3, (mat[6] -. mat[9]) /. s);
+       Array.unsafe_set(out, 0, 0.25 *. s);
+       Array.unsafe_set(out, 1, (mat[1] +. mat[4]) /. s);
+       Array.unsafe_set(out, 2, (mat[8] +. mat[2]) /. s);
+     } else if (mat[5] > mat[10]) {
+       let s = Js.Math.sqrt(1.0 +. mat[5] -. mat[0] -. mat[10]) *. 2.;
+       Array.unsafe_set(out, 3, (mat[8] -. mat[2]) /. s);
+       Array.unsafe_set(out, 0, (mat[1] +. mat[4]) /. s);
+       Array.unsafe_set(out, 1, 0.25 *. s);
+       Array.unsafe_set(out, 2, (mat[6] +. mat[9]) /. s)
+
+     } else {
+       let s = Js.Math.sqrt(1.0 +. mat[10] -. mat[0] -. mat[5]) *. 2.;
+       Array.unsafe_set(out, 3, (mat[1] -. mat[4]) /. s);
+       Array.unsafe_set(out, 0, (mat[8] +. mat[2]) /. s);
+       Array.unsafe_set(out, 1, (mat[6] +. mat[9]) /. s);
+       Array.unsafe_set(out, 2, 0.25 *. s)
+     }; */
   if (trace > 0.) {
     let s = Js.Math.sqrt(trace +. 1.0) *. 2.;
-    out[3] = 0.25 *. s;
-    out[0] = (mat[6] -. mat[9]) /. s;
-    out[1] = (mat[8] -. mat[2]) /. s;
-    out[2] = (mat[1] -. mat[4]) /. s
+    ((mat[6] -. mat[9]) /. s, (mat[8] -. mat[2]) /. s, (mat[1] -. mat[4]) /. s, 0.25 *. s)
   } else if (mat[0] > mat[5] & mat[0] > mat[10]) {
     let s = Js.Math.sqrt(1.0 +. mat[0] -. mat[5] -. mat[10]) *. 2.;
-    out[3] = (mat[6] -. mat[9]) /. s;
-    out[0] = 0.25 *. s;
-    out[1] = (mat[1] +. mat[4]) /. s;
-    out[2] = (mat[8] +. mat[2]) /. s
+    (0.25 *. s, (mat[1] +. mat[4]) /. s, (mat[8] +. mat[2]) /. s, (mat[6] -. mat[9]) /. s)
   } else if (mat[5] > mat[10]) {
     let s = Js.Math.sqrt(1.0 +. mat[5] -. mat[0] -. mat[10]) *. 2.;
-    out[3] = (mat[8] -. mat[2]) /. s;
-    out[0] = (mat[1] +. mat[4]) /. s;
-    out[1] = 0.25 *. s;
-    out[2] = (mat[6] +. mat[9]) /. s
+    ((mat[1] +. mat[4]) /. s, 0.25 *. s, (mat[6] +. mat[9]) /. s, (mat[8] -. mat[2]) /. s)
   } else {
     let s = Js.Math.sqrt(1.0 +. mat[10] -. mat[0] -. mat[5]) *. 2.;
-    out[3] = (mat[1] -. mat[4]) /. s;
-    out[0] = (mat[8] +. mat[2]) /. s;
-    out[1] = (mat[6] +. mat[9]) /. s;
-    out[2] = 0.25 *. s
-  };
-  out |> arrayFloat4ToTuple
+    ((mat[8] +. mat[2]) /. s, (mat[6] +. mat[9]) /. s, 0.25 *. s, (mat[1] -. mat[4]) /. s)
+  }
 };
 
 let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
@@ -904,18 +1038,18 @@ let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
                   {
                     translation:
                       switch translation {
-                      | None => (0., 0., 0.)
-                      | Some(translation) => translation |> arrayFloat3ToTuple
+                      | None => None
+                      | Some(translation) => Some(translation |> arrayFloat3ToTuple)
                       },
                     rotation:
                       switch rotation {
-                      | None => (0., 0., 0., 1.)
-                      | Some(rotation) => rotation |> arrayFloat4ToTuple
+                      | None => None
+                      | Some(rotation) => Some(rotation |> arrayFloat4ToTuple)
                       },
                     scale:
                       switch scale {
-                      | None => (1., 1., 1.)
-                      | Some(scale) => scale |> arrayFloat3ToTuple
+                      | None => None
+                      | Some(scale) => Some(scale |> arrayFloat3ToTuple)
                       }
                   }: WDType.transform
                 )
@@ -923,9 +1057,9 @@ let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
              arr
              |> ArrayService.push(
                   {
-                    translation: _getTranslationTuple(matrix),
-                    rotation: _getRotationTuple(matrix),
-                    scale: _getScaleTuple(matrix)
+                    translation: Some(_getTranslationTuple(matrix)),
+                    rotation: Some(_getRotationTuple(matrix)),
+                    scale: Some(_getScaleTuple(matrix))
                   }: WDType.transform
                 )
            }
@@ -934,7 +1068,6 @@ let _convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
      );
 
 let _convertToBasicCameraViews = ({cameras}: GLTFType.gltf) : WDType.basicCameraViews => {
-  /* count: nodes |> Js.Array.filter(({camera}) => camera |> Js.Option.isSome) |> Js.Array.length */
   count:
     switch cameras {
     | None => 0
@@ -943,39 +1076,6 @@ let _convertToBasicCameraViews = ({cameras}: GLTFType.gltf) : WDType.basicCamera
 };
 
 let _convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
-  /* switch cameras {
-     | None => [||]
-     | Some(cameras) =>
-       nodes
-       |> WonderCommonlib.ArrayService.reduceOneParam(
-            [@bs]
-            (
-              (arr, {camera}: GLTFType.camera) =>
-                switch camera {
-                | None => arr
-                | Some(camera) =>
-                  let {type_, perspective} = Array.unsafe_get(cameras, camera);
-                  switch type_ {
-                  | "perspective" =>
-                    let {aspectRatio, yfov, zfar, znear} = perspective |> OptionService.unsafeGet;
-                    arr
-                    |> ArrayService.push
-                         /* near: Some(znear),
-                            far: switch(zfar){
-                            | None =>
-                            /* TODO how to use infinite projection matrix? */
-                            Some(10000)
-                            | Some(zfar) => Some(zfar)
-                            },
-                            fovy: Some(yfov),
-                            aspect: aspectRatio */
-                         ({near: znear, far: zfar, fovy, aspect: aspectRatio})
-                  }
-                }
-            ),
-            [||]
-          )
-     }; */
   switch cameras {
   | None => [||]
   | Some(cameras) =>
@@ -1002,6 +1102,7 @@ let _convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
                     (
                       {near: znear, far: zfar, fovy: yfov, aspect: aspectRatio}: WDType.perspectiveCameraProjection
                     )
+             | _ => arr
              }
          ),
          [||]
@@ -1037,25 +1138,38 @@ let _convertToLightMaterials = ({materials}: GLTFType.gltf) : array(WDType.light
        [||]
      );
 
-let _convertToGeometrys = ({meshes}: GLTFType.gltf) : array(WDType.geometry) =>
+let _convertToGeometry = ({primitives}: GLTFType.mesh) : option(WDType.geometry) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            /* TODO test */
+            test(
+              Log.buildAssertMessage(~expect={j|not has texCoord_1|j}, ~actual={j|has|j}),
+              () => {
+                let {attributes, indices}: GLTFType.primitive = _getPrimitiveData(primitives);
+                attributes.texCoord_1 |> assertNotExist
+              }
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  primitives |> Js.Array.length > 1 ?
+    None :
+    {
+      let {attributes, indices}: GLTFType.primitive = _getPrimitiveData(primitives);
+      let {position, normal, texCoord_0}: GLTFType.attributes = attributes;
+      Some({position, normal, texCoord: texCoord_0, index: indices |> OptionService.unsafeGet})
+    }
+};
+
+let _convertToGeometrys = ({meshes}: GLTFType.gltf) =>
   meshes
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (arr, {primitives}: GLTFType.mesh) => {
-           let {attributes, indices}: GLTFType.primitive = _getPrimitiveData(primitives);
-           let {position, normal, texCoord_0}: GLTFType.attributes = attributes;
-           arr
-           |> ArrayService.push(
-                {
-                  position,
-                  normal,
-                  texCoord: texCoord_0,
-                  index: indices |> OptionService.unsafeGet
-                }: WDType.geometry
-              )
-         }
-       ),
+       [@bs] ((arr, mesh) => arr |> ArrayService.push(_convertToGeometry(mesh))),
        [||]
      );
 
@@ -1266,7 +1380,7 @@ let _convertToBufferViews = ({bufferViews}: GLTFType.gltf) : array(WDType.buffer
   |> WonderCommonlib.ArrayService.reduceOneParam(
        [@bs]
        (
-         (arr, {buffer, byteOffset, byteLength, byteStride, target}: GLTFType.bufferView) =>
+         (arr, {buffer, byteOffset, byteLength, byteStride}: GLTFType.bufferView) =>
            arr
            |> ArrayService.push(
                 {
@@ -1277,22 +1391,22 @@ let _convertToBufferViews = ({bufferViews}: GLTFType.gltf) : array(WDType.buffer
                     | Some(byteOffset) => byteOffset
                     },
                   byteLength,
-                  byteStride,
-                  target:
-                    switch (target |> OptionService.unsafeGet) {
-                    | 34962 => WDType.ARRAY_BUFFER
-                    | 34963 => WDType.ELEMENT_ARRAY_BUFFER
-                    | target =>
-                      WonderLog.Log.fatal(
-                        WonderLog.Log.buildFatalMessage(
-                          ~title="_convertToBufferViews",
-                          ~description={j|unknown target: $target|j},
-                          ~reason="",
-                          ~solution={j||j},
-                          ~params={j||j}
-                        )
-                      )
-                    }
+                  byteStride
+                  /* target:
+                     switch (target |> OptionService.unsafeGet) {
+                     | 34962 => WDType.ARRAY_BUFFER
+                     | 34963 => WDType.ELEMENT_ARRAY_BUFFER
+                     | target =>
+                       WonderLog.Log.fatal(
+                         WonderLog.Log.buildFatalMessage(
+                           ~title="_convertToBufferViews",
+                           ~description={j|unknown target: $target|j},
+                           ~reason="",
+                           ~solution={j||j},
+                           ~params={j||j}
+                         )
+                       )
+                     } */
                 }: WDType.bufferView
               )
        ),
@@ -1322,44 +1436,110 @@ let _convertToBuffers = ({buffers}: GLTFType.gltf) : array(WDType.buffer) =>
        [||]
      );
 
+/* TODO refactor */
 let _convertMultiPrimitivesToNodes = ({nodes, meshes} as gltf: GLTFType.gltf) : GLTFType.gltf => {
-  let (newNodes, newMeshs) =
+  let meshesLen = meshes |> Js.Array.length;
+  let (multiPrimitivesMeshMap, newMeshIndex) =
+    meshes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         [@bs]
+         (
+           ((multiPrimitivesMeshMap, newMeshIndex), {primitives}: GLTFType.mesh, meshIndex) =>
+             switch (primitives |> Js.Array.length) {
+             | 0
+             | 1 => (multiPrimitivesMeshMap, newMeshIndex)
+             | primitivesLen =>
+               let newMeshDataArr =
+                 primitives
+                 |> WonderCommonlib.ArrayService.reduceOneParami(
+                      [@bs]
+                      (
+                        (newMeshDataArr, primitive, primitiveIndex) =>
+                          newMeshDataArr
+                          |> ArrayService.push((
+                               {primitives: [|primitive|]}: GLTFType.mesh,
+                               newMeshIndex + primitiveIndex
+                             ))
+                      ),
+                      [||]
+                    );
+               (
+                 multiPrimitivesMeshMap
+                 |> WonderCommonlib.SparseMapService.set(meshIndex, newMeshDataArr),
+                 newMeshIndex + (newMeshDataArr |> Js.Array.length)
+               )
+             }
+         ),
+         (WonderCommonlib.SparseMapService.createEmpty(), meshesLen)
+       );
+  let newMeshes =
+    multiPrimitivesMeshMap
+    |> SparseMapService.reduceiValid(
+         [@bs]
+         (
+           (newMeshes, newMeshDataArr, _) =>
+             newMeshes
+             |> Js.Array.concat(newMeshDataArr |> Js.Array.map(((newMesh, _)) => newMesh))
+         ),
+         meshes |> Js.Array.copy
+       );
+  let (newNodes, newNodesOfMultiPrimitives, newNodeIndex) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParam(
          [@bs]
          (
-           ((newNodes, newMeshs), {mesh} as node: GLTFType.node) =>
+           ((newNodes, newNodesOfMultiPrimitives, newNodeIndex), {mesh} as node: GLTFType.node) =>
              switch mesh {
-             | None =>
-               /* newNodes */
-               (newNodes |> ArrayService.push(node), newMeshs)
+             | None => (
+                 newNodes |> ArrayService.push(node),
+                 newNodesOfMultiPrimitives,
+                 newNodeIndex
+               )
              | Some(mesh) =>
-               let primitives = Array.unsafe_get(meshes, mesh).primitives;
-               switch (primitives |> Js.Array.length) {
-               | 0
-               | 1 => (newNodes |> ArrayService.push(node), newMeshs)
-               | _ =>
-                 primitives
-                 |> WonderCommonlib.ArrayService.reduceOneParam(
-                      [@bs]
-                      (
-                        ((newNodes, newMeshs), primitive) => {
-                          let meshIndex = (newMeshs |> Js.Array.length) - 1;
-                          (
-                            newNodes |> ArrayService.push({...node, mesh: Some(meshIndex |> succ)}),
-                            newMeshs
-                            |> ArrayService.push({primitives: [|primitive|]}: GLTFType.mesh)
-                          )
-                        }
-                      ),
-                      (newNodes, newMeshs)
-                    )
+               switch (multiPrimitivesMeshMap |> WonderCommonlib.SparseMapService.get(mesh)) {
+               | None => (
+                   newNodes |> ArrayService.push(node),
+                   newNodesOfMultiPrimitives,
+                   newNodeIndex
+                 )
+               | Some(newMeshDataArr) =>
+                 let newNodesOfMultiPrimitives =
+                   newMeshDataArr
+                   |> WonderCommonlib.ArrayService.reduceOneParam(
+                        [@bs]
+                        (
+                          (newNodesOfMultiPrimitives, (_, meshIndex)) =>
+                            newNodesOfMultiPrimitives
+                            |> ArrayService.push({...node, children: None, mesh: Some(meshIndex)})
+                        ),
+                        newNodesOfMultiPrimitives
+                      );
+                 let newChildren =
+                   ArrayService.range(
+                     newNodeIndex,
+                     newNodeIndex + (newMeshDataArr |> Js.Array.length) - 1
+                   );
+                 (
+                   newNodes
+                   |> ArrayService.push({
+                        ...node,
+                        mesh: None,
+                        children:
+                          switch node.children {
+                          | None => Some(newChildren)
+                          | Some(children) => Some(children |> Js.Array.concat(newChildren))
+                          }
+                      }),
+                   newNodesOfMultiPrimitives,
+                   newNodeIndex + (newMeshDataArr |> Js.Array.length)
+                 )
                }
              }
          ),
-         ([||], meshes |> Js.Array.copy)
+         ([||], [||], nodes |> Js.Array.length)
        );
-  {...gltf, nodes: newNodes, meshes: newMeshs}
+  let newNodes = newNodes |> Js.Array.concat(newNodesOfMultiPrimitives);
+  {...gltf, nodes: newNodes, meshes: newMeshes}
 };
 
 let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
@@ -1385,35 +1565,6 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
 };
 
 let convert = (gltfFileContent: string) => {
-  /* result: imageMap(path, image), bufferMap(path, arraybuffer), .wd record */
-  /* FetchCommon.createFetchJsonStream(gltfFilePath, _fetch)
-     |> Most.map((json) => _convertGLTFJsonToRecord(json))
-     |> Most.flatMap(
-          (gltf) =>
-            /* Most.from([|_convertGLTFToWD(gltf), _loadImages(gltf), _loadBuffers(gltf)|]) */
-            [|
-              _convertGLTFToWD(gltf),
-              _loadImages(gltfFilePath, gltf),
-              _loadBuffers(gltfFilePath, gltf)
-            |]
-            |> Most.mergeArray
-            |> Most.reduce((arr, result) => arr |> ArrayService.push(result), [||])
-        )
-     |> Most.map((arr) => (arr[0], arr[1], arr[2])); */
-  /* FetchCommon.createFetchJsonStream(gltfFilePath, _fetch)
-     |> Most.map((json) => _convertGLTFJsonToRecord(json))
-     |> Most.flatMap(
-          (gltf) =>
-            /* Most.from([|_convertGLTFToWD(gltf), _loadImages(gltf), _loadBuffers(gltf)|]) */
-            [|
-              _convertGLTFToWD(gltf),
-              _loadImages(gltfFilePath, gltf),
-              _loadBuffers(gltfFilePath, gltf)
-            |]
-            |> Most.mergeArray
-            |> Most.reduce((arr, result) => arr |> ArrayService.push(result), [||])
-        )
-     |> Most.map((arr) => (arr[0], arr[1], arr[2])); */
   let gltf = _convertGLTFJsonToRecord(gltfFileContent |> Js.Json.parseExn);
   _buildImageArray(gltf)
   |> Most.map((imageArr) => (_convertGLTFToWD(gltf), imageArr, _buildBufferArray(gltf)))

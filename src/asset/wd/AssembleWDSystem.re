@@ -108,42 +108,45 @@ let _batchSetCustomGeometryData = ({geometrys} as wdRecord, geometryArr, bufferA
   |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
-         (state, {position, normal, texCoord, index}: WDType.geometry, geometryIndex) => {
-           let geometry = Array.unsafe_get(geometryArr, geometryIndex);
-           let state =
-             VerticesCustomGeometryMainService.setVerticesByTypeArray(
-               geometry,
-               _getBufferAttributeData(position, bufferArr, wdRecord),
-               state
-             );
-           let state =
-             switch normal {
-             | None => state
-             | Some(normal) =>
-               NormalsCustomGeometryMainService.setNormalsByTypeArray(
+         (state, geometryData, geometryIndex) =>
+           switch geometryData {
+           | None => state
+           | Some(({position, normal, texCoord, index}: WDType.geometry)) =>
+             let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+             let state =
+               VerticesCustomGeometryMainService.setVerticesByTypeArray(
                  geometry,
-                 _getBufferAttributeData(normal, bufferArr, wdRecord),
+                 _getBufferAttributeData(position, bufferArr, wdRecord),
                  state
-               )
-             };
-           let state =
-             switch texCoord {
-             | None => state
-             | Some(texCoord) =>
-               TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
+               );
+             let state =
+               switch normal {
+               | None => state
+               | Some(normal) =>
+                 NormalsCustomGeometryMainService.setNormalsByTypeArray(
+                   geometry,
+                   _getBufferAttributeData(normal, bufferArr, wdRecord),
+                   state
+                 )
+               };
+             let state =
+               switch texCoord {
+               | None => state
+               | Some(texCoord) =>
+                 TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
+                   geometry,
+                   _getBufferAttributeData(texCoord, bufferArr, wdRecord) |> _normalizeTexCoords,
+                   state
+                 )
+               };
+             let state =
+               IndicesCustomGeometryMainService.setIndicesByTypeArray(
                  geometry,
-                 _getBufferAttributeData(texCoord, bufferArr, wdRecord) |> _normalizeTexCoords,
+                 _getBufferIndexData(index, bufferArr, wdRecord),
                  state
-               )
-             };
-           let state =
-             IndicesCustomGeometryMainService.setIndicesByTypeArray(
-               geometry,
-               _getBufferIndexData(index, bufferArr, wdRecord),
-               state
-             );
-           state
-         }
+               );
+             state
+           }
        ),
        state
      );
@@ -206,19 +209,45 @@ let _addChildrenToParent = (parent, children, (parentMap, childMap)) => (
 );
 
 let _batchSetTransformParent = ({indices}, transformArr, state) => {
+  let parentTransforms =
+    indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
+    |> Js.Array.map((index) => Array.unsafe_get(transformArr, index));
+  /* let childrenTransforms =
+     indices.gameObjectIndices.childrenTransformIndexData.childrenTransformIndices
+     |> Js.Array.map(
+          (childrenIndices) =>
+            switch childrenIndices {
+            | None => None
+            | Some(childrenIndices) =>
+              Some(
+                childrenIndices |> Js.Array.map((index) => Array.unsafe_get(transformArr, index))
+              )
+            }
+        ); */
+  let childrenTransforms =
+    indices.gameObjectIndices.childrenTransformIndexData.childrenTransformIndices
+    |> Js.Array.map(
+         (childrenIndices) =>
+           childrenIndices |> Js.Array.map((index) => Array.unsafe_get(transformArr, index))
+       );
   let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =
     RecordTransformMainService.getRecord(state);
   let (parentMap, childMap) =
-    indices.gameObjectIndices.childrenTransformIndices
+    parentTransforms
     |> WonderCommonlib.ArrayService.reduceOneParami(
          [@bs]
          (
-           (hierachyDataTuple, childrenTransforms, parentTransform) =>
-             switch childrenTransforms {
-             | None => hierachyDataTuple
-             | Some(childrenTransforms) =>
-               _addChildrenToParent(parentTransform, childrenTransforms, hierachyDataTuple)
-             }
+           (hierachyDataTuple, parentTransform, index) =>
+             /* switch (Array.unsafe_get(childrenTransforms, index)) {
+                | None => hierachyDataTuple
+                | Some(childrenTransforms) =>
+                  _addChildrenToParent(parentTransform, childrenTransforms, hierachyDataTuple)
+                } */
+             _addChildrenToParent(
+               parentTransform,
+               Array.unsafe_get(childrenTransforms, index),
+               hierachyDataTuple
+             )
          ),
          (parentMap, childMap)
        );
@@ -256,14 +285,17 @@ let _batchSetTransformData = ({transforms}, transformArr, state) => {
           |> WonderCommonlib.ArrayService.reduceOneParami(
                [@bs]
                (
-                 (localPositions, {translation}, index) => {
-                   let transform = transformArr[index];
-                   RecordTransformMainService.setLocalPositionByTuple(
-                     transform,
-                     translation,
-                     localPositions
-                   )
-                 }
+                 (localPositions, {translation}, index) =>
+                   switch translation {
+                   | None => localPositions
+                   | Some(translation) =>
+                     let transform = transformArr[index];
+                     RecordTransformMainService.setLocalPositionByTuple(
+                       transform,
+                       translation,
+                       localPositions
+                     )
+                   }
                ),
                localPositions
              )
@@ -384,6 +416,7 @@ let assemble = ((wdRecord, imageArr, bufferArr), state) => {
     |> _batchSetTransformData(wdRecord, transformArr)
     |> _batchSetTransformParent(wdRecord, transformArr)
     |> _batchSetCustomGeometryData(wdRecord, customGeometryArr, bufferArr)
+    /* TODO fix: should get gameObjectArr by indices */
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          gameObjectArr,
          transformArr

@@ -23,6 +23,8 @@ type cameraProjectionIndex = int;
    type pointLightIndex = int; */
 type geometryIndex = int;
 
+type componentIndex = int;
+
 type imageIndex = int;
 
 type samplerIndex = int;
@@ -37,12 +39,9 @@ type scene = {gameObjects: array(gameObjectIndex)};
 type gameObjects = {count: int};
 
 type transform = {
-  /* translation: array(float),
-     rotation: array(float),
-     scale: array(float) */
-  translation: (float, float, float),
-  rotation: (float, float, float, float),
-  scale: (float, float, float)
+  translation: option((float, float, float)),
+  rotation: option((float, float, float, float)),
+  scale: option((float, float, float))
 };
 
 type geometry = {
@@ -107,16 +106,16 @@ type buffer = {
   byteLength: int
 };
 
-type bufferViewTarget =
+/* type bufferViewTarget =
   | ARRAY_BUFFER
-  | ELEMENT_ARRAY_BUFFER;
+  | ELEMENT_ARRAY_BUFFER; */
 
 type bufferView = {
   buffer: bufferIndex,
   byteOffset: int,
   byteLength: int,
-  byteStride: option(int),
-  target: bufferViewTarget
+  byteStride: option(int)
+  /* target: bufferViewTarget */
 };
 
 type image = {uri: string};
@@ -148,37 +147,60 @@ type sampler = {
   wrapT: wrap
 };
 
+type componentGameObjectIndexData = {
+  gameObjectIndices: array(gameObjectIndex),
+  componentIndices: array(componentIndex)
+};
+
+type childrenTransformIndexData = {
+  parentTransformIndices: array(transformIndex),
+  childrenTransformIndices: array(array(transformIndex))
+};
+
 type gameObjectIndices = {
-  /* parentGameObjectIndices: array(transformIndex), */
-  childrenTransformIndices: array(option(array(transformIndex))),
-  transformGameObjectIndices: array(transformIndex),
-  basicCameraViewGameObjectIndices: array(cameraViewIndex),
-  perspectiveCameraProjectionGameObjectIndices: array(cameraProjectionIndex),
-  lightMaterialGameObjectIndices: array(lightMaterialIndex),
-  /* ambientLightGameObjectIndices: array(ambientLightIndex),
+  childrenTransformIndexData,
+  transformGameObjectIndexData: componentGameObjectIndexData,
+  basicCameraViewGameObjectIndexData: componentGameObjectIndexData,
+  perspectiveCameraProjectionGameObjectIndexData: componentGameObjectIndexData,
+  lightMaterialGameObjectIndexData: componentGameObjectIndexData,
+  /* TODO ambientLightGameObjectIndices: array(ambientLightIndex),
      directionLightGameObjectIndices: array(directionLightIndex),
      pointLightGameObjectIndices: array(pointLightIndex), */
-  geometryGameObjectIndices: array(geometryIndex)
+  /* geometryGameObjectIndices: array(geometryIndex) */
+  geometryGameObjectIndexData: componentGameObjectIndexData
+};
+
+
+type mapMaterialIndexData = {
+  materialIndices: array(lightMaterialIndex),
+  mapIndices: array(textureIndex)
 };
 
 type materialIndices = {
-  diffuseMapMaterialIndices: array(textureIndex)
-  /* specularMapMaterialIndices: array(textureIndex) */
+  diffuseMapMaterialIndices: mapMaterialIndexData
+};
+
+type imageTextureIndexData = {
+  textureIndices: array(textureIndex),
+  imageIndices: array(imageIndex)
+};
+
+type samplerTextureIndexData = {
+  textureIndices: array(textureIndex),
+  samplerIndices: array(samplerIndex)
 };
 
 type indices = {
   gameObjectIndices,
   materialIndices,
-  imageTextureIndices: array(imageIndex),
-  samplerTextureIndices: array(samplerIndex)
+  imageTextureIndices: imageTextureIndexData,
+  samplerTextureIndices: samplerTextureIndexData
 };
 
 type basicCameraViews = {count: int};
 
 type wd = {
   asset,
-  /* scenes: array(scene), */
-  /* scene: int, */
   scene,
   indices,
   gameObjects,
@@ -192,6 +214,6 @@ type wd = {
   basicCameraViews,
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   transforms: array(transform),
-  geometrys: array(geometry),
+  geometrys: array(option(geometry)),
   lightMaterials: array(lightMaterial)
 };
