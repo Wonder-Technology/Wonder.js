@@ -95,7 +95,7 @@ let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
   [@bs] GetCustomGeometryIndicesRenderService.getIndicesCount(index, state);
 
 let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
-  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
+  GetComponentGameObjectService.unsafeGetCustomGeometryComponent(uid, gameObjectRecord)
   |> WonderLog.Contract.ensureCheck(
        (r) =>
          WonderLog.(
@@ -105,7 +105,7 @@ let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
                  Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
                  () => {
                    let (_, type_) =
-                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
+                     GetComponentGameObjectService.unsafeGetCustomGeometryComponentData(
                        uid,
                        gameObjectRecord
                      );

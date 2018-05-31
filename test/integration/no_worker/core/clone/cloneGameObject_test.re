@@ -385,7 +385,7 @@ let _ =
                         CloneTool.cloneWithBoxGeometry(state, gameObject1, geometry1, 2)
                       };
                       test(
-                        "test clone specific count of geometrys",
+                        "test clone specific count of customGeometrys",
                         () => {
                           let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
                           clonedGeometryArr |> Js.Array.length |> expect == 2
@@ -415,7 +415,7 @@ let _ =
                         CloneTool.cloneWithCustomGeometry(state, gameObject1, geometry1, 2)
                       };
                       test(
-                        "test clone specific count of geometrys",
+                        "test clone specific count of customGeometrys",
                         () => {
                           let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
                           clonedGeometryArr |> Js.Array.length |> expect == 2
@@ -1149,7 +1149,7 @@ let _ =
                    "test clone geometry component",
                    () =>
                      test(
-                       "test clone specific count of geometrys",
+                       "test clone specific count of customGeometrys",
                        () => {
                          open StateDataMainType;
                          let (state, gameObject1, geometry1) =

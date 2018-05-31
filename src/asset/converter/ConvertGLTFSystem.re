@@ -841,7 +841,7 @@ let _convertToGameObjectIndexData =
       _convertToPerspectiveCameraProjectionGameObjectIndexData(nodes, cameras),
     lightMaterialGameObjectIndexData:
       _convertToLightMaterialGameObjectIndexData(nodes, meshes, materials),
-    geometryGameObjectIndexData: _convertToGeometryGameObjectIndexData(nodes)
+    customGeometryGameObjectIndexData: _convertToGeometryGameObjectIndexData(nodes)
   }
 };
 
@@ -1138,7 +1138,7 @@ let _convertToLightMaterials = ({materials}: GLTFType.gltf) : array(WDType.light
        [||]
      );
 
-let _convertToGeometry = ({primitives}: GLTFType.mesh) : option(WDType.geometry) => {
+let _convertToGeometry = ({primitives}: GLTFType.mesh) : option(WDType.customGeometry) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -1554,7 +1554,7 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
     basicCameraViews: _convertToBasicCameraViews(gltf),
     perspectiveCameraProjections: _convertToPerspectiveCameraProjections(gltf),
     lightMaterials: _convertToLightMaterials(gltf),
-    geometrys: _convertToGeometrys(gltf),
+    customGeometrys: _convertToGeometrys(gltf),
     basicSourceTextures: {count: _getCount(nodes)},
     samplers: _convertToSamplers(gltf),
     images: _convertToImages(gltf),

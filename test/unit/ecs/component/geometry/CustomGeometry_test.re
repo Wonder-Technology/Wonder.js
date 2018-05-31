@@ -204,7 +204,7 @@ let _ =
                         CustomGeometryTool.createThreeGameObjectsAndSetPointData(state)
                       };
                       describe(
-                        "if have dispose too many geometrys, reallocate geometry",
+                        "if have dispose too many customGeometrys, reallocate geometry",
                         () => {
                           describe(
                             "test type array data",

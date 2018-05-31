@@ -77,6 +77,7 @@ let _getBufferIndexData = (accessorIndex, bufferArr, {accessors, bufferViews, bu
                 switch bufferView.byteStride {
                 | Some(byteStride) =>
                   byteStride == _getAccessorTypeSize(accessor) * Uint16Array._BYTES_PER_ELEMENT
+                | None => ()
                 }
               }
             )
@@ -94,28 +95,28 @@ let _getBufferIndexData = (accessorIndex, bufferArr, {accessors, bufferViews, bu
   )
 };
 
-let _normalizeTexCoords = (texCoords) => {
-  for (i in 0 to Float32Array.length(texCoords) / 2) {
-    let index = i * 2 + 1;
-    Float32Array.unsafe_set(texCoords, index, 1.0 -. Float32Array.unsafe_get(texCoords, index))
-  };
-  texCoords
-};
-
-let _batchSetCustomGeometryData = ({geometrys} as wdRecord, geometryArr, bufferArr, state) =>
-  /* TODO optimize: first get all geometry point data; then batch set?(need benchmark test) */
-  geometrys
+/* let _normalizeTexCoords = (texCoords) => {
+     for (i in 0 to Float32Array.length(texCoords) / 2) {
+       let index = i * 2 + 1;
+       Float32Array.unsafe_set(texCoords, index, 1.0 -. Float32Array.unsafe_get(texCoords, index))
+     };
+     texCoords
+   }; */
+let _batchSetCustomGeometryData =
+    ({customGeometrys} as wdRecord, customGeometryArr, bufferArr, state) =>
+  /* TODO optimize: first get all customGeometry point data; then batch set?(need benchmark test) */
+  customGeometrys
   |> WonderCommonlib.ArrayService.reduceOneParami(
        [@bs]
        (
          (state, geometryData, geometryIndex) =>
            switch geometryData {
            | None => state
-           | Some(({position, normal, texCoord, index}: WDType.geometry)) =>
-             let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+           | Some(({position, normal, texCoord, index}: WDType.customGeometry)) =>
+             let customGeometry = Array.unsafe_get(customGeometryArr, geometryIndex);
              let state =
                VerticesCustomGeometryMainService.setVerticesByTypeArray(
-                 geometry,
+                 customGeometry,
                  _getBufferAttributeData(position, bufferArr, wdRecord),
                  state
                );
@@ -124,7 +125,7 @@ let _batchSetCustomGeometryData = ({geometrys} as wdRecord, geometryArr, bufferA
                | None => state
                | Some(normal) =>
                  NormalsCustomGeometryMainService.setNormalsByTypeArray(
-                   geometry,
+                   customGeometry,
                    _getBufferAttributeData(normal, bufferArr, wdRecord),
                    state
                  )
@@ -134,14 +135,15 @@ let _batchSetCustomGeometryData = ({geometrys} as wdRecord, geometryArr, bufferA
                | None => state
                | Some(texCoord) =>
                  TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
-                   geometry,
-                   _getBufferAttributeData(texCoord, bufferArr, wdRecord) |> _normalizeTexCoords,
+                   customGeometry,
+                   /* _getBufferAttributeData(texCoord, bufferArr, wdRecord) |> _normalizeTexCoords, */
+                   _getBufferAttributeData(texCoord, bufferArr, wdRecord),
                    state
                  )
                };
              let state =
                IndicesCustomGeometryMainService.setIndicesByTypeArray(
-                 geometry,
+                 customGeometry,
                  _getBufferIndexData(index, bufferArr, wdRecord),
                  state
                );
@@ -158,10 +160,10 @@ let _checkNotExceedMaxCountByIndex = (maxCount, indexArr) => {
   indexArr
 };
 
-let _batchCreateCustomGeometry = ({geometrys}, {settingRecord} as state) => {
+let _batchCreateCustomGeometry = ({customGeometrys}, {settingRecord} as state) => {
   let ({index, aliveIndexArray}: CustomGeometryType.customGeometryRecord) as customGeometryRecord =
     RecordCustomGeometryMainService.getRecord(state);
-  let newIndex = index + (geometrys |> Js.Array.length);
+  let newIndex = index + (customGeometrys |> Js.Array.length);
   let indexArr =
     ArrayService.range(index, newIndex - 1)
     |> _checkNotExceedMaxCountByIndex(BufferSettingService.getCustomGeometryCount(settingRecord));
@@ -208,28 +210,7 @@ let _addChildrenToParent = (parent, children, (parentMap, childMap)) => (
   WonderCommonlib.SparseMapService.set(parent, children, childMap)
 );
 
-let _batchSetTransformParent = ({indices}, transformArr, state) => {
-  let parentTransforms =
-    indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
-    |> Js.Array.map((index) => Array.unsafe_get(transformArr, index));
-  /* let childrenTransforms =
-     indices.gameObjectIndices.childrenTransformIndexData.childrenTransformIndices
-     |> Js.Array.map(
-          (childrenIndices) =>
-            switch childrenIndices {
-            | None => None
-            | Some(childrenIndices) =>
-              Some(
-                childrenIndices |> Js.Array.map((index) => Array.unsafe_get(transformArr, index))
-              )
-            }
-        ); */
-  let childrenTransforms =
-    indices.gameObjectIndices.childrenTransformIndexData.childrenTransformIndices
-    |> Js.Array.map(
-         (childrenIndices) =>
-           childrenIndices |> Js.Array.map((index) => Array.unsafe_get(transformArr, index))
-       );
+let _batchSetTransformParent = (parentTransforms, childrenTransforms, state) => {
   let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =
     RecordTransformMainService.getRecord(state);
   let (parentMap, childMap) =
@@ -238,11 +219,6 @@ let _batchSetTransformParent = ({indices}, transformArr, state) => {
          [@bs]
          (
            (hierachyDataTuple, parentTransform, index) =>
-             /* switch (Array.unsafe_get(childrenTransforms, index)) {
-                | None => hierachyDataTuple
-                | Some(childrenTransforms) =>
-                  _addChildrenToParent(parentTransform, childrenTransforms, hierachyDataTuple)
-                } */
              _addChildrenToParent(
                parentTransform,
                Array.unsafe_get(childrenTransforms, index),
@@ -254,25 +230,25 @@ let _batchSetTransformParent = ({indices}, transformArr, state) => {
   {...state, transformRecord: Some({...transformRecord, parentMap, childMap})}
 };
 
-let _batchSetTransformData = ({transforms}, transformArr, state) => {
+let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
   /* TODO set local rotation, scale */
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|transformArr->length === transforms->length|j},
-                ~actual={j|not|j}
-              ),
-              () => transformArr |> Js.Array.length == (transforms |> Js.Array.length)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|transformArr->length === transforms->length|j},
+                   ~actual={j|not|j}
+                 ),
+                 () => transformArr |> Js.Array.length == (transforms |> Js.Array.length)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
   let ({localPositions}: TransformType.transformRecord) as transformRecord =
     RecordTransformMainService.getRecord(state);
   {
@@ -289,7 +265,7 @@ let _batchSetTransformData = ({transforms}, transformArr, state) => {
                    switch translation {
                    | None => localPositions
                    | Some(translation) =>
-                     let transform = transformArr[index];
+                     let transform = gameObjectTransforms[index];
                      RecordTransformMainService.setLocalPositionByTuple(
                        transform,
                        translation,
@@ -303,36 +279,38 @@ let _batchSetTransformData = ({transforms}, transformArr, state) => {
   }
 };
 
-/* let _setDefaultChildren = (indexArr, childMap) =>
-   indexArr
-   |> WonderCommonlib.ArrayService.reduceOneParam(
-        [@bs]
-        (
-          (childMap, index) =>
-            WonderCommonlib.SparseMapService.set(
-              index,
-              WonderCommonlib.ArrayService.createEmpty(),
-              childMap
-            )
-        ),
-        childMap
-      ); */
-/* let _initTransformDataWhenCreate =
-     (
-       indexArr,
+let _setDefaultChildren = (indexArr, childMap) =>
+  indexArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       [@bs]
        (
-         {
-           childMap,
-           localToWorldMatrices,
-           localPositions,
-           defaultLocalToWorldMatrix,
-           defaultLocalPosition
-         }: TransformType.transformRecord
-       ) as transformRecord
-     ) =>
-   /* _isNotNeedInitData(index, childMap) ?
-      transformRecord : */
-   {...transformRecord, childMap: childMap |> _setDefaultChildren(indexArr)}; */
+         (childMap, index) =>
+           WonderCommonlib.SparseMapService.set(
+             index,
+             WonderCommonlib.ArrayService.createEmpty(),
+             childMap
+           )
+       ),
+       childMap
+     );
+
+let _initTransformDataWhenCreate =
+    (
+      indexArr,
+      (
+        {
+          childMap,
+          localToWorldMatrices,
+          localPositions,
+          defaultLocalToWorldMatrix,
+          defaultLocalPosition
+        }: TransformType.transformRecord
+      ) as transformRecord
+    ) =>
+  /* _isNotNeedInitData(index, childMap) ?
+     transformRecord : */
+  {...transformRecord, childMap: childMap |> _setDefaultChildren(indexArr)};
+
 let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
   let ({index, disposedIndexArray}: TransformType.transformRecord) as transformRecord =
     RecordTransformMainService.getRecord(state);
@@ -342,7 +320,7 @@ let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
     |> _checkNotExceedMaxCountByIndex(BufferSettingService.getTransformCount(settingRecord));
   /* let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray); */
   transformRecord.index = newIndex;
-  /* let transformRecord = _initTransformDataWhenCreate(indexArr, transformRecord); */
+  let transformRecord = _initTransformDataWhenCreate(indexArr, transformRecord);
   /* transformRecord.disposedIndexArray = disposedIndexArray; */
   state.transformRecord =
     Some(
@@ -383,9 +361,7 @@ let _batchCreateGameObject = ({gameObjects}, {gameObjectRecord} as state) => {
 let _buildSceneGameObject = ({scene}, gameObjectArr, {gameObjectRecord} as state) => {
   let gameObjects = scene.gameObjects;
   switch (gameObjects |> Js.Array.length) {
-  | 1 =>
-    /* TODO test */
-    (state, Array.unsafe_get(gameObjectArr, gameObjects[0]))
+  | 1 => (state, Array.unsafe_get(gameObjectArr, gameObjects[0]))
   | _ =>
     let (state, gameObject) = CreateGameObjectMainService.create(state);
     let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =
@@ -407,23 +383,66 @@ let _buildSceneGameObject = ({scene}, gameObjectArr, {gameObjectRecord} as state
   }
 };
 
-let assemble = ((wdRecord, imageArr, bufferArr), state) => {
+let _getBatchArrByIndices = (sourceArr, indices) =>
+  indices |> Js.Array.map((index) => Array.unsafe_get(sourceArr, index));
+
+let _getBatchComponentGameObjectData = ((gameObjectArr, transformArr, customGeometryArr), indices) => {
+  let parentTransforms =
+    indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
+    |> _getBatchArrByIndices(transformArr);
+  let childrenTransforms =
+    indices.gameObjectIndices.childrenTransformIndexData.childrenTransformIndices
+    |> Js.Array.map(
+         (childrenIndices) =>
+           childrenIndices |> Js.Array.map((index) => Array.unsafe_get(transformArr, index))
+       );
+  let transformGameObjects =
+    indices.gameObjectIndices.transformGameObjectIndexData.gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr);
+  let gameObjectTransforms =
+    indices.gameObjectIndices.transformGameObjectIndexData.componentIndices
+    |> _getBatchArrByIndices(transformArr);
+  let customGeometryGameObjects =
+    indices.gameObjectIndices.customGeometryGameObjectIndexData.gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr);
+  let gameObjectCustomGeometrys =
+    indices.gameObjectIndices.customGeometryGameObjectIndexData.componentIndices
+    |> _getBatchArrByIndices(customGeometryArr);
+  (
+    parentTransforms,
+    childrenTransforms,
+    transformGameObjects,
+    gameObjectTransforms,
+    customGeometryGameObjects,
+    gameObjectCustomGeometrys
+  )
+};
+
+let assemble = (({indices} as wdRecord, imageArr, bufferArr), state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wdRecord, state);
   let (state, transformArr) = _batchCreateTransform(wdRecord, state);
   let (state, customGeometryArr) = _batchCreateCustomGeometry(wdRecord, state);
+  let (
+    parentTransforms,
+    childrenTransforms,
+    transformGameObjects,
+    gameObjectTransforms,
+    customGeometryGameObjects,
+    gameObjectCustomGeometrys
+  ) =
+    _getBatchComponentGameObjectData((gameObjectArr, transformArr, customGeometryArr), indices);
   let state =
     state
-    |> _batchSetTransformData(wdRecord, transformArr)
-    |> _batchSetTransformParent(wdRecord, transformArr)
+    |> _batchSetTransformData(wdRecord, gameObjectTransforms)
+    |> _batchSetTransformParent(parentTransforms, childrenTransforms)
     |> _batchSetCustomGeometryData(wdRecord, customGeometryArr, bufferArr)
-    /* TODO fix: should get gameObjectArr by indices */
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
-         gameObjectArr,
-         transformArr
+         transformGameObjects,
+         gameObjectTransforms
        )
     |> BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForCreate(
-         gameObjectArr,
-         customGeometryArr
+         customGeometryGameObjects,
+         gameObjectCustomGeometrys
        );
   _buildSceneGameObject(wdRecord, gameObjectArr, state)
 };

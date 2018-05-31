@@ -143,14 +143,6 @@ let hasGameObjectTransformComponent = (gameObject: gameObject, state: StateDataM
   hasTransformComponent(gameObject, state.gameObjectRecord)
 };
 
-let unsafeGetGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
-  unsafeGetGeometryComponent(gameObject, state.gameObjectRecord)
-};
-
 let addGameObjectBoxGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
@@ -193,6 +185,15 @@ let disposeGameObjectCustomGeometryComponent =
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
   [@bs] deferDisposeCustomGeometryComponent(component, state)
+};
+
+let unsafeGetGameObjectCustomGeometryComponent =
+    (gameObject: gameObject, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () => WonderLog.(Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+  );
+  unsafeGetCustomGeometryComponent(gameObject, state.gameObjectRecord)
 };
 
 let hasGameObjectCustomGeometryComponent = (gameObject: gameObject, state: StateDataMainType.state) => {

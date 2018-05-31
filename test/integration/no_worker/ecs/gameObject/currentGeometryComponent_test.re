@@ -65,7 +65,7 @@ let _ =
                              );
                         let (geometryIndex, type_) =
                           state
-                          |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(gameObject);
+                          |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(gameObject);
                         (geometryIndex, type_) |> expect == (customGeometry2, 1)
                       }
                     )
@@ -117,7 +117,7 @@ let _ =
                          _
                        ) =
                          state
-                         |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(gameObject);
+                         |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(gameObject);
                        let state = _setBoxGeometryBuffer(geometryIndex, state);
                        (
                          customGeometryVertexBufferMap
@@ -145,7 +145,7 @@ let _ =
                        )
                     |> GameObjectAPI.addGameObjectBoxGeometryComponent(gameObject, boxGeometry2);
                   let (geometryIndex, type_) =
-                    state |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(gameObject);
+                    state |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(gameObject);
                   (geometryIndex, type_) |> expect == (boxGeometry2, 0)
                 }
               )
@@ -165,7 +165,7 @@ let _ =
                  expect(
                    () =>
                      state
-                     |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(gameObject)
+                     |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(gameObject)
                  )
                  |> toThrowMessage("expect has component, but actual not")
                }
@@ -183,7 +183,7 @@ let _ =
                 CloneTool.cloneWithBoxGeometry(state, gameObject, boxGeometry1, 2);
               let (geometryIndex, _) =
                 state
-                |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(
+                |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(
                      clonedGameObjectArr[1]
                    );
               geometryIndex |> expect == boxGeometry1
@@ -199,7 +199,7 @@ let _ =
                 CloneTool.cloneWithCustomGeometry(state, gameObject, customGeometry1, 2);
               let (geometryIndex, _) =
                 state
-                |> GetComponentGameObjectTool.unsafeGetGeometryComponentData(
+                |> GetComponentGameObjectTool.unsafeGetCustomGeometryComponentData(
                      clonedGameObjectArr[1]
                    );
               geometryIndex |> expect == customGeometry1

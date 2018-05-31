@@ -282,12 +282,12 @@ let _ =
                 "test convert to wd",
                 () => {
                   testPromise(
-                    "test geometrys",
+                    "test customGeometrys",
                     () =>
                       _test(
                         ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
-                        (({geometrys}, _, _)) =>
-                          geometrys
+                        (({customGeometrys}, _, _)) =>
+                          customGeometrys
                           |>
                           expect == [|
                                       None,
@@ -320,7 +320,7 @@ let _ =
                                   _test(
                                     ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
                                     (({indices}, _, _)) =>
-                                      indices.gameObjectIndices.geometryGameObjectIndexData
+                                      indices.gameObjectIndices.customGeometryGameObjectIndexData
                                       |>
                                       expect == {
                                                   gameObjectIndices: [|1, 3, 4, 5, 6|],
@@ -578,15 +578,15 @@ let _ =
               )
           );
           describe(
-            "test geometrys",
+            "test customGeometrys",
             () =>
               testPromise(
                 "test single primitive",
                 () =>
                   _test(
                     ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-                    (({geometrys}, _, _)) =>
-                      geometrys
+                    (({customGeometrys}, _, _)) =>
+                      customGeometrys
                       |>
                       expect == [|
                                   Some({position: 2, normal: Some(1), texCoord: Some(3), index: 0})
@@ -849,7 +849,7 @@ let _ =
                     }
                   );
                   describe(
-                    "test geometryGameObjectIndexData",
+                    "test customGeometryGameObjectIndexData",
                     () => {
                       testPromise(
                         "test single node gltf",
@@ -857,7 +857,7 @@ let _ =
                           _test(
                             ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
                             (({indices}, _, _)) =>
-                              indices.gameObjectIndices.geometryGameObjectIndexData
+                              indices.gameObjectIndices.customGeometryGameObjectIndexData
                               |> expect == _buildComponentIndexData([|0|], [|0|])
                           )
                       );
@@ -867,7 +867,7 @@ let _ =
                           _test(
                             ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
                             (({indices}, _, _)) =>
-                              indices.gameObjectIndices.geometryGameObjectIndexData
+                              indices.gameObjectIndices.customGeometryGameObjectIndexData
                               |>
                               expect == _buildComponentIndexData(
                                           [|2, 4, 5, 6, 7|],

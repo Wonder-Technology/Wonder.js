@@ -179,7 +179,7 @@ let _ =
             "test geometry component",
             () => {
               describe(
-                "unsafeGetGeometryComponent",
+                "unsafeGetCustomGeometryComponent",
                 () =>
                   test(
                     "get last added geometry component",
@@ -192,7 +192,7 @@ let _ =
                         state
                         |> addGameObjectBoxGeometryComponent(gameObject, boxGeometry)
                         |> addGameObjectCustomGeometryComponent(gameObject, customGeometry2);
-                      unsafeGetGameObjectGeometryComponent(gameObject, state)
+                      unsafeGetGameObjectCustomGeometryComponent(gameObject, state)
                       |> expect == customGeometry2
                     }
                   )
@@ -1833,8 +1833,8 @@ let _ =
                 () => _testTwoParamFunc(unsafeGetGameObjectMeshRendererComponent)
               );
               test(
-                "unsafeGetGeometryComponent should error",
-                () => _testTwoParamFunc(unsafeGetGameObjectGeometryComponent)
+                "unsafeGetCustomGeometryComponent should error",
+                () => _testTwoParamFunc(unsafeGetGameObjectCustomGeometryComponent)
               );
               test(
                 "unsafeGetGameObjectBasicCameraViewComponent should error",

@@ -998,3 +998,22 @@ let buildGLTFJsonOfTransform = () =>
     ]|},
     ()
   );
+
+let _buildFakeLoadImage = [%bs.raw
+  {|
+    function(){
+        window.loadImage_wonder = function(base64Str, resolve, reject){
+            resolve(base64Str)
+        }
+    }
+    |}
+];
+
+let testResult = (gltfJson, testFunc) => {
+  open Js.Promise;
+  let data = ref(Obj.magic(1));
+  _buildFakeLoadImage();
+  ConvertGLTFSystem.convert(gltfJson)
+  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => data := (wdRecord, imageArr, bufferArr))
+  |> then_(() => testFunc(data^) |> resolve)
+};

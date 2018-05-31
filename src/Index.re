@@ -98,7 +98,7 @@ let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGe
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
 
-let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
+let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
@@ -528,7 +528,7 @@ let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGe
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
 
-let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
+let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 

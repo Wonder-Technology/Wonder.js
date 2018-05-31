@@ -338,7 +338,7 @@ let getGroupCount = (geometry, state) =>
   GroupBoxGeometryService.getGroupCount(geometry, state |> RecordBoxGeometryMainService.getRecord);
 
 let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
-  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
+  GetComponentGameObjectService.unsafeGetCustomGeometryComponent(uid, gameObjectRecord)
   |> WonderLog.Contract.ensureCheck(
        (r) =>
          WonderLog.(
@@ -348,7 +348,7 @@ let unsafeGetBoxGeometryComponent = (uid: int, {gameObjectRecord}) =>
                  Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
                  () => {
                    let (_, type_) =
-                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
+                     GetComponentGameObjectService.unsafeGetCustomGeometryComponentData(
                        uid,
                        gameObjectRecord
                      );

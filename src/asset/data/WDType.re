@@ -44,7 +44,7 @@ type transform = {
   scale: option((float, float, float))
 };
 
-type geometry = {
+type customGeometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
@@ -167,7 +167,7 @@ type gameObjectIndices = {
      directionLightGameObjectIndices: array(directionLightIndex),
      pointLightGameObjectIndices: array(pointLightIndex), */
   /* geometryGameObjectIndices: array(geometryIndex) */
-  geometryGameObjectIndexData: componentGameObjectIndexData
+  customGeometryGameObjectIndexData: componentGameObjectIndexData
 };
 
 
@@ -214,6 +214,6 @@ type wd = {
   basicCameraViews,
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   transforms: array(transform),
-  geometrys: array(option(geometry)),
+  customGeometrys: array(option(customGeometry)),
   lightMaterials: array(lightMaterial)
 };
