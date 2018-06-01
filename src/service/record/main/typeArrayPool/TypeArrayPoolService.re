@@ -2,9 +2,9 @@ open Js.Typed_array;
 
 open TypeArrayPoolType;
 
-let getFloat32ArrayPoolMap = (record) => record.float32ArrayPoolMap;
+let getFloat32ArrayPoolMap = record => record.float32ArrayPoolMap;
 
-let getUint16ArrayPoolMap = (record) => record.uint16ArrayPoolMap;
+let getUint16ArrayPoolMap = record => record.uint16ArrayPoolMap;
 
 let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
   switch (map |> WonderCommonlib.SparseMapService.get(count)) {
@@ -13,24 +13,28 @@ let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
     | len when len >= maxSize => map
     | _ =>
       arr |> Js.Array.push(typeArray) |> ignore;
-      map
+      map;
     }
   | None => map |> WonderCommonlib.SparseMapService.set(count, [|typeArray|])
   };
 
 let addFloat32TypeArrayToPool =
-  [@bs]
-  (
-    (typeArray: Float32Array.t, maxSize, map) =>
-      _addTypeArrayToPool(typeArray |> Float32Array.length, typeArray, maxSize, map)
-  );
+  (. typeArray: Float32Array.t, maxSize, map) =>
+    _addTypeArrayToPool(
+      typeArray |> Float32Array.length,
+      typeArray,
+      maxSize,
+      map,
+    );
 
 let addUint16TypeArrayToPool =
-  [@bs]
-  (
-    (typeArray: Uint16Array.t, maxSize, map) =>
-      _addTypeArrayToPool(typeArray |> Uint16Array.length, typeArray, maxSize, map)
-  );
+  (. typeArray: Uint16Array.t, maxSize, map) =>
+    _addTypeArrayToPool(
+      typeArray |> Uint16Array.length,
+      typeArray,
+      maxSize,
+      map,
+    );
 
 let _getTypeArrayFromPool = (count, map) =>
   switch (map |> WonderCommonlib.SparseMapService.get(count)) {
@@ -43,21 +47,36 @@ let _getTypeArrayFromPool = (count, map) =>
   };
 
 let getFloat32TypeArrayFromPool =
-  [@bs] ((count, record) => _getTypeArrayFromPool(count, record |> getFloat32ArrayPoolMap));
+  (. count, record) =>
+    _getTypeArrayFromPool(count, record |> getFloat32ArrayPoolMap);
 
 let getUint16TypeArrayFromPool =
-  [@bs] ((count, record) => _getTypeArrayFromPool(count, record |> getUint16ArrayPoolMap));
+  (. count, record) =>
+    _getTypeArrayFromPool(count, record |> getUint16ArrayPoolMap);
 
-let _addAllTypeArrayToPool = (typeArrayMap, maxSize, map, addTypeArrayToPoolFunc) => {
+let _addAllTypeArrayToPool =
+    (typeArrayMap, maxSize, map, addTypeArrayToPoolFunc) => {
   typeArrayMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((typeArray) => [@bs] addTypeArrayToPoolFunc(typeArray, maxSize, map) |> ignore)
+  |> SparseMapService.forEachValid((. typeArray) =>
+       addTypeArrayToPoolFunc(. typeArray, maxSize, map) |> ignore
      );
-  map
+  map;
 };
 
-let addAllFloat32TypeArrayToPool = (typeArrayMap: array(Float32Array.t), maxSize, map) =>
-  _addAllTypeArrayToPool(typeArrayMap, maxSize, map, addFloat32TypeArrayToPool);
+let addAllFloat32TypeArrayToPool =
+    (typeArrayMap: array(Float32Array.t), maxSize, map) =>
+  _addAllTypeArrayToPool(
+    typeArrayMap,
+    maxSize,
+    map,
+    addFloat32TypeArrayToPool,
+  );
 
-let addAllUint16TypeArrayToPool = (typeArrayMap: array(Uint16Array.t), maxSize, map) =>
-  _addAllTypeArrayToPool(typeArrayMap, maxSize, map, addUint16TypeArrayToPool);
+let addAllUint16TypeArrayToPool =
+    (typeArrayMap: array(Uint16Array.t), maxSize, map) =>
+  _addAllTypeArrayToPool(
+    typeArrayMap,
+    maxSize,
+    map,
+    addUint16TypeArrayToPool,
+  );

@@ -13,10 +13,10 @@ let createGetContextStub = (fakeGl, sandbox) =>
 
 let buildFakeGl = (sandbox) => {
   "viewport": createEmptyStub(refJsObjToSandbox(sandbox^)),
-  "getParameter": createEmptyStub(refJsObjToSandbox(sandbox^)),
+  "getParameter": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0)),
   "getShaderPrecisionFormat":
     createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns({"precision": 1}),
-  "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0))
+  "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(1))
 };
 
 let buildFakeCanvas = (id, gl, sandbox) => {

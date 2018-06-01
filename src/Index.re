@@ -1,3 +1,13 @@
+let assembleGLTF = AssembleWDAPI.assembleGLTF;
+
+let assembleWD = AssembleWDAPI.assembleWD;
+
+let convertGLTFToWD = ConverterAPI.convertGLTFToWD;
+
+let loadToData = LoaderManagerAPI.loadToData;
+
+let load = LoaderManagerAPI.load;
+
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
@@ -88,6 +98,8 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
+let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
+
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
@@ -97,8 +109,6 @@ let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryCo
 let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
-
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
@@ -227,10 +237,6 @@ let getPointLightColor = PointLightAPI.getPointLightColor;
 let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
-
-let loadToData = LoaderManagerAPI.loadToData;
-
-let load = LoaderManagerAPI.load;
 
 let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
 
@@ -518,6 +524,8 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
+let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
+
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
@@ -527,8 +535,6 @@ let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryCo
 let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
 
 let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
-
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
@@ -571,10 +577,6 @@ let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
 let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
-
-let loadToData = LoaderManagerAPI.loadToData;
-
-let load = LoaderManagerAPI.load;
 
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 

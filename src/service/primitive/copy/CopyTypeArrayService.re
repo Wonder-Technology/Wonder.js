@@ -43,7 +43,7 @@ let deepCopyArrayArray = (arr: array(array('a))) =>
   |> Js.Array.map(
        (itemArr) =>
          SparseMapService.isDeleted(itemArr) ?
-           Js.Nullable.empty |> Obj.magic : itemArr |> Js.Array.copy
+           Js.Nullable.undefined |> Obj.magic : itemArr |> Js.Array.copy
      );
 /* let copyFloat32TypeArrayFromSharedArrayBuffer = (buffer) =>
      Js.Typed_array.Float32Array.fromBuffer(WorkerType.sharedArrayBufferToArrayBuffer(buffer));
