@@ -60,7 +60,7 @@ let testAttachBufferToAttribute = (sandbox, (name, callIndex, size), prepareFunc
               vertexAttribPointer
               |> getCall(callIndex)
               |> expect
-              |> toCalledWith([|pos, size, float, Obj.magic(Js.false_), 0, 0|])
+              |> toCalledWith([|pos, size, float, Obj.magic(false), 0, 0|])
             }
           )
         )

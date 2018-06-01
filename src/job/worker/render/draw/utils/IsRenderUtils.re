@@ -13,5 +13,5 @@ let isRender = (data) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  data##renderData##isRender === Js.true_
+  data##renderData##isRender === true
 };

@@ -10,7 +10,7 @@ type side =
 
 type deviceManagerRecord = {
   gl: option(webgl1Context),
-  colorWrite: option((Js.boolean, Js.boolean, Js.boolean, Js.boolean)),
+  colorWrite: option((bool, bool, bool, bool)),
   clearColor: option(colorRgba),
   side: option(side),
   depthTest: option(bool),

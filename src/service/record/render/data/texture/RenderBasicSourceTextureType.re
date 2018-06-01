@@ -9,5 +9,5 @@ type basicSourceTextureRecord = {
   sourceMap: WonderCommonlib.SparseMapService.t(DomType.imageElement),
   glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
-  setFlipYFunc: (GlType.webgl1Context, Js.boolean, BrowserDetectType.browserDetectRecord) => unit
+  setFlipYFunc: (GlType.webgl1Context, bool, BrowserDetectType.browserDetectRecord) => unit
 };

@@ -13,7 +13,7 @@ let _isInOtherWorker = [%bs.raw
 ];
 
 let _logMessage = (data, worker) =>
-  _isInOtherWorker(worker) === Js.true_ ?
+  _isInOtherWorker(worker) === true ?
     {
       WonderLog.Log.log({j|--in other worker-- post message to main worker:|j});
       WonderLog.Log.logJson(data)

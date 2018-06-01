@@ -278,7 +278,7 @@ let _ =
                      let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                      vertexAttribPointer
                      |> expect
-                     |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
+                     |> toCalledWith([|pos, 3, float, Obj.magic(false), 0, 0|])
                    }
                  );
                  describe(
@@ -397,7 +397,7 @@ let _ =
                         |> expect
                         |> toCalledWith([|
                              pos,
-                             Obj.magic(Js.false_),
+                             Obj.magic(false),
                              Obj.magic(
                                Js.Typed_array.Float32Array.make([|
                                  1.,
@@ -470,7 +470,7 @@ let _ =
                             |> expect
                             |> toCalledWith([|
                                  pos,
-                                 Obj.magic(Js.false_),
+                                 Obj.magic(false),
                                  Obj.magic(
                                    TransformTool.getDefaultLocalToWorldMatrixTypeArray(state)
                                  )
@@ -573,7 +573,7 @@ let _ =
                         ~completeFunc=
                           (_) =>
                             pixelStorei
-                            |> withTwoArgs(unpackFlipYWebgl, Js.true_)
+                            |> withTwoArgs(unpackFlipYWebgl, true)
                             |> expect
                             |> not_
                             |> toCalled
@@ -611,7 +611,7 @@ let _ =
                         ~completeFunc=
                           (_) =>
                             pixelStorei
-                            |> withTwoArgs(unpackFlipYWebgl, Js.true_)
+                            |> withTwoArgs(unpackFlipYWebgl, true)
                             |> expect
                             |> toCalledTwice
                             |> resolve,

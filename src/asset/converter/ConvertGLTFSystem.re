@@ -234,7 +234,7 @@ let _convertGLTFJsonToRecord = (json) : GLTFType.gltf =>
 let _getSourcePath = (filePath, sourceRelativePath) =>
   PathService.resolve(filePath, sourceRelativePath);
 
-/* let _isBase64: string => Js.boolean = [%bs.raw
+/* let _isBase64: string => bool = [%bs.raw
      {|
                function(uri){
 

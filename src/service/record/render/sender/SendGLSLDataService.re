@@ -38,7 +38,7 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
        {glslSenderRecord}
      ) => {
        bindBuffer(getArrayBuffer(gl), buffer, gl);
-       vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
+       vertexAttribPointer(pos, size, getFloat(gl), false, 0, 0, gl);
        enableVertexAttribArray(gl, pos, glslSenderRecord.vertexAttribHistoryArray)
      }
    ); */
@@ -47,7 +47,7 @@ let sendMatrix3 =
   (
     (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
       /* WonderLog.Log.log(("send matrix3: ", data)) |> ignore; */
-      uniformMatrix3fv(pos, Js.false_, data, gl)
+      uniformMatrix3fv(pos, false, data, gl)
   );
 
 let sendMatrix4 =
@@ -55,7 +55,7 @@ let sendMatrix4 =
   (
     (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
       /* WonderLog.Log.log(("send matrix4: ", data)) |> ignore; */
-      uniformMatrix4fv(pos, Js.false_, data, gl)
+      uniformMatrix4fv(pos, false, data, gl)
   );
 
 let _getCache = (shaderCacheMap, name: string) =>

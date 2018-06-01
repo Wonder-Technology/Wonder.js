@@ -9,7 +9,7 @@ let _compileShader = (gl, glslSource: string, shader) => {
   compileShader(shader, gl);
   WonderLog.Log.debugWithFunc(
     () =>
-      getShaderParameter(shader, getCompileStatus(gl), gl) === Js.false_ ?
+      getShaderParameter(shader, getCompileStatus(gl), gl) === false ?
         {
           let message = getShaderInfoLog(shader, gl);
           WonderLog.Log.debug(
@@ -34,7 +34,7 @@ let _linkProgram = (program, gl) => {
   linkProgram(program, gl);
   WonderLog.Log.debugWithFunc(
     () =>
-      getProgramParameter(program, getLinkStatus(gl), gl) === Js.false_ ?
+      getProgramParameter(program, getLinkStatus(gl), gl) === false ?
         {
           let message = getProgramInfoLog(program, gl);
           WonderLog.Log.fatal(

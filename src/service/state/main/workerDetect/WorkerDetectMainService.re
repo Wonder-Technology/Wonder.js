@@ -11,17 +11,17 @@ let detect = (state: StateDataMainType.state) => {
           false :
           DetectService.hasProperty(
             "transferControlToOffscreen",
-            DomService.buildCanvas() |> Obj.magic
-          )
-          |> Js.to_bool
-    }
-  }
+            DomService.buildCanvas() |> Obj.magic,
+          ),
+    },
+  };
 };
 
 let isSupportSharedArrayBuffer = (state: StateDataMainType.state) =>
   state.workerDetectRecord.isSupportSharedArrayBuffer;
 
-let isSupportRenderWorkerAndSharedArrayBuffer = (state: StateDataMainType.state) =>
+let isSupportRenderWorkerAndSharedArrayBuffer =
+    (state: StateDataMainType.state) =>
   state.workerDetectRecord.isSupportRenderWorkerAndSharedArrayBuffer;
 
 let isUseWorker = (state: StateDataMainType.state) =>

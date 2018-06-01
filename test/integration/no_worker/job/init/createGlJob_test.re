@@ -83,12 +83,12 @@ let _ =
               |> toCalledWith([|
                    matchAny,
                    {
-                     "alpha": Js.Nullable.return(Js.false_),
-                     "depth": Js.Nullable.return(Js.true_),
-                     "stencil": Js.Nullable.return(Js.true_),
-                     "antialias": Js.Nullable.return(Js.false_),
-                     "premultipliedAlpha": Js.Nullable.return(Js.false_),
-                     "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
+                     "alpha": Js.Nullable.return(false),
+                     "depth": Js.Nullable.return(true),
+                     "stencil": Js.Nullable.return(true),
+                     "antialias": Js.Nullable.return(false),
+                     "premultipliedAlpha": Js.Nullable.return(false),
+                     "preserveDrawingBuffer": Js.Nullable.return(false)
                    }
                  |])
             }
@@ -113,12 +113,12 @@ let _ =
               |> toCalledWith([|
                    matchAny,
                    {
-                     "alpha": Js.Nullable.return(Js.true_),
-                     "depth": Js.Nullable.return(Js.true_),
-                     "stencil": Js.Nullable.return(Js.false_),
-                     "antialias": Js.Nullable.return(Js.true_),
-                     "premultipliedAlpha": Js.Nullable.return(Js.true_),
-                     "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
+                     "alpha": Js.Nullable.return(true),
+                     "depth": Js.Nullable.return(true),
+                     "stencil": Js.Nullable.return(false),
+                     "antialias": Js.Nullable.return(true),
+                     "premultipliedAlpha": Js.Nullable.return(true),
+                     "preserveDrawingBuffer": Js.Nullable.return(false)
                    }
                  |])
             }

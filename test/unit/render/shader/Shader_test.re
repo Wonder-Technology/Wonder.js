@@ -167,7 +167,7 @@ let _ =
                         createMethodStubWithJsObjSandbox(sandbox, Console.console, "trace")
                         |> ignore;
                       test(
-                        "if gl.getShaderParameter return Js.false_, log shader info",
+                        "if gl.getShaderParameter return false, log shader info",
                         () => {
                           let (state, _, _, _) =
                             InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
@@ -183,9 +183,9 @@ let _ =
                           let getShaderParameter =
                             createEmptyStubWithJsObjSandbox(sandbox)
                             |> withTwoArgs(shader1, compile_status)
-                            |> returns(Js.false_)
+                            |> returns(false)
                             |> withTwoArgs(shader2, compile_status)
-                            |> returns(Js.false_);
+                            |> returns(false);
                           let getShaderInfoLog = createEmptyStubWithJsObjSandbox(sandbox);
                           let log =
                             createMethodStubWithJsObjSandbox(sandbox, Console.console, "log");
@@ -261,7 +261,7 @@ let _ =
                         "contract check",
                         () =>
                           test(
-                            "if getProgramParameter returns Js.false_, error",
+                            "if getProgramParameter returns false, error",
                             () => {
                               let (state, _, _, _) =
                                 InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
@@ -269,7 +269,7 @@ let _ =
                               let getProgramParameter =
                                 createEmptyStubWithJsObjSandbox(sandbox)
                                 |> withTwoArgs(matchAny, link_status)
-                                |> returns(Js.false_);
+                                |> returns(false);
                               let programInfo = "err";
                               let getProgramInfoLog =
                                 createEmptyStubWithJsObjSandbox(sandbox) |> returns(programInfo);

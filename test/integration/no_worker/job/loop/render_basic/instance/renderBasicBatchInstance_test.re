@@ -187,7 +187,7 @@ let _ =
                   uniformMatrix4fv
                   |> withThreeArgs(
                        pos,
-                       Js.false_,
+                       false,
                        Js.Typed_array.Float32Array.make([|
                          1.,
                          0.,

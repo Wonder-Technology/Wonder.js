@@ -412,7 +412,7 @@ let _ =
                             _prepareForTestVertexAttribPointer(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([|pos1, 4, float, Obj.magic(Js.false_), 64, 0|])
+                          |> toCalledWith([|pos1, 4, float, Obj.magic(false), 64, 0|])
                         }
                       );
                       test(
@@ -422,7 +422,7 @@ let _ =
                             _prepareForTestVertexAttribPointer(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([|pos2, 4, float, Obj.magic(Js.false_), 64, 16|])
+                          |> toCalledWith([|pos2, 4, float, Obj.magic(false), 64, 16|])
                         }
                       );
                       test(
@@ -432,7 +432,7 @@ let _ =
                             _prepareForTestVertexAttribPointer(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([|pos3, 4, float, Obj.magic(Js.false_), 64, 32|])
+                          |> toCalledWith([|pos3, 4, float, Obj.magic(false), 64, 32|])
                         }
                       );
                       test(
@@ -442,7 +442,7 @@ let _ =
                             _prepareForTestVertexAttribPointer(sandbox, state);
                           vertexAttribPointer
                           |> expect
-                          |> toCalledWith([|pos4, 4, float, Obj.magic(Js.false_), 64, 48|])
+                          |> toCalledWith([|pos4, 4, float, Obj.magic(false), 64, 48|])
                         }
                       )
                     }
@@ -546,7 +546,7 @@ let _ =
                                 "if not send data before, send data",
                                 () => {
                                   let (state, _, (bufferSubData, bindBuffer)) =
-                                    _prepareForBufferSubData(sandbox, Js.true_, state);
+                                    _prepareForBufferSubData(sandbox, true, state);
                                   let state = state |> DirectorTool.runWithDefaultTime;
                                   bufferSubData |> expect |> toCalledOnce
                                 }
@@ -558,7 +558,7 @@ let _ =
                                     "not buffer data",
                                     () => {
                                       let (state, _, (bufferSubData, bindBuffer)) =
-                                        _prepareForBufferSubData(sandbox, Js.true_, state);
+                                        _prepareForBufferSubData(sandbox, true, state);
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       bufferSubData |> expect |> toCalledOnce
@@ -568,7 +568,7 @@ let _ =
                                     "bind instance buffer",
                                     () => {
                                       let (state, _, (bufferSubData, bindBuffer)) =
-                                        _prepareForBufferSubData(sandbox, Js.true_, state);
+                                        _prepareForBufferSubData(sandbox, true, state);
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let callCount = bindBuffer |> getCallCount;
                                       let state = state |> DirectorTool.runWithDefaultTime;
@@ -603,7 +603,7 @@ let _ =
                                                pos1,
                                                4,
                                                float,
-                                               Obj.magic(Js.false_),
+                                               Obj.magic(false),
                                                64,
                                                0
                                              |])
@@ -689,7 +689,7 @@ let _ =
                                 "send data",
                                 () => {
                                   let (state, sourceInstance, (bufferSubData, _)) =
-                                    _prepareForBufferSubData(sandbox, Js.false_, state);
+                                    _prepareForBufferSubData(sandbox, false, state);
                                   let state = state |> DirectorTool.runWithDefaultTime;
                                   bufferSubData |> expect |> toCalledOnce
                                 }
@@ -705,12 +705,12 @@ let _ =
                                     "send data",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
-                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                        _prepareForBufferSubData(sandbox, false, state);
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let state =
                                         SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                                           sourceInstance,
-                                          Js.false_,
+                                          false,
                                           state
                                         );
                                       let state = state |> DirectorTool.runWithDefaultTime;
@@ -730,12 +730,12 @@ let _ =
                                     "send data in the next render, and not send data in the next next render",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
-                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                        _prepareForBufferSubData(sandbox, false, state);
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let state =
                                         SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                                           sourceInstance,
-                                          Js.true_,
+                                          true,
                                           state
                                         );
                                       let state = state |> DirectorTool.runWithDefaultTime;
@@ -756,19 +756,19 @@ let _ =
                                     "send data in the next render, and not send data in the next next render",
                                     () => {
                                       let (state, sourceInstance, (bufferSubData, _)) =
-                                        _prepareForBufferSubData(sandbox, Js.false_, state);
+                                        _prepareForBufferSubData(sandbox, false, state);
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let state =
                                         SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                                           sourceInstance,
-                                          Js.false_,
+                                          false,
                                           state
                                         );
                                       let state = state |> DirectorTool.runWithDefaultTime;
                                       let state =
                                         SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                                           sourceInstance,
-                                          Js.true_,
+                                          true,
                                           state
                                         );
                                       let state = state |> DirectorTool.runWithDefaultTime;

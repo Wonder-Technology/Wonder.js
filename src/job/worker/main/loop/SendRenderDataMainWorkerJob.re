@@ -40,9 +40,9 @@ let _buildData = (operateType, stateData) => {
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
     switch (OperateRenderMainService.getCameraRecord(state)) {
-    | None => (Js.false_, Js.Nullable.null)
+    | None => (false, Js.Nullable.null)
     | Some({vMatrix, pMatrix, position}) => (
-        Js.true_,
+        true,
         Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
       )
     };

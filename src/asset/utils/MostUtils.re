@@ -23,7 +23,7 @@ let concatArray = (streamArr) =>
          [@bs]
          (
            (stream1, stream2) =>
-             _isFromEventStream(stream1) === Js.true_ ?
+             _isFromEventStream(stream1) === true ?
                stream1 |> concat(stream2) : stream1 |> concat(stream2)
          ),
          streamArr[0]

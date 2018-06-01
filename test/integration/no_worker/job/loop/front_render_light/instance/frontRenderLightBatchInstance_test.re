@@ -133,7 +133,7 @@ let _ =
                   uniformMatrix3fv
                   |> withThreeArgs(
                        pos,
-                       Js.false_,
+                       false,
                        Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 1., 0., 0., 0., 1.|])
                      )
                   |> getCallCount

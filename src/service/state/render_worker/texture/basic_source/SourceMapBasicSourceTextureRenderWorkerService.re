@@ -29,7 +29,7 @@ let _createImageBitmap = (texture, imageData, state) => {
     let flipY = OperateTypeArrayBasicSourceTextureService.getFlipY();
     _createImageBitmapForChrome(
       imageData,
-      {"imageOrientation": flipY === Js.true_ ? "flipY" : "none"}
+      {"imageOrientation": flipY === true ? "flipY" : "none"}
     )
   | Firefox => _createImageBitmapForFirefox(imageData)
   | _ =>

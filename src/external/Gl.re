@@ -145,7 +145,7 @@ open Js.Typed_array;
 
 [@bs.send.pipe : webgl1Context] external cullFace : int => unit = "";
 
-[@bs.send.pipe : webgl1Context] external pixelStorei : (int, Js.boolean) => unit = "";
+[@bs.send.pipe : webgl1Context] external pixelStorei : (int, bool) => unit = "";
 
 [@bs.send] external commit : webgl1Context => unit = "";
 
@@ -178,9 +178,9 @@ external getWebgl1Context :
 /* external linkStatus : context::contextT => int = "LINK_STATUS" [@@bs.get]; */
 /* external validateStatus : context::contextT => int = "VALIDATE_STATUS" [@@bs.get];
    external shaderType : context::contextT => int = "SHADER_TYPE" [@@bs.get]; */
-[@bs.send.pipe : webgl1Context] external getShaderParameter : (shader, int) => Js.boolean = "";
+[@bs.send.pipe : webgl1Context] external getShaderParameter : (shader, int) => bool = "";
 
-[@bs.send.pipe : webgl1Context] external getProgramParameter : (program, int) => Js.boolean = "";
+[@bs.send.pipe : webgl1Context] external getProgramParameter : (program, int) => bool = "";
 
 [@bs.send.pipe : webgl1Context] external getShaderInfoLog : shader => string = "";
 
@@ -243,17 +243,17 @@ external texImage2DWithArrayBufferView :
 [@bs.send.pipe : webgl1Context] external bindTexture : (int, texture) => unit = "";
 
 [@bs.send.pipe : webgl1Context]
-external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, int) => unit =
+external vertexAttribPointer : (attributeLocation, int, int, bool, int, int) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external enableVertexAttribArray : attributeLocation => unit = "";
 
 [@bs.send.pipe : webgl1Context]
-external uniformMatrix3fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
+external uniformMatrix3fv : (uniformLocation, bool, Float32Array.t) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context]
-external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
+external uniformMatrix4fv : (uniformLocation, bool, Float32Array.t) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external uniform1i : (uniformLocation, int) => unit = "";
@@ -275,7 +275,7 @@ external uniform3f : (uniformLocation, float, float, float) => unit =
 [@bs.send.pipe : webgl1Context] external clear : int => unit = "";
 
 [@bs.send.pipe : webgl1Context]
-external colorMask : (Js.boolean, Js.boolean, Js.boolean, Js.boolean) => unit =
+external colorMask : (bool, bool, bool, bool) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external useProgram : program => unit = "";

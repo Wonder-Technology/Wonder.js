@@ -9,7 +9,7 @@ let cloneGameObject = (gameObject, count, isShareMaterial, state) =>
   GameObjectAPI.cloneGameObject(
     gameObject,
     count,
-    Js.Boolean.to_js_boolean(isShareMaterial),
+    isShareMaterial,
     state
   );
 

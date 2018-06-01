@@ -154,7 +154,7 @@ let _ =
                         state
                         |> SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic(
                              sourceInstance,
-                             Js.false_
+                             false
                            );
                       let state =
                         state

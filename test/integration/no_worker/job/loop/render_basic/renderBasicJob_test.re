@@ -373,7 +373,7 @@ let _ =
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
+                      |> toCalledWith([|pos, 3, float, Obj.magic(false), 0, 0|])
                     }
                   );
                   describe(
@@ -473,7 +473,7 @@ let _ =
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([|pos, 2, float, Obj.magic(Js.false_), 0, 0|])
+                      |> toCalledWith([|pos, 2, float, Obj.magic(false), 0, 0|])
                     }
                   )
               )
@@ -548,7 +548,7 @@ let _ =
                     |> expect
                     |> toCalledWith([|
                          pos,
-                         Obj.magic(Js.false_),
+                         Obj.magic(false),
                          Obj.magic(TransformTool.getDefaultLocalToWorldMatrixTypeArray(state))
                        |])
                   }
@@ -595,7 +595,7 @@ let _ =
                         |> expect
                         |> toCalledWith([|
                              pos,
-                             Obj.magic(Js.false_),
+                             Obj.magic(false),
                              Obj.magic(TransformTool.getDefaultLocalToWorldMatrixTypeArray(state))
                            |])
                       }
@@ -952,7 +952,7 @@ let _ =
                            );
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       pixelStorei
-                      |> withTwoArgs(unpackFlipYWebgl, Js.true_)
+                      |> withTwoArgs(unpackFlipYWebgl, true)
                       |> expect
                       |> toCalledOnce
                     }

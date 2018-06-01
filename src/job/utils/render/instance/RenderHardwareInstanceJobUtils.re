@@ -41,7 +41,7 @@ let _sendTransformMatrixDataBuffer =
     pos,
     size,
     Gl.getFloat(gl),
-    Js.false_,
+    false,
     stride,
     [@bs] getOffsetFunc(index),
     gl

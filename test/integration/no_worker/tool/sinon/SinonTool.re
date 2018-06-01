@@ -13,16 +13,16 @@ let _defer = [%bs.raw
 ];
 
 /* TODO move to wonder-bs-sinon */
-let calledWith = (stub, arg) => stub##calledWith(arg) |> Js.to_bool;
+let calledWith = (stub, arg) => stub##calledWith(arg);
 
+let calledWithArg2 = (stub, arg1, arg2) => stub##calledWith(arg1, arg2);
 
-let calledWithArg2 = (stub, arg1, arg2) => stub##calledWith(arg1, arg2) |> Js.to_bool;
+let deferReturns = (timeout, returnedData, stub) =>
+  stub |> returns(_defer(timeout, returnedData));
 
-let deferReturns = (timeout, returnedData, stub) => stub |> returns(_defer(timeout, returnedData));
-
-let returnDifferentOnEachCall = (stub) =>
+let returnDifferentOnEachCall = stub =>
   ArrayService.range(0, 100)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((stub, i) => stub |> onCall(i) |> returns(i |> Obj.magic)),
-       stub
+       (. stub, i) => stub |> onCall(i) |> returns(i |> Obj.magic),
+       stub,
      );

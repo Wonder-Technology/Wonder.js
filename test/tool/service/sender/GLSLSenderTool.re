@@ -82,7 +82,7 @@ module JudgeSendUniformData = {
                        == [] */
                     uniformMatrix4fv
                     |> expect
-                    |> toCalledWith([|pos, Obj.magic(Js.false_), Obj.magic(targetData)|])
+                    |> toCalledWith([|pos, Obj.magic(false), Obj.magic(targetData)|])
                   }
                 );
                 testFunc(prepareSendUniformData)
@@ -146,7 +146,7 @@ module JudgeSendUniformData = {
                        == [] */
                     uniformMatrix3fv
                     |> expect
-                    |> toCalledWith([|pos, Obj.magic(Js.false_), Obj.magic(targetData)|])
+                    |> toCalledWith([|pos, Obj.magic(false), Obj.magic(targetData)|])
                   }
                 );
                 testFunc(prepareSendUniformData)

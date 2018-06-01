@@ -50,7 +50,7 @@ let _ =
                        Some({
                          "data": {
                            "renderData": {
-                             "isRender": Js.true_,
+                             "isRender": true,
                              "basic": {
                                "buffer": buffer,
                                "count": count,

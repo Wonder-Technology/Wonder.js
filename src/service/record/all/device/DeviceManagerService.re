@@ -32,10 +32,10 @@ let setColorWrite =
     (
       gl,
       (
-        writeRed: Js.boolean,
-        writeGreen: Js.boolean,
-        writeBlue: Js.boolean,
-        writeAlpha: Js.boolean
+        writeRed: bool,
+        writeGreen: bool,
+        writeBlue: bool,
+        writeAlpha: bool
       ),
       {colorWrite} as record
     ) =>
@@ -48,10 +48,10 @@ let setColorWrite =
         && oldWriteAlpha === writeAlpha => record
   | _ =>
     Gl.colorMask(
-      writeRed: Js.boolean,
-      writeGreen: Js.boolean,
-      writeBlue: Js.boolean,
-      writeAlpha: Js.boolean,
+      writeRed: bool,
+      writeGreen: bool,
+      writeBlue: bool,
+      writeAlpha: bool,
       gl
     );
     {...record, colorWrite: Some((writeRed, writeGreen, writeBlue, writeAlpha))}
@@ -103,7 +103,7 @@ let setDepthTest = (gl, targetDepthTest, {depthTest} as record) =>
   };
 
 let clearBuffer = (gl, bit: int, record) => {
-  let record = setColorWrite(gl, (Js.true_, Js.true_, Js.true_, Js.true_), record);
+  let record = setColorWrite(gl, (true, true, true, true), record);
   /*! optimize in ANGLE:
     (need more verify:set color mask all false before clear?
     so here not do the recommendation)

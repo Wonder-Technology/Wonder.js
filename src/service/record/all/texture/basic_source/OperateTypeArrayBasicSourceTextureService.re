@@ -39,4 +39,4 @@ let setType = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getTypeIndex(index), data, typeArr);
 
 /* TODO get from typeArrays */
-let getFlipY = () => Js.true_;
+let getFlipY = () => true;

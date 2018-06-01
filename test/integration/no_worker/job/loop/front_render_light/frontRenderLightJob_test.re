@@ -331,7 +331,7 @@ let _ =
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
+                      |> toCalledWith([|pos, 3, float, Obj.magic(false), 0, 0|])
                     }
                   )
               );
@@ -361,7 +361,7 @@ let _ =
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([|pos, 2, float, Obj.magic(Js.false_), 0, 0|])
+                      |> toCalledWith([|pos, 2, float, Obj.magic(false), 0, 0|])
                     }
                   )
               );
@@ -395,7 +395,7 @@ let _ =
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
                       |> expect
-                      |> toCalledWith([|pos, 3, float, Obj.magic(Js.false_), 0, 0|])
+                      |> toCalledWith([|pos, 3, float, Obj.magic(false), 0, 0|])
                     }
                   )
               )
@@ -1446,7 +1446,7 @@ let _ =
                      FakeGlTool.buildFakeGl(~sandbox, ~unpackFlipYWebgl, ~pixelStorei, ())
                    );
               let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              pixelStorei |> withTwoArgs(unpackFlipYWebgl, Js.true_) |> expect |> toCalledTwice
+              pixelStorei |> withTwoArgs(unpackFlipYWebgl, true) |> expect |> toCalledTwice
             }
           )
         }

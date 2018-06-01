@@ -420,7 +420,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos1, 4, float, Obj.magic(Js.false_), 100, 0|])
+                              |> toCalledWith([|pos1, 4, float, Obj.magic(false), 100, 0|])
                             }
                           );
                           test(
@@ -434,7 +434,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos2, 4, float, Obj.magic(Js.false_), 100, 16|])
+                              |> toCalledWith([|pos2, 4, float, Obj.magic(false), 100, 16|])
                             }
                           );
                           test(
@@ -448,7 +448,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos3, 4, float, Obj.magic(Js.false_), 100, 32|])
+                              |> toCalledWith([|pos3, 4, float, Obj.magic(false), 100, 32|])
                             }
                           );
                           test(
@@ -462,7 +462,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos4, 4, float, Obj.magic(Js.false_), 100, 48|])
+                              |> toCalledWith([|pos4, 4, float, Obj.magic(false), 100, 48|])
                             }
                           )
                         }
@@ -481,7 +481,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos5, 3, float, Obj.magic(Js.false_), 100, 64|])
+                              |> toCalledWith([|pos5, 3, float, Obj.magic(false), 100, 64|])
                             }
                           );
                           test(
@@ -495,7 +495,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos6, 3, float, Obj.magic(Js.false_), 100, 76|])
+                              |> toCalledWith([|pos6, 3, float, Obj.magic(false), 100, 76|])
                             }
                           );
                           test(
@@ -509,7 +509,7 @@ let _ =
                                 _prepare(sandbox, state);
                               vertexAttribPointer
                               |> expect
-                              |> toCalledWith([|pos7, 3, float, Obj.magic(Js.false_), 100, 88|])
+                              |> toCalledWith([|pos7, 3, float, Obj.magic(false), 100, 88|])
                             }
                           )
                         }
@@ -586,7 +586,7 @@ let _ =
                           test(
                             "if not send data before, send data",
                             () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, true, state);
                               let state = state |> DirectorTool.runWithDefaultTime;
                               bufferSubData |> expect |> toCalledOnce
                             }
@@ -594,7 +594,7 @@ let _ =
                           test(
                             "else, not send data",
                             () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, true, state);
                               let state = state |> DirectorTool.runWithDefaultTime;
                               let state = state |> DirectorTool.runWithDefaultTime;
                               bufferSubData |> expect |> toCalledOnce
@@ -608,7 +608,7 @@ let _ =
                           test(
                             "send data",
                             () => {
-                              let (state, _, bufferSubData) = _prepare(sandbox, Js.false_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, false, state);
                               let state = state |> DirectorTool.runWithDefaultTime;
                               bufferSubData |> expect |> toCalledOnce
                             }

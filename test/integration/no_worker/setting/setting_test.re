@@ -42,8 +42,8 @@ let _ =
         () => {
           open SettingType;
           open SettingGPUType;
-          let _buildExpectedGPUConfig = (~useHardwareInstance=Js.true_, ()) => {
-            useHardwareInstance: Js.to_bool(useHardwareInstance)
+          let _buildExpectedGPUConfig = (~useHardwareInstance=true, ()) => {
+            useHardwareInstance: useHardwareInstance
           };
           describe(
             "if pass gpu config",
@@ -52,7 +52,7 @@ let _ =
                 "set to setting",
                 () => {
                   let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
-                  let useHardwareInstance = Js.false_;
+                  let useHardwareInstance = false;
                   let state =
                     TestTool.initWithJobConfigWithoutBuildFakeDom(
                       ~sandbox,
@@ -75,7 +75,7 @@ let _ =
                   let state = TestTool.initWithJobConfigWithoutBuildFakeDom(~sandbox, ());
                   state
                   |> SettingTool.unsafeGetGPU
-                  |> expect == _buildExpectedGPUConfig(~useHardwareInstance=Js.true_, ())
+                  |> expect == _buildExpectedGPUConfig(~useHardwareInstance=true, ())
                 }
               )
           )

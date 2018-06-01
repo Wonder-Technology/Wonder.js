@@ -71,7 +71,7 @@ let getSourceInstanceObjectInstanceTransformArray =
 };
 
 let markSourceInstanceModelMatrixIsStatic =
-    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: StateDataMainType.state) => {
+    (sourceInstance: sourceInstance, isStatic: bool, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -95,7 +95,7 @@ let markSourceInstanceModelMatrixIsStatic =
         isTransformStatics:
           StaticTransformService.markModelMatrixIsStatic(
             sourceInstance,
-            Js.to_bool(isStatic),
+            isStatic,
             RecordSourceInstanceMainService.getRecord(state).isTransformStatics
           )
       })

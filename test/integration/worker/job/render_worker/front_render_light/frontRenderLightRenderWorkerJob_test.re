@@ -91,7 +91,7 @@ let _ =
                         |> expect
                         |> toCalledWith([|
                              pos,
-                             Obj.magic(Js.false_),
+                             Obj.magic(false),
                              Obj.magic(
                                Js.Typed_array.Float32Array.make([|
                                  1.,

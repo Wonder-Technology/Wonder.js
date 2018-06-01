@@ -49,4 +49,4 @@ let setHeight = (index, data, typeArr) =>
   TypeArrayService.setUint16_1(getHeightIndex(index), data, typeArr);
 
 /* TODO get from typeArrays */
-let getFlipY = () => Js.true_;
+let getFlipY = () => true;

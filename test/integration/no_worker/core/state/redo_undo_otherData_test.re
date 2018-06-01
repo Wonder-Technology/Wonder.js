@@ -15,7 +15,7 @@ let _ =
         open DeviceManagerType;
         let record = DeviceManagerTool.getDeviceManagerRecord(state);
         let gl = Obj.magic(RandomTool.getRandomFloat(10.));
-        let colorWrite = Some((Js.true_, Js.true_, Js.true_, Js.false_));
+        let colorWrite = Some((true, true, true, false));
         let clearColor = Some((1., 0.1, 0.2, 1.));
         let side = Some(BOTH);
         let depthTest = Some(true);

@@ -8,23 +8,30 @@ let _isSupportSharedArrayBuffer = [%bs.raw
     |}
 ];
 
-let isSupportSharedArrayBuffer = () => _isSupportSharedArrayBuffer() |> Js.to_bool;
+let isSupportSharedArrayBuffer = () => _isSupportSharedArrayBuffer();
 
 [@bs.new] external newWorker : string => worker = "Worker";
 
 /* [@bs.val] external sharedArrayBuffer : sharedArrayBuffer = "SharedArrayBuffer"; */
-[@bs.new] external _newSharedArrayBuffer : int => sharedArrayBuffer = "SharedArrayBuffer";
+[@bs.new]
+external _newSharedArrayBuffer : int => sharedArrayBuffer =
+  "SharedArrayBuffer";
 
-[@bs.new] external _newArrayBufferToBeSharedArrayBuffer : int => sharedArrayBuffer = "ArrayBuffer";
+[@bs.new]
+external _newArrayBufferToBeSharedArrayBuffer : int => sharedArrayBuffer =
+  "ArrayBuffer";
 
-[@bs.send.pipe : worker] external postMessage : Js.t({..}) => unit = "";
+[@bs.send.pipe: worker] external postMessage : Js.t({..}) => unit = "";
 
-[@bs.send.pipe : worker]
-external postMessageWithTransferData : (Js.t({..}), array('transferData)) => unit =
+[@bs.send.pipe: worker]
+external postMessageWithTransferData :
+  (Js.t({..}), array('transferData)) => unit =
   "postMessage";
 
-[@bs.send.pipe : DomType.htmlElement] external transferControlToOffscreen : offscreen = "";
+[@bs.send.pipe: DomType.htmlElement]
+external transferControlToOffscreen : offscreen = "";
 
-let newSharedArrayBuffer = (totalByteLength) =>
+let newSharedArrayBuffer = totalByteLength =>
   isSupportSharedArrayBuffer() ?
-    _newSharedArrayBuffer(totalByteLength) : _newArrayBufferToBeSharedArrayBuffer(totalByteLength);
+    _newSharedArrayBuffer(totalByteLength) :
+    _newArrayBufferToBeSharedArrayBuffer(totalByteLength);

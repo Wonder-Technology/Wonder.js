@@ -150,7 +150,7 @@ let _ =
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~colorMask, ()));
               let state = state |> DirectorTool.runWithDefaultTime;
-              colorMask |> expect |> toCalledWith([|Js.true_, Js.true_, Js.true_, Js.true_|])
+              colorMask |> expect |> toCalledWith([|true, true, true, true|])
             }
           );
           test(
