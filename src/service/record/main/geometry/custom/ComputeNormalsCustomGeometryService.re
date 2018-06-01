@@ -34,16 +34,26 @@ let _normalizeNormals = (normals) => {
         let x = Float32Array.unsafe_get(normals, index);
         let y = Float32Array.unsafe_get(normals, index + 1);
         let z = Float32Array.unsafe_get(normals, index + 2);
-        let n = 1.0 /. Js.Math.sqrt(x *. z +. y *. y +. z *. z);
-        Float32Array.unsafe_set(normals, index, x *. n);
-        Float32Array.unsafe_set(normals, index + 1, y *. n);
-        Float32Array.unsafe_set(normals, index + 2, z *. n);
+        let d = Js.Math.sqrt(x *. x +. y *. y +. z *. z);
+        d === 0. ?
+          {
+            Float32Array.unsafe_set(normals, index, 0.);
+            Float32Array.unsafe_set(normals, index + 1, 0.);
+            Float32Array.unsafe_set(normals, index + 2, 0.)
+          } :
+          {
+            Float32Array.unsafe_set(normals, index, x /. d);
+            Float32Array.unsafe_set(normals, index + 1, y /. d);
+            Float32Array.unsafe_set(normals, index + 2, z /. d)
+          };
         _normalized(index + 3, normals)
       };
   _normalized(0, normals)
 };
 
-let computeVertexNormals = (vertices, indices, normals) => {
+let _createDefaultNormals = (count) => Float32Array.fromLength(count);
+
+let computeVertexNormals = (vertices, indices) => {
   open Vector3Type;
   let indicesLen = indices |> Uint16Array.length;
   let rec _compute = (index, normals) =>
@@ -58,6 +68,9 @@ let computeVertexNormals = (vertices, indices, normals) => {
         let pc = _getPosition(vertices, vc);
         let v0 = Vector3Service.sub(Float, pc, pb);
         let v1 = Vector3Service.sub(Float, pa, pb);
+        /*!
+          TODO need Vector3Service.normalize???
+          */
         let (faceNormalX, faceNormalY, faceNormalZ) as faceNormalTuple =
           Vector3Service.cross(v0, v1);
         _compute(
@@ -68,5 +81,5 @@ let computeVertexNormals = (vertices, indices, normals) => {
           |> _setNormal(faceNormalTuple, vc)
         )
       };
-  _compute(0, normals) |> _normalizeNormals
+  _compute(0, _createDefaultNormals(vertices |> Float32Array.length)) |> _normalizeNormals
 };

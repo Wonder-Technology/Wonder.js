@@ -15,14 +15,15 @@ let execJob = (flags, state) => {
            (state, geometry) =>
              NormalsCustomGeometryMainService.hasNormals(geometry, state) ?
                state :
-               {
+               NormalsCustomGeometryMainService.setNormalsByTypeArray(
+                 geometry,
                  ComputeNormalsCustomGeometryService.computeVertexNormals(
                    [@bs] VerticesCustomGeometryMainService.getVertices(geometry, state),
-                   [@bs] IndicesCustomGeometryMainService.getIndices(geometry, state),
-                   [@bs] NormalsCustomGeometryMainService.getNormals(geometry, state)
-                 );
+                   [@bs] IndicesCustomGeometryMainService.getIndices(geometry, state)
+                   /* [@bs] NormalsCustomGeometryMainService.getNormals(geometry, state) */
+                 ),
                  state
-               }
+               )
          ),
          state
        );
