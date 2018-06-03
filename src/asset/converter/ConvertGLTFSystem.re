@@ -142,13 +142,13 @@ let _convertGLTFJsonToRecord = (json) : GLTFType.gltf =>
                "nodes",
                array(
                  (json) => {
-                   camera: json |> optional(field("camera", int)),
-                   mesh: json |> optional(field("mesh", int)),
-                   matrix: json |> optional(field("matrix", array(float))),
-                   translation: json |> optional(field("translation", array(float))),
-                   rotation: json |> optional(field("rotation", array(float))),
-                   scale: json |> optional(field("scale", array(float))),
-                   children: json |> optional(field("children", array(int)))
+                   camera: json |> optimizedOptional(optimizedField("camera", int)),
+                   mesh: json |> optimizedOptional(optimizedField("mesh", int)),
+                   matrix: json |> optimizedOptional(optimizedField("matrix", array(float))),
+                   translation: json |> optimizedOptional(optimizedField("translation", array(float))),
+                   rotation: json |> optimizedOptional(optimizedField("rotation", array(float))),
+                   scale: json |> optimizedOptional(optimizedField("scale", array(float))),
+                   children: json |> optimizedOptional(optimizedField("children", array(int)))
                  }
                )
              ),

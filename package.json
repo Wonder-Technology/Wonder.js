@@ -60,7 +60,6 @@
   },
   "dependencies": {
     "bs-fetch": "^0.2.1",
-    "bs-json": "^0.2.3",
     "bs-most": "^0.1.1",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-commonlib": "^0.2.23",
