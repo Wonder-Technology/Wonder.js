@@ -1,0 +1,1 @@
+let convertGLTFToWD = (gltfFileContent: string) => ConvertGLTFSystem.convert(gltfFileContent);
