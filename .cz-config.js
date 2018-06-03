@@ -60,6 +60,7 @@ module.exports = {
       { name: "unit-integration-test" },
       { name: "integration-test" },
       { name: "run-test" },
+      { name: "benchmark-test" },
       { name: "contract" },
       { name: "coverage" }
     ],
