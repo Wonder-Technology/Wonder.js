@@ -3,8 +3,8 @@ let prepare = (state: StateDataMainType.state) => {
   state
 };
 
-let init = (state: StateDataMainType.state) => state |> DirectorSystem._noWorkerInit;
+let init = (state: StateDataMainType.state) => state |> DirectorAPI._noWorkerInit;
 
-let run = (state: StateDataMainType.state, ~time=0., ()) => state |> DirectorSystem._run(time);
+let run = (state: StateDataMainType.state, ~time=0., ()) => state |> DirectorAPI._run(time);
 
-let runWithDefaultTime = (state: StateDataMainType.state) => state |> DirectorSystem._run(0.);
+let runWithDefaultTime = (state: StateDataMainType.state) => state |> DirectorAPI._run(0.);
