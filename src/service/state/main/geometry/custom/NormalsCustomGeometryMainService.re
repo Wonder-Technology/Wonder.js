@@ -11,20 +11,18 @@ open TypeArrayService;
 open Js.Typed_array;
 
 let getNormals =
-  [@bs]
-  (
-    (index, state) => {
-      let {normals, normalsInfos} = getRecord(state);
-      getFloat32PointData(BufferCustomGeometryService.getInfoIndex(index), normals, normalsInfos)
-    }
-  );
+  (. index, state) => {
+    let {normals, normalsInfos} = getRecord(state);
+    getFloat32PointData(
+      BufferCustomGeometryService.getInfoIndex(index),
+      normals,
+      normalsInfos,
+    );
+  };
 
 let hasNormals = (index, state) => {
-  let {normals, normalsInfos} = getRecord(state);
-  ReallocatedPointsGeometryService.hasPointData(
-    BufferCustomGeometryService.getInfoIndex(index),
-    normalsInfos
-  )
+  let {normalsInfos} = getRecord(state);
+  HasNormalsService.hasNormals(index, normalsInfos);
 };
 
 let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
@@ -35,9 +33,9 @@ let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
         BufferCustomGeometryService.getInfoIndex(index),
         normalsInfos,
         normalsOffset,
-        Float32Array.length(data)
+        Float32Array.length(data),
       ),
-      fillFloat32ArrayWithOffset(normals, data)
+      fillFloat32ArrayWithOffset(normals, data),
     );
-  state
+  state;
 };

@@ -12,8 +12,7 @@ let _getInitJobHandles = () => [
   ("init_texture", InitTextureJob.execJob),
   ("init_state", InitStateJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
-  ("init_light_material", InitLightMaterialJob.execJob),
-  ("init_custom_geometry", InitCustomGeometryJob.execJob) 
+  ("init_light_material", InitLightMaterialJob.execJob)
 ];
 
 let _getLoopJobHandles = () => [

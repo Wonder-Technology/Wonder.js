@@ -8,7 +8,7 @@ let _getOrCreateBuffer =
       (gl, geometryIndex),
       (
         (vertexBufferMap, texCoordBufferMap, normalBufferMap, elementArrayBufferMap),
-        (getVerticesFunc, getTexCoordsFunc, getNormalsFunc, getIndicesFunc)
+        (getVerticesFunc, getTexCoordsFunc, _, getIndicesFunc)
       ),
       state
     ) =>
@@ -28,10 +28,9 @@ let _getOrCreateBuffer =
       state
     )
   | "normal" =>
-    ArrayBufferRenderService.getOrCreateBuffer(
+    ArrayBufferRenderService.getOrCreateNormalBuffer(
       gl,
       (geometryIndex, normalBufferMap),
-      [@bs] getNormalsFunc,
       state
     )
   | "index" =>

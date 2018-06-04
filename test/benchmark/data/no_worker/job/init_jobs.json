@@ -34,8 +34,5 @@
     },
     {
         "name": "init_texture"
-    },
-    {
-        "name": "init_custom_geometry"
     }
 ]

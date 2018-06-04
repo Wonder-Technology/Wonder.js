@@ -14,17 +14,25 @@ let prepareGameObject = (sandbox, state) => {
     |> addGameObjectLightMaterialComponent(gameObject, material)
     |> addGameObjectBoxGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-  (state, gameObject, geometry, material, meshRenderer)
+  (state, gameObject, geometry, material, meshRenderer);
 };
 
 let prepareGameObjectWithCreatedMap = (sandbox, state) => {
-  let (state, gameObject, geometry, material, meshRenderer) = prepareGameObject(sandbox, state);
-  let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
-  (state, gameObject, geometry, material, meshRenderer, (texture1, texture2))
+  let (state, gameObject, geometry, material, meshRenderer) =
+    prepareGameObject(sandbox, state);
+  let (state, (texture1, texture2)) =
+    LightMaterialTool.createAndSetMaps(material, state);
+  (
+    state,
+    gameObject,
+    geometry,
+    material,
+    meshRenderer,
+    (texture1, texture2),
+  );
 };
 
-let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
-  open GameObjectAPI;
+let prepareGameObjectWithSharedGeometry = (sandbox, geometry, addGameObjectGeometryComponentFunc, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;
@@ -36,7 +44,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectGeometryComponentFunc(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-  (state, gameObject, geometry, material, meshRenderer)
+  (state, gameObject, geometry, material, meshRenderer);
 };
