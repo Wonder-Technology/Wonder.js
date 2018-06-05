@@ -7,6 +7,19 @@ open Js.Typed_array;
 let _getBatchArrByIndices = (sourceArr, indices) =>
   indices |> Js.Array.map(index => Array.unsafe_get(sourceArr, index));
 
+let _batchCreateMeshRendererArr =
+    (lightMaterialGameObjects, {gameObjects}, {meshRendererRecord} as state) => {
+  AssembleCommon.checkNotDisposedBefore(
+    meshRendererRecord.disposedIndexArray,
+  );
+
+  let {index}: MeshRendererType.meshRendererRecord = meshRendererRecord;
+  let newIndex = index + (lightMaterialGameObjects |> Js.Array.length);
+  let indexArr = ArrayService.range(index, newIndex - 1);
+  state.meshRendererRecord = {...meshRendererRecord, index: newIndex};
+  (state, indexArr);
+};
+
 let _getBatchComponentGameObjectData =
     (
       (
@@ -18,6 +31,8 @@ let _getBatchComponentGameObjectData =
         lightMaterialArr,
       ),
       indices,
+      wdRecord,
+      state,
     ) => {
   let parentTransforms =
     indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
@@ -44,30 +59,55 @@ let _getBatchComponentGameObjectData =
       componentIndices
     |> _getBatchArrByIndices(customGeometryArr);
 
-  (
-    parentTransforms,
-    childrenTransforms,
-    transformGameObjects,
-    gameObjectTransforms,
-    customGeometryGameObjects,
-    gameObjectCustomGeometrys,
-    indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
-      gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr),
-    indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
-      componentIndices
-    |> _getBatchArrByIndices(basicCameraViewArr),
-    indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
-      gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr),
-    indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
-      componentIndices
-    |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
+  let lightMaterialGameObjects =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.
       gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr),
+    |> _getBatchArrByIndices(gameObjectArr);
+
+  let gameObjectLightMaterials =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(lightMaterialArr),
+    |> _getBatchArrByIndices(lightMaterialArr);
+
+  let (state, meshRendererArr) =
+    _batchCreateMeshRendererArr(lightMaterialGameObjects, wdRecord, state);
+
+  (
+    (
+      parentTransforms,
+      childrenTransforms,
+      transformGameObjects,
+      gameObjectTransforms,
+      customGeometryGameObjects,
+      gameObjectCustomGeometrys,
+      indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
+        gameObjectIndices
+      |> _getBatchArrByIndices(gameObjectArr),
+      indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
+        componentIndices
+      |> _getBatchArrByIndices(basicCameraViewArr),
+      indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
+        gameObjectIndices
+      |> _getBatchArrByIndices(gameObjectArr),
+      indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
+        componentIndices
+      |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
+      /* indices.gameObjectIndices.lightMaterialGameObjectIndexData.
+           gameObjectIndices
+         |> _getBatchArrByIndices(gameObjectArr),
+
+         indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
+         |> _getBatchArrByIndices(lightMaterialArr), */
+      lightMaterialGameObjects,
+      gameObjectLightMaterials,
+      lightMaterialGameObjects,
+      meshRendererArr,
+      /* meshRendererArr */
+      /* |> Js.Array.slice(
+           ~start=0,
+           ~end_=Js.Array.length(lightMaterialGameObjects) - 1,
+         ), */
+    ),
+    state,
   );
 };
 
@@ -381,18 +421,23 @@ let batchOperate =
       ),
     ) => {
   let (
-    parentTransforms,
-    childrenTransforms,
-    transformGameObjects,
-    gameObjectTransforms,
-    customGeometryGameObjects,
-    gameObjectCustomGeometrys,
-    basicCameraViewGameObjects,
-    gameObjectBasicCameraViews,
-    perspectiveCameraProjectionGameObjects,
-    gameObjectPerspectiveCameraProjection,
-    lightMaterialGameObjects,
-    gameObjectLightMaterials,
+    (
+      parentTransforms,
+      childrenTransforms,
+      transformGameObjects,
+      gameObjectTransforms,
+      customGeometryGameObjects,
+      gameObjectCustomGeometrys,
+      basicCameraViewGameObjects,
+      gameObjectBasicCameraViews,
+      perspectiveCameraProjectionGameObjects,
+      gameObjectPerspectiveCameraProjection,
+      lightMaterialGameObjects,
+      gameObjectLightMaterials,
+      meshRendererGameObjects,
+      gameObjectMeshRenderers,
+    ),
+    state,
   ) =
     _getBatchComponentGameObjectData(
       (
@@ -404,6 +449,8 @@ let batchOperate =
         lightMaterialArr,
       ),
       indices,
+      wdRecord,
+      state,
     );
   let (
     (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
@@ -445,6 +492,10 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
          lightMaterialGameObjects,
          gameObjectLightMaterials,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForCreate(
+         meshRendererGameObjects,
+         gameObjectMeshRenderers,
        )
     |> BatchSetTextureAllDataSystem.batchSet(
          (diffuseMapLightMaterials, lightMaterialDiffuseMaps),

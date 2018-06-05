@@ -1004,4 +1004,28 @@ let _ =
         );
       });
     });
+
+    describe("test meshRenderers", () =>
+      testPromise(
+        "each gameObject with light material component should has one meshRenderer",
+        () =>
+        ConvertGLTFTool.testResult(
+          ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+          ((wdRecord, imageArr, bufferArr) as data) => {
+            let (state, sceneGameObject) =
+              AssembleWDSystem.assemble(data, state^);
+
+            _getAllGameObjects(sceneGameObject, state)
+            |> Js.Array.filter(gameObject =>
+                 GameObjectAPI.hasGameObjectMeshRendererComponent(
+                   gameObject,
+                   state,
+                 )
+               )
+            |> Js.Array.length
+            |> expect == 5;
+          },
+        )
+      )
+    );
   });

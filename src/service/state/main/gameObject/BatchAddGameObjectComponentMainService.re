@@ -114,7 +114,7 @@ let _batchAddTransformComponent =
 
 let batchAddTransformComponentForClone = _batchAddTransformComponent;
 
-let batchAddMeshRendererComponentForClone =
+let _batchAddMeshRendererComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -125,6 +125,8 @@ let batchAddMeshRendererComponentForClone =
     AddMeshRendererMainService.handleAddComponent,
     state,
   );
+
+let batchAddMeshRendererComponentForClone = _batchAddMeshRendererComponent;
 
 let _batchAddSharableComponent =
     (
@@ -271,7 +273,6 @@ let _batchAddMaterialComponentForClone =
      record,
    ); */
 
-
 let batchAddBasicMaterialComponentForClone =
     (
       uidArr: array(int),
@@ -311,10 +312,7 @@ let _batchAddLightMaterialComponent =
     ),
 };
 
-
-let batchAddLightMaterialComponentForClone =
-_batchAddLightMaterialComponent;
-
+let batchAddLightMaterialComponentForClone = _batchAddLightMaterialComponent;
 
 let batchAddAmbientLightComponentForClone =
     (
@@ -369,5 +367,6 @@ let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponen
 
 let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;
 
-let batchAddLightMaterialComponentForCreate =
-_batchAddLightMaterialComponent;
+let batchAddLightMaterialComponentForCreate = _batchAddLightMaterialComponent;
+
+let batchAddMeshRendererComponentForCreate = _batchAddMeshRendererComponent;

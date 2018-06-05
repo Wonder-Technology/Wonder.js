@@ -9,26 +9,6 @@ let _checkNotExceedMaxCountByIndex = (maxCount, indexArr) => {
   indexArr;
 };
 
-let _checkNotDisposedBefore = disposedIndexArray =>
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|not disposed before|j},
-                ~actual={j|do|j},
-              ),
-              () =>
-              disposedIndexArray |> Js.Array.length == 0
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
 let _batchCreateGameObject = ({gameObjects}, {gameObjectRecord} as state) => {
   let {count}: gameObjects = gameObjects;
   let {uid, aliveUidArray}: GameObjectType.gameObjectRecord = gameObjectRecord;
@@ -76,7 +56,7 @@ let _initTransformDataWhenCreate =
 };
 
 let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
-  _checkNotDisposedBefore(
+  AssembleCommon.checkNotDisposedBefore(
     RecordTransformMainService.getRecord(state).disposedIndexArray,
   );
   let ({index, disposedIndexArray}: TransformType.transformRecord) as transformRecord =
@@ -104,7 +84,7 @@ let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
 
 let _batchCreateCustomGeometry =
     ({customGeometrys}, {settingRecord} as state) => {
-  _checkNotDisposedBefore(
+  AssembleCommon.checkNotDisposedBefore(
     RecordCustomGeometryMainService.getRecord(state).disposedIndexArray,
   );
   let ({index, aliveIndexArray}: CustomGeometryType.customGeometryRecord) as customGeometryRecord =
@@ -126,7 +106,9 @@ let _batchCreateCustomGeometry =
 
 let _batchCreateBasicCameraView =
     ({basicCameraViews}, {basicCameraViewRecord} as state) => {
-  _checkNotDisposedBefore(basicCameraViewRecord.disposedIndexArray);
+  AssembleCommon.checkNotDisposedBefore(
+    basicCameraViewRecord.disposedIndexArray,
+  );
 
   let {index}: BasicCameraViewType.basicCameraViewRecord = basicCameraViewRecord;
   let newIndex = index + basicCameraViews.count;
@@ -140,7 +122,7 @@ let _batchCreatePerspectiveCameraProjection =
       {perspectiveCameraProjections},
       {perspectiveCameraProjectionRecord} as state,
     ) => {
-  _checkNotDisposedBefore(
+  AssembleCommon.checkNotDisposedBefore(
     perspectiveCameraProjectionRecord.disposedIndexArray,
   );
 
@@ -173,7 +155,9 @@ let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => 
   let ({index, textureCountMap}: LightMaterialType.lightMaterialRecord) as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
 
-  _checkNotDisposedBefore(lightMaterialRecord.disposedIndexArray);
+  AssembleCommon.checkNotDisposedBefore(
+    lightMaterialRecord.disposedIndexArray,
+  );
 
   let newIndex = index + (lightMaterials |> Js.Array.length);
   let indexArr =
@@ -205,7 +189,9 @@ let _batchCreateBasicSourceTextureArr =
   let ({index}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
-  _checkNotDisposedBefore(basicSourceTextureRecord.disposedIndexArray);
+  AssembleCommon.checkNotDisposedBefore(
+    basicSourceTextureRecord.disposedIndexArray,
+  );
 
   let newIndex = index + basicSourceTextures.count;
   let indexArr =
