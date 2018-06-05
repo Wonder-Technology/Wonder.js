@@ -2,13 +2,13 @@ open Js.Typed_array;
 
 open BufferSourceSizeTextureService;
 
-let getDefaultWrapS = () => TextureWrapService.getClampToEdge();
+let getDefaultWrapS = () => SourceTextureType.CLAMP_TO_EDGE;
 
-let getDefaultWrapT = () => TextureWrapService.getClampToEdge();
+let getDefaultWrapT = () => SourceTextureType.CLAMP_TO_EDGE;
 
-let getDefaultMagFilter = () => TextureFilterService.getLinear();
+let getDefaultMagFilter = () => SourceTextureType.LINEAR;
 
-let getDefaultMinFilter = () => TextureFilterService.getNearest();
+let getDefaultMinFilter = () => SourceTextureType.NEAREST;
 
 let getDefaultFormat = () => TextureFormatService.getRgba();
 
@@ -20,71 +20,75 @@ let getNotNeedUpdate = () => 0;
 
 let getDefaultIsNeedUpdate = () => getNeedUpdate();
 
-let getWrapSsLength = (basicSourceTextureCount) => basicSourceTextureCount * getWrapSsSize();
+let getWrapSsLength = basicSourceTextureCount =>
+  basicSourceTextureCount * getWrapSsSize();
 
-let getWrapSsOffset = (basicSourceTextureCount) =>
+let getWrapSsOffset = basicSourceTextureCount =>
   BufferSourceTextureService.getBasicSourceTextureOffset() + 0;
 
-let getWrapSIndex = (index) => index * getWrapSsSize();
+let getWrapSIndex = index => index * getWrapSsSize();
 
-let getWrapTsLength = (basicSourceTextureCount) => basicSourceTextureCount * getWrapTsSize();
+let getWrapTsLength = basicSourceTextureCount =>
+  basicSourceTextureCount * getWrapTsSize();
 
-let getWrapTsOffset = (basicSourceTextureCount) =>
+let getWrapTsOffset = basicSourceTextureCount =>
   getWrapSsOffset(basicSourceTextureCount)
   + getWrapSsLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getWrapTIndex = (index) => index * getWrapTsSize();
+let getWrapTIndex = index => index * getWrapTsSize();
 
-let getMagFiltersLength = (basicSourceTextureCount) =>
+let getMagFiltersLength = basicSourceTextureCount =>
   basicSourceTextureCount * getMagFiltersSize();
 
-let getMagFiltersOffset = (basicSourceTextureCount) =>
+let getMagFiltersOffset = basicSourceTextureCount =>
   getWrapTsOffset(basicSourceTextureCount)
   + getWrapTsLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getMagFilterIndex = (index) => index * getMagFiltersSize();
+let getMagFilterIndex = index => index * getMagFiltersSize();
 
-let getMinFiltersLength = (basicSourceTextureCount) =>
+let getMinFiltersLength = basicSourceTextureCount =>
   basicSourceTextureCount * getMinFiltersSize();
 
-let getMinFiltersOffset = (basicSourceTextureCount) =>
+let getMinFiltersOffset = basicSourceTextureCount =>
   getMagFiltersOffset(basicSourceTextureCount)
   + getMagFiltersLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getMinFilterIndex = (index) => index * getMinFiltersSize();
+let getMinFilterIndex = index => index * getMinFiltersSize();
 
-let getFormatsLength = (basicSourceTextureCount) => basicSourceTextureCount * getFormatsSize();
+let getFormatsLength = basicSourceTextureCount =>
+  basicSourceTextureCount * getFormatsSize();
 
-let getFormatsOffset = (basicSourceTextureCount) =>
+let getFormatsOffset = basicSourceTextureCount =>
   getMinFiltersOffset(basicSourceTextureCount)
   + getMinFiltersLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getFormatIndex = (index) => index * getFormatsSize();
+let getFormatIndex = index => index * getFormatsSize();
 
-let getTypesLength = (basicSourceTextureCount) => basicSourceTextureCount * getTypesSize();
+let getTypesLength = basicSourceTextureCount =>
+  basicSourceTextureCount * getTypesSize();
 
-let getTypesOffset = (basicSourceTextureCount) =>
+let getTypesOffset = basicSourceTextureCount =>
   getFormatsOffset(basicSourceTextureCount)
   + getFormatsLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getTypeIndex = (index) => index * getTypesSize();
+let getTypeIndex = index => index * getTypesSize();
 
-let getIsNeedUpdatesLength = (basicSourceTextureCount) =>
+let getIsNeedUpdatesLength = basicSourceTextureCount =>
   basicSourceTextureCount * getIsNeedUpdatesSize();
 
-let getIsNeedUpdatesOffset = (basicSourceTextureCount) =>
+let getIsNeedUpdatesOffset = basicSourceTextureCount =>
   getTypesOffset(basicSourceTextureCount)
   + getTypesLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getIsNeedUpdateIndex = (index) => index * getIsNeedUpdatesSize();
+let getIsNeedUpdateIndex = index => index * getIsNeedUpdatesSize();
 
-let getTotalByteLength = (basicSourceTextureCount) =>
+let getTotalByteLength = basicSourceTextureCount =>
   basicSourceTextureCount
   * (
     Uint8Array._BYTES_PER_ELEMENT

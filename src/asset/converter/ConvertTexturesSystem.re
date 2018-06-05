@@ -1,7 +1,11 @@
 let convertToBasicSourceTextures =
-    ({nodes}: GLTFType.gltf)
+    ({textures}: GLTFType.gltf)
     : WDType.basicSourceTextures => {
-  count: ConvertCommon.getCount(nodes),
+  count:
+    switch (textures) {
+    | None => 0
+    | Some(textures) => ConvertCommon.getCount(textures)
+    },
 };
 
 let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
@@ -16,11 +20,11 @@ let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
                 {
                   magFilter:
                     switch (magFilter) {
-                    | None => WDType.LINEAR
+                    | None => SourceTextureType.LINEAR
                     | Some(magFilter) =>
                       switch (magFilter) {
-                      | 9728 => WDType.NEAREST
-                      | 9729 => WDType.LINEAR
+                      | 9728 => SourceTextureType.NEAREST
+                      | 9729 => SourceTextureType.LINEAR
                       | magFilter =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(
@@ -35,15 +39,15 @@ let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
                     },
                   minFilter:
                     switch (minFilter) {
-                    | None => WDType.NEAREST
+                    | None => SourceTextureType.NEAREST
                     | Some(minFilter) =>
                       switch (minFilter) {
-                      | 9728 => WDType.NEAREST
-                      | 9729 => WDType.LINEAR
-                      | 9984 => WDType.NEAREST_MIPMAP_NEAREST
-                      | 9985 => WDType.LINEAR_MIPMAP_NEAREST
-                      | 9986 => WDType.NEAREST_MIPMAP_LINEAR
-                      | 9987 => WDType.LINEAR_MIPMAP_LINEAR
+                      | 9728 => SourceTextureType.NEAREST
+                      | 9729 => SourceTextureType.LINEAR
+                      | 9984 => SourceTextureType.NEAREST_MIPMAP_NEAREST
+                      | 9985 => SourceTextureType.LINEAR_MIPMAP_NEAREST
+                      | 9986 => SourceTextureType.NEAREST_MIPMAP_LINEAR
+                      | 9987 => SourceTextureType.LINEAR_MIPMAP_LINEAR
                       | minFilter =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(
@@ -58,12 +62,12 @@ let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
                     },
                   wrapS:
                     switch (wrapS) {
-                    | None => WDType.CLAMP_TO_EDGE
+                    | None => SourceTextureType.CLAMP_TO_EDGE
                     | Some(wrapS) =>
                       switch (wrapS) {
-                      | 33071 => WDType.CLAMP_TO_EDGE
-                      | 33648 => WDType.MIRRORED_REPEAT
-                      | 10497 => WDType.REPEAT
+                      | 33071 => SourceTextureType.CLAMP_TO_EDGE
+                      | 33648 => SourceTextureType.MIRRORED_REPEAT
+                      | 10497 => SourceTextureType.REPEAT
                       | wrapS =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(
@@ -78,12 +82,12 @@ let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
                     },
                   wrapT:
                     switch (wrapT) {
-                    | None => WDType.CLAMP_TO_EDGE
+                    | None => SourceTextureType.CLAMP_TO_EDGE
                     | Some(wrapT) =>
                       switch (wrapT) {
-                      | 33071 => WDType.CLAMP_TO_EDGE
-                      | 33648 => WDType.MIRRORED_REPEAT
-                      | 10497 => WDType.REPEAT
+                      | 33071 => SourceTextureType.CLAMP_TO_EDGE
+                      | 33648 => SourceTextureType.MIRRORED_REPEAT
+                      | 10497 => SourceTextureType.REPEAT
                       | wrapT =>
                         WonderLog.Log.fatal(
                           WonderLog.Log.buildFatalMessage(

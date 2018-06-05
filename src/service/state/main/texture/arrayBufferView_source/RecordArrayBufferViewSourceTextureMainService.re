@@ -15,12 +15,24 @@ let setAllTypeArrDataToDefault =
     (
       arrayBufferViewSourceTextureCount: int,
       arrayBufferViewSourceTextureIndexOffset,
-      (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
+      (
+        wrapSs,
+        wrapTs,
+        magFilters,
+        minFilters,
+        formats,
+        types,
+        isNeedUpdates,
+        widths,
+        heights,
+      ),
     ) => {
-  let defaultWrapS = getDefaultWrapS();
-  let defaultWrapT = getDefaultWrapT();
-  let defaultMagFilter = getDefaultMagFilter();
-  let defaultMinFilter = getDefaultMinFilter();
+  let defaultWrapS = getDefaultWrapS() |> SourceTextureType.wrapToUint8;
+  let defaultWrapT = getDefaultWrapT() |> SourceTextureType.wrapToUint8;
+  let defaultMagFilter =
+    getDefaultMagFilter() |> SourceTextureType.filterToUint8;
+  let defaultMinFilter =
+    getDefaultMinFilter() |> SourceTextureType.filterToUint8;
   let defaultFormat = getDefaultFormat();
   let defaultType = getDefaultType();
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
@@ -28,61 +40,78 @@ let setAllTypeArrDataToDefault =
   let defaultHeight = getDefaultHeight();
   ArrayService.range(0, arrayBufferViewSourceTextureCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
+       (.
          (
-           (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights),
-           indexInTypeArray
-         ) => (
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
-             indexInTypeArray,
-             defaultWrapS,
-             wrapSs
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
-             indexInTypeArray,
-             defaultWrapT,
-             wrapTs
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
-             indexInTypeArray,
-             defaultMagFilter,
-             magFilters
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
-             indexInTypeArray,
-             defaultMinFilter,
-             minFilters
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
-             indexInTypeArray,
-             defaultFormat,
-             formats
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setType(
-             indexInTypeArray,
-             defaultType,
-             types
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
-             indexInTypeArray,
-             defaultIsNeedUpdate,
-             isNeedUpdates
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
-             indexInTypeArray,
-             defaultWidth,
-             widths
-           ),
-           OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
-             indexInTypeArray,
-             defaultHeight,
-             heights
-           )
-         )
+           wrapSs,
+           wrapTs,
+           magFilters,
+           minFilters,
+           formats,
+           types,
+           isNeedUpdates,
+           widths,
+           heights,
+         ),
+         indexInTypeArray,
+       ) => (
+         OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
+           indexInTypeArray,
+           defaultWrapS,
+           wrapSs,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
+           indexInTypeArray,
+           defaultWrapT,
+           wrapTs,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
+           indexInTypeArray,
+           defaultMagFilter,
+           magFilters,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
+           indexInTypeArray,
+           defaultMinFilter,
+           minFilters,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
+           indexInTypeArray,
+           defaultFormat,
+           formats,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setType(
+           indexInTypeArray,
+           defaultType,
+           types,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
+           indexInTypeArray,
+           defaultIsNeedUpdate,
+           isNeedUpdates,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
+           indexInTypeArray,
+           defaultWidth,
+           widths,
+         ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
+           indexInTypeArray,
+           defaultHeight,
+           heights,
+         ),
        ),
-       (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
-     )
+       (
+         wrapSs,
+         wrapTs,
+         magFilters,
+         minFilters,
+         formats,
+         types,
+         isNeedUpdates,
+         widths,
+         heights,
+       ),
+     );
 };
 
 let _initBufferData =
@@ -90,32 +119,65 @@ let _initBufferData =
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,
       buffer,
-      arrayBufferViewSourceTextureIndexOffset
+      arrayBufferViewSourceTextureIndexOffset,
     ) => {
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
+  let (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    widths,
+    heights,
+  ) =
     CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
-      arrayBufferViewSourceTextureCount
+      arrayBufferViewSourceTextureCount,
     );
-  (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights)
+  (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    widths,
+    heights,
+  )
   |> setAllTypeArrDataToDefault(
        arrayBufferViewSourceTextureCount,
-       arrayBufferViewSourceTextureIndexOffset
-     )
+       arrayBufferViewSourceTextureIndexOffset,
+     );
 };
 
 let create = ({settingRecord} as state) => {
-  let basicSourceTextureCount = BufferSettingService.getBasicSourceTextureCount(settingRecord);
+  let basicSourceTextureCount =
+    BufferSettingService.getBasicSourceTextureCount(settingRecord);
   let arrayBufferViewSourceTextureCount =
     BufferSettingService.getArrayBufferViewSourceTextureCount(settingRecord);
   let {buffer} = RecordSourceTextureMainService.getRecord(state);
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
+  let (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    widths,
+    heights,
+  ) =
     _initBufferData(
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,
       buffer,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     );
   state.arrayBufferViewSourceTextureRecord =
     Some({
@@ -134,9 +196,9 @@ let create = ({settingRecord} as state) => {
       bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       needAddedSourceArray: [||],
-      needInitedTextureIndexArray: [||]
+      needInitedTextureIndexArray: [||],
     });
-  state
+  state;
 };
 
 let deepCopyForRestore = ({settingRecord} as state) => {
@@ -158,7 +220,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         bindTextureUnitCacheMap,
         disposedIndexArray,
         needAddedSourceArray,
-        needInitedTextureIndexArray
+        needInitedTextureIndexArray,
       } as record =
     state |> getRecord;
   {
@@ -167,29 +229,59 @@ let deepCopyForRestore = ({settingRecord} as state) => {
       Some({
         ...record,
         index,
-        wrapSs: wrapSs |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getWrapSsSize()),
-        wrapTs: wrapTs |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getWrapTsSize()),
+        wrapSs:
+          wrapSs
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getWrapSsSize(),
+             ),
+        wrapTs:
+          wrapTs
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getWrapTsSize(),
+             ),
         magFilters:
           magFilters
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMagFiltersSize()),
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getMagFiltersSize(),
+             ),
         minFilters:
           minFilters
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMinFiltersSize()),
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getMinFiltersSize(),
+             ),
         formats:
-          formats |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getFormatsSize()),
-        types: types |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getTypesSize()),
+          formats
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getFormatsSize(),
+             ),
+        types:
+          types
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getTypesSize(),
+             ),
         isNeedUpdates:
           isNeedUpdates
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsNeedUpdatesSize()),
-        widths: widths |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getWidthsSize()),
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getIsNeedUpdatesSize(),
+             ),
+        widths:
+          widths
+          |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(
+               index * getWidthsSize(),
+             ),
         heights:
-          heights |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getHeightsSize()),
+          heights
+          |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(
+               index * getHeightsSize(),
+             ),
         sourceMap: sourceMap |> SparseMapService.copy,
         glTextureMap: glTextureMap |> SparseMapService.copy,
-        bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+        bindTextureUnitCacheMap:
+          WonderCommonlib.SparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
-        needInitedTextureIndexArray: needInitedTextureIndexArray |> Js.Array.copy
-      })
-  }
+        needInitedTextureIndexArray:
+          needInitedTextureIndexArray |> Js.Array.copy,
+      }),
+  };
 };

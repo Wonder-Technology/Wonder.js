@@ -1,3 +1,4 @@
+/* TODO use SourceTextureType->type_ */
 let getUnsignedByte = () => 0;
 
 let getUnsignedShort565 = () => 1;

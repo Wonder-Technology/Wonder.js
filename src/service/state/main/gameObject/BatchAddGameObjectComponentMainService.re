@@ -129,7 +129,7 @@ let batchAddMeshRendererComponentForClone =
 let _batchAddSharableComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
-      increaseGroupCountFunc,
+      (increaseGroupCountFunc, handleAddComponentFunc),
       record,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
@@ -140,7 +140,8 @@ let _batchAddSharableComponent =
          componentMap
          |> ComponentMapService.addComponent(uid, component)
          |> ignore;
-         increaseGroupCountFunc(. component, record);
+         let record = increaseGroupCountFunc(. component, record);
+         handleAddComponentFunc(. component, uid, record);
        },
        record,
      );
@@ -153,8 +154,11 @@ let _batchAddSharableGeometryComponent =
         componentArr: array(component),
         dataTupleForBatchAddComponentDataFunc,
       ),
-      increaseGroupCountFunc,
-      batchAddComponentDataFunc,
+      (
+        increaseGroupCountFunc,
+        handleAddComponentFunc,
+        batchAddComponentDataFunc,
+      ),
       record,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
@@ -168,7 +172,8 @@ let _batchAddSharableGeometryComponent =
            uid,
          )
          |> ignore;
-         increaseGroupCountFunc(. component, record);
+         let record = increaseGroupCountFunc(. component, record);
+         handleAddComponentFunc(. component, uid, record);
        },
        record,
      );
@@ -199,8 +204,11 @@ let batchAddBoxGeometryComponentForClone =
           CurrentComponentDataMapRenderService.getBoxGeometryType(),
         ),
       ),
-      GroupBoxGeometryService.increaseGroupCount,
-      _batchAddBoxGeometryComponentDataForClone,
+      (
+        GroupBoxGeometryService.increaseGroupCount,
+        AddBoxGeometryService.handleAddComponent,
+        _batchAddBoxGeometryComponentDataForClone,
+      ),
       state |> RecordBoxGeometryMainService.getRecord,
     ),
 };
@@ -231,8 +239,11 @@ let _batchAddCustomGeometryComponent =
             CurrentComponentDataMapRenderService.getCustomGeometryType(),
           ),
         ),
-        GroupCustomGeometryService.increaseGroupCount,
-        _batchAddCustomGeometryComponentData,
+        (
+          GroupCustomGeometryService.increaseGroupCount,
+          AddCustomGeometryService.handleAddComponent,
+          _batchAddCustomGeometryComponentData,
+        ),
         state |> RecordCustomGeometryMainService.getRecord,
       ),
     ),
@@ -242,26 +253,27 @@ let batchAddCustomGeometryComponentForClone = _batchAddCustomGeometryComponent;
 
 let _batchAddMaterialComponentForClone =
     (
-      isShareMaterial,
       (uidArr: array(int), componentArr: array(component), componentMap),
-      (increaseGroupCountFunc, handleAddComponentFunc),
+      /* (increaseGroupCountFunc, handleAddComponentFunc), */
+      funcTuple,
       record,
     ) =>
-  isShareMaterial ?
-    _batchAddSharableComponent(
-      (uidArr, componentArr, componentMap),
-      increaseGroupCountFunc,
-      record,
-    ) :
-    _batchAddComponent(
-      (uidArr, componentArr, componentMap),
-      handleAddComponentFunc,
-      record,
-    );
+  /* isShareMaterial ? */
+  _batchAddSharableComponent(
+    (uidArr, componentArr, componentMap),
+    funcTuple,
+    record,
+  );
+/* :
+   _batchAddComponent(
+     (uidArr, componentArr, componentMap),
+     handleAddComponentFunc,
+     record,
+   ); */
+
 
 let batchAddBasicMaterialComponentForClone =
     (
-      isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
       {gameObjectRecord} as state,
@@ -270,7 +282,6 @@ let batchAddBasicMaterialComponentForClone =
   basicMaterialRecord:
     Some(
       _batchAddMaterialComponentForClone(
-        isShareMaterial,
         (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
         (
           GroupBasicMaterialService.increaseGroupCount,
@@ -280,10 +291,8 @@ let batchAddBasicMaterialComponentForClone =
       ),
     ),
 };
-
-let batchAddLightMaterialComponentForClone =
+let _batchAddLightMaterialComponent =
     (
-      isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
       {gameObjectRecord} as state,
@@ -292,7 +301,6 @@ let batchAddLightMaterialComponentForClone =
   lightMaterialRecord:
     Some(
       _batchAddMaterialComponentForClone(
-        isShareMaterial,
         (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
         (
           GroupLightMaterialService.increaseGroupCount,
@@ -302,6 +310,11 @@ let batchAddLightMaterialComponentForClone =
       ),
     ),
 };
+
+
+let batchAddLightMaterialComponentForClone =
+_batchAddLightMaterialComponent;
+
 
 let batchAddAmbientLightComponentForClone =
     (
@@ -355,3 +368,6 @@ let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
 let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponent;
 
 let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;
+
+let batchAddLightMaterialComponentForCreate =
+_batchAddLightMaterialComponent;

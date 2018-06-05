@@ -101,9 +101,10 @@ let _cloneComponentExceptTransform =
          CloneComponentGameObjectMainService.cloneBasicMaterialComponent(isShareMaterial)
          
          ,
-         BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone(
+         /* BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone(
            isShareMaterial
-         )
+         ) */
+         BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForClone
        )
      )
   |> _clone(
@@ -115,9 +116,10 @@ let _cloneComponentExceptTransform =
        ),
        (
          CloneComponentGameObjectMainService.cloneLightMaterialComponent(isShareMaterial),
-         BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone(
+         /* BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone(
            isShareMaterial
-         )
+         ) */
+         BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone
        )
      )
   |> _clone(

@@ -31,7 +31,7 @@ type samplerIndex = int;
 
 type asset = {
   version: string,
-  generator: string
+  generator: string,
 };
 
 type scene = {gameObjects: array(gameObjectIndex)};
@@ -41,14 +41,14 @@ type gameObjects = {count: int};
 type transform = {
   translation: option((float, float, float)),
   rotation: option((float, float, float, float)),
-  scale: option((float, float, float))
+  scale: option((float, float, float)),
 };
 
 type customGeometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
-  index: accessorIndex
+  index: accessorIndex,
   /* TODO add mode */
 };
 
@@ -56,12 +56,12 @@ type perspectiveCameraProjection = {
   near: float,
   far: option(float),
   fovy: float,
-  aspect: option(float)
+  aspect: option(float),
 };
 
 type lightMaterial = {
   /* TODO add doubleSided: option(bool), */
-  diffuseColor: option(array(float))
+  diffuseColor: option(array(float)),
   /* specularColor: option(array(float)),
      shininess: option(float) */
 };
@@ -98,23 +98,23 @@ type accessor = {
   byteOffset: int,
   count: int,
   componentType: accessorComponentType,
-  type_: accessorType
+  type_: accessorType,
 };
 
 type buffer = {
   uri: string,
-  byteLength: int
+  byteLength: int,
 };
 
 /* type bufferViewTarget =
-  | ARRAY_BUFFER
-  | ELEMENT_ARRAY_BUFFER; */
+   | ARRAY_BUFFER
+   | ELEMENT_ARRAY_BUFFER; */
 
 type bufferView = {
   buffer: bufferIndex,
   byteOffset: int,
   byteLength: int,
-  byteStride: option(int)
+  byteStride: option(int),
   /* target: bufferViewTarget */
 };
 
@@ -122,39 +122,22 @@ type image = {uri: string};
 
 type basicSourceTextures = {count: int};
 
-type magFilter =
-  | NEAREST
-  | LINEAR;
-
-type minFilter =
-  | NEAREST
-  | LINEAR
-  | NEAREST_MIPMAP_NEAREST
-  | LINEAR_MIPMAP_NEAREST
-  | NEAREST_MIPMAP_LINEAR
-  | LINEAR_MIPMAP_LINEAR;
-
-type wrap =
-  | CLAMP_TO_EDGE
-  | MIRRORED_REPEAT
-  | REPEAT;
-
 type sampler = {
   /* TODO add format, type_, ... */
-  magFilter,
-  minFilter,
-  wrapS: wrap,
-  wrapT: wrap
+  magFilter: SourceTextureType.filter,
+  minFilter: SourceTextureType.filter,
+  wrapS: SourceTextureType.wrap,
+  wrapT: SourceTextureType.wrap,
 };
 
 type componentGameObjectIndexData = {
   gameObjectIndices: array(gameObjectIndex),
-  componentIndices: array(componentIndex)
+  componentIndices: array(componentIndex),
 };
 
 type childrenTransformIndexData = {
   parentTransformIndices: array(transformIndex),
-  childrenTransformIndices: array(array(transformIndex))
+  childrenTransformIndices: array(array(transformIndex)),
 };
 
 type gameObjectIndices = {
@@ -167,34 +150,31 @@ type gameObjectIndices = {
      directionLightGameObjectIndices: array(directionLightIndex),
      pointLightGameObjectIndices: array(pointLightIndex), */
   /* geometryGameObjectIndices: array(geometryIndex) */
-  customGeometryGameObjectIndexData: componentGameObjectIndexData
+  customGeometryGameObjectIndexData: componentGameObjectIndexData,
 };
-
 
 type mapMaterialIndexData = {
   materialIndices: array(lightMaterialIndex),
-  mapIndices: array(textureIndex)
+  mapIndices: array(textureIndex),
 };
 
-type materialIndices = {
-  diffuseMapMaterialIndices: mapMaterialIndexData
-};
+type materialIndices = {diffuseMapMaterialIndices: mapMaterialIndexData};
 
 type imageTextureIndexData = {
   textureIndices: array(textureIndex),
-  imageIndices: array(imageIndex)
+  imageIndices: array(imageIndex),
 };
 
 type samplerTextureIndexData = {
   textureIndices: array(textureIndex),
-  samplerIndices: array(samplerIndex)
+  samplerIndices: array(samplerIndex),
 };
 
 type indices = {
   gameObjectIndices,
   materialIndices,
   imageTextureIndices: imageTextureIndexData,
-  samplerTextureIndices: samplerTextureIndexData
+  samplerTextureIndices: samplerTextureIndexData,
 };
 
 type basicCameraViews = {count: int};
@@ -215,5 +195,5 @@ type wd = {
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   transforms: array(transform),
   customGeometrys: array(option(customGeometry)),
-  lightMaterials: array(lightMaterial)
+  lightMaterials: array(lightMaterial),
 };

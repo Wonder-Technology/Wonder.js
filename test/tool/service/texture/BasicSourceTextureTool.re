@@ -2,32 +2,41 @@ open StateDataMainType;
 
 open BasicSourceTextureType;
 
-let getRecord = (state) => state.basicSourceTextureRecord |> OptionService.unsafeGet;
+let getRecord = state =>
+  state.basicSourceTextureRecord |> OptionService.unsafeGet;
 
 let unsafeGetTexture = (texture, state) =>
-  OperateGlTextureMapService.unsafeGetTexture(texture, getRecord(state).glTextureMap);
+  OperateGlTextureMapService.unsafeGetTexture(
+    texture,
+    getRecord(state).glTextureMap,
+  );
 
 let isNeedUpdate = (texture, state) =>
-  [@bs]
-  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(
+  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
     texture,
-    getRecord(state).isNeedUpdates
+    getRecord(state).isNeedUpdates,
   )
   === BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
 
-let getNearest = () => TextureFilterService.getNearest();
+let getNearest = () =>
+  SourceTextureType.NEAREST |> SourceTextureType.filterToUint8;
 
-let getNearestMipmapNearest = () => TextureFilterService.getNearestMipmapNearest();
+let getNearestMipmapNearest = () =>
+  SourceTextureType.NEAREST_MIPMAP_NEAREST |> SourceTextureType.filterToUint8;
 
-let getNearestMipmapLinear = () => TextureFilterService.getNearestMipmapLinear();
+let getLinear = () =>
+  SourceTextureType.LINEAR |> SourceTextureType.filterToUint8;
 
-let getLinear = () => TextureFilterService.getLinear();
+let getNearestMipmapLinear = () =>
+  SourceTextureType.NEAREST_MIPMAP_LINEAR |> SourceTextureType.filterToUint8;
 
-let getLinearMipmapNearest = () => TextureFilterService.getLinearMipmapNearest();
+let getLinearMipmapNearest = () =>
+  SourceTextureType.LINEAR_MIPMAP_NEAREST |> SourceTextureType.filterToUint8;
 
-let getLinearMipmapLinear = () => TextureFilterService.getLinearMipmapLinear();
+let getLinearMipmapLinear = () =>
+  SourceTextureType.LINEAR_MIPMAP_LINEAR |> SourceTextureType.filterToUint8;
 
 let getRgb = () => TextureFormatService.getRgb();
 
@@ -41,16 +50,19 @@ let getUnsignedShort565 = () => TextureTypeService.getUnsignedShort565();
 
 let buildSource = (width, height) => {"width": width, "height": height};
 
-let getDefaultWrapS = () => TextureWrapService.getClampToEdge();
+let getDefaultWrapS = () => BufferBasicSourceTextureService.getDefaultWrapS();
 
-let getDefaultWrapT = () => TextureWrapService.getClampToEdge();
+let getDefaultWrapT = () => BufferBasicSourceTextureService.getDefaultWrapT();
 
-let getDefaultMagFilter = () => TextureFilterService.getLinear();
+let getDefaultMagFilter = () =>
+  BufferBasicSourceTextureService.getDefaultMagFilter();
 
-let getDefaultMinFilter = () => TextureFilterService.getNearest();
+let getDefaultMinFilter = () =>
+  BufferBasicSourceTextureService.getDefaultMinFilter();
 
 let getDefaultFormat = () => TextureFormatService.getRgba();
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
-let getDefaultIsNeedUpdate = () => BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
+let getDefaultIsNeedUpdate = () =>
+  BufferBasicSourceTextureService.getDefaultIsNeedUpdate();

@@ -1,3 +1,4 @@
+/* TODO use SourceTextureType->format */
 let getRgb = () => 0;
 
 let getRgba = () => 1;

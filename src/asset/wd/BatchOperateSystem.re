@@ -15,6 +15,7 @@ let _getBatchComponentGameObjectData =
         customGeometryArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        lightMaterialArr,
       ),
       indices,
     ) => {
@@ -62,8 +63,40 @@ let _getBatchComponentGameObjectData =
     indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
       componentIndices
     |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
+    indices.gameObjectIndices.lightMaterialGameObjectIndexData.
+      gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr),
+    indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
+    |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
   );
 };
+
+let _getBatchTextureData =
+    (
+      lightMaterialArr,
+      basicSourceTextureArr,
+      imageArr,
+      {indices, images, samplers},
+    ) => (
+  (
+    indices.materialIndices.diffuseMapMaterialIndices.materialIndices
+    |> _getBatchArrByIndices(lightMaterialArr),
+    indices.materialIndices.diffuseMapMaterialIndices.mapIndices
+    |> _getBatchArrByIndices(basicSourceTextureArr),
+  ),
+  (
+    indices.samplerTextureIndices.textureIndices
+    |> _getBatchArrByIndices(basicSourceTextureArr),
+    indices.samplerTextureIndices.samplerIndices
+    |> _getBatchArrByIndices(samplers),
+  ),
+  (
+    indices.imageTextureIndices.textureIndices
+    |> _getBatchArrByIndices(basicSourceTextureArr),
+    indices.imageTextureIndices.imageIndices
+    |> _getBatchArrByIndices(imageArr),
+  ),
+);
 
 let _getAccessorTypeSize = ({type_}) =>
   switch (type_) {
@@ -312,6 +345,7 @@ let _batchSetPerspectiveCameraProjectionData =
 let batchOperate =
     (
       {indices} as wdRecord,
+      imageArr,
       bufferArr,
       (
         state,
@@ -321,7 +355,9 @@ let batchOperate =
           customGeometryArr,
           basicCameraViewArr,
           perspectiveCameraProjectionArr,
+          lightMaterialArr,
         ),
+        basicSourceTextureArr,
       ),
     ) => {
   let (
@@ -335,6 +371,8 @@ let batchOperate =
     gameObjectBasicCameraViews,
     perspectiveCameraProjectionGameObjects,
     gameObjectPerspectiveCameraProjection,
+    lightMaterialGameObjects,
+    gameObjectLightMaterials,
   ) =
     _getBatchComponentGameObjectData(
       (
@@ -343,8 +381,20 @@ let batchOperate =
         customGeometryArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        lightMaterialArr,
       ),
       indices,
+    );
+  let (
+    (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
+    (samplerBasicSourceTextures, basicSourceTextureSamplers),
+    (imageBasicSourceTextures, basicSourceTextureImages),
+  ) =
+    _getBatchTextureData(
+      lightMaterialArr,
+      basicSourceTextureArr,
+      imageArr,
+      wdRecord,
     );
   (
     state
@@ -370,6 +420,15 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
          perspectiveCameraProjectionGameObjects,
          gameObjectPerspectiveCameraProjection,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
+         lightMaterialGameObjects,
+         gameObjectLightMaterials,
+       )
+    |> BatchSetTextureAllDataSystem.batchSet(
+         (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
+         (samplerBasicSourceTextures, basicSourceTextureSamplers),
+         (imageBasicSourceTextures, basicSourceTextureImages),
        ),
     gameObjectArr,
   );

@@ -1,26 +1,11 @@
-let getNearest = () => 0;
-
-let getNearestMipmapNearest = () => 1;
-
-let getNearestMipmapLinear = () => 2;
-
-let getLinear = () => 3;
-
-let getLinearMipmapNearest = () => 4;
-
-let getLinearMipmapLinear = () => 5;
+open SourceTextureType;
 
 let getGlFilter = (gl, filter) =>
-  if (filter === getNearest()) {
-    gl |> Gl.getNearest
-  } else if (filter === getNearestMipmapNearest()) {
-    gl |> Gl.getNearestMipmapNearest
-  } else if (filter === getNearestMipmapLinear()) {
-    gl |> Gl.getNearestMipmapLinear
-  } else if (filter === getLinear()) {
-    gl |> Gl.getLinear
-  } else if (filter === getLinearMipmapNearest()) {
-    gl |> Gl.getLinearMipmapNearest
-  } else {
-    gl |> Gl.getLinearMipmapLinear
+  switch (filter) {
+  | NEAREST => gl |> Gl.getNearest
+  | LINEAR => gl |> Gl.getLinear
+  | NEAREST_MIPMAP_NEAREST => gl |> Gl.getNearestMipmapNearest
+  | LINEAR_MIPMAP_NEAREST => gl |> Gl.getLinearMipmapNearest
+  | NEAREST_MIPMAP_LINEAR => gl |> Gl.getLinearMipmapNearest
+  | LINEAR_MIPMAP_LINEAR => gl |> Gl.getLinearMipmapLinear
   };

@@ -169,6 +169,58 @@ let _batchCreatePerspectiveCameraProjection =
   (state, indexArr);
 };
 
+let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => {
+  let ({index, textureCountMap}: LightMaterialType.lightMaterialRecord) as lightMaterialRecord =
+    RecordLightMaterialMainService.getRecord(state);
+
+  _checkNotDisposedBefore(lightMaterialRecord.disposedIndexArray);
+
+  let newIndex = index + (lightMaterials |> Js.Array.length);
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> _checkNotExceedMaxCountByIndex(
+         BufferSettingService.getLightMaterialCount(settingRecord),
+       );
+  state.lightMaterialRecord =
+    Some({
+      ...lightMaterialRecord,
+      index: newIndex,
+      textureCountMap:
+        indexArr
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             (. textureCountMap, index) =>
+               WonderCommonlib.SparseMapService.set(
+                 index,
+                 TextureCountMapMaterialService.getDefaultCount(),
+                 textureCountMap,
+               ),
+             textureCountMap,
+           ),
+    });
+  (state, indexArr);
+};
+
+let _batchCreateBasicSourceTextureArr =
+    ({basicSourceTextures}, {settingRecord} as state) => {
+  let ({index}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
+
+  _checkNotDisposedBefore(basicSourceTextureRecord.disposedIndexArray);
+
+  let newIndex = index + basicSourceTextures.count;
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> Js.Array.map(index =>
+         IndexSourceTextureMainService.generateBasicSourceTextureIndex(index)
+       )
+    |> _checkNotExceedMaxCountByIndex(
+         BufferSettingService.getLightMaterialCount(settingRecord),
+       );
+  state.basicSourceTextureRecord =
+    Some({...basicSourceTextureRecord, index: newIndex});
+  (state, indexArr);
+};
+
 let batchCreate = (wdRecord, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wdRecord, state);
   let (state, transformArr) = _batchCreateTransform(wdRecord, state);
@@ -179,6 +231,11 @@ let batchCreate = (wdRecord, state) => {
   let (state, perspectiveCameraProjectionArr) =
     _batchCreatePerspectiveCameraProjection(wdRecord, state);
 
+  let (state, lightMaterialArr) = _batchCreateLightMaterial(wdRecord, state);
+
+  let (state, basicSourceTextureArr) =
+    _batchCreateBasicSourceTextureArr(wdRecord, state);
+
   (
     state,
     gameObjectArr,
@@ -187,6 +244,8 @@ let batchCreate = (wdRecord, state) => {
       customGeometryArr,
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
+      lightMaterialArr,
     ),
+    basicSourceTextureArr,
   );
 };

@@ -12,7 +12,8 @@ open BrowserDetectType;
          }
          |}
    ]; */
-let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, height)) => {
+let _drawTexture =
+    (gl, (target, index, source, glFormat, glType), (width, height)) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -21,17 +22,17 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, heigh
             test(
               Log.buildAssertMessage(
                 ~expect={j|width/height shouldn't be 0|j},
-                ~actual={j|width is $width; height is $height|j}
+                ~actual={j|width is $width; height is $height|j},
               ),
               () => {
                 width <>= 0;
-                height <>= 0
-              }
+                height <>= 0;
+              },
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   /* _setUnpackAlignmentaToOne(gl); */
   gl
@@ -44,17 +45,23 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType), (width, heigh
        0,
        glFormat,
        glType,
-       source
-     )
+       source,
+     );
 };
 
-let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), sizeTuple, source) =>
+let _drawNoMipmapTwoDTexture =
+    (gl, (target, glFormat, glType), sizeTuple, source) =>
   _drawTexture(gl, (target, 0, source, glFormat, glType), sizeTuple);
 
 let _allocateSourceToTexture = (sizeTuple, gl, paramTuple, source) =>
   _drawNoMipmapTwoDTexture(gl, paramTuple, sizeTuple, source);
 
-let update = (gl, textureInTypeArray, (arrayBufferViewSourceTextureRecord, browserDetectRecord)) => {
+let update =
+    (
+      gl,
+      textureInTypeArray,
+      (arrayBufferViewSourceTextureRecord, browserDetectRecord),
+    ) => {
   let {
     sourceMap,
     wrapSs,
@@ -66,47 +73,80 @@ let update = (gl, textureInTypeArray, (arrayBufferViewSourceTextureRecord, brows
     isNeedUpdates,
     widths,
     heights,
-    setFlipYFunc
+    setFlipYFunc,
   } = arrayBufferViewSourceTextureRecord;
   switch (TextureSourceMapService.getSource(textureInTypeArray, sourceMap)) {
   | None => (arrayBufferViewSourceTextureRecord, browserDetectRecord)
   | Some(source) =>
     let width =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(textureInTypeArray, widths);
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(
+        textureInTypeArray,
+        widths,
+      );
     let height =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(textureInTypeArray, heights);
+      OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(
+        textureInTypeArray,
+        heights,
+      );
     let glWrapS =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(textureInTypeArray, wrapSs)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(
+        textureInTypeArray,
+        wrapSs,
+      )
+      |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let glWrapT =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(textureInTypeArray, wrapTs)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(
+        textureInTypeArray,
+        wrapTs,
+      )
+      |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let magFilter =
       OperateTypeArrayArrayBufferViewSourceTextureService.getMagFilter(
         textureInTypeArray,
-        magFilters
-      );
+        magFilters,
+      )
+      |> SourceTextureType.uint8ToFilter;
     let minFilter =
       OperateTypeArrayArrayBufferViewSourceTextureService.getMinFilter(
         textureInTypeArray,
-        minFilters
-      );
+        minFilters,
+      )
+      |> SourceTextureType.uint8ToFilter;
     let glFormat =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(textureInTypeArray, formats)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(
+        textureInTypeArray,
+        formats,
+      )
       |> TextureFormatService.getGlFormat(gl);
     let glType =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getType(textureInTypeArray, types)
+      OperateTypeArrayArrayBufferViewSourceTextureService.getType(
+        textureInTypeArray,
+        types,
+      )
       |> TextureTypeService.getGlType(gl);
     let flipY = OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY();
     let target = Gl.getTexture2D(gl);
     UpdateSourceTextureRenderService.update(
       (gl, textureInTypeArray, source),
-      (width, height, glWrapS, glWrapT, magFilter, minFilter, glFormat, glType, flipY, target),
+      (
+        width,
+        height,
+        glWrapS,
+        glWrapT,
+        magFilter,
+        minFilter,
+        glFormat,
+        glType,
+        flipY,
+        target,
+      ),
       (isNeedUpdates, browserDetectRecord),
-      (_allocateSourceToTexture((width, height)), setFlipYFunc)
+      (_allocateSourceToTexture((width, height)), setFlipYFunc),
     );
-    (arrayBufferViewSourceTextureRecord, browserDetectRecord)
-  }
+    (arrayBufferViewSourceTextureRecord, browserDetectRecord);
+  };
 };
 
 let isNeedUpdate = (textureInTypeArray, arrayBufferViewSourceTextureRecord) =>
@@ -114,5 +154,5 @@ let isNeedUpdate = (textureInTypeArray, arrayBufferViewSourceTextureRecord) =>
     textureInTypeArray,
     BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate(),
     arrayBufferViewSourceTextureRecord.isNeedUpdates,
-    OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate
+    OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate,
   );

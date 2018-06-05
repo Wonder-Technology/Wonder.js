@@ -397,7 +397,26 @@ let _ =
                           let (_, geometry, _, _, clonedGeometryArr) = _prepare(state^);
                           clonedGeometryArr |> expect == [|geometry, geometry|]
                         }
-                      )
+                      );
+                      test(
+                        "cloned one's gameObject ===  the last gameObject which add the geometry",
+                        () => {
+                          let (state, gameObject, _, clonedGameObjectArr, clonedGeometryArr) =
+                            _prepare(state^);
+                            WonderLog.Log.print(clonedGeometryArr) |> ignore;
+                          (
+                            BoxGeometryAPI .unsafeGetBoxGeometryGameObject(
+                              clonedGeometryArr[0],
+                              state
+                            ),
+                          BoxGeometryAPI .unsafeGetBoxGeometryGameObject(
+                              clonedGeometryArr[1],
+                              state
+                            ),
+                          )
+                          |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1])
+                        }
+                      );
                     }
                   );
                   describe(
@@ -427,7 +446,26 @@ let _ =
                           let (_, geometry, _, _, clonedGeometryArr) = _prepare(state^);
                           clonedGeometryArr |> expect == [|geometry, geometry|]
                         }
-                      )
+                      );
+                      test(
+                        "cloned one's gameObject ===  the last gameObject which add the geometry",
+                        () => {
+                          let (state, gameObject, _, clonedGameObjectArr, clonedGeometryArr) =
+                            _prepare(state^);
+                            WonderLog.Log.print(clonedGeometryArr) |> ignore;
+                          (
+                            CustomGeometryAPI .unsafeGetCustomGeometryGameObject(
+                              clonedGeometryArr[0],
+                              state
+                            ),
+                            CustomGeometryAPI .unsafeGetCustomGeometryGameObject(
+                              clonedGeometryArr[1],
+                              state
+                            ),
+                          )
+                          |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1])
+                        }
+                      );
                     }
                   )
                 }
@@ -471,7 +509,7 @@ let _ =
                         }
                       );
                       test(
-                        "cloned one's gameObject === source one's gameObject",
+                        "cloned one's gameObject ===  the last gameObject which add the material",
                         () => {
                           let (state, gameObject, _, clonedGameObjectArr, clonedMaterialArr) =
                             _prepare(true);
@@ -485,7 +523,7 @@ let _ =
                               state
                             )
                           )
-                          |> expect == (gameObject, gameObject)
+                          |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1])
                         }
                       );
                       test(
