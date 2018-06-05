@@ -8,7 +8,16 @@ let _getBatchArrByIndices = (sourceArr, indices) =>
   indices |> Js.Array.map(index => Array.unsafe_get(sourceArr, index));
 
 let _getBatchComponentGameObjectData =
-    ((gameObjectArr, transformArr, customGeometryArr), indices) => {
+    (
+      (
+        gameObjectArr,
+        transformArr,
+        customGeometryArr,
+        basicCameraViewArr,
+        perspectiveCameraProjectionArr,
+      ),
+      indices,
+    ) => {
   let parentTransforms =
     indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
     |> _getBatchArrByIndices(transformArr);
@@ -33,6 +42,7 @@ let _getBatchComponentGameObjectData =
     indices.gameObjectIndices.customGeometryGameObjectIndexData.
       componentIndices
     |> _getBatchArrByIndices(customGeometryArr);
+
   (
     parentTransforms,
     childrenTransforms,
@@ -40,6 +50,18 @@ let _getBatchComponentGameObjectData =
     gameObjectTransforms,
     customGeometryGameObjects,
     gameObjectCustomGeometrys,
+    indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
+      gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr),
+    indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
+      componentIndices
+    |> _getBatchArrByIndices(basicCameraViewArr),
+    indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
+      gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr),
+    indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
+      componentIndices
+    |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
   );
 };
 
@@ -220,11 +242,87 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
   };
 };
 
+let _batchSetPerspectiveCameraProjectionData =
+    (
+      {perspectiveCameraProjections},
+      perspectiveCameraProjectionArr,
+      {perspectiveCameraProjectionRecord, viewRecord} as state,
+    ) => {
+  perspectiveCameraProjections
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (.
+         perspectiveCameraProjectionRecord,
+         {near, far, fovy, aspect},
+         index,
+       ) => {
+         let cameraProjection = perspectiveCameraProjectionArr[index];
+
+         let perspectiveCameraProjectionRecord =
+           perspectiveCameraProjectionRecord
+           |> FrustumPerspectiveCameraProjectionService.setNear(
+                cameraProjection,
+                near,
+              );
+         let perspectiveCameraProjectionRecord =
+           switch (far) {
+           | None =>
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setFar(
+                  cameraProjection,
+                  FrustumPerspectiveCameraProjectionService.getInfiniteFar(),
+                )
+           | Some(far) =>
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setFar(
+                  cameraProjection,
+                  far,
+                )
+           };
+         let perspectiveCameraProjectionRecord =
+           perspectiveCameraProjectionRecord
+           |> FrustumPerspectiveCameraProjectionService.setFovy(
+                cameraProjection,
+                fovy,
+              );
+         let perspectiveCameraProjectionRecord =
+           switch (aspect) {
+           | None =>
+             let canvas =
+               ViewService.getCanvas(viewRecord) |> DomType.htmlElementToJsObj;
+
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setAspect(
+                  cameraProjection,
+                  canvas##width /. canvas##height,
+                );
+           | Some(aspect) =>
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setAspect(
+                  cameraProjection,
+                  aspect,
+                )
+           };
+         perspectiveCameraProjectionRecord;
+       },
+       perspectiveCameraProjectionRecord,
+     );
+  {...state, perspectiveCameraProjectionRecord};
+};
+
 let batchOperate =
     (
       {indices} as wdRecord,
       bufferArr,
-      (state, gameObjectArr, (transformArr, customGeometryArr)),
+      (
+        state,
+        gameObjectArr,
+        (
+          transformArr,
+          customGeometryArr,
+          basicCameraViewArr,
+          perspectiveCameraProjectionArr,
+        ),
+      ),
     ) => {
   let (
     parentTransforms,
@@ -233,9 +331,19 @@ let batchOperate =
     gameObjectTransforms,
     customGeometryGameObjects,
     gameObjectCustomGeometrys,
+    basicCameraViewGameObjects,
+    gameObjectBasicCameraViews,
+    perspectiveCameraProjectionGameObjects,
+    gameObjectPerspectiveCameraProjection,
   ) =
     _getBatchComponentGameObjectData(
-      (gameObjectArr, transformArr, customGeometryArr),
+      (
+        gameObjectArr,
+        transformArr,
+        customGeometryArr,
+        basicCameraViewArr,
+        perspectiveCameraProjectionArr,
+      ),
       indices,
     );
   (
@@ -243,6 +351,10 @@ let batchOperate =
     |> _batchSetTransformData(wdRecord, gameObjectTransforms)
     |> _batchSetTransformParent(parentTransforms, childrenTransforms)
     |> _batchSetCustomGeometryData(wdRecord, customGeometryArr, bufferArr)
+    |> _batchSetPerspectiveCameraProjectionData(
+         wdRecord,
+         perspectiveCameraProjectionArr,
+       )
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          transformGameObjects,
          gameObjectTransforms,
@@ -250,6 +362,14 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForCreate(
          customGeometryGameObjects,
          gameObjectCustomGeometrys,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
+         basicCameraViewGameObjects,
+         gameObjectBasicCameraViews,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
+         perspectiveCameraProjectionGameObjects,
+         gameObjectPerspectiveCameraProjection,
        ),
     gameObjectArr,
   );

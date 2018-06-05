@@ -61,7 +61,7 @@ let _batchAddComponentWithState =
      );
 };
 
-let batchAddBasicCameraViewComponentForClone =
+let _batchAddBasicCameraViewComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -76,7 +76,9 @@ let batchAddBasicCameraViewComponentForClone =
     ),
 };
 
-let batchAddPerspectiveCameraProjectionComponentForClone =
+let batchAddBasicCameraViewComponentForClone = _batchAddBasicCameraViewComponent;
+
+let _batchAddPerspectiveCameraProjectionComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -90,6 +92,8 @@ let batchAddPerspectiveCameraProjectionComponentForClone =
       perspectiveCameraProjectionRecord,
     ),
 };
+
+let batchAddPerspectiveCameraProjectionComponentForClone = _batchAddPerspectiveCameraProjectionComponent;
 
 let _batchAddTransformComponent =
     (
@@ -347,3 +351,7 @@ let batchAddPointLightComponentForClone =
 let batchAddTransformComponentForCreate = _batchAddTransformComponent;
 
 let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
+
+let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponent;
+
+let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;

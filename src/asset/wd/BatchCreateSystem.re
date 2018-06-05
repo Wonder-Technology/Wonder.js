@@ -124,10 +124,69 @@ let _batchCreateCustomGeometry =
   (state, indexArr);
 };
 
+let _batchCreateBasicCameraView =
+    ({basicCameraViews}, {basicCameraViewRecord} as state) => {
+  _checkNotDisposedBefore(basicCameraViewRecord.disposedIndexArray);
+
+  let {index}: BasicCameraViewType.basicCameraViewRecord = basicCameraViewRecord;
+  let newIndex = index + basicCameraViews.count;
+  let indexArr = ArrayService.range(index, newIndex - 1);
+  state.basicCameraViewRecord = {...basicCameraViewRecord, index: newIndex};
+  (state, indexArr);
+};
+
+let _batchCreatePerspectiveCameraProjection =
+    (
+      {perspectiveCameraProjections},
+      {perspectiveCameraProjectionRecord} as state,
+    ) => {
+  _checkNotDisposedBefore(
+    perspectiveCameraProjectionRecord.disposedIndexArray,
+  );
+
+  let {index, pMatrixMap}: PerspectiveCameraProjectionType.perspectiveCameraProjectionRecord = perspectiveCameraProjectionRecord;
+
+  let newIndex = index + (perspectiveCameraProjections |> Js.Array.length);
+
+  let indexArr = ArrayService.range(index, newIndex - 1);
+
+  state.perspectiveCameraProjectionRecord = {
+    ...perspectiveCameraProjectionRecord,
+    index: newIndex,
+    dirtyArray: indexArr,
+    pMatrixMap:
+      indexArr
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. pMatrixMap, index) =>
+             WonderCommonlib.SparseMapService.set(
+               index,
+               Matrix4Service.createIdentityMatrix4(),
+               pMatrixMap,
+             ),
+           pMatrixMap,
+         ),
+  };
+  (state, indexArr);
+};
+
 let batchCreate = (wdRecord, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wdRecord, state);
   let (state, transformArr) = _batchCreateTransform(wdRecord, state);
   let (state, customGeometryArr) =
     _batchCreateCustomGeometry(wdRecord, state);
-  (state, gameObjectArr, (transformArr, customGeometryArr));
+  let (state, basicCameraViewArr) =
+    _batchCreateBasicCameraView(wdRecord, state);
+  let (state, perspectiveCameraProjectionArr) =
+    _batchCreatePerspectiveCameraProjection(wdRecord, state);
+
+  (
+    state,
+    gameObjectArr,
+    (
+      transformArr,
+      customGeometryArr,
+      basicCameraViewArr,
+      perspectiveCameraProjectionArr,
+    ),
+  );
 };

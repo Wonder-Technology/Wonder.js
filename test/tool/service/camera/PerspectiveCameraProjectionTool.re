@@ -1,36 +1,42 @@
 open StateDataMainType;
-let isPerspectiveCameraProjection = (cameraProjection) => {
+
+let isPerspectiveCameraProjection = cameraProjection => {
   open Wonder_jest;
   open Expect;
   open! Expect.Operators;
-  expect(cameraProjection) >= 0
+  expect(cameraProjection) >= 0;
 };
-
 
 let unsafeGetPMatrix = (cameraProjection, state: StateDataMainType.state) =>
   PMatrixService.unsafeGetPMatrix(
     cameraProjection,
-    state.perspectiveCameraProjectionRecord.pMatrixMap
+    state.perspectiveCameraProjectionRecord.pMatrixMap,
   );
 
-let getDirtyArray = (state) => state.perspectiveCameraProjectionRecord.dirtyArray;
+let getDirtyArray = state =>
+  state.perspectiveCameraProjectionRecord.dirtyArray;
 
 let init = (state: StateDataMainType.state) =>
-  InitPerspectiveCameraProjectionService.init(state.perspectiveCameraProjectionRecord);
+  InitPerspectiveCameraProjectionService.init(
+    state.perspectiveCameraProjectionRecord,
+  );
 
 let update = (state: StateDataMainType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
-    UpdatePerspectiveCameraProjectionService.update(state.perspectiveCameraProjectionRecord)
+    UpdatePerspectiveCameraProjectionService.update(
+      state.perspectiveCameraProjectionRecord,
+    ),
 };
 
-let updateCameraProjection = (cameraProjection, state: StateDataMainType.state) => {
+let updateCameraProjection =
+    (cameraProjection, state: StateDataMainType.state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     UpdatePerspectiveCameraProjectionService.updateCameraProjection(
       cameraProjection,
-      state.perspectiveCameraProjectionRecord
-    )
+      state.perspectiveCameraProjectionRecord,
+    ),
 };
 
 let getPMatrixOfCreateBasicCameraViewPerspectiveCamera = () =>
@@ -50,5 +56,29 @@ let getPMatrixOfCreateBasicCameraViewPerspectiveCamera = () =>
     0.,
     0.,
     (-0.2000200020002),
-    0.
+    0.,
   |]);
+
+let unsafeGetNear = (cameraProjection, state: StateDataMainType.state) =>
+  FrustumPerspectiveCameraProjectionService.unsafeGetNear(
+    cameraProjection,
+    state.perspectiveCameraProjectionRecord,
+  );
+
+let unsafeGetFar = (cameraProjection, state: StateDataMainType.state) =>
+  FrustumPerspectiveCameraProjectionService.unsafeGetFar(
+    cameraProjection,
+    state.perspectiveCameraProjectionRecord,
+  );
+
+let unsafeGetFovy = (cameraProjection, state: StateDataMainType.state) =>
+  FrustumPerspectiveCameraProjectionService.unsafeGetFovy(
+    cameraProjection,
+    state.perspectiveCameraProjectionRecord,
+  );
+
+let unsafeGetAspect = (cameraProjection, state: StateDataMainType.state) =>
+  FrustumPerspectiveCameraProjectionService.unsafeGetAspect(
+    cameraProjection,
+    state.perspectiveCameraProjectionRecord,
+  );
