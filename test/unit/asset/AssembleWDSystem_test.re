@@ -691,4 +691,317 @@ let _ =
         });
       })
     );
+
+    describe("test lightMaterials", () => {
+      let _buildGLTFJsonOfLightMaterial = () =>
+        ConvertGLTFTool.buildGLTFJson(
+          ~nodes=
+            {| [
+        {
+            "children": [
+                1, 2, 3, 4, 5
+            ]
+        },
+        {
+          "mesh": 0
+        },
+        {
+          "mesh": 1
+        },
+        {
+          "mesh": 0
+        },
+        {
+          "mesh": 2
+        },
+        {
+          "mesh": 3
+        }
+    ]|},
+          ~meshes=
+            {| [
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 0
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 1
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 3
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 2
+                }
+            ]
+        }
+    ] |},
+          ~materials=
+            {| [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0
+            },
+            "name": "truck"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    1.0,
+                    0.5,
+                    0.5,
+                    0.8
+                ],
+                "metallicFactor": 0.0
+            },
+            "name": "glass"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 1
+                },
+                "metallicFactor": 0.0
+            }
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0
+            }
+        }
+    ]|},
+          ~textures=
+            {|  [
+        {
+            "sampler": 0,
+            "source": 0
+        },
+        {
+            "sampler": 1,
+            "source": 1
+        }
+    ]|},
+          ~samplers=
+            {|  [
+        {
+            "magFilter": 9729,
+            "minFilter": 9986,
+            "wrapS": 10497,
+            "wrapT": 33071
+        },
+        {
+            "magFilter": 9728,
+            "minFilter": 9729,
+            "wrapS": 33071,
+            "wrapT": 33648
+        }
+    ]|},
+          ~images=
+            {|  [
+        {
+            "uri":"|}
+            ++ ConvertGLTFTool.buildFakeImageOfSingleNode()
+            ++ {|"
+            },
+        {
+            "uri":"|}
+            ++ ConvertGLTFTool.buildFakeImageOfCesiumMilkTruck()
+            ++ {|"
+            }
+            ]|},
+          (),
+        );
+
+      let _getAllLightMaterials = (sceneGameObject, state) =>
+        _getAllGameObjects(sceneGameObject, state)
+        |> Js.Array.filter(gameObject =>
+             GameObjectAPI.hasGameObjectLightMaterialComponent(
+               gameObject,
+               state,
+             )
+           )
+        |> Js.Array.map(gameObject =>
+             GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
+               gameObject,
+               state,
+             )
+           );
+
+      testPromise("test set diffuseColor", () =>
+        AssembleWDSystemTool.testResult(
+          _buildGLTFJsonOfLightMaterial(),
+          ((state, sceneGameObject)) =>
+            _getAllLightMaterials(sceneGameObject, state)
+            |> Js.Array.map(lightMaterial =>
+                 LightMaterialAPI.getLightMaterialDiffuseColor(
+                   lightMaterial,
+                   state,
+                 )
+               )
+            |>
+            expect == [|
+                        LightMaterialTool.getDefaultDiffuseColor(state),
+                        [|1., 0.5, 0.5|],
+                        LightMaterialTool.getDefaultDiffuseColor(state),
+                        LightMaterialTool.getDefaultDiffuseColor(state),
+                        LightMaterialTool.getDefaultDiffuseColor(state),
+                      |],
+          state^,
+        )
+      );
+
+      testPromise("test set diffuseMap", () =>
+        AssembleWDSystemTool.testResult(
+          _buildGLTFJsonOfLightMaterial(),
+          ((state, sceneGameObject)) =>
+            _getAllLightMaterials(sceneGameObject, state)
+            |> Js.Array.filter(lightMaterial =>
+                 LightMaterialAPI.hasLightMaterialDiffuseMap(
+                   lightMaterial,
+                   state,
+                 )
+               )
+            |> Js.Array.map(lightMaterial =>
+                 LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                   lightMaterial,
+                   state,
+                 )
+               )
+            |> expect == [|0, 0, 0, 1|],
+          state^,
+        )
+      );
+
+      describe("test diffuseMaps", () => {
+        let _getAllDiffuseMaps = (sceneGameObject, state) =>
+          _getAllLightMaterials(sceneGameObject, state)
+          |> Js.Array.filter(lightMaterial =>
+               LightMaterialAPI.hasLightMaterialDiffuseMap(
+                 lightMaterial,
+                 state,
+               )
+             )
+          |> Js.Array.map(lightMaterial =>
+               LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                 lightMaterial,
+                 state,
+               )
+             );
+
+        testPromise("test set data", () =>
+          AssembleWDSystemTool.testResult(
+            _buildGLTFJsonOfLightMaterial(),
+            ((state, sceneGameObject)) =>
+              _getAllDiffuseMaps(sceneGameObject, state)
+              |> Js.Array.map(diffuseMap =>
+                   (
+                     BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
+                       diffuseMap,
+                       state,
+                     ),
+                     BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
+                       diffuseMap,
+                       state,
+                     ),
+                     BasicSourceTextureAPI.getBasicSourceTextureWrapS(
+                       diffuseMap,
+                       state,
+                     ),
+                     BasicSourceTextureAPI.getBasicSourceTextureWrapT(
+                       diffuseMap,
+                       state,
+                     ),
+                   )
+                 )
+              |> Obj.magic
+              |>
+              expect == [|
+                          (
+                            SourceTextureType.LINEAR,
+                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                            SourceTextureType.REPEAT,
+                            SourceTextureType.CLAMP_TO_EDGE,
+                          ),
+                          (
+                            SourceTextureType.LINEAR,
+                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                            SourceTextureType.REPEAT,
+                            SourceTextureType.CLAMP_TO_EDGE,
+                          ),
+                          (
+                            SourceTextureType.LINEAR,
+                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                            SourceTextureType.REPEAT,
+                            SourceTextureType.CLAMP_TO_EDGE,
+                          ),
+                          (
+                            SourceTextureType.NEAREST,
+                            SourceTextureType.LINEAR,
+                            SourceTextureType.CLAMP_TO_EDGE,
+                            SourceTextureType.MIRRORED_REPEAT,
+                          ),
+                        |],
+            state^,
+          )
+        );
+        testPromise("test set source", () =>
+          ConvertGLTFTool.testResult(
+            _buildGLTFJsonOfLightMaterial(),
+            ((wdRecord, imageArr, bufferArr) as data) => {
+              let (state, sceneGameObject) =
+                AssembleWDSystem.assemble(data, state^);
+
+              _getAllDiffuseMaps(sceneGameObject, state)
+              |> Js.Array.map(diffuseMap =>
+                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                     diffuseMap,
+                     state,
+                   )
+                 )
+              |>
+              expect == [|imageArr[0], imageArr[0], imageArr[0], imageArr[1]|];
+            },
+          )
+        );
+      });
+    });
   });

@@ -448,34 +448,34 @@ let _ =
               lightMaterials |> expect == [|{diffuseColor: None}|]
             )
           );
-          testPromise("test truck gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({lightMaterials}, _, _)) =>
-              lightMaterials
-              |>
-              expect == [|
-                          {diffuseColor: None},
-                          {
-                            diffuseColor:
-                              Some([|
-                                0.0,
-                                0.04050629958510399,
-                                0.021240700036287309,
-                                1.0,
-                              |]),
-                          },
-                          {
-                            diffuseColor:
-                              Some([|
-                                0.06400000303983689,
-                                0.06400000303983689,
-                                0.06400000303983689,
-                                1.0,
-                              |]),
-                          },
-                          {diffuseColor: None},
-                        |]
+          describe("test has data", () =>
+            testPromise("only set r,g,b components, ignore alpha component", () =>
+              _test(
+                ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+                (({lightMaterials}, _, _)) =>
+                lightMaterials
+                |>
+                expect == [|
+                            {diffuseColor: None},
+                            {
+                              diffuseColor:
+                                Some([|
+                                  0.0,
+                                  0.04050629958510399,
+                                  0.021240700036287309,
+                                |]),
+                            },
+                            {
+                              diffuseColor:
+                                Some([|
+                                  0.06400000303983689,
+                                  0.06400000303983689,
+                                  0.06400000303983689,
+                                |]),
+                            },
+                            {diffuseColor: None},
+                          |]
+              )
             )
           );
         })
@@ -483,9 +483,9 @@ let _ =
       describe("test basicSourceTextures", () =>
         testPromise("test", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
             (({basicSourceTextures}, _, _)) =>
-            basicSourceTextures |> expect == {count: 1}
+            basicSourceTextures |> expect == {count: 2}
           )
         )
       );

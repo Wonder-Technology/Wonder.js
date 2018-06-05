@@ -403,7 +403,6 @@ let _ =
                         () => {
                           let (state, gameObject, _, clonedGameObjectArr, clonedGeometryArr) =
                             _prepare(state^);
-                            WonderLog.Log.print(clonedGeometryArr) |> ignore;
                           (
                             BoxGeometryAPI .unsafeGetBoxGeometryGameObject(
                               clonedGeometryArr[0],
@@ -452,7 +451,6 @@ let _ =
                         () => {
                           let (state, gameObject, _, clonedGameObjectArr, clonedGeometryArr) =
                             _prepare(state^);
-                            WonderLog.Log.print(clonedGeometryArr) |> ignore;
                           (
                             CustomGeometryAPI .unsafeGetCustomGeometryGameObject(
                               clonedGeometryArr[0],

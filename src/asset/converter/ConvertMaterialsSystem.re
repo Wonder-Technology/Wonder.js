@@ -17,7 +17,15 @@ let convertToLightMaterials =
            arr
            |> ArrayService.push(
                 {
-                  diffuseColor: baseColorFactor,
+                  diffuseColor:
+                    switch (baseColorFactor) {
+                    | None => None
+                    | Some(baseColorFactor) => [|
+                        baseColorFactor[0],
+                        baseColorFactor[1],
+                        baseColorFactor[2],
+                      |] |. Some
+                    },
                   /* specularColor: metallicFactor,
                      shininess: roughnessFactor */
                 }: WDType.lightMaterial,

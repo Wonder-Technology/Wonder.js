@@ -10,9 +10,10 @@ open OperateLightMaterialMainService;
 
 open DisposeLightMaterialMainService;
 
-let createLightMaterial = (state) => [@bs] create(state);
+let createLightMaterial = state => create(. state);
 
-let unsafeGetLightMaterialGameObject = (material, state: StateDataMainType.state) => {
+let unsafeGetLightMaterialGameObject =
+    (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -21,14 +22,17 @@ let unsafeGetLightMaterialGameObject = (material, state: StateDataMainType.state
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(material, RecordLightMaterialMainService.getRecord(state))
+  unsafeGetGameObject(
+    material,
+    RecordLightMaterialMainService.getRecord(state),
+  );
 };
 
 let getLightMaterialDiffuseColor = (material, state: StateDataMainType.state) => {
@@ -40,17 +44,18 @@ let getLightMaterialDiffuseColor = (material, state: StateDataMainType.state) =>
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getDiffuseColor(material, state)
+  getDiffuseColor(material, state);
 };
 
-let setLightMaterialDiffuseColor = (material, color, state: StateDataMainType.state) => {
+let setLightMaterialDiffuseColor =
+    (material, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -59,14 +64,14 @@ let setLightMaterialDiffuseColor = (material, color, state: StateDataMainType.st
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setDiffuseColor(material, color, state)
+  setDiffuseColor(material, color, state);
 };
 
 let getLightMaterialSpecularColor = (material, state: StateDataMainType.state) => {
@@ -78,17 +83,18 @@ let getLightMaterialSpecularColor = (material, state: StateDataMainType.state) =
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getSpecularColor(material, state)
+  getSpecularColor(material, state);
 };
 
-let setLightMaterialSpecularColor = (material, color, state: StateDataMainType.state) => {
+let setLightMaterialSpecularColor =
+    (material, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -97,14 +103,14 @@ let setLightMaterialSpecularColor = (material, color, state: StateDataMainType.s
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setSpecularColor(material, color, state)
+  setSpecularColor(material, color, state);
 };
 
 let getLightMaterialShininess = (material, state: StateDataMainType.state) => {
@@ -116,17 +122,18 @@ let getLightMaterialShininess = (material, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getShininess(material, state)
+  getShininess(material, state);
 };
 
-let setLightMaterialShininess = (material, shininess, state: StateDataMainType.state) => {
+let setLightMaterialShininess =
+    (material, shininess, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -135,14 +142,14 @@ let setLightMaterialShininess = (material, shininess, state: StateDataMainType.s
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setShininess(material, shininess, state)
+  setShininess(material, shininess, state);
 };
 
 let unsafeGetLightMaterialDiffuseMap = (material, state) => {
@@ -154,14 +161,14 @@ let unsafeGetLightMaterialDiffuseMap = (material, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetDiffuseMap(material, state)
+  unsafeGetDiffuseMap(material, state);
 };
 
 let setLightMaterialDiffuseMap = (material, texture, state) => {
@@ -173,14 +180,33 @@ let setLightMaterialDiffuseMap = (material, texture, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setDiffuseMap(material, texture, state)
+  setDiffuseMap(material, texture, state);
+};
+
+let hasLightMaterialDiffuseMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasDiffuseMap(material, state);
 };
 
 let unsafeGetLightMaterialSpecularMap = (material, state) => {
@@ -192,14 +218,14 @@ let unsafeGetLightMaterialSpecularMap = (material, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetSpecularMap(material, state)
+  unsafeGetSpecularMap(material, state);
 };
 
 let setLightMaterialSpecularMap = (material, texture, state) => {
@@ -211,12 +237,31 @@ let setLightMaterialSpecularMap = (material, texture, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordLightMaterialMainService.getRecord(state)
+              RecordLightMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setSpecularMap(material, texture, state)
+  setSpecularMap(material, texture, state);
+};
+
+let hasLightMaterialSpecularMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasSpecularMap(material, state);
 };

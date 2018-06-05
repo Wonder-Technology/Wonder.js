@@ -67,7 +67,7 @@ let _getBatchComponentGameObjectData =
       gameObjectIndices
     |> _getBatchArrByIndices(gameObjectArr),
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
+    |> _getBatchArrByIndices(lightMaterialArr),
   );
 };
 
@@ -342,6 +342,26 @@ let _batchSetPerspectiveCameraProjectionData =
   {...state, perspectiveCameraProjectionRecord};
 };
 
+let _batchSetLightMaterialData =
+    ({lightMaterials}, lightMaterialArr, {lightMaterialRecord} as state) =>
+  lightMaterials
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, {diffuseColor}, index) => {
+         let material = lightMaterialArr[index];
+
+         switch (diffuseColor) {
+         | None => state
+         | Some(diffuseColor) =>
+           OperateLightMaterialMainService.setDiffuseColor(
+             material,
+             diffuseColor,
+             state,
+           )
+         };
+       },
+       state,
+     );
+
 let batchOperate =
     (
       {indices} as wdRecord,
@@ -405,6 +425,7 @@ let batchOperate =
          wdRecord,
          perspectiveCameraProjectionArr,
        )
+    |> _batchSetLightMaterialData(wdRecord, lightMaterialArr)
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          transformGameObjects,
          gameObjectTransforms,

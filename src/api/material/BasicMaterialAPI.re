@@ -10,9 +10,10 @@ open OperateBasicMaterialMainService;
 
 open DisposeBasicMaterialMainService;
 
-let createBasicMaterial = (state) => [@bs] create(state);
+let createBasicMaterial = state => create(. state);
 
-let unsafeGetBasicMaterialGameObject = (material, state: StateDataMainType.state) => {
+let unsafeGetBasicMaterialGameObject =
+    (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -21,14 +22,17 @@ let unsafeGetBasicMaterialGameObject = (material, state: StateDataMainType.state
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordBasicMaterialMainService.getRecord(state)
+              RecordBasicMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(material, RecordBasicMaterialMainService.getRecord(state))
+  unsafeGetGameObject(
+    material,
+    RecordBasicMaterialMainService.getRecord(state),
+  );
 };
 
 let getBasicMaterialColor = (material, state: StateDataMainType.state) => {
@@ -40,14 +44,14 @@ let getBasicMaterialColor = (material, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordBasicMaterialMainService.getRecord(state)
+              RecordBasicMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getColor(material, state)
+  getColor(material, state);
 };
 
 let setBasicMaterialColor = (material, color, state: StateDataMainType.state) => {
@@ -59,14 +63,14 @@ let setBasicMaterialColor = (material, color, state: StateDataMainType.state) =>
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordBasicMaterialMainService.getRecord(state)
+              RecordBasicMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setColor(material, color, state)
+  setColor(material, color, state);
 };
 
 let unsafeGetBasicMaterialMap = (material, state) => {
@@ -78,14 +82,14 @@ let unsafeGetBasicMaterialMap = (material, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordBasicMaterialMainService.getRecord(state)
+              RecordBasicMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetMap(material, state)
+  unsafeGetMap(material, state);
 };
 
 let setBasicMaterialMap = (material, texture, state) => {
@@ -97,12 +101,31 @@ let setBasicMaterialMap = (material, texture, state) => {
             AliveComponentService.checkComponentShouldAlive(
               material,
               isAlive,
-              RecordBasicMaterialMainService.getRecord(state)
+              RecordBasicMaterialMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setMap(material, texture, state)
+  setMap(material, texture, state);
+};
+
+let hasLightMaterialMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasMap(material, state);
 };

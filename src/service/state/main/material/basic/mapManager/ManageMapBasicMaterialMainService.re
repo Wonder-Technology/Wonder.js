@@ -3,16 +3,17 @@ open StateDataMainType;
 open BasicMaterialType;
 
 let getMap = (material, {settingRecord} as state) => {
-  let {textureIndices, mapUnits} = RecordBasicMaterialMainService.getRecord(state);
+  let {textureIndices, mapUnits} =
+    RecordBasicMaterialMainService.getRecord(state);
   ManagerMapMaterialMainService.getMap(
     material,
     BufferSettingService.getTextureCountPerMaterial(settingRecord),
     (
       OperateTypeArrayBasicMaterialService.getMapUnit,
-      OperateTypeArrayBasicMaterialService.getTextureIndex
+      OperateTypeArrayBasicMaterialService.getTextureIndex,
     ),
-    (textureIndices, mapUnits)
-  )
+    (textureIndices, mapUnits),
+  );
 };
 
 let unsafeGetMap = (material, {settingRecord} as state) =>
@@ -28,17 +29,26 @@ let setMap = (material, texture, {settingRecord} as state) => {
       (
         OperateTypeArrayBasicMaterialService.getMapUnit,
         OperateTypeArrayBasicMaterialService.setMapUnit,
-        OperateTypeArrayBasicMaterialService.setTextureIndex
+        OperateTypeArrayBasicMaterialService.setTextureIndex,
       ),
       (
         BufferSettingService.getTextureCountPerMaterial(settingRecord),
         textureIndices,
         mapUnits,
-        textureCountMap
-      )
+        textureCountMap,
+      ),
     );
   {
     ...state,
-    basicMaterialRecord: Some({...basicMaterialRecord, textureIndices, mapUnits, textureCountMap})
-  }
+    basicMaterialRecord:
+      Some({
+        ...basicMaterialRecord,
+        textureIndices,
+        mapUnits,
+        textureCountMap,
+      }),
+  };
 };
+
+let hasMap = (material, {settingRecord} as state) =>
+  getMap(material, state) |> Js.Option.isSome;
