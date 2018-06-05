@@ -15,177 +15,175 @@ let _checkBatchAdd = (uidArr, componentArr) =>
       test(
         Log.buildAssertMessage(
           ~expect={j|one gameObject should add one component|j},
-          ~actual={j|$gameObjectCount gameObject add $componentCount components|j}
+          ~actual=
+            {j|$gameObjectCount gameObject add $componentCount components|j},
         ),
-        () => gameObjectCount == componentCount
-      )
+        () =>
+        gameObjectCount == componentCount
+      );
     },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
 let _batchAddComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
       handleAddComponentFunc,
-      componentRecord
+      componentRecord,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (componentRecord, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           ComponentMapService.addComponent(uid, component, componentMap);
-           [@bs] handleAddComponentFunc(component, uid, componentRecord)
-         }
-       ),
-       componentRecord
-     )
+       (. componentRecord, uid, index) => {
+         let component = Array.unsafe_get(componentArr, index);
+         ComponentMapService.addComponent(uid, component, componentMap);
+         handleAddComponentFunc(. component, uid, componentRecord);
+       },
+       componentRecord,
+     );
 };
 
 let _batchAddComponentWithState =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
       handleAddComponentFunc,
-      state
+      state,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (state, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           ComponentMapService.addComponent(uid, component, componentMap);
-           [@bs] handleAddComponentFunc(component, uid, state)
-         }
-       ),
-       state
-     )
+       (. state, uid, index) => {
+         let component = Array.unsafe_get(componentArr, index);
+         ComponentMapService.addComponent(uid, component, componentMap);
+         handleAddComponentFunc(. component, uid, state);
+       },
+       state,
+     );
 };
 
 let batchAddBasicCameraViewComponentForClone =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {basicCameraViewRecord, gameObjectRecord} as state
+      {basicCameraViewRecord, gameObjectRecord} as state,
     ) => {
   ...state,
   basicCameraViewRecord:
     _batchAddComponent(
       (uidArr, componentArr, gameObjectRecord.basicCameraViewMap),
       AddBasicCameraViewService.handleAddComponent,
-      basicCameraViewRecord
-    )
+      basicCameraViewRecord,
+    ),
 };
 
 let batchAddPerspectiveCameraProjectionComponentForClone =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {perspectiveCameraProjectionRecord, gameObjectRecord} as state
+      {perspectiveCameraProjectionRecord, gameObjectRecord} as state,
     ) => {
   ...state,
   perspectiveCameraProjectionRecord:
     _batchAddComponent(
       (uidArr, componentArr, gameObjectRecord.perspectiveCameraProjectionMap),
       AddPerspectiveCameraProjectionService.handleAddComponent,
-      perspectiveCameraProjectionRecord
-    )
+      perspectiveCameraProjectionRecord,
+    ),
 };
 
-let batchAddTransformComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
+let _batchAddTransformComponent =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {gameObjectRecord} as state,
+    ) => {
   ...state,
   transformRecord:
     Some(
       _batchAddComponent(
         (uidArr, componentArr, gameObjectRecord.transformMap),
         AddTransformService.handleAddComponent,
-        state |> RecordTransformMainService.getRecord
-      )
-    )
+        state |> RecordTransformMainService.getRecord,
+      ),
+    ),
 };
 
+let batchAddTransformComponentForClone = _batchAddTransformComponent;
+
 let batchAddMeshRendererComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) =>
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {gameObjectRecord} as state,
+    ) =>
   _batchAddComponentWithState(
     (uidArr, componentArr, gameObjectRecord.meshRendererMap),
     AddMeshRendererMainService.handleAddComponent,
-    state
+    state,
   );
 
 let _batchAddSharableComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
       increaseGroupCountFunc,
-      record
+      record,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (record, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
-           [@bs] increaseGroupCountFunc(component, record)
-         }
-       ),
-       record
-     )
+       (. record, uid, index) => {
+         let component = Array.unsafe_get(componentArr, index);
+         componentMap
+         |> ComponentMapService.addComponent(uid, component)
+         |> ignore;
+         increaseGroupCountFunc(. component, record);
+       },
+       record,
+     );
 };
 
 let _batchAddSharableGeometryComponent =
     (
-      (uidArr: array(int), componentArr: array(component), dataTupleForBatchAddComponentDataFunc),
+      (
+        uidArr: array(int),
+        componentArr: array(component),
+        dataTupleForBatchAddComponentDataFunc,
+      ),
       increaseGroupCountFunc,
       batchAddComponentDataFunc,
-      record
+      record,
     ) => {
   _checkBatchAdd(uidArr, componentArr);
   uidArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       [@bs]
-       (
-         (record, uid, index) => {
-           let component = Array.unsafe_get(componentArr, index);
-           [@bs] batchAddComponentDataFunc(dataTupleForBatchAddComponentDataFunc, component, uid)
-           |> ignore;
-           [@bs] increaseGroupCountFunc(component, record)
-         }
-       ),
-       record
-     )
+       (. record, uid, index) => {
+         let component = Array.unsafe_get(componentArr, index);
+         batchAddComponentDataFunc(.
+           dataTupleForBatchAddComponentDataFunc,
+           component,
+           uid,
+         )
+         |> ignore;
+         increaseGroupCountFunc(. component, record);
+       },
+       record,
+     );
 };
 
 let _batchAddBoxGeometryComponentDataForClone =
-  [@bs]
-  (
-    ((currentGeometryDataMap, type_), component, uid) =>
-      /* let component = Array.unsafe_get(componentArr, index); */
-      CurrentComponentDataMapRenderService.addToMap(
-        uid,
-        (
-          component,
-          /* CurrentComponentDataMapRenderService.getBoxGeometryType(), */
-          type_
-          /* bufferMapTuple,
-             (
-               VerticesBoxGeometryMainService.getVertices,
-               NormalsBoxGeometryMainService.getNormals,
-               IndicesBoxGeometryMainService.getIndices,
-               IndicesBoxGeometryMainService.getIndicesCount
-             ) */
-        ),
-        currentGeometryDataMap
-      )
-  );
+  (. (currentGeometryDataMap, type_), component, uid) =>
+    CurrentComponentDataMapRenderService.addToMap(
+      uid,
+      (component, type_),
+      currentGeometryDataMap,
+    );
 
 let batchAddBoxGeometryComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  /* let {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap} = vboBufferRecord; */
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {gameObjectRecord} as state,
+    ) => {
   ...state,
   boxGeometryRecord:
     _batchAddSharableGeometryComponent(
@@ -194,50 +192,29 @@ let batchAddBoxGeometryComponentForClone =
         componentArr,
         (
           gameObjectRecord.currentGeometryDataMap,
-          CurrentComponentDataMapRenderService.getBoxGeometryType()
-          /* (
-               boxGeometryVertexBufferMap,
-               boxGeometryNormalBufferMap,
-               boxGeometryElementArrayBufferMap
-             ) */
-        )
+          CurrentComponentDataMapRenderService.getBoxGeometryType(),
+        ),
       ),
       GroupBoxGeometryService.increaseGroupCount,
       _batchAddBoxGeometryComponentDataForClone,
-      state |> RecordBoxGeometryMainService.getRecord
-    )
+      state |> RecordBoxGeometryMainService.getRecord,
+    ),
 };
 
-let _batchAddCustomGeometryComponentDataForClone =
-  [@bs]
-  (
-    ((currentGeometryDataMap, type_), component, uid) =>
-      /* let component = Array.unsafe_get(componentArr, index); */
-      CurrentComponentDataMapRenderService.addToMap(
-        uid,
-        (
-          component,
-          /* CurrentComponentDataMapRenderService.getCustomGeometryType(), */
-          type_
-          /* bufferMapTuple,
-             (
-               VerticesCustomGeometryMainService.getVertices,
-               NormalsCustomGeometryMainService.getNormals,
-               IndicesCustomGeometryMainService.getIndices,
-               IndicesCustomGeometryMainService.getIndicesCount
-             ) */
-        ),
-        currentGeometryDataMap
-      )
-  );
+let _batchAddCustomGeometryComponentData =
+  (. (currentGeometryDataMap, type_), component, uid) =>
+    CurrentComponentDataMapRenderService.addToMap(
+      uid,
+      (component, type_),
+      currentGeometryDataMap,
+    );
 
-let batchAddCustomGeometryComponentForClone =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  /* let {
-       customGeometryVertexBufferMap,
-       customGeometryNormalBufferMap,
-       customGeometryElementArrayBufferMap
-     } = vboBufferRecord; */
+let _batchAddCustomGeometryComponent =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {gameObjectRecord} as state,
+    ) => {
   ...state,
   customGeometryRecord:
     Some(
@@ -247,42 +224,43 @@ let batchAddCustomGeometryComponentForClone =
           componentArr,
           (
             gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapRenderService.getCustomGeometryType()
-            /* (
-                 customGeometryVertexBufferMap,
-                 customGeometryNormalBufferMap,
-                 customGeometryElementArrayBufferMap
-               ) */
-          )
+            CurrentComponentDataMapRenderService.getCustomGeometryType(),
+          ),
         ),
         GroupCustomGeometryService.increaseGroupCount,
-        _batchAddCustomGeometryComponentDataForClone,
-        state |> RecordCustomGeometryMainService.getRecord
-      )
-    )
+        _batchAddCustomGeometryComponentData,
+        state |> RecordCustomGeometryMainService.getRecord,
+      ),
+    ),
 };
+
+let batchAddCustomGeometryComponentForClone = _batchAddCustomGeometryComponent;
 
 let _batchAddMaterialComponentForClone =
     (
       isShareMaterial,
       (uidArr: array(int), componentArr: array(component), componentMap),
       (increaseGroupCountFunc, handleAddComponentFunc),
-      record
+      record,
     ) =>
   isShareMaterial ?
     _batchAddSharableComponent(
       (uidArr, componentArr, componentMap),
       increaseGroupCountFunc,
-      record
+      record,
     ) :
-    _batchAddComponent((uidArr, componentArr, componentMap), handleAddComponentFunc, record);
+    _batchAddComponent(
+      (uidArr, componentArr, componentMap),
+      handleAddComponentFunc,
+      record,
+    );
 
 let batchAddBasicMaterialComponentForClone =
     (
       isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
-      {gameObjectRecord} as state
+      {gameObjectRecord} as state,
     ) => {
   ...state,
   basicMaterialRecord:
@@ -290,10 +268,13 @@ let batchAddBasicMaterialComponentForClone =
       _batchAddMaterialComponentForClone(
         isShareMaterial,
         (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
-        (GroupBasicMaterialService.increaseGroupCount, AddBasicMaterialService.handleAddComponent),
-        RecordBasicMaterialMainService.getRecord(state)
-      )
-    )
+        (
+          GroupBasicMaterialService.increaseGroupCount,
+          AddBasicMaterialService.handleAddComponent,
+        ),
+        RecordBasicMaterialMainService.getRecord(state),
+      ),
+    ),
 };
 
 let batchAddLightMaterialComponentForClone =
@@ -301,7 +282,7 @@ let batchAddLightMaterialComponentForClone =
       isShareMaterial,
       uidArr: array(int),
       componentArr: array(component),
-      {gameObjectRecord} as state
+      {gameObjectRecord} as state,
     ) => {
   ...state,
   lightMaterialRecord:
@@ -309,111 +290,60 @@ let batchAddLightMaterialComponentForClone =
       _batchAddMaterialComponentForClone(
         isShareMaterial,
         (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
-        (GroupLightMaterialService.increaseGroupCount, AddLightMaterialService.handleAddComponent),
-        RecordLightMaterialMainService.getRecord(state)
-      )
-    )
+        (
+          GroupLightMaterialService.increaseGroupCount,
+          AddLightMaterialService.handleAddComponent,
+        ),
+        RecordLightMaterialMainService.getRecord(state),
+      ),
+    ),
 };
 
 let batchAddAmbientLightComponentForClone =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {ambientLightRecord, gameObjectRecord} as state
+      {ambientLightRecord, gameObjectRecord} as state,
     ) => {
   ...state,
   ambientLightRecord:
     _batchAddComponent(
       (uidArr, componentArr, gameObjectRecord.ambientLightMap),
       AddAmbientLightService.handleAddComponent,
-      ambientLightRecord
-    )
+      ambientLightRecord,
+    ),
 };
 
 let batchAddDirectionLightComponentForClone =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {directionLightRecord, gameObjectRecord} as state
+      {directionLightRecord, gameObjectRecord} as state,
     ) => {
   ...state,
   directionLightRecord:
     _batchAddComponent(
       (uidArr, componentArr, gameObjectRecord.directionLightMap),
       AddDirectionLightService.handleAddComponent,
-      directionLightRecord
-    )
+      directionLightRecord,
+    ),
 };
 
 let batchAddPointLightComponentForClone =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {pointLightRecord, gameObjectRecord} as state
+      {pointLightRecord, gameObjectRecord} as state,
     ) => {
   ...state,
   pointLightRecord:
     _batchAddComponent(
       (uidArr, componentArr, gameObjectRecord.pointLightMap),
       AddPointLightService.handleAddComponent,
-      pointLightRecord
-    )
+      pointLightRecord,
+    ),
 };
 
-/* TODO duplicate */
-let batchAddTransformComponentForCreate =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  ...state,
-  transformRecord:
-    Some(
-      _batchAddComponent(
-        (uidArr, componentArr, gameObjectRecord.transformMap),
-        AddTransformService.handleAddComponent,
-        state |> RecordTransformMainService.getRecord
-      )
-    )
-};
+let batchAddTransformComponentForCreate = _batchAddTransformComponent;
 
-let _batchAddCustomGeometryComponentDataForCreate =
-  [@bs]
-  (
-    ((currentGeometryDataMap, type_), component, uid) =>
-      /* let component = Array.unsafe_get(componentArr, index); */
-      CurrentComponentDataMapRenderService.addToMap(
-        uid,
-        (
-          component,
-          /* CurrentComponentDataMapRenderService.getCustomGeometryType(), */
-          type_
-          /* bufferMapTuple,
-             (
-               VerticesCustomGeometryMainService.getVertices,
-               NormalsCustomGeometryMainService.getNormals,
-               IndicesCustomGeometryMainService.getIndices,
-               IndicesCustomGeometryMainService.getIndicesCount
-             ) */
-        ),
-        currentGeometryDataMap
-      )
-  );
-
-let batchAddCustomGeometryComponentForCreate =
-    (uidArr: array(int), componentArr: array(component), {gameObjectRecord} as state) => {
-  ...state,
-  customGeometryRecord:
-    Some(
-      _batchAddSharableGeometryComponent(
-        (
-          uidArr,
-          componentArr,
-          (
-            gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapRenderService.getCustomGeometryType()
-          )
-        ),
-        GroupCustomGeometryService.increaseGroupCount,
-        _batchAddCustomGeometryComponentDataForCreate,
-        state |> RecordCustomGeometryMainService.getRecord
-      )
-    )
-};
+let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
