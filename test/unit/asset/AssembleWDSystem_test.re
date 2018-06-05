@@ -501,7 +501,7 @@ let _ =
       );
     });
 
-    describe("test basicCameraViews", () => {
+    describe("test basicCameraViews", () =>
       describe("test add basicCameraView components", () =>
         testPromise("test", () =>
           AssembleWDSystemTool.testResult(
@@ -518,57 +518,57 @@ let _ =
             state^,
           )
         )
-      );
+      )
+    );
 
-      describe("test perspectiveCameraProjections", () =>
-        describe("test set data", () => {
-          let _getAllPerspectiveCameraProjectionComponent =
-              (sceneGameObject, state) =>
-            _getAllGameObjects(sceneGameObject, state)
-            |> Js.Array.filter(gameObject =>
-                 GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent(
-                   gameObject,
-                   state,
-                 )
+    describe("test perspectiveCameraProjections", () =>
+      describe("test set data", () => {
+        let _getAllPerspectiveCameraProjectionComponent =
+            (sceneGameObject, state) =>
+          _getAllGameObjects(sceneGameObject, state)
+          |> Js.Array.filter(gameObject =>
+               GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent(
+                 gameObject,
+                 state,
                )
-            |> Js.Array.map(gameObject =>
-                 GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent(
-                   gameObject,
-                   state,
-                 )
-               );
+             )
+          |> Js.Array.map(gameObject =>
+               GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent(
+                 gameObject,
+                 state,
+               )
+             );
 
-          testPromise("test set near, fovy", () =>
-            AssembleWDSystemTool.testResult(
-              ConvertGLTFTool.buildGLTFJsonOfCamera(),
-              ((state, sceneGameObject)) =>
-                _getAllPerspectiveCameraProjectionComponent(
-                  sceneGameObject,
-                  state,
-                )
-                |> Js.Array.map(cameraProjection =>
-                     (
-                       PerspectiveCameraProjectionTool.unsafeGetNear(
-                         cameraProjection,
-                         state,
-                       ),
-                       PerspectiveCameraProjectionTool.unsafeGetFovy(
-                         cameraProjection,
-                         state,
-                       ),
-                     )
+        testPromise("test set near, fovy", () =>
+          AssembleWDSystemTool.testResult(
+            ConvertGLTFTool.buildGLTFJsonOfCamera(),
+            ((state, sceneGameObject)) =>
+              _getAllPerspectiveCameraProjectionComponent(
+                sceneGameObject,
+                state,
+              )
+              |> Js.Array.map(cameraProjection =>
+                   (
+                     PerspectiveCameraProjectionTool.unsafeGetNear(
+                       cameraProjection,
+                       state,
+                     ),
+                     PerspectiveCameraProjectionTool.unsafeGetFovy(
+                       cameraProjection,
+                       state,
+                     ),
                    )
-                |>
-                expect == [|(2., 0.5), (1., 0.6), (1., 0.6), (2., 0.5)|],
-              state^,
-            )
-          );
+                 )
+              |> expect == [|(2., 0.5), (1., 0.6), (1., 0.6), (2., 0.5)|],
+            state^,
+          )
+        );
 
-          describe("test set far", () => {
-            let _buildGLTFJsonOfCamera = () =>
-              ConvertGLTFTool.buildGLTFJson(
-                ~nodes=
-                  {| [
+        describe("test set far", () => {
+          let _buildGLTFJsonOfCamera = () =>
+            ConvertGLTFTool.buildGLTFJson(
+              ~nodes=
+                {| [
         {
             "mesh": 0,
             "camera": 1,
@@ -581,8 +581,8 @@ let _ =
             "camera": 0
         }
     ]|},
-                ~cameras=
-                  {|
+              ~cameras=
+                {|
 [
         {
             "perspective": {
@@ -603,34 +603,34 @@ let _ =
         }
     ]
         |},
-                (),
-              );
-
-            testPromise("if no far, set infinite", () =>
-              AssembleWDSystemTool.testResult(
-                _buildGLTFJsonOfCamera(),
-                ((state, sceneGameObject)) =>
-                  _getAllPerspectiveCameraProjectionComponent(
-                    sceneGameObject,
-                    state,
-                  )
-                  |> Js.Array.map(cameraProjection =>
-                       PerspectiveCameraProjectionTool.unsafeGetFar(
-                         cameraProjection,
-                         state,
-                       )
-                     )
-                  |> expect == [|1000., 100000.|],
-                state^,
-              )
+              (),
             );
-          });
 
-          describe("test set aspect", () => {
-            let _buildGLTFJsonOfCamera = () =>
-              ConvertGLTFTool.buildGLTFJson(
-                ~nodes=
-                  {| [
+          testPromise("if no far, set infinite", () =>
+            AssembleWDSystemTool.testResult(
+              _buildGLTFJsonOfCamera(),
+              ((state, sceneGameObject)) =>
+                _getAllPerspectiveCameraProjectionComponent(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(cameraProjection =>
+                     PerspectiveCameraProjectionTool.unsafeGetFar(
+                       cameraProjection,
+                       state,
+                     )
+                   )
+                |> expect == [|1000., 100000.|],
+              state^,
+            )
+          );
+        });
+
+        describe("test set aspect", () => {
+          let _buildGLTFJsonOfCamera = () =>
+            ConvertGLTFTool.buildGLTFJson(
+              ~nodes=
+                {| [
         {
             "mesh": 0,
             "camera": 1,
@@ -643,8 +643,8 @@ let _ =
             "camera": 0
         }
     ]|},
-                ~cameras=
-                  {|
+              ~cameras=
+                {|
 [
         {
             "perspective": {
@@ -664,49 +664,31 @@ let _ =
         }
     ]
         |},
-                (),
-              );
+              (),
+            );
 
-            testPromise("if no aspect, set canvas.width/canvas.height", () => {
-              let canvas = {"width": 100., "height": 200.} |> Obj.magic;
-              let state = ViewTool.setCanvas(canvas, state^);
+          testPromise("if no aspect, set canvas.width/canvas.height", () => {
+            let canvas = {"width": 100., "height": 200.} |> Obj.magic;
+            let state = ViewTool.setCanvas(canvas, state^);
 
-              AssembleWDSystemTool.testResult(
-                _buildGLTFJsonOfCamera(),
-                ((state, sceneGameObject)) =>
-                  _getAllPerspectiveCameraProjectionComponent(
-                    sceneGameObject,
-                    state,
-                  )
-                  |> Js.Array.map(cameraProjection =>
-                       PerspectiveCameraProjectionTool.unsafeGetAspect(
-                         cameraProjection,
-                         state,
-                       )
+            AssembleWDSystemTool.testResult(
+              _buildGLTFJsonOfCamera(),
+              ((state, sceneGameObject)) =>
+                _getAllPerspectiveCameraProjectionComponent(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(cameraProjection =>
+                     PerspectiveCameraProjectionTool.unsafeGetAspect(
+                       cameraProjection,
+                       state,
                      )
-                  |> expect == [|2., canvas##width /. canvas##height|],
-                state,
-              );
-            });
+                   )
+                |> expect == [|2., canvas##width /. canvas##height|],
+              state,
+            );
           });
-        })
-      );
-
-      describe("contract check", () =>
-        testPromise("shouldn't disposed before", () => {
-          TestTool.openContractCheck();
-          let (state, gameObject, transform) =
-            GameObjectTool.createGameObject(state^);
-          let state = TransformTool.dispose(transform, state);
-
-          ConvertGLTFTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(), data =>
-            expect(() =>
-              AssembleWDSystem.assemble(data, state)
-            )
-            |> toThrowMessage("expect not disposed before")
-          );
-        })
-      );
-    });
+        });
+      })
+    );
   });

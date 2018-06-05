@@ -1,4 +1,3 @@
-
 let convertToBasicCameraViews =
     ({cameras}: GLTFType.gltf)
     : WDType.basicCameraViews => {
@@ -22,15 +21,6 @@ let convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
                perspective |> OptionService.unsafeGet;
              arr
              |> ArrayService.push(
-                  /* near: Some(znear),
-                     far: switch(zfar){
-                     | None =>
-                     /* TODO how to use infinite projection matrix? */
-                     Some(10000)
-                     | Some(zfar) => Some(zfar)
-                     },
-                     fovy: Some(yfov),
-                     aspect: aspectRatio */
                   {near: znear, far: zfar, fovy: yfov, aspect: aspectRatio}: WDType.perspectiveCameraProjection,
                 );
            | _ => arr
