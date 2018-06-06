@@ -1,7 +1,3 @@
-/* type magFilter =
-   | NEAREST
-   | LINEAR; */
-
 type filter =
   | NEAREST
   | LINEAR

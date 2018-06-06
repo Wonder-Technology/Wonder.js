@@ -59,34 +59,45 @@ let buildFakeGl =
       ~texImage2D=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~texParameteri=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getParameter=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(99),
+      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     |> returns(99),
       ~activeTexture=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bindTexture=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~generateMipmap=createEmptyStub(refJsObjToSandbox(sandbox^))
+                      |> returns(100),
       ~shaderSource=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~enable=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~disable=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~cullFace=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createProgram=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(100),
+      ~createProgram=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     |> returns(100),
       ~createShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~compileShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getVertexAttribArrayEnabled=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getVertexAttribArrayEnabled=createEmptyStub(
+                                     refJsObjToSandbox(sandbox^),
+                                   ),
       ~linkProgram=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getShaderParameter=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getProgramParameter=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(true),
+      ~getProgramParameter=createEmptyStub(refJsObjToSandbox(sandbox^))
+                           |> returns(true),
       ~getShaderInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getProgramInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getShaderPrecisionFormat=createEmptyStub(refJsObjToSandbox(sandbox^))
                                 |> returns({"precision": 1}),
-      ~getExtension=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~getExtension=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    |> returns(0),
       ~attachShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bindAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~deleteShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~deleteBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
-      ~getUniformLocation=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~getAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^))
+                         |> returns(0),
+      ~getUniformLocation=createEmptyStub(refJsObjToSandbox(sandbox^))
+                          |> returns(0),
       ~bindBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~resetBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    |> returns(0),
       ~bufferData=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bufferSubData=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~vertexAttribPointer=createEmptyStub(refJsObjToSandbox(sandbox^)),
@@ -104,13 +115,13 @@ let buildFakeGl =
       ~colorMask=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~useProgram=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~disableVertexAttribArray=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ()
+      (),
     ) => {
   "TEXTURE_WRAP_S": textureWrapS,
   "TEXTURE_WRAP_T": textureWrapT,
   "TEXTURE_MAG_FILTER": textureMagFilter,
   "TEXTURE_MIN_FILTER": textureMinFilter,
-  "REAPEAT": repeat,
+  "REPEAT": repeat,
   "MIRRORED_REPEAT": mirroredRepeat,
   "CLAMP_TO_EDGE": clampToEdge,
   "NEAREST": nearest,
@@ -158,6 +169,7 @@ let buildFakeGl =
   "createTexture": createTexture,
   "activeTexture": activeTexture,
   "bindTexture": bindTexture,
+  "generateMipmap": generateMipmap,
   "VERTEX_ATTRIB_ARRAY_ENABLED": getVertexAttribArrayEnabled,
   "BACK": back,
   "FRONT": front,
@@ -203,11 +215,12 @@ let buildFakeGl =
   "shaderSource": shaderSource,
   "createProgram": createProgram,
   "createShader": createShader,
-  "compileShader": compileShader
+  "compileShader": compileShader,
 };
 
 let setFakeGl = (fakeGlObj, state: StateDataMainType.state) => {
   ...state,
   deviceManagerRecord:
-    state.deviceManagerRecord |> DeviceManagerService.setGl(fakeGlObj |> Obj.magic)
+    state.deviceManagerRecord
+    |> DeviceManagerService.setGl(fakeGlObj |> Obj.magic),
 };

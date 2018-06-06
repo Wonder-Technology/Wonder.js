@@ -4,7 +4,8 @@ open RenderBasicSourceTextureType;
 
 open BrowserDetectType;
 
-let _isPowerOfTwo = value => value land (value - 1) === 0 && value !== 0;
+let _isPowerOfTwo = value =>
+  value land (value - 1) === 0 && value !== 0 && value !== 1;
 
 let _isSourcePowerOfTwo = (width, height) =>
   _isPowerOfTwo(width) && _isPowerOfTwo(height);
@@ -68,6 +69,15 @@ let _setTextureParameters =
          );
     };
 
+let _isFilterMipmaps = filter =>
+  switch (filter) {
+  | SourceTextureType.NEAREST_MIPMAP_NEAREST
+  | SourceTextureType.NEAREST_MIPMAP_LINEAR
+  | SourceTextureType.LINEAR_MIPMAP_NEAREST
+  | SourceTextureType.LINEAR_MIPMAP_LINEAR => true
+  | _ => false
+  };
+
 let update =
     (
       (gl, textureInTypeArray, source),
@@ -105,10 +115,11 @@ let update =
     (glWrapS, glWrapT, magFilter, minFilter),
   );
   allocateSourceToTextureFunc(gl, (target, glFormat, glType), source);
-  /* TODO generateMipmaps
-     if (this.generateMipmaps && isSourcePowerOfTwo) {
-         gl.generateMipmap(gl[this.target]);
-     } */
+
+  isSourcePowerOfTwo
+  && (_isFilterMipmaps(magFilter) || _isFilterMipmaps(minFilter)) ?
+    gl |> Gl.generateMipmap(target) : ();
+
   OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
     textureInTypeArray,
     BufferBasicSourceTextureService.getNotNeedUpdate(),

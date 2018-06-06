@@ -20,23 +20,18 @@ let isNeedUpdate = (texture, state) =>
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
 
-let getNearest = () =>
-  SourceTextureType.NEAREST |> SourceTextureType.filterToUint8;
+let getNearest = () => SourceTextureTool.getNearest();
 
 let getNearestMipmapNearest = () =>
-  SourceTextureType.NEAREST_MIPMAP_NEAREST |> SourceTextureType.filterToUint8;
+  SourceTextureTool.getNearestMipmapNearest();
 
-let getLinear = () =>
-  SourceTextureType.LINEAR |> SourceTextureType.filterToUint8;
+let getLinear = () => SourceTextureTool.getLinear();
 
-let getNearestMipmapLinear = () =>
-  SourceTextureType.NEAREST_MIPMAP_LINEAR |> SourceTextureType.filterToUint8;
+let getNearestMipmapLinear = () => SourceTextureTool.getNearestMipmapLinear();
 
-let getLinearMipmapNearest = () =>
-  SourceTextureType.LINEAR_MIPMAP_NEAREST |> SourceTextureType.filterToUint8;
+let getLinearMipmapNearest = () => SourceTextureTool.getLinearMipmapNearest();
 
-let getLinearMipmapLinear = () =>
-  SourceTextureType.LINEAR_MIPMAP_LINEAR |> SourceTextureType.filterToUint8;
+let getLinearMipmapLinear = () => SourceTextureTool.getLinearMipmapLinear();
 
 let getRgb = () => TextureFormatService.getRgb();
 

@@ -278,6 +278,8 @@ external texParameteri : (int, int, int) => unit = "";
 [@bs.send.pipe: webgl1Context]
 external bindTexture : (int, texture) => unit = "";
 
+[@bs.send.pipe: webgl1Context] external generateMipmap : int => unit = "";
+
 [@bs.send.pipe: webgl1Context]
 external vertexAttribPointer :
   (attributeLocation, int, int, bool, int, int) => unit =
