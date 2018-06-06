@@ -14,11 +14,11 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let startDirector = DirectorAPI.startDirector;
+
 let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
-
-let startDirector = DirectorAPI.startDirector;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
@@ -238,6 +238,8 @@ let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
 
+let hasLightMaterialMap = BasicMaterialAPI.hasLightMaterialMap;
+
 let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
 
 let unsafeGetBasicMaterialMap = BasicMaterialAPI.unsafeGetBasicMaterialMap;
@@ -250,9 +252,13 @@ let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGa
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
+let hasLightMaterialSpecularMap = LightMaterialAPI.hasLightMaterialSpecularMap;
+
 let setLightMaterialSpecularMap = LightMaterialAPI.setLightMaterialSpecularMap;
 
 let unsafeGetLightMaterialSpecularMap = LightMaterialAPI.unsafeGetLightMaterialSpecularMap;
+
+let hasLightMaterialDiffuseMap = LightMaterialAPI.hasLightMaterialDiffuseMap;
 
 let setLightMaterialDiffuseMap = LightMaterialAPI.setLightMaterialDiffuseMap;
 
@@ -440,11 +446,11 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let startDirector = DirectorAPI.startDirector;
+
 let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
-
-let startDirector = DirectorAPI.startDirector;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
