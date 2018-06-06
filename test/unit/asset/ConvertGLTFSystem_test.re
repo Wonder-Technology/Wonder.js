@@ -438,6 +438,55 @@ let _ =
                       |]
           )
         );
+
+        describe("fix bug", () =>
+          testPromise("fix get rotation bug", () =>
+            _test(
+              ConvertGLTFTool.buildGLTFJson(
+                ~nodes=
+                  {| [
+        {
+            "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+    ]|},
+                (),
+              ),
+              (({transforms}, _, _)) =>
+              transforms
+              |>
+              expect == [|
+                          {
+                            translation: Some((0., 0., 0.)),
+                            rotation:
+                              Some((
+                                (-0.7071067811865475),
+                                0.,
+                                0.,
+                                0.7071067811865476,
+                              )),
+                            scale: Some((1., 1., 1.)),
+                          },
+                        |]
+            )
+          )
+        );
       });
       describe("test lightMaterials", () =>
         describe("test diffuseColor", () => {
@@ -449,7 +498,8 @@ let _ =
             )
           );
           describe("test has data", () =>
-            testPromise("only set r,g,b components, ignore alpha component", () =>
+            testPromise(
+              "only set r,g,b components, ignore alpha component", () =>
               _test(
                 ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
                 (({lightMaterials}, _, _)) =>

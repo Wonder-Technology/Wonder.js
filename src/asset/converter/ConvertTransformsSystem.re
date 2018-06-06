@@ -60,7 +60,7 @@ let _getRotationTuple = mat => {
       (mat[1] -. mat[4]) /. s,
       0.25 *. s,
     );
-  } else if (mat[0] > mat[5] & mat[0] > mat[10]) {
+  } else if (mat[0] > mat[5] && mat[0] > mat[10]) {
     let s = Js.Math.sqrt(1.0 +. mat[0] -. mat[5] -. mat[10]) *. 2.;
     (
       0.25 *. s,

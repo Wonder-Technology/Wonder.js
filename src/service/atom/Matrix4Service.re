@@ -120,7 +120,7 @@ let getRotationTuple = matTypeArr => {
     );
   } else if (Float32Array.unsafe_get(matTypeArr, 0)
              > Float32Array.unsafe_get(matTypeArr, 5)
-             &
+             &&
              Float32Array.unsafe_get(matTypeArr, 0) > Float32Array.unsafe_get(
                                                          matTypeArr,
                                                          10,
