@@ -54,6 +54,14 @@ let _ =
         TransformAPI.setTransformLocalPosition(transform2, pos2, state);
       let state =
         TransformAPI.setTransformLocalPosition(transform3, pos3, state);
+
+      let rotation1 = ((-2.5), 1., 0., 1.);
+      let scale1 = (2., 2., 2.5);
+      let state =
+        state
+        |> TransformAPI.setTransformLocalRotation(transform1, rotation1)
+        |> TransformAPI.setTransformLocalScale(transform1, scale1);
+
       let state =
         state
         |> GameObjectTool.disposeGameObjectTransformComponent(
@@ -374,6 +382,28 @@ let _ =
               GameObjectTool.createGameObject,
               TransformAPI.getTransformLocalPosition,
               TransformAPI.setTransformLocalPosition,
+              () => ((2., 0., 0.), (3., 1., 2.)),
+            ),
+            state,
+          )
+        );
+        test("copy localRotations", () =>
+          _testCopyTypeArraySingleValue(
+            (
+              GameObjectTool.createGameObject,
+              TransformAPI.getTransformLocalRotation,
+              TransformAPI.setTransformLocalRotation,
+              () => ((2., 0., 0., 1.), (3., 1., 2., 1.)),
+            ),
+            state,
+          )
+        );
+        test("copy localScales", () =>
+          _testCopyTypeArraySingleValue(
+            (
+              GameObjectTool.createGameObject,
+              TransformAPI.getTransformLocalScale,
+              TransformAPI.setTransformLocalScale,
               () => ((2., 0., 0.), (3., 1., 2.)),
             ),
             state,
@@ -1690,43 +1720,48 @@ let _ =
       describe("restore transform record to target state", () => {
         let _test = state => {
           open TransformType;
-          let {localToWorldMatrices, localPositions} =
+          let {
+            localToWorldMatrices,
+            localPositions,
+            localRotations,
+            localScales,
+          } =
             state |> TransformTool.getRecord;
-          (localToWorldMatrices, localPositions)
+          (localToWorldMatrices, localPositions, localRotations, localScales)
           |>
           expect == (
                       Float32Array.make([|
-                        1.,
+                        (-2.),
+                        (-10.),
+                        (-4.),
                         0.,
+                        (-10.),
+                        (-23.),
+                        (-10.),
                         0.,
-                        0.,
-                        0.,
-                        1.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        1.,
+                        5.,
+                        12.5,
+                        (-33.75),
                         0.,
                         1.,
                         2.,
                         3.,
                         1.,
-                        1.,
+                        (-2.),
+                        (-10.),
+                        (-4.),
                         0.,
+                        (-10.),
+                        (-23.),
+                        (-10.),
                         0.,
+                        5.,
+                        12.5,
+                        (-33.75),
                         0.,
-                        0.,
-                        1.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        1.,
-                        0.,
-                        3.,
-                        6.,
-                        13.,
+                        7.,
+                        15.,
+                        (-382.5),
                         1.,
                         1.,
                         0.,
@@ -1794,6 +1829,45 @@ let _ =
                         0.,
                         0.,
                       |]),
+                      Float32Array.make([|
+                        (-2.5),
+                        1.,
+                        0.,
+                        1.,
+                        0.,
+                        0.,
+                        0.,
+                        1.,
+                        0.,
+                        0.,
+                        0.,
+                        1.,
+                        0.,
+                        0.,
+                        0.,
+                        1.,
+                        0.,
+                        0.,
+                        0.,
+                        1.,
+                      |]),
+                      Float32Array.make([|
+                        2.,
+                        2.,
+                        2.5,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                      |]),
                     );
         };
         test("test restore typeArrays", () => {
@@ -1806,29 +1880,27 @@ let _ =
             );
           let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
             _prepareTransformMatrixData(state);
+
           let state =
             state
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
           let state = TransformTool.update(transform1, state);
           let state = TransformTool.update(transform2, state);
           let copiedState = MainStateTool.deepCopyForRestore(state);
-          let (currentState, _, transform4) =
-            GameObjectTool.createGameObject(state);
-          let pos4 = ((-2.), 3., 1.);
-          let currentState =
-            TransformAPI.setTransformLocalPosition(
-              transform4,
-              pos4,
-              currentState,
-            );
+
           let currentState = state;
-          let pos1 = (11., 17., 20.);
+          let (currentState, _, transform4) =
+            GameObjectTool.createGameObject(currentState);
+
+          let pos4 = ((-2.), 3., 1.);
+          let rotation4 = ((-2.5), 1., 0., 1.);
+          let scale4 = (2., 2., 2.5);
           let currentState =
-            TransformAPI.setTransformLocalPosition(
-              transform1,
-              pos1,
-              currentState,
-            );
+            currentState
+            |> TransformAPI.setTransformLocalPosition(transform4, pos4)
+            |> TransformAPI.setTransformLocalRotation(transform4, rotation4)
+            |> TransformAPI.setTransformLocalScale(transform4, scale4);
+
           let currentState = TransformTool.update(transform1, currentState);
           let _ = MainStateTool.restore(currentState, copiedState);
           _test(MainStateTool.unsafeGetState());

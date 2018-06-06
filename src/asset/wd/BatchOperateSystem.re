@@ -287,8 +287,9 @@ let _batchSetTransformParent = (parentTransforms, childrenTransforms, state) => 
 };
 
 let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
-  /* TODO set local rotation, scale */
-  let ({localPositions}: TransformType.transformRecord) as transformRecord =
+  let (
+        {localPositions, localRotations, localScales}: TransformType.transformRecord
+      ) as transformRecord =
     RecordTransformMainService.getRecord(state);
   {
     ...state,
@@ -303,13 +304,45 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
                  | None => localPositions
                  | Some(translation) =>
                    let transform = gameObjectTransforms[index];
-                   RecordTransformMainService.setLocalPositionByTuple(
+                   OperateTypeArrayTransformService.setLocalPositionByTuple(
                      transform,
                      translation,
                      localPositions,
                    );
                  },
                localPositions,
+             ),
+        localRotations:
+          transforms
+          |> WonderCommonlib.ArrayService.reduceOneParami(
+               (. localRotations, {rotation}, index) =>
+                 switch (rotation) {
+                 | None => localRotations
+                 | Some(rotation) =>
+                   let transform = gameObjectTransforms[index];
+                   OperateTypeArrayTransformService.setLocalRotationByTuple(
+                     transform,
+                     rotation,
+                     localRotations,
+                   );
+                 },
+               localRotations,
+             ),
+        localScales:
+          transforms
+          |> WonderCommonlib.ArrayService.reduceOneParami(
+               (. localScales, {scale}, index) =>
+                 switch (scale) {
+                 | None => localScales
+                 | Some(scale) =>
+                   let transform = gameObjectTransforms[index];
+                   OperateTypeArrayTransformService.setLocalScaleByTuple(
+                     transform,
+                     scale,
+                     localScales,
+                   );
+                 },
+               localScales,
              ),
       }),
   };

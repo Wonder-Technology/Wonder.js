@@ -6,108 +6,141 @@ open Js.Typed_array;
 
 open BufferTransformService;
 
-let getRecord = ({transformRecord}) => transformRecord |> OptionService.unsafeGet;
+open OperateTypeArrayTransformService;
 
-let getLocalToWorldMatrixTypeArray = (index, typeArr) =>
-  TypeArrayService.getFloat16TypeArray(getLocalToWorldMatrixIndex(index), typeArr);
-
-let getLocalToWorldMatrix = (index, typeArr) =>
-  TypeArrayService.getFloat16(getLocalToWorldMatrixIndex(index), typeArr);
-
-let setLocalToWorldMatrix = (index, data, typeArr) =>
-  TypeArrayService.setFloat16(getLocalToWorldMatrixIndex(index), data, typeArr);
-
-let getLocalPositionTuple = (index, typeArr) =>
-  TypeArrayService.getFloat3Tuple(getLocalPositionIndex(index), typeArr);
-
-let getLocalPositionTypeArray = (index, typeArr) =>
-  TypeArrayService.getFloat3TypeArray(getLocalPositionIndex(index), typeArr);
-
-let setLocalPosition = (index, data, typeArr) =>
-  TypeArrayService.setFloat3(getLocalPositionIndex(index), data, typeArr);
-
-let setLocalPositionByTuple = (index, dataTuple, typeArr) =>
-  TypeArrayService.setFloat3ByTuple(getLocalPositionIndex(index), dataTuple, typeArr);
+let getRecord = ({transformRecord}) =>
+  transformRecord |> OptionService.unsafeGet;
 
 let setAllTypeArrDataToDefault =
     (
       count: int,
-      defaultLocalToWorldMatrix,
-      defaultLocalPosition,
-      (localToWorldMatrices, localPositions)
+      (
+        defaultLocalToWorldMatrix,
+        defaultLocalPosition,
+        defaultLocalRotation,
+        defaultLocalScale,
+      ),
+      (localToWorldMatrices, localPositions, localRotations, localScales),
     ) =>
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         ((localToWorldMatrices, localPositions), index) => (
-           setLocalToWorldMatrix(index, defaultLocalToWorldMatrix, localToWorldMatrices),
-           setLocalPosition(index, defaultLocalPosition, localPositions)
-         )
+       (.
+         (localToWorldMatrices, localPositions, localRotations, localScales),
+         index,
+       ) => (
+         setLocalToWorldMatrix(
+           index,
+           defaultLocalToWorldMatrix,
+           localToWorldMatrices,
+         ),
+         setLocalPosition(index, defaultLocalPosition, localPositions),
+         setLocalRotation(index, defaultLocalRotation, localRotations),
+         setLocalScale(index, defaultLocalScale, localScales),
        ),
-       (localToWorldMatrices, localPositions)
+       (localToWorldMatrices, localPositions, localRotations, localScales),
      );
 
 let _setAllTypeArrDataToDefault =
     (
       count: int,
-      defaultLocalToWorldMatrix,
-      defaultLocalPosition,
-      (buffer, localToWorldMatrices, localPositions)
+      defaultDataTuple,
+      (
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
     ) => (
   buffer,
   setAllTypeArrDataToDefault(
     count,
-    defaultLocalToWorldMatrix,
-    defaultLocalPosition,
-    (localToWorldMatrices, localPositions)
-  )
+    defaultDataTuple,
+    (localToWorldMatrices, localPositions, localRotations, localScales),
+  ),
 );
 
-let _initBufferData = (count, defaultLocalToWorldMatrix, defaultLocalPosition) => {
+let _initBufferData = (count, defaultDataTuple) => {
   let buffer = createBuffer(count);
-  let (localToWorldMatrices, localPositions) =
+  let (localToWorldMatrices, localPositions, localRotations, localScales) =
     CreateTypeArrayTransformService.createTypeArrays(buffer, count);
-  (buffer, localToWorldMatrices, localPositions)
-  |> _setAllTypeArrDataToDefault(count, defaultLocalToWorldMatrix, defaultLocalPosition)
+  (buffer, localToWorldMatrices, localPositions, localRotations, localScales)
+  |> _setAllTypeArrDataToDefault(count, defaultDataTuple);
 };
 
 let _createForWorker =
     (
       transformCount,
-      (defaultLocalToWorldMatrix, defaultLocalPosition),
-      (buffer, localToWorldMatrices, localPositions),
-      state
+      (
+        defaultLocalToWorldMatrix,
+        defaultLocalPosition,
+        defaultLocalRotation,
+        defaultLocalScale,
+      ) as defaultDataTuple,
+      (
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
+      state,
     ) => {
-  let (copiedBuffer, (copiedLocalToWorldMatrices, copiedLocalPositions)) =
-    _initBufferData(transformCount, defaultLocalToWorldMatrix, defaultLocalPosition);
+  let (
+    copiedBuffer,
+    (
+      copiedLocalToWorldMatrices,
+      copiedLocalPositions,
+      copiedLocalRotations,
+      copiedLocalScales,
+    ),
+  ) =
+    _initBufferData(transformCount, defaultDataTuple);
   state.transformRecord =
     Some({
       index: 0,
       buffer,
       localToWorldMatrices,
       localPositions,
+      localRotations,
+      localScales,
       copiedBuffer: Some(copiedBuffer),
       copiedLocalToWorldMatrices: Some(copiedLocalToWorldMatrices),
       copiedLocalPositions: Some(copiedLocalPositions),
+      copiedLocalRotations: Some(copiedLocalRotations),
+      copiedLocalScales: Some(copiedLocalScales),
       defaultLocalToWorldMatrix,
       defaultLocalPosition,
+      defaultLocalRotation,
+      defaultLocalScale,
       parentMap: WonderCommonlib.SparseMapService.createEmpty(),
       childMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
-      localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+      localToWorldMatrixCacheMap:
+        WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
     });
-  state
+  state;
 };
 
 let _createForNoWorker =
     (
-      (defaultLocalToWorldMatrix, defaultLocalPosition),
-      (buffer, localToWorldMatrices, localPositions),
-      state
+      (
+        defaultLocalToWorldMatrix,
+        defaultLocalPosition,
+        defaultLocalRotation,
+        defaultLocalScale,
+      ),
+      (
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
+      state,
     ) => {
   state.transformRecord =
     Some({
@@ -115,20 +148,27 @@ let _createForNoWorker =
       buffer,
       localToWorldMatrices,
       localPositions,
+      localRotations,
+      localScales,
       copiedBuffer: None,
       copiedLocalToWorldMatrices: None,
       copiedLocalPositions: None,
+      copiedLocalRotations: None,
+      copiedLocalScales: None,
       defaultLocalToWorldMatrix,
       defaultLocalPosition,
+      defaultLocalRotation,
+      defaultLocalScale,
       parentMap: WonderCommonlib.SparseMapService.createEmpty(),
       childMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
-      localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+      localToWorldMatrixCacheMap:
+        WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
     });
-  state
+  state;
 };
 
 let create = ({settingRecord} as state) => {
@@ -149,40 +189,65 @@ let create = ({settingRecord} as state) => {
     0.,
     0.,
     0.,
-    1.
+    1.,
   |];
   let defaultLocalPosition = [|0., 0., 0.|];
-  let (buffer, (localToWorldMatrices, localPositions)) =
-    _initBufferData(transformCount, defaultLocalToWorldMatrix, defaultLocalPosition);
+  let defaultLocalRotation = [|0., 0., 0., 1.|];
+  let defaultLocalScale = [|1., 1., 1.|];
+  let defaultDataTuple = (
+    defaultLocalToWorldMatrix,
+    defaultLocalPosition,
+    defaultLocalRotation,
+    defaultLocalScale,
+  );
+
+  let (
+    buffer,
+    (localToWorldMatrices, localPositions, localRotations, localScales),
+  ) =
+    _initBufferData(transformCount, defaultDataTuple);
+
   /* TODO use conditional compile */
   WorkerDetectMainService.isUseWorker(state) ?
     _createForWorker(
       transformCount,
-      (defaultLocalToWorldMatrix, defaultLocalPosition),
-      (buffer, localToWorldMatrices, localPositions),
-      state
+      defaultDataTuple,
+      (
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
+      state,
     ) :
     _createForNoWorker(
-      (defaultLocalToWorldMatrix, defaultLocalPosition),
-      (buffer, localToWorldMatrices, localPositions),
-      state
-    )
+      defaultDataTuple,
+      (
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
+      state,
+    );
 };
 
-let deepCopyForRestore = (state) => {
+let deepCopyForRestore = state => {
   let {
         index,
         localPositions,
+        localRotations,
+        localScales,
         localToWorldMatrices,
-        defaultLocalToWorldMatrix,
-        defaultLocalPosition,
         localToWorldMatrixCacheMap,
         normalMatrixCacheMap,
         parentMap,
         childMap,
         dirtyMap,
         gameObjectMap,
-        disposedIndexArray
+        disposedIndexArray,
       } as record =
     state |> getRecord;
   {
@@ -192,21 +257,32 @@ let deepCopyForRestore = (state) => {
         ...record,
         localPositions:
           localPositions
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getLocalPositionsSize()),
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getLocalPositionsSize(),
+             ),
+        localRotations:
+          localRotations
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getLocalRotationsSize(),
+             ),
+        localScales:
+          localScales
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getLocalScalesSize(),
+             ),
         localToWorldMatrices:
           localToWorldMatrices
           |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-               index * getLocalToWorldMatricesSize()
+               index * getLocalToWorldMatricesSize(),
              ),
-        defaultLocalToWorldMatrix,
-        defaultLocalPosition,
-        localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+        localToWorldMatrixCacheMap:
+          WonderCommonlib.SparseMapService.createEmpty(),
         normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
         parentMap: parentMap |> SparseMapService.copy,
         childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,
         dirtyMap: dirtyMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy
-      })
-  }
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+      }),
+  };
 };

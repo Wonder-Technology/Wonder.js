@@ -15,6 +15,16 @@ let handleCloneComponent =
       sourceComponent,
       transformRecord.localPositions
     );
+  let localRotation =
+    ModelMatrixTransformService.getLocalRotationTuple(
+      sourceComponent,
+      transformRecord.localRotations
+    );
+  let localScale =
+    ModelMatrixTransformService.getLocalScaleTuple(
+      sourceComponent,
+      transformRecord.localScales
+    );
   let (transformRecord, componentArr) =
     countRangeArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -29,6 +39,8 @@ let handleCloneComponent =
              (
                transformRecord
                |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
+               |> ModelMatrixTransformService.setLocalRotationByTuple(index, localRotation)
+               |> ModelMatrixTransformService.setLocalScaleByTuple(index, localScale)
                |> DirtyTransformService.mark(index, true),
                componentArr |> ArrayService.push(index)
              )

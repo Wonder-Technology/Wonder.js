@@ -3,35 +3,71 @@ open StateDataMainType;
 open TransformType;
 
 let _restoreTypeArrays = (currentTransformRecord, targetTransformRecord) =>
-  currentTransformRecord.localPositions === targetTransformRecord.localPositions
-  && currentTransformRecord.localToWorldMatrices === targetTransformRecord.localToWorldMatrices ?
+  currentTransformRecord.localPositions
+  === targetTransformRecord.localPositions
+  &&
+  currentTransformRecord.localRotations === targetTransformRecord.
+                                              localRotations
+  && currentTransformRecord.localScales === targetTransformRecord.localScales
+  &&
+  currentTransformRecord.localToWorldMatrices === targetTransformRecord.
+                                                    localToWorldMatrices ?
     (currentTransformRecord, targetTransformRecord) :
     {
-      let (localToWorldMatrices, localPositions) =
-        (currentTransformRecord.localToWorldMatrices, currentTransformRecord.localPositions)
+      let (localToWorldMatrices, localPositions, localRotations, localScales) =
+        (
+          currentTransformRecord.localToWorldMatrices,
+          currentTransformRecord.localPositions,
+          currentTransformRecord.localRotations,
+          currentTransformRecord.localScales,
+        )
         |> RecordTransformMainService.setAllTypeArrDataToDefault(
              currentTransformRecord.index,
-             currentTransformRecord.defaultLocalToWorldMatrix,
-             currentTransformRecord.defaultLocalPosition
+             (
+               currentTransformRecord.defaultLocalToWorldMatrix,
+               currentTransformRecord.defaultLocalPosition,
+               currentTransformRecord.defaultLocalRotation,
+               currentTransformRecord.defaultLocalScale,
+             ),
            );
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentTransformRecord.localPositions, 0),
         (targetTransformRecord.localPositions, 0),
-        Js.Typed_array.Float32Array.length(targetTransformRecord.localPositions)
+        Js.Typed_array.Float32Array.length(
+          targetTransformRecord.localPositions,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentTransformRecord.localRotations, 0),
+        (targetTransformRecord.localRotations, 0),
+        Js.Typed_array.Float32Array.length(
+          targetTransformRecord.localRotations,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentTransformRecord.localScales, 0),
+        (targetTransformRecord.localScales, 0),
+        Js.Typed_array.Float32Array.length(targetTransformRecord.localScales),
       )
       |> ignore;
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentTransformRecord.localToWorldMatrices, 0),
         (targetTransformRecord.localToWorldMatrices, 0),
-        Js.Typed_array.Float32Array.length(targetTransformRecord.localToWorldMatrices)
+        Js.Typed_array.Float32Array.length(
+          targetTransformRecord.localToWorldMatrices,
+        ),
       )
       |> ignore;
-      (currentTransformRecord, targetTransformRecord)
+      (currentTransformRecord, targetTransformRecord);
     };
 
 let restore = (currentState, targetState) => {
-  let currentTransformRecord = RecordTransformMainService.getRecord(currentState);
-  let targetTransformRecord = RecordTransformMainService.getRecord(targetState);
+  let currentTransformRecord =
+    RecordTransformMainService.getRecord(currentState);
+  let targetTransformRecord =
+    RecordTransformMainService.getRecord(targetState);
   let (currentTransformRecord, targetTransformRecord) =
     _restoreTypeArrays(currentTransformRecord, targetTransformRecord);
   {
@@ -41,7 +77,9 @@ let restore = (currentState, targetState) => {
         ...targetTransformRecord,
         buffer: currentTransformRecord.buffer,
         localPositions: currentTransformRecord.localPositions,
-        localToWorldMatrices: currentTransformRecord.localToWorldMatrices
-      })
-  }
+        localRotations: currentTransformRecord.localRotations,
+        localScales: currentTransformRecord.localScales,
+        localToWorldMatrices: currentTransformRecord.localToWorldMatrices,
+      }),
+  };
 };

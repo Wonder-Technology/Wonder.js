@@ -279,6 +279,11 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         },
         {
             "mesh": 1,
+            "scale": [
+                2.0,
+                3.5,
+                0.5
+            ],
             "rotation": [
                 -0.0,
                 -0.0,

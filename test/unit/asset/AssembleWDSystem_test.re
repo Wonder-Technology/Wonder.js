@@ -139,32 +139,62 @@ let _ =
         );
       });
       describe("test set data", () =>
-        testPromise("test", () =>
+        testPromise("test set localPosition, localRotation, localScale", () =>
           AssembleWDSystemTool.testResult(
             ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) =>
               _getAllSortedTransforms(sceneGameObject, state)
               |> Js.Array.map(transform =>
-                   TransformAPI.getTransformLocalPosition(transform, state)
+                   (
+                     TransformAPI.getTransformLocalPosition(transform, state),
+                     TransformAPI.getTransformLocalRotation(transform, state),
+                     TransformAPI.getTransformLocalScale(transform, state),
+                   )
                  )
               |>
               expect == [|
-                          (0., 0., 0.),
+                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
                           (
-                            (-1.352329969406128),
-                            0.4277220070362091,
-                            (-2.98022992950564e-8),
+                            (
+                              (-1.352329969406128),
+                              0.4277220070362091,
+                              (-2.98022992950564e-8),
+                            ),
+                            (0., 0., 0., 1.),
+                            (1., 1., 1.),
                           ),
-                          (0., 0., 0.),
                           (
-                            1.432669997215271,
-                            0.4277220070362091,
-                            (-2.98022992950564e-8),
+                            (0., 0., 0.),
+                            (
+                              (-0.),
+                              (-0.),
+                              0.08848590403795242,
+                              (-0.9960774183273315),
+                            ),
+                            (1., 1., 1.),
                           ),
-                          (0., 0., 0.),
-                          (0., 0., 0.),
-                          (0., 0., 0.),
-                          (0., 0., 0.),
+                          (
+                            (
+                              1.432669997215271,
+                              0.4277220070362091,
+                              (-2.98022992950564e-8),
+                            ),
+                            (0., 0., 0., 1.),
+                            (1., 1., 1.),
+                          ),
+                          (
+                            (0., 0., 0.),
+                            (
+                              (-0.),
+                              (-0.),
+                              0.08848590403795242,
+                              (-0.9960774183273315),
+                            ),
+                            (2., 3.5, 0.5),
+                          ),
+                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
                         |],
             state^,
           )

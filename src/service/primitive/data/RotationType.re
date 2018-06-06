@@ -1,0 +1,1 @@
+type rotation = (float, float, float, float);

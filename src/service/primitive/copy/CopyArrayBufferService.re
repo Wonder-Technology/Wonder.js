@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let copyArrayBufferData = (sourceBuffer, targetBuffer) => {
+/* let copyArrayBufferData = (sourceBuffer, targetBuffer) => {
   let targetView =
     Uint8Array.fromBuffer(targetBuffer |> WorkerType.sharedArrayBufferToArrayBuffer);
   TypeArrayService.setUint8Array(
@@ -9,7 +9,7 @@ let copyArrayBufferData = (sourceBuffer, targetBuffer) => {
   )
   |> Uint8Array.buffer
   |> WorkerType.arrayBufferToSharedArrayBuffer
-};
+}; */
 
 let copyArrayBufferSpecificData = (sourceBuffer, targetBuffer, totalByteLength) => {
   let offset = 0;

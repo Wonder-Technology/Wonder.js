@@ -420,6 +420,22 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let setTransformScale = TransformAPI.setTransformScale;
+
+let getTransformScale = TransformAPI.getTransformScale;
+
+let setTransformLocalScale = TransformAPI.setTransformLocalScale;
+
+let getTransformLocalScale = TransformAPI.getTransformLocalScale;
+
+let setTransformRotation = TransformAPI.setTransformRotation;
+
+let getTransformRotation = TransformAPI.getTransformRotation;
+
+let setTransformLocalRotation = TransformAPI.setTransformLocalRotation;
+
+let getTransformLocalRotation = TransformAPI.getTransformLocalRotation;
+
 let setTransformPosition = TransformAPI.setTransformPosition;
 
 let getTransformPosition = TransformAPI.getTransformPosition;
@@ -647,6 +663,22 @@ let deepCopyForRestore = StateAPI.deepCopyForRestore;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let setTransformScale = TransformAPI.setTransformScale;
+
+let getTransformScale = TransformAPI.getTransformScale;
+
+let setTransformLocalScale = TransformAPI.setTransformLocalScale;
+
+let getTransformLocalScale = TransformAPI.getTransformLocalScale;
+
+let setTransformRotation = TransformAPI.setTransformRotation;
+
+let getTransformRotation = TransformAPI.getTransformRotation;
+
+let setTransformLocalRotation = TransformAPI.setTransformLocalRotation;
+
+let getTransformLocalRotation = TransformAPI.getTransformLocalRotation;
 
 let setTransformPosition = TransformAPI.setTransformPosition;
 

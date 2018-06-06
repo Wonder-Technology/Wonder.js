@@ -4,9 +4,14 @@ open TransformType;
 
 open Js.Typed_array;
 
-let getRecord = (state: StateDataMainType.state) => state |> RecordTransformMainService.getRecord;
+let getRecord = (state: StateDataMainType.state) =>
+  state |> RecordTransformMainService.getRecord;
 
 let getDefaultPosition = () => (0., 0., 0.);
+
+let getDefaultRotation = () => (0., 0., 0., 1.);
+
+let getDefaultScale = () => (1., 1., 1.);
 
 /* let getDefaultLocalToWorldMatrix = () =>
    Js.Typed_array.Float32Array.make([|
@@ -31,116 +36,166 @@ let isTransform = (transform: transform) => {
   open Wonder_jest;
   open Expect;
   open! Expect.Operators;
-  expect(transform) >= 0
+  expect(transform) >= 0;
 };
 
-let getLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) => {
+let getLocalToWorldMatrixTypeArray =
+    (transform, state: StateDataMainType.state) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  [@bs]
-  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
+  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(.
     transform,
     localToWorldMatrices,
-    localToWorldMatrixCacheMap
-  )
+    localToWorldMatrixCacheMap,
+  );
 };
 
-let getLocalToWorldMatrixTypeArrayByVisitTypeArray = (transform, state: StateDataMainType.state) => {
+let getLocalToWorldMatrixTypeArrayByVisitTypeArray =
+    (transform, state: StateDataMainType.state) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap} =
     RecordTransformMainService.getRecord(state);
-  RecordTransformMainService.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrices)
+  OperateTypeArrayTransformService.getLocalToWorldMatrixTypeArray(
+    transform,
+    localToWorldMatrices,
+  );
 };
 
 let update = (transform, {globalTempRecord} as state) => {
   UpdateTransformMainService.update(
     transform,
     globalTempRecord,
-    RecordTransformMainService.getRecord(state)
+    RecordTransformMainService.getRecord(state),
   )
   |> ignore;
-  state
+  state;
 };
 
-let updateAndGetLocalToWorldMatrixTypeArray = (transform, state: StateDataMainType.state) =>
+let updateAndGetLocalToWorldMatrixTypeArray =
+    (transform, state: StateDataMainType.state) =>
   UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
     transform,
     state.globalTempRecord,
-    RecordTransformMainService.getRecord(state)
+    RecordTransformMainService.getRecord(state),
   );
 
 let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
 
 let getDefaultLocalToWorldMatrixTypeArray = (state: StateDataMainType.state) =>
-  RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix |> Float32Array.make;
+  RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix
+  |> Float32Array.make;
 
 let getDefaultLocalPosition = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalPosition;
 
-let getDefaultLocalPositionTuple = (state: StateDataMainType.state) => (0., 0., 0.);
+let getDefaultLocalRotation = (state: StateDataMainType.state) =>
+  RecordTransformMainService.getRecord(state).defaultLocalRotation;
+
+let getDefaultLocalScale = (state: StateDataMainType.state) =>
+  RecordTransformMainService.getRecord(state).defaultLocalScale;
+
+let getDefaultLocalPositionTuple = (state: StateDataMainType.state) =>
+  getDefaultLocalPosition(state) |> Obj.magic;
+
+let getDefaultLocalRotationTuple = (state: StateDataMainType.state) =>
+  getDefaultLocalRotation(state) |> Obj.magic;
+
+let getDefaultLocalScaleTuple = (state: StateDataMainType.state) =>
+  getDefaultLocalScale(state) |> Obj.magic;
 
 let getLocalToWorldMatrix = (transform, state: StateDataMainType.state) =>
-  RecordTransformMainService.getLocalToWorldMatrix(
+  OperateTypeArrayTransformService.getLocalToWorldMatrix(
     transform,
-    RecordTransformMainService.getRecord(state).localToWorldMatrices
+    RecordTransformMainService.getRecord(state).localToWorldMatrices,
   );
 
 let setLocalToWorldMatrix = (transform: transform, data, state) => {
   let {localToWorldMatrices} = state |> RecordTransformMainService.getRecord;
-  RecordTransformMainService.setLocalToWorldMatrix(transform, data, localToWorldMatrices) |> ignore;
-  state
+  OperateTypeArrayTransformService.setLocalToWorldMatrix(
+    transform,
+    data,
+    localToWorldMatrices,
+  )
+  |> ignore;
+  state;
 };
 
-let updateAndGetNormalMatrixTypeArray = (transform, state: StateDataMainType.state) =>
+let updateAndGetNormalMatrixTypeArray =
+    (transform, state: StateDataMainType.state) =>
   UpdateTransformMainService.updateAndGetNormalMatrixTypeArray(
     transform,
     state.globalTempRecord,
-    state |> RecordTransformMainService.getRecord
+    state |> RecordTransformMainService.getRecord,
   );
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();
-  let state = GameObjectTool.disposeGameObjectTransformComponent(0, transform, false, state);
+  let state =
+    GameObjectTool.disposeGameObjectTransformComponent(
+      0,
+      transform,
+      false,
+      state,
+    );
   TestTool.openContractCheck();
-  state
+  state;
 };
 
 let isDisposed = (transform, state) =>
   ! DisposeTransformMainService.isAlive(transform, getRecord(state));
 
 let isDirty = (transform, state) =>
-  DirtyTransformService.isDirty(transform, state |> RecordTransformMainService.getRecord);
+  DirtyTransformService.isDirty(
+    transform,
+    state |> RecordTransformMainService.getRecord,
+  );
 
 /* let {localToWorldMatrixMap} = getRecord(state);
    ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform)) */
 let getTransformLocalPositionTypeArray = (transform, state) =>
-  ModelMatrixTransformService.getLocalPositionTypeArray(
+  OperateTypeArrayTransformService.getLocalPositionTypeArray(
     transform,
-    RecordTransformMainService.getRecord(state).localPositions
+    RecordTransformMainService.getRecord(state).localPositions,
   );
 
-/* let setTransformLocalPositionByTypeArray = TransformSystem.setLocalPositionByTypeArray; */
 let getTransformPositionTypeArray = (transform, state) =>
-  UpdateTransformMainService.updateAndGetPositionTypeArray(
+  UpdateTransformMainService.updateAndGetPositionTuple(
     transform,
     state.globalTempRecord,
-    state |> RecordTransformMainService.getRecord
+    state |> RecordTransformMainService.getRecord,
   );
 
-/* let setTransformPositionByTypeArray = TransformSystem.setPositionByTypeArray; */
 let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);
 
 let createBuffer = BufferTransformService.createBuffer;
 
 let createTypeArrays = CreateTypeArrayTransformService.createTypeArrays;
 
-let setAllTypeArrDataToDefault = (count: int, state, (localToWorldMatrices, localPositions)) => {
-  let (_, (localToWorldMatrices, localPositions)) =
+let setAllTypeArrDataToDefault =
+    (
+      count: int,
+      state,
+      (localToWorldMatrices, localPositions, localRotations, localScales),
+    ) => {
+  let (
+    _,
+    (localToWorldMatrices, localPositions, localRotations, localScales),
+  ) =
     RecordTransformMainService._setAllTypeArrDataToDefault(
       count,
-      getDefaultLocalToWorldMatrix(state),
-      getDefaultLocalPosition(state),
-      (Obj.magic(1), localToWorldMatrices, localPositions)
+      (
+        getDefaultLocalToWorldMatrix(state),
+        getDefaultLocalPosition(state),
+        getDefaultLocalRotation(state),
+        getDefaultLocalScale(state),
+      ),
+      (
+        Obj.magic(1),
+        localToWorldMatrices,
+        localPositions,
+        localRotations,
+        localScales,
+      ),
     );
-  (localToWorldMatrices, localPositions)
+  (localToWorldMatrices, localPositions, localRotations, localScales);
 };

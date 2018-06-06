@@ -1,5 +1,9 @@
 open PositionType;
 
+open RotationType;
+
+open ScaleType;
+
 open TransformType;
 
 open Matrix4Service;
@@ -27,7 +31,7 @@ let rec update =
         (
           transform: transform,
           globalTempRecord,
-          {localPositions} as transformRecord,
+          {localPositions, localRotations, localScales} as transformRecord,
         ) =>
   switch (isDirty(transform, transformRecord)) {
   | false => transformRecord
@@ -53,8 +57,10 @@ let rec update =
         );
       multiply(
         parentLocalToWorldMatrix,
-        fromTranslation(
+        fromTranslationRotationScale(
           getLocalPositionTuple(transform, localPositions),
+          getLocalRotationTuple(transform, localRotations),
+          getLocalScaleTuple(transform, localScales),
           GlobalTempService.getFloat32Array1(globalTempRecord),
         ),
         childLocalToWorldMatrix,
@@ -68,46 +74,16 @@ let rec update =
           transformRecord.localToWorldMatrices,
           transformRecord.localToWorldMatrixCacheMap,
         );
-      fromTranslation(
+      fromTranslationRotationScale(
         getLocalPositionTuple(transform, localPositions),
+        getLocalRotationTuple(transform, localRotations),
+        getLocalScaleTuple(transform, localScales),
         localToWorldMatrix,
       )
       |> ignore;
       transformRecord;
     };
   };
-
-let _updateAndGetPosition =
-    (transform: transform, getTranslationFunc, globalTempRecord, record) => {
-  open Js.Typed_array;
-  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
-    update(transform, globalTempRecord, record);
-  let localToWorldMatrix =
-    getLocalToWorldMatrixTypeArray(.
-      transform,
-      localToWorldMatrices,
-      localToWorldMatrixCacheMap,
-    );
-  getTranslationFunc(. localToWorldMatrix);
-};
-
-let updateAndGetPositionTypeArray =
-    (transform: transform, globalTempRecord, record) =>
-  _updateAndGetPosition(
-    transform,
-    Matrix4Service.getTranslationTypeArray,
-    globalTempRecord,
-    record,
-  );
-
-let updateAndGetPositionTuple =
-    (transform: transform, globalTempRecord, record) =>
-  _updateAndGetPosition(
-    transform,
-    Matrix4Service.getTranslationTuple,
-    globalTempRecord,
-    record,
-  );
 
 let updateAndGetLocalToWorldMatrixTypeArray =
     (transform: transform, globalTempRecord, record) => {
@@ -130,6 +106,20 @@ let updateAndGetNormalMatrixTypeArray =
   );
 };
 
+let updateAndGetPositionTuple =
+    (transform: transform, globalTempRecord, record) => {
+  open Js.Typed_array;
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  let localToWorldMatrix =
+    getLocalToWorldMatrixTypeArray(.
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap,
+    );
+  Matrix4Service.getTranslationTuple(localToWorldMatrix);
+};
+
 let updateAndSetPositionByTuple =
     (transform: transform, position: position, globalTempRecord, record) =>
   switch (getParent(transform, record)) {
@@ -142,15 +132,59 @@ let updateAndSetPositionByTuple =
       position: position,
       (globalTempRecord, record),
     );
-  /* setLocalPositionByTuple(
-       transform,
-       Vector3Service.transformMat4Tuple(
-         position,
-         invert(
-           getLocalToWorldMatrixTypeArray(parent, record.localToWorldMatrixMap),
-           GlobalTempService.getFloat32Array1(globalTempRecord)
-         )
-       ),
-       record
-     ) */
+  };
+
+let updateAndGetRotationTuple =
+    (transform: transform, globalTempRecord, record) => {
+  open Js.Typed_array;
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  let localToWorldMatrix =
+    getLocalToWorldMatrixTypeArray(.
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap,
+    );
+  Matrix4Service.getRotationTuple(localToWorldMatrix);
+};
+
+let updateAndSetRotationByTuple =
+    (transform: transform, rotation: rotation, globalTempRecord, record) =>
+  switch (getParent(transform, record)) {
+  | None => setLocalRotationByTuple(transform, rotation, record)
+  | Some(parent) =>
+    setLocalRotationByTuple(
+      transform,
+      updateAndGetRotationTuple(parent, globalTempRecord, record)
+      |> QuaternionService.invert
+      |. QuaternionService.multiply(rotation),
+      record,
+    )
+  };
+
+let updateAndGetScaleTuple = (transform: transform, globalTempRecord, record) => {
+  open Js.Typed_array;
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  let localToWorldMatrix =
+    getLocalToWorldMatrixTypeArray(.
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap,
+    );
+  Matrix4Service.getScaleTuple(localToWorldMatrix);
+};
+
+let updateAndSetScaleByTuple =
+    (transform: transform, position: position, globalTempRecord, record) =>
+  switch (getParent(transform, record)) {
+  | None => setLocalScaleByTuple(transform, position, record)
+  | Some(parent) =>
+    let record = update(parent, globalTempRecord, record);
+    setScaleByTuple(
+      transform: transform,
+      parent,
+      position: position,
+      (globalTempRecord, record),
+    );
   };
