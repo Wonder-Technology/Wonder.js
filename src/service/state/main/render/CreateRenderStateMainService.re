@@ -44,14 +44,7 @@ let createRenderState =
         browserDetectRecord,
       } as state: StateDataMainType.state,
     ) => {
-  let {
-        localToWorldMatrices,
-        localPositions,
-        /* copiedLocalToWorldMatrices,
-           copiedLocalPositions, */
-        localToWorldMatrixCacheMap,
-        normalMatrixCacheMap,
-      } as transformRecord =
+  let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformMainService.getRecord(state);
   /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
@@ -72,17 +65,10 @@ let createRenderState =
         localToWorldMatrices:
           transformRecord
           |> CopyTransformService.unsafeGetCopiedLocalToWorldMatrices,
-        localPositions:
-          transformRecord |> CopyTransformService.unsafeGetCopiedLocalPositions,
         localToWorldMatrixCacheMap,
         normalMatrixCacheMap,
       } :
-      {
-        localToWorldMatrices,
-        localPositions,
-        localToWorldMatrixCacheMap,
-        normalMatrixCacheMap,
-      };
+      {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap};
   {
     glslSenderRecord,
     programRecord,

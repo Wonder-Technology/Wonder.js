@@ -49,7 +49,6 @@ let createRenderState =
     ) => {
   let {
         localToWorldMatrices,
-        localPositions,
         localToWorldMatrixCacheMap,
         normalMatrixCacheMap,
       } as transformRecord =
@@ -228,7 +227,6 @@ let createRenderState =
     typeArrayPoolRecord,
     transformRecord: {
       localToWorldMatrices,
-      localPositions,
       localToWorldMatrixCacheMap,
       normalMatrixCacheMap,
     },
