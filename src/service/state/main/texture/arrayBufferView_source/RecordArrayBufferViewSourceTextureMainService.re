@@ -23,6 +23,7 @@ let setAllTypeArrDataToDefault =
         formats,
         types,
         isNeedUpdates,
+        flipYs,
         widths,
         heights,
       ),
@@ -36,6 +37,7 @@ let setAllTypeArrDataToDefault =
   let defaultFormat = getDefaultFormat();
   let defaultType = getDefaultType();
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
+  let defaultFlipY = getDefaultFlipY();
   let defaultWidth = getDefaultWidth();
   let defaultHeight = getDefaultHeight();
   ArrayService.range(0, arrayBufferViewSourceTextureCount - 1)
@@ -49,6 +51,7 @@ let setAllTypeArrDataToDefault =
            formats,
            types,
            isNeedUpdates,
+        flipYs,
            widths,
            heights,
          ),
@@ -89,6 +92,11 @@ let setAllTypeArrDataToDefault =
            defaultIsNeedUpdate,
            isNeedUpdates,
          ),
+         OperateTypeArrayArrayBufferViewSourceTextureService.setFlipY(
+           indexInTypeArray,
+           defaultFlipY,
+           flipYs,
+         ),
          OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
            indexInTypeArray,
            defaultWidth,
@@ -108,6 +116,7 @@ let setAllTypeArrDataToDefault =
          formats,
          types,
          isNeedUpdates,
+        flipYs,
          widths,
          heights,
        ),
@@ -129,6 +138,7 @@ let _initBufferData =
     formats,
     types,
     isNeedUpdates,
+    flipYs,
     widths,
     heights,
   ) =
@@ -145,6 +155,7 @@ let _initBufferData =
     formats,
     types,
     isNeedUpdates,
+    flipYs,
     widths,
     heights,
   )
@@ -168,6 +179,7 @@ let create = ({settingRecord} as state) => {
     formats,
     types,
     isNeedUpdates,
+    flipYs,
     widths,
     heights,
   ) =
@@ -189,6 +201,7 @@ let create = ({settingRecord} as state) => {
       formats,
       types,
       isNeedUpdates,
+      flipYs,
       widths,
       heights,
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -213,6 +226,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         formats,
         types,
         isNeedUpdates,
+        flipYs,
         widths,
         heights,
         sourceMap,
@@ -263,6 +277,11 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           isNeedUpdates
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getIsNeedUpdatesSize(),
+             ),
+        flipYs:
+          flipYs
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getFlipYsSize(),
              ),
         widths:
           widths

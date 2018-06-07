@@ -12,6 +12,8 @@ let getTypesSize = () => 1;
 
 let getIsNeedUpdatesSize = () => 1;
 
+let getFlipYsSize = () => 1;
+
 let getWidthsSize = () => 1;
 
 let getHeightsSize = () => 1;

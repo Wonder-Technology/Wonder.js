@@ -294,3 +294,40 @@ let setBasicSourceTextureType = (texture, type_, state: StateDataMainType.state)
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
   OperateBasicSourceTextureMainService.setType(texture, type_, state);
+
+
+let getBasicSourceTextureFlipY = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordBasicSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateBasicSourceTextureMainService.getFlipY(texture, state);
+
+let setBasicSourceTextureFlipY = (texture, flipY, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordBasicSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateBasicSourceTextureMainService.setFlipY(texture, flipY, state);

@@ -14,7 +14,16 @@ let getRecord = ({basicSourceTextureRecord}) =>
 let setAllTypeArrDataToDefault =
     (
       basicSourceTextureCount: int,
-      (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates),
+      (
+        wrapSs,
+        wrapTs,
+        magFilters,
+        minFilters,
+        formats,
+        types,
+        isNeedUpdates,
+        flipYs,
+      ),
     ) => {
   let defaultWrapS = getDefaultWrapS() |> SourceTextureType.wrapToUint8;
   let defaultWrapT = getDefaultWrapT() |> SourceTextureType.wrapToUint8;
@@ -25,6 +34,7 @@ let setAllTypeArrDataToDefault =
   let defaultFormat = getDefaultFormat();
   let defaultType = getDefaultType();
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
+  let defaultFlipY = getDefaultFlipY();
   WonderCommonlib.ArrayService.range(0, basicSourceTextureCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
@@ -36,6 +46,7 @@ let setAllTypeArrDataToDefault =
            formats,
            types,
            isNeedUpdates,
+           flipYs,
          ),
          indexInTypeArray,
        ) => (
@@ -74,6 +85,11 @@ let setAllTypeArrDataToDefault =
            defaultIsNeedUpdate,
            isNeedUpdates,
          ),
+         OperateTypeArrayBasicSourceTextureService.setFlipY(
+           indexInTypeArray,
+           defaultFlipY,
+           flipYs,
+         ),
        ),
        (
          wrapSs,
@@ -83,17 +99,36 @@ let setAllTypeArrDataToDefault =
          formats,
          types,
          isNeedUpdates,
+         flipYs,
        ),
      );
 };
 
 let _initBufferData = (basicSourceTextureCount, buffer) => {
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
+  let (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    flipYs,
+  ) =
     CreateTypeArrayBasicSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
     );
-  (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates)
+  (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    flipYs,
+  )
   |> setAllTypeArrDataToDefault(basicSourceTextureCount);
 };
 
@@ -101,7 +136,16 @@ let create = ({settingRecord} as state) => {
   let basicSourceTextureCount =
     BufferSettingService.getBasicSourceTextureCount(settingRecord);
   let {buffer} = RecordSourceTextureMainService.getRecord(state);
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
+  let (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    formats,
+    types,
+    isNeedUpdates,
+    flipYs,
+  ) =
     _initBufferData(basicSourceTextureCount, buffer);
   state.basicSourceTextureRecord =
     Some
@@ -116,6 +160,7 @@ let create = ({settingRecord} as state) => {
         formats,
         types,
         isNeedUpdates,
+        flipYs,
         sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
         glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
         bindTextureUnitCacheMap:
@@ -139,6 +184,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         formats,
         types,
         isNeedUpdates,
+        flipYs,
         sourceMap,
         glTextureMap,
         bindTextureUnitCacheMap,
@@ -187,6 +233,11 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           isNeedUpdates
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getIsNeedUpdatesSize(),
+             ),
+        flipYs:
+          flipYs
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getFlipYsSize(),
              ),
         sourceMap: sourceMap |> SparseMapService.copy,
         glTextureMap: glTextureMap |> SparseMapService.copy,

@@ -14,11 +14,9 @@ let getDefaultFormat = () => TextureFormatService.getRgba();
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
-let getNeedUpdate = () => 1;
+let getDefaultIsNeedUpdate = BufferSourceTextureService.getDefaultIsNeedUpdate;
 
-let getNotNeedUpdate = () => 0;
-
-let getDefaultIsNeedUpdate = () => getNeedUpdate();
+let getDefaultFlipY = BufferSourceTextureService.getDefaultFlipY;
 
 let getWrapSsLength = basicSourceTextureCount =>
   basicSourceTextureCount * getWrapSsSize();
@@ -86,7 +84,17 @@ let getIsNeedUpdatesOffset = basicSourceTextureCount =>
   + getTypesLength(basicSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getIsNeedUpdateIndex = index => index * getIsNeedUpdatesSize();
+let getIsNeedUpdateIndex = BufferSourceTextureService.getIsNeedUpdateIndex;
+
+let getFlipYsLength = basicSourceTextureCount =>
+  basicSourceTextureCount * getFlipYsSize();
+
+let getFlipYsOffset = basicSourceTextureCount =>
+  getIsNeedUpdatesOffset(basicSourceTextureCount)
+  + getIsNeedUpdatesLength(basicSourceTextureCount)
+  * Uint8Array._BYTES_PER_ELEMENT;
+
+let getFlipYIndex = index => index * getFlipYsSize();
 
 let getTotalByteLength = basicSourceTextureCount =>
   basicSourceTextureCount
@@ -100,5 +108,6 @@ let getTotalByteLength = basicSourceTextureCount =>
       + getFormatsSize()
       + getTypesSize()
       + getIsNeedUpdatesSize()
+      + getFlipYsSize()
     )
   );

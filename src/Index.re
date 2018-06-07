@@ -348,6 +348,10 @@ let setArrayBufferViewSourceTextureWidth = ArrayBufferViewSourceTextureAPI.setAr
 
 let getArrayBufferViewSourceTextureWidth = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWidth;
 
+let setArrayBufferViewSourceTextureFlipY = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureFlipY;
+
+let getArrayBufferViewSourceTextureFlipY = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureFlipY;
+
 let setArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureType;
 
 let getArrayBufferViewSourceTextureType = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureType;
@@ -381,6 +385,10 @@ let setArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.setA
 let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureSource;
 
 let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
+
+let setBasicSourceTextureFlipY = BasicSourceTextureAPI.setBasicSourceTextureFlipY;
+
+let getBasicSourceTextureFlipY = BasicSourceTextureAPI.getBasicSourceTextureFlipY;
 
 let setBasicSourceTextureType = BasicSourceTextureAPI.setBasicSourceTextureType;
 

@@ -71,6 +71,7 @@ let update =
     formats,
     types,
     isNeedUpdates,
+    flipYs,
     widths,
     heights,
     setFlipYFunc,
@@ -126,7 +127,11 @@ let update =
         types,
       )
       |> TextureTypeService.getGlType(gl);
-    let flipY = OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY();
+    let flipY =
+      OperateTypeArrayArrayBufferViewSourceTextureService.isFlipY(
+        textureInTypeArray,
+        flipYs,
+      );
     let target = Gl.getTexture2D(gl);
     UpdateSourceTextureRenderService.update(
       (gl, textureInTypeArray, source),

@@ -1018,8 +1018,14 @@ let _ =
             |> not_
             |> toCalled;
           });
-          test("set flipY true", () => {
+          test("set flipY", () => {
             let (state, map) = _prepare(~state=state^, ());
+            let state =
+              BasicSourceTextureAPI.setBasicSourceTextureFlipY(
+                map,
+                true,
+                state,
+              );
             let unpackFlipYWebgl = Obj.magic(2);
             let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
             let state =
@@ -1032,8 +1038,10 @@ let _ =
                      (),
                    ),
                  );
+
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
             pixelStorei
             |> withTwoArgs(unpackFlipYWebgl, true)
             |> expect

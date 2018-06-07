@@ -1,7 +1,5 @@
 open StateRenderType;
 
-open RenderBasicSourceTextureType;
-
 open BrowserDetectType;
 
 let _isPowerOfTwo = value =>
@@ -120,9 +118,9 @@ let update =
   && (_isFilterMipmaps(magFilter) || _isFilterMipmaps(minFilter)) ?
     gl |> Gl.generateMipmap(target) : ();
 
-  OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
+  OperateTypeArraySourceTextureService.setIsNeedUpdate(
     textureInTypeArray,
-    BufferBasicSourceTextureService.getNotNeedUpdate(),
+    BufferSourceTextureService.getNotNeedUpdate(),
     isNeedUpdates,
   )
   |> ignore;
@@ -136,4 +134,4 @@ let isNeedUpdate =
       getIsNeedUpdateFunc,
     ) =>
   getIsNeedUpdateFunc(. textureInTypeArray, isNeedUpdates)
-  === BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
+  === BufferSourceTextureService.getDefaultIsNeedUpdate();

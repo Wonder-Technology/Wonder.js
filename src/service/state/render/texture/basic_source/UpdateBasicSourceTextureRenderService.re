@@ -32,6 +32,7 @@ let update =
     formats,
     types,
     isNeedUpdates,
+    flipYs,
     setFlipYFunc,
   } = basicSourceTextureRecord;
   switch (TextureSourceMapService.getSource(textureInTypeArray, sourceMap)) {
@@ -77,7 +78,11 @@ let update =
         types,
       )
       |> TextureTypeService.getGlType(gl);
-    let flipY = OperateTypeArrayBasicSourceTextureService.getFlipY();
+    let flipY =
+      OperateTypeArrayBasicSourceTextureService.isFlipY(
+        textureInTypeArray,
+        flipYs,
+      );
     let target = Gl.getTexture2D(gl);
     UpdateSourceTextureRenderService.update(
       (gl, textureInTypeArray, source),

@@ -8,6 +8,7 @@ type arrayBufferViewSourceTextureRecord = {
   formats: option(Js.Typed_array.Uint8Array.t),
   types: option(Js.Typed_array.Uint8Array.t),
   isNeedUpdates: option(Js.Typed_array.Uint8Array.t),
+  flipYs: option(Js.Typed_array.Uint8Array.t),
   widths: option(Js.Typed_array.Uint16Array.t),
   heights: option(Js.Typed_array.Uint16Array.t),
   sourceMap: option(WonderCommonlib.SparseMapService.t(Js.Typed_array.Uint8Array.t)),

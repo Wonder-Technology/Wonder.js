@@ -957,7 +957,24 @@ let _ =
                )
              );
 
-        testPromise("test set data", () =>
+        testPromise("set not flipY", () =>
+          AssembleWDSystemTool.testResult(
+            _buildGLTFJsonOfLightMaterial(),
+            ((state, sceneGameObject)) =>
+              _getAllDiffuseMaps(sceneGameObject, state)
+              |> Js.Array.map(diffuseMap =>
+                   BasicSourceTextureAPI.getBasicSourceTextureFlipY(
+                     diffuseMap,
+                     state,
+                   )
+                 )
+              |> Obj.magic
+              |> expect == [|false, false, false, false|],
+            state^,
+          )
+        );
+
+        testPromise("test set other data", () =>
           AssembleWDSystemTool.testResult(
             _buildGLTFJsonOfLightMaterial(),
             ((state, sceneGameObject)) =>

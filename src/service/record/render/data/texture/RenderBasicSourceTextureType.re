@@ -6,6 +6,7 @@ type basicSourceTextureRecord = {
   formats: Js.Typed_array.Uint8Array.t,
   types: Js.Typed_array.Uint8Array.t,
   isNeedUpdates: Js.Typed_array.Uint8Array.t,
+  flipYs: Js.Typed_array.Uint8Array.t,
   sourceMap: WonderCommonlib.SparseMapService.t(DomType.imageElement),
   glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),

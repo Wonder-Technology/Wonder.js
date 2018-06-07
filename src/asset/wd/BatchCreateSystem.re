@@ -186,7 +186,7 @@ let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => 
 
 let _batchCreateBasicSourceTextureArr =
     ({basicSourceTextures}, {settingRecord} as state) => {
-  let ({index}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
+  let ({index, flipYs}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
   AssembleCommon.checkNotDisposedBefore(
@@ -202,8 +202,25 @@ let _batchCreateBasicSourceTextureArr =
     |> _checkNotExceedMaxCountByIndex(
          BufferSettingService.getLightMaterialCount(settingRecord),
        );
+
+  let notFlipY = BufferSourceTextureService.getFlipYTypeArrayValue(false);
+
   state.basicSourceTextureRecord =
-    Some({...basicSourceTextureRecord, index: newIndex});
+    Some({
+      ...basicSourceTextureRecord,
+      index: newIndex,
+      flipYs:
+        indexArr
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             (. flipYs, index) =>
+               OperateTypeArrayBasicSourceTextureService.setFlipY(
+                 index,
+                 notFlipY,
+                 flipYs,
+               ),
+             flipYs,
+           ),
+    });
   (state, indexArr);
 };
 

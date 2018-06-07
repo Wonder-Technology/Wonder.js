@@ -2,11 +2,12 @@ open StateDataMainType;
 
 open ArrayBufferViewSourceTextureType;
 
-let createArrayBufferViewSourceTexture = (state) =>
-  [@bs] CreateArrayBufferViewSourceTextureMainService.create(state);
+let createArrayBufferViewSourceTexture = state =>
+  CreateArrayBufferViewSourceTextureMainService.create(. state);
 
 /* TODO check alive */
-let unsafeGetArrayBufferViewSourceTextureSource = (texture, state: StateDataMainType.state) =>
+let unsafeGetArrayBufferViewSourceTextureSource =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -22,9 +23,13 @@ let unsafeGetArrayBufferViewSourceTextureSource = (texture, state: StateDataMain
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.unsafeGetSource(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.unsafeGetSource(
+    texture,
+    state,
+  );
 
-let setArrayBufferViewSourceTextureSource = (texture, source, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureSource =
+    (texture, source, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -40,9 +45,14 @@ let setArrayBufferViewSourceTextureSource = (texture, source, state: StateDataMa
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setSource(texture, source, state);
+  OperateArrayBufferViewSourceTextureMainService.setSource(
+    texture,
+    source,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureWidth = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureWidth =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -60,7 +70,8 @@ let getArrayBufferViewSourceTextureWidth = (texture, state: StateDataMainType.st
      ); */
   OperateArrayBufferViewSourceTextureMainService.getWidth(texture, state);
 
-let getArrayBufferViewSourceTextureHeight = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureHeight =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -78,7 +89,8 @@ let getArrayBufferViewSourceTextureHeight = (texture, state: StateDataMainType.s
      ); */
   OperateArrayBufferViewSourceTextureMainService.getHeight(texture, state);
 
-let getArrayBufferViewSourceTextureWrapS = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureWrapS =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -96,7 +108,8 @@ let getArrayBufferViewSourceTextureWrapS = (texture, state: StateDataMainType.st
      ); */
   OperateArrayBufferViewSourceTextureMainService.getWrapS(texture, state);
 
-let setArrayBufferViewSourceTextureWrapS = (texture, wrapS, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureWrapS =
+    (texture, wrapS, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -112,9 +125,14 @@ let setArrayBufferViewSourceTextureWrapS = (texture, wrapS, state: StateDataMain
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setWrapS(texture, wrapS, state);
+  OperateArrayBufferViewSourceTextureMainService.setWrapS(
+    texture,
+    wrapS,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureWrapT = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureWrapT =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -132,7 +150,8 @@ let getArrayBufferViewSourceTextureWrapT = (texture, state: StateDataMainType.st
      ); */
   OperateArrayBufferViewSourceTextureMainService.getWrapT(texture, state);
 
-let setArrayBufferViewSourceTextureWrapT = (texture, wrapT, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureWrapT =
+    (texture, wrapT, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -148,9 +167,14 @@ let setArrayBufferViewSourceTextureWrapT = (texture, wrapT, state: StateDataMain
          ),
        IsDebugMainService.getIsDebug(TtateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setWrapT(texture, wrapT, state);
+  OperateArrayBufferViewSourceTextureMainService.setWrapT(
+    texture,
+    wrapT,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureMagFilter = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureMagFilter =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -168,7 +192,8 @@ let getArrayBufferViewSourceTextureMagFilter = (texture, state: StateDataMainTyp
      ); */
   OperateArrayBufferViewSourceTextureMainService.getMagFilter(texture, state);
 
-let setArrayBufferViewSourceTextureMagFilter = (texture, filter, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureMagFilter =
+    (texture, filter, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -184,9 +209,14 @@ let setArrayBufferViewSourceTextureMagFilter = (texture, filter, state: StateDat
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setMagFilter(texture, filter, state);
+  OperateArrayBufferViewSourceTextureMainService.setMagFilter(
+    texture,
+    filter,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureMinFilter = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureMinFilter =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -204,7 +234,8 @@ let getArrayBufferViewSourceTextureMinFilter = (texture, state: StateDataMainTyp
      ); */
   OperateArrayBufferViewSourceTextureMainService.getMinFilter(texture, state);
 
-let setArrayBufferViewSourceTextureMinFilter = (texture, filter, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureMinFilter =
+    (texture, filter, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -220,9 +251,14 @@ let setArrayBufferViewSourceTextureMinFilter = (texture, filter, state: StateDat
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setMinFilter(texture, filter, state);
+  OperateArrayBufferViewSourceTextureMainService.setMinFilter(
+    texture,
+    filter,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureFormat = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureFormat =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -240,7 +276,8 @@ let getArrayBufferViewSourceTextureFormat = (texture, state: StateDataMainType.s
      ); */
   OperateArrayBufferViewSourceTextureMainService.getFormat(texture, state);
 
-let setArrayBufferViewSourceTextureFormat = (texture, format, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureFormat =
+    (texture, format, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -256,9 +293,14 @@ let setArrayBufferViewSourceTextureFormat = (texture, format, state: StateDataMa
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setFormat(texture, format, state);
+  OperateArrayBufferViewSourceTextureMainService.setFormat(
+    texture,
+    format,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureType = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureType =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -276,7 +318,8 @@ let getArrayBufferViewSourceTextureType = (texture, state: StateDataMainType.sta
      ); */
   OperateArrayBufferViewSourceTextureMainService.getType(texture, state);
 
-let setArrayBufferViewSourceTextureType = (texture, type_, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureType =
+    (texture, type_, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -292,9 +335,56 @@ let setArrayBufferViewSourceTextureType = (texture, type_, state: StateDataMainT
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setType(texture, type_, state);
+  OperateArrayBufferViewSourceTextureMainService.setType(
+    texture,
+    type_,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureWidth = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureFlipY =
+    (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordArrayBufferViewSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateArrayBufferViewSourceTextureMainService.getFlipY(texture, state);
+
+let setArrayBufferViewSourceTextureFlipY =
+    (texture, flipY, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordArrayBufferViewSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  OperateArrayBufferViewSourceTextureMainService.setFlipY(
+    texture,
+    flipY,
+    state,
+  );
+
+let getArrayBufferViewSourceTextureWidth =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -312,7 +402,8 @@ let getArrayBufferViewSourceTextureWidth = (texture, state: StateDataMainType.st
      ); */
   OperateArrayBufferViewSourceTextureMainService.getWidth(texture, state);
 
-let setArrayBufferViewSourceTextureWidth = (texture, width, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureWidth =
+    (texture, width, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -328,9 +419,14 @@ let setArrayBufferViewSourceTextureWidth = (texture, width, state: StateDataMain
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setWidth(texture, width, state);
+  OperateArrayBufferViewSourceTextureMainService.setWidth(
+    texture,
+    width,
+    state,
+  );
 
-let getArrayBufferViewSourceTextureHeight = (texture, state: StateDataMainType.state) =>
+let getArrayBufferViewSourceTextureHeight =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -348,7 +444,8 @@ let getArrayBufferViewSourceTextureHeight = (texture, state: StateDataMainType.s
      ); */
   OperateArrayBufferViewSourceTextureMainService.getHeight(texture, state);
 
-let setArrayBufferViewSourceTextureHeight = (texture, height, state: StateDataMainType.state) =>
+let setArrayBufferViewSourceTextureHeight =
+    (texture, height, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -364,4 +461,8 @@ let setArrayBufferViewSourceTextureHeight = (texture, height, state: StateDataMa
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.setHeight(texture, height, state);
+  OperateArrayBufferViewSourceTextureMainService.setHeight(
+    texture,
+    height,
+    state,
+  );

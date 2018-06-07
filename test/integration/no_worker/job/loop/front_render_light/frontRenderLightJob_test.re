@@ -1671,8 +1671,12 @@ let _ =
         |> not_
         |> toCalled;
       });
-      test("set flipY true", () => {
-        let (state, _) = _prepare(~state=state^, ());
+      test("set flipY", () => {
+        let (state, (map1, map2)) = _prepare(~state=state^, ());
+        let state =
+          state
+          |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map1, false)
+          |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map2, true);
         let unpackFlipYWebgl = Obj.magic(2);
         let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
         let state =
@@ -1690,7 +1694,7 @@ let _ =
         pixelStorei
         |> withTwoArgs(unpackFlipYWebgl, true)
         |> expect
-        |> toCalledTwice;
+        |> toCalledOnce;
       });
     });
     describe("draw", () =>

@@ -3,7 +3,7 @@ open StateDataRenderWorkerType;
 open Js.Promise;
 
 let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceTextureCount, state) => {
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates) =
+  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, flipYs) =
     CreateTypeArrayBasicSourceTextureService.createTypeArrays(buffer, basicSourceTextureCount);
   state.basicSourceTextureRecord =
     Some({
@@ -14,11 +14,12 @@ let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceT
       formats: Some(formats),
       types: Some(types),
       isNeedUpdates: Some(isNeedUpdates),
+      flipYs: Some(flipYs),
       sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
       bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty()
     });
-  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, widths, heights) =
+  let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, flipYs, widths, heights) =
     CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
@@ -33,6 +34,7 @@ let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceT
       formats: Some(formats),
       types: Some(types),
       isNeedUpdates: Some(isNeedUpdates),
+      flipYs: Some(flipYs),
       widths: Some(widths),
       heights: Some(heights),
       sourceMap: None,

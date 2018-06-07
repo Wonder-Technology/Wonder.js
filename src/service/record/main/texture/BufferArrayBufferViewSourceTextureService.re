@@ -14,11 +14,9 @@ let getDefaultFormat = () => TextureFormatService.getRgba();
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
-let getNeedUpdate = () => 1;
+let getDefaultIsNeedUpdate = BufferSourceTextureService.getDefaultIsNeedUpdate;
 
-let getNotNeedUpdate = () => 0;
-
-let getDefaultIsNeedUpdate = () => getNeedUpdate();
+let getDefaultFlipY = BufferSourceTextureService.getDefaultFlipY;
 
 let getDefaultWidth = () => 0;
 
@@ -106,18 +104,29 @@ let getIsNeedUpdatesOffset =
   + getTypesLength(arrayBufferViewSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getIsNeedUpdateIndex = index => index * getIsNeedUpdatesSize();
+let getIsNeedUpdateIndex = BufferSourceTextureService.getIsNeedUpdateIndex;
 
-let getWidthsLength = arrayBufferViewSourceTextureCount =>
-  arrayBufferViewSourceTextureCount * getWidthsSize();
+let getFlipYsLength = arrayBufferViewSourceTextureCount =>
+  arrayBufferViewSourceTextureCount * getFlipYsSize();
 
-let getWidthsOffset =
+let getFlipYsOffset =
     (basicSourceTextureCount, arrayBufferViewSourceTextureCount) =>
   getIsNeedUpdatesOffset(
     basicSourceTextureCount,
     arrayBufferViewSourceTextureCount,
   )
   + getIsNeedUpdatesLength(arrayBufferViewSourceTextureCount)
+  * Uint8Array._BYTES_PER_ELEMENT;
+
+let getFlipYIndex = index => index * getFlipYsSize();
+
+let getWidthsLength = arrayBufferViewSourceTextureCount =>
+  arrayBufferViewSourceTextureCount * getWidthsSize();
+
+let getWidthsOffset =
+    (basicSourceTextureCount, arrayBufferViewSourceTextureCount) =>
+  getFlipYsOffset(basicSourceTextureCount, arrayBufferViewSourceTextureCount)
+  + getFlipYsLength(arrayBufferViewSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
 let getWidthIndex = index => index * getWidthsSize();
@@ -145,6 +154,7 @@ let getTotalByteLength = arrayBufferViewSourceTextureCount =>
       + getFormatsSize()
       + getTypesSize()
       + getIsNeedUpdatesSize()
+      + getFlipYsSize()
     )
     + Uint16Array._BYTES_PER_ELEMENT
     * (getWidthsSize() + getHeightsSize())

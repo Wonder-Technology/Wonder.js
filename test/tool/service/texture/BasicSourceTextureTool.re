@@ -16,7 +16,7 @@ let isNeedUpdate = (texture, state) =>
     texture,
     getRecord(state).isNeedUpdates,
   )
-  === BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
+  === BufferSourceTextureService.getNeedUpdate();
 
 let getDefaultUnit = () => MapUnitService.getDefaultUnit();
 

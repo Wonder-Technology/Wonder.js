@@ -3,14 +3,17 @@ open StateDataMainType;
 open ArrayBufferViewSourceTextureType;
 
 let unsafeGetSource = (texture, state) => {
-  let {sourceMap} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {sourceMap} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   TextureSourceMapService.unsafeGetSource(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    sourceMap
-  )
+    sourceMap,
+  );
 };
 
 let setSource = (texture, source, state) =>
@@ -21,225 +24,310 @@ let setSource = (texture, source, state) =>
       TextureSourceMapService.setSource(
         IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
           texture,
-          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+            state,
+          ),
         ),
         source,
-        sourceMap
+        sourceMap,
       )
       |> ignore;
       needAddedSourceArray |> ArrayService.push((texture, source)) |> ignore;
-      state
+      state;
     } :
     {
-      let {sourceMap} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+      let {sourceMap} =
+        RecordArrayBufferViewSourceTextureMainService.getRecord(state);
       TextureSourceMapService.setSource(
         IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
           texture,
-          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+            state,
+          ),
         ),
         source,
-        sourceMap
+        sourceMap,
       )
       |> ignore;
-      state
+      state;
     };
 
 let getWrapS = (texture, state) => {
-  let {wrapSs} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {wrapSs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    wrapSs
-  )
+    wrapSs,
+  );
 };
 
 let setWrapS = (texture, wrapS, state) => {
-  let {wrapSs} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {wrapSs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     wrapS,
-    wrapSs
+    wrapSs,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getWrapT = (texture, state) => {
-  let {wrapTs} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {wrapTs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    wrapTs
-  )
+    wrapTs,
+  );
 };
 
 let setWrapT = (texture, wrapT, state) => {
-  let {wrapTs} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {wrapTs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     wrapT,
-    wrapTs
+    wrapTs,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getMagFilter = (texture, state) => {
-  let {magFilters} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {magFilters} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getMagFilter(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    magFilters
-  )
+    magFilters,
+  );
 };
 
 let setMagFilter = (texture, filter, state) => {
-  let {magFilters} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {magFilters} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     filter,
-    magFilters
+    magFilters,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getMinFilter = (texture, state) => {
-  let {minFilters} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {minFilters} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getMinFilter(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    minFilters
-  )
+    minFilters,
+  );
 };
 
 let setMinFilter = (texture, filter, state) => {
-  let {minFilters} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {minFilters} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     filter,
-    minFilters
+    minFilters,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getFormat = (texture, state) => {
-  let {formats} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {formats} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    formats
-  )
+    formats,
+  );
 };
 
 let setFormat = (texture, format, state) => {
-  let {formats} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {formats} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     format,
-    formats
+    formats,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getType = (texture, state) => {
-  let {types} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {types} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getType(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    types
-  )
+    types,
+  );
 };
 
 let setType = (texture, type_, state) => {
-  let {types} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {types} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setType(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     type_,
-    types
+    types,
   )
   |> ignore;
-  state
+  state;
+};
+
+let getFlipY = (texture, state) : bool => {
+  let {flipYs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY(
+    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+      texture,
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
+    ),
+    flipYs,
+  )
+  |> BufferSourceTextureService.getFlipYFromTypeArrayValue;
+};
+
+let setFlipY = (texture, flipY: bool, state) => {
+  let {flipYs} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  OperateTypeArrayArrayBufferViewSourceTextureService.setFlipY(
+    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+      texture,
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
+    ),
+    BufferSourceTextureService.getFlipYTypeArrayValue(flipY),
+    flipYs,
+  )
+  |> ignore;
+  state;
 };
 
 let getWidth = (texture, state) => {
-  let {widths} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {widths} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    widths
-  )
+    widths,
+  );
 };
 
 let setWidth = (texture, width, state) => {
-  let {widths} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {widths} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     width,
-    widths
+    widths,
   )
   |> ignore;
-  state
+  state;
 };
 
 let getHeight = (texture, state) => {
-  let {heights} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {heights} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
-    heights
-  )
+    heights,
+  );
 };
 
 let setHeight = (texture, height, state) => {
-  let {heights} = RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let {heights} =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state)
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
     ),
     height,
-    heights
+    heights,
   )
   |> ignore;
-  state
+  state;
 };

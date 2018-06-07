@@ -41,8 +41,8 @@ let createRenderState =
         globalTempRecord,
         deviceManagerRecord,
         shaderRecord,
-        browserDetectRecord
-      } as state: StateDataMainType.state
+        browserDetectRecord,
+      } as state: StateDataMainType.state,
     ) => {
   let {
         localToWorldMatrices,
@@ -50,7 +50,7 @@ let createRenderState =
         /* copiedLocalToWorldMatrices,
            copiedLocalPositions, */
         localToWorldMatrixCacheMap,
-        normalMatrixCacheMap
+        normalMatrixCacheMap,
       } as transformRecord =
     RecordTransformMainService.getRecord(state);
   /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
@@ -60,7 +60,8 @@ let createRenderState =
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
@@ -69,12 +70,19 @@ let createRenderState =
     isUseWorker ?
       {
         localToWorldMatrices:
-          transformRecord |> CopyTransformService.unsafeGetCopiedLocalToWorldMatrices,
-        localPositions: transformRecord |> CopyTransformService.unsafeGetCopiedLocalPositions,
+          transformRecord
+          |> CopyTransformService.unsafeGetCopiedLocalToWorldMatrices,
+        localPositions:
+          transformRecord |> CopyTransformService.unsafeGetCopiedLocalPositions,
         localToWorldMatrixCacheMap,
-        normalMatrixCacheMap
+        normalMatrixCacheMap,
       } :
-      {localToWorldMatrices, localPositions, localToWorldMatrixCacheMap, normalMatrixCacheMap};
+      {
+        localToWorldMatrices,
+        localPositions,
+        localToWorldMatrixCacheMap,
+        normalMatrixCacheMap,
+      };
   {
     glslSenderRecord,
     programRecord,
@@ -82,7 +90,7 @@ let createRenderState =
       vertices: boxGeometryRecord.vertices,
       texCoords: boxGeometryRecord.texCoords,
       normals: boxGeometryRecord.normals,
-      indices: boxGeometryRecord.indices
+      indices: boxGeometryRecord.indices,
     },
     customGeometryRecord: {
       vertices: customGeometryRecord.vertices,
@@ -92,14 +100,14 @@ let createRenderState =
       verticesInfos: customGeometryRecord.verticesInfos,
       texCoordsInfos: customGeometryRecord.texCoordsInfos,
       normalsInfos: customGeometryRecord.normalsInfos,
-      indicesInfos: customGeometryRecord.indicesInfos
+      indicesInfos: customGeometryRecord.indicesInfos,
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
     basicMaterialRecord: {
       shaderIndices: basicMaterialRecord.shaderIndices,
       colors: basicMaterialRecord.colors,
       textureIndices: basicMaterialRecord.textureIndices,
-      mapUnits: basicMaterialRecord.mapUnits
+      mapUnits: basicMaterialRecord.mapUnits,
     },
     lightMaterialRecord: {
       shaderIndices: lightMaterialRecord.shaderIndices,
@@ -108,7 +116,7 @@ let createRenderState =
       shininess: lightMaterialRecord.shininess,
       textureIndices: lightMaterialRecord.textureIndices,
       diffuseMapUnits: lightMaterialRecord.diffuseMapUnits,
-      specularMapUnits: lightMaterialRecord.specularMapUnits
+      specularMapUnits: lightMaterialRecord.specularMapUnits,
     },
     basicSourceTextureRecord: {
       wrapSs: basicSourceTextureRecord.wrapSs,
@@ -118,10 +126,12 @@ let createRenderState =
       formats: basicSourceTextureRecord.formats,
       types: basicSourceTextureRecord.types,
       isNeedUpdates: basicSourceTextureRecord.isNeedUpdates,
+      flipYs: basicSourceTextureRecord.flipYs,
       sourceMap: basicSourceTextureRecord.sourceMap,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap: basicSourceTextureRecord.bindTextureUnitCacheMap,
-      setFlipYFunc: OperateSourceTextureMainService.setFlipY
+      bindTextureUnitCacheMap:
+        basicSourceTextureRecord.bindTextureUnitCacheMap,
+      setFlipYFunc: OperateSourceTextureMainService.setFlipY,
     },
     arrayBufferViewSourceTextureRecord: {
       wrapSs: arrayBufferViewSourceTextureRecord.wrapSs,
@@ -131,16 +141,23 @@ let createRenderState =
       formats: arrayBufferViewSourceTextureRecord.formats,
       types: arrayBufferViewSourceTextureRecord.types,
       isNeedUpdates: arrayBufferViewSourceTextureRecord.isNeedUpdates,
+      flipYs: arrayBufferViewSourceTextureRecord.flipYs,
       widths: arrayBufferViewSourceTextureRecord.widths,
       heights: arrayBufferViewSourceTextureRecord.heights,
       sourceMap: arrayBufferViewSourceTextureRecord.sourceMap,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap: arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
+      bindTextureUnitCacheMap:
+        arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:
-        IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
-      setFlipYFunc: OperateSourceTextureMainService.setFlipY
+        IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+          state,
+        ),
+      setFlipYFunc: OperateSourceTextureMainService.setFlipY,
     },
-    ambientLightRecord: {index: ambientLightRecord.index, colors: ambientLightRecord.colors},
+    ambientLightRecord: {
+      index: ambientLightRecord.index,
+      colors: ambientLightRecord.colors,
+    },
     directionLightRecord: {
       index: directionLightRecord.index,
       colors: directionLightRecord.colors,
@@ -149,8 +166,8 @@ let createRenderState =
         PositionLightMainService.buildPositionMap(
           directionLightRecord.index,
           PositionDirectionLightMainService.getPosition,
-          state
-        )
+          state,
+        ),
     },
     pointLightRecord: {
       index: pointLightRecord.index,
@@ -164,8 +181,8 @@ let createRenderState =
         PositionLightMainService.buildPositionMap(
           pointLightRecord.index,
           PositionPointLightMainService.getPosition,
-          state
-        )
+          state,
+        ),
     },
     vboBufferRecord,
     typeArrayPoolRecord,
@@ -178,27 +195,40 @@ let createRenderState =
          isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
        }, */
     sourceInstanceRecord: {
-      objectInstanceTransformCollections: sourceInstanceRecord.objectInstanceTransformCollections,
-      objectInstanceTransformIndexMap: sourceInstanceRecord.objectInstanceTransformIndexMap,
+      objectInstanceTransformCollections:
+        sourceInstanceRecord.objectInstanceTransformCollections,
+      objectInstanceTransformIndexMap:
+        sourceInstanceRecord.objectInstanceTransformIndexMap,
       isTransformStatics: sourceInstanceRecord.isTransformStatics,
-      matrixInstanceBufferCapacityMap: sourceInstanceRecord.matrixInstanceBufferCapacityMap,
+      matrixInstanceBufferCapacityMap:
+        sourceInstanceRecord.matrixInstanceBufferCapacityMap,
       matrixFloat32ArrayMap: sourceInstanceRecord.matrixFloat32ArrayMap,
-      isSendTransformMatrixDataMap: sourceInstanceRecord.isSendTransformMatrixDataMap
+      isSendTransformMatrixDataMap:
+        sourceInstanceRecord.isSendTransformMatrixDataMap,
     },
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {index: shaderRecord.index},
+    shaderRecord: {
+      index: shaderRecord.index,
+    },
     settingRecord: {
       gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord)),
       instanceBuffer:
         Some({
           objectInstanceCountPerSourceInstance:
-            BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+            BufferSettingService.getObjectInstanceCountPerSourceInstance(
+              settingRecord,
+            ),
         }),
-      textureCountPerMaterial: Some(BufferSettingService.getTextureCountPerMaterial(settingRecord))
+      textureCountPerMaterial:
+        Some(BufferSettingService.getTextureCountPerMaterial(settingRecord)),
     },
-    workerDetectRecord: {isUseWorker: isUseWorker},
-    browserDetectRecord: {browser: browserDetectRecord.browser}
-  }
+    workerDetectRecord: {
+      isUseWorker: isUseWorker,
+    },
+    browserDetectRecord: {
+      browser: browserDetectRecord.browser,
+    },
+  };
 };
