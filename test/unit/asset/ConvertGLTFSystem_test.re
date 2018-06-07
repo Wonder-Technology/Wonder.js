@@ -384,13 +384,13 @@ let _ =
                             near: 1.0,
                             far: Some(10000.0),
                             aspect: Some(1.5),
-                            fovy: 0.6,
+                            fovy: 34.37746770784939,
                           },
                           {
                             near: 2.0,
                             far: Some(1000.0),
                             aspect: Some(2.0),
-                            fovy: 0.5,
+                            fovy: 28.64788975654116,
                           },
                         |]
             )

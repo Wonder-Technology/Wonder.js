@@ -8,6 +8,8 @@ let convertToBasicCameraViews =
     },
 };
 
+let _convertRadiansToDegree = angle => angle *. 180. /. Js.Math._PI;
+
 let convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
   switch (cameras) {
   | None => [||]
@@ -21,7 +23,12 @@ let convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
                perspective |> OptionService.unsafeGet;
              arr
              |> ArrayService.push(
-                  {near: znear, far: zfar, fovy: yfov, aspect: aspectRatio}: WDType.perspectiveCameraProjection,
+                  {
+                    near: znear,
+                    far: zfar,
+                    fovy: yfov |> _convertRadiansToDegree,
+                    aspect: aspectRatio,
+                  }: WDType.perspectiveCameraProjection,
                 );
            | _ => arr
            },
