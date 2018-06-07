@@ -698,12 +698,41 @@ let _ =
             );
 
           testPromise("if no aspect, set canvas.width/canvas.height", () => {
-            let canvas = {"width": 100., "height": 200.} |> Obj.magic;
-            let state = ViewTool.setCanvas(canvas, state^);
+            let state =
+              RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+                sandbox,
+                NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+                  ~initPipelines=
+                    {|
+[
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "init_camera"
+        }
+        ]
+    }
+]
+        |},
+                  (),
+                ),
+              );
 
             AssembleWDSystemTool.testResult(
               _buildGLTFJsonOfCamera(),
-              ((state, sceneGameObject)) =>
+              ((state, sceneGameObject)) => {
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+
+                let canvas = {"width": 100., "height": 200.} |> Obj.magic;
+                let state = ViewTool.setCanvas(canvas, state);
+
+                let state = state |> RenderJobsTool.init;
+
                 _getAllPerspectiveCameraProjectionComponent(
                   sceneGameObject,
                   state,
@@ -714,7 +743,8 @@ let _ =
                        state,
                      )
                    )
-                |> expect == [|2., canvas##width /. canvas##height|],
+                |> expect == [|2., canvas##width /. canvas##height|];
+              },
               state,
             );
           });

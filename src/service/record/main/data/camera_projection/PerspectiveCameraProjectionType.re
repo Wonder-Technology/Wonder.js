@@ -1,6 +1,7 @@
 open ComponentType;
 
-type pMatrixMap = WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t);
+type pMatrixMap =
+  WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t);
 
 type dirtyArray = array(int);
 
@@ -13,5 +14,5 @@ type perspectiveCameraProjectionRecord = {
   fovyMap: WonderCommonlib.SparseMapService.t(float),
   aspectMap: WonderCommonlib.SparseMapService.t(float),
   gameObjectMap,
-  disposedIndexArray: array(component)
+  disposedIndexArray: array(component),
 };

@@ -1,7 +1,4 @@
 open StateDataMainType;
 
-let execJob = (flags, {perspectiveCameraProjectionRecord} as state) => {
-  ...state,
-  perspectiveCameraProjectionRecord:
-    UpdatePerspectiveCameraProjectionService.update(perspectiveCameraProjectionRecord)
-};
+let execJob = (flags, {perspectiveCameraProjectionRecord} as state) =>
+  UpdatePerspectiveCameraProjectionMainService.update(state);

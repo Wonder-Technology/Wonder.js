@@ -393,14 +393,7 @@ let _batchSetPerspectiveCameraProjectionData =
          let perspectiveCameraProjectionRecord =
            switch (aspect) {
            | None =>
-             let canvas =
-               ViewService.getCanvas(viewRecord) |> DomType.htmlElementToJsObj;
-
              perspectiveCameraProjectionRecord
-             |> FrustumPerspectiveCameraProjectionService.setAspect(
-                  cameraProjection,
-                  canvas##width /. canvas##height,
-                );
            | Some(aspect) =>
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setAspect(
