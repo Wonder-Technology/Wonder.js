@@ -1,11 +1,15 @@
+open Js.Promise;
+
 let _getSourcePath = (filePath, sourceRelativePath) =>
   PathService.resolve(filePath, sourceRelativePath);
 
-let buildImageArray = ({images}: GLTFType.gltf) : Most.stream('a) => {
+/* let buildImageArray = ({images}: GLTFType.gltf) : Most.stream('a) => { */
+let buildImageArray = ({images}: GLTFType.gltf)  => {
   open GLTFType;
   let imageArr = [||];
   switch (images) {
-  | None => Most.just(imageArr)
+  /* | None => Most.just(imageArr) */
+  | None => imageArr |> resolve
   | Some(images) =>
     images
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -51,7 +55,9 @@ let buildImageArray = ({images}: GLTFType.gltf) : Most.stream('a) => {
          [||],
        )
     |> Most.mergeArray
-    |> Most.map(_ => imageArr)
+    /* |> Most.map(_ => imageArr) */
+    |> Most.drain
+    |> then_(() => imageArr |> resolve)
   };
 };
 

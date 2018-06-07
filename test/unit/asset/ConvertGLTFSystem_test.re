@@ -888,4 +888,38 @@ let _ =
         )
       )
     );
+    describe("fix bug", () => {
+      let _buildGLTFJsonOfMultiImages = () =>
+        ConvertGLTFTool.buildGLTFJson(
+          ~images=
+            {|  [
+        {
+            "uri":"|}
+            ++ ConvertGLTFTool.buildFakeImageOfSingleNode()
+            ++ {|"
+            },
+        {
+            "uri":"|}
+            ++ ConvertGLTFTool.buildFakeImageOfCesiumMilkTruck()
+            ++ {|"
+            }
+            ]|},
+          (),
+        );
+      let _test = (gltfJson, testFunc) => {
+        _buildFakeLoadImage();
+        ConvertGLTFSystem.convert(gltfJson)
+        |> Most.reduce(
+             (arr, dataTuple) => arr |> ArrayService.push(dataTuple),
+             [||],
+           )
+        |> then_(arr => testFunc(arr) |> resolve);
+      };
+
+      testPromise("should only exec convert once", () =>
+        _test(_buildGLTFJsonOfMultiImages(), arr =>
+          arr |> Js.Array.length |> expect == 1
+        )
+      );
+    });
   });

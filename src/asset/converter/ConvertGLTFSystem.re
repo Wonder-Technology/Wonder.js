@@ -60,11 +60,19 @@ let convert = (gltfFileContent: string) => {
       gltfFileContent |> Js.Json.parseExn,
     );
   ConvertImagesSystem.buildImageArray(gltf)
-  |> Most.map(imageArr =>
+  |> then_((imageArr) => {
+       (
+         _convertGLTFToWD(gltf),
+         imageArr,
+         ConvertBuffersSystem.buildBufferArray(gltf),
+       ) |> resolve
+  })
+  |> Most.fromPromise
+  /* |> Most.map(imageArr =>
        (
          _convertGLTFToWD(gltf),
          imageArr,
          ConvertBuffersSystem.buildBufferArray(gltf),
        )
-     );
+     ); */
 };
