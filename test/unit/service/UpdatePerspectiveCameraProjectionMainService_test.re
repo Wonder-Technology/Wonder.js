@@ -1,7 +1,7 @@
 open Wonder_jest;
 
 describe(
-  "UpdatePerspectiveCameraProjectionService",
+  "UpdatePerspectiveCameraProjectionMainService",
   () => {
     open Expect;
     open Expect.Operators;
@@ -22,7 +22,7 @@ describe(
           "if not has fovy/aspect/near/far value, error",
           () =>
             expect(() => PerspectiveCameraProjectionTool.updateCameraProjection(0, state^))
-            |> toThrowMessage("fovy,aspect,near,far should all exist")
+            |> toThrowMessage("fovy,near,far should all exist")
         )
     )
   }

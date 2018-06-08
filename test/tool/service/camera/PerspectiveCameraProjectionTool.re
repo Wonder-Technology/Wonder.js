@@ -17,27 +17,17 @@ let getDirtyArray = state =>
   state.perspectiveCameraProjectionRecord.dirtyArray;
 
 let init = (state: StateDataMainType.state) =>
-  InitPerspectiveCameraProjectionService.init(
-    state.perspectiveCameraProjectionRecord,
-  );
+  InitPerspectiveCameraProjectionMainService.init(state);
 
-let update = (state: StateDataMainType.state) => {
-  ...state,
-  perspectiveCameraProjectionRecord:
-    UpdatePerspectiveCameraProjectionService.update(
-      state.perspectiveCameraProjectionRecord,
-    ),
-};
+let update = (state: StateDataMainType.state) =>
+  UpdatePerspectiveCameraProjectionMainService.update(state);
 
 let updateCameraProjection =
-    (cameraProjection, state: StateDataMainType.state) => {
-  ...state,
-  perspectiveCameraProjectionRecord:
-    UpdatePerspectiveCameraProjectionService.updateCameraProjection(
-      cameraProjection,
-      state.perspectiveCameraProjectionRecord,
-    ),
-};
+    (cameraProjection, state: StateDataMainType.state) =>
+  UpdatePerspectiveCameraProjectionMainService.updateCameraProjection(
+    cameraProjection,
+    state,
+  );
 
 let getPMatrixOfCreateBasicCameraViewPerspectiveCamera = () =>
   Js.Typed_array.Float32Array.make([|
