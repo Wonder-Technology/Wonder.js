@@ -809,47 +809,6 @@ let buildGLTFJsonOfMultiPrimitives = () =>
         }
 
     ]|},
-    /* ~meshes={|
-       [
-               {
-                   "primitives": [
-                       {
-                           "attributes": {
-                               "NORMAL": 1,
-                               "POSITION": 2,
-                               "TEXCOORD_0": 3
-                           },
-                           "indices": 0,
-                           "mode": 4,
-                           "material": 0
-                       },
-                       {
-                           "attributes": {
-                               "NORMAL": 5,
-                               "POSITION": 6
-                           },
-                           "indices": 4,
-                           "mode": 4,
-                           "material": 1
-                       }
-                   ]
-               },
-               {
-                   "primitives": [
-                       {
-                           "attributes": {
-                               "NORMAL": 8,
-                               "POSITION": 9
-                           },
-                           "indices": 7,
-                           "mode": 4,
-                           "material": 2
-                       }
-                   ]
-               }
-
-           ]
-               |}, */
     ~meshes=
       {|
 [

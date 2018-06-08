@@ -44,6 +44,7 @@ let _ =
               );
             ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes(gltf);
           };
+
           test("test nodes", () => {
             open GLTFType;
             let gltfRecord = _prepare();
@@ -135,25 +136,7 @@ let _ =
                           camera: None,
                           mesh: Some(2),
                           children: None,
-                          matrix:
-                            Some([|
-                              1.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              1.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              1.0,
-                              0.0,
-                              1.0,
-                              2.0,
-                              3.0,
-                              1.0,
-                            |]),
+                          matrix: None,
                           translation: None,
                           rotation: None,
                           scale: None,
@@ -162,25 +145,7 @@ let _ =
                           camera: None,
                           mesh: Some(3),
                           children: None,
-                          matrix:
-                            Some([|
-                              1.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              1.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              0.0,
-                              1.0,
-                              0.0,
-                              1.0,
-                              2.0,
-                              3.0,
-                              1.0,
-                            |]),
+                          matrix: None,
                           translation: None,
                           rotation: None,
                           scale: None,
@@ -353,7 +318,8 @@ let _ =
           )
         );
 
-        testPromise("test default material's lightMaterialGameObjectIndexData", () =>
+        testPromise(
+          "test default material's lightMaterialGameObjectIndexData", () =>
           _test(
             ConvertGLTFTool.buildGLTFJsonOfCameras(), (({indices}, _, _)) =>
             indices.gameObjectIndices.lightMaterialGameObjectIndexData

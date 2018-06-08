@@ -1,4 +1,4 @@
-let _buildMultiPrimitivesMeshMap = (meshes) => {
+let _buildMultiPrimitivesMeshMap = meshes => {
   let (multiPrimitivesMeshMap, newMeshIndex) =
     meshes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -31,22 +31,24 @@ let _buildMultiPrimitivesMeshMap = (meshes) => {
                newMeshIndex + (newMeshDataArr |> Js.Array.length),
              );
            },
-         (WonderCommonlib.SparseMapService.createEmpty(), meshes |> Js.Array.length),
+         (
+           WonderCommonlib.SparseMapService.createEmpty(),
+           meshes |> Js.Array.length,
+         ),
        );
-multiPrimitivesMeshMap
+  multiPrimitivesMeshMap;
 };
 
-let _buildNewMeshes = (meshes, multiPrimitivesMeshMap) => {
-    multiPrimitivesMeshMap
-    |> SparseMapService.reduceiValid(
-         (. newMeshes, newMeshDataArr, _) =>
-           newMeshes
-           |> Js.Array.concat(
-                newMeshDataArr |> Js.Array.map(((newMesh, _)) => newMesh),
-              ),
-         meshes |> Js.Array.copy,
-       );
-};
+let _buildNewMeshes = (meshes, multiPrimitivesMeshMap) =>
+  multiPrimitivesMeshMap
+  |> SparseMapService.reduceiValid(
+       (. newMeshes, newMeshDataArr, _) =>
+         newMeshes
+         |> Js.Array.concat(
+              newMeshDataArr |> Js.Array.map(((newMesh, _)) => newMesh),
+            ),
+       meshes |> Js.Array.copy,
+     );
 
 let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
   let (newNodes, newNodesOfMultiPrimitives, newNodeIndex) =
@@ -78,11 +80,17 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
                  |> WonderCommonlib.ArrayService.reduceOneParam(
                       (. newNodesOfMultiPrimitives, (_, meshIndex)) =>
                         newNodesOfMultiPrimitives
-                        |> ArrayService.push({
-                             ...node,
-                             children: None,
-                             mesh: Some(meshIndex),
-                           }),
+                        |> ArrayService.push(
+                             {
+                               camera: None,
+                               matrix: None,
+                               translation: None,
+                               rotation: None,
+                               scale: None,
+                               children: None,
+                               mesh: Some(meshIndex),
+                             }: GLTFType.node,
+                           ),
                       newNodesOfMultiPrimitives,
                     );
                let newChildren =
@@ -109,12 +117,16 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
            },
          ([||], [||], nodes |> Js.Array.length),
        );
-   newNodes |> Js.Array.concat(newNodesOfMultiPrimitives);
+  newNodes |> Js.Array.concat(newNodesOfMultiPrimitives);
 };
 
 let convertMultiPrimitivesToNodes =
     ({nodes, meshes} as gltf: GLTFType.gltf)
     : GLTFType.gltf => {
   let multiPrimitivesMeshMap = _buildMultiPrimitivesMeshMap(meshes);
-  {...gltf, nodes: _buildNewNodes(nodes, multiPrimitivesMeshMap) , meshes: _buildNewMeshes(meshes, multiPrimitivesMeshMap)};
+  {
+    ...gltf,
+    nodes: _buildNewNodes(nodes, multiPrimitivesMeshMap),
+    meshes: _buildNewMeshes(meshes, multiPrimitivesMeshMap),
+  };
 };
