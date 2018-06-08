@@ -162,7 +162,7 @@ type mesh = {primitives: array(primitive)};
 type gltf = {
   asset,
   scenes: array(scene),
-  scene: int,
+  scene: option(int),
   images: option(array(image)),
   textures: option(array(texture)),
   samplers: option(array(sampler)),
@@ -172,5 +172,5 @@ type gltf = {
   cameras: option(array(camera)),
   nodes: array(node),
   meshes: array(mesh),
-  materials: array(material)
+  materials: option(array(material))
 };

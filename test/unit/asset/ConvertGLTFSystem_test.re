@@ -320,6 +320,49 @@ let _ =
           );
         });
       });
+
+      describe("test set default material", () => {
+        testPromise("test default lightMaterial", () =>
+          _test(
+            ConvertGLTFTool.buildGLTFJsonOfCameras(),
+            (({lightMaterials}, _, _)) =>
+            lightMaterials
+            |>
+            expect == [|
+                        {
+                          diffuseColor:
+                            ConvertGLTFTool.getDefaultDiffuseColor(),
+                        },
+                      |]
+          )
+        );
+        testPromise("test customGeometrys", () =>
+          _test(
+            ConvertGLTFTool.buildGLTFJsonOfCameras(),
+            (({customGeometrys}, _, _)) =>
+            customGeometrys
+            |>
+            expect == [|
+                        Some({
+                          position: 1,
+                          normal: None,
+                          texCoord: None,
+                          index: 0,
+                        }),
+                      |]
+          )
+        );
+
+        testPromise("test default material's lightMaterialGameObjectIndexData", () =>
+          _test(
+            ConvertGLTFTool.buildGLTFJsonOfCameras(), (({indices}, _, _)) =>
+            indices.gameObjectIndices.lightMaterialGameObjectIndexData
+            |>
+            expect == ConvertGLTFTool.buildComponentIndexData([|0|], [|0|])
+          )
+        );
+      });
+
       testPromise("test asset", () =>
         _test(
           ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({asset}, _, _)) =>
@@ -494,7 +537,14 @@ let _ =
             _test(
               ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
               (({lightMaterials}, _, _)) =>
-              lightMaterials |> expect == [|{diffuseColor: None}|]
+              lightMaterials
+              |>
+              expect == [|
+                          {
+                            diffuseColor:
+                              ConvertGLTFTool.getDefaultDiffuseColor(),
+                          },
+                        |]
             )
           );
           describe("test has data", () =>
@@ -506,24 +556,28 @@ let _ =
                 lightMaterials
                 |>
                 expect == [|
-                            {diffuseColor: None},
                             {
                               diffuseColor:
-                                Some([|
-                                  0.0,
-                                  0.04050629958510399,
-                                  0.021240700036287309,
-                                |]),
+                                ConvertGLTFTool.getDefaultDiffuseColor(),
+                            },
+                            {
+                              diffuseColor: [|
+                                0.0,
+                                0.04050629958510399,
+                                0.021240700036287309,
+                              |],
+                            },
+                            {
+                              diffuseColor: [|
+                                0.06400000303983689,
+                                0.06400000303983689,
+                                0.06400000303983689,
+                              |],
                             },
                             {
                               diffuseColor:
-                                Some([|
-                                  0.06400000303983689,
-                                  0.06400000303983689,
-                                  0.06400000303983689,
-                                |]),
+                                ConvertGLTFTool.getDefaultDiffuseColor(),
                             },
-                            {diffuseColor: None},
                           |]
               )
             )
@@ -680,10 +734,11 @@ let _ =
             parentTransformIndices,
             childrenTransformIndices,
           };
-          let _buildComponentIndexData = (gameObjectIndices, componentIndices) => {
-            gameObjectIndices,
-            componentIndices,
-          };
+          let _buildComponentIndexData = (gameObjectIndices, componentIndices) =>
+            ConvertGLTFTool.buildComponentIndexData(
+              gameObjectIndices,
+              componentIndices,
+            );
           describe("test childrenTransformIndexData", () => {
             testPromise("test single node gltf", () =>
               _test(

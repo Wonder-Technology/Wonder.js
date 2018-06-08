@@ -18,7 +18,7 @@ let convert = json : GLTFType.gltf =>
                  {nodes: json |> optional(field("nodes", array(int)))}
                ),
              ),
-        scene: json |> field("scene", int),
+        scene: json |> optional(field("scene", int)),
         images:
           json
           |> optional(
@@ -217,58 +217,65 @@ let convert = json : GLTFType.gltf =>
              ),
         materials:
           json
-          |> field(
-               "materials",
-               array(json =>
-                 {
-                   pbrMetallicRoughness:
-                     json
-                     |> optional(
-                          field("pbrMetallicRoughness", json =>
-                            {
-                              baseColorFactor:
-                                json
-                                |> optional(
-                                     field("baseColorFactor", array(float)),
-                                   ),
-                              baseColorTexture:
-                                json
-                                |> optional(
-                                     field("baseColorTexture", json =>
-                                       {
-                                         index: json |> field("index", int),
-                                         texCoord:
-                                           json
-                                           |> optional(
-                                                field("texCoord", int),
-                                              ),
-                                       }
+          |> optional(
+               field(
+                 "materials",
+                 array(json =>
+                   {
+                     pbrMetallicRoughness:
+                       json
+                       |> optional(
+                            field("pbrMetallicRoughness", json =>
+                              {
+                                baseColorFactor:
+                                  json
+                                  |> optional(
+                                       field(
+                                         "baseColorFactor",
+                                         array(float),
+                                       ),
                                      ),
-                                   ),
-                              metallicFactor:
-                                json
-                                |> optional(field("metallicFactor", float)),
-                              roughnessFactor:
-                                json
-                                |> optional(field("roughnessFactor", float)),
-                              metallicRoughnessTexture:
-                                json
-                                |> optional(
-                                     field("metallicRoughnessTexture", json =>
-                                       {
-                                         index: json |> field("index", int),
-                                         texCoord:
-                                           json
-                                           |> optional(
-                                                field("texCoord", int),
-                                              ),
-                                       }
+                                baseColorTexture:
+                                  json
+                                  |> optional(
+                                       field("baseColorTexture", json =>
+                                         {
+                                           index: json |> field("index", int),
+                                           texCoord:
+                                             json
+                                             |> optional(
+                                                  field("texCoord", int),
+                                                ),
+                                         }
+                                       ),
                                      ),
-                                   ),
-                            }
+                                metallicFactor:
+                                  json
+                                  |> optional(field("metallicFactor", float)),
+                                roughnessFactor:
+                                  json
+                                  |> optional(
+                                       field("roughnessFactor", float),
+                                     ),
+                                metallicRoughnessTexture:
+                                  json
+                                  |> optional(
+                                       field("metallicRoughnessTexture", json =>
+                                         {
+                                           index: json |> field("index", int),
+                                           texCoord:
+                                             json
+                                             |> optional(
+                                                  field("texCoord", int),
+                                                ),
+                                         }
+                                       ),
+                                     ),
+                              }
+                            ),
                           ),
-                        ),
-                 }
+                   }
+                 ),
                ),
              ),
       }

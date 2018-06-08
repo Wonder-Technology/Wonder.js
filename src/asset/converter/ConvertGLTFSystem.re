@@ -19,6 +19,11 @@ let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+  let scene =
+    switch (scene) {
+    | None => 0
+    | Some(scene) => scene
+    };
   {
     gameObjects:
       Array.unsafe_get(scenes, scene).nodes |> OptionService.unsafeGet,
@@ -27,7 +32,10 @@ let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
 
 let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
   let ({asset, scenes, scene, nodes}: GLTFType.gltf) as gltf =
-    ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes(gltf);
+    gltf
+    |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
+    |> ConvertDefaultMaterialSystem.convert;
+
   {
     asset: {
       version: asset.version,
@@ -60,14 +68,15 @@ let convert = (gltfFileContent: string) => {
       gltfFileContent |> Js.Json.parseExn,
     );
   ConvertImagesSystem.buildImageArray(gltf)
-  |> then_((imageArr) => {
+  |> then_(imageArr =>
        (
          _convertGLTFToWD(gltf),
          imageArr,
          ConvertBuffersSystem.buildBufferArray(gltf),
-       ) |> resolve
-  })
-  |> Most.fromPromise
+       )
+       |> resolve
+     )
+  |> Most.fromPromise;
   /* |> Most.map(imageArr =>
        (
          _convertGLTFToWD(gltf),

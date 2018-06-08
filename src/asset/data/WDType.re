@@ -61,7 +61,7 @@ type perspectiveCameraProjection = {
 
 type lightMaterial = {
   /* TODO add doubleSided: option(bool), */
-  diffuseColor: option(array(float)),
+  diffuseColor: array(float),
   /* specularColor: option(array(float)),
      shininess: option(float) */
 };

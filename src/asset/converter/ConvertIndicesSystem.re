@@ -332,57 +332,68 @@ let _setMapMaterialIndices =
 
 let _convertToMaterialIndices =
     ({nodes, materials}: GLTFType.gltf)
-    : WDType.materialIndices => {
-  let (materialIndices, diffuseMapIndices) =
-    materials
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           (materialIndices, diffuseMapIndices),
-           {pbrMetallicRoughness}: GLTFType.material,
-           index,
+    : WDType.materialIndices =>
+  switch (materials) {
+  | None => (
+      {
+        diffuseMapMaterialIndices: {
+          materialIndices: [||],
+          mapIndices: [||],
+        },
+      }: WDType.materialIndices
+    )
+  | Some(materials) =>
+    let (materialIndices, diffuseMapIndices) =
+      materials
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (.
+             (materialIndices, diffuseMapIndices),
+             {pbrMetallicRoughness}: GLTFType.material,
+             index,
+           ) =>
+             switch (pbrMetallicRoughness) {
+             | None => (materialIndices, diffuseMapIndices)
+             | Some(pbrMetallicRoughness) =>
+               let {baseColorTexture, metallicRoughnessTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
+               _setMapMaterialIndices(
+                 baseColorTexture,
+                 index,
+                 (materialIndices, diffuseMapIndices),
+               );
+             },
+           ([||], [||]),
+         );
+    (
+      {
+        diffuseMapMaterialIndices: {
+          materialIndices,
+          mapIndices: diffuseMapIndices,
+        },
+      }: WDType.materialIndices
+    )
+    |> WonderLog.Contract.ensureCheck(
+         (
+           {diffuseMapMaterialIndices: {materialIndices, mapIndices}}: WDType.materialIndices,
          ) =>
-           switch (pbrMetallicRoughness) {
-           | None => (materialIndices, diffuseMapIndices)
-           | Some(pbrMetallicRoughness) =>
-             let {baseColorTexture, metallicRoughnessTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
-             _setMapMaterialIndices(
-               baseColorTexture,
-               index,
-               (materialIndices, diffuseMapIndices),
-             );
-           },
-         ([||], [||]),
-       );
-  (
-    {
-      diffuseMapMaterialIndices: {
-        materialIndices,
-        mapIndices: diffuseMapIndices,
-      },
-    }: WDType.materialIndices
-  )
-  |> WonderLog.Contract.ensureCheck(
-       (
-         {diffuseMapMaterialIndices: {materialIndices, mapIndices}}: WDType.materialIndices,
-       ) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|materialIndices' count === mapIndices' count|j},
-                   ~actual={j|not|j},
-                 ),
-                 () =>
-                 materialIndices
-                 |> Js.Array.length == (mapIndices |> Js.Array.length)
+           WonderLog.(
+             Contract.(
+               Operators.(
+                 test(
+                   Log.buildAssertMessage(
+                     ~expect=
+                       {j|materialIndices' count === mapIndices' count|j},
+                     ~actual={j|not|j},
+                   ),
+                   () =>
+                   materialIndices
+                   |> Js.Array.length == (mapIndices |> Js.Array.length)
+                 )
                )
              )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-};
+           ),
+         IsDebugMainService.getIsDebug(StateDataMain.stateData),
+       );
+  };
 
 let _convertToImageAndSamplerTextureIndices =
     ({nodes, textures}: GLTFType.gltf) =>

@@ -392,8 +392,7 @@ let _batchSetPerspectiveCameraProjectionData =
               );
          let perspectiveCameraProjectionRecord =
            switch (aspect) {
-           | None =>
-             perspectiveCameraProjectionRecord
+           | None => perspectiveCameraProjectionRecord
            | Some(aspect) =>
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setAspect(
@@ -415,15 +414,11 @@ let _batchSetLightMaterialData =
        (. state, {diffuseColor}, index) => {
          let material = lightMaterialArr[index];
 
-         switch (diffuseColor) {
-         | None => state
-         | Some(diffuseColor) =>
-           OperateLightMaterialMainService.setDiffuseColor(
-             material,
-             diffuseColor,
-             state,
-           )
-         };
+         OperateLightMaterialMainService.setDiffuseColor(
+           material,
+           diffuseColor,
+           state,
+         );
        },
        state,
      );

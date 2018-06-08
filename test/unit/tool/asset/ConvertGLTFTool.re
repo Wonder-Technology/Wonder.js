@@ -181,7 +181,7 @@ let buildGLTFJson =
                ++ {|"
             }
             ]|},
-      ()
+      (),
     ) => {j|
 {
     "asset": $asset,
@@ -203,18 +203,18 @@ let buildGLTFJson =
 let buildGLTFJsonOfSingleNode = () => buildGLTFJson();
 
 let buildGLTFJsonOfCesiumMilkTruck = () =>
-  buildGLTFJson
+  buildGLTFJson(
     /* ~asset={| {
            "version": "2.0"
        }|}, */
-    (
-      ~scene={|0|},
-      ~scenes={|  [
+    ~scene={|0|},
+    ~scenes={|  [
         {
         "nodes": [0]
     }
     ]|},
-      ~nodes={| [
+    ~nodes=
+      {| [
         {
             "mesh": 0,
             "children": [
@@ -293,7 +293,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         }
 
     ]|},
-      ~meshes={| [
+    ~meshes=
+      {| [
         {
             "primitives": [
                 {
@@ -344,7 +345,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         }
 
     ]|},
-      ~accessors={| [
+    ~accessors=
+      {| [
         {
             "bufferView": 0,
             "byteOffset": 0,
@@ -629,7 +631,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         }
 
     ]|},
-      ~materials={| [
+    ~materials=
+      {| [
         {
             "pbrMetallicRoughness": {
                 "baseColorTexture": {
@@ -674,7 +677,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         }
 
     ]|},
-      ~textures={|  [
+    ~textures=
+      {|  [
         {
             "sampler": 0,
             "source": 0
@@ -685,15 +689,16 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         }
 
     ]|},
-      ~images=
-        {|  [
+    ~images=
+      {|  [
         {
             "uri":"|}
-        ++ buildFakeImageOfCesiumMilkTruck()
-        ++ {|"
+      ++ buildFakeImageOfCesiumMilkTruck()
+      ++ {|"
             }
             ]|},
-      ~samplers={|  [
+    ~samplers=
+      {|  [
         {
             "magFilter": 9729,
             "minFilter": 9986,
@@ -701,7 +706,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
             "wrapT": 10497
         }
     ]|},
-      ~bufferViews={|  [
+    ~bufferViews=
+      {|  [
         {
             "buffer": 0,
             "byteOffset": 92248,
@@ -733,21 +739,22 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
             "byteLength": 992
         }
     ]|},
-      ~buffers=
-        {| [
+    ~buffers=
+      {| [
         {
             "byteLength": 109384,
             "uri":"|}
-        ++ buildFakeBufferOfCesiumMilkTruck()
-        ++ {|"
+      ++ buildFakeBufferOfCesiumMilkTruck()
+      ++ {|"
             }
             ]|},
-      ()
-    );
+    (),
+  );
 
 let buildGLTFJsonOfMultiPrimitives = () =>
   buildGLTFJson(
-    ~nodes={| [
+    ~nodes=
+      {| [
         {
             "mesh": 0,
             "children": [
@@ -843,7 +850,8 @@ let buildGLTFJsonOfMultiPrimitives = () =>
 
            ]
                |}, */
-    ~meshes={|
+    ~meshes=
+      {|
 [
         {
             "primitives": [
@@ -880,12 +888,13 @@ let buildGLTFJsonOfMultiPrimitives = () =>
 
     ]
         |},
-    ()
+    (),
   );
 
 let buildGLTFJsonOfCamera = () =>
   buildGLTFJson(
-    ~nodes={| [
+    ~nodes=
+      {| [
         {
             "mesh": 0,
             "camera": 2,
@@ -927,7 +936,8 @@ let buildGLTFJsonOfCamera = () =>
             "camera": 2
         }
     ]|},
-    ~cameras={|
+    ~cameras=
+      {|
 [
         {
             "perspective": {
@@ -958,12 +968,13 @@ let buildGLTFJsonOfCamera = () =>
         }
     ]
         |},
-    ()
+    (),
   );
 
 let buildGLTFJsonOfTransform = () =>
   buildGLTFJson(
-    ~nodes={| [
+    ~nodes=
+      {| [
         {
             "children": [
                 1
@@ -1001,8 +1012,109 @@ let buildGLTFJsonOfTransform = () =>
             ]
         }
     ]|},
-    ()
+    (),
   );
+
+let buildGLTFJsonOfCameras = () => {|
+    {
+  "scenes" : [
+    {
+      "nodes" : [ 0, 1, 2 ]
+    }
+  ],
+  "nodes" : [
+    {
+      "rotation" : [ -0.383, 0.0, 0.0, 0.92375 ],
+      "mesh" : 0
+    },
+    {
+      "translation" : [ 0.5, 0.5, 3.0 ],
+      "camera" : 0
+    },
+    {
+      "translation" : [ 0.5, 0.5, 3.0 ],
+      "camera" : 1
+    }
+  ],
+
+  "cameras" : [
+    {
+      "type": "perspective",
+      "perspective": {
+        "aspectRatio": 1.0,
+        "yfov": 0.7,
+        "zfar": 100,
+        "znear": 0.01
+      }
+    },
+    {
+      "type": "orthographic",
+      "orthographic": {
+        "xmag": 1.0,
+        "ymag": 1.0,
+        "zfar": 100,
+        "znear": 0.01
+      }
+    }
+  ],
+
+  "meshes" : [
+    {
+      "primitives" : [ {
+        "attributes" : {
+          "POSITION" : 1
+        },
+        "indices" : 0
+      } ]
+    }
+  ],
+
+  "buffers" : [
+    {
+      "uri" : "data:application/octet-stream;base64,AAABAAIAAQADAAIAAAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAA",
+      "byteLength" : 60
+    }
+  ],
+  "bufferViews" : [
+    {
+      "buffer" : 0,
+      "byteOffset" : 0,
+      "byteLength" : 12,
+      "target" : 34963
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 12,
+      "byteLength" : 48,
+      "target" : 34962
+    }
+  ],
+  "accessors" : [
+    {
+      "bufferView" : 0,
+      "byteOffset" : 0,
+      "componentType" : 5123,
+      "count" : 6,
+      "type" : "SCALAR",
+      "max" : [ 3 ],
+      "min" : [ 0 ]
+    },
+    {
+      "bufferView" : 1,
+      "byteOffset" : 0,
+      "componentType" : 5126,
+      "count" : 4,
+      "type" : "VEC3",
+      "max" : [ 1.0, 1.0, 0.0 ],
+      "min" : [ 0.0, 0.0, 0.0 ]
+    }
+  ],
+
+  "asset" : {
+    "version" : "2.0"
+  }
+}
+    |};
 
 let _buildFakeLoadImage = [%bs.raw
   {|
@@ -1019,6 +1131,17 @@ let testResult = (gltfJson, testFunc) => {
   let data = ref(Obj.magic(1));
   _buildFakeLoadImage();
   ConvertGLTFSystem.convert(gltfJson)
-  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => data := (wdRecord, imageArr, bufferArr))
-  |> then_(() => testFunc(data^) |> resolve)
+  |> Most.forEach(((wdRecord, imageArr, bufferArr)) =>
+       data := (wdRecord, imageArr, bufferArr)
+     )
+  |> then_(() => testFunc(data^) |> resolve);
+};
+
+let getDefaultDiffuseColor = () => [|1., 1., 1.|];
+
+let buildComponentIndexData =
+    (gameObjectIndices, componentIndices)
+    : WDType.componentGameObjectIndexData => {
+  gameObjectIndices,
+  componentIndices,
 };
