@@ -1047,6 +1047,31 @@ let _ =
             |> expect
             |> toCalledOnce;
           });
+          test("set unpack_colorspace_conversion_webgl to be none", () => {
+            let (state, map) = _prepare(~state=state^, ());
+            let none = Obj.magic(2);
+            let unpackColorspaceConversionWebgl = Obj.magic(3);
+            let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~none,
+                     ~unpackColorspaceConversionWebgl,
+                     ~pixelStorei,
+                     (),
+                   ),
+                 );
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            pixelStorei
+            |> withTwoArgs(unpackColorspaceConversionWebgl, none)
+            |> expect
+            |> toCalledOnce;
+          });
           describe("set texture parameters", () => {
             describe("if source is power of two", () => {
               let _prepare = state => {

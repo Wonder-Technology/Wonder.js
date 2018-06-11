@@ -112,6 +112,13 @@ external getMaxTextureImageUnits : webgl1Context => int =
    [@bs.get] external getTextureUnit14 : webgl1Context => int = "TEXTURE14";
 
    [@bs.get] external getTextureUnit15 : webgl1Context => int = "TEXTURE15"; */
+
+[@bs.get] external getNone : webgl1Context => enum = "NONE";
+
+[@bs.get]
+external getUnpackColorspaceCoersionWebgl : webgl1Context => int =
+  "UNPACK_COLORSPACE_CONVERSION_WEBGL";
+
 [@bs.get] external getCompileStatus : webgl1Context => int = "COMPILE_STATUS";
 
 [@bs.get] external getLinkStatus : webgl1Context => int = "LINK_STATUS";
@@ -170,6 +177,8 @@ external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
 [@bs.send.pipe: webgl1Context] external cullFace : int => unit = "";
 
 [@bs.send.pipe: webgl1Context] external pixelStorei : (int, bool) => unit = "";
+
+[@bs.send.pipe: webgl1Context] external pixelStoreiEnum : (int, enum) => unit = "pixelStorei";
 
 [@bs.send] external commit : webgl1Context => unit = "";
 

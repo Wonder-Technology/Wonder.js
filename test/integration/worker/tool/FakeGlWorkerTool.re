@@ -40,6 +40,7 @@ let buildFakeGl =
       ~array_buffer=(-1),
       ~element_array_buffer=(-1),
       ~float=(-1),
+      ~none=(-1),
       ~static_draw=(-1),
       ~dynamic_draw=(-1),
       ~triangles=(-1),
@@ -54,9 +55,11 @@ let buildFakeGl =
       ~getCullFace=(-3),
       ~getDepthTest=(-4),
       ~pixelStorei=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~unpack_colorspace_conversion_webgl=(-1),
       ~texImage2D=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~texParameteri=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(99),
+      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     |> returns(99),
       ~getParameter=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~activeTexture=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bindTexture=createEmptyStub(refJsObjToSandbox(sandbox^)),
@@ -65,27 +68,35 @@ let buildFakeGl =
       ~enable=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~disable=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~cullFace=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createProgram=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(100),
+      ~createProgram=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     |> returns(100),
       ~createShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~compileShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getVertexAttribArrayEnabled=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getVertexAttribArrayEnabled=createEmptyStub(
+                                     refJsObjToSandbox(sandbox^),
+                                   ),
       ~linkProgram=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getShaderParameter=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getProgramParameter=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(true),
+      ~getProgramParameter=createEmptyStub(refJsObjToSandbox(sandbox^))
+                           |> returns(true),
       ~getShaderInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getProgramInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getShaderPrecisionFormat=createEmptyStub(refJsObjToSandbox(sandbox^))
                                 |> returns({"precision": 1}),
-      ~getExtension=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~getExtension=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    |> returns(0),
       ~attachShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bindAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~deleteShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~deleteBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
-      ~getUniformLocation=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~getAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^))
+                         |> returns(0),
+      ~getUniformLocation=createEmptyStub(refJsObjToSandbox(sandbox^))
+                          |> returns(0),
       ~bindBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~resetBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(0),
+      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    |> returns(0),
       ~bufferData=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bufferSubData=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~vertexAttribPointer=createEmptyStub(refJsObjToSandbox(sandbox^)),
@@ -104,7 +115,7 @@ let buildFakeGl =
       ~useProgram=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~disableVertexAttribArray=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~commit=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ()
+      (),
     ) => {
   "TEXTURE_WRAP_S": textureWrapS,
   "TEXTURE_WRAP_T": textureWrapT,
@@ -151,6 +162,8 @@ let buildFakeGl =
   "COLOR_BUFFER_BIT": color_buffer_bit,
   "DEPTH_BUFFER_BIT": depth_buffer_bit,
   "STENCIL_BUFFER_BIT": stencil_buffer_bit,
+  "NONE": none,
+  "UNPACK_COLORSPACE_CONVERSION_WEBGL": unpack_colorspace_conversion_webgl,
   "pixelStorei": pixelStorei,
   "texImage2D": texImage2D,
   "texParameteri": texParameteri,
@@ -205,17 +218,19 @@ let buildFakeGl =
   "createProgram": createProgram,
   "createShader": createShader,
   "compileShader": compileShader,
-  "commit": commit
+  "commit": commit,
 };
 
 let setFakeGl = (fakeGlObj, state) =>
   FakeGlTool.setFakeGl(fakeGlObj, state) |> MainStateTool.setState;
 
-let setFakeGlToRenderWorkerState = (fakeGlObj, state: StateDataRenderWorkerType.renderWorkerState) =>
+let setFakeGlToRenderWorkerState =
+    (fakeGlObj, state: StateDataRenderWorkerType.renderWorkerState) =>
   {
     ...state,
     deviceManagerRecord:
-      state.deviceManagerRecord |> DeviceManagerService.setGl(Obj.magic(fakeGlObj))
+      state.deviceManagerRecord
+      |> DeviceManagerService.setGl(Obj.magic(fakeGlObj)),
   }
   |> RenderWorkerStateTool.setState;
 /*

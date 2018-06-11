@@ -96,6 +96,10 @@ let update =
     ) => {
   let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
   setFlipYFunc(gl, flipY, browserDetectRecord);
+
+  gl
+  |> Gl.pixelStoreiEnum(Gl.getUnpackColorspaceCoersionWebgl(gl), Gl.getNone(gl));
+
   /* TODO handle _needClampMaxSize
      if(_needClampMaxSize(source, width, height)){
          this.clampToMaxSize();

@@ -14,6 +14,8 @@ type attributeLocation = int;
 
 type uniformLocation;
 
+type enum;
+
 type precisionFormat = {. "precision": int};
 
 type extension;
