@@ -36,7 +36,10 @@ type asset = {
 
 type scene = {gameObjects: array(gameObjectIndex)};
 
-type gameObjects = {count: int};
+type gameObjects = {
+  count: int,
+  names: array(string),
+};
 
 type transform = {
   translation: option((float, float, float)),

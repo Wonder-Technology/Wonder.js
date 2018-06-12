@@ -42,9 +42,7 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
       generator: "GLTF2WD",
     },
     scene: _convertToScene(gltf),
-    gameObjects: {
-      count: ConvertCommon.getCount(nodes),
-    },
+    gameObjects: ConvertGameObjectsSystem.convert(gltf),
     indices: ConvertIndicesSystem.convertToIndices(gltf),
     transforms: ConvertTransformsSystem.convertToTransforms(gltf),
     basicCameraViews: ConvertCamerasSystem.convertToBasicCameraViews(gltf),

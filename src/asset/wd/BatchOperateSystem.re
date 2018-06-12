@@ -423,9 +423,21 @@ let _batchSetLightMaterialData =
        state,
      );
 
+let _setName = (gameObjectArr, {names}: WDType.gameObjects, state) =>
+  gameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, gameObject, index) =>
+         NameGameObjectMainService.setName(
+           gameObject,
+           Array.unsafe_get(names, index),
+           state,
+         ),
+       state,
+     );
+
 let batchOperate =
     (
-      {indices} as wdRecord,
+      {indices, gameObjects} as wdRecord,
       imageArr,
       bufferArr,
       (
@@ -441,6 +453,7 @@ let batchOperate =
         basicSourceTextureArr,
       ),
     ) => {
+  let state = state |> _setName(gameObjectArr, gameObjects);
   let (
     (
       parentTransforms,

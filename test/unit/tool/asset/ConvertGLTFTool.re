@@ -807,7 +807,6 @@ let buildGLTFJsonOfMultiPrimitives = () =>
                 1.0
             ]
         }
-
     ]|},
     ~meshes=
       {|
@@ -844,7 +843,130 @@ let buildGLTFJsonOfMultiPrimitives = () =>
                 }
             ]
         }
+    ]
+        |},
+    (),
+  );
 
+let buildGLTFJsonOfMultiPrimitivesWithName = () =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "children": [
+                3,
+                2,
+                1
+            ]
+        },
+        {
+            "mesh": 1,
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                10.0,
+                30.0,
+                50.0,
+                1.0
+            ],
+            "name": "node1"
+        },
+        {
+            "mesh": 0,
+            "children": [
+                1
+            ],
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                1.0,
+                2.0,
+                3.0,
+                1.0
+            ],
+            "name": "node2"
+        },
+        {
+            "mesh": 2
+        }
+    ]|},
+    ~meshes=
+      {|
+[
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 2
+                    },
+                    "indices": 0,
+                    "mode": 4,
+                    "material": 0
+                },
+                {
+                    "attributes": {
+                        "POSITION": 6
+                    },
+                    "indices": 4,
+                    "mode": 4,
+                    "material": 1
+                }
+            ],
+            "name": "mesh0"
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 9
+                    },
+                    "indices": 7,
+                    "mode": 4,
+                    "material": 2
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 10
+                    },
+                    "indices": 8,
+                    "mode": 4,
+                    "material": 2
+                },
+                {
+                    "attributes": {
+                        "POSITION": 6
+                    },
+                    "indices": 4,
+                    "mode": 4,
+                    "material": 1
+                }
+            ]
+        }
     ]
         |},
     (),

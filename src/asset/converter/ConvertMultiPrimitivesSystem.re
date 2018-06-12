@@ -1,10 +1,22 @@
+let _buildMultiPrimitivesMeshName = (meshName, primitiveIndex) =>
+  switch (meshName) {
+  | None => None
+  | Some(meshName) => Some({j|$(meshName)_$primitiveIndex|j})
+  };
+
+let _buildMultiPrimitivesNodeName = (nodeName, primitiveIndex) =>
+  switch (nodeName) {
+  | None => None
+  | Some(nodeName) => Some({j|$(nodeName)_$primitiveIndex|j})
+  };
+
 let _buildMultiPrimitivesMeshMap = meshes => {
   let (multiPrimitivesMeshMap, newMeshIndex) =
     meshes
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (multiPrimitivesMeshMap, newMeshIndex),
-           {primitives}: GLTFType.mesh,
+           {primitives, name}: GLTFType.mesh,
            meshIndex,
          ) =>
            switch (primitives |> Js.Array.length) {
@@ -17,7 +29,14 @@ let _buildMultiPrimitivesMeshMap = meshes => {
                     (. newMeshDataArr, primitive, primitiveIndex) =>
                       newMeshDataArr
                       |> ArrayService.push((
-                           {primitives: [|primitive|]}: GLTFType.mesh,
+                           {
+                             primitives: [|primitive|],
+                             name:
+                               _buildMultiPrimitivesMeshName(
+                                 name,
+                                 primitiveIndex,
+                               ),
+                           }: GLTFType.mesh,
                            newMeshIndex + primitiveIndex,
                          )),
                     [||],
@@ -56,7 +75,7 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
            (newNodes, newNodesOfMultiPrimitives, newNodeIndex),
-           {mesh} as node: GLTFType.node,
+           {mesh, name} as node: GLTFType.node,
          ) =>
            switch (mesh) {
            | None => (
@@ -77,11 +96,20 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
              | Some(newMeshDataArr) =>
                let newNodesOfMultiPrimitives =
                  newMeshDataArr
-                 |> WonderCommonlib.ArrayService.reduceOneParam(
-                      (. newNodesOfMultiPrimitives, (_, meshIndex)) =>
+                 |> WonderCommonlib.ArrayService.reduceOneParami(
+                      (.
+                        newNodesOfMultiPrimitives,
+                        (_, meshIndex),
+                        primitiveIndex,
+                      ) =>
                         newNodesOfMultiPrimitives
                         |> ArrayService.push(
                              {
+                               name:
+                                 _buildMultiPrimitivesNodeName(
+                                   name,
+                                   primitiveIndex,
+                                 ),
                                camera: None,
                                matrix: None,
                                translation: None,

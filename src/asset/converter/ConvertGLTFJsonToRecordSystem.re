@@ -140,6 +140,9 @@ let convert = json : GLTFType.gltf =>
                "nodes",
                array(json =>
                  {
+                   name:
+                     json
+                     |> optimizedOptional(optimizedField("name", string)),
                    camera:
                      json |> optimizedOptional(optimizedField("camera", int)),
                    mesh:
@@ -178,6 +181,7 @@ let convert = json : GLTFType.gltf =>
                "meshes",
                array(json =>
                  {
+                   name: json |> optional(field("name", string)),
                    primitives:
                      json
                      |> field(

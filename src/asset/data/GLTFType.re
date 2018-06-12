@@ -22,7 +22,7 @@ type scene = {nodes: option(array(nodeIndex))};
 
 type asset = {
   version: string,
-  generator: option(string)
+  generator: option(string),
 };
 
 /*
@@ -47,12 +47,12 @@ type accessor = {
   byteOffset: option(int),
   count: int,
   componentType: int,
-  type_: string
+  type_: string,
 };
 
 type buffer = {
   uri: option(string),
-  byteLength: int
+  byteLength: int,
 };
 
 /* type bufferViewTarget =
@@ -62,7 +62,7 @@ type bufferView = {
   buffer: bufferIndex,
   byteOffset: option(int),
   byteLength: int,
-  byteStride: option(int)
+  byteStride: option(int),
   /* target: option(int) */
 };
 
@@ -70,14 +70,14 @@ type perspective = {
   aspectRatio: option(float),
   yfov: float,
   zfar: option(float),
-  znear: float
+  znear: float,
 };
 
 type orthographic = {
   xmag: float,
   ymag: float,
   zfar: float,
-  znear: float
+  znear: float,
 };
 
 /* type cameraType =
@@ -86,7 +86,7 @@ type orthographic = {
 type camera = {
   type_: string,
   perspective: option(perspective),
-  orthographic: option(orthographic)
+  orthographic: option(orthographic),
 };
 
 type image = {uri: option(string)};
@@ -111,17 +111,17 @@ type sampler = {
   magFilter: option(int),
   minFilter: option(int),
   wrapS: option(int),
-  wrapT: option(int)
+  wrapT: option(int),
 };
 
 type texture = {
   sampler: option(samplerIndex),
-  source: option(imageIndex)
+  source: option(imageIndex),
 };
 
 type textureInfo = {
   index: int,
-  texCoord: option(int)
+  texCoord: option(int),
 };
 
 type pbrMetallicRoughness = {
@@ -129,35 +129,39 @@ type pbrMetallicRoughness = {
   baseColorTexture: option(textureInfo),
   metallicFactor: option(float),
   roughnessFactor: option(float),
-  metallicRoughnessTexture: option(textureInfo)
+  metallicRoughnessTexture: option(textureInfo),
 };
 
 type material = {pbrMetallicRoughness: option(pbrMetallicRoughness)};
 
 type node = {
+  name: option(string),
   camera: option(cameraIndex),
   mesh: option(meshIndex),
   children: option(array(nodeIndex)),
   matrix: option(array(float)),
   translation: option(array(float)),
   rotation: option(array(float)),
-  scale: option(array(float))
+  scale: option(array(float)),
 };
 
 type attributes = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord_0: option(accessorIndex),
-  texCoord_1: option(accessorIndex)
+  texCoord_1: option(accessorIndex),
 };
 
 type primitive = {
   attributes,
   indices: option(accessorIndex),
-  material: option(materialIndex)
+  material: option(materialIndex),
 };
 
-type mesh = {primitives: array(primitive)};
+type mesh = {
+  primitives: array(primitive),
+  name: option(string),
+};
 
 type gltf = {
   asset,
@@ -172,5 +176,5 @@ type gltf = {
   cameras: option(array(camera)),
   nodes: array(node),
   meshes: array(mesh),
-  materials: option(array(material))
+  materials: option(array(material)),
 };

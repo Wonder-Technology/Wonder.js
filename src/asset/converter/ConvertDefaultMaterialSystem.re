@@ -1,44 +1,3 @@
-let _buildMultiPrimitivesMeshMap = meshes => {
-  let (multiPrimitivesMeshMap, newMeshIndex) =
-    meshes
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           (multiPrimitivesMeshMap, newMeshIndex),
-           {primitives}: GLTFType.mesh,
-           meshIndex,
-         ) =>
-           switch (primitives |> Js.Array.length) {
-           | 0
-           | 1 => (multiPrimitivesMeshMap, newMeshIndex)
-           | primitivesLen =>
-             let newMeshDataArr =
-               primitives
-               |> WonderCommonlib.ArrayService.reduceOneParami(
-                    (. newMeshDataArr, primitive, primitiveIndex) =>
-                      newMeshDataArr
-                      |> ArrayService.push((
-                           {primitives: [|primitive|]}: GLTFType.mesh,
-                           newMeshIndex + primitiveIndex,
-                         )),
-                    [||],
-                  );
-             (
-               multiPrimitivesMeshMap
-               |> WonderCommonlib.SparseMapService.set(
-                    meshIndex,
-                    newMeshDataArr,
-                  ),
-               newMeshIndex + (newMeshDataArr |> Js.Array.length),
-             );
-           },
-         (
-           WonderCommonlib.SparseMapService.createEmpty(),
-           meshes |> Js.Array.length,
-         ),
-       );
-  multiPrimitivesMeshMap;
-};
-
 let _buildNewMeshes = (meshes, multiPrimitivesMeshMap) =>
   multiPrimitivesMeshMap
   |> SparseMapService.reduceiValid(
@@ -155,6 +114,7 @@ let _setDefaultMaterial =
              newMeshes
              |> ArrayService.push(
                   {
+                    ...mesh,
                     primitives: [|
                       {
                         ...ConvertCommon.getPrimitiveData(mesh.primitives),

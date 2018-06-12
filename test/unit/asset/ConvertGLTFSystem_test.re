@@ -39,7 +39,7 @@ let _ =
           let _prepare = () => {
             let gltf =
               ConvertGLTFJsonToRecordSystem.convert(
-                ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives()
+                ConvertGLTFTool.buildGLTFJsonOfMultiPrimitivesWithName()
                 |> Js.Json.parseExn,
               );
             ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes(gltf);
@@ -52,15 +52,17 @@ let _ =
             |>
             expect == [|
                         {
+                          name: None,
                           camera: None,
                           mesh: None,
-                          children: Some([|2, 1, 3, 4|]),
+                          children: Some([|3, 2, 1, 4, 5|]),
                           matrix: None,
                           translation: None,
                           rotation: None,
                           scale: None,
                         },
                         {
+                          name: Some("node1"),
                           camera: None,
                           mesh: Some(1),
                           children: None,
@@ -88,9 +90,10 @@ let _ =
                           scale: None,
                         },
                         {
+                          name: Some("node2"),
                           camera: None,
                           mesh: None,
-                          children: Some([|1, 5, 6|]),
+                          children: Some([|1, 6, 7|]),
                           matrix:
                             Some([|
                               1.0,
@@ -115,15 +118,17 @@ let _ =
                           scale: None,
                         },
                         {
+                          name: None,
                           camera: None,
-                          mesh: Some(2),
-                          children: None,
+                          mesh: None,
+                          children: Some([|8, 9|]),
                           matrix: None,
                           translation: None,
                           rotation: None,
                           scale: None,
                         },
                         {
+                          name: None,
                           camera: None,
                           mesh: Some(3),
                           children: None,
@@ -133,8 +138,9 @@ let _ =
                           scale: None,
                         },
                         {
+                          name: None,
                           camera: None,
-                          mesh: Some(2),
+                          mesh: Some(4),
                           children: None,
                           matrix: None,
                           translation: None,
@@ -142,8 +148,39 @@ let _ =
                           scale: None,
                         },
                         {
+                          name: Some("node2_0"),
                           camera: None,
                           mesh: Some(3),
+                          children: None,
+                          matrix: None,
+                          translation: None,
+                          rotation: None,
+                          scale: None,
+                        },
+                        {
+                          name: Some("node2_1"),
+                          camera: None,
+                          mesh: Some(4),
+                          children: None,
+                          matrix: None,
+                          translation: None,
+                          rotation: None,
+                          scale: None,
+                        },
+                        {
+                          name: None,
+                          camera: None,
+                          mesh: Some(5),
+                          children: None,
+                          matrix: None,
+                          translation: None,
+                          rotation: None,
+                          scale: None,
+                        },
+                        {
+                          name: None,
+                          camera: None,
+                          mesh: Some(6),
                           children: None,
                           matrix: None,
                           translation: None,
@@ -159,6 +196,7 @@ let _ =
             |>
             expect == [|
                         {
+                          name: Some("mesh0"),
                           primitives: [|
                             {
                               attributes: {
@@ -183,6 +221,7 @@ let _ =
                           |],
                         },
                         {
+                          name: None,
                           primitives: [|
                             {
                               attributes: {
@@ -197,6 +236,32 @@ let _ =
                           |],
                         },
                         {
+                          name: None,
+                          primitives: [|
+                            {
+                              attributes: {
+                                position: 10,
+                                normal: None,
+                                texCoord_0: None,
+                                texCoord_1: None,
+                              },
+                              indices: Some(8),
+                              material: Some(2),
+                            },
+                            {
+                              attributes: {
+                                position: 6,
+                                normal: None,
+                                texCoord_0: None,
+                                texCoord_1: None,
+                              },
+                              indices: Some(4),
+                              material: Some(1),
+                            },
+                          |],
+                        },
+                        {
+                          name: Some("mesh0_0"),
                           primitives: [|
                             {
                               attributes: {
@@ -211,6 +276,37 @@ let _ =
                           |],
                         },
                         {
+                          name: Some("mesh0_1"),
+                          primitives: [|
+                            {
+                              attributes: {
+                                position: 6,
+                                normal: None,
+                                texCoord_0: None,
+                                texCoord_1: None,
+                              },
+                              indices: Some(4),
+                              material: Some(1),
+                            },
+                          |],
+                        },
+                        {
+                          name: None,
+                          primitives: [|
+                            {
+                              attributes: {
+                                position: 10,
+                                normal: None,
+                                texCoord_0: None,
+                                texCoord_1: None,
+                              },
+                              indices: Some(8),
+                              material: Some(2),
+                            },
+                          |],
+                        },
+                        {
+                          name: None,
                           primitives: [|
                             {
                               attributes: {
@@ -227,6 +323,7 @@ let _ =
                       |];
           });
         });
+
         describe("test convert to wd", () => {
           testPromise("test customGeometrys", () =>
             _test(
@@ -257,13 +354,17 @@ let _ =
                         |]
             )
           );
-          testPromise("test gameObjects", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
-              (({gameObjects}, _, _)) =>
-              gameObjects |> expect == {count: 7}
+
+          describe("test gameObjects", () =>
+            testPromise("test count", () =>
+              _test(
+                ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
+                (({gameObjects}, _, _)) =>
+                gameObjects.count |> expect == 7
+              )
             )
           );
+
           describe("test indices", () =>
             describe("test gameObjectIndices", () =>
               describe("test geometryGameObjectIndices", () =>
@@ -346,14 +447,28 @@ let _ =
           _test(
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
             (({gameObjects}, _, _)) =>
-            gameObjects |> expect == {count: 1}
+            gameObjects |> expect == {count: 1, names: [|"gameObject_0"|]}
           )
         );
         testPromise("test truck gltf", () =>
           _test(
             ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
             (({gameObjects}, _, _)) =>
-            gameObjects |> expect == {count: 8}
+            gameObjects
+            |>
+            expect == {
+                        count: 8,
+                        names: [|
+                          "gameObject_0",
+                          "gameObject_1",
+                          "Wheels",
+                          "gameObject_3",
+                          "Wheels",
+                          "Cesium_Milk_Truck_0",
+                          "Cesium_Milk_Truck_1",
+                          "Cesium_Milk_Truck_2",
+                        |],
+                      }
           )
         );
       });

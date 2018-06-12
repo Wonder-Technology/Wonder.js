@@ -101,6 +101,34 @@ let _ =
         )
       );
     });
+
+    describe("set name", () =>
+      describe("set gameObject name", () =>
+        testPromise("test", () =>
+          AssembleWDSystemTool.testResult(
+            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ((state, sceneGameObject)) =>
+              _getAllGameObjects(sceneGameObject, state)
+              |> Js.Array.map(gameObject =>
+                   GameObjectAPI.unsafeGetGameObjectName(gameObject, state)
+                 )
+              |>
+              expect == [|
+                          "gameObject_0",
+                          "gameObject_1",
+                          "gameObject_3",
+                          "Cesium_Milk_Truck_0",
+                          "Cesium_Milk_Truck_1",
+                          "Cesium_Milk_Truck_2",
+                          "Wheels",
+                          "Wheels",
+                        |],
+            state^,
+          )
+        )
+      )
+    );
+
     describe("test transforms", () => {
       describe("test set parent", () => {
         testPromise("test children", () =>
@@ -589,7 +617,13 @@ let _ =
                      ),
                    )
                  )
-              |> expect == [|(2., 28.64788975654116), (1., 34.37746770784939), (1., 34.37746770784939), (2., 28.64788975654116)|],
+              |>
+              expect == [|
+                          (2., 28.64788975654116),
+                          (1., 34.37746770784939),
+                          (1., 34.37746770784939),
+                          (2., 28.64788975654116),
+                        |],
             state^,
           )
         );
