@@ -10,12 +10,18 @@ open BufferLightMaterialService;
 
 open OperateTypeArrayLightMaterialService;
 
-let getRecord = ({lightMaterialRecord}) => lightMaterialRecord |> OptionService.unsafeGet;
+let getRecord = ({lightMaterialRecord}) =>
+  lightMaterialRecord |> OptionService.unsafeGet;
 
 let setAllTypeArrDataToDefault =
     (
       lightMaterialCount: int,
-      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
+      (
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShininess,
+      ),
       (
         shaderIndices,
         diffuseColors,
@@ -23,33 +29,41 @@ let setAllTypeArrDataToDefault =
         shininess,
         textureIndices,
         diffuseMapUnits,
-        specularMapUnits
-      )
+        specularMapUnits,
+      ),
     ) => {
   let defaultUnit = MapUnitService.getDefaultUnit();
-  let (shaderIndices, diffuseColors, specularColors, shininess, diffuseMapUnits, specularMapUnits) =
+  let (
+    shaderIndices,
+    diffuseColors,
+    specularColors,
+    shininess,
+    diffuseMapUnits,
+    specularMapUnits,
+  ) =
     WonderCommonlib.ArrayService.range(0, lightMaterialCount - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
+         (.
            (
-             (
-               shaderIndices,
-               diffuseColors,
-               specularColors,
-               shininess,
-               diffuseMapUnits,
-               specularMapUnits
-             ),
-             index
-           ) => (
-             [@bs] ShaderIndicesService.setShaderIndex(index, defaultShaderIndex, shaderIndices),
-             setDiffuseColor(index, defaultDiffuseColor, diffuseColors),
-             setSpecularColor(index, defaultSpecularColor, specularColors),
-             setShininess(index, defaultShininess, shininess),
-             setDiffuseMapUnit(index, defaultUnit, diffuseMapUnits),
-             setSpecularMapUnit(index, defaultUnit, specularMapUnits)
-           )
+             shaderIndices,
+             diffuseColors,
+             specularColors,
+             shininess,
+             diffuseMapUnits,
+             specularMapUnits,
+           ),
+           index,
+         ) => (
+           ShaderIndicesService.setShaderIndex(.
+             index,
+             defaultShaderIndex,
+             shaderIndices,
+           ),
+           setDiffuseColor(index, defaultDiffuseColor, diffuseColors),
+           setSpecularColor(index, defaultSpecularColor, specularColors),
+           setShininess(index, defaultShininess, shininess),
+           setDiffuseMapUnit(index, defaultUnit, diffuseMapUnits),
+           setSpecularMapUnit(index, defaultUnit, specularMapUnits),
          ),
          (
            shaderIndices,
@@ -57,8 +71,8 @@ let setAllTypeArrDataToDefault =
            specularColors,
            shininess,
            diffuseMapUnits,
-           specularMapUnits
-         )
+           specularMapUnits,
+         ),
        );
   (
     shaderIndices,
@@ -67,14 +81,19 @@ let setAllTypeArrDataToDefault =
     shininess,
     textureIndices |> Js.Typed_array.Uint32Array.fillInPlace(0),
     diffuseMapUnits,
-    specularMapUnits
-  )
+    specularMapUnits,
+  );
 };
 
 let _setAllTypeArrDataToDefault =
     (
       lightMaterialCount: int,
-      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
+      (
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShininess,
+      ),
       (
         buffer,
         shaderIndices,
@@ -83,13 +102,18 @@ let _setAllTypeArrDataToDefault =
         shininess,
         textureIndices,
         diffuseMapUnits,
-        specularMapUnits
-      )
+        specularMapUnits,
+      ),
     ) => (
   buffer,
   setAllTypeArrDataToDefault(
     lightMaterialCount,
-    (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess),
+    (
+      defaultShaderIndex,
+      defaultDiffuseColor,
+      defaultSpecularColor,
+      defaultShininess,
+    ),
     (
       shaderIndices,
       diffuseColors,
@@ -97,16 +121,21 @@ let _setAllTypeArrDataToDefault =
       shininess,
       textureIndices,
       diffuseMapUnits,
-      specularMapUnits
-    )
-  )
+      specularMapUnits,
+    ),
+  ),
 );
 
 let _initBufferData =
     (
       lightMaterialCount,
       textureCountPerMaterial,
-      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness)
+      (
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShiness,
+      ),
     ) => {
   let buffer = createBuffer(lightMaterialCount, textureCountPerMaterial);
   let (
@@ -116,12 +145,12 @@ let _initBufferData =
     shininess,
     textureIndices,
     diffuseMapUnits,
-    specularMapUnits
+    specularMapUnits,
   ) =
     CreateTypeArrayLightMaterialService.createTypeArrays(
       buffer,
       lightMaterialCount,
-      textureCountPerMaterial
+      textureCountPerMaterial,
     );
   (
     buffer,
@@ -131,16 +160,22 @@ let _initBufferData =
     shininess,
     textureIndices,
     diffuseMapUnits,
-    specularMapUnits
+    specularMapUnits,
   )
   |> _setAllTypeArrDataToDefault(
        lightMaterialCount,
-       (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShiness)
-     )
+       (
+         defaultShaderIndex,
+         defaultDiffuseColor,
+         defaultSpecularColor,
+         defaultShiness,
+       ),
+     );
 };
 
 let create = ({settingRecord} as state) => {
-  let defaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex();
+  let defaultShaderIndex =
+    DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultDiffuseColor = [|1., 1., 1.|];
   let defaultSpecularColor = [|1., 1., 1.|];
   let defaultShininess = 32.0;
@@ -153,13 +188,18 @@ let create = ({settingRecord} as state) => {
       shininess,
       textureIndices,
       diffuseMapUnits,
-      specularMapUnits
-    )
+      specularMapUnits,
+    ),
   ) =
     _initBufferData(
       BufferSettingService.getLightMaterialCount(settingRecord),
       BufferSettingService.getTextureCountPerMaterial(settingRecord),
-      (defaultShaderIndex, defaultDiffuseColor, defaultSpecularColor, defaultShininess)
+      (
+        defaultShaderIndex,
+        defaultDiffuseColor,
+        defaultSpecularColor,
+        defaultShininess,
+      ),
     );
   state.lightMaterialRecord =
     Some({
@@ -175,13 +215,14 @@ let create = ({settingRecord} as state) => {
       defaultDiffuseColor,
       defaultSpecularColor,
       defaultShininess,
+      nameMap: WonderCommonlib.SparseMapService.createEmpty(),
       textureCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty()
+      materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty(),
     });
-  state
+  state;
 };
 
 let deepCopyForRestore = ({settingRecord} as state) => {
@@ -197,11 +238,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
+        nameMap,
         textureCountMap,
         groupCountMap,
         gameObjectMap,
         disposedIndexArray,
-        materialArrayForWorkerInit
+        materialArrayForWorkerInit,
       } as record =
     state |> getRecord;
   {
@@ -212,38 +254,54 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         index,
         shaderIndices:
           shaderIndices
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(index * getShaderIndicesSize()),
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
+               index * getShaderIndicesSize(),
+             ),
         diffuseColors:
           diffuseColors
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getDiffuseColorsSize()),
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getDiffuseColorsSize(),
+             ),
         specularColors:
           specularColors
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getSpecularColorsSize()),
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getSpecularColorsSize(),
+             ),
         shininess:
           shininess
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getShininessSize()),
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getShininessSize(),
+             ),
         textureIndices:
           textureIndices
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
                index
                * BufferMaterialService.getTextureIndicesSize(
-                   BufferSettingService.getTextureCountPerMaterial(settingRecord)
-                 )
+                   BufferSettingService.getTextureCountPerMaterial(
+                     settingRecord,
+                   ),
+                 ),
              ),
         diffuseMapUnits:
           diffuseMapUnits
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getMapUnitsSize(),
+             ),
         specularMapUnits:
           specularMapUnits
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getMapUnitsSize()),
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getMapUnitsSize(),
+             ),
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
+        nameMap: nameMap |> SparseMapService.copy,
         textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        materialArrayForWorkerInit: materialArrayForWorkerInit |> Js.Array.copy
-      })
-  }
+        materialArrayForWorkerInit:
+          materialArrayForWorkerInit |> Js.Array.copy,
+      }),
+  };
 };

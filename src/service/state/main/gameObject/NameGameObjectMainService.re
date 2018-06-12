@@ -1,16 +1,12 @@
 open StateDataMainType;
 
 let unsafeGetName = (uid, {gameObjectRecord} as state) =>
-  gameObjectRecord.nameMap
-  |> WonderCommonlib.SparseMapService.get(uid)
-  |> OptionService.unsafeGet;
+  NameService.unsafeGetName(uid, gameObjectRecord.nameMap);
 
 let setName = (uid, name, {gameObjectRecord} as state) => {
   ...state,
   gameObjectRecord: {
     ...gameObjectRecord,
-    nameMap:
-      gameObjectRecord.nameMap
-      |> WonderCommonlib.SparseMapService.set(uid, name),
+    nameMap: NameService.setName(uid, name, gameObjectRecord.nameMap),
   },
 };

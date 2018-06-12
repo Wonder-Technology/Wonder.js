@@ -14,5 +14,6 @@ type basicSourceTextureRecord = {
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, DomType.imageElement)),
-  needInitedTextureIndexArray: array(int)
+  needInitedTextureIndexArray: array(int),
+  nameMap: WonderCommonlib.SparseMapService.t(string)
 };

@@ -161,6 +161,7 @@ let create = ({settingRecord} as state) => {
         types,
         isNeedUpdates,
         flipYs,
+        nameMap: WonderCommonlib.SparseMapService.createEmpty(),
         sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
         glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
         bindTextureUnitCacheMap:
@@ -185,6 +186,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         types,
         isNeedUpdates,
         flipYs,
+        nameMap,
         sourceMap,
         glTextureMap,
         bindTextureUnitCacheMap,
@@ -239,6 +241,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getFlipYsSize(),
              ),
+        nameMap: nameMap |> SparseMapService.copy,
         sourceMap: sourceMap |> SparseMapService.copy,
         glTextureMap: glTextureMap |> SparseMapService.copy,
         bindTextureUnitCacheMap:
