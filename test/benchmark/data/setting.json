@@ -1,5 +1,5 @@
 {
-    "is_debug": true,
+    "is_debug": false,
     "context": {
         "alpha": true,
         "depth": true,

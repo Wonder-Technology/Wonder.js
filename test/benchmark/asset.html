@@ -70,8 +70,10 @@
                 // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())
                 // wd.convertGLTFToWD(getGLTFJsonOfDuck())
                     // wd.convertGLTFToWD(getGLTFJsonOfTruck())
-                    // wd.convertGLTFToWD(getGLTFJsonOfVC())
-                    wd.convertGLTFToWD(getGLTFJsonOfCamera())
+                    wd.convertGLTFToWD(getGLTFJsonOfVC())
+                    // wd.convertGLTFToWD(getGLTFJsonOfCamera())
+                    // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
+                    // wd.convertGLTFToWD(getGLTFJsonOfTest())
                     .forEach((wdData) => {
 
                         var state = state$;
@@ -135,19 +137,20 @@
                         // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
 
-                        // var data = LightBoxesTool.createCamera(state);
-                        // var state = data[0];
-                        // var camera = data[1];
+                        var data = LightBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
 
 
-                        // var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
-                        // var state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
+                        // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
+                        var state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
 
-                        // var state =
-                        //     wd.setCurrentCameraGameObject(
-                        //         camera, state
-                        //     );
+                        var state =
+                            wd.setCurrentCameraGameObject(
+                                camera, state
+                            );
 
 
                         wd.startDirector(state);

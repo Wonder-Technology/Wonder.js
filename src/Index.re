@@ -20,6 +20,10 @@ let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
 
+let setGameObjectName = GameObjectAPI.setGameObjectName;
+
+let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
+
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
 let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOrder;
@@ -252,6 +256,10 @@ let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGa
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
+let setLightMaterialName = LightMaterialAPI.setLightMaterialName;
+
+let unsafeGetLightMaterialName = LightMaterialAPI.unsafeGetLightMaterialName;
+
 let hasLightMaterialSpecularMap = LightMaterialAPI.hasLightMaterialSpecularMap;
 
 let setLightMaterialSpecularMap = LightMaterialAPI.setLightMaterialSpecularMap;
@@ -386,6 +394,10 @@ let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAP
 
 let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
 
+let setBasicSourceTextureName = BasicSourceTextureAPI.setBasicSourceTextureName;
+
+let unsafeGetBasicSourceTextureName = BasicSourceTextureAPI.unsafeGetBasicSourceTextureName;
+
 let setBasicSourceTextureFlipY = BasicSourceTextureAPI.setBasicSourceTextureFlipY;
 
 let getBasicSourceTextureFlipY = BasicSourceTextureAPI.getBasicSourceTextureFlipY;
@@ -475,6 +487,10 @@ let startDirector = DirectorAPI.startDirector;
 let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
+
+let setGameObjectName = GameObjectAPI.setGameObjectName;
+
+let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
