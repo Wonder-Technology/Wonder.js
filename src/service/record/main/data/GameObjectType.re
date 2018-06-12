@@ -42,6 +42,7 @@ type gameObjectCurrentGeometryDataMap = WonderCommonlib.SparseMapService.t((geom
 
 type gameObjectRecord = {
   mutable uid: int,
+  mutable nameMap: WonderCommonlib.SparseMapService.t(string),
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable disposedUidArray: array(int),

@@ -5,6 +5,7 @@ let _setNewDataToState =
       newAliveUidArray,
       record,
       (
+        newNameMap,
         newCurrentGeometryDataMap,
         newTransformMap,
         newMeshRendererMap,
@@ -15,10 +16,11 @@ let _setNewDataToState =
         newDirectionLightMap,
         newPointLightMap,
         newSourceInstanceMap,
-        newObjectInstanceMap
-      )
+        newObjectInstanceMap,
+      ),
     ) => {
   ...record,
+  nameMap: newNameMap,
   disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
   currentGeometryDataMap: newCurrentGeometryDataMap,
@@ -31,19 +33,21 @@ let _setNewDataToState =
   directionLightMap: newDirectionLightMap,
   pointLightMap: newPointLightMap,
   sourceInstanceMap: newSourceInstanceMap,
-  objectInstanceMap: newObjectInstanceMap
+  objectInstanceMap: newObjectInstanceMap,
 };
 
 let _setNewMap = (uid, oldMap, newMap) =>
   switch (oldMap |> WonderCommonlib.SparseMapService.get(uid)) {
   | None => newMap
-  | Some(component) => newMap |> WonderCommonlib.SparseMapService.set(uid, component)
+  | Some(component) =>
+    newMap |> WonderCommonlib.SparseMapService.set(uid, component)
   };
 
 let _allocateNewMaps =
     (
       newAliveUidArray,
       {
+        nameMap,
         currentGeometryDataMap,
         transformMap,
         meshRendererMap,
@@ -54,45 +58,44 @@ let _allocateNewMaps =
         pointLightMap,
         basicCameraViewMap,
         sourceInstanceMap,
-        objectInstanceMap
-      } as record
+        objectInstanceMap,
+      } as record,
     ) =>
   newAliveUidArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
+       (.
          (
-           (
-             newCurrentGeometryDataMap,
-             newTransformMap,
-             newMeshRendererMap,
-             newBasicCameraViewMap,
-             newBasicMaterialMap,
-             newLightMaterialMap,
-             newAmbientLightMap,
-             newDirectionLightMap,
-             newPointLightMap,
-             newSourceInstanceMap,
-             newObjectInstanceMap
-           ),
-           uid
-         ) => (
-           _setNewMap(uid, currentGeometryDataMap, newCurrentGeometryDataMap),
-           newTransformMap
-           |> WonderCommonlib.SparseMapService.set(
-                uid,
-                transformMap |> WonderCommonlib.SparseMapService.unsafeGet(uid)
-              ),
-           _setNewMap(uid, meshRendererMap, newMeshRendererMap),
-           _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
-           _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
-           _setNewMap(uid, lightMaterialMap, newLightMaterialMap),
-           _setNewMap(uid, ambientLightMap, newAmbientLightMap),
-           _setNewMap(uid, directionLightMap, newDirectionLightMap),
-           _setNewMap(uid, pointLightMap, newPointLightMap),
-           _setNewMap(uid, sourceInstanceMap, newSourceInstanceMap),
-           _setNewMap(uid, objectInstanceMap, newObjectInstanceMap)
-         )
+           newNameMap,
+           newCurrentGeometryDataMap,
+           newTransformMap,
+           newMeshRendererMap,
+           newBasicCameraViewMap,
+           newBasicMaterialMap,
+           newLightMaterialMap,
+           newAmbientLightMap,
+           newDirectionLightMap,
+           newPointLightMap,
+           newSourceInstanceMap,
+           newObjectInstanceMap,
+         ),
+         uid,
+       ) => (
+         _setNewMap(uid, nameMap, newNameMap),
+         _setNewMap(uid, currentGeometryDataMap, newCurrentGeometryDataMap),
+         newTransformMap
+         |> WonderCommonlib.SparseMapService.set(
+              uid,
+              transformMap |> WonderCommonlib.SparseMapService.unsafeGet(uid),
+            ),
+         _setNewMap(uid, meshRendererMap, newMeshRendererMap),
+         _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
+         _setNewMap(uid, basicMaterialMap, newBasicMaterialMap),
+         _setNewMap(uid, lightMaterialMap, newLightMaterialMap),
+         _setNewMap(uid, ambientLightMap, newAmbientLightMap),
+         _setNewMap(uid, directionLightMap, newDirectionLightMap),
+         _setNewMap(uid, pointLightMap, newPointLightMap),
+         _setNewMap(uid, sourceInstanceMap, newSourceInstanceMap),
+         _setNewMap(uid, objectInstanceMap, newObjectInstanceMap),
        ),
        (
          WonderCommonlib.SparseMapService.createEmpty(),
@@ -105,15 +108,18 @@ let _allocateNewMaps =
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
          WonderCommonlib.SparseMapService.createEmpty(),
-         WonderCommonlib.SparseMapService.createEmpty()
-       )
+         WonderCommonlib.SparseMapService.createEmpty(),
+         WonderCommonlib.SparseMapService.createEmpty(),
+       ),
      );
 
 let reAllocate = ({aliveUidArray, disposedUidMap} as record) => {
   let newAliveUidArray =
     aliveUidArray
-    |> Js.Array.filter(
-         (aliveUid) => ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap)
+    |> Js.Array.filter(aliveUid =>
+         ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap)
        );
-  record |> _allocateNewMaps(newAliveUidArray) |> _setNewDataToState(newAliveUidArray, record)
+  record
+  |> _allocateNewMaps(newAliveUidArray)
+  |> _setNewDataToState(newAliveUidArray, record);
 };

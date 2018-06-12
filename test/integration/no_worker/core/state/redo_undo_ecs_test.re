@@ -1452,13 +1452,14 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
               MainStateTool.testShadowCopyArrayLikeMapData(
                 state => {
                   let {
+                    nameMap,
                     disposedUidMap,
                     disposedUidArray,
                     disposedUidArrayForKeepOrder,
@@ -1492,6 +1493,7 @@ let _ =
                   } =
                     GameObjectTool.getGameObjectRecord(state);
                   [|
+                    nameMap |> Obj.magic,
                     disposedUidMap |> Obj.magic,
                     disposedUidArray |> Obj.magic,
                     disposedUidArrayForKeepOrder |> Obj.magic,
