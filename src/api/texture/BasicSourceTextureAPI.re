@@ -2,10 +2,12 @@ open StateDataMainType;
 
 open BasicSourceTextureType;
 
-let createBasicSourceTexture = (state) => [@bs] CreateBasicSourceTextureMainService.create(state);
+let createBasicSourceTexture = state =>
+  CreateBasicSourceTextureMainService.create(. state);
 
 /* TODO check alive */
-let unsafeGetBasicSourceTextureSource = (texture, state: StateDataMainType.state) =>
+let unsafeGetBasicSourceTextureSource =
+    (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -23,7 +25,8 @@ let unsafeGetBasicSourceTextureSource = (texture, state: StateDataMainType.state
      ); */
   OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
 
-let setBasicSourceTextureSource = (texture, source, state: StateDataMainType.state) =>
+let setBasicSourceTextureSource =
+    (texture, source, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -95,7 +98,8 @@ let getBasicSourceTextureWrapS = (texture, state: StateDataMainType.state) =>
      ); */
   OperateBasicSourceTextureMainService.getWrapS(texture, state);
 
-let setBasicSourceTextureWrapS = (texture, wrapS, state: StateDataMainType.state) =>
+let setBasicSourceTextureWrapS =
+    (texture, wrapS, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -131,7 +135,8 @@ let getBasicSourceTextureWrapT = (texture, state: StateDataMainType.state) =>
      ); */
   OperateBasicSourceTextureMainService.getWrapT(texture, state);
 
-let setBasicSourceTextureWrapT = (texture, wrapT, state: StateDataMainType.state) =>
+let setBasicSourceTextureWrapT =
+    (texture, wrapT, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -167,7 +172,8 @@ let getBasicSourceTextureMagFilter = (texture, state: StateDataMainType.state) =
      ); */
   OperateBasicSourceTextureMainService.getMagFilter(texture, state);
 
-let setBasicSourceTextureMagFilter = (texture, filter, state: StateDataMainType.state) =>
+let setBasicSourceTextureMagFilter =
+    (texture, filter, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -203,7 +209,8 @@ let getBasicSourceTextureMinFilter = (texture, state: StateDataMainType.state) =
      ); */
   OperateBasicSourceTextureMainService.getMinFilter(texture, state);
 
-let setBasicSourceTextureMinFilter = (texture, filter, state: StateDataMainType.state) =>
+let setBasicSourceTextureMinFilter =
+    (texture, filter, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -220,8 +227,6 @@ let setBasicSourceTextureMinFilter = (texture, filter, state: StateDataMainType.
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
   OperateBasicSourceTextureMainService.setMinFilter(texture, filter, state);
-
-
 
 let getBasicSourceTextureFormat = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -241,7 +246,8 @@ let getBasicSourceTextureFormat = (texture, state: StateDataMainType.state) =>
      ); */
   OperateBasicSourceTextureMainService.getFormat(texture, state);
 
-let setBasicSourceTextureFormat = (texture, format, state: StateDataMainType.state) =>
+let setBasicSourceTextureFormat =
+    (texture, format, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -277,7 +283,8 @@ let getBasicSourceTextureType = (texture, state: StateDataMainType.state) =>
      ); */
   OperateBasicSourceTextureMainService.getType(texture, state);
 
-let setBasicSourceTextureType = (texture, type_, state: StateDataMainType.state) =>
+let setBasicSourceTextureType =
+    (texture, type_, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -294,7 +301,6 @@ let setBasicSourceTextureType = (texture, type_, state: StateDataMainType.state)
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
   OperateBasicSourceTextureMainService.setType(texture, type_, state);
-
 
 let getBasicSourceTextureFlipY = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -314,7 +320,8 @@ let getBasicSourceTextureFlipY = (texture, state: StateDataMainType.state) =>
      ); */
   OperateBasicSourceTextureMainService.getFlipY(texture, state);
 
-let setBasicSourceTextureFlipY = (texture, flipY, state: StateDataMainType.state) =>
+let setBasicSourceTextureFlipY =
+    (texture, flipY, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
        () =>
          WonderLog.(
@@ -331,3 +338,40 @@ let setBasicSourceTextureFlipY = (texture, flipY, state: StateDataMainType.state
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
   OperateBasicSourceTextureMainService.setFlipY(texture, flipY, state);
+
+let unsafeGetBasicSourceTextureName = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordBasicSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  NameBasicSourceTextureMainService.unsafeGetName(texture, state);
+
+let setBasicSourceTextureName =
+    (texture, name, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordBasicSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  NameBasicSourceTextureMainService.setName(texture, name, state);

@@ -89,7 +89,10 @@ type camera = {
   orthographic: option(orthographic),
 };
 
-type image = {uri: option(string)};
+type image = {
+  uri: option(string),
+  name: option(string),
+};
 
 /* type magFilter =
      | NEAREST
@@ -117,6 +120,7 @@ type sampler = {
 type texture = {
   sampler: option(samplerIndex),
   source: option(imageIndex),
+  name: option(string),
 };
 
 type textureInfo = {
@@ -132,7 +136,10 @@ type pbrMetallicRoughness = {
   metallicRoughnessTexture: option(textureInfo),
 };
 
-type material = {pbrMetallicRoughness: option(pbrMetallicRoughness)};
+type material = {
+  pbrMetallicRoughness: option(pbrMetallicRoughness),
+  name: option(string),
+};
 
 type node = {
   name: option(string),

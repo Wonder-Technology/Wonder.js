@@ -411,33 +411,55 @@ let _batchSetLightMaterialData =
     ({lightMaterials}, lightMaterialArr, {lightMaterialRecord} as state) =>
   lightMaterials
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, {diffuseColor}, index) => {
+       (. state, {diffuseColor, name}, index) => {
          let material = lightMaterialArr[index];
 
          OperateLightMaterialMainService.setDiffuseColor(
            material,
            diffuseColor,
            state,
-         );
+         )
+         |> NameLightMaterialMainService.setName(material, name);
        },
        state,
      );
 
-let _setName = (gameObjectArr, {names}: WDType.gameObjects, state) =>
-  gameObjectArr
+let _batchSetNames =
+    (
+      (gameObjectArr, basicSourceTextureArr),
+      (
+        gameObjects: WDType.gameObjects,
+        basicSourceTextures: WDType.basicSourceTextures,
+      ),
+      state,
+    ) => {
+  /* TODO duplicate */
+  let state =
+    gameObjectArr
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. state, gameObject, index) =>
+           NameGameObjectMainService.setName(
+             gameObject,
+             Array.unsafe_get(gameObjects.names, index),
+             state,
+           ),
+         state,
+       );
+  basicSourceTextureArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, gameObject, index) =>
-         NameGameObjectMainService.setName(
-           gameObject,
-           Array.unsafe_get(names, index),
+       (. state, basicSourceTexture, index) =>
+         NameBasicSourceTextureMainService.setName(
+           basicSourceTexture,
+           Array.unsafe_get(basicSourceTextures.names, index),
            state,
          ),
        state,
      );
+};
 
 let batchOperate =
     (
-      {indices, gameObjects} as wdRecord,
+      {indices, gameObjects, basicSourceTextures} as wdRecord,
       imageArr,
       bufferArr,
       (
@@ -453,7 +475,12 @@ let batchOperate =
         basicSourceTextureArr,
       ),
     ) => {
-  let state = state |> _setName(gameObjectArr, gameObjects);
+  let state =
+    state
+    |> _batchSetNames(
+         (gameObjectArr, basicSourceTextureArr),
+         (gameObjects, basicSourceTextures),
+       );
   let (
     (
       parentTransforms,

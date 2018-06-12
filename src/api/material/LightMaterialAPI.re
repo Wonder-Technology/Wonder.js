@@ -265,3 +265,41 @@ let hasLightMaterialSpecularMap = (material, state) => {
   );
   hasSpecularMap(material, state);
 };
+
+let unsafeGetLightMaterialName = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameLightMaterialMainService.unsafeGetName(material, state);
+};
+
+let setLightMaterialName = (material, name, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameLightMaterialMainService.setName(material, name, state);
+};

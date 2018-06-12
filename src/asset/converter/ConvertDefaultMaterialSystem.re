@@ -74,6 +74,7 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
 };
 
 let _createDefaultMaterial = () : GLTFType.material => {
+  name: Some("defaultMaterial"),
   pbrMetallicRoughness:
     Some({
       baseColorFactor: Some([|1., 1., 1.|]),
@@ -82,7 +83,6 @@ let _createDefaultMaterial = () : GLTFType.material => {
       roughnessFactor: Some(1.),
       metallicRoughnessTexture: None,
     }),
-  /* "name": "Texture" */
 };
 
 let _addDefaultMaterial = ({materials} as gltf: GLTFType.gltf) => {

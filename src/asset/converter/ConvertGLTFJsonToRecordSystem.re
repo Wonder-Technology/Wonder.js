@@ -25,7 +25,10 @@ let convert = json : GLTFType.gltf =>
                field(
                  "images",
                  array(json =>
-                   {uri: json |> optional(field("uri", string))}
+                   {
+                     uri: json |> optional(field("uri", string)),
+                     name: json |> optional(field("name", string)),
+                   }
                  ),
                ),
              ),
@@ -36,6 +39,7 @@ let convert = json : GLTFType.gltf =>
                  "textures",
                  array(json =>
                    {
+                     name: json |> optional(field("name", string)),
                      sampler: json |> optional(field("sampler", int)),
                      source: json |> optional(field("source", int)),
                    }
@@ -226,6 +230,7 @@ let convert = json : GLTFType.gltf =>
                  "materials",
                  array(json =>
                    {
+                     name: json |> optional(field("name", string)),
                      pbrMetallicRoughness:
                        json
                        |> optional(

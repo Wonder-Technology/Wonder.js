@@ -1,3 +1,6 @@
+/* TODO duplicate */
+let _buildDefaultMaterialName = materialIndex => {j|material_$materialIndex|j};
+
 let convertToLightMaterials =
     ({materials}: GLTFType.gltf)
     : array(WDType.lightMaterial) =>
@@ -5,8 +8,8 @@ let convertToLightMaterials =
   | None => [||]
   | Some(materials) =>
     materials
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. arr, {pbrMetallicRoughness}: GLTFType.material) =>
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. arr, {pbrMetallicRoughness, name}: GLTFType.material, index) =>
            switch (pbrMetallicRoughness) {
            | None => arr
            | Some(pbrMetallicRoughness) =>
@@ -20,6 +23,11 @@ let convertToLightMaterials =
              arr
              |> ArrayService.push(
                   {
+                    name:
+                      switch (name) {
+                      | None => _buildDefaultMaterialName(index)
+                      | Some(name) => name
+                      },
                     diffuseColor:
                       switch (baseColorFactor) {
                       | None => [|1., 1., 1.|]

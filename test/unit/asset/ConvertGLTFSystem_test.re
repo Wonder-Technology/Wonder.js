@@ -398,6 +398,7 @@ let _ =
                         {
                           diffuseColor:
                             ConvertGLTFTool.getDefaultDiffuseColor(),
+                          name: "defaultMaterial",
                         },
                       |]
           )
@@ -624,6 +625,7 @@ let _ =
                           {
                             diffuseColor:
                               ConvertGLTFTool.getDefaultDiffuseColor(),
+                            name: "material",
                           },
                         |]
             )
@@ -640,6 +642,7 @@ let _ =
                             {
                               diffuseColor:
                                 ConvertGLTFTool.getDefaultDiffuseColor(),
+                              name: "truck",
                             },
                             {
                               diffuseColor: [|
@@ -647,6 +650,7 @@ let _ =
                                 0.04050629958510399,
                                 0.021240700036287309,
                               |],
+                              name: "glass",
                             },
                             {
                               diffuseColor: [|
@@ -654,10 +658,12 @@ let _ =
                                 0.06400000303983689,
                                 0.06400000303983689,
                               |],
+                              name: "window_trim",
                             },
                             {
                               diffuseColor:
                                 ConvertGLTFTool.getDefaultDiffuseColor(),
+                              name: "wheels",
                             },
                           |]
               )
@@ -668,9 +674,14 @@ let _ =
       describe("test basicSourceTextures", () =>
         testPromise("test", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLTFTool.buildGLTFJsonOfTexture(),
             (({basicSourceTextures}, _, _)) =>
-            basicSourceTextures |> expect == {count: 2}
+            basicSourceTextures
+            |>
+            expect == {
+                        count: 3,
+                        names: [|"texture_0", "texture0", "image0"|],
+                      }
           )
         )
       );

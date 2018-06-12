@@ -127,7 +127,7 @@ let buildGLTFJson =
                 },
                 "metallicFactor": 0.0
             },
-            "name": "Texture"
+            "name": "material"
         }
     ]|},
       ~textures={|  [
@@ -685,7 +685,8 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
         },
         {
             "sampler": 0,
-            "source": 0
+            "source": 0,
+            "name": "texture0"
         }
 
     ]|},
@@ -1196,6 +1197,51 @@ let buildGLTFJsonOfCameras = () => {|
   }
 }
     |};
+
+let buildGLTFJsonOfTexture = () =>
+  buildGLTFJson(
+    ~textures=
+      {|  [
+        {
+            "sampler": 0,
+            "source": 0
+        },
+        {
+            "sampler": 0,
+            "source": 0,
+            "name": "texture0"
+        },
+        {
+            "sampler": 0,
+            "source": 1
+        }
+
+    ]|},
+    ~images=
+      {|  [
+        {
+            "uri":"|}
+      ++ buildFakeImageOfCesiumMilkTruck()
+      ++ {|"
+            },
+        {
+            "name": "image0",
+            "uri":"|}
+      ++ buildFakeImageOfCesiumMilkTruck()
+      ++ {|"
+            }
+            ]|},
+    ~samplers=
+      {|  [
+        {
+            "magFilter": 9729,
+            "minFilter": 9986,
+            "wrapS": 10497,
+            "wrapT": 10497
+        }
+    ]|},
+    (),
+  );
 
 let _buildFakeLoadImage = [%bs.raw
   {|

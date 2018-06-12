@@ -67,6 +67,7 @@ type lightMaterial = {
   diffuseColor: array(float),
   /* specularColor: option(array(float)),
      shininess: option(float) */
+  name: string,
 };
 
 /*
@@ -123,7 +124,10 @@ type bufferView = {
 
 type image = {uri: string};
 
-type basicSourceTextures = {count: int};
+type basicSourceTextures = {
+  count: int,
+  names: array(string),
+};
 
 type sampler = {
   /* TODO add format, type_, ... */

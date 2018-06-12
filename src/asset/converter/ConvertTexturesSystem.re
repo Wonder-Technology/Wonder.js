@@ -1,10 +1,42 @@
+/* TODO duplicate */
+let _buildDefaultName = textureIndex => {j|texture_$textureIndex|j};
+
+/* TODO support get name from image->uri if not base64 (e.g. uri: "image.png") */
+/* TODO refactor: duplicate */
+let _getNames = (textures, images) =>
+  textures
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. nameArr, ({name, source}: GLTFType.texture) as texture, index) =>
+         switch (name) {
+         | Some(name) => nameArr |> ArrayService.push(name)
+         | None =>
+           switch (source) {
+           | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+           | Some(source) =>
+             let {name}: GLTFType.image =
+               Array.unsafe_get(images |> OptionService.unsafeGet, source);
+
+             switch (name) {
+             | Some(name) => nameArr |> ArrayService.push(name)
+             | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+             };
+           }
+         },
+       [||],
+     );
+
 let convertToBasicSourceTextures =
-    ({textures}: GLTFType.gltf)
+    (({textures, images}: GLTFType.gltf) as gltf)
     : WDType.basicSourceTextures => {
   count:
     switch (textures) {
     | None => 0
     | Some(textures) => ConvertCommon.getCount(textures)
+    },
+  names:
+    switch (textures) {
+    | None => [||]
+    | Some(textures) => _getNames(textures, images)
     },
 };
 

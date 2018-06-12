@@ -102,7 +102,7 @@ let _ =
       );
     });
 
-    describe("set name", () =>
+    describe("test gameObject", () =>
       describe("set gameObject name", () =>
         testPromise("test", () =>
           AssembleWDSystemTool.testResult(
@@ -960,6 +960,31 @@ let _ =
              )
            );
 
+      describe("test set material name", () =>
+        testPromise("test", () =>
+          AssembleWDSystemTool.testResult(
+            _buildGLTFJsonOfLightMaterial(),
+            ((state, sceneGameObject)) =>
+              _getAllLightMaterials(sceneGameObject, state)
+              |> Js.Array.map(material =>
+                   LightMaterialAPI.unsafeGetLightMaterialName(
+                     material,
+                     state,
+                   )
+                 )
+              |>
+              expect == [|
+                          "truck",
+                          "glass",
+                          "truck",
+                          "material_3",
+                          "material_2",
+                        |],
+            state^,
+          )
+        )
+      );
+
       testPromise("test set diffuseColor", () =>
         AssembleWDSystemTool.testResult(
           _buildGLTFJsonOfLightMaterial(),
@@ -1020,6 +1045,24 @@ let _ =
                  state,
                )
              );
+
+        describe("test set texture name", () =>
+          testPromise("test", () =>
+            AssembleWDSystemTool.testResult(
+              ConvertGLTFTool.buildGLTFJsonOfTexture(),
+              ((state, sceneGameObject)) =>
+                _getAllDiffuseMaps(sceneGameObject, state)
+                |> Js.Array.map(diffuseMap =>
+                     BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
+                       diffuseMap,
+                       state,
+                     )
+                   )
+                |> expect == [|"texture_0"|],
+              state^,
+            )
+          )
+        );
 
         testPromise("set not flipY", () =>
           AssembleWDSystemTool.testResult(
