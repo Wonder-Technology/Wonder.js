@@ -1,8 +1,7 @@
-/* TODO duplicate */
-let _buildDefaultName = textureIndex => {j|texture_$textureIndex|j};
+let _buildDefaultName = textureIndex =>
+  ConvertCommon.buildDefaultName("texture", textureIndex);
 
 /* TODO support get name from image->uri if not base64 (e.g. uri: "image.png") */
-/* TODO refactor: duplicate */
 let _getNames = (textures, images) =>
   textures
   |> WonderCommonlib.ArrayService.reduceOneParami(

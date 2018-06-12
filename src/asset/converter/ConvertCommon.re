@@ -34,3 +34,5 @@ let isBase64 = str =>
   |> Js.Re.test(str)
   || str
   |> Js.String.substring(~from=0, ~to_=5) === "data:";
+
+let buildDefaultName = (type_, index) => {j|$(type_)_$index|j};

@@ -1,5 +1,5 @@
-/* TODO duplicate */
-let _buildDefaultMaterialName = materialIndex => {j|material_$materialIndex|j};
+let _buildDefaultMaterialName = materialIndex =>
+  ConvertCommon.buildDefaultName("material", materialIndex);
 
 let convertToLightMaterials =
     ({materials}: GLTFType.gltf)
