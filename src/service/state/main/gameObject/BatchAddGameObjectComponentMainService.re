@@ -253,25 +253,17 @@ let _batchAddCustomGeometryComponent =
 
 let batchAddCustomGeometryComponentForClone = _batchAddCustomGeometryComponent;
 
-let _batchAddMaterialComponentForClone =
+let _batchAddMaterialComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
-      /* (increaseGroupCountFunc, handleAddComponentFunc), */
       funcTuple,
       record,
     ) =>
-  /* isShareMaterial ? */
   _batchAddSharableComponent(
     (uidArr, componentArr, componentMap),
     funcTuple,
     record,
   );
-/* :
-   _batchAddComponent(
-     (uidArr, componentArr, componentMap),
-     handleAddComponentFunc,
-     record,
-   ); */
 
 let batchAddBasicMaterialComponentForClone =
     (
@@ -282,7 +274,7 @@ let batchAddBasicMaterialComponentForClone =
   ...state,
   basicMaterialRecord:
     Some(
-      _batchAddMaterialComponentForClone(
+      _batchAddMaterialComponent(
         (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
         (
           GroupBasicMaterialService.increaseGroupCount,
@@ -292,6 +284,7 @@ let batchAddBasicMaterialComponentForClone =
       ),
     ),
 };
+
 let _batchAddLightMaterialComponent =
     (
       uidArr: array(int),
@@ -301,7 +294,7 @@ let _batchAddLightMaterialComponent =
   ...state,
   lightMaterialRecord:
     Some(
-      _batchAddMaterialComponentForClone(
+      _batchAddMaterialComponent(
         (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
         (
           GroupLightMaterialService.increaseGroupCount,
