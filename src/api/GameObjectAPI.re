@@ -856,5 +856,5 @@ let setGameObjectName =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  NameGameObjectMainService.setName(gameObject, name, state);
+  NameGameObjectMainService.setName(. gameObject, name, state);
 };

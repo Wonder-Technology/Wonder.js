@@ -424,6 +424,14 @@ let _batchSetLightMaterialData =
        state,
      );
 
+let _batchSetName = (targets, names, setNameFunc, state) =>
+  targets
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, target, index) =>
+         setNameFunc(. target, Array.unsafe_get(names, index), state),
+       state,
+     );
+
 let _batchSetNames =
     (
       (gameObjectArr, basicSourceTextureArr),
@@ -432,30 +440,18 @@ let _batchSetNames =
         basicSourceTextures: WDType.basicSourceTextures,
       ),
       state,
-    ) => {
-  /* TODO duplicate */
-  let state =
-    gameObjectArr
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (. state, gameObject, index) =>
-           NameGameObjectMainService.setName(
-             gameObject,
-             Array.unsafe_get(gameObjects.names, index),
-             state,
-           ),
-         state,
-       );
-  basicSourceTextureArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, basicSourceTexture, index) =>
-         NameBasicSourceTextureMainService.setName(
-           basicSourceTexture,
-           Array.unsafe_get(basicSourceTextures.names, index),
-           state,
-         ),
-       state,
+    ) =>
+  state
+  |> _batchSetName(
+       gameObjectArr,
+       gameObjects.names,
+       NameGameObjectMainService.setName,
+     )
+  |> _batchSetName(
+       basicSourceTextureArr,
+       basicSourceTextures.names,
+       NameBasicSourceTextureMainService.setName,
      );
-};
 
 let batchOperate =
     (

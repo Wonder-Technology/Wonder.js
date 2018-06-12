@@ -8,16 +8,17 @@ let unsafeGetName = (texture, state) =>
     RecordBasicSourceTextureMainService.getRecord(state).nameMap,
   );
 
-let setName = (texture, name, state) => {
-  let {nameMap} as record =
-    RecordBasicSourceTextureMainService.getRecord(state);
+let setName =
+  (. texture, name, state) => {
+    let {nameMap} as record =
+      RecordBasicSourceTextureMainService.getRecord(state);
 
-  {
-    ...state,
-    basicSourceTextureRecord:
-      Some({
-        ...record,
-        nameMap: NameService.setName(texture, name, nameMap),
-      }),
+    {
+      ...state,
+      basicSourceTextureRecord:
+        Some({
+          ...record,
+          nameMap: NameService.setName(texture, name, nameMap),
+        }),
+    };
   };
-};
