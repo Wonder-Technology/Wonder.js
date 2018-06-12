@@ -6,19 +6,15 @@ let _decodeArrayBuffer = (base64Str: string) => {
   let bufferLength = decodedString |> Js.String.length;
   let arrayBuffer = ArrayBuffer.make(bufferLength);
   let typeArr = Uint8Array.fromBuffer(arrayBuffer);
-  let typeArr =
-    ArrayService.range(0, bufferLength - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. typeArr, i) => {
-           Uint8Array.unsafe_set(
-             typeArr,
-             i,
-             decodedString |> Js.String.charCodeAt(i) |> Obj.magic,
-           );
-           typeArr;
-         },
-         typeArr,
-       );
+
+  for (i in 0 to bufferLength - 1) {
+    Uint8Array.unsafe_set(
+      typeArr,
+      i,
+      decodedString |> Js.String.charCodeAt(i) |> Obj.magic,
+    );
+  };
+
   typeArr |> Uint8Array.buffer;
 };
 
