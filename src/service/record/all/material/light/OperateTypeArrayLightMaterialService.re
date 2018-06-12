@@ -20,16 +20,28 @@ let setShininess = (index, data, typeArr) =>
 
 let getTextureIndex = OperateTypeArrayMaterialService.getTextureIndex;
 
-let setTextureIndex = OperateTypeArrayMaterialService.setTextureIndex;
+let setTextureIndex =
+  (. indexTuple, data, typeArr) =>
+    OperateTypeArrayMaterialService.setTextureIndex(
+      indexTuple,
+      data,
+      typeArr,
+    );
 
-let getDiffuseMapUnit = (index, typeArr) =>
-  TypeArrayService.getUint8_1(getDiffuseMapUnitIndex(index), typeArr);
+let getDiffuseMapUnit =
+  (. index, typeArr) =>
+    TypeArrayService.getUint8_1(getDiffuseMapUnitIndex(index), typeArr);
 
-let setDiffuseMapUnit = (index, data, typeArr) =>
-  TypeArrayService.setUint8_1(getDiffuseMapUnitIndex(index), data, typeArr);
+let setDiffuseMapUnit =
+  (. index, data, typeArr) =>
+    TypeArrayService.setUint8_1(
+      getDiffuseMapUnitIndex(index),
+      data,
+      typeArr,
+    );
 
-let getSpecularMapUnit = (index, typeArr) =>
+let getSpecularMapUnit = (. index, typeArr) =>
   TypeArrayService.getUint8_1(getSpecularMapUnitIndex(index), typeArr);
 
-let setSpecularMapUnit = (index, data, typeArr) =>
+let setSpecularMapUnit = (. index, data, typeArr) =>
   TypeArrayService.setUint8_1(getSpecularMapUnitIndex(index), data, typeArr);

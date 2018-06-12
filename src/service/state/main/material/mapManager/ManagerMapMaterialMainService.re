@@ -3,12 +3,17 @@ let getMap =
       material,
       textureCountPerMaterial,
       (getMapUnitFunc, getTextureIndexFunc),
-      (textureIndices, mapUnits)
+      (textureIndices, mapUnits),
     ) => {
-  let mapUnit = getMapUnitFunc(material, mapUnits);
+  let mapUnit = getMapUnitFunc(. material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
-    Some([@bs] getTextureIndexFunc((material, mapUnit, textureCountPerMaterial), textureIndices)) :
-    None
+    Some(
+      getTextureIndexFunc(.
+        (material, mapUnit, textureCountPerMaterial),
+        textureIndices,
+      ),
+    ) :
+    None;
 };
 
 /* let unsafeGetMap =
@@ -30,21 +35,34 @@ let setMap =
       material,
       texture,
       (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
-      (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap)
+      (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap),
     ) => {
-  let mapUnit = getMapUnitFunc(material, mapUnits);
+  let mapUnit = getMapUnitFunc(. material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
     (
-      setTextureIndexFunc((material, mapUnit, textureCountPerMaterial), texture, textureIndices),
+      setTextureIndexFunc(.
+        (material, mapUnit, textureCountPerMaterial),
+        texture,
+        textureIndices,
+      ),
       mapUnits,
-      textureCountMap
+      textureCountMap,
     ) :
     {
-      let mapCount = TextureCountMapMaterialService.unsafeGetCount(material, textureCountMap);
+      let mapCount =
+        TextureCountMapMaterialService.unsafeGetCount(
+          material,
+          textureCountMap,
+        );
       (
-        setTextureIndexFunc((material, mapCount, textureCountPerMaterial), texture, textureIndices),
-        setMapUnitFunc(material, mapCount, mapUnits),
-        textureCountMap |> TextureCountMapMaterialService.setCount(material, mapCount |> succ)
-      )
-    }
+        setTextureIndexFunc(.
+          (material, mapCount, textureCountPerMaterial),
+          texture,
+          textureIndices,
+        ),
+        setMapUnitFunc(. material, mapCount, mapUnits),
+        textureCountMap
+        |> TextureCountMapMaterialService.setCount(material, mapCount |> succ),
+      );
+    };
 };

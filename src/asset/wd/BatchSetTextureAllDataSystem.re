@@ -5,7 +5,7 @@ open WDType;
 let _batchSetNewMap =
     (
       (materialArr, textureArr, mapCount),
-      (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
+      (setMapUnitFunc, setTextureIndexFunc),
       (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap),
     ) => {
   let newTextureCount = mapCount |> succ;
@@ -16,12 +16,12 @@ let _batchSetNewMap =
          let texture = Array.unsafe_get(textureArr, index);
 
          (
-           setTextureIndexFunc(
+           setTextureIndexFunc(.
              (material, mapCount, textureCountPerMaterial),
              texture,
              textureIndices,
            ),
-           setMapUnitFunc(material, mapCount, mapUnits),
+           setMapUnitFunc(. material, mapCount, mapUnits),
            textureCountMap
            |> TextureCountMapMaterialService.setCount(
                 material,
@@ -52,7 +52,6 @@ let _batchSetNewDiffueMaps =
     _batchSetNewMap(
       (diffuseMapLightMaterials, lightMaterialDiffuseMaps, 0),
       (
-        OperateTypeArrayLightMaterialService.getDiffuseMapUnit,
         OperateTypeArrayLightMaterialService.setDiffuseMapUnit,
         OperateTypeArrayLightMaterialService.setTextureIndex,
       ),

@@ -8,7 +8,7 @@ let bindAndUpdate =
     (gl, material, {settingRecord, basicMaterialRecord} as state) => {
       let {textureIndices, mapUnits} = basicMaterialRecord;
       let mapUnit =
-        OperateTypeArrayBasicMaterialService.getMapUnit(material, basicMaterialRecord.mapUnits);
+        OperateTypeArrayBasicMaterialService.getMapUnit(. material, basicMaterialRecord.mapUnits);
       let (textureIndices, settingRecord, state) =
         (textureIndices, settingRecord, state)
         |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(

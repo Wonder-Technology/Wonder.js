@@ -62,8 +62,8 @@ let setAllTypeArrDataToDefault =
            setDiffuseColor(index, defaultDiffuseColor, diffuseColors),
            setSpecularColor(index, defaultSpecularColor, specularColors),
            setShininess(index, defaultShininess, shininess),
-           setDiffuseMapUnit(index, defaultUnit, diffuseMapUnits),
-           setSpecularMapUnit(index, defaultUnit, specularMapUnits),
+           setDiffuseMapUnit(. index, defaultUnit, diffuseMapUnits),
+           setSpecularMapUnit(. index, defaultUnit, specularMapUnits),
          ),
          (
            shaderIndices,

@@ -3,26 +3,29 @@ open StateRenderType;
 let getDiffuseColor = (material, {lightMaterialRecord}) =>
   OperateTypeArrayLightMaterialService.getDiffuseColor(
     material,
-    lightMaterialRecord.diffuseColors
+    lightMaterialRecord.diffuseColors,
   );
 
 let getSpecularColor = (material, {lightMaterialRecord}) =>
   OperateTypeArrayLightMaterialService.getSpecularColor(
     material,
-    lightMaterialRecord.specularColors
+    lightMaterialRecord.specularColors,
   );
 
 let getShininess = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getShininess(material, lightMaterialRecord.shininess);
+  OperateTypeArrayLightMaterialService.getShininess(
+    material,
+    lightMaterialRecord.shininess,
+  );
 
 let getDiffuseMapUnit = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getDiffuseMapUnit(
+  OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
     material,
-    lightMaterialRecord.diffuseMapUnits
+    lightMaterialRecord.diffuseMapUnits,
   );
 
 let getSpecularMapUnit = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getSpecularMapUnit(
+  OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
     material,
-    lightMaterialRecord.specularMapUnits
+    lightMaterialRecord.specularMapUnits,
   );

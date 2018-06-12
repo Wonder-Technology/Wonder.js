@@ -2,69 +2,80 @@ open StateDataMainType;
 
 open BasicMaterialType;
 
-let getRecord = (state) => RecordBasicMaterialMainService.getRecord(state);
+let getRecord = state => RecordBasicMaterialMainService.getRecord(state);
 
-let createGameObject = (state) => {
+let createGameObject = state => {
   open BasicMaterialAPI;
   open GameObjectAPI;
   let (state, material) = createBasicMaterial(state);
   let (state, gameObject) = state |> createGameObject;
-  let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
-  (state, gameObject, material)
+  let state =
+    state |> addGameObjectBasicMaterialComponent(gameObject, material);
+  (state, gameObject, material);
 };
 
-let createGameObjectWithMap = (state) => {
+let createGameObjectWithMap = state => {
   let (state, gameObject, material) = createGameObject(state);
-  let (state, texture) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
-  (state, gameObject, (material, texture))
+  let (state, texture) =
+    BasicSourceTextureAPI.createBasicSourceTexture(state);
+  let state =
+    state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
+  (state, gameObject, (material, texture));
 };
 
 let createGameObjectWithMaterial = (material, state) => {
   open GameObjectAPI;
   let (state, gameObject) = state |> createGameObject;
-  let state = state |> addGameObjectBasicMaterialComponent(gameObject, material);
-  (state, gameObject, material)
+  let state =
+    state |> addGameObjectBasicMaterialComponent(gameObject, material);
+  (state, gameObject, material);
 };
 
-let getDefaultShaderIndex = (state) => DefaultTypeArrayValueService.getDefaultShaderIndex();
+let getDefaultShaderIndex = state =>
+  DefaultTypeArrayValueService.getDefaultShaderIndex();
 
-let getDefaultColor = (state) => getRecord(state).defaultColor;
+let getDefaultColor = state => getRecord(state).defaultColor;
 
 let initMaterials = (gl, {gameObjectRecord} as state) => {
-  let {index, disposedIndexArray} = RecordBasicMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray} =
+    RecordBasicMaterialMainService.getRecord(state);
   InitInitBasicMaterialService.init(
     gl,
     (
       JudgeInstanceMainService.buildMap(
         index,
         RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
-        gameObjectRecord
+        gameObjectRecord,
       ),
-      JudgeInstanceMainService.isSupportInstance(state)
+      JudgeInstanceMainService.isSupportInstance(state),
     ),
     CreateInitBasicMaterialStateMainService.createInitMaterialState(
       (index, disposedIndexArray),
-      state
-    )
+      state,
+    ),
   )
   |> ignore;
-  state
+  state;
 };
 
 let getShaderIndex = (materialIndex: int, state) =>
   ShaderIndicesService.getShaderIndex(
     materialIndex,
-    RecordBasicMaterialMainService.getRecord(state).shaderIndices
+    RecordBasicMaterialMainService.getRecord(state).shaderIndices,
   );
 
 /* let hasShaderIndex = (materialIndex: int, state: StateDataMainType.state) =>
    ShaderIndexBasicMaterialMainService.hasShaderIndex(materialIndex, state); */
-let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataMainType.state) =>
-  [@bs] ShaderIndexBasicMaterialMainService.setShaderIndex(materialIndex, shaderIndex, state);
+let setShaderIndex =
+    (materialIndex: int, shaderIndex, state: StateDataMainType.state) =>
+  ShaderIndexBasicMaterialMainService.setShaderIndex(.
+    materialIndex,
+    shaderIndex,
+    state,
+  );
 
 let dispose = (material, state: StateDataMainType.state) =>
-  GameObjectTool.disposeGameObjectBasicMaterialComponent((-1), material, state);
+  GameObjectTool.disposeGameObjectBasicMaterialComponent(-1, material, state);
 
 let initMaterial = (materialIndex, state) =>
   InitBasicMaterialMainService.handleInitComponent(materialIndex, state);
@@ -72,28 +83,39 @@ let initMaterial = (materialIndex, state) =>
 let isMaterialDisposed = (material, state) => {
   open BasicMaterialType;
   let {disposedIndexArray} = getRecord(state);
-  disposedIndexArray |> Js.Array.includes(material)
+  disposedIndexArray |> Js.Array.includes(material);
 };
 
 let getGroupCount = (material, state) =>
   GroupBasicMaterialService.getGroupCount(material, getRecord(state));
 
 let getBasicSourceTextureCount = (material, state) =>
-  TextureCountMapMaterialService.unsafeGetCount(material, getRecord(state).textureCountMap);
+  TextureCountMapMaterialService.unsafeGetCount(
+    material,
+    getRecord(state).textureCountMap,
+  );
 
 let getMapUnit = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getMapUnit(material, getRecord(state).mapUnits);
+  OperateTypeArrayBasicMaterialService.getMapUnit(.
+    material,
+    getRecord(state).mapUnits,
+  );
 
 let setMapUnit = (material, unit, state) => {
-  OperateTypeArrayBasicMaterialService.setMapUnit(material, unit, getRecord(state).mapUnits)
+  OperateTypeArrayBasicMaterialService.setMapUnit(.
+    material,
+    unit,
+    getRecord(state).mapUnits,
+  )
   |> ignore;
-  state
+  state;
 };
 
 let getTextureIndicesIndex = (material, state) =>
   BufferBasicMaterialService.getTextureIndicesIndex(
     material,
-    BufferSettingService.getTextureCountPerMaterial(state.settingRecord)
+    BufferSettingService.getTextureCountPerMaterial(state.settingRecord),
   );
 
-let getDefaultTextureIndex = () => BufferMaterialService.getDefaultTextureIndex();
+let getDefaultTextureIndex = () =>
+  BufferMaterialService.getDefaultTextureIndex();
