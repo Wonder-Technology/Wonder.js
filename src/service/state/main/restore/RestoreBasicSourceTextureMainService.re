@@ -78,7 +78,6 @@ let _restoreTypeArrays = (currentTextureRecord, targetTextureRecord) =>
         Js.Typed_array.Uint8Array.length(targetTextureRecord.isNeedUpdates),
       )
       |> ignore;
-      /* TODO test */
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentTextureRecord.flipYs, 0),
         (targetTextureRecord.flipYs, 0),

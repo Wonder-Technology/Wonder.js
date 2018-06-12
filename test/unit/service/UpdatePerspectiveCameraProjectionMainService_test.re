@@ -19,7 +19,7 @@ describe(
       "updateCameraProjection",
       () =>
         test(
-          "if not has fovy/aspect/near/far value, error",
+          "if not has fovy/near/far value, error",
           () =>
             expect(() => PerspectiveCameraProjectionTool.updateCameraProjection(0, state^))
             |> toThrowMessage("fovy,near,far should all exist")
