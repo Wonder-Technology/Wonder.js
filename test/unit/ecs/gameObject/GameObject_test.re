@@ -122,7 +122,7 @@ let _ =
         );
       });
       describe("test geometry component", () => {
-        describe("unsafeGetCustomGeometryComponent", () =>
+        describe("unsafeGetGeometryComponent", () =>
           test("get last added geometry component", () => {
             let (state, gameObject) = createGameObject(state^);
             let (state, boxGeometry) =
@@ -138,7 +138,7 @@ let _ =
                    gameObject,
                    customGeometry2,
                  );
-            unsafeGetGameObjectCustomGeometryComponent(gameObject, state)
+            unsafeGetGameObjectGeometryComponent(gameObject, state)
             |> expect == customGeometry2;
           })
         );
@@ -757,7 +757,7 @@ let _ =
               |> expect == (false, false, true);
             });
             describe("test current component data map", () =>
-              test("new currentGeometryDataMap should only has alive data", () => {
+              test("new geometryDataMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                 TestTool.closeContractCheck();
@@ -770,31 +770,31 @@ let _ =
                 let (state, gameObject3, geometry3) =
                   BoxGeometryTool.createGameObject(state);
                 /*let state = state |> BoxGeometryTool.initGeometrys;*/
-                let {currentGeometryDataMap as oldCurrentGeometryDataMap} =
+                let {geometryDataMap as oldCurrentGeometryDataMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject1);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject2);
-                let {currentGeometryDataMap} =
+                let {geometryDataMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 (
                   ArrayTool.isArraySame(
-                    currentGeometryDataMap,
+                    geometryDataMap,
                     oldCurrentGeometryDataMap,
                   ),
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject1),
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject2),
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject3),
                 )
                 |> expect == (false, false, false, true);
               })
             );
             describe("test geometry map", () =>
-              test("new currentGeometryDataMap should only has alive data", () => {
+              test("new geometryDataMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                 TestTool.closeContractCheck();
@@ -811,14 +811,14 @@ let _ =
                   state |> GameObjectTool.disposeGameObject(gameObject1);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject2);
-                let {currentGeometryDataMap} =
+                let {geometryDataMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 (
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject1),
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject2),
-                  currentGeometryDataMap
+                  geometryDataMap
                   |> WonderCommonlib.SparseMapService.has(gameObject3),
                 )
                 |> expect == (false, false, true);
@@ -1722,8 +1722,8 @@ let _ =
         test("unsafeGetGameObjectMeshRendererComponent should error", () =>
           _testTwoParamFunc(unsafeGetGameObjectMeshRendererComponent)
         );
-        test("unsafeGetCustomGeometryComponent should error", () =>
-          _testTwoParamFunc(unsafeGetGameObjectCustomGeometryComponent)
+        test("unsafeGetGeometryComponent should error", () =>
+          _testTwoParamFunc(unsafeGetGameObjectGeometryComponent)
         );
         test("unsafeGetGameObjectBasicCameraViewComponent should error", () =>
           _testTwoParamFunc(unsafeGetGameObjectBasicCameraViewComponent)

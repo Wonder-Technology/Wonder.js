@@ -102,7 +102,7 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
+let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
@@ -570,7 +570,7 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 
 let hasGameObjectCustomGeometryComponent = GameObjectAPI.hasGameObjectCustomGeometryComponent;
 
-let unsafeGetGameObjectCustomGeometryComponent = GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent;
+let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 

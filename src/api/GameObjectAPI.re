@@ -289,7 +289,7 @@ let disposeGameObjectCustomGeometryComponent =
   deferDisposeCustomGeometryComponent(. component, state);
 };
 
-let unsafeGetGameObjectCustomGeometryComponent =
+let unsafeGetGameObjectGeometryComponent =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -298,7 +298,7 @@ let unsafeGetGameObjectCustomGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetCustomGeometryComponent(gameObject, state.gameObjectRecord);
+  unsafeGetGeometryComponent(gameObject, state.gameObjectRecord);
 };
 
 let hasGameObjectCustomGeometryComponent =

@@ -1452,7 +1452,7 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, currentGeometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -1481,7 +1481,7 @@ let _ =
                     aliveUidArray,
                     transformMap,
                     basicCameraViewMap,
-                    currentGeometryDataMap,
+                    geometryDataMap,
                     meshRendererMap,
                     basicMaterialMap,
                     lightMaterialMap,
@@ -1515,7 +1515,7 @@ let _ =
                     aliveUidArray |> Obj.magic,
                     transformMap |> Obj.magic,
                     basicCameraViewMap |> Obj.magic,
-                    currentGeometryDataMap |> Obj.magic,
+                    geometryDataMap |> Obj.magic,
                     meshRendererMap |> Obj.magic,
                     basicMaterialMap |> Obj.magic,
                     lightMaterialMap |> Obj.magic,

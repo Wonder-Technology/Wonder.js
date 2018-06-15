@@ -2,6 +2,12 @@ open StateDataMainType;
 
 open LightMaterialType;
 
+let getName = (material, state) =>
+  NameService.getName(
+    material,
+    RecordLightMaterialMainService.getRecord(state).nameMap,
+  );
+
 let unsafeGetName = (material, state) =>
   NameService.unsafeGetName(
     material,

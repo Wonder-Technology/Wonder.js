@@ -63,7 +63,7 @@ type gameObjectRecord = {
   mutable disposedMeshRendererComponentArray: array(int),
   mutable disposedMeshRendererUidArray: array(int),
   mutable aliveUidArray: gameObjectAliveUidArray,
-  mutable currentGeometryDataMap: gameObjectCurrentGeometryDataMap,
+  mutable geometryDataMap: gameObjectCurrentGeometryDataMap,
   mutable transformMap: gameObjectTransformMap,
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,

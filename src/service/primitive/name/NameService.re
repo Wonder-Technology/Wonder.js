@@ -1,7 +1,8 @@
+let getName = (id, nameMap) =>
+  nameMap |> WonderCommonlib.SparseMapService.get(id);
+
 let unsafeGetName = (id, nameMap) =>
-  nameMap
-  |> WonderCommonlib.SparseMapService.get(id)
-  |> OptionService.unsafeGet;
+  getName(id, nameMap) |> OptionService.unsafeGet;
 
 let setName = (id, name, nameMap) =>
   nameMap |> WonderCommonlib.SparseMapService.set(id, name);

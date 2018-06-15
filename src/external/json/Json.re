@@ -3,7 +3,7 @@
   */
 module Decode = Json_decode;
 
-/* module Encode = Json_encode; */
+module Encode = Json_encode;
 
 exception ParseError(string);
 

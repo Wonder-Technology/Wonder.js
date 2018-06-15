@@ -23,7 +23,7 @@ let _setNewDataToState =
   nameMap: newNameMap,
   disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
-  currentGeometryDataMap: newCurrentGeometryDataMap,
+  geometryDataMap: newCurrentGeometryDataMap,
   transformMap: newTransformMap,
   meshRendererMap: newMeshRendererMap,
   basicCameraViewMap: newBasicCameraViewMap,
@@ -48,7 +48,7 @@ let _allocateNewMaps =
       newAliveUidArray,
       {
         nameMap,
-        currentGeometryDataMap,
+        geometryDataMap,
         transformMap,
         meshRendererMap,
         basicMaterialMap,
@@ -81,7 +81,7 @@ let _allocateNewMaps =
          uid,
        ) => (
          _setNewMap(uid, nameMap, newNameMap),
-         _setNewMap(uid, currentGeometryDataMap, newCurrentGeometryDataMap),
+         _setNewMap(uid, geometryDataMap, newCurrentGeometryDataMap),
          newTransformMap
          |> WonderCommonlib.SparseMapService.set(
               uid,

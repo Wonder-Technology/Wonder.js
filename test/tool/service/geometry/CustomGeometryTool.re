@@ -94,8 +94,8 @@ let isGeometryDisposed = (geometry, state) =>
 let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
   [@bs] GetCustomGeometryIndicesRenderService.getIndicesCount(index, state);
 
-let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
-  GetComponentGameObjectService.unsafeGetCustomGeometryComponent(uid, gameObjectRecord)
+let unsafeGetGeometryComponent = (uid: int, {gameObjectRecord}) =>
+  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
   |> WonderLog.Contract.ensureCheck(
        (r) =>
          WonderLog.(
@@ -105,11 +105,11 @@ let unsafeGetCustomGeometryComponent = (uid: int, {gameObjectRecord}) =>
                  Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
                  () => {
                    let (_, type_) =
-                     GetComponentGameObjectService.unsafeGetCustomGeometryComponentData(
+                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
                        uid,
                        gameObjectRecord
                      );
-                   type_ == CurrentComponentDataMapRenderService.getCustomGeometryType()
+                   type_ == CurrentComponentDataMapService.getCustomGeometryType()
                  }
                )
              )

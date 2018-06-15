@@ -1258,9 +1258,10 @@ let testResult = (gltfJson, testFunc) => {
   let data = ref(Obj.magic(1));
   _buildFakeLoadImage();
   ConvertGLTFSystem.convert(gltfJson)
-  |> Most.forEach(((wdRecord, imageArr, bufferArr)) =>
-       data := (wdRecord, imageArr, bufferArr)
-     )
+  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
+       data := (wdRecord, imageArr, bufferArr);
+       ();
+     })
   |> then_(() => testFunc(data^) |> resolve);
 };
 

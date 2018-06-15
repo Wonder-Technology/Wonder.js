@@ -26,7 +26,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedMeshRendererUidArray: WonderCommonlib.ArrayService.createEmpty(),
   aliveUidArray: WonderCommonlib.ArrayService.createEmpty(),
-  currentGeometryDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryDataMap: WonderCommonlib.SparseMapService.createEmpty(),
   transformMap: WonderCommonlib.SparseMapService.createEmpty(),
   basicCameraViewMap: WonderCommonlib.SparseMapService.createEmpty(),
   perspectiveCameraProjectionMap:
@@ -66,7 +66,7 @@ let deepCopyForRestore =
         disposedMeshRendererComponentArray,
         disposedMeshRendererUidArray,
         aliveUidArray,
-        currentGeometryDataMap,
+        geometryDataMap,
         transformMap,
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
@@ -116,7 +116,7 @@ let deepCopyForRestore =
   disposedMeshRendererUidArray:
     disposedMeshRendererUidArray |> SparseMapService.copy,
   aliveUidArray: aliveUidArray |> SparseMapService.copy,
-  currentGeometryDataMap: currentGeometryDataMap |> SparseMapService.copy,
+  geometryDataMap: geometryDataMap |> SparseMapService.copy,
   transformMap: transformMap |> SparseMapService.copy,
   basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
   perspectiveCameraProjectionMap:

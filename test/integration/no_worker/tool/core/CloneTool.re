@@ -38,7 +38,7 @@ let cloneWithCustomGeometry = (state, gameObject1, geometry1, count) => {
     clonedGameObjectArr
     |> getFlattenClonedGameObjectArr
     |> Js.Array.map(
-         (clonedGameObject) => CustomGeometryTool.unsafeGetCustomGeometryComponent(clonedGameObject, state)
+         (clonedGameObject) => CustomGeometryTool.unsafeGetGeometryComponent(clonedGameObject, state)
        )
   )
 };

@@ -255,7 +255,7 @@ let _ =
             ((state, sceneGameObject)) => {
               let boxGameObject = sceneGameObject;
               let boxCustomGeometry =
-                GameObjectAPI.unsafeGetGameObjectCustomGeometryComponent(
+                GameObjectAPI.unsafeGetGameObjectGeometryComponent(
                   boxGameObject,
                   state,
                 );

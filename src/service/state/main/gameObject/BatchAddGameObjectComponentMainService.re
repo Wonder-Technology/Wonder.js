@@ -182,11 +182,11 @@ let _batchAddSharableGeometryComponent =
 };
 
 let _batchAddBoxGeometryComponentDataForClone =
-  (. (currentGeometryDataMap, type_), component, uid) =>
+  (. (geometryDataMap, type_), component, uid) =>
     CurrentComponentDataMapRenderService.addToMap(
       uid,
       (component, type_),
-      currentGeometryDataMap,
+      geometryDataMap,
     );
 
 let batchAddBoxGeometryComponentForClone =
@@ -202,8 +202,8 @@ let batchAddBoxGeometryComponentForClone =
         uidArr,
         componentArr,
         (
-          gameObjectRecord.currentGeometryDataMap,
-          CurrentComponentDataMapRenderService.getBoxGeometryType(),
+          gameObjectRecord.geometryDataMap,
+          CurrentComponentDataMapService.getBoxGeometryType(),
         ),
       ),
       (
@@ -216,11 +216,11 @@ let batchAddBoxGeometryComponentForClone =
 };
 
 let _batchAddCustomGeometryComponentData =
-  (. (currentGeometryDataMap, type_), component, uid) =>
+  (. (geometryDataMap, type_), component, uid) =>
     CurrentComponentDataMapRenderService.addToMap(
       uid,
       (component, type_),
-      currentGeometryDataMap,
+      geometryDataMap,
     );
 
 let _batchAddCustomGeometryComponent =
@@ -237,8 +237,8 @@ let _batchAddCustomGeometryComponent =
           uidArr,
           componentArr,
           (
-            gameObjectRecord.currentGeometryDataMap,
-            CurrentComponentDataMapRenderService.getCustomGeometryType(),
+            gameObjectRecord.geometryDataMap,
+            CurrentComponentDataMapService.getCustomGeometryType(),
           ),
         ),
         (
