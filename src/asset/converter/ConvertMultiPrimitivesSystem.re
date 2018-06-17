@@ -117,6 +117,7 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
                                scale: None,
                                children: None,
                                mesh: Some(meshIndex),
+                               extension: None
                              }: GLTFType.node,
                            ),
                       newNodesOfMultiPrimitives,

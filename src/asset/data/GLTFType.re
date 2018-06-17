@@ -141,6 +141,8 @@ type material = {
   name: option(string),
 };
 
+type nodeExtension = {material: option(int)};
+
 type node = {
   name: option(string),
   camera: option(cameraIndex),
@@ -150,6 +152,7 @@ type node = {
   translation: option(array(float)),
   rotation: option(array(float)),
   scale: option(array(float)),
+  extension: option(nodeExtension),
 };
 
 type attributes = {

@@ -52,7 +52,7 @@ let _ =
         testPromise("test nodes", () =>
           GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-            {|"nodes":[{"name":"gameObject_0","translation":[10,20,30],"mesh":0}]|},
+            {|"nodes":[{"name":"gameObject_0","translation":[10,20,30],"mesh":0,"extension":{"material":0}}]|},
             state,
           )
         )
@@ -63,7 +63,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
             ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
             {|
-               "nodes": [
+        "nodes": [
     {
       "name": "gameObject_0",
       "children": [
@@ -98,7 +98,10 @@ let _ =
         3.5,
         0.5
       ],
-      "mesh": 0
+      "mesh": 0,
+      "extension": {
+        "material": 0
+      }
     },
     {
       "name": "gameObject_1",
@@ -119,21 +122,34 @@ let _ =
         0.08848590403795242,
         -0.9960774183273315
       ],
-      "mesh": 0
+      "mesh": 0,
+      "extension": {
+        "material": 0
+      }
     },
     {
       "name": "Cesium_Milk_Truck_0",
-      "mesh": 1
+      "mesh": 1,
+      "extension": {
+        "material": 1
+      }
     },
     {
       "name": "Cesium_Milk_Truck_1",
-      "mesh": 2
+      "mesh": 2,
+      "extension": {
+        "material": 2
+      }
     },
     {
       "name": "Cesium_Milk_Truck_2",
-      "mesh": 3
+      "mesh": 3,
+      "extension": {
+        "material": 3
+      }
     }
   ]
+
 |},
             state,
           )
@@ -146,7 +162,6 @@ let _ =
     {
       "primitives": [
         {
-          "material": 0,
           "attributes": {
             "TEXCOORD_0": 2,
             "POSITION": 0,
@@ -159,7 +174,6 @@ let _ =
     {
       "primitives": [
         {
-          "material": 1,
           "attributes": {
             "TEXCOORD_0": 6,
             "POSITION": 4,
@@ -172,7 +186,6 @@ let _ =
     {
       "primitives": [
         {
-          "material": 2,
           "attributes": {
             "POSITION": 8,
             "NORMAL": 9
@@ -184,7 +197,6 @@ let _ =
     {
       "primitives": [
         {
-          "material": 3,
           "attributes": {
             "POSITION": 11,
             "NORMAL": 12
@@ -624,7 +636,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             sceneGameObject,
-            {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2}]|j},
+            {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extension":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1,"extension":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2,"extension":{"material":2}}]|j},
             state,
           );
         });
@@ -652,7 +664,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             sceneGameObject,
             {j|
-                "meshes":[{"primitives":[{"material":0,"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"material":1,"attributes":{"POSITION":3,"NORMAL":4},"indices":5}]},{"primitives":[{"material":2,"attributes":{"POSITION":6,"NORMAL":7},"indices":8}]}]
+                "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4},"indices":5}]},{"primitives":[{"attributes":{"POSITION":6,"NORMAL":7},"indices":8}]}]
                 |j},
             state,
           );
@@ -822,7 +834,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             sceneGameObject,
-            {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1}]|j},
+            {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extension":{"material":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extension":{"material":1}}]|j},
             state,
           );
         });
@@ -850,11 +862,218 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             sceneGameObject,
             {j|
-                "meshes":[{"primitives":[{"material":0,"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"material":1,"attributes":{"POSITION":3,"NORMAL":4},"indices":5}]}]
+                "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4},"indices":5}]}]
                 |j},
             state,
           );
         });
+      });
+
+      describe("test share geometry", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+          open LightMaterialAPI;
+          open BoxGeometryAPI;
+          open CustomGeometryAPI;
+          open MeshRendererAPI;
+
+          let (state, sceneGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              sceneGameObject,
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            (transform1, (localPos1, localRotation1, localScale1)),
+            geometry1,
+            material1,
+            meshRenderer1,
+          ) =
+            _createGameObject1(state);
+
+          let (
+            state,
+            gameObject2,
+            (transform2, (localPos2, localRotation2, localScale2)),
+            geometry2,
+            material2,
+            meshRenderer2,
+          ) =
+            _createGameObjectWithShareGeometry(
+              geometry1,
+              GameObjectAPI.addGameObjectBoxGeometryComponent,
+              state,
+            );
+
+          let (
+            state,
+            gameObject3,
+            (transform3, (localPos3, localRotation3, localScale3)),
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            material3,
+            meshRenderer3,
+          ) =
+            _createGameObject3(state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform2,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(transform2),
+                 transform3,
+               );
+
+          (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              geometry2,
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (material1, material2, material3),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          );
+        };
+
+        test("test nodes", () => {
+          let (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              geometry2,
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (material1, material2, material3),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            sceneGameObject,
+            {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extension":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extension":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extension":{"material":2}}]|j},
+            state,
+          );
+        });
+
+        test("test meshes", () => {
+          let (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              geometry2,
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (material1, material2, material3),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            sceneGameObject,
+            {j|
+                "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4},"indices":5}]}]
+                |j},
+            state,
+          );
+        });
+
+        describe("test buffer", () =>
+          testPromise("test data", () => {
+            let (
+              state,
+              (sceneGameObject, sceneGameObjectTransform),
+              (gameObject1, gameObject2, gameObject3),
+              (
+                (transform1, (localPos1, localRotation1, localScale1)),
+                (transform2, (localPos2, localRotation2, localScale2)),
+                (transform3, (localPos3, localRotation3, localScale3)),
+              ),
+              (
+                geometry1,
+                geometry2,
+                (geometry3, (vertices3, texCoords3, normals3, indices3)),
+              ),
+              (material1, material2, material3),
+              (meshRenderer1, meshRenderer2, meshRenderer3),
+            ) =
+              _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+              sceneGameObject,
+              ((state, sceneGameObject)) => {
+                let dataMap = GLTFTool.getTruckGeometryData();
+
+                AssembleWDSystemTool.getAllGeometryData(
+                  sceneGameObject,
+                  state,
+                )
+                |>
+                expect == [|
+                            (
+                              "gameObject_1",
+                              (
+                                GLTFTool.getBoxMainVertices(),
+                                GLTFTool.getBoxMainNormals(),
+                                Float32Array.make([||]),
+                                GLTFTool.getBoxMainIndices(),
+                              ),
+                            ),
+                            (
+                              "gameObject_2",
+                              (
+                                GLTFTool.getBoxMainVertices(),
+                                GLTFTool.getBoxMainNormals(),
+                                Float32Array.make([||]),
+                                GLTFTool.getBoxMainIndices(),
+                              ),
+                            ),
+                            (
+                              "gameObject_3",
+                              (
+                                vertices3,
+                                normals3,
+                                Float32Array.make([||]),
+                                indices3,
+                              ),
+                            ),
+                          |];
+              },
+              state,
+            );
+          })
+        );
       });
     });
   });

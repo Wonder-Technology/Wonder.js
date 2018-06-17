@@ -1273,3 +1273,28 @@ let buildComponentIndexData =
   gameObjectIndices,
   componentIndices,
 };
+
+let buildNode =
+    (
+      ~name=None,
+      ~camera=None,
+      ~mesh=None,
+      ~children=None,
+      ~matrix=None,
+      ~translation=None,
+      ~rotation=None,
+      ~scale=None,
+      ~extension=None,
+      (),
+    )
+    : GLTFType.node => {
+  name,
+  camera,
+  mesh,
+  children,
+  matrix,
+  translation,
+  rotation,
+  scale,
+  extension,
+};

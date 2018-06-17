@@ -51,22 +51,14 @@ let _ =
             gltfRecord.nodes
             |>
             expect == [|
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: None,
-                          children: Some([|3, 2, 1, 4, 5|]),
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: Some("node1"),
-                          camera: None,
-                          mesh: Some(1),
-                          children: None,
-                          matrix:
+                        ConvertGLTFTool.buildNode(
+                          ~children=Some([|3, 2, 1, 4, 5|]),
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(
+                          ~name=Some("node1"),
+                          ~mesh=Some(1),
+                          ~matrix=
                             Some([|
                               1.0,
                               0.0,
@@ -85,16 +77,12 @@ let _ =
                               50.0,
                               1.0,
                             |]),
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: Some("node2"),
-                          camera: None,
-                          mesh: None,
-                          children: Some([|1, 6, 7|]),
-                          matrix:
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(
+                          ~name=Some("node2"),
+                          ~children=Some([|1, 6, 7|]),
+                          ~matrix=
                             Some([|
                               1.0,
                               0.0,
@@ -113,80 +101,26 @@ let _ =
                               3.0,
                               1.0,
                             |]),
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: None,
-                          children: Some([|8, 9|]),
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: Some(3),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: Some(4),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: Some("node2_0"),
-                          camera: None,
-                          mesh: Some(3),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: Some("node2_1"),
-                          camera: None,
-                          mesh: Some(4),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: Some(5),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
-                        {
-                          name: None,
-                          camera: None,
-                          mesh: Some(6),
-                          children: None,
-                          matrix: None,
-                          translation: None,
-                          rotation: None,
-                          scale: None,
-                        },
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(
+                          ~children=Some([|8, 9|]),
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(~mesh=Some(3), ()),
+                        ConvertGLTFTool.buildNode(~mesh=Some(4), ()),
+                        ConvertGLTFTool.buildNode(
+                          ~name=Some("node2_0"),
+                          ~mesh=Some(3),
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(
+                          ~name=Some("node2_1"),
+                          ~mesh=Some(4),
+                          (),
+                        ),
+                        ConvertGLTFTool.buildNode(~mesh=Some(5), ()),
+                        ConvertGLTFTool.buildNode(~mesh=Some(6), ()),
                       |];
           });
           test("test meshes", () => {

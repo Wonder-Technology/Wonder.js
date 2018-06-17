@@ -66,12 +66,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
               gameObjectChildrenMap,
               gameObjectNodeIndexMap,
             ),
-            (
-              meshPointDataMap,
-              meshMaterialMap,
-              materialDataMap,
-              cameraDataMap,
-            ),
+            (meshPointDataMap, materialDataMap, cameraDataMap),
             (transformArr, nodeDataArr),
           ) =>
     transformArr
@@ -86,12 +81,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
                gameObjectChildrenMap,
                gameObjectNodeIndexMap,
              ),
-             (
-               meshPointDataMap,
-               meshMaterialMap,
-               materialDataMap,
-               cameraDataMap,
-             ),
+             (meshPointDataMap, materialDataMap, cameraDataMap),
              nodeDataArr,
            ),
            transform,
@@ -269,7 +259,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
              materialData,
              newMaterialIndex,
              lightMaterialDataMap,
-             meshMaterialMap,
            ) =
              switch (
                GetComponentGameObjectService.getLightMaterialComponent(.
@@ -277,13 +266,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
                  gameObjectRecord,
                )
              ) {
-             | None => (
-                 None,
-                 None,
-                 materialIndex,
-                 lightMaterialDataMap,
-                 meshMaterialMap,
-               )
+             | None => (None, None, materialIndex, lightMaterialDataMap)
              | Some(lightMaterial) =>
                switch (
                  lightMaterialDataMap
@@ -294,7 +277,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
                    materialData,
                    materialIndex,
                    lightMaterialDataMap,
-                   meshMaterialMap,
                  )
                | None =>
                  let materialData =
@@ -307,12 +289,12 @@ let _getAllNodeData = (sceneGameObject, state) => {
                    ));
 
                  /* WonderLog.Log.print((
-                   "materialIndex: ",
-                   materialIndex,
-                   "meshIndex: ",
-                   meshIndex,
-                 ))
-                 |> ignore; */
+                      "materialIndex: ",
+                      materialIndex,
+                      "meshIndex: ",
+                      meshIndex,
+                    ))
+                    |> ignore; */
 
                  (
                    Some(materialIndex),
@@ -323,15 +305,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
                         lightMaterial,
                         (materialIndex, materialData),
                       ),
-                   switch (meshIndex) {
-                   | None => meshMaterialMap
-                   | Some(meshIndex) =>
-                     meshMaterialMap
-                     |> WonderCommonlib.SparseMapService.set(
-                          meshIndex,
-                          materialIndex,
-                        )
-                   },
                  );
                }
              };
@@ -452,9 +425,14 @@ let _getAllNodeData = (sceneGameObject, state) => {
                     },
                   mesh: meshIndex,
                   camera: cameraIndex,
+                  extension:
+                    switch (materialIndex) {
+                    | None => None
+                    | Some(materialIndex) =>
+                      Some({material: Some(materialIndex)})
+                    },
                 }: nodeData,
               );
-           /* |> WonderLog.Log.printJson; */
 
            _getNodeData(
              state,
@@ -465,12 +443,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
                gameObjectChildrenMap,
                gameObjectNodeIndexMap,
              ),
-             (
-               meshPointDataMap,
-               meshMaterialMap,
-               materialDataMap,
-               cameraDataMap,
-             ),
+             (meshPointDataMap, materialDataMap, cameraDataMap),
              (childrenTransformArr, nodeDataArr),
            );
          },
@@ -483,12 +456,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
              gameObjectChildrenMap,
              gameObjectNodeIndexMap,
            ),
-           (
-             meshPointDataMap,
-             meshMaterialMap,
-             materialDataMap,
-             cameraDataMap,
-           ),
+           (meshPointDataMap, materialDataMap, cameraDataMap),
            nodeDataArr,
          ),
        );
@@ -502,7 +470,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap),
     nodeDataArr,
   ) =
     _getNodeData(
@@ -518,7 +486,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
         WonderCommonlib.SparseMapService.createEmpty(),
       ),
       (
-        WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
@@ -543,18 +510,14 @@ let _getAllNodeData = (sceneGameObject, state) => {
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap),
     nodeDataArr,
   );
 
   let nodeDataArr =
     _setChildren(gameObjectChildrenMap, gameObjectNodeIndexMap, nodeDataArr);
 
-  (
-    state,
-    (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
-    nodeDataArr,
-  );
+  (state, (meshPointDataMap, materialDataMap, cameraDataMap), nodeDataArr);
 };
 
 let _checkShouldHasNoSlot = map =>
@@ -617,7 +580,7 @@ let _addBufferViewData =
     );
   };
 
-let _buildGeometryData = (meshPointDataMap, meshMaterialMap) => {
+let _buildGeometryData = meshPointDataMap => {
   open Js.Typed_array;
 
   WonderLog.Contract.requireCheck(
@@ -753,9 +716,7 @@ let _buildGeometryData = (meshPointDataMap, meshMaterialMap) => {
                             },
                         },
                         indices: indexIndex,
-                        material:
-                          meshMaterialMap
-                          |> WonderCommonlib.SparseMapService.get(meshIndex),
+                        material: None,
                       },
                       /* |> OptionService.unsafeGet, */
                       name: None,
@@ -852,13 +813,13 @@ let _buildBuffer = (totalByteLength, meshPointDataMap) => {
 let generateEmbededGLTF = (sceneGameObject, state) => {
   let (
     state,
-    (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap),
     nodeDataArr,
   ) =
     _getAllNodeData(sceneGameObject, state);
 
   let (totalByteLength, (bufferViewDataArr, accessorDataArr, meshDataArr)) =
-    _buildGeometryData(meshPointDataMap, meshMaterialMap);
+    _buildGeometryData(meshPointDataMap);
 
   let buffer = _buildBuffer(totalByteLength, meshPointDataMap);
 
@@ -892,7 +853,16 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
       nodeDataArr
       |> Js.Array.map(
            (
-             {gameObject, children, translation, rotation, scale, mesh, camera}: nodeData,
+             {
+               gameObject,
+               children,
+               translation,
+               rotation,
+               scale,
+               mesh,
+               camera,
+               extension,
+             }: nodeData,
            ) => {
            let list = [];
 
@@ -956,9 +926,25 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
              | Some(camera) => [("camera", camera |> int), ...list]
              };
 
+           let list =
+             switch (extension) {
+             | None => list
+             | Some(({material}: nodeExtension)) =>
+               let extensionList = [];
+               let extensionList =
+                 switch (material) {
+                 | None => extensionList
+                 | Some(material) => [
+                     ("material", material |> int),
+                     ...extensionList,
+                   ]
+                 };
+
+               [("extension", extensionList |> object_), ...list];
+             };
+
            list |> List.rev |> object_;
          })
-      /* |> WonderLog.Log.print */
       |> jsonArray,
     ),
     (

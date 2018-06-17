@@ -248,23 +248,34 @@ let _convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (gameObjectIndices, componentIndices),
-           {mesh}: GLTFType.node,
+           {mesh, extension}: GLTFType.node,
            index,
          ) =>
-           switch (mesh) {
-           | None => (gameObjectIndices, componentIndices)
-           | Some(mesh) =>
-             let {primitives}: GLTFType.mesh =
-               Array.unsafe_get(meshes, mesh);
-             let {material}: GLTFType.primitive =
-               ConvertCommon.getPrimitiveData(primitives);
+           switch (extension) {
+           | None =>
+             switch (mesh) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(mesh) =>
+               let {primitives}: GLTFType.mesh =
+                 Array.unsafe_get(meshes, mesh);
+               let {material}: GLTFType.primitive =
+                 ConvertCommon.getPrimitiveData(primitives);
+               switch (material) {
+               | None => (gameObjectIndices, componentIndices)
+               | Some(material) => (
+                   gameObjectIndices |> ArrayService.push(index),
+                   componentIndices |> ArrayService.push(material),
+                 )
+               };
+             }
+           | Some({material}) =>
              switch (material) {
              | None => (gameObjectIndices, componentIndices)
              | Some(material) => (
                  gameObjectIndices |> ArrayService.push(index),
                  componentIndices |> ArrayService.push(material),
                )
-             };
+             }
            },
          ([||], [||]),
        );
@@ -331,7 +342,7 @@ let _setMapMaterialIndices =
   };
 
 let _convertToMaterialIndices =
-    ({nodes, materials}: GLTFType.gltf)
+    ({materials}: GLTFType.gltf)
     : WDType.materialIndices =>
   switch (materials) {
   | None => (
