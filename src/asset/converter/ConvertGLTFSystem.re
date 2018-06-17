@@ -39,7 +39,7 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
   {
     asset: {
       version: asset.version,
-      generator: "GLTF2WD",
+      generator: GLTFUtils.getGenerator(),
     },
     scene: _convertToScene(gltf),
     gameObjects: ConvertGameObjectsSystem.convert(gltf),
