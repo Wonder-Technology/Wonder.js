@@ -1,7 +1,5 @@
 open GameObjectAPI;
 
-open GameObjectAPI;
-
 let getFlattenClonedGameObjectArr = (clonedGameObjectArr) =>
   clonedGameObjectArr |> WonderCommonlib.ArrayService.flatten;
 

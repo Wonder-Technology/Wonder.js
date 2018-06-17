@@ -9,56 +9,13 @@ let _ =
     open Sinon;
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
-    let _getChildren = (parent, state) =>
-      TransformAPI.unsafeGetTransformChildren(parent, state)
-      |> Js.Array.sortInPlace;
-    let _getAllChildrenTransform = (sceneGameObject, state) => {
-      let rec _addChildren = (parentArr, state, childrenArr) => {
-        let childrenArr = childrenArr |> Js.Array.concat(parentArr);
-        parentArr
-        |> WonderCommonlib.ArrayService.reduceOneParam(
-             (. (state, childrenArr), parent) =>
-               _addChildren(_getChildren(parent, state), state, childrenArr),
-             (state, childrenArr),
-           );
-      };
-      _addChildren(
-        _getChildren(
-          GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            sceneGameObject,
-            state,
-          ),
-          state,
-        ),
-        state,
-        [||],
-      );
-    };
-    let _getAllSortedTransforms = (sceneGameObject, state) => {
-      let (state, allTransformChildren) =
-        _getAllChildrenTransform(sceneGameObject, state);
-      let allTransformChildren = allTransformChildren |> Js.Array.sortInPlace;
-      [|
-        GameObjectAPI.unsafeGetGameObjectTransformComponent(
-          sceneGameObject,
-          state,
-        ),
-      |]
-      |> Js.Array.concat(allTransformChildren);
-    };
+    let _getAllChildrenTransform = (sceneGameObject, state) =>
+      AssembleWDSystemTool.getAllChildrenTransform(sceneGameObject, state);
+    let _getAllSortedTransforms = (sceneGameObject, state) =>
+      AssembleWDSystemTool.getAllSortedTransforms(sceneGameObject, state);
 
-    let _getAllGameObjects = (sceneGameObject, state) => {
-      let (state, allTransformChildren) =
-        _getAllChildrenTransform(sceneGameObject, state);
-
-      [|sceneGameObject|]
-      |> Js.Array.concat(
-           allTransformChildren
-           |> Js.Array.map(transform =>
-                TransformAPI.unsafeGetTransformGameObject(transform, state)
-              ),
-         );
-    };
+    let _getAllGameObjects = (sceneGameObject, state) =>
+      AssembleWDSystemTool.getAllGameObjects(sceneGameObject, state);
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -254,28 +211,16 @@ let _ =
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
             ((state, sceneGameObject)) => {
               let boxGameObject = sceneGameObject;
-              let boxCustomGeometry =
+              let geometry =
                 GameObjectAPI.unsafeGetGameObjectGeometryComponent(
                   boxGameObject,
                   state,
                 );
               (
-                CustomGeometryAPI.getCustomGeometryVertices(
-                  boxCustomGeometry,
-                  state,
-                ),
-                CustomGeometryAPI.getCustomGeometryNormals(
-                  boxCustomGeometry,
-                  state,
-                ),
-                CustomGeometryAPI.getCustomGeometryTexCoords(
-                  boxCustomGeometry,
-                  state,
-                ),
-                CustomGeometryAPI.getCustomGeometryIndices(
-                  boxCustomGeometry,
-                  state,
-                ),
+                CustomGeometryAPI.getCustomGeometryVertices(geometry, state),
+                CustomGeometryAPI.getCustomGeometryNormals(geometry, state),
+                CustomGeometryAPI.getCustomGeometryTexCoords(geometry, state),
+                CustomGeometryAPI.getCustomGeometryIndices(geometry, state),
               )
               |>
               expect == (
@@ -520,6 +465,57 @@ let _ =
             state^,
           )
         );
+
+        testPromise("test truck gltf", () =>
+          AssembleWDSystemTool.testResult(
+            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ((state, sceneGameObject)) => {
+              let dataMap = GLTFTool.getTruckGeometryData();
+
+              AssembleWDSystemTool.getAllGeometryData(sceneGameObject, state)
+              |>
+              expect == [|
+                          (
+                            "Cesium_Milk_Truck_0",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Cesium_Milk_Truck_0",
+                               ),
+                          ),
+                          (
+                            "Cesium_Milk_Truck_1",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Cesium_Milk_Truck_1",
+                               ),
+                          ),
+                          (
+                            "Cesium_Milk_Truck_2",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Cesium_Milk_Truck_2",
+                               ),
+                          ),
+                          (
+                            "Wheels",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Wheels",
+                               ),
+                          ),
+                          (
+                            "Wheels",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Wheels",
+                               ),
+                          ),
+                        |];
+            },
+            state^,
+          )
+        );
+
         testPromise(
           "test gameObjects which has no cutomGeometry component", () =>
           AssembleWDSystemTool.testResult(
@@ -530,7 +526,7 @@ let _ =
                    TransformAPI.unsafeGetTransformGameObject(transform, state)
                  )
               |> Js.Array.map(gameObject =>
-                   GameObjectAPI.hasGameObjectCustomGeometryComponent(
+                   GameObjectAPI.hasGameObjectGeometryComponent(
                      gameObject,
                      state,
                    )

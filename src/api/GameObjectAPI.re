@@ -301,7 +301,7 @@ let unsafeGetGameObjectGeometryComponent =
   unsafeGetGeometryComponent(gameObject, state.gameObjectRecord);
 };
 
-let hasGameObjectCustomGeometryComponent =
+let hasGameObjectGeometryComponent =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -310,7 +310,7 @@ let hasGameObjectCustomGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  hasCustomGeometryComponent(gameObject, state.gameObjectRecord);
+  hasGeometryComponent(gameObject, state.gameObjectRecord);
 };
 
 let addGameObjectBasicMaterialComponent =

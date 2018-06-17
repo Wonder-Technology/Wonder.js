@@ -23,6 +23,34 @@ let _hasMap = (gameObject, {gameObjectRecord} as state) =>
     || OperateLightMaterialMainService.hasSpecularMap(lightMaterial, state)
   };
 
+let _setChildren =
+    (gameObjectChildrenMap, gameObjectNodeIndexMap, nodeDataArr) =>
+  nodeDataArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. newNodeDataArr, ({gameObject}: nodeData) as nodeData) =>
+         newNodeDataArr
+         |> ArrayService.push({
+              ...nodeData,
+              children:
+                switch (
+                  gameObjectChildrenMap
+                  |> WonderCommonlib.SparseMapService.get(gameObject)
+                ) {
+                | None => None
+                | Some(children) =>
+                  children
+                  |> Js.Array.map(childGameObject =>
+                       gameObjectNodeIndexMap
+                       |> WonderCommonlib.SparseMapService.unsafeGet(
+                            childGameObject,
+                          )
+                     )
+                  |. Some
+                },
+            }),
+       [||],
+     );
+
 let _getAllNodeData = (sceneGameObject, state) => {
   let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
   let customGeometryType =
@@ -35,6 +63,8 @@ let _getAllNodeData = (sceneGameObject, state) => {
             (
               (boxGeometryDataMap, customGeometryDataMap),
               lightMaterialDataMap,
+              gameObjectChildrenMap,
+              gameObjectNodeIndexMap,
             ),
             (
               meshPointDataMap,
@@ -53,6 +83,8 @@ let _getAllNodeData = (sceneGameObject, state) => {
              (
                (boxGeometryDataMap, customGeometryDataMap),
                lightMaterialDataMap,
+               gameObjectChildrenMap,
+               gameObjectNodeIndexMap,
              ),
              (
                meshPointDataMap,
@@ -252,7 +284,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
                  lightMaterialDataMap,
                  meshMaterialMap,
                )
-
              | Some(lightMaterial) =>
                switch (
                  lightMaterialDataMap
@@ -265,7 +296,6 @@ let _getAllNodeData = (sceneGameObject, state) => {
                    lightMaterialDataMap,
                    meshMaterialMap,
                  )
-
                | None =>
                  let materialData =
                    Some((
@@ -275,6 +305,14 @@ let _getAllNodeData = (sceneGameObject, state) => {
                        state,
                      ),
                    ));
+
+                 /* WonderLog.Log.print((
+                   "materialIndex: ",
+                   materialIndex,
+                   "meshIndex: ",
+                   meshIndex,
+                 ))
+                 |> ignore; */
 
                  (
                    Some(materialIndex),
@@ -336,20 +374,36 @@ let _getAllNodeData = (sceneGameObject, state) => {
                   )
              };
 
+           /* WonderLog.Log.print((
+                "gameObject:",
+                gameObject,
+                "  children: ",
+                childrenGameObjectArr,
+              ))
+              |> ignore; */
+
+           let gameObjectChildrenMap =
+             switch (childrenGameObjectArr |> Js.Array.length) {
+             | 0 => gameObjectChildrenMap
+             | _ =>
+               gameObjectChildrenMap
+               |> WonderCommonlib.SparseMapService.set(
+                    gameObject,
+                    childrenGameObjectArr,
+                  )
+             };
+
+           let gameObjectNodeIndexMap =
+             gameObjectNodeIndexMap
+             |> WonderCommonlib.SparseMapService.set(gameObject, nodeIndex);
+
+           let newNodeIndex = nodeIndex |> succ;
+
            nodeDataArr
            |> ArrayService.push(
                 {
                   gameObject,
-                  children:
-                    switch (childrenGameObjectArr |> Js.Array.length) {
-                    | 0 => None
-                    | length =>
-                      ArrayService.range(
-                        nodeIndex + 1,
-                        nodeIndex + 1 + length - 1,
-                      )
-                      |. Some
-                    },
+                  children: None,
                   translation:
                     switch (
                       ModelMatrixTransformService.getLocalPositionTuple(
@@ -400,9 +454,7 @@ let _getAllNodeData = (sceneGameObject, state) => {
                   camera: cameraIndex,
                 }: nodeData,
               );
-
-           let newNodeIndex =
-             nodeIndex + (childrenGameObjectArr |> Js.Array.length);
+           /* |> WonderLog.Log.printJson; */
 
            _getNodeData(
              state,
@@ -410,6 +462,8 @@ let _getAllNodeData = (sceneGameObject, state) => {
              (
                (boxGeometryDataMap, customGeometryDataMap),
                lightMaterialDataMap,
+               gameObjectChildrenMap,
+               gameObjectNodeIndexMap,
              ),
              (
                meshPointDataMap,
@@ -426,6 +480,8 @@ let _getAllNodeData = (sceneGameObject, state) => {
            (
              (boxGeometryDataMap, customGeometryDataMap),
              lightMaterialDataMap,
+             gameObjectChildrenMap,
+             gameObjectNodeIndexMap,
            ),
            (
              meshPointDataMap,
@@ -440,7 +496,12 @@ let _getAllNodeData = (sceneGameObject, state) => {
   let (
     state,
     (nodeIndex, meshIndex, materialIndex, cameraIndex),
-    ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
+    (
+      (boxGeometryDataMap, customGeometryDataMap),
+      lightMaterialDataMap,
+      gameObjectChildrenMap,
+      gameObjectNodeIndexMap,
+    ),
     (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
     nodeDataArr,
   ) =
@@ -452,6 +513,8 @@ let _getAllNodeData = (sceneGameObject, state) => {
           WonderCommonlib.SparseMapService.createEmpty(),
           WonderCommonlib.SparseMapService.createEmpty(),
         ),
+        WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
       ),
       (
@@ -470,6 +533,23 @@ let _getAllNodeData = (sceneGameObject, state) => {
         [||],
       ),
     );
+
+  (
+    state,
+    (nodeIndex, meshIndex, materialIndex, cameraIndex),
+    (
+      (boxGeometryDataMap, customGeometryDataMap),
+      lightMaterialDataMap,
+      gameObjectChildrenMap,
+      gameObjectNodeIndexMap,
+    ),
+    (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
+    nodeDataArr,
+  );
+
+  let nodeDataArr =
+    _setChildren(gameObjectChildrenMap, gameObjectNodeIndexMap, nodeDataArr);
+
   (
     state,
     (meshPointDataMap, meshMaterialMap, materialDataMap, cameraDataMap),
@@ -690,18 +770,27 @@ let _buildGeometryData = (meshPointDataMap, meshMaterialMap) => {
   (totalByteLength, (bufferViewDataArr, accessorDataArr, meshDataArr));
 };
 
+let _getFloat1 =
+  (. typeArray, index) =>
+    Js.Typed_array.Float32Array.unsafe_get(typeArray, index);
+
+let _getUint16_1 =
+  (. typeArray, index) =>
+    Js.Typed_array.Uint16Array.unsafe_get(typeArray, index);
+
 let _fillBuffer =
     (
-      (buffer, points, pointsLength, bytes_per_element, offset),
-      (fillTypeArrayWithOffsetFunc, fromBufferRangeFunc),
+      (dataView, points, pointsLength, offset),
+      (writeDataViewFunc, getValueFunc),
     ) => {
-  fillTypeArrayWithOffsetFunc(
-    fromBufferRangeFunc(buffer, ~offset, ~length=pointsLength),
-    points,
-    0,
-  );
+  let offset = ref(offset);
 
-  (buffer, offset + pointsLength * bytes_per_element);
+  for (i in 0 to pointsLength - 1) {
+    offset :=
+      writeDataViewFunc(. getValueFunc(. points, i), offset^, dataView);
+  };
+
+  (dataView, offset^);
 };
 
 let _buildBuffer = (totalByteLength, meshPointDataMap) => {
@@ -709,11 +798,13 @@ let _buildBuffer = (totalByteLength, meshPointDataMap) => {
 
   let buffer = ArrayBuffer.make(totalByteLength);
 
-  let (buffer, offset) =
+  let dataView = DataViewCommon.create(buffer);
+
+  let (dataView, offset) =
     meshPointDataMap
     |> SparseMapService.reduceiValid(
          (.
-           (buffer, offset),
+           (dataView, offset),
            (vertices, normals, texCoords, indices),
            meshIndex,
          ) => {
@@ -726,70 +817,34 @@ let _buildBuffer = (totalByteLength, meshPointDataMap) => {
              };
            let indicesLength = indices |> Uint16Array.length;
 
-           let (buffer, offset) =
+           let (dataView, offset) =
              _fillBuffer(
-               (
-                 buffer,
-                 vertices,
-                 verticesLength,
-                 Float32Array._BYTES_PER_ELEMENT,
-                 offset,
-               ),
-               (
-                 TypeArrayService.fillFloat32ArrayWithOffset,
-                 Float32Array.fromBufferRange,
-               ),
+               (dataView, vertices, verticesLength, offset),
+               (DataViewCommon.writeFloat, _getFloat1),
              );
 
-           let (buffer, offset) =
+           let (dataView, offset) =
              _fillBuffer(
-               (
-                 buffer,
-                 normals,
-                 normalsLength,
-                 Float32Array._BYTES_PER_ELEMENT,
-                 offset,
-               ),
-               (
-                 TypeArrayService.fillFloat32ArrayWithOffset,
-                 Float32Array.fromBufferRange,
-               ),
+               (dataView, normals, normalsLength, offset),
+               (DataViewCommon.writeFloat, _getFloat1),
              );
 
-           let (buffer, offset) =
+           let (dataView, offset) =
              switch (texCoords) {
              | Some(texCoords) =>
                _fillBuffer(
-                 (
-                   buffer,
-                   texCoords,
-                   texCoordsLength,
-                   Float32Array._BYTES_PER_ELEMENT,
-                   offset,
-                 ),
-                 (
-                   TypeArrayService.fillFloat32ArrayWithOffset,
-                   Float32Array.fromBufferRange,
-                 ),
+                 (dataView, texCoords, texCoordsLength, offset),
+                 (DataViewCommon.writeFloat, _getFloat1),
                )
-             | None => (buffer, offset)
+             | None => (dataView, offset)
              };
 
            _fillBuffer(
-             (
-               buffer,
-               indices,
-               indicesLength,
-               Uint16Array._BYTES_PER_ELEMENT,
-               offset,
-             ),
-             (
-               TypeArrayService.fillUint16ArrayWithOffset,
-               Uint16Array.fromBufferRange,
-             ),
+             (dataView, indices, indicesLength, offset),
+             (DataViewCommon.writeUint16_1, _getUint16_1),
            );
          },
-         (buffer, 0),
+         (dataView, 0),
        );
   buffer;
 };
@@ -810,6 +865,12 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
   /* TODO get materialData */
 
   /* TODO get cameraData */
+
+  /* WonderLog.Log.printJson(nodeDataArr) |> ignore; */
+
+  /* WonderLog.Log.print( state.gameObjectRecord.nameMap) |> ignore; */
+
+  /* WonderLog.Log.print("build json!") |> ignore; */
 
   [
     (
@@ -838,7 +899,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
            let list =
              switch (NameGameObjectMainService.getName(gameObject, state)) {
              | None => list
-             | Some(name) => [("name", name |> string)]
+             | Some(name) => [("name", name |> string), ...list]
              };
 
            let list =
@@ -858,6 +919,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
                    "translation",
                    translation |> positionTupleToArray |> numberArray,
                  ),
+                 ...list,
                ]
              };
 
@@ -869,6 +931,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
                    "rotation",
                    rotation |> rotationTupleToArray |> numberArray,
                  ),
+                 ...list,
                ]
              };
 
@@ -877,32 +940,37 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
              | None => list
              | Some(scale) => [
                  ("scale", scale |> scaleTupleToArray |> numberArray),
+                 ...list,
                ]
              };
 
            let list =
              switch (mesh) {
              | None => list
-             | Some(mesh) => [("mesh", mesh |> int)]
+             | Some(mesh) => [("mesh", mesh |> int), ...list]
              };
 
            let list =
              switch (camera) {
              | None => list
-             | Some(camera) => [("camera", camera |> int)]
+             | Some(camera) => [("camera", camera |> int), ...list]
              };
 
            list |> List.rev |> object_;
          })
+      /* |> WonderLog.Log.print */
       |> jsonArray,
     ),
     (
       "buffers",
-      [
-        ("byteLength", totalByteLength |> int),
-        ("uri", Base64ArrayBufferCommon.encode(buffer) |> string),
-      ]
-      |> object_,
+      [|
+        [
+          ("byteLength", totalByteLength |> int),
+          ("uri", Base64ArrayBufferCommon.encode(buffer) |> string),
+        ]
+        |> object_,
+      |]
+      |> jsonArray,
     ),
     (
       "bufferViews",
@@ -965,7 +1033,10 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
                primitivesList |> List.append([("material", material |> int)])
              };
 
-           let primitives = ("primitives", primitivesList |> object_);
+           let primitives = (
+             "primitives",
+             [|primitivesList |> object_|] |> jsonArray,
+           );
 
            switch (name) {
            | None => [primitives] |> object_
@@ -985,9 +1056,9 @@ let generateEmbededWD = (sceneGameObject, state) => {
   generateEmbededGLTF(sceneGameObject, state)
   |> Js.Json.stringify
   |> ConvertGLTFSystem.convert
-  |> Most.forEach(((wdRecord, _, _)) => {
-       data := wdRecord;
+  |> Most.forEach(convertResultDataTuple => {
+       data := convertResultDataTuple;
        ();
      })
-  |> then_(() => data^ |> resolve);
+  |> then_(() => (state, data^) |> resolve);
 };

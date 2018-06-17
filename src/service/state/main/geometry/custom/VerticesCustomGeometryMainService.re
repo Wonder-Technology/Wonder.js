@@ -11,13 +11,14 @@ open TypeArrayService;
 open Js.Typed_array;
 
 let getVertices =
-  [@bs]
-  (
-    (index, state) => {
-      let {vertices, verticesInfos} = getRecord(state);
-      getFloat32PointData(BufferCustomGeometryService.getInfoIndex(index), vertices, verticesInfos)
-    }
-  );
+  (. index, state) => {
+    let {vertices, verticesInfos} = getRecord(state);
+    getFloat32PointData(
+      BufferCustomGeometryService.getInfoIndex(index),
+      vertices,
+      verticesInfos,
+    );
+  };
 
 let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {verticesInfos, vertices, verticesOffset} as record = getRecord(state);
@@ -27,9 +28,9 @@ let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
         BufferCustomGeometryService.getInfoIndex(index),
         verticesInfos,
         verticesOffset,
-        Float32Array.length(data)
+        Float32Array.length(data),
       ),
-      fillFloat32ArrayWithOffset(vertices, data)
+      fillFloat32ArrayWithOffset(vertices, data),
     );
-  state
+  state;
 };

@@ -1,6 +1,8 @@
 let encode = [%bs.raw
   {|
     function(arraybuffer) {
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
     var bytes = new Uint8Array(arraybuffer),
     i, len = bytes.length, base64 = "";
 

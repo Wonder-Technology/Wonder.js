@@ -7,22 +7,35 @@ open CustomGeometryAPI;
 let buildInfo = (startIndex, endIndex) => (startIndex, endIndex);
 
 let getInfo = (index, infos) =>
-  ReallocatedPointsGeometryService.getInfo(BufferCustomGeometryService.getInfoIndex(index), infos);
+  ReallocatedPointsGeometryService.getInfo(
+    BufferCustomGeometryService.getInfoIndex(index),
+    infos,
+  );
 
-let getRecord = (state) => RecordCustomGeometryMainService.getRecord(state);
+let getRecord = state => RecordCustomGeometryMainService.getRecord(state);
 
 let createGameObject = (state: StateDataMainType.state) => {
   let (state, geometry) = createCustomGeometry(state);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
-  let state = state |> GameObjectAPI.addGameObjectCustomGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry)
+  let state =
+    state
+    |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+         gameObject,
+         geometry,
+       );
+  (state, gameObject, geometry);
 };
 
 let createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
   open Js.Typed_array;
   let (state, geometry) = createCustomGeometry(state);
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
-  let state = state |> GameObjectAPI.addGameObjectCustomGeometryComponent(gameObject, geometry);
+  let state =
+    state
+    |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+         gameObject,
+         geometry,
+       );
   let vertices1 = Float32Array.make([|10.|]);
   let texCoords1 = Float32Array.make([|0.5|]);
   let normals1 = Float32Array.make([|1.|]);
@@ -33,10 +46,10 @@ let createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
     |> setCustomGeometryTexCoords(geometry, texCoords1)
     |> setCustomGeometryNormals(geometry, normals1)
     |> setCustomGeometryIndices(geometry, indices1);
-  (state, gameObject, geometry, (vertices1, texCoords1, normals1, indices1))
+  (state, gameObject, geometry, (vertices1, texCoords1, normals1, indices1));
 };
 
-let createThreeGameObjectsAndSetPointData = (state) => {
+let createThreeGameObjectsAndSetPointData = state => {
   open Js.Typed_array;
   let vertices1 = Float32Array.make([|10., 10., 11.|]);
   let vertices2 = Float32Array.make([|3., 2., 3.|]);
@@ -74,46 +87,143 @@ let createThreeGameObjectsAndSetPointData = (state) => {
     (vertices1, vertices2, vertices3),
     (texCoords1, texCoords2, texCoords3),
     (normals1, normals2, normals3),
-    (indices1, indices2, indices3)
-  )
+    (indices1, indices2, indices3),
+  );
 };
 
 let getGroupCount = (geometry, state) =>
   GroupCustomGeometryService.getGroupCount(
     geometry,
-    state |> RecordCustomGeometryMainService.getRecord
+    state |> RecordCustomGeometryMainService.getRecord,
   );
 
 let isGeometryDisposed = (geometry, state) =>
   !
     DisposeCustomGeometryMainService.isAlive(
       geometry,
-      state |> RecordCustomGeometryMainService.getRecord
+      state |> RecordCustomGeometryMainService.getRecord,
     );
 
 let getIndicesCount = (index: int, state: StateRenderType.renderState) =>
-  [@bs] GetCustomGeometryIndicesRenderService.getIndicesCount(index, state);
+  GetCustomGeometryIndicesRenderService.getIndicesCount(. index, state);
 
 let unsafeGetGeometryComponent = (uid: int, {gameObjectRecord}) =>
-  GetComponentGameObjectService.unsafeGetGeometryComponent(uid, gameObjectRecord)
+  GetComponentGameObjectService.unsafeGetGeometryComponent(
+    uid,
+    gameObjectRecord,
+  )
   |> WonderLog.Contract.ensureCheck(
-       (r) =>
+       r =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|type_ is box|j}, ~actual={j|not|j}),
+                 Log.buildAssertMessage(
+                   ~expect={j|type_ is box|j},
+                   ~actual={j|not|j},
+                 ),
                  () => {
                    let (_, type_) =
                      GetComponentGameObjectService.unsafeGetGeometryComponentData(
                        uid,
-                       gameObjectRecord
+                       gameObjectRecord,
                      );
-                   type_ == CurrentComponentDataMapService.getCustomGeometryType()
-                 }
+                   type_
+                   == CurrentComponentDataMapService.getCustomGeometryType();
+                 },
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
+
+let _getMainVertexData = (geometry, count, getCustomGeometryVertexFunc, state) => {
+  open Js.Typed_array;
+
+  let points = getCustomGeometryVertexFunc(geometry, state);
+
+  let length = points |> Float32Array.length;
+
+  let mainVertexs = Float32Array.fromLength(count);
+
+  length > count ?
+    {
+      TypeArrayService.fillFloat32ArrayWithOffset(
+        mainVertexs,
+        Float32Array.slice(~start=0, ~end_=count / 2, points),
+        0,
+      );
+
+      TypeArrayService.fillFloat32ArrayWithOffset(
+        mainVertexs,
+        Float32Array.slice(
+          ~start=length - count / 2 - 1,
+          ~end_=length - 1,
+          points,
+        ),
+        count / 2,
+      );
+
+      mainVertexs;
+    } :
+    points;
+};
+
+let getMainVertices = (geometry, state) =>
+  _getMainVertexData(
+    geometry,
+    60,
+    CustomGeometryAPI.getCustomGeometryVertices,
+    state,
+  );
+
+let getMainNormals = (geometry, state) =>
+  _getMainVertexData(
+    geometry,
+    60,
+    CustomGeometryAPI.getCustomGeometryNormals,
+    state,
+  );
+
+let getMainTexCoords = (geometry, state) =>
+  _getMainVertexData(
+    geometry,
+    40,
+    CustomGeometryAPI.getCustomGeometryTexCoords,
+    state,
+  );
+
+let getMainIndices = (geometry, state) => {
+  open Js.Typed_array;
+
+  let indices = CustomGeometryAPI.getCustomGeometryIndices(geometry, state);
+
+  let count = 60;
+
+  let length = indices |> Uint16Array.length;
+
+  let mainVertexs = Uint16Array.fromLength(count);
+
+  length > count ?
+    {
+      TypeArrayService.fillUint16ArrayWithOffset(
+        mainVertexs,
+        Uint16Array.slice(~start=0, ~end_=count / 2, indices),
+        0,
+      );
+
+      TypeArrayService.fillUint16ArrayWithOffset(
+        mainVertexs,
+        Uint16Array.slice(
+          ~start=length - count / 2 - 1,
+          ~end_=length - 1,
+          indices,
+        ),
+        count / 2,
+      );
+
+      mainVertexs;
+    } :
+    indices;
+};

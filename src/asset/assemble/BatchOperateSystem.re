@@ -161,10 +161,9 @@ let _getAccessorTypeSize = ({type_}) =>
 
 let _getBufferData =
     (
-      accessorIndex,
-      bufferArr,
       {accessors, bufferViews, buffers},
-      (_BYTES_PER_ELEMENT, fromBufferRangeFunc),
+      (accessorIndex, dataViewArr, bytes_per_element),
+      (getDataViewFunc, createTypeArrayFunc),
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -183,7 +182,7 @@ let _getBufferData =
                 switch (bufferView.byteStride) {
                 | Some(byteStride) =>
                   byteStride == _getAccessorTypeSize(accessor)
-                  * _BYTES_PER_ELEMENT
+                  * bytes_per_element
                 | None => ()
                 };
               },
@@ -195,31 +194,41 @@ let _getBufferData =
   );
   let accessor = Array.unsafe_get(accessors, accessorIndex);
   let bufferView = Array.unsafe_get(bufferViews, accessor.bufferView);
-  fromBufferRangeFunc(
-    Array.unsafe_get(bufferArr, bufferView.buffer),
-    ~offset=accessor.byteOffset + bufferView.byteOffset,
-    ~length=accessor.count * _getAccessorTypeSize(accessor),
-  );
+  let dataView = Array.unsafe_get(dataViewArr, bufferView.buffer);
+
+  let offset = ref(accessor.byteOffset + bufferView.byteOffset);
+  let pointArr = [||];
+
+  for (i in 0 to accessor.count * _getAccessorTypeSize(accessor) - 1) {
+    let (value, newOffset) = getDataViewFunc(. offset^, dataView);
+
+    offset := newOffset;
+
+    pointArr |> ArrayService.push(value) |> ignore;
+  };
+
+  createTypeArrayFunc(pointArr);
 };
 
-let _getBufferAttributeData = (accessorIndex, bufferArr, wdRecord) =>
+let _getBufferAttributeData = (accessorIndex, dataViewArr, wdRecord) =>
   _getBufferData(
-    accessorIndex,
-    bufferArr,
     wdRecord,
-    (Float32Array._BYTES_PER_ELEMENT, Float32Array.fromBufferRange),
+    (accessorIndex, dataViewArr, Float32Array._BYTES_PER_ELEMENT),
+    (DataViewCommon.getFloat, Float32Array.make),
   );
 
-let _getBufferIndexData = (accessorIndex, bufferArr, wdRecord) =>
+let _getBufferIndexData = (accessorIndex, dataViewArr, wdRecord) =>
   _getBufferData(
-    accessorIndex,
-    bufferArr,
     wdRecord,
-    (Uint16Array._BYTES_PER_ELEMENT, Uint16Array.fromBufferRange),
+    (accessorIndex, dataViewArr, Uint16Array._BYTES_PER_ELEMENT),
+    (DataViewCommon.getUint16_1, Uint16Array.make),
   );
 
 let _batchSetCustomGeometryData =
-    ({customGeometrys} as wdRecord, customGeometryArr, bufferArr, state) =>
+    ({customGeometrys} as wdRecord, customGeometryArr, bufferArr, state) => {
+  let dataViewArr =
+    bufferArr |> Js.Array.map(buffer => DataViewCommon.create(buffer));
+
   /* TODO optimize: first get all customGeometry point data; then batch set?(need benchmark test) */
   customGeometrys
   |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -232,7 +241,7 @@ let _batchSetCustomGeometryData =
            let state =
              VerticesCustomGeometryMainService.setVerticesByTypeArray(
                customGeometry,
-               _getBufferAttributeData(position, bufferArr, wdRecord),
+               _getBufferAttributeData(position, dataViewArr, wdRecord),
                state,
              );
            let state =
@@ -241,7 +250,7 @@ let _batchSetCustomGeometryData =
              | Some(normal) =>
                NormalsCustomGeometryMainService.setNormalsByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(normal, bufferArr, wdRecord),
+                 _getBufferAttributeData(normal, dataViewArr, wdRecord),
                  state,
                )
              };
@@ -251,20 +260,21 @@ let _batchSetCustomGeometryData =
              | Some(texCoord) =>
                TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(texCoord, bufferArr, wdRecord),
+                 _getBufferAttributeData(texCoord, dataViewArr, wdRecord),
                  state,
                )
              };
            let state =
              IndicesCustomGeometryMainService.setIndicesByTypeArray(
                customGeometry,
-               _getBufferIndexData(index, bufferArr, wdRecord),
+               _getBufferIndexData(index, dataViewArr, wdRecord),
                state,
              );
            state;
          },
        state,
      );
+};
 
 let _batchSetTransformParent = (parentTransforms, childrenTransforms, state) => {
   let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =

@@ -1243,7 +1243,7 @@ let buildGLTFJsonOfTexture = () =>
     (),
   );
 
-let _buildFakeLoadImage = [%bs.raw
+let buildFakeLoadImage = [%bs.raw
   {|
     function(){
         window.loadImage_wonder = function(base64Str, resolve, reject){
@@ -1256,7 +1256,7 @@ let _buildFakeLoadImage = [%bs.raw
 let testResult = (gltfJson, testFunc) => {
   open Js.Promise;
   let data = ref(Obj.magic(1));
-  _buildFakeLoadImage();
+  buildFakeLoadImage();
   ConvertGLTFSystem.convert(gltfJson)
   |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
        data := (wdRecord, imageArr, bufferArr);

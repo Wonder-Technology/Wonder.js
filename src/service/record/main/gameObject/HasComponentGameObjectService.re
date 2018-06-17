@@ -23,7 +23,7 @@ let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
     CurrentComponentDataMapService.getBoxGeometryType()
   );
 
-let hasCustomGeometryComponent = (uid: int, gameObjectRecord) : bool =>
+let hasGeometryComponent = (uid: int, gameObjectRecord) : bool =>
   CurrentComponentDataMapRenderService.hasComponent(
     uid,
     gameObjectRecord.geometryDataMap,

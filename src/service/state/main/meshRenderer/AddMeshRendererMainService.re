@@ -41,7 +41,8 @@ let handleAddComponent =
             )
         }
       }
-      |> WonderLog.Contract.ensureCheck(
+      /* TODO open! */
+      /* |> WonderLog.Contract.ensureCheck(
            (state) =>
              WonderLog.(
                Contract.(
@@ -49,7 +50,7 @@ let handleAddComponent =
                    test(
                      Log.buildAssertMessage(
                        ~expect={j|should add material component before add meshRenderer component|j},
-                       ~actual={j|not. the gameObjectUid is $gameObjectUid|j}
+                       ~actual={j|not(the gameObjectUid is $gameObjectUid)|j}
                      ),
                      () => {
                        let {basicMaterialRenderGameObjectArray, lightMaterialRenderGameObjectArray} =
@@ -67,6 +68,6 @@ let handleAddComponent =
                )
              ),
            IsDebugMainService.getIsDebug(StateDataMain.stateData)
-         )
+         ) */
     }
   );

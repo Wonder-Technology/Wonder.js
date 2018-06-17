@@ -157,7 +157,7 @@ let _ =
           )
         );
         describe("test custom geometry component", () =>
-          describe("hasGameObjectCustomGeometryComponent", () =>
+          describe("hasGameObjectGeometryComponent", () =>
             test("has geometry component", () => {
               let (state, gameObject) = createGameObject(state^);
               let (state, geometry) =
@@ -165,7 +165,7 @@ let _ =
               let state =
                 state
                 |> addGameObjectCustomGeometryComponent(gameObject, geometry);
-              hasGameObjectCustomGeometryComponent(gameObject, state)
+              hasGameObjectGeometryComponent(gameObject, state)
               |> expect == true;
             })
           )
@@ -1745,8 +1745,8 @@ let _ =
         test("hasGameObjectBoxGeometryComponent should error", () =>
           _testTwoParamFunc(hasGameObjectBoxGeometryComponent)
         );
-        test("hasGameObjectCustomGeometryComponent should error", () =>
-          _testTwoParamFunc(hasGameObjectCustomGeometryComponent)
+        test("hasGameObjectGeometryComponent should error", () =>
+          _testTwoParamFunc(hasGameObjectGeometryComponent)
         );
         test("addGameObjectTransformComponent should error", () =>
           _testThreeParmFunc(addGameObjectTransformComponent)
