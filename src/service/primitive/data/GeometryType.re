@@ -5,7 +5,7 @@ type geometry = int;
 type geometryComputeData = {
   vertices: array(float),
   normals: array(float),
-  indices: array(int)
+  indices: array(int),
 };
 
 /* TODO optimize: use Uint32Array based on config or query gpu extension */

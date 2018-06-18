@@ -55,93 +55,110 @@ open BrowserDetectType;
 type attributeSendData = {
   pos: attributeLocation,
   size: int,
-  buffer: string,
+  buffer: VboBufferType.bufferEnum,
   sendFunc:
-    [@bs]
     (
-      (
-        webgl1Context,
-        (attributeLocation, int),
-        GlType.buffer,
-        /* StateRenderType.sendAttributeState */
-        /* GLSLSenderType.vertexAttribHistoryArray */
-        renderState
-      ) =>
+      . webgl1Context,
+      (attributeLocation, int),
+      GlType.buffer,
+      /* StateRenderType.sendAttributeState */
+      /* GLSLSenderType.vertexAttribHistoryArray */
       renderState
-    )
+    ) =>
+    renderState,
 }
 and instanceAttributeSendData = {
   pos: attributeLocation,
   size: int,
-  getOffsetFunc: [@bs] (int => int)
+  getOffsetFunc: (. int) => int,
 }
 and uniformRenderObjectSendModelData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, renderState) => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getDataFunc: (. component, renderState) => Float32Array.t,
+  sendDataFunc: (. webgl1Context, uniformLocation, Float32Array.t) => unit,
 }
 and uniformRenderObjectSendMaterialData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, renderState) => array(float)),
+  getDataFunc: (. component, renderState) => array(float),
   sendDataFunc:
-    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
+    (
+      . webgl1Context,
+      shaderCacheMap,
+      (string, uniformLocation),
+      array(float)
+    ) =>
+    unit,
 }
 and uniformShaderSendNoCachableData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] (renderState => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getDataFunc: (. renderState) => Float32Array.t,
+  sendDataFunc: (. webgl1Context, uniformLocation, Float32Array.t) => unit,
 }
 and uniformShaderSendCachableData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
-  getDataFunc: [@bs] (renderState => array(float)),
+  getDataFunc: (. renderState) => array(float),
   sendDataFunc:
-    [@bs] ((webgl1Context, shaderCacheMap, (string, uniformLocation), array(float)) => unit)
+    (
+      . webgl1Context,
+      shaderCacheMap,
+      (string, uniformLocation),
+      array(float)
+    ) =>
+    unit,
 }
 and uniformShaderSendCachableFunctionData = {
   program,
   shaderCacheMap,
   locationMap: GLSLLocationType.uniformLocationMapOfShader,
   sendCachableFunctionDataFunc:
-    [@bs]
     (
-      (
-        webgl1Context,
-        (program, shaderCacheMap, GLSLLocationType.uniformLocationMapOfShader),
-        renderState
-      ) =>
-      unit
-    )
+      . webgl1Context,
+      (program, shaderCacheMap, GLSLLocationType.uniformLocationMapOfShader),
+      renderState
+    ) =>
+    unit,
 }
 and uniformInstanceSendNoCachableData = {
   pos: uniformLocation,
-  getDataFunc: [@bs] ((component, renderState) => Float32Array.t),
-  sendDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
+  getDataFunc: (. component, renderState) => Float32Array.t,
+  sendDataFunc: (. webgl1Context, uniformLocation, Float32Array.t) => unit,
 }
 and glslSenderRecord = {
-  attributeSendDataMap: WonderCommonlib.SparseMapService.t(array(attributeSendData)),
+  attributeSendDataMap:
+    WonderCommonlib.SparseMapService.t(array(attributeSendData)),
   instanceAttributeSendDataMap:
     WonderCommonlib.SparseMapService.t(array(instanceAttributeSendData)),
   uniformCacheMap,
   uniformRenderObjectSendModelDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendModelData)),
+    WonderCommonlib.SparseMapService.t(
+      array(uniformRenderObjectSendModelData),
+    ),
   uniformRenderObjectSendMaterialDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformRenderObjectSendMaterialData)),
+    WonderCommonlib.SparseMapService.t(
+      array(uniformRenderObjectSendMaterialData),
+    ),
   uniformShaderSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformShaderSendNoCachableData)),
+    WonderCommonlib.SparseMapService.t(
+      array(uniformShaderSendNoCachableData),
+    ),
   uniformShaderSendCachableDataMap:
     WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableData)),
   uniformShaderSendCachableFunctionDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableFunctionData)),
+    WonderCommonlib.SparseMapService.t(
+      array(uniformShaderSendCachableFunctionData),
+    ),
   uniformInstanceSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformInstanceSendNoCachableData)),
+    WonderCommonlib.SparseMapService.t(
+      array(uniformInstanceSendNoCachableData),
+    ),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
   mutable lastSendMaterial: option(material),
-  mutable lastSendGeometry: option((geometry, int))
+  mutable lastSendGeometry: option((geometry, int)),
 }
 and renderState = {
   vboBufferRecord,
@@ -166,5 +183,5 @@ and renderState = {
   shaderRecord,
   settingRecord,
   workerDetectRecord,
-  browserDetectRecord
+  browserDetectRecord,
 };

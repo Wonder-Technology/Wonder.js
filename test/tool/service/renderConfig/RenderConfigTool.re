@@ -230,22 +230,22 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_mVec4_0",
-          "buffer": "instance_mMatrix",
+          "buffer": 5,
           "type": "vec4"
         },
         {
           "name": "a_mVec4_1",
-          "buffer": "instance_mMatrix",
+          "buffer": 5,
           "type": "vec4"
         },
         {
           "name": "a_mVec4_2",
-          "buffer": "instance_mMatrix",
+          "buffer": 5,
           "type": "vec4"
         },
         {
           "name": "a_mVec4_3",
-          "buffer": "instance_mMatrix",
+          "buffer": 5,
           "type": "vec4"
         }
       ]
@@ -276,7 +276,7 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_position",
-          "buffer": "vertex",
+          "buffer": 0,
           "type": "vec3"
         }
       ]
@@ -326,7 +326,7 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_texCoord",
-          "buffer": "texCoord",
+          "buffer": 2,
           "type": "vec2"
         }
       ],
@@ -380,17 +380,17 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_normalVec3_0",
-          "buffer": "instance_normalMatrix",
+          "buffer": 4,
           "type": "vec3"
         },
         {
           "name": "a_normalVec3_1",
-          "buffer": "instance_normalMatrix",
+          "buffer": 4,
           "type": "vec3"
         },
         {
           "name": "a_normalVec3_2",
-          "buffer": "instance_normalMatrix",
+          "buffer": 4,
           "type": "vec3"
         }
       ]
@@ -421,7 +421,7 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_normal",
-          "buffer": "normal",
+          "buffer": 1,
           "type": "vec3"
         }
       ]
@@ -465,7 +465,7 @@ let buildRenderConfig =
       "attributes": [
         {
           "name": "a_texCoord",
-          "buffer": "texCoord",
+          "buffer": 2,
           "type": "vec2"
         }
       ]
@@ -681,7 +681,7 @@ let buildRenderConfig =
     "variables": {
       "attributes": [
         {
-          "buffer": "index"
+          "buffer": 3
         }
       ]
     }

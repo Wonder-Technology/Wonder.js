@@ -2,6 +2,8 @@ open StateRenderType;
 
 open VboBufferType;
 
+open GeometryType;
+
 let _getOrCreateBuffer =
     (
       buffer,
@@ -18,28 +20,28 @@ let _getOrCreateBuffer =
       state,
     ) => {
   switch (buffer) {
-  | "vertex" =>
+  | VERTEX =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, vertexBufferMap),
       [@bs] getVerticesFunc,
       state,
     )
-  | "texCoord" =>
+  | TEXCOORD =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, texCoordBufferMap),
       [@bs] getTexCoordsFunc,
       state,
     )
-  | "normal" =>
+  | NORMAL =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, normalBufferMap),
       [@bs] getNormalsFunc,
       state,
     )
-  | "index" =>
+  | INDEX =>
     ElementArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, elementArrayBufferMap),
