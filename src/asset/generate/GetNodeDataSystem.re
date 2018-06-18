@@ -323,7 +323,7 @@ let rec _getNodeData =
              materialDataMap
              |> WonderCommonlib.SparseMapService.set(
                   materialIndex,
-                  materialData,
+                  materialData |> OptionService.unsafeGet,
                 )
            };
 

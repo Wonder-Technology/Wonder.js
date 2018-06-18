@@ -1,23 +1,5 @@
 open GenerateSceneGraphType;
 
-let _checkShouldHasNoSlot = map =>
-  WonderLog.(
-    Contract.(
-      Operators.(
-        test(
-          Log.buildAssertMessage(
-            ~expect={j|map has no slot|j},
-            ~actual={j|not|j},
-          ),
-          () =>
-          map
-          |> SparseMapService.getValidValues
-          |> SparseMapService.length == (map |> SparseMapService.length)
-        )
-      )
-    )
-  );
-
 let _addBufferViewData =
     (
       (pointsLength, pointsCount, bytes_per_element, pointType),
@@ -115,13 +97,15 @@ let _addAllPointData =
   );
 };
 
-let buildGeometryData = meshPointDataMap => {
+let build = meshPointDataMap => {
   open Js.Typed_array;
 
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
-        Contract.(Operators.(_checkShouldHasNoSlot(meshPointDataMap)))
+        Contract.(
+          Operators.(GenerateCommon.checkShouldHasNoSlot(meshPointDataMap))
+        )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );

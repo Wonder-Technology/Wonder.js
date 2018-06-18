@@ -365,7 +365,7 @@ let _convertToMaterialIndices =
              switch (pbrMetallicRoughness) {
              | None => (materialIndices, diffuseMapIndices)
              | Some(pbrMetallicRoughness) =>
-               let {baseColorTexture, metallicRoughnessTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
+               let {baseColorTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
                _setMapMaterialIndices(
                  baseColorTexture,
                  index,

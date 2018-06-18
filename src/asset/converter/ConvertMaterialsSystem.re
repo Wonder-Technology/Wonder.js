@@ -16,8 +16,8 @@ let convertToLightMaterials =
              let {
                baseColorFactor,
                /* baseColorTexture: option(textureIndex), */
-               metallicFactor,
-               roughnessFactor,
+               /* metallicFactor,
+                  roughnessFactor, */
                /* metallicRoughnessTexture: option(textureIndex) */
              }: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
              arr

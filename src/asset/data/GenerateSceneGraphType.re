@@ -41,6 +41,25 @@ type accessorData = {
   type_: string,
 };
 
+type samplerData = {
+  wrapS: int,
+  wrapT: int,
+  magFilter: int,
+  minFilter: int,
+};
+
+type textureData = {
+  name: option(string),
+  sampler: int,
+  source: int,
+};
+
+type materialData = {
+  baseColorFactor: option(array(float)),
+  baseColorTexture: option(int),
+  name: option(string),
+};
+
 type point =
   | VERTEX
   | NORMAL

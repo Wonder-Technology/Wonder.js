@@ -2,6 +2,12 @@ open StateDataMainType;
 
 open BasicSourceTextureType;
 
+let getName = (texture, state) =>
+  NameService.getName(
+    texture,
+    RecordBasicSourceTextureMainService.getRecord(state).nameMap,
+  );
+
 let unsafeGetName = (texture, state) =>
   NameService.unsafeGetName(
     texture,

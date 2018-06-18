@@ -21,7 +21,7 @@ let _fillBuffer =
   (dataView, offset^);
 };
 
-let buildBuffer = (totalByteLength, meshPointDataMap) => {
+let build = (totalByteLength, meshPointDataMap) => {
   let buffer = ArrayBuffer.make(totalByteLength);
 
   let dataView = DataViewCommon.create(buffer);

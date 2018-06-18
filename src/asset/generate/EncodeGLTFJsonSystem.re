@@ -100,6 +100,101 @@ let _encodeNodes = (nodeDataArr, state) => (
   |> jsonArray,
 );
 
+let _encodeMaterials = (materialDataArr, state) => (
+  "materials",
+  materialDataArr
+  |> Js.Array.map(({baseColorFactor, baseColorTexture, name}: materialData) => {
+       let list = [];
+
+       let list =
+         switch (name) {
+         | None => list
+         | Some(name) => [("name", name |> string), ...list]
+         };
+
+       let pbrMetallicRoughnessList = [];
+
+       let pbrMetallicRoughnessList =
+         switch (baseColorFactor) {
+         | None => pbrMetallicRoughnessList
+         | Some(baseColorFactor) => [
+             ("baseColorFactor", baseColorFactor |> numberArray),
+             ...pbrMetallicRoughnessList,
+           ]
+         };
+
+       let pbrMetallicRoughnessList =
+         switch (baseColorTexture) {
+         | None => pbrMetallicRoughnessList
+         | Some(baseColorTexture) => [
+             (
+               "baseColorTexture",
+               [("index", baseColorTexture |> int)] |> object_,
+             ),
+             ...pbrMetallicRoughnessList,
+           ]
+         };
+
+       let list = [
+         ("pbrMetallicRoughness", pbrMetallicRoughnessList |> object_),
+         ...list,
+       ];
+
+       list |> List.rev |> object_;
+     })
+  |> jsonArray,
+);
+
+let _encodeTextures = (textureDataArr, state) => (
+  "textures",
+  textureDataArr
+  |> Js.Array.map(({name, sampler, source}: textureData) => {
+       let list = [];
+
+       let list =
+         switch (name) {
+         | None => list
+         | Some(name) => [("name", name |> string), ...list]
+         };
+
+       let list = [
+         ("sampler", sampler |> int),
+         ("source", source |> int),
+         ...list,
+       ];
+
+       list |> object_;
+     })
+  |> jsonArray,
+);
+
+let _encodeSamplers = (samplerDataArr, state) => (
+  "samplers",
+  samplerDataArr
+  |> Js.Array.map(({wrapS, wrapT, magFilter, minFilter}: samplerData) => {
+       let list = [
+         ("wrapS", wrapS |> int),
+         ("wrapT", wrapT |> int),
+         ("magFilter", magFilter |> int),
+         ("minFilter", minFilter |> int),
+       ];
+
+       list |> object_;
+     })
+  |> jsonArray,
+);
+
+let _encodeSources = (sourceBase64Arr, state) => (
+  "sources",
+  sourceBase64Arr
+  |> Js.Array.map((base64Str: string) => {
+       let list = [("uri", base64Str |> string)];
+
+       list |> object_;
+     })
+  |> jsonArray,
+);
+
 let _encodeMeshes = (meshDataArr, state) => (
   "meshes",
   meshDataArr
@@ -149,7 +244,16 @@ let _encodeMeshes = (meshDataArr, state) => (
 let encode =
     (
       (buffer, totalByteLength),
-      (nodeDataArr, bufferViewDataArr, accessorDataArr, meshDataArr),
+      (
+        nodeDataArr,
+        bufferViewDataArr,
+        accessorDataArr,
+        meshDataArr,
+        materialDataArr,
+        textureDataArr,
+        samplerDataArr,
+        sourceBase64Arr,
+      ),
       state,
     ) =>
   [
@@ -167,6 +271,10 @@ let encode =
       [|[("nodes", [|0|] |> intArray)] |> object_|] |> jsonArray,
     ),
     _encodeNodes(nodeDataArr, state),
+    _encodeMaterials(materialDataArr, state),
+    _encodeTextures(textureDataArr, state),
+    _encodeSamplers(samplerDataArr, state),
+    _encodeSources(sourceBase64Arr, state),
     (
       "buffers",
       [|
