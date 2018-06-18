@@ -95,6 +95,17 @@ let _addImageData = (texture, imageMap, state, imageBase64Arr) => {
   };
 };
 
+let _addTextureData =
+    (texture, (samplerIndex, imageIndex), state, textureDataArr) =>
+  textureDataArr
+  |> ArrayService.push(
+       {
+         name: NameBasicSourceTextureMainService.getName(texture, state),
+         sampler: samplerIndex,
+         source: imageIndex,
+       }: GenerateSceneGraphType.textureData,
+     );
+
 let build = (materialDataMap, state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -114,12 +125,7 @@ let build = (materialDataMap, state) => {
     |> SparseMapService.reduceiValid(
          (.
            (
-             (
-               materialDataArr,
-               textureDataArr,
-               samplerDataArr,
-               imageBase64Arr,
-             ),
+             (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
              (textureIndexMap, samplerIndexMap, imageMap),
            ),
            (lightMaterial, name),
@@ -203,12 +209,7 @@ let build = (materialDataMap, state) => {
                  );
 
                let (imageIndex, imageMap, imageBase64Arr) =
-                 _addImageData(
-                   diffuseMap,
-                   imageMap,
-                   state,
-                   imageBase64Arr,
-                 );
+                 _addImageData(diffuseMap, imageMap, state, imageBase64Arr);
 
                (
                  (
@@ -220,18 +221,12 @@ let build = (materialDataMap, state) => {
                           name,
                         }: GenerateSceneGraphType.materialData,
                       ),
-                   textureDataArr
-                   |> ArrayService.push(
-                        {
-                          name:
-                            NameBasicSourceTextureMainService.getName(
-                              diffuseMap,
-                              state,
-                            ),
-                          sampler: samplerIndex,
-                          source: imageIndex,
-                        }: GenerateSceneGraphType.textureData,
-                      ),
+                   _addTextureData(
+                     diffuseMap,
+                     (samplerIndex, imageIndex),
+                     state,
+                     textureDataArr,
+                   ),
                    samplerDataArr,
                    imageBase64Arr,
                  ),

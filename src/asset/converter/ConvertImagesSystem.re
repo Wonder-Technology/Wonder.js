@@ -18,7 +18,7 @@ let buildImageArray = ({images}: GLTFType.gltf)  => {
            | None =>
              WonderLog.Log.fatal(
                WonderLog.Log.buildFatalMessage(
-                 ~title="_loadImages",
+                 ~title="buildImageArray",
                  ~description={j|image->uri should exist|j},
                  ~reason="",
                  ~solution={j||j},
@@ -30,7 +30,7 @@ let buildImageArray = ({images}: GLTFType.gltf)  => {
              | false =>
                WonderLog.Log.fatal(
                  WonderLog.Log.buildFatalMessage(
-                   ~title="_loadImages",
+                   ~title="buildImageArray",
                    ~description={j|only support base64 uri|j},
                    ~reason="",
                    ~solution={j||j},

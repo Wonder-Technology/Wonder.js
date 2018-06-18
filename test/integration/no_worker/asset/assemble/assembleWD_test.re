@@ -3,7 +3,7 @@ open Wonder_jest;
 open Js.Promise;
 
 let _ =
-  describe("AssembleWDSystem", () => {
+  describe("assemble wd", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;

@@ -1,7 +1,13 @@
 open Js.Promise;
 
+open Sinon;
+
 let _emptyBufferUriData = jsonStr =>
-  jsonStr |> Js.String.replaceByRe([%re {|/"buffers"\:\[\{"byteLength"\:(\d+),\"uri"\:".+?"/img|}], {|"buffers":[{"byteLength":$1,"uri":""|});
+  jsonStr
+  |> Js.String.replaceByRe(
+       [%re {|/"buffers"\:\[\{"byteLength"\:(\d+),\"uri"\:".+?"/img|}],
+       {|"buffers":[{"byteLength":$1,"uri":""|},
+     );
 
 let _contain = (targetJsonStr: string, wdJson: Js.Json.t) =>
   Wonder_jest.(
@@ -83,10 +89,54 @@ let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
 };
 
 let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) =>
-  Js.Promise.
-    (
-      GenerateSceneGraphSystem.generateEmbededWD(sceneGameObject, state)
-      |> then_(((state, data)) =>
-           testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
-         )
+  Js.Promise.(
+    GenerateSceneGraphSystem.generateEmbededWD(sceneGameObject, state)
+    |> then_(((state, data)) =>
+         testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
+       )
+  );
+
+let _buildFakeContext = sandbox => {
+  "drawImage": createEmptyStubWithJsObjSandbox(sandbox),
+};
+
+let _buildFakeCanvas = (sandbox, context, (base64Str1, base64Str2)) =>
+  {
+    let toDataURL =
+      createEmptyStubWithJsObjSandbox(sandbox)
+      |> onCall(0)
+      |> returns(base64Str1)
+      |> onCall(1)
+      |> returns(base64Str2);
+
+    {
+      "width": 0.,
+      "height": 0.,
+      "style": {
+        "left": "",
+        "top": "",
+        "width": "",
+        "height": "",
+        "position": "static",
+      },
+      "getContext":
+        createEmptyStubWithJsObjSandbox(sandbox) |> returns(context),
+      "toDataURL": toDataURL,
+    };
+  }
+  |> SettingWorkerTool.addTransferControlToOffscreen;
+
+let prepareCanvas = sandbox => {
+  let context = _buildFakeContext(sandbox);
+
+  let base64Str1 = "data:aaa";
+  let base64Str2 = "data:bbb";
+
+  let canvas =
+    SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
+      sandbox,
+      _buildFakeCanvas(sandbox, context, (base64Str1, base64Str2)),
     );
+
+  (canvas, context, (base64Str1, base64Str2));
+};
