@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open SourceTextureType;
+
 open BasicSourceTextureType;
 
 let createBasicSourceTexture = state =>
@@ -96,7 +98,7 @@ let getBasicSourceTextureWrapS = (texture, state: StateDataMainType.state) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.getWrapS(texture, state);
+  OperateBasicSourceTextureMainService.getWrapS(texture, state) |> uint8ToWrap;
 
 let setBasicSourceTextureWrapS =
     (texture, wrapS, state: StateDataMainType.state) =>
@@ -115,7 +117,11 @@ let setBasicSourceTextureWrapS =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.setWrapS(texture, wrapS, state);
+  OperateBasicSourceTextureMainService.setWrapS(
+    texture,
+    wrapS |> wrapToUint8,
+    state,
+  );
 
 let getBasicSourceTextureWrapT = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -133,7 +139,7 @@ let getBasicSourceTextureWrapT = (texture, state: StateDataMainType.state) =>
          ),
        IsDebugMainService.getIsDebug(TtateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.getWrapT(texture, state);
+  OperateBasicSourceTextureMainService.getWrapT(texture, state) |> uint8ToWrap;
 
 let setBasicSourceTextureWrapT =
     (texture, wrapT, state: StateDataMainType.state) =>
@@ -152,7 +158,11 @@ let setBasicSourceTextureWrapT =
          ),
        IsDebugMainService.getIsDebug(TtateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.setWrapT(texture, wrapT, state);
+  OperateBasicSourceTextureMainService.setWrapT(
+    texture,
+    wrapT |> wrapToUint8,
+    state,
+  );
 
 let getBasicSourceTextureMagFilter = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -170,7 +180,8 @@ let getBasicSourceTextureMagFilter = (texture, state: StateDataMainType.state) =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.getMagFilter(texture, state);
+  OperateBasicSourceTextureMainService.getMagFilter(texture, state)
+  |> uint8ToFilter;
 
 let setBasicSourceTextureMagFilter =
     (texture, filter, state: StateDataMainType.state) =>
@@ -189,7 +200,11 @@ let setBasicSourceTextureMagFilter =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.setMagFilter(texture, filter, state);
+  OperateBasicSourceTextureMainService.setMagFilter(
+    texture,
+    filter |> filterToUint8,
+    state,
+  );
 
 let getBasicSourceTextureMinFilter = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -207,7 +222,8 @@ let getBasicSourceTextureMinFilter = (texture, state: StateDataMainType.state) =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.getMinFilter(texture, state);
+  OperateBasicSourceTextureMainService.getMinFilter(texture, state)
+  |> uint8ToFilter;
 
 let setBasicSourceTextureMinFilter =
     (texture, filter, state: StateDataMainType.state) =>
@@ -226,7 +242,11 @@ let setBasicSourceTextureMinFilter =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.setMinFilter(texture, filter, state);
+  OperateBasicSourceTextureMainService.setMinFilter(
+    texture,
+    filter |> filterToUint8,
+    state,
+  );
 
 let getBasicSourceTextureFormat = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(

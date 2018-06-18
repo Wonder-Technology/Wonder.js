@@ -3,8 +3,6 @@ open Js.Typed_array;
 let getTruckGeometryData = () => {
   let map = WonderCommonlib.HashMapService.createEmpty();
 
-  /* 1 */
-
   map
   |> WonderCommonlib.HashMapService.set(
        "Cesium_Milk_Truck_0",

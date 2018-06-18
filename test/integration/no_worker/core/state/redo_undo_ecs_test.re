@@ -201,14 +201,17 @@ let _ =
     let _prepareBasicSourceTextureData = state => {
       open BasicSourceTextureAPI;
       open Js.Typed_array;
+      open SourceTextureType;
       let (state, texture1) = createBasicSourceTexture(state);
       let (state, texture2) = createBasicSourceTexture(state);
       let (state, texture3) = createBasicSourceTexture(state);
       let state = AllMaterialTool.prepareForInit(state);
-      let state = state |> setBasicSourceTextureWrapS(texture2, 1);
-      let state = state |> setBasicSourceTextureWrapT(texture2, 1);
-      let state = state |> setBasicSourceTextureMagFilter(texture2, 1);
-      let state = state |> setBasicSourceTextureMinFilter(texture2, 1);
+      let state =
+        state |> setBasicSourceTextureWrapS(texture2, MIRRORED_REPEAT);
+      let state =
+        state |> setBasicSourceTextureWrapT(texture2, MIRRORED_REPEAT);
+      let state = state |> setBasicSourceTextureMagFilter(texture2, LINEAR);
+      let state = state |> setBasicSourceTextureMinFilter(texture2, LINEAR);
       let state = state |> setBasicSourceTextureType(texture2, 1);
       let state = state |> setBasicSourceTextureFormat(texture2, 2);
       (state, texture1, texture2, texture3);
@@ -216,16 +219,21 @@ let _ =
     let _prepareArrayBufferViewSourceTextureData = state => {
       open ArrayBufferViewSourceTextureAPI;
       open Js.Typed_array;
+      open SourceTextureType;
       let (state, texture1) = createArrayBufferViewSourceTexture(state);
       let (state, texture2) = createArrayBufferViewSourceTexture(state);
       let (state, texture3) = createArrayBufferViewSourceTexture(state);
       let state = AllMaterialTool.prepareForInit(state);
-      let state = state |> setArrayBufferViewSourceTextureWrapS(texture2, 1);
-      let state = state |> setArrayBufferViewSourceTextureWrapT(texture2, 1);
       let state =
-        state |> setArrayBufferViewSourceTextureMagFilter(texture2, 1);
+        state
+        |> setArrayBufferViewSourceTextureWrapS(texture2, MIRRORED_REPEAT);
       let state =
-        state |> setArrayBufferViewSourceTextureMinFilter(texture2, 1);
+        state
+        |> setArrayBufferViewSourceTextureWrapT(texture2, MIRRORED_REPEAT);
+      let state =
+        state |> setArrayBufferViewSourceTextureMagFilter(texture2, LINEAR);
+      let state =
+        state |> setArrayBufferViewSourceTextureMinFilter(texture2, LINEAR);
       let state = state |> setArrayBufferViewSourceTextureType(texture2, 1);
       let state = state |> setArrayBufferViewSourceTextureFormat(texture2, 2);
       let state = state |> setArrayBufferViewSourceTextureWidth(texture2, 2);
@@ -2445,7 +2453,7 @@ let _ =
             let currentState =
               BasicSourceTextureAPI.setBasicSourceTextureWrapT(
                 texture4,
-                1,
+                SourceTextureType.MIRRORED_REPEAT,
                 currentState,
               );
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
@@ -2561,7 +2569,7 @@ let _ =
             let currentState =
               ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT(
                 texture4,
-                1,
+                SourceTextureType.MIRRORED_REPEAT ,
                 currentState,
               );
             let currentState = AllMaterialTool.pregetGLSLData(currentState);

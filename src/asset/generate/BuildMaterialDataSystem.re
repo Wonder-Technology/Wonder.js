@@ -67,22 +67,22 @@ let _convertImageToBase64 = [%raw
 
     ctx.drawImage(image, 0, 0);
 
-    return  canvas.toDataURL();
+    return canvas.toDataURL();
     |}
 ];
 
-let _addSourceData = (texture, sourceMap, state, sourceBase64Arr) => {
+let _addImageData = (texture, imageMap, state, imageBase64Arr) => {
   let source =
     OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
 
-  switch (sourceMap |> SparseMapService.indexOf(source)) {
-  | sourceIndex when sourceIndex === (-1) =>
-    let sourceIndex = sourceBase64Arr |> Js.Array.length;
+  switch (imageMap |> SparseMapService.indexOf(source)) {
+  | imageIndex when imageIndex === (-1) =>
+    let imageIndex = imageBase64Arr |> Js.Array.length;
 
     (
-      sourceIndex,
-      sourceMap |> WonderCommonlib.SparseMapService.set(sourceIndex, source),
-      sourceBase64Arr
+      imageIndex,
+      imageMap |> WonderCommonlib.SparseMapService.set(imageIndex, source),
+      imageBase64Arr
       |> ArrayService.push(
            _convertImageToBase64(
              TextureSizeService.getWidth(source),
@@ -91,7 +91,7 @@ let _addSourceData = (texture, sourceMap, state, sourceBase64Arr) => {
            ),
          ),
     );
-  | sourceIndex => (sourceIndex, sourceMap, sourceBase64Arr)
+  | imageIndex => (imageIndex, imageMap, imageBase64Arr)
   };
 };
 
@@ -107,8 +107,8 @@ let build = (materialDataMap, state) => {
   );
 
   let (
-    (materialDataArr, textureDataArr, samplerDataArr, sourceBase64Arr),
-    (textureIndexMap, samplerIndexMap, sourceMap),
+    (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+    (textureIndexMap, samplerIndexMap, imageMap),
   ) =
     materialDataMap
     |> SparseMapService.reduceiValid(
@@ -118,9 +118,9 @@ let build = (materialDataMap, state) => {
                materialDataArr,
                textureDataArr,
                samplerDataArr,
-               sourceBase64Arr,
+               imageBase64Arr,
              ),
-             (textureIndexMap, samplerIndexMap, sourceMap),
+             (textureIndexMap, samplerIndexMap, imageMap),
            ),
            (lightMaterial, name),
            materialIndex,
@@ -157,9 +157,9 @@ let build = (materialDataMap, state) => {
                     ),
                  textureDataArr,
                  samplerDataArr,
-                 sourceBase64Arr,
+                 imageBase64Arr,
                ),
-               (textureIndexMap, samplerIndexMap, sourceMap),
+               (textureIndexMap, samplerIndexMap, imageMap),
              );
 
            | Some(diffuseMap) =>
@@ -179,9 +179,9 @@ let build = (materialDataMap, state) => {
                       ),
                    textureDataArr,
                    samplerDataArr,
-                   sourceBase64Arr,
+                   imageBase64Arr,
                  ),
-                 (textureIndexMap, samplerIndexMap, sourceMap),
+                 (textureIndexMap, samplerIndexMap, imageMap),
                )
 
              | None =>
@@ -202,12 +202,12 @@ let build = (materialDataMap, state) => {
                    samplerDataArr,
                  );
 
-               let (sourceIndex, sourceMap, sourceBase64Arr) =
-                 _addSourceData(
+               let (imageIndex, imageMap, imageBase64Arr) =
+                 _addImageData(
                    diffuseMap,
-                   sourceMap,
+                   imageMap,
                    state,
-                   sourceBase64Arr,
+                   imageBase64Arr,
                  );
 
                (
@@ -229,13 +229,13 @@ let build = (materialDataMap, state) => {
                               state,
                             ),
                           sampler: samplerIndex,
-                          source: sourceIndex,
+                          source: imageIndex,
                         }: GenerateSceneGraphType.textureData,
                       ),
                    samplerDataArr,
-                   sourceBase64Arr,
+                   imageBase64Arr,
                  ),
-                 (textureIndexMap, samplerIndexMap, sourceMap),
+                 (textureIndexMap, samplerIndexMap, imageMap),
                );
              }
            };
@@ -245,5 +245,5 @@ let build = (materialDataMap, state) => {
            ([||], WonderCommonlib.HashMapService.createEmpty(), [||]),
          ),
        );
-  (materialDataArr, textureDataArr, samplerDataArr, sourceBase64Arr);
+  (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr);
 };

@@ -19,7 +19,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
 
   let buffer = BuildBufferSystem.build(totalByteLength, meshPointDataMap);
 
-  let (materialDataArr, textureDataArr, samplerDataArr, sourceBase64Arr) =
+  let (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr) =
     BuildMaterialDataSystem.build(materialDataMap, state);
 
   /* TODO get cameraData */
@@ -34,7 +34,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
       materialDataArr,
       textureDataArr,
       samplerDataArr,
-      sourceBase64Arr,
+      imageBase64Arr,
     ),
     state,
   );

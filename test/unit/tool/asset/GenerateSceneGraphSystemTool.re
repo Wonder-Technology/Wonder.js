@@ -1,7 +1,7 @@
 open Js.Promise;
 
-let _emptyUriData = jsonStr =>
-  jsonStr |> Js.String.replaceByRe([%re {|/"uri"\:".+?"/img|}], {|"uri":""|});
+let _emptyBufferUriData = jsonStr =>
+  jsonStr |> Js.String.replaceByRe([%re {|/"buffers"\:\[\{"byteLength"\:(\d+),\"uri"\:".+?"/img|}], {|"buffers":[{"byteLength":$1,"uri":""|});
 
 let _contain = (targetJsonStr: string, wdJson: Js.Json.t) =>
   Wonder_jest.(
@@ -9,7 +9,7 @@ let _contain = (targetJsonStr: string, wdJson: Js.Json.t) =>
       Expect.Operators.(
         wdJson
         |> Js.Json.stringify
-        |> _emptyUriData
+        |> _emptyBufferUriData
         |> expect
         |> toContainString(
              targetJsonStr |> Js.String.replaceByRe([%re {|/\s/img|}], ""),

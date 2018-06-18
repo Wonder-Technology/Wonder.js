@@ -184,9 +184,9 @@ let _encodeSamplers = (samplerDataArr, state) => (
   |> jsonArray,
 );
 
-let _encodeSources = (sourceBase64Arr, state) => (
-  "sources",
-  sourceBase64Arr
+let _encodeImages = (imageBase64Arr, state) => (
+  "images",
+  imageBase64Arr
   |> Js.Array.map((base64Str: string) => {
        let list = [("uri", base64Str |> string)];
 
@@ -252,7 +252,7 @@ let encode =
         materialDataArr,
         textureDataArr,
         samplerDataArr,
-        sourceBase64Arr,
+        imageBase64Arr,
       ),
       state,
     ) =>
@@ -274,7 +274,7 @@ let encode =
     _encodeMaterials(materialDataArr, state),
     _encodeTextures(textureDataArr, state),
     _encodeSamplers(samplerDataArr, state),
-    _encodeSources(sourceBase64Arr, state),
+    _encodeImages(imageBase64Arr, state),
     (
       "buffers",
       [|

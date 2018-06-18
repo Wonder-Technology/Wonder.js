@@ -1,5 +1,7 @@
 open StateDataMainType;
 
+open SourceTextureType;
+
 open ArrayBufferViewSourceTextureType;
 
 let createArrayBufferViewSourceTexture = state =>
@@ -106,7 +108,8 @@ let getArrayBufferViewSourceTextureWrapS =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.getWrapS(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.getWrapS(texture, state)
+  |> uint8ToWrap;
 
 let setArrayBufferViewSourceTextureWrapS =
     (texture, wrapS, state: StateDataMainType.state) =>
@@ -127,7 +130,7 @@ let setArrayBufferViewSourceTextureWrapS =
      ); */
   OperateArrayBufferViewSourceTextureMainService.setWrapS(
     texture,
-    wrapS,
+    wrapS |> wrapToUint8,
     state,
   );
 
@@ -148,7 +151,8 @@ let getArrayBufferViewSourceTextureWrapT =
          ),
        IsDebugMainService.getIsDebug(TtateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.getWrapT(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.getWrapT(texture, state)
+  |> uint8ToWrap;
 
 let setArrayBufferViewSourceTextureWrapT =
     (texture, wrapT, state: StateDataMainType.state) =>
@@ -169,7 +173,7 @@ let setArrayBufferViewSourceTextureWrapT =
      ); */
   OperateArrayBufferViewSourceTextureMainService.setWrapT(
     texture,
-    wrapT,
+    wrapT |> wrapToUint8,
     state,
   );
 
@@ -190,7 +194,8 @@ let getArrayBufferViewSourceTextureMagFilter =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.getMagFilter(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.getMagFilter(texture, state)
+  |> uint8ToFilter;
 
 let setArrayBufferViewSourceTextureMagFilter =
     (texture, filter, state: StateDataMainType.state) =>
@@ -211,7 +216,7 @@ let setArrayBufferViewSourceTextureMagFilter =
      ); */
   OperateArrayBufferViewSourceTextureMainService.setMagFilter(
     texture,
-    filter,
+    filter |> filterToUint8,
     state,
   );
 
@@ -232,7 +237,8 @@ let getArrayBufferViewSourceTextureMinFilter =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.getMinFilter(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.getMinFilter(texture, state)
+  |> uint8ToFilter;
 
 let setArrayBufferViewSourceTextureMinFilter =
     (texture, filter, state: StateDataMainType.state) =>
@@ -253,7 +259,7 @@ let setArrayBufferViewSourceTextureMinFilter =
      ); */
   OperateArrayBufferViewSourceTextureMainService.setMinFilter(
     texture,
-    filter,
+    filter |> filterToUint8,
     state,
   );
 

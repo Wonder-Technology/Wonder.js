@@ -113,7 +113,7 @@ let _ =
     describe("setBasicSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = 1;
+        let wrap = SourceTextureType.MIRRORED_REPEAT;
         let state = state |> setBasicSourceTextureWrapS(texture, wrap);
         getBasicSourceTextureWrapS(texture, state) |> expect == wrap;
       })
@@ -121,7 +121,7 @@ let _ =
     describe("setBasicSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = 1;
+        let wrap = SourceTextureType.MIRRORED_REPEAT;
         let state = state |> setBasicSourceTextureWrapT(texture, wrap);
         getBasicSourceTextureWrapT(texture, state) |> expect == wrap;
       })
@@ -129,7 +129,7 @@ let _ =
     describe("setBasicSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = 1;
+        let filter = SourceTextureType.LINEAR;
         let state = state |> setBasicSourceTextureMagFilter(texture, filter);
         getBasicSourceTextureMagFilter(texture, state) |> expect == filter;
       })
@@ -137,7 +137,7 @@ let _ =
     describe("setBasicSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = 1;
+        let filter = SourceTextureType.LINEAR;
         let state = state |> setBasicSourceTextureMinFilter(texture, filter);
         getBasicSourceTextureMinFilter(texture, state) |> expect == filter;
       })

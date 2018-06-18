@@ -99,7 +99,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let wrap = 1;
+        let wrap = SourceTextureType.MIRRORED_REPEAT;
         let state =
           state |> setArrayBufferViewSourceTextureWrapS(texture, wrap);
         getArrayBufferViewSourceTextureWrapS(texture, state) |> expect == wrap;
@@ -108,7 +108,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let wrap = 1;
+        let wrap = SourceTextureType.MIRRORED_REPEAT;
         let state =
           state |> setArrayBufferViewSourceTextureWrapT(texture, wrap);
         getArrayBufferViewSourceTextureWrapT(texture, state) |> expect == wrap;
@@ -117,7 +117,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let filter = 1;
+        let filter = SourceTextureType.LINEAR;
         let state =
           state |> setArrayBufferViewSourceTextureMagFilter(texture, filter);
         getArrayBufferViewSourceTextureMagFilter(texture, state)
@@ -127,7 +127,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let filter = 1;
+        let filter = SourceTextureType.LINEAR;
         let state =
           state |> setArrayBufferViewSourceTextureMinFilter(texture, filter);
         getArrayBufferViewSourceTextureMinFilter(texture, state)
@@ -158,7 +158,8 @@ let _ =
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
         let state =
           state |> setArrayBufferViewSourceTextureFlipY(texture, false);
-        getArrayBufferViewSourceTextureFlipY(texture, state) |> expect == false;
+        getArrayBufferViewSourceTextureFlipY(texture, state)
+        |> expect == false;
       })
     );
   });
