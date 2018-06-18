@@ -66,8 +66,11 @@ let _ =
           (state, geometry);
         };
         let _prepareWithMap = (sandbox, state) => {
-          let (state, gameObject, geometry, _, _) =
-            FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+          let (state, _, geometry, _, _, _) =
+            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
+              sandbox,
+              state,
+            );
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
           (state, geometry);
         };
@@ -91,6 +94,7 @@ let _ =
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           let points = getGeometryPointsFunc(state);
+          /* WonderLog.Log.print(points) |> ignore; */
           bufferData
           |> withThreeArgs(array_buffer, points, static_draw)
           |> expect
@@ -154,118 +158,127 @@ let _ =
           test("bufferData", () =>
             _prepareForBufferData(
               state,
-              (BoxGeometryAPI.getBoxGeometryVertices, _prepareWithMap),
+              (BoxGeometryAPI.getBoxGeometryTexCoords, _prepareWithMap),
             )
           )
         );
         describe("init normal buffer", () =>
           describe("bufferData", () => {
-            describe("if not has normals", () => {
-              open Js.Typed_array;
+            test("boxGeometry", () =>
+              _prepareForBufferData(
+                state,
+                (BoxGeometryAPI.getBoxGeometryNormals, _prepareWithMap),
+              )
+            );
 
-              let _prepare = (sandbox, state) => {
-                open CustomGeometryAPI;
-                let (state, geometry) = createCustomGeometry(state);
-                let state =
-                  state
-                  |> setCustomGeometryVertices(
-                       geometry,
-                       Float32Array.make([|
-                         1.,
-                         (-1.),
-                         0.,
-                         0.,
-                         1.,
-                         0.,
-                         0.,
-                         0.,
-                         1.,
-                         2.,
-                         3.,
-                         (-2.),
-                       |]),
-                     )
-                  |> setCustomGeometryIndices(
-                       geometry,
-                       Uint16Array.make([|0, 2, 1, 2, 3, 1|]),
-                     );
+            describe("test customGeometry", () => {
+              describe("if not has normals", () => {
+                open Js.Typed_array;
 
-                let (state, gameObject, geometry, _, _) =
-                  FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
-                    sandbox,
-                    geometry,
-                    GameObjectAPI.addGameObjectCustomGeometryComponent,
-                    state,
-                  );
-                let (state, _, _, _) =
-                  CameraTool.createCameraGameObject(state);
-                (state, geometry);
-              };
+                let _prepare = (sandbox, state) => {
+                  open CustomGeometryAPI;
+                  let (state, geometry) = createCustomGeometry(state);
+                  let state =
+                    state
+                    |> setCustomGeometryVertices(
+                         geometry,
+                         Float32Array.make([|
+                           1.,
+                           (-1.),
+                           0.,
+                           0.,
+                           1.,
+                           0.,
+                           0.,
+                           0.,
+                           1.,
+                           2.,
+                           3.,
+                           (-2.),
+                         |]),
+                       )
+                    |> setCustomGeometryIndices(
+                         geometry,
+                         Uint16Array.make([|0, 2, 1, 2, 3, 1|]),
+                       );
 
-              let _getComputedNormals = () =>
-                Float32Array.make([|
-                  (-0.8164966106414795),
-                  (-0.40824830532073975),
-                  (-0.40824830532073975),
-                  (-0.8164966106414795),
-                  0.40824830532073975,
-                  0.40824830532073975,
-                  (-0.8164966106414795),
-                  0.40824830532073975,
-                  0.40824830532073975,
-                  0.,
-                  0.7071067690849304,
-                  0.7071067690849304,
-                |]);
-
-              test("compute vertex normals", () =>
-                Js.Typed_array.(
-                  CustomGeometryAPI.(
-                    _prepareForBufferData(
+                  let (state, gameObject, geometry, _, _) =
+                    FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                      sandbox,
+                      geometry,
+                      GameObjectAPI.addGameObjectCustomGeometryComponent,
                       state,
-                      (_ => _getComputedNormals(), _prepare),
+                    );
+                  let (state, _, _, _) =
+                    CameraTool.createCameraGameObject(state);
+                  (state, geometry);
+                };
+
+                let _getComputedNormals = () =>
+                  Float32Array.make([|
+                    (-0.8164966106414795),
+                    (-0.40824830532073975),
+                    (-0.40824830532073975),
+                    (-0.8164966106414795),
+                    0.40824830532073975,
+                    0.40824830532073975,
+                    (-0.8164966106414795),
+                    0.40824830532073975,
+                    0.40824830532073975,
+                    0.,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                  |]);
+
+                test("compute vertex normals", () =>
+                  Js.Typed_array.(
+                    CustomGeometryAPI.(
+                      _prepareForBufferData(
+                        state,
+                        (_ => _getComputedNormals(), _prepare),
+                      )
                     )
+                  )
+                );
+                test("only buffer data once", () => {
+                  let (state, geometry) = _prepare(sandbox, state^);
+                  let array_buffer = 1;
+                  let static_draw = 2;
+                  let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(
+                           ~sandbox,
+                           ~array_buffer,
+                           ~static_draw,
+                           ~bufferData,
+                           (),
+                         ),
+                       );
+
+                  let state =
+                    state
+                    |> RenderJobsTool.init
+                    |> DirectorTool.runWithDefaultTime;
+                  let state = state |> DirectorTool.runWithDefaultTime;
+
+                  let points = _getComputedNormals();
+                  bufferData
+                  |> withThreeArgs(array_buffer, points, static_draw)
+                  |> expect
+                  |> toCalledOnce;
+                });
+              });
+              describe("else", () =>
+                test("test", () =>
+                  _prepareForBufferData(
+                    state,
+                    (BoxGeometryAPI.getBoxGeometryVertices, _prepare),
                   )
                 )
               );
-              test("only buffer data once", () => {
-                let (state, geometry) = _prepare(sandbox, state^);
-                let array_buffer = 1;
-                let static_draw = 2;
-                let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(
-                         ~sandbox,
-                         ~array_buffer,
-                         ~static_draw,
-                         ~bufferData,
-                         (),
-                       ),
-                     );
-
-                let state =
-                  state
-                  |> RenderJobsTool.init
-                  |> DirectorTool.runWithDefaultTime;
-                let state = state |> DirectorTool.runWithDefaultTime;
-
-                let points = _getComputedNormals();
-                bufferData
-                |> withThreeArgs(array_buffer, points, static_draw)
-                |> expect
-                |> toCalledOnce;
-              });
             });
-            describe("else", () =>
-              test("test", () =>
-                _prepareForBufferData(
-                  state,
-                  (BoxGeometryAPI.getBoxGeometryVertices, _prepare),
-                )
-              )
-            );
           })
         );
         describe("init index buffer", () => {

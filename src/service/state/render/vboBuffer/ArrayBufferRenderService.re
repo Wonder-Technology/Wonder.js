@@ -23,12 +23,3 @@ let getOrCreateBuffer = (gl, (geometryIndex, bufferMap), getDataFunc, state) =>
     (createBuffer, getDataFunc),
     state,
   );
-
-let getOrCreateNormalBuffer =
-    (gl, (geometryIndex, bufferMap), state) =>
-  GetVboBufferRenderService.getOrCreateNormalBuffer(
-    gl,
-    (geometryIndex, bufferMap),
-    createBuffer,
-    state,
-  );
