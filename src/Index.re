@@ -4,6 +4,10 @@ let assembleWD = AssembleWDAPI.assembleWD;
 
 let convertGLTFToWD = ConverterAPI.convertGLTFToWD;
 
+let generateEmbededWD = GenerateSceneGraphAPI.generateEmbededWD;
+
+let generateEmbededGLTF = GenerateSceneGraphAPI.generateEmbededGLTF;
+
 let loadToData = LoaderManagerAPI.loadToData;
 
 let load = LoaderManagerAPI.load;

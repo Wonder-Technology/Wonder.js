@@ -32,6 +32,21 @@
     <script src="./gltfTool.js"></script>
 
     <script>
+        function _disposeAll(gameObject, state) {
+            function _getAllChildren(gameObject, state, childrenArr) {
+                return wd.unsafeGetTransformChildren(
+                    wd.unsafeGetGameObjectTransformComponent(gameObject, state),
+                    state
+                ).reduce((childrenArr, child) => {
+                    childrenArr.push(child);
+
+                    return _getAllChildren(child, state, childrenArr);
+                }, childrenArr);
+            }
+
+            return wd.batchDisposeGameObject(_getAllChildren(gameObject, state, []), state)
+        };
+
         window.onload = function () {
 
             ReplaceFetchTool.replaceFetchForTest();
@@ -46,34 +61,129 @@
 
 
                 image1.onload = function () {
-                    // var image2 = new Image();
-                    // image2.src = "./2.jpg";
+                    var image2 = new Image();
+                    image2.src = "./2.jpg";
 
-                    // image2.onload = function () {
-                    return initSample(image1, wd.unsafeGetState());
-                    // }
+                    image2.onload = function () {
+                        var state = wd.unsafeGetState();
+
+
+                        var record = wd.createBasicSourceTexture(state)
+                        var state = record[0];
+                        var texture1 = record[1];
+
+                        var state = wd.setBasicSourceTextureSource(texture1, image1, state);
+
+
+
+                        var record = wd.createBasicSourceTexture(state)
+                        var state = record[0];
+                        var texture2 = record[1];
+
+                        var state = wd.setBasicSourceTextureSource(texture2, image2, state);
+
+
+
+                        return initSample(texture1, texture2, wd.unsafeGetState());
+                    }
                 }
             });
 
 
 
 
+            function _createLightsAndCamera(isCreateCamera, state) {
+                var record = LightTool.createAmbientLight(state);
+                var state = record[0];
+
+
+
+                var record = LightTool.createDirectionLight(state);
+                var state = record[0];
+                var directionLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+                var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+                // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                if (isCreateCamera) {
+
+                    var data = LightBoxesTool.createCamera(state);
+                    var state = data[0];
+                    var camera = data[1];
+
+
+                    var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                    // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
+                    state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
+
+                    state =
+                        wd.setCurrentCameraGameObject(
+                            camera, state
+                        );
+                }
+
+                return state
+            }
+
+
+            function _testGenerateEmbededWDByGLTF(gltf, state$) {
+                wd.convertGLTFToWD(gltf)
+                    .forEach((wdData) => {
+                        var record = wd.assembleWD(wdData, state$);
+                        var state = record[0];
+                        var sceneGameObject = record[1];
+
+                        var record = wd.generateEmbededWD(sceneGameObject, state)
+                            .then(([state, wdData]) => {
+
+
+                                // var state = record[0];
+                                // var wdData = record[1];
+
+                                var state =
+                                    _disposeAll(sceneGameObject, state);
+
+
+                                var record = wd.assembleWD(wdData, state);
+                                var state = record[0];
+                                // var sceneGameObject$ = record[1];
+
+
+
+                                var state = _createLightsAndCamera(true, state);
+
+
+                                wd.startDirector(state);
+
+                            })
+
+                    });
+            }
 
 
 
 
 
-            function initSample(image1, state$) {
+            function _testAssembleWD(gltf, state$) {
                 console.profile("convert");
                 var n0 = performance.now();
 
-                // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())
-                // wd.convertGLTFToWD(getGLTFJsonOfDuck())
-                    // wd.convertGLTFToWD(getGLTFJsonOfTruck())
-                    wd.convertGLTFToWD(getGLTFJsonOfVC())
-                    // wd.convertGLTFToWD(getGLTFJsonOfCamera())
-                    // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
-                    // wd.convertGLTFToWD(getGLTFJsonOfTest())
+                wd.convertGLTFToWD(gltf)
                     .forEach((wdData) => {
 
                         var state = state$;
@@ -111,46 +221,7 @@
 
 
 
-                        var record = LightTool.createAmbientLight(state);
-                        var state = record[0];
-
-
-
-                        var record = LightTool.createDirectionLight(state);
-                        var state = record[0];
-                        var directionLightObj = record[1];
-
-
-
-                        var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
-
-                        state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-                        var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
-
-                        var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
-
-
-
-                        // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
-
-
-                        var data = LightBoxesTool.createCamera(state);
-                        var state = data[0];
-                        var camera = data[1];
-
-
-                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
-
-                        // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
-                        var state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
-
-                        var state =
-                            wd.setCurrentCameraGameObject(
-                                camera, state
-                            );
+                        var state = _createLightsAndCamera(true, state);
 
 
                         wd.startDirector(state);
@@ -160,7 +231,30 @@
                         // console.profileEnd();
 
                     });
+            }
 
+
+
+
+            function initSample(map1, map2, state$) {
+                // wd.convertGLTFToWD(getGLTFJsonOfVC())
+                // wd.convertGLTFToWD(getGLTFJsonOfCamera())
+                // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
+                // wd.convertGLTFToWD(getGLTFJsonOfTest())
+                // wd.convertGLTFToWD(getGLTFJsonOfDuck())
+
+                _testGenerateEmbededWDByGLTF(getGLTFJsonOfTruck(), state$);
+
+
+
+
+                // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())
+                // wd.convertGLTFToWD(getGLTFJsonOfDuck())
+                // wd.convertGLTFToWD(getGLTFJsonOfTruck())
+                // wd.convertGLTFToWD(getGLTFJsonOfCamera())
+                // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
+                // wd.convertGLTFToWD(getGLTFJsonOfTest())
+                // _testAssembleWD(getGLTFJsonOfDuck(), state$);
             }
 
         };
