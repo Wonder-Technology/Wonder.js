@@ -25,42 +25,67 @@ let _addDefaultMaterial = ({materials} as gltf: GLTFType.gltf) => {
   (defaultMaterialIndex, {...gltf, materials});
 };
 
-let _isNotHasMaterial = ({primitives}: GLTFType.mesh) =>
+let _isNeedAddDefaultMaterialByJudgeMesh = (mesh, meshes) => {
+  let {primitives}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
+
   ConvertCommon.getPrimitiveData(primitives).material |> Js.Option.isNone;
+};
+
+let _isNeedAddDefaultMaterial = ({extension, mesh}: GLTFType.node, meshes) =>
+  switch (mesh) {
+  | Some(mesh) =>
+    switch (extension) {
+    | Some({material}) =>
+      switch (material) {
+      | None => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
+      | Some(_) => false
+      }
+    | None => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
+    }
+  | None => false
+  };
 
 let _setDefaultMaterial =
-    ((defaultMaterialIndex, {meshes} as gltf: GLTFType.gltf)) => {
+    ((defaultMaterialIndex, {nodes, meshes} as gltf: GLTFType.gltf)) => {
   ...gltf,
-  meshes:
-    meshes
+  nodes:
+    nodes
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. newMeshes, mesh) =>
-           _isNotHasMaterial(mesh) ?
-             newMeshes
+         (. newNodes, ({extension}: GLTFType.node) as node) =>
+           _isNeedAddDefaultMaterial(node, meshes) ?
+             newNodes
              |> ArrayService.push(
                   {
-                    ...mesh,
-                    primitives: [|
-                      {
-                        ...ConvertCommon.getPrimitiveData(mesh.primitives),
-                        material: Some(defaultMaterialIndex),
+                    ...node,
+                    extension:
+                      switch (extension) {
+                      | None => Some({material: Some(defaultMaterialIndex)})
+                      | Some(extension) =>
+                        Some({
+                          ...extension,
+                          material: Some(defaultMaterialIndex),
+                        })
                       },
-                    |],
-                  }: GLTFType.mesh,
+                  }: GLTFType.node,
                 ) :
-             newMeshes |> ArrayService.push(mesh),
+             newNodes |> ArrayService.push(node),
          [||],
        ),
 };
 
-let convert = ({materials, meshes} as gltf: GLTFType.gltf) : GLTFType.gltf => {
-  let notHasMaterial =
-    meshes
+let convert =
+    ({materials, nodes, meshes} as gltf: GLTFType.gltf)
+    : GLTFType.gltf => {
+  let isNeedAddDefaultMaterial =
+    nodes
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. notHasMaterial, mesh) =>
-           notHasMaterial ? notHasMaterial : _isNotHasMaterial(mesh),
+         (. isNeedAddDefaultMaterial, node) =>
+           isNeedAddDefaultMaterial ?
+             isNeedAddDefaultMaterial :
+             _isNeedAddDefaultMaterial(node, meshes),
          false,
        );
 
-  notHasMaterial ? _addDefaultMaterial(gltf) |> _setDefaultMaterial : gltf;
+  isNeedAddDefaultMaterial ?
+    _addDefaultMaterial(gltf) |> _setDefaultMaterial : gltf;
 };
