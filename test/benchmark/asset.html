@@ -141,7 +141,7 @@
             }
 
 
-            function _testGenerateEmbededWDByGLTF(gltf, state$) {
+            function _testGenerateEmbededWDByGLTF(gltf, isCreateCamera, state$) {
                 wd.convertGLTFToWD(gltf)
                     .forEach((wdData) => {
                         var record = wd.assembleWD(wdData, state$);
@@ -165,7 +165,7 @@
 
 
 
-                                var state = _createLightsAndCamera(true, state);
+                                var state = _createLightsAndCamera(isCreateCamera, state);
 
 
                                 wd.startDirector(state);
@@ -207,12 +207,28 @@
 
                 var sceneGameObjectTransform = wd.unsafeGetGameObjectTransformComponent(sceneGameObject, state);
 
-                var state = newBoxes.reduce((state, box) => {
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
+
+
+
+
+                var gameObjects = newBoxes.concat([camera]);
+
+                var state = gameObjects.reduce((state, box) => {
                     return wd.setTransformParent(
                         sceneGameObjectTransform, wd.unsafeGetGameObjectTransformComponent(box, state),
                         state
                     );
                 }, state);
+
 
 
 
@@ -228,21 +244,6 @@
 
 
                         var state = _createLightsAndCamera(false, state);
-
-
-                        var data = LightBoxesTool.createCamera(state);
-                        var state = data[0];
-                        var camera = data[1];
-
-
-                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
-
-                        state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
-
-                        state =
-                            wd.setCurrentCameraGameObject(
-                                camera, state
-                            );
 
 
 
@@ -318,7 +319,13 @@
                 // wd.convertGLTFToWD(getGLTFJsonOfTest())
                 // wd.convertGLTFToWD(getGLTFJsonOfDuck())
 
-                // _testGenerateEmbededWDByGLTF(getGLTFJsonOfTruck(), state$);
+                // _testGenerateEmbededWDByGLTF(
+                //     // getGLTFJsonOfTruck(),
+                //     getGLTFJsonOfDuck(),
+                //     false,
+                //     // true,
+
+                //     state$);
 
 
                 _testGenerateEmbededWDByGameObject(map1, map2, state$);
