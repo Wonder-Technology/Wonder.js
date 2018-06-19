@@ -599,7 +599,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           sceneGameObject,
           {j|
-              "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"TEXCOORD_0":5,"POSITION":3,"NORMAL":4},"indices":6}]},{"primitives":[{"attributes":{"TEXCOORD_0":9,"POSITION":7,"NORMAL":8},"indices":10}]}]
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]},{"primitives":[{"attributes":{"POSITION":7,"NORMAL":8,"TEXCOORD_0":9},"indices":10}]}]
                 |j},
           state,
         );
@@ -854,7 +854,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           sceneGameObject,
           {j|
-              "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"TEXCOORD_0":5,"POSITION":3,"NORMAL":4},"indices":6}]}]
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
                 |j},
           state,
         );
@@ -1034,7 +1034,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           sceneGameObject,
           {j|
-                "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"TEXCOORD_0":5,"POSITION":3,"NORMAL":4},"indices":6}]}]
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
                 |j},
           state,
         );

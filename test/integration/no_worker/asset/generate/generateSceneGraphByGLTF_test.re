@@ -143,55 +143,10 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-          {| "meshes": [
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "TEXCOORD_0": 2,
-            "POSITION": 0,
-            "NORMAL": 1
-          },
-          "indices": 3
-        }
-      ]
-    },
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "TEXCOORD_0": 6,
-            "POSITION": 4,
-            "NORMAL": 5
-          },
-          "indices": 7
-        }
-      ]
-    },
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "POSITION": 8,
-            "NORMAL": 9
-          },
-          "indices": 10
-        }
-      ]
-    },
-    {
-      "primitives": [
-        {
-          "attributes": {
-            "POSITION": 11,
-            "NORMAL": 12
-          },
-          "indices": 13
-        }
-      ]
-    }
-  ]
-|},
+          {| 
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]},{"primitives":[{"attributes":{"POSITION":8,"NORMAL":9},"indices":10}]},{"primitives":[{"attributes":{"POSITION":11,"NORMAL":12},"indices":13}]}]
+          
+          |},
           state,
         );
       });
@@ -354,9 +309,35 @@ let _ =
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
-          ConvertGLTFTool.buildGLTFJsonOfCamera(),
+          ConvertGLTFTool.buildGLTFJsonOfCameras(),
           {|
-            "nodes":[{"name":"gameObject_0","children":[1,2],"mesh":0,"camera":0,"extension":{"material":0}},{"name":"gameObject_1","translation":[10,30,50],"mesh":0,"camera":1,"extension":{"material":0}},{"name":"gameObject_2","mesh":0,"extension":{"material":0}}]
+            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extension":{"material":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
+            |},
+          state,
+        );
+      });
+
+      testPromise("test meshes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          {|
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0},"indices":1}]
+            |},
+          state,
+        );
+      });
+
+      testPromise("test accessors and bufferViews", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          {|
+            "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":48},{"buffer":0,"byteOffset":48,"byteLength":12}],
+
+            "accessors":[{"bufferView":0,"componentType":5126,"count":4,"type":"VEC3"},{"bufferView":1,"componentType":5123,"count":6,"type":"SCALAR"}]
             |},
           state,
         );
@@ -366,9 +347,9 @@ let _ =
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
-          ConvertGLTFTool.buildGLTFJsonOfCamera(),
+          ConvertGLTFTool.buildGLTFJsonOfCameras(),
           {|
-            "cameras":[{"type":"perspective","perspective":{"znear":2,"zfar":1000,"yfov":0.5,"aspectRatio":2}},{"type":"perspective","perspective":{"znear":1,"zfar":10000,"yfov":0.5999999999999999,"aspectRatio":1.5}}]
+            "cameras":[{"type":"perspective","perspective":{"znear":0.01,"zfar":100,"yfov":0.7,"aspectRatio":1}}]
             |},
           state,
         );

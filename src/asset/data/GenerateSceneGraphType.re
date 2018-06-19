@@ -13,7 +13,7 @@ type nodeData = {
 
 type attributes = {
   position: int,
-  normal: int,
+  normal: option(int),
   texCoord_0: option(int),
 };
 

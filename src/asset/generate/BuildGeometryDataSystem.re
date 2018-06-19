@@ -6,12 +6,12 @@ let _addBufferViewData =
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
     ) =>
   switch (pointsLength) {
-  | 0 => ((-1), accessorDataArr, bufferViewDataArr, bufferViewOffset)
+  | 0 => (None, accessorDataArr, bufferViewDataArr, bufferViewOffset)
   | _ =>
     let bufferViewByteLength = pointsLength * bytes_per_element;
 
     (
-      accessorDataArr |> Js.Array.length,
+      accessorDataArr |> Js.Array.length |. Some,
       accessorDataArr
       |> ArrayService.push({
            bufferView: bufferViewDataArr |> Js.Array.length,
@@ -175,15 +175,15 @@ let build = meshPointDataMap => {
                     {
                       primitives: {
                         attributes: {
-                          position: vertexIndex,
+                          position: vertexIndex |> OptionService.unsafeGet,
                           normal: normalIndex,
                           texCoord_0:
                             switch (texCoords) {
                             | None => None
-                            | Some(_) => Some(texCoordIndex)
+                            | Some(_) => texCoordIndex
                             },
                         },
-                        indices: indexIndex,
+                        indices: indexIndex |> OptionService.unsafeGet,
                         material: None,
                       },
                       name: None,

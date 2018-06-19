@@ -227,20 +227,25 @@ let _encodeMeshes = (meshDataArr, state) => (
 
        let {position, normal, texCoord_0}: attributes = attributes;
 
-       let attributesList = [
-         ("POSITION", position |> int),
-         ("NORMAL", normal |> int),
-       ];
+       let attributesList = [("POSITION", position |> int)];
+
+       let attributesList =
+         switch (normal) {
+         | None => attributesList
+         | Some(normal) => [("NORMAL", normal |> int), ...attributesList]
+         };
 
        let attributesList =
          switch (texCoord_0) {
          | None => attributesList
-         | Some(texCoord_0) =>
-           attributesList |> List.append([("TEXCOORD_0", texCoord_0 |> int)])
+         | Some(texCoord_0) => [
+             ("TEXCOORD_0", texCoord_0 |> int),
+             ...attributesList,
+           ]
          };
 
        let primitivesList = [
-         ("attributes", attributesList |> object_),
+         ("attributes", attributesList |> List.rev |> object_),
          ("indices", indices |> int),
        ];
 
