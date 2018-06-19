@@ -1,14 +1,8 @@
 open Js.Promise;
 
-let assembleWD = (wdDataTuple, state) =>
-  AssembleWDSystem.assemble(wdDataTuple, state);
+let assembleWD = (wdRecord, state) =>
+  AssembleWDSystem.assemble(wdRecord, state);
 
-let assembleGLTF = (gltfFileContent: string, state) => {
-  let data = ref(Obj.magic(1));
+let assembleGLTF = (gltfFileContent: string, state) =>
   ConvertGLTFSystem.convert(gltfFileContent)
-  |> Most.forEach(wdData => {
-       data := AssembleWDSystem.assemble(wdData, state);
-       ();
-     })
-  |> then_(() => data^ |> resolve);
-};
+  |. AssembleWDSystem.assemble(state);

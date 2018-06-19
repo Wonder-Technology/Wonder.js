@@ -65,21 +65,15 @@ let convert = (gltfFileContent: string) => {
     ConvertGLTFJsonToRecordSystem.convert(
       gltfFileContent |> Js.Json.parseExn,
     );
-  ConvertImagesSystem.buildImageArray(gltf)
-  |> then_(imageArr =>
-       (
-         _convertGLTFToWD(gltf),
-         imageArr,
-         ConvertBuffersSystem.buildBufferArray(gltf),
-       )
-       |> resolve
-     )
-  |> Most.fromPromise;
-  /* |> Most.map(imageArr =>
-       (
-         _convertGLTFToWD(gltf),
-         imageArr,
-         ConvertBuffersSystem.buildBufferArray(gltf),
-       )
-     ); */
+  /* ConvertImagesSystem.buildImageArray(gltf)
+     |> then_(imageArr =>
+          (
+            _convertGLTFToWD(gltf),
+            imageArr,
+            ConvertBuffersSystem.buildBufferArray(gltf),
+          )
+          |> resolve
+        )
+     |> Most.fromPromise; */
+  _convertGLTFToWD(gltf);
 };

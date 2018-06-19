@@ -1246,15 +1246,25 @@ let buildFakeLoadImage = [%bs.raw
 ];
 
 let testResult = (gltfJson, testFunc) => {
+  /* open Js.Promise;
+     let data = ref(Obj.magic(1));
+     buildFakeLoadImage();
+     ConvertGLTFSystem.convert(gltfJson)
+     |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
+          data := (wdRecord, imageArr, bufferArr);
+          ();
+        })
+     |> then_(() => testFunc(data^) |> resolve); */
+
   open Js.Promise;
   let data = ref(Obj.magic(1));
   buildFakeLoadImage();
-  ConvertGLTFSystem.convert(gltfJson)
-  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
-       data := (wdRecord, imageArr, bufferArr);
-       ();
-     })
-  |> then_(() => testFunc(data^) |> resolve);
+  ConvertGLTFSystem.convert(gltfJson) |> testFunc;
+  /* |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
+          data := (wdRecord, imageArr, bufferArr);
+          ();
+        })
+     |> then_(() => testFunc(data^) |> resolve); */
 };
 
 let getDefaultDiffuseColor = () => [|1., 1., 1.|];

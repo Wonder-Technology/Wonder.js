@@ -8,6 +8,8 @@ let generateEmbededWD = GenerateSceneGraphAPI.generateEmbededWD;
 
 let generateEmbededGLTF = GenerateSceneGraphAPI.generateEmbededGLTF;
 
+let loadWD = LoaderManagerAPI.loadWD;
+
 let loadToData = LoaderManagerAPI.loadToData;
 
 let load = LoaderManagerAPI.load;

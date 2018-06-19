@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>run test</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                return AssetTool.loadWD("./cameras.wd", function ([state, gameObject]) {
+                    return initSample(state, gameObject);
+                });
+            });
+
+
+            function _createLightsAndCamera(isCreateCamera, state) {
+                var record = LightTool.createAmbientLight(state);
+                var state = record[0];
+
+
+
+                var record = LightTool.createDirectionLight(state);
+                var state = record[0];
+                var directionLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+                var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+                if (isCreateCamera) {
+
+                    var data = LightBoxesTool.createCamera(state);
+                    var state = data[0];
+                    var camera = data[1];
+
+
+                    var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                    state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
+
+                    state =
+                        wd.setCurrentCameraGameObject(
+                            camera, state
+                        );
+                }
+
+                return state
+            }
+
+            function initSample(state, gameObject) {
+                var state = _createLightsAndCamera(false, state);
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>

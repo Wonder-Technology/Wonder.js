@@ -10,6 +10,17 @@ var AssetTool = (function () {
                     return completeFunc()
                 }
             })
+        },
+
+        loadWD: function (wdPath, testFunc) {
+            return wd.loadWD(wdPath).forEach(function ([state, gameObject]) {
+                testFunc([state, gameObject])
+            })
+            // .then(function () {
+            //     if (!!completeFunc) {
+            //         return completeFunc()
+            //     }
+            // })
         }
     }
 })()

@@ -248,10 +248,10 @@ let _ =
       });
 
       describe("test convert to wd", () => {
-        testPromise("test customGeometrys", () =>
+        test("test customGeometrys", () =>
           _test(
             ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
-            (({customGeometrys}, _, _)) =>
+            ({customGeometrys}) =>
             customGeometrys
             |>
             expect == [|
@@ -279,10 +279,10 @@ let _ =
         );
 
         describe("test gameObjects", () =>
-          testPromise("test count", () =>
+          test("test count", () =>
             _test(
               ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
-              (({gameObjects}, _, _)) =>
+              ({gameObjects}) =>
               gameObjects.count |> expect == 7
             )
           )
@@ -291,11 +291,11 @@ let _ =
         describe("test indices", () =>
           describe("test gameObjectIndices", () =>
             describe("test geometryGameObjectIndices", () =>
-              testPromise(
+              test(
                 "test multi primitives geometry should has no gameObject", () =>
                 _test(
                   ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
-                  (({indices}, _, _)) =>
+                  ({indices}) =>
                   indices.gameObjectIndices.customGeometryGameObjectIndexData
                   |>
                   expect == {
@@ -311,10 +311,8 @@ let _ =
     });
 
     describe("test set default material", () => {
-      testPromise("test default lightMaterial", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfCameras(),
-          (({lightMaterials}, _, _)) =>
+      test("test default lightMaterial", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfCameras(), ({lightMaterials}) =>
           lightMaterials
           |>
           expect == [|
@@ -325,10 +323,8 @@ let _ =
                     |]
         )
       );
-      testPromise("test customGeometrys", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfCameras(),
-          (({customGeometrys}, _, _)) =>
+      test("test customGeometrys", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfCameras(), ({customGeometrys}) =>
           customGeometrys
           |>
           expect == [|
@@ -342,37 +338,33 @@ let _ =
         )
       );
 
-      testPromise(
-        "test default material's lightMaterialGameObjectIndexData", () =>
-        _test(ConvertGLTFTool.buildGLTFJsonOfCameras(), (({indices}, _, _)) =>
+      test("test default material's lightMaterialGameObjectIndexData", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfCameras(), ({indices}) =>
           indices.gameObjectIndices.lightMaterialGameObjectIndexData
           |> expect == ConvertGLTFTool.buildComponentIndexData([|0|], [|0|])
         )
       );
     });
 
-    testPromise("test asset", () =>
-      _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({asset}, _, _)) =>
+    test("test asset", () =>
+      _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({asset}) =>
         asset |> expect == {version: "2.0", generator: "GLTF2WD"}
       )
     );
-    testPromise("test scene", () =>
-      _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({scene}, _, _)) =>
+    test("test scene", () =>
+      _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({scene}) =>
         scene |> expect == {gameObjects: [|0|]}
       )
     );
     describe("test gameObjects", () => {
-      testPromise("test single node gltf", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          (({gameObjects}, _, _)) =>
+      test("test single node gltf", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({gameObjects}) =>
           gameObjects |> expect == {count: 1, names: [|"gameObject_0"|]}
         )
       );
-      testPromise("test truck gltf", () =>
+      test("test truck gltf", () =>
         _test(
-          ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-          (({gameObjects}, _, _)) =>
+          ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({gameObjects}) =>
           gameObjects
           |>
           expect == {
@@ -393,33 +385,31 @@ let _ =
     });
     describe("test camera data", () => {
       describe("test basicCameraViews", () => {
-        testPromise("test no data", () =>
+        test("test no data", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-            (({basicCameraViews}, _, _)) =>
+            ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({basicCameraViews}) =>
             basicCameraViews |> expect == {count: 0}
           )
         );
-        testPromise("test camera gltf", () =>
+        test("test camera gltf", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfCamera(),
-            (({basicCameraViews}, _, _)) =>
+            ConvertGLTFTool.buildGLTFJsonOfCamera(), ({basicCameraViews}) =>
             basicCameraViews |> expect == {count: 3}
           )
         );
       });
       describe("test perspectiveCameraProjections", () => {
-        testPromise("test no data", () =>
+        test("test no data", () =>
           _test(
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-            (({perspectiveCameraProjections}, _, _)) =>
+            ({perspectiveCameraProjections}) =>
             perspectiveCameraProjections |> expect == [||]
           )
         );
-        testPromise("test camera gltf", () =>
+        test("test camera gltf", () =>
           _test(
             ConvertGLTFTool.buildGLTFJsonOfCamera(),
-            (({perspectiveCameraProjections}, _, _)) =>
+            ({perspectiveCameraProjections}) =>
             perspectiveCameraProjections
             |>
             expect == [|
@@ -441,10 +431,8 @@ let _ =
       });
     });
     describe("test transforms", () => {
-      testPromise("test matrix exist", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          (({transforms}, _, _)) =>
+      test("test matrix exist", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({transforms}) =>
           transforms
           |>
           expect == [|
@@ -456,9 +444,8 @@ let _ =
                     |]
         )
       );
-      testPromise("test transform gltf", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfTransform(), (({transforms}, _, _)) =>
+      test("test transform gltf", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfTransform(), ({transforms}) =>
           transforms
           |>
           expect == [|
@@ -482,7 +469,7 @@ let _ =
       );
 
       describe("fix bug", () =>
-        testPromise("fix get rotation bug", () =>
+        test("fix get rotation bug", () =>
           _test(
             ConvertGLTFTool.buildGLTFJson(
               ~nodes=
@@ -510,7 +497,7 @@ let _ =
     ]|},
               (),
             ),
-            (({transforms}, _, _)) =>
+            ({transforms}) =>
             transforms
             |>
             expect == [|
@@ -532,10 +519,9 @@ let _ =
     });
     describe("test lightMaterials", () =>
       describe("test diffuseColor", () => {
-        testPromise("test no data", () =>
+        test("test no data", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-            (({lightMaterials}, _, _)) =>
+            ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({lightMaterials}) =>
             lightMaterials
             |>
             expect == [|
@@ -548,10 +534,10 @@ let _ =
           )
         );
         describe("test has data", () =>
-          testPromise("only set r,g,b components, ignore alpha component", () =>
+          test("only set r,g,b components, ignore alpha component", () =>
             _test(
               ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({lightMaterials}, _, _)) =>
+              ({lightMaterials}) =>
               lightMaterials
               |>
               expect == [|
@@ -588,10 +574,9 @@ let _ =
       })
     );
     describe("test basicSourceTextures", () =>
-      testPromise("test", () =>
+      test("test", () =>
         _test(
-          ConvertGLTFTool.buildGLTFJsonOfTexture(),
-          (({basicSourceTextures}, _, _)) =>
+          ConvertGLTFTool.buildGLTFJsonOfTexture(), ({basicSourceTextures}) =>
           basicSourceTextures
           |>
           expect == {count: 3, names: [|"texture_0", "texture0", "image0"|]}
@@ -599,9 +584,8 @@ let _ =
       )
     );
     describe("test samplers", () =>
-      testPromise("test", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({samplers}, _, _)) =>
+      test("test", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({samplers}) =>
           samplers
           |>
           expect == [|
@@ -616,9 +600,8 @@ let _ =
       )
     );
     describe("test images", () =>
-      testPromise("test", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({images}, _, _)) =>
+      test("test", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({images}) =>
           images
           |>
           expect == [|{uri: ConvertGLTFTool.buildFakeImageOfSingleNode()}|]
@@ -626,10 +609,9 @@ let _ =
       )
     );
     describe("test customGeometrys", () =>
-      testPromise("test single primitive", () =>
+      test("test single primitive", () =>
         _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          (({customGeometrys}, _, _)) =>
+          ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({customGeometrys}) =>
           customGeometrys
           |>
           expect == [|
@@ -644,9 +626,8 @@ let _ =
       )
     );
     describe("test accessors", () =>
-      testPromise("test", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({accessors}, _, _)) =>
+      test("test", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({accessors}) =>
           accessors
           |>
           expect == [|
@@ -683,10 +664,8 @@ let _ =
       )
     );
     describe("test bufferViews", () =>
-      testPromise("test", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          (({bufferViews}, _, _)) =>
+      test("test", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({bufferViews}) =>
           bufferViews
           |>
           expect == [|
@@ -716,9 +695,8 @@ let _ =
       )
     );
     describe("test buffers", () =>
-      testPromise("test", () =>
-        _test(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(), (({buffers}, _, _)) =>
+      test("test", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({buffers}) =>
           buffers
           |>
           expect == [|
@@ -743,18 +721,15 @@ let _ =
             componentIndices,
           );
         describe("test childrenTransformIndexData", () => {
-          testPromise("test single node gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test single node gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.childrenTransformIndexData
               |> expect == _buildTransformIndexData([||], [||])
             )
           );
-          testPromise("test truck gltf", () =>
+          test("test truck gltf", () =>
             _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({indices}, _, _)) =>
+              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
               indices.gameObjectIndices.childrenTransformIndexData
               |>
               expect == _buildTransformIndexData(
@@ -765,62 +740,45 @@ let _ =
           );
         });
         describe("test basicCameraViewGameObjectIndexData", () => {
-          testPromise("test no data", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test no data", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.basicCameraViewGameObjectIndexData
               |> expect == _buildComponentIndexData([||], [||])
             )
           );
-          testPromise("test camera gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfCamera(), (({indices}, _, _)) =>
+          test("test camera gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfCamera(), ({indices}) =>
               indices.gameObjectIndices.basicCameraViewGameObjectIndexData
-              |>
-              expect == _buildComponentIndexData(
-                          [|0, 1|],
-                          [|2, 0|],
-                        )
+              |> expect == _buildComponentIndexData([|0, 1|], [|2, 0|])
             )
           );
         });
         describe("test perspectiveCameraProjectionGameObjectIndexData", () => {
-          testPromise("test no data", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test no data", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.
                 perspectiveCameraProjectionGameObjectIndexData
               |> expect == _buildComponentIndexData([||], [||])
             )
           );
-          testPromise("test camera gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfCamera(), (({indices}, _, _)) =>
+          test("test camera gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfCamera(), ({indices}) =>
               indices.gameObjectIndices.
                 perspectiveCameraProjectionGameObjectIndexData
-              |>
-              expect == _buildComponentIndexData(
-                          [|0, 1|],
-                          [|1, 0|],
-                        )
+              |> expect == _buildComponentIndexData([|0, 1|], [|1, 0|])
             )
           );
         });
         describe("test lightMaterialGameObjectIndexData", () => {
-          testPromise("test single node gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test single node gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.lightMaterialGameObjectIndexData
               |> expect == _buildComponentIndexData([|0|], [|0|])
             )
           );
-          testPromise("test truck gltf", () =>
+          test("test truck gltf", () =>
             _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({indices}, _, _)) =>
+              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
               indices.gameObjectIndices.lightMaterialGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
@@ -831,18 +789,15 @@ let _ =
           );
         });
         describe("test transformGameObjectIndexData", () => {
-          testPromise("test single node gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test single node gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.transformGameObjectIndexData
               |> expect == _buildComponentIndexData([|0|], [|0|])
             )
           );
-          testPromise("test truck gltf", () =>
+          test("test truck gltf", () =>
             _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({indices}, _, _)) =>
+              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
               indices.gameObjectIndices.transformGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
@@ -853,18 +808,15 @@ let _ =
           );
         });
         describe("test customGeometryGameObjectIndexData", () => {
-          testPromise("test single node gltf", () =>
-            _test(
-              ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-              (({indices}, _, _)) =>
+          test("test single node gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({indices}) =>
               indices.gameObjectIndices.customGeometryGameObjectIndexData
               |> expect == _buildComponentIndexData([|0|], [|0|])
             )
           );
-          testPromise("test truck gltf", () =>
+          test("test truck gltf", () =>
             _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({indices}, _, _)) =>
+              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
               indices.gameObjectIndices.customGeometryGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
@@ -881,10 +833,9 @@ let _ =
           mapIndices,
         };
         describe("test diffuseMapMaterialIndices", () =>
-          testPromise("test truck gltf", () =>
+          test("test truck gltf", () =>
             _test(
-              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-              (({indices}, _, _)) =>
+              ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
               indices.materialIndices.diffuseMapMaterialIndices
               |> expect == _buildIndexData([|0, 3|], [|0, 1|])
             )
@@ -896,10 +847,9 @@ let _ =
           textureIndices,
           imageIndices,
         };
-        testPromise("test truck gltf", () =>
+        test("test truck gltf", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-            (({indices}, _, _)) =>
+            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
             indices.imageTextureIndices
             |> expect == _buildIndexData([|0, 1|], [|0, 0|])
           )
@@ -910,10 +860,9 @@ let _ =
           textureIndices,
           samplerIndices,
         };
-        testPromise("test truck gltf", () =>
+        test("test truck gltf", () =>
           _test(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-            (({indices}, _, _)) =>
+            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(), ({indices}) =>
             indices.samplerTextureIndices
             |> expect == _buildIndexData([|0, 1|], [|0, 0|])
           )

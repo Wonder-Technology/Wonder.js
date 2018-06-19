@@ -50,24 +50,25 @@ let testResult = (gltfJson, testFunc, state) =>
 
 let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
   open Js.Promise;
-  let data = ref(Obj.magic(1));
+
+  let result = ref(Obj.magic(1));
+
   ConvertGLTFTool.buildFakeLoadImage();
+
   ConvertGLTFSystem.convert(gltfJson)
-  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
-       data := (wdRecord, imageArr, bufferArr);
-       ();
-     })
-  |> then_(() => AssembleWDSystem.assemble(data^, state^) |> resolve)
-  |> then_(((state, sceneGameObject)) =>
+  |. AssembleWDSystem.assemble(state^)
+  |> Most.forEach(data => result := data)
+  |> then_(() => {
+       let (state, sceneGameObject) = result^;
+
        GenerateSceneGraphSystem.generateEmbededGLTF(
          sceneGameObject,
          WonderCommonlib.SparseMapService.createEmpty(),
          state,
        )
        |> _contain(targetJson)
-       |> resolve
-     );
-  /* |> then_(wdJson => wdJson |> _contain(targetJson) |> resolve); */
+       |> resolve;
+     });
 };
 
 let testGLTFResultByGameObject = (sceneGameObject, targetJson, state) =>
@@ -89,37 +90,47 @@ let testGLTFResultByGameObjectWithImageBase64Map =
 
 let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
   open Js.Promise;
-  let data = ref(Obj.magic(1));
+
+  let result = ref(Obj.magic(1));
+
   ConvertGLTFTool.buildFakeLoadImage();
+
   ConvertGLTFSystem.convert(gltfJson)
-  |> Most.forEach(((wdRecord, imageArr, bufferArr)) => {
-       data := (wdRecord, imageArr, bufferArr);
-       ();
-     })
-  |> then_(() => AssembleWDSystem.assemble(data^, state^) |> resolve)
-  |> then_(((state, sceneGameObject)) =>
+  |. AssembleWDSystem.assemble(state^)
+  |> Most.forEach(data => result := data)
+  |> then_(() => {
+       let (state, sceneGameObject) = result^;
+
        GenerateSceneGraphSystem.generateEmbededWD(
          sceneGameObject,
          WonderCommonlib.SparseMapService.createEmpty(),
          state,
        )
-     )
+       |> resolve;
+     })
   |> then_(((state, data)) =>
-       testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
+       AssembleWDSystem.assemble(data, state)
+       |> Most.forEach(data => result := data)
+       |> then_(() => testFunc(result^) |> resolve)
      );
 };
 
-let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) =>
-  Js.Promise.(
+let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  let (state, data) =
     GenerateSceneGraphSystem.generateEmbededWD(
       sceneGameObject,
       WonderCommonlib.SparseMapService.createEmpty(),
       state,
-    )
-    |> then_(((state, data)) =>
-         testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
-       )
-  );
+    );
+
+  AssembleWDSystem.assemble(data, state)
+  |> Most.forEach(data => result := data)
+  |> then_(() => testFunc(result^) |> resolve);
+};
 
 let _buildFakeContext = sandbox => {
   "drawImage": createEmptyStubWithJsObjSandbox(sandbox),

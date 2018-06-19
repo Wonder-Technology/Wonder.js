@@ -143,11 +143,14 @@
 
 
             function _testGenerateEmbededWDByGLTF(gltf, imageBase64Map, isCreateCamera, state$) {
-                wd.convertGLTFToWD(gltf)
-                    .forEach((wdData) => {
-                        var record = wd.assembleWD(wdData, state$);
-                        var state = record[0];
-                        var sceneGameObject = record[1];
+                let wdRecord = wd.convertGLTFToWD(gltf);
+
+                wd.assembleWD(wdRecord, state$)
+
+                    .forEach(([state, sceneGameObject]) => {
+                        // var record = wd.assembleWD(wdData, state$);
+                        // var state = record[0];
+                        // var sceneGameObject = record[1];
 
 
 
@@ -155,35 +158,28 @@
                         var n0 = performance.now();
 
 
-                        var record = wd.generateEmbededWD(sceneGameObject, imageBase64Map, state)
-                            .then(([state, wdData]) => {
+                        var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, imageBase64Map, state);
 
 
-                                console.profileEnd();
-                                var n1 = performance.now();
+                        console.profileEnd();
+                        var n1 = performance.now();
 
-                                console.log(n1 - n0)
-
-
-                                // var state = record[0];
-                                // var wdData = record[1];
-
-                                var state =
-                                    _disposeAll(sceneGameObject, state);
+                        console.log(n1 - n0)
 
 
-                                var record = wd.assembleWD(wdData, state);
-                                var state = record[0];
-                                // var sceneGameObject$ = record[1];
+                        var state =
+                            _disposeAll(sceneGameObject, state);
 
 
-
+                        wd.assembleWD(wdRecord, state)
+                            .forEach(([state, sceneGameObject]) => {
                                 var state = _createLightsAndCamera(isCreateCamera, state);
 
 
                                 wd.startDirector(state);
+                            });
 
-                            })
+
 
                     });
             }
@@ -246,25 +242,18 @@
 
 
 
-                var record = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state)
-                    .then(([state, wdData]) => {
-                        var state =
-                            _disposeAll(sceneGameObject, state);
+                var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state);
 
-                        var record = wd.assembleWD(wdData, state);
-                        var state = record[0];
+                var state =
+                    _disposeAll(sceneGameObject, state);
 
-
-
+                wd.assembleWD(wdRecord, state)
+                    .forEach(([state, sceneGameObject]) => {
                         var state = _createLightsAndCamera(false, state);
 
 
-
-
                         wd.startDirector(state);
-
                     })
-
             }
 
 
@@ -272,26 +261,22 @@
                 console.profile("convert");
                 var n0 = performance.now();
 
-                wd.convertGLTFToWD(gltf)
-                    .forEach((wdData) => {
+                let wdRecord = wd.convertGLTFToWD(gltf);
 
-                        var state = state$;
-
-
-                        console.log(performance.now() - n0);
-                        console.profileEnd();
+                var state = state$;
 
 
-
-                        console.profile("assembleWD");
-
-                        var n1 = performance.now();
-
-                        var record = wd.assembleWD(wdData, state);
-                        var state = record[0];
-                        var sceneGameObject = record[1];
+                console.log(performance.now() - n0);
+                console.profileEnd();
 
 
+
+                console.profile("assembleWD");
+
+                var n1 = performance.now();
+
+                wd.assembleWD(wdRecord, state)
+                    .forEach(([state, sceneGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();
 
@@ -319,7 +304,9 @@
                         // console.log(performance.now() - n2);
                         // console.profileEnd();
 
-                    });
+                    })
+
+
             }
 
 

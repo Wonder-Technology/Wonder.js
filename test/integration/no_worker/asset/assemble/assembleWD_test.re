@@ -195,9 +195,10 @@ let _ =
           ConvertGLTFTool.testResult(
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(), data =>
             expect(() =>
-              AssembleWDSystem.assemble(data, state)
+              AssembleWDSystemTool.batchCreate(data, state)
             )
             |> toThrowMessage("expect not disposed before")
+            |> resolve
           );
         })
       );
@@ -547,9 +548,10 @@ let _ =
           ConvertGLTFTool.testResult(
             ConvertGLTFTool.buildGLTFJsonOfSingleNode(), data =>
             expect(() =>
-              AssembleWDSystem.assemble(data, state)
+              AssembleWDSystemTool.batchCreate(data, state)
             )
             |> toThrowMessage("expect not disposed before")
+            |> resolve
           );
         })
       );
@@ -1129,12 +1131,9 @@ let _ =
           )
         );
         testPromise("test set source", () =>
-          ConvertGLTFTool.testResult(
+          AssembleWDSystemTool.testResult(
             _buildGLTFJsonOfLightMaterial(),
-            ((wdRecord, imageArr, bufferArr) as data) => {
-              let (state, sceneGameObject) =
-                AssembleWDSystem.assemble(data, state^);
-
+            ((state, sceneGameObject)) =>
               _getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
@@ -1143,10 +1142,32 @@ let _ =
                    )
                  )
               |>
-              expect == [|imageArr[0], imageArr[0], imageArr[0], imageArr[1]|];
-            },
+              expect == [|
+                          "data:image/png;base64,AAA" |> Obj.magic,
+                          "data:image/png;base64,AAA" |> Obj.magic,
+                          "data:image/png;base64,AAA" |> Obj.magic,
+                          "data:image/png;base64,BBB" |> Obj.magic,
+                        |],
+            state^,
           )
         );
+        /* ConvertGLTFTool.testResult(_buildGLTFJsonOfLightMaterial(), data =>
+           {
+             let (state, sceneGameObject) =
+               AssembleWDSystem.assemble(data, state^);
+
+             _getAllDiffuseMaps(sceneGameObject, state)
+             |> Js.Array.map(diffuseMap =>
+                  BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                    diffuseMap,
+                    state,
+                  )
+                )
+             |>
+             expect == [|imageArr[0], imageArr[0], imageArr[0], imageArr[1]|];
+           }
+           |> resolve */
+        /* ) */
       });
     });
 
@@ -1154,12 +1175,9 @@ let _ =
       testPromise(
         "each gameObject with light material component should has one meshRenderer",
         () =>
-        ConvertGLTFTool.testResult(
+        AssembleWDSystemTool.testResult(
           ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-          ((wdRecord, imageArr, bufferArr) as data) => {
-            let (state, sceneGameObject) =
-              AssembleWDSystem.assemble(data, state^);
-
+          ((state, sceneGameObject)) =>
             _getAllGameObjects(sceneGameObject, state)
             |> Js.Array.filter(gameObject =>
                  GameObjectAPI.hasGameObjectMeshRendererComponent(
@@ -1168,8 +1186,8 @@ let _ =
                  )
                )
             |> Js.Array.length
-            |> expect == 5;
-          },
+            |> expect == 5,
+          state^,
         )
       )
     );
