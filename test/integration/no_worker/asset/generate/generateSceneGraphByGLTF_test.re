@@ -143,9 +143,9 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
-          {| 
+          {|
             "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]},{"primitives":[{"attributes":{"POSITION":8,"NORMAL":9},"indices":10}]},{"primitives":[{"attributes":{"POSITION":11,"NORMAL":12},"indices":13}]}]
-          
+
           |},
           state,
         );
@@ -349,10 +349,45 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfCameras(),
           {|
-            "cameras":[{"type":"perspective","perspective":{"znear":0.01,"zfar":100,"yfov":0.7,"aspectRatio":1}}]
+            "cameras":[{"type":"perspective","perspective":{"aspectRatio":1,"zfar":100,"znear":0.01,"yfov":0.7}}]
             |},
           state,
         );
       });
+
+      describe("fix bug", () =>
+        testPromise("test gltf->camera has no aspectRatio,zfar", () => {
+          let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+            ConvertGLTFTool.buildGLTFJson(
+              ~nodes=
+                {| [
+        {
+            "mesh": 0,
+            "camera": 0
+        }
+    ]|},
+              ~cameras=
+                {|
+[
+        {
+            "perspective": {
+                "yfov": 0.6,
+                "znear": 1.0
+            },
+            "type": "perspective"
+        }
+    ]
+        |},
+              (),
+            ),
+            {|
+              "cameras":[{"type":"perspective","perspective":{"zfar":100000,"znear":1,"yfov":0.5999999999999999}}]
+            |},
+            state,
+          );
+        })
+      );
     });
   });

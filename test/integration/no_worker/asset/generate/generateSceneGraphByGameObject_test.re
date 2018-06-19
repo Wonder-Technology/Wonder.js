@@ -1732,7 +1732,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           sceneGameObject,
           {j|
-            "cameras":[{"type":"perspective","perspective":{"znear":0.1,"zfar":1000.5,"yfov":1.0471975511965976,"aspectRatio":1.5}},{"type":"perspective","perspective":{"znear":0.1,"zfar":1000.5,"yfov":1.0471975511965976,"aspectRatio":1.5}}]
+            "cameras":[{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}},{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}}]
                 |j},
           state,
         );

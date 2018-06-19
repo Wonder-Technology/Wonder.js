@@ -28,7 +28,7 @@ let build = (cameraDataMap, {perspectiveCameraProjectionRecord} as state) => {
                        ),
                   far:
                     perspectiveCameraProjectionRecord
-                    |> FrustumPerspectiveCameraProjectionService.unsafeGetFar(
+                    |> FrustumPerspectiveCameraProjectionService.getFar(
                          perspectiveCameraProjection,
                        ),
                   fovy:
@@ -39,7 +39,7 @@ let build = (cameraDataMap, {perspectiveCameraProjectionRecord} as state) => {
                     |> _convertDegreeToRadians,
                   aspect:
                     perspectiveCameraProjectionRecord
-                    |> FrustumPerspectiveCameraProjectionService.unsafeGetAspect(
+                    |> FrustumPerspectiveCameraProjectionService.getAspect(
                          perspectiveCameraProjection,
                        ),
                 },

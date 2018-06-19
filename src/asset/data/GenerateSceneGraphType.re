@@ -62,9 +62,9 @@ type materialData = {
 
 type perspectiveCameraData = {
   near: float,
-  far: float,
+  far: option(float),
   fovy: float,
-  aspect: float,
+  aspect: option(float),
 };
 
 type cameraData = {

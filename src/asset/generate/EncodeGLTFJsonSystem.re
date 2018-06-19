@@ -106,18 +106,29 @@ let _encodeCameras = (cameraDataArr, state) => (
   |> Js.Array.map(({type_, perspective}: cameraData) => {
        let {near, far, fovy, aspect} = perspective;
 
+       let perspectiveList = [
+         ("znear", near |> float),
+         ("yfov", fovy |> float),
+       ];
+
+       let perspectiveList =
+         switch (far) {
+         | None => perspectiveList
+         | Some(far) => [("zfar", far |> float), ...perspectiveList]
+         };
+
+       let perspectiveList =
+         switch (aspect) {
+         | None => perspectiveList
+         | Some(aspect) => [
+             ("aspectRatio", aspect |> float),
+             ...perspectiveList,
+           ]
+         };
+
        [
          ("type", type_ |> string),
-         (
-           "perspective",
-           [
-             ("znear", near |> float),
-             ("zfar", far |> float),
-             ("yfov", fovy |> float),
-             ("aspectRatio", aspect |> float),
-           ]
-           |> object_,
-         ),
+         ("perspective", perspectiveList |> object_),
        ]
        |> object_;
      })
