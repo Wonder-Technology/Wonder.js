@@ -336,7 +336,10 @@ let rec _getNodeData =
            | None => cameraDataMap
            | Some(cameraIndex) =>
              cameraDataMap
-             |> WonderCommonlib.SparseMapService.set(cameraIndex, cameraData)
+             |> WonderCommonlib.SparseMapService.set(
+                  cameraIndex,
+                  cameraData |> OptionService.unsafeGet,
+                )
            };
 
          let gameObjectChildrenMap =

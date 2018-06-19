@@ -60,6 +60,18 @@ type materialData = {
   name: option(string),
 };
 
+type perspectiveCameraData = {
+  near: float,
+  far: float,
+  fovy: float,
+  aspect: float,
+};
+
+type cameraData = {
+  type_: string,
+  perspective: perspectiveCameraData,
+};
+
 type point =
   | VERTEX
   | NORMAL

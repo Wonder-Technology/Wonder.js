@@ -122,14 +122,13 @@ let build = (materialDataMap, state) => {
     (textureIndexMap, samplerIndexMap, imageMap),
   ) =
     materialDataMap
-    |> SparseMapService.reduceiValid(
+    |> SparseMapService.reduceValid(
          (.
            (
              (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
              (textureIndexMap, samplerIndexMap, imageMap),
            ),
-           (lightMaterial, name),
-           materialIndex,
+           (lightMaterial, name)
          ) => {
            let diffuseMap =
              OperateLightMaterialMainService.getDiffuseMap(

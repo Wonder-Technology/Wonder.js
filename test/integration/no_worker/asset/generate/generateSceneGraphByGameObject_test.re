@@ -1446,6 +1446,7 @@ let _ =
         );
       });
     });
+
     describe("test basic material", () => {
       let _prepareGameObject = state => {
         open GameObjectAPI;
@@ -1538,6 +1539,200 @@ let _ =
           sceneGameObject,
           {j|
               "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"uri":"$base64Str1"}]
+                |j},
+          state,
+        );
+      });
+    });
+
+    describe("test camera", () => {
+      let _createBasicCameraViewPerspectiveCamera = state => {
+        open BasicCameraViewAPI;
+        open PerspectiveCameraProjectionAPI;
+
+        let (state, perspectiveCameraProjection) =
+          createPerspectiveCameraProjection(state);
+        let (state, basicCameraView) = createBasicCameraView(state);
+        let near = 0.1;
+        let far = 1000.5;
+        let fovy = 60.;
+        let aspect = 1.5;
+        let state =
+          state
+          |> setPerspectiveCameraNear(perspectiveCameraProjection, near)
+          |> setPerspectiveCameraFar(perspectiveCameraProjection, far)
+          |> setPerspectiveCameraFovy(perspectiveCameraProjection, fovy)
+          |> setPerspectiveCameraAspect(perspectiveCameraProjection, aspect);
+        (
+          state,
+          basicCameraView,
+          (perspectiveCameraProjection, near, far, fovy, aspect),
+        );
+      };
+
+      let _createCameraGameObject = state => {
+        open GameObjectAPI;
+
+        let (
+          state,
+          basicCameraView,
+          (perspectiveCameraProjection, near, far, fovy, aspect),
+        ) =
+          _createBasicCameraViewPerspectiveCamera(state);
+        let (state, gameObject) = state |> GameObjectAPI.createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicCameraViewComponent(
+               gameObject,
+               basicCameraView,
+             );
+        let state =
+          state
+          |> addGameObjectPerspectiveCameraProjectionComponent(
+               gameObject,
+               perspectiveCameraProjection,
+             );
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (
+            basicCameraView,
+            (perspectiveCameraProjection, near, far, fovy, aspect),
+          ),
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, sceneGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            sceneGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          transform1,
+          (
+            basicCameraView1,
+            (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+          ),
+        ) =
+          _createCameraGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          transform3,
+          (
+            basicCameraView3,
+            (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+          ),
+        ) =
+          _createCameraGameObject(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        );
+      };
+
+      test("test nodes", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          sceneGameObject,
+          {j|
+            "nodes":[{"children":[1,2]},{"camera":0},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extension":{"material":0}},{"camera":1}]
+                |j},
+          state,
+        );
+      });
+
+      test("test cameras", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          sceneGameObject,
+          {j|
+            "cameras":[{"type":"perspective","perspective":{"znear":0.1,"zfar":1000.5,"yfov":1.0471975511965976,"aspectRatio":1.5}},{"type":"perspective","perspective":{"znear":0.1,"zfar":1000.5,"yfov":1.0471975511965976,"aspectRatio":1.5}}]
                 |j},
           state,
         );

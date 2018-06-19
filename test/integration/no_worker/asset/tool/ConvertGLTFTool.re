@@ -981,7 +981,7 @@ let buildGLTFJsonOfCamera = () =>
             "mesh": 0,
             "camera": 2,
             "children": [
-                1, 2, 3, 4
+                1, 2
             ]
         },
         {
@@ -1008,14 +1008,6 @@ let buildGLTFJsonOfCamera = () =>
         },
         {
             "mesh": 0
-        },
-        {
-            "mesh": 0,
-            "camera": 0
-        },
-        {
-            "mesh": 0,
-            "camera": 2
         }
     ]|},
     ~cameras=

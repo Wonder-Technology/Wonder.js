@@ -43,6 +43,18 @@ let forEachiValid = (func, map) =>
        }
      );
 
+let reduceValid = (func, initValue, map) =>
+  map
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. previousValue, value) =>
+         if (value |> Obj.magic === Js.Undefined.empty) {
+           previousValue;
+         } else {
+           func(. previousValue, value);
+         },
+       initValue,
+     );
+
 let reduceiValid = (func, initValue, map) =>
   map
   |> WonderCommonlib.ArrayService.reduceOneParami(

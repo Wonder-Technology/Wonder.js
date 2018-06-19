@@ -22,7 +22,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
   let (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr) =
     BuildMaterialDataSystem.build(materialDataMap, state);
 
-  /* TODO get cameraData */
+  let cameraDataArr = BuildCameraDataSystem.build(cameraDataMap, state);
 
   EncodeGLTFJsonSystem.encode(
     (buffer, totalByteLength),
@@ -35,6 +35,7 @@ let generateEmbededGLTF = (sceneGameObject, state) => {
       textureDataArr,
       samplerDataArr,
       imageBase64Arr,
+      cameraDataArr,
     ),
     state,
   );

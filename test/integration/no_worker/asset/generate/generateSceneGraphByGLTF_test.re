@@ -348,4 +348,30 @@ let _ =
         })
       );
     });
+
+    describe("test camera", () => {
+      testPromise("test nodes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfCamera(),
+          {|
+            "nodes":[{"name":"gameObject_0","children":[1,2],"mesh":0,"camera":0,"extension":{"material":0}},{"name":"gameObject_1","translation":[10,30,50],"mesh":0,"camera":1,"extension":{"material":0}},{"name":"gameObject_2","mesh":0,"extension":{"material":0}}]
+            |},
+          state,
+        );
+      });
+
+      testPromise("test cameras", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfCamera(),
+          {|
+            "cameras":[{"type":"perspective","perspective":{"znear":2,"zfar":1000,"yfov":0.5,"aspectRatio":2}},{"type":"perspective","perspective":{"znear":1,"zfar":10000,"yfov":0.5999999999999999,"aspectRatio":1.5}}]
+            |},
+          state,
+        );
+      });
+    });
   });

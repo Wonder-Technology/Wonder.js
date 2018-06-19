@@ -779,8 +779,8 @@ let _ =
               indices.gameObjectIndices.basicCameraViewGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
-                          [|0, 1, 3, 4|],
-                          [|2, 0, 0, 2|],
+                          [|0, 1|],
+                          [|2, 0|],
                         )
             )
           );
@@ -802,8 +802,8 @@ let _ =
                 perspectiveCameraProjectionGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
-                          [|0, 1, 3, 4|],
-                          [|1, 0, 0, 1|],
+                          [|0, 1|],
+                          [|1, 0|],
                         )
             )
           );

@@ -100,6 +100,30 @@ let _encodeNodes = (nodeDataArr, state) => (
   |> jsonArray,
 );
 
+let _encodeCameras = (cameraDataArr, state) => (
+  "cameras",
+  cameraDataArr
+  |> Js.Array.map(({type_, perspective}: cameraData) => {
+       let {near, far, fovy, aspect} = perspective;
+
+       [
+         ("type", type_ |> string),
+         (
+           "perspective",
+           [
+             ("znear", near |> float),
+             ("zfar", far |> float),
+             ("yfov", fovy |> float),
+             ("aspectRatio", aspect |> float),
+           ]
+           |> object_,
+         ),
+       ]
+       |> object_;
+     })
+  |> jsonArray,
+);
+
 let _encodeMaterials = (materialDataArr, state) => (
   "materials",
   materialDataArr
@@ -253,6 +277,7 @@ let encode =
         textureDataArr,
         samplerDataArr,
         imageBase64Arr,
+        cameraDataArr,
       ),
       state,
     ) =>
@@ -270,6 +295,7 @@ let encode =
       "scenes",
       [|[("nodes", [|0|] |> intArray)] |> object_|] |> jsonArray,
     ),
+    _encodeCameras(cameraDataArr, state),
     _encodeNodes(nodeDataArr, state),
     _encodeMaterials(materialDataArr, state),
     _encodeTextures(textureDataArr, state),
