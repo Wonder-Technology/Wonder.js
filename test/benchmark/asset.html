@@ -30,6 +30,7 @@
 
 
     <script src="./gltfTool.js"></script>
+    <script src="./base64DataTool.js"></script>
 
     <script>
         function _disposeAll(gameObject, state) {
@@ -141,15 +142,27 @@
             }
 
 
-            function _testGenerateEmbededWDByGLTF(gltf, isCreateCamera, state$) {
+            function _testGenerateEmbededWDByGLTF(gltf, imageBase64Map, isCreateCamera, state$) {
                 wd.convertGLTFToWD(gltf)
                     .forEach((wdData) => {
                         var record = wd.assembleWD(wdData, state$);
                         var state = record[0];
                         var sceneGameObject = record[1];
 
-                        var record = wd.generateEmbededWD(sceneGameObject, state)
+
+
+                        console.profile("generateEmbededWD");
+                        var n0 = performance.now();
+
+
+                        var record = wd.generateEmbededWD(sceneGameObject, imageBase64Map, state)
                             .then(([state, wdData]) => {
+
+
+                                console.profileEnd();
+                                var n1 = performance.now();
+
+                                console.log(n1 - n0)
 
 
                                 // var state = record[0];
@@ -233,7 +246,7 @@
 
 
 
-                var record = wd.generateEmbededWD(sceneGameObject, state)
+                var record = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state)
                     .then(([state, wdData]) => {
                         var state =
                             _disposeAll(sceneGameObject, state);
@@ -255,7 +268,7 @@
             }
 
 
-            function _testAssembleWD(gltf, state$) {
+            function _testAssembleWD(gltf, isCreateCamera, state$) {
                 console.profile("convert");
                 var n0 = performance.now();
 
@@ -297,7 +310,7 @@
 
 
 
-                        var state = _createLightsAndCamera(true, state);
+                        var state = _createLightsAndCamera(isCreateCamera, state);
 
 
                         wd.startDirector(state);
@@ -319,16 +332,29 @@
                 // wd.convertGLTFToWD(getGLTFJsonOfTest())
                 // wd.convertGLTFToWD(getGLTFJsonOfDuck())
 
-                // _testGenerateEmbededWDByGLTF(
-                //     // getGLTFJsonOfTruck(),
-                //     getGLTFJsonOfDuck(),
-                //     false,
-                //     // true,
-
-                //     state$);
 
 
-                _testGenerateEmbededWDByGameObject(map1, map2, state$);
+                var imageBase64Map = wd.createSparseMap();
+                imageBase64Map =
+                    wd.setSparseMapValue(3,
+                        truckImageBase64,
+                        imageBase64Map);
+
+                _testGenerateEmbededWDByGLTF(
+                    getGLTFJsonOfTruck(),
+                    // getGLTFJsonOf2CylinderEngine(),
+                    // getGLTFJsonOfVC(),
+                    // getGLTFJsonOfCamera(),
+                    // getGLTFJsonOfDuck(),
+                    // false,
+                    imageBase64Map,
+
+                    true,
+
+                    state$);
+
+
+                // _testGenerateEmbededWDByGameObject(map1, map2, state$);
 
 
                 // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())
@@ -337,7 +363,14 @@
                 // wd.convertGLTFToWD(getGLTFJsonOfCamera())
                 // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
                 // wd.convertGLTFToWD(getGLTFJsonOfTest())
-                // _testAssembleWD(getGLTFJsonOfDuck(), state$);
+
+                // _testAssembleWD(
+                //     // getGLTFJsonOfDuck(),
+                //     // getGLTFJsonOf2CylinderEngine(),
+                //     // getGLTFJsonOfVC(),
+                //     getGLTFJsonOfCamera(),
+                //     false,
+                //     state$);
             }
 
         };

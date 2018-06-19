@@ -352,6 +352,14 @@ let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
 
+let setSparseMapValue = SparseMapAPI.setSparseMapValue;
+
+let getSparseMapValue = SparseMapAPI.getSparseMapValue;
+
+let unsafeGetSparseMapValue = SparseMapAPI.unsafeGetSparseMapValue;
+
+let createSparseMap = SparseMapAPI.createSparseMap;
+
 let setArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureHeight;
 
 let getArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureHeight;

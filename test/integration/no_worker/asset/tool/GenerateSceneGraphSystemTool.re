@@ -59,7 +59,11 @@ let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
      })
   |> then_(() => AssembleWDSystem.assemble(data^, state^) |> resolve)
   |> then_(((state, sceneGameObject)) =>
-       GenerateSceneGraphSystem.generateEmbededGLTF(sceneGameObject, state)
+       GenerateSceneGraphSystem.generateEmbededGLTF(
+         sceneGameObject,
+         WonderCommonlib.SparseMapService.createEmpty(),
+         state,
+       )
        |> _contain(targetJson)
        |> resolve
      );
@@ -67,7 +71,20 @@ let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
 };
 
 let testGLTFResultByGameObject = (sceneGameObject, targetJson, state) =>
-  GenerateSceneGraphSystem.generateEmbededGLTF(sceneGameObject, state)
+  GenerateSceneGraphSystem.generateEmbededGLTF(
+    sceneGameObject,
+    WonderCommonlib.SparseMapService.createEmpty(),
+    state,
+  )
+  |> _contain(targetJson);
+
+let testGLTFResultByGameObjectWithImageBase64Map =
+    (sceneGameObject, targetJson, imageBase64Map, state) =>
+  GenerateSceneGraphSystem.generateEmbededGLTF(
+    sceneGameObject,
+    imageBase64Map,
+    state,
+  )
   |> _contain(targetJson);
 
 let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
@@ -81,7 +98,11 @@ let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
      })
   |> then_(() => AssembleWDSystem.assemble(data^, state^) |> resolve)
   |> then_(((state, sceneGameObject)) =>
-       GenerateSceneGraphSystem.generateEmbededWD(sceneGameObject, state)
+       GenerateSceneGraphSystem.generateEmbededWD(
+         sceneGameObject,
+         WonderCommonlib.SparseMapService.createEmpty(),
+         state,
+       )
      )
   |> then_(((state, data)) =>
        testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
@@ -90,7 +111,11 @@ let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
 
 let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) =>
   Js.Promise.(
-    GenerateSceneGraphSystem.generateEmbededWD(sceneGameObject, state)
+    GenerateSceneGraphSystem.generateEmbededWD(
+      sceneGameObject,
+      WonderCommonlib.SparseMapService.createEmpty(),
+      state,
+    )
     |> then_(((state, data)) =>
          testFunc(AssembleWDSystem.assemble(data, state)) |> resolve
        )

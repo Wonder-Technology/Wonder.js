@@ -58,7 +58,7 @@ let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
 
 let _convertImageToBase64 = [%raw
   (width, height, image) => {|
-     var canvas = document.createElement("canvas");
+    var canvas = document.createElement("canvas");
     var ctx = canvas.getContext("2d");
     var dataURL = null;
 
@@ -71,7 +71,8 @@ let _convertImageToBase64 = [%raw
     |}
 ];
 
-let _addImageData = (texture, imageMap, state, imageBase64Arr) => {
+let _addImageData =
+    ((texture, imageMap, state), imageBase64Map, imageBase64Arr) => {
   let source =
     OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
 
@@ -84,11 +85,17 @@ let _addImageData = (texture, imageMap, state, imageBase64Arr) => {
       imageMap |> WonderCommonlib.SparseMapService.set(imageIndex, source),
       imageBase64Arr
       |> ArrayService.push(
-           _convertImageToBase64(
-             TextureSizeService.getWidth(source),
-             TextureSizeService.getHeight(source),
-             source,
-           ),
+           switch (
+             imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)
+           ) {
+           | None =>
+             _convertImageToBase64(
+               TextureSizeService.getWidth(source),
+               TextureSizeService.getHeight(source),
+               source,
+             )
+           | Some(base64Str) => base64Str
+           },
          ),
     );
   | imageIndex => (imageIndex, imageMap, imageBase64Arr)
@@ -106,7 +113,7 @@ let _addTextureData =
        }: GenerateSceneGraphType.textureData,
      );
 
-let build = (materialDataMap, state) => {
+let build = (materialDataMap, imageBase64Map, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -128,7 +135,7 @@ let build = (materialDataMap, state) => {
              (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
              (textureIndexMap, samplerIndexMap, imageMap),
            ),
-           (lightMaterial, name)
+           (lightMaterial, name),
          ) => {
            let diffuseMap =
              OperateLightMaterialMainService.getDiffuseMap(
@@ -208,7 +215,11 @@ let build = (materialDataMap, state) => {
                  );
 
                let (imageIndex, imageMap, imageBase64Arr) =
-                 _addImageData(diffuseMap, imageMap, state, imageBase64Arr);
+                 _addImageData(
+                   (diffuseMap, imageMap, state),
+                   imageBase64Map,
+                   imageBase64Arr,
+                 );
 
                (
                  (

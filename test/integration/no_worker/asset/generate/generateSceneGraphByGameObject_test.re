@@ -1738,4 +1738,132 @@ let _ =
         );
       });
     });
+
+    describe("optimize", () =>
+      describe("get image base64 from map", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+
+          let (state, sceneGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              sceneGameObject,
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            (transform1, (localPos1, localRotation1, localScale1)),
+            geometry1,
+            (material1, diffuseColor1),
+            meshRenderer1,
+          ) =
+            _createGameObject1(state);
+
+          let (
+            state,
+            gameObject2,
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (geometry2, (vertices2, texCoords2, normals2, indices2)),
+            (material2, (texture2, name2), (source2, width2, height2)),
+            meshRenderer2,
+          ) =
+            _createGameObject2(state);
+
+          let (
+            state,
+            gameObject3,
+            (transform3, (localPos3, localRotation3, localScale3)),
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            (material3, texture3, (source3, width3, height3)),
+            meshRenderer3,
+          ) =
+            _createGameObject3(state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform2,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(transform2),
+                 transform3,
+               );
+
+          let (canvas, context, (base64Str1, base64Str2)) =
+            GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+          (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              (geometry2, (vertices2, texCoords2, normals2, indices2)),
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (
+              (material1, diffuseColor1),
+              (material2, (texture2, name2), (source2, width2, height2)),
+              (material3, texture3, (source3, width3, height3)),
+            ),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          );
+        };
+
+        test("test images", () => {
+          let (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              (geometry2, (vertices2, texCoords2, normals2, indices2)),
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (
+              (material1, diffuseColor1),
+              (material2, (texture2, name2), (source2, width2, height2)),
+              (material3, texture3, (source3, width3, height3)),
+            ),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          ) =
+            _prepareGameObject(state);
+
+          let base64Str1 = "data:c1";
+          let base64Str2 = "data:c2";
+
+          let imageBase64Map =
+            WonderCommonlib.SparseMapService.createEmpty()
+            |> WonderCommonlib.SparseMapService.set(texture2, base64Str1)
+            |> WonderCommonlib.SparseMapService.set(texture3, base64Str2);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageBase64Map(
+            sceneGameObject,
+            {j|
+              "images":[{"uri":"$base64Str1"},{"uri":"$base64Str2"}]
+                |j},
+            imageBase64Map,
+            state,
+          );
+        });
+      })
+    );
   });
