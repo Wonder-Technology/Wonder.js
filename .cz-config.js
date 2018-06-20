@@ -27,6 +27,7 @@ module.exports = {
     { name: "job" },
     { name: "transform" },
     { name: "render-worker" },
+    { name: "basicMaterial" },
     { name: "lightMaterial" },
     { name: "instance" },
     { name: "boxGeometry" },

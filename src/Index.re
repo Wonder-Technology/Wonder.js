@@ -248,7 +248,7 @@ let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
 
-let hasLightMaterialMap = BasicMaterialAPI.hasLightMaterialMap;
+let hasBasicMaterialMap = BasicMaterialAPI.hasBasicMaterialMap;
 
 let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
 

@@ -111,7 +111,7 @@ let setBasicMaterialMap = (material, texture, state) => {
   setMap(material, texture, state);
 };
 
-let hasLightMaterialMap = (material, state) => {
+let hasBasicMaterialMap = (material, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
