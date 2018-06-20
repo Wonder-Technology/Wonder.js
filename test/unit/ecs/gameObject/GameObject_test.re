@@ -674,6 +674,112 @@ let _ =
         });
       });
 
+      describe("replace components", () => {
+        test("replace basic material component", () => {
+          let (state, gameObject1, (material1, _)) =
+            BasicMaterialTool.createGameObjectWithMap(state^);
+
+          let state =
+            GameObjectAPI.disposeGameObjectBasicMaterialComponent(
+              gameObject1,
+              material1,
+              state,
+            );
+          let (state, material2, _) =
+            BasicMaterialTool.createMaterialWithMap(state);
+          let state =
+            GameObjectAPI.addGameObjectBasicMaterialComponent(
+              gameObject1,
+              material2,
+              state,
+            );
+
+          GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
+            gameObject1,
+            state,
+          )
+          |> expect == material2;
+        });
+
+        test("replace light material component", () => {
+          let (state, gameObject1, (material1, _)) =
+            LightMaterialTool.createGameObjectWithMap(state^);
+
+          let state =
+            GameObjectAPI.disposeGameObjectLightMaterialComponent(
+              gameObject1,
+              material1,
+              state,
+            );
+          let (state, material2, _) =
+            LightMaterialTool.createMaterialWithMap(state);
+          let state =
+            GameObjectAPI.addGameObjectLightMaterialComponent(
+              gameObject1,
+              material2,
+              state,
+            );
+
+          GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
+            gameObject1,
+            state,
+          )
+          |> expect == material2;
+        });
+
+        test("replace boxGeometry component", () => {
+          let (state, gameObject1, geometry1) =
+            BoxGeometryTool.createGameObject(state^);
+
+          let state =
+            GameObjectAPI.disposeGameObjectBoxGeometryComponent(
+              gameObject1,
+              geometry1,
+              state,
+            );
+          let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
+          let state =
+            GameObjectAPI.addGameObjectBoxGeometryComponent(
+              gameObject1,
+              geometry2,
+              state,
+            );
+
+          GameObjectAPI.unsafeGetGameObjectGeometryComponent(
+            gameObject1,
+            state,
+          )
+          |> expect == geometry2;
+        });
+
+        test("replace customGeometry component", () => {
+          let (state, gameObject1, geometry1) =
+            CustomGeometryTool.createGameObject(state^);
+
+          let state =
+            GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+              gameObject1,
+              geometry1,
+              state,
+            );
+          let (state, geometry2) =
+            CustomGeometryAPI.createCustomGeometry(state);
+          let state =
+            GameObjectAPI.addGameObjectCustomGeometryComponent(
+              gameObject1,
+              geometry2,
+              state,
+            );
+
+          GameObjectAPI.unsafeGetGameObjectGeometryComponent(
+            gameObject1,
+            state,
+          )
+          |> expect == geometry2;
+        });
+        /* TODO test more... */
+      });
+
       describe("test reallocate gameObject", () => {
         describe(
           "if have dispose too many gameObjects, reallocate gameObject", () => {

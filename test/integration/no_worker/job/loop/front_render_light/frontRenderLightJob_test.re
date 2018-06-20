@@ -1521,97 +1521,96 @@ let _ =
         (),
       );
     });
-    describe("bind and update map", () =>
-      describe("bind map", () => {
-        test("if not has map, not bind", () => {
-          let (state, gameObject, _, _, _) =
-            FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+    describe("bind map", () => {
+      test("if not has map, not bind", () => {
+        let (state, gameObject, _, _, _) =
+          FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+        let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(~sandbox, ~bindTexture, ()),
+             );
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+        bindTexture |> expect |> not_ |> toCalled;
+      });
+      describe("else", () => {
+        let _prepare = state => {
+          let (state, gameObject, _, _, _, _) =
+            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
+              sandbox,
+              state,
+            );
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+          let textureUnit0 = 0;
+          let texture2D = Obj.magic(8);
+          let glTexture1 = Obj.magic(11);
+          let glTexture2 = Obj.magic(12);
+          let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
+          createTexture |> onCall(0) |> returns(glTexture1);
+          createTexture |> onCall(1) |> returns(glTexture2);
+          let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
           let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
             state
             |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(~sandbox, ~bindTexture, ()),
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~textureUnit0,
+                   ~texture2D,
+                   ~createTexture,
+                   ~activeTexture,
+                   ~bindTexture,
+                   (),
+                 ),
                );
+          (
+            state,
+            (texture2D, glTexture1, glTexture2),
+            (activeTexture, bindTexture),
+          );
+        };
+        test(
+          "if texture of the specific unit is cached, not bind and active it again",
+          () => {
+          let (state, _, (activeTexture, _)) = _prepare(state^);
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-          bindTexture |> expect |> not_ |> toCalled;
+          let state = state |> DirectorTool.runWithDefaultTime;
+          activeTexture |> expect |> toCalledTwice;
         });
         describe("else", () => {
-          let _prepare = state => {
-            let (state, gameObject, _, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
-                sandbox,
-                state,
-              );
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            let textureUnit0 = 0;
-            let texture2D = Obj.magic(8);
-            let glTexture1 = Obj.magic(11);
-            let glTexture2 = Obj.magic(12);
-            let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-            createTexture |> onCall(0) |> returns(glTexture1);
-            createTexture |> onCall(1) |> returns(glTexture2);
-            let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
-            let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~textureUnit0,
-                     ~texture2D,
-                     ~createTexture,
-                     ~activeTexture,
-                     ~bindTexture,
-                     (),
-                   ),
-                 );
-            (
-              state,
-              (texture2D, glTexture1, glTexture2),
-              (activeTexture, bindTexture),
-            );
-          };
-          test(
-            "if texture of the specific unit is cached, not bind and active it again",
-            () => {
+          test("active texture unit", () => {
             let (state, _, (activeTexture, _)) = _prepare(state^);
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            activeTexture |> expect |> toCalledTwice;
+            (
+              SinonTool.calledWith(activeTexture, 0),
+              SinonTool.calledWith(activeTexture, 1),
+            )
+            |> expect == (true, true);
           });
-          describe("else", () => {
-            test("active texture unit", () => {
-              let (state, _, (activeTexture, _)) = _prepare(state^);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              (
-                SinonTool.calledWith(activeTexture, 0),
-                SinonTool.calledWith(activeTexture, 1),
-              )
-              |> expect == (true, true);
-            });
-            test("bind gl texture to TEXTURE_2D target", () => {
-              let (
-                state,
-                (texture2D, glTexture1, glTexture2),
-                (_, bindTexture),
-              ) =
-                _prepare(state^);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              (
-                SinonTool.calledWithArg2(bindTexture, texture2D, glTexture1),
-                SinonTool.calledWithArg2(bindTexture, texture2D, glTexture2),
-              )
-              |> expect == (true, true);
-            });
+          test("bind gl texture to TEXTURE_2D target", () => {
+            let (
+              state,
+              (texture2D, glTexture1, glTexture2),
+              (_, bindTexture),
+            ) =
+              _prepare(state^);
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            (
+              SinonTool.calledWithArg2(bindTexture, texture2D, glTexture1),
+              SinonTool.calledWithArg2(bindTexture, texture2D, glTexture2),
+            )
+            |> expect == (true, true);
           });
         });
-      })
-    );
+      });
+    });
+
     describe("update map", () => {
       let _prepare = (~state, ~width=2, ~height=4, ()) => {
         let (state, gameObject, _, _, _, (diffuseMap, specularMap)) =
@@ -1710,6 +1709,127 @@ let _ =
         |> toCalledOnce;
       });
     });
+
+    describe("test set map at runtime which has no map before", () =>
+      test("replace material component", () => {
+        let (state, gameObject1, _, material1, _) =
+          FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+        let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
+        let pos1 = 0;
+        let pos2 = 1;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(
+            ~pos=pos1,
+            sandbox,
+            "u_diffuseMapSampler",
+          );
+        let getUniformLocation =
+          GLSLLocationTool.stubLocation(
+            getUniformLocation,
+            pos2,
+            sandbox,
+            "u_specularMapSampler",
+          );
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniform1i,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        let state =
+          GameObjectAPI.disposeGameObjectLightMaterialComponent(
+            gameObject1,
+            material1,
+            state,
+          );
+        let (state, material2, _) =
+          LightMaterialTool.createMaterialWithMap(state);
+        let state =
+          GameObjectAPI.addGameObjectLightMaterialComponent(
+            gameObject1,
+            material2,
+            state,
+          );
+        let state = GameObjectAPI.initGameObject(gameObject1, state);
+        let state = state |> DirectorTool.runWithDefaultTime;
+
+        (
+          uniform1i |> withOneArg(pos1) |> getCallCount,
+          uniform1i |> withOneArg(pos2) |> getCallCount,
+        )
+        |> expect == (1, 1);
+      })
+    );
+
+    describe("test remove map at runtime which has map before", () =>
+      test("replace material component", () => {
+        let (state, gameObject1, _, material1, _, (diffuseMap, specularMap)) =
+          FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
+            sandbox,
+            state^,
+          );
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+        let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
+        let pos1 = 0;
+        let pos2 = 1;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(
+            ~pos=pos1,
+            sandbox,
+            "u_diffuseMapSampler",
+          );
+        let getUniformLocation =
+          GLSLLocationTool.stubLocation(
+            getUniformLocation,
+            pos2,
+            sandbox,
+            "u_specularMapSampler",
+          );
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniform1i,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        let state =
+          GameObjectAPI.disposeGameObjectLightMaterialComponent(
+            gameObject1,
+            material1,
+            state,
+          );
+        let (state, material2) = LightMaterialAPI.createLightMaterial(state);
+        let state =
+          GameObjectAPI.addGameObjectLightMaterialComponent(
+            gameObject1,
+            material2,
+            state,
+          );
+        let state = GameObjectAPI.initGameObject(gameObject1, state);
+        let state = state |> DirectorTool.runWithDefaultTime;
+
+        (
+          uniform1i |> withOneArg(pos1) |> getCallCount,
+          uniform1i |> withOneArg(pos2) |> getCallCount,
+        )
+        |> expect == (1, 1);
+      })
+    );
+
     describe("draw", () =>
       describe(
         "if geometry has index buffer, bind index buffer and drawElements", () => {

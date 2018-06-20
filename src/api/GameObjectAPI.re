@@ -68,7 +68,7 @@ let disposeGameObjectBasicCameraViewComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeBasicCameraViewComponent(. component, state);
+  deferDisposeBasicCameraViewComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectBasicCameraViewComponent =
@@ -124,7 +124,11 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposePerspectiveCameraProjectionComponent(. component, state);
+  deferDisposePerspectiveCameraProjectionComponent(.
+    gameObject,
+    component,
+    state,
+  );
 };
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent =
@@ -185,8 +189,12 @@ let disposeGameObjectTransformComponent =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   isKeepOrder ?
-    deferDisposeTransformComponentForKeepOrder(. component, state) :
-    deferDisposeTransformComponent(. component, state);
+    deferDisposeTransformComponentForKeepOrder(.
+      gameObject,
+      component,
+      state,
+    ) :
+    deferDisposeTransformComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectTransformComponent =
@@ -242,7 +250,7 @@ let disposeGameObjectBoxGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeBoxGeometryComponent(. component, state);
+  deferDisposeBoxGeometryComponent(. gameObject, component, state);
 };
 
 let hasGameObjectBoxGeometryComponent =
@@ -286,7 +294,7 @@ let disposeGameObjectCustomGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeCustomGeometryComponent(. component, state);
+  deferDisposeCustomGeometryComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectGeometryComponent =
@@ -342,7 +350,7 @@ let disposeGameObjectBasicMaterialComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeBasicMaterialComponent(. component, state);
+  deferDisposeBasicMaterialComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectBasicMaterialComponent =
@@ -398,7 +406,7 @@ let disposeGameObjectLightMaterialComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeLightMaterialComponent(. component, state);
+  deferDisposeLightMaterialComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectLightMaterialComponent =
@@ -510,7 +518,7 @@ let disposeGameObjectAmbientLightComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeAmbientLightComponent(. component, state);
+  deferDisposeAmbientLightComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectAmbientLightComponent =
@@ -566,7 +574,7 @@ let disposeGameObjectDirectionLightComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeDirectionLightComponent(. component, state);
+  deferDisposeDirectionLightComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectDirectionLightComponent =
@@ -622,7 +630,7 @@ let disposeGameObjectPointLightComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposePointLightComponent(. component, state);
+  deferDisposePointLightComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectPointLightComponent =
@@ -702,7 +710,7 @@ let disposeGameObjectSourceInstanceComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeSourceInstanceComponent(. component, state);
+  deferDisposeSourceInstanceComponent(. gameObject, component, state);
 };
 
 let addGameObjectObjectInstanceComponent =
@@ -746,7 +754,7 @@ let disposeGameObjectObjectInstanceComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeObjectInstanceComponent(. component, state);
+  deferDisposeObjectInstanceComponent(. gameObject, component, state);
 };
 
 let isGameObjectAlive =

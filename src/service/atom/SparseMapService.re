@@ -23,6 +23,16 @@ let getValidKeys = map =>
        [||],
      );
 
+let mapValid = (func, map) =>
+  map
+  |> Js.Array.map(value =>
+       if (value |> Obj.magic === Js.Undefined.empty) {
+         value;
+       } else {
+         func(. value);
+       }
+     );
+
 let forEachValid = (func, map) =>
   map
   |> WonderCommonlib.ArrayService.forEach((. value) =>

@@ -4,6 +4,19 @@ open BasicMaterialType;
 
 let getRecord = state => RecordBasicMaterialMainService.getRecord(state);
 
+let createMaterialWithMap = state => {
+  let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
+  let (state, texture) =
+    BasicSourceTextureAPI.createBasicSourceTexture(state);
+  let source = BasicSourceTextureTool.buildSource(10, 20);
+  let state =
+    state
+    |> BasicSourceTextureAPI.setBasicSourceTextureSource(texture, source);
+  let state = BasicMaterialAPI.setBasicMaterialMap(material, texture, state);
+
+  (state, material, (texture, source));
+};
+
 let createGameObject = state => {
   open BasicMaterialAPI;
   open GameObjectAPI;
