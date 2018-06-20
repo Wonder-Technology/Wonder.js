@@ -332,6 +332,12 @@ let buildRenderConfig =
       ],
       "uniforms": [
         {
+          "name": "u_color",
+          "field": "color",
+          "type": "float3",
+          "from": "basicMaterial"
+        },
+        {
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
@@ -485,6 +491,12 @@ let buildRenderConfig =
     ],
     "variables": {
       "uniforms": [
+        {
+          "name": "u_diffuse",
+          "field": "diffuseColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        },
         {
           "name": "u_diffuseMapSampler",
           "field": "diffuseMap",

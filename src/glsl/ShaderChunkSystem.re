@@ -594,7 +594,7 @@ varying vec2 v_diffuseMapTexCoord;
 
 |},{|
 vec3 getMaterialDiffuse() {
-        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;
+        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb * u_diffuse;
     }
 |}),{|
 
@@ -900,7 +900,7 @@ varying vec2 v_mapCoord0;
 |},{|
 
 |}),{|
-totalColor *= texture2D(u_mapSampler, v_mapCoord0);
+totalColor = vec4(totalColor.rgb * texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, totalColor.a);
 |}))
 
     };

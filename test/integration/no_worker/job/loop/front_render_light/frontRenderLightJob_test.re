@@ -1321,8 +1321,9 @@ let _ =
           ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
           (),
         );
-        describe("test send map data", () =>
-          describe("send u_diffuseMapSampler, u_specularMapSampler", () => {
+        describe("test with map", () =>
+          describe(
+            "send u_diffuseMapSampler, u_diffuse, u_specularMapSampler", () => {
             let _prepare = state => {
               let (state, gameObject, _, _, _, _) =
                 FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
@@ -1332,8 +1333,10 @@ let _ =
               let (state, _, _, _) =
                 CameraTool.createCameraGameObject(state);
               let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
+              let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
               let pos1 = 0;
               let pos2 = 1;
+              let pos3 = 2;
               let getUniformLocation =
                 GLSLLocationTool.getUniformLocation(
                   ~pos=pos1,
@@ -1347,27 +1350,37 @@ let _ =
                   sandbox,
                   "u_specularMapSampler",
                 );
+              let getUniformLocation =
+                GLSLLocationTool.stubLocation(
+                  getUniformLocation,
+                  pos3,
+                  sandbox,
+                  "u_diffuse",
+                );
               let state =
                 state
                 |> FakeGlTool.setFakeGl(
                      FakeGlTool.buildFakeGl(
                        ~sandbox,
                        ~uniform1i,
+                       ~uniform3f,
                        ~getUniformLocation,
                        (),
                      ),
                    );
-              (state, (pos1, pos2), uniform1i);
+              (state, (pos1, pos2, pos3), (uniform1i, uniform3f));
             };
             test("test send", () => {
-              let (state, (pos1, pos2), uniform1i) = _prepare(state^);
+              let (state, (pos1, pos2, pos3), (uniform1i, uniform3f)) =
+                _prepare(state^);
               let state =
                 state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
               (
                 SinonTool.calledWithArg2(uniform1i, pos1, 0),
                 SinonTool.calledWithArg2(uniform1i, pos2, 1),
+                SinonTool.calledWith(uniform3f, pos3),
               )
-              |> expect == (true, true);
+              |> expect == (true, true, true);
             });
           })
         );

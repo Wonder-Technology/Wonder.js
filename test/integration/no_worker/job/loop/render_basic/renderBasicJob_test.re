@@ -742,48 +742,75 @@ let _ =
             ),
         (),
       );
-      describe("send u_mapSampler", () => {
-        let _prepare = state => {
-          let (state, gameObject, _, _, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithCreatedMap(
-              sandbox,
-              state,
-            );
-          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-          let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
-          let pos = 0;
-          let getUniformLocation =
-            GLSLLocationTool.getUniformLocation(
-              ~pos,
-              sandbox,
-              "u_mapSampler",
-            );
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~uniform1i,
-                   ~getUniformLocation,
-                   (),
-                 ),
-               );
-          (state, pos, uniform1i);
-        };
-        test("if cached, not send", () => {
-          let (state, pos, uniform1i) = _prepare(state^);
-          let state =
-            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-          let state = state |> DirectorTool.runWithDefaultTime;
-          uniform1i |> withTwoArgs(pos, 0) |> expect |> toCalledOnce;
-        });
-        test("else, send", () => {
-          let (state, pos, uniform1i) = _prepare(state^);
-          let state =
-            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-          uniform1i |> withOneArg(pos) |> expect |> toCalledWith([|pos, 0|]);
-        });
-      });
+
+      describe("test with map", () =>
+        describe("send u_mapSampler and u_color", () => {
+          let _prepare = state => {
+            let (state, gameObject, _, _, _, _) =
+              RenderBasicJobTool.prepareGameObjectWithCreatedMap(
+                sandbox,
+                state,
+              );
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
+            let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+            let pos1 = 0;
+            let pos2 = 1;
+            let getUniformLocation =
+              GLSLLocationTool.getUniformLocation(
+                ~pos=pos1,
+                sandbox,
+                "u_mapSampler",
+              );
+            let getUniformLocation =
+              GLSLLocationTool.stubLocation(
+                getUniformLocation,
+                pos2,
+                sandbox,
+                "u_color",
+              );
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~uniform1i,
+                     ~uniform3f,
+                     ~getUniformLocation,
+                     (),
+                   ),
+                 );
+            (state, (pos1, pos2), (uniform1i, uniform3f));
+          };
+          test("if cached, not send", () => {
+            let (state, (pos1, pos2), (uniform1i, uniform3f)) =
+              _prepare(state^);
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            let state = state |> DirectorTool.runWithDefaultTime;
+
+            (
+              uniform1i |> withTwoArgs(pos1, 0) |> getCallCount,
+              uniform3f |> withOneArg(pos2) |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+          test("else, send", () => {
+            let (state, (pos1, pos2), (uniform1i, uniform3f)) =
+              _prepare(state^);
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            (
+              uniform1i |> withTwoArgs(pos1, 0) |> getCallCount,
+              uniform3f |> withFourArgs(pos2, 1., 1., 1.) |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+        })
+      );
     });
 
     describe("bind map", () => {
@@ -1685,7 +1712,7 @@ let _ =
           state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
         let state =
-          GameObjectAPI .disposeGameObjectBasicMaterialComponent(
+          GameObjectAPI.disposeGameObjectBasicMaterialComponent(
             gameObject1,
             material1,
             state,

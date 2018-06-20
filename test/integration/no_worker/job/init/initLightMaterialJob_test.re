@@ -575,9 +575,10 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                                 GLSLTool.getFsSource(shaderSource),
                                 [
                                   {|uniform sampler2D u_diffuseMapSampler;|},
+                                  {|uniform vec3 u_diffuse;|},
                                   {|varying vec2 v_diffuseMapTexCoord;|},
                                   {|vec3 getMaterialDiffuse() {
-        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;
+        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb * u_diffuse;
     }|}
                                 ]
                               )

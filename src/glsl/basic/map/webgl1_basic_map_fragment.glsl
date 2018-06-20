@@ -3,6 +3,6 @@ varying vec2 v_mapCoord0;
 @end
 
 @body
-    totalColor *= texture2D(u_mapSampler, v_mapCoord0);
+    totalColor = vec4(totalColor.rgb * texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, totalColor.a);
 @end
 
