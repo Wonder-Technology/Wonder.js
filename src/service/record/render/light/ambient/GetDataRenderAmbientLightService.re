@@ -1,3 +1,3 @@
-open RenderAmbientLightType ;
+open RenderSceneType;
 
-let getColor = (mappedIndex, {colors}) => RecordAmbientLightMainService.getColor(mappedIndex, colors);
+let getColor = ({ambientLight}) => ambientLight.color;

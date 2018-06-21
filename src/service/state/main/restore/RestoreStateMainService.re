@@ -36,7 +36,6 @@ let restore =
   |> RestoreRenderMainService.restore(currentState)
   |> RestoreTransformMainService.restore(currentState)
   |> RestoreCustomGeometryMainService.restore(currentState)
-  |> RestoreAmbientLightMainService.restore(currentState)
   |> RestoreDirectionLightMainService.restore(currentState)
   |> RestorePointLightMainService.restore(currentState)
   |> RestoreSourceTextureMainService.restore(currentState)

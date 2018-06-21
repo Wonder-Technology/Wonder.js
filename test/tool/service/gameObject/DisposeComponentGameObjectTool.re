@@ -133,19 +133,6 @@ let deferDisposeObjectInstanceComponent =
     }
   );
 
-let deferDisposeAmbientLightComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedAmbientLightArray:
-          state.gameObjectRecord.disposedAmbientLightArray |> ArrayService.push(component)
-      }
-    }
-  );
-
 let deferDisposeDirectionLightComponent =
   [@bs]
   (
@@ -243,17 +230,6 @@ let batchDisposeBasicMaterialComponent = (state, componentArray: array(component
 
 let batchDisposeLightMaterialComponent = (state, componentArray: array(component)) =>
   DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(state, componentArray);
-
-let batchDisposeAmbientLightComponent =
-    ({ambientLightRecord} as state, componentArray: array(component)) => {
-  ...state,
-  ambientLightRecord:
-    ComponentMapService.batchDisposeComponent(
-      ambientLightRecord,
-      DisposeAmbientLightService.handleBatchDisposeComponent,
-      componentArray
-    )
-};
 
 let batchDisposeDirectionLightComponent =
     ({directionLightRecord} as state, componentArray: array(component)) => {

@@ -16,11 +16,12 @@ type cameraViewIndex = int;
 
 type cameraProjectionIndex = int;
 
-/* type ambientLightIndex = int;
+type ambientLightIndex = int;
 
-   type directionLightIndex = int;
+type directionLightIndex = int;
 
-   type pointLightIndex = int; */
+type pointLightIndex = int;
+
 type geometryIndex = int;
 
 type componentIndex = int;
@@ -33,8 +34,6 @@ type asset = {
   version: string,
   generator: string,
 };
-
-type scene = {gameObjects: array(gameObjectIndex)};
 
 type gameObjects = {
   count: int,
@@ -70,16 +69,6 @@ type lightMaterial = {
   name: string,
 };
 
-/*
- type ambientLight = {
- color: option(array(float))
- };
-
-
- type directionLight = {
- color: option(array(float)),
- intensity: option(float)
- }; */
 type accessorComponentType =
   | BYTE
   | UNSIGNED_BYTE
@@ -147,16 +136,20 @@ type childrenTransformIndexData = {
   childrenTransformIndices: array(array(transformIndex)),
 };
 
+/* type ambientLightGameObjectIndexData = {
+     gameObjectIndex,
+     componentIndex: ambientLightIndex,
+   }; */
+
 type gameObjectIndices = {
   childrenTransformIndexData,
   transformGameObjectIndexData: componentGameObjectIndexData,
   basicCameraViewGameObjectIndexData: componentGameObjectIndexData,
   perspectiveCameraProjectionGameObjectIndexData: componentGameObjectIndexData,
   lightMaterialGameObjectIndexData: componentGameObjectIndexData,
-  /* TODO ambientLightGameObjectIndices: array(ambientLightIndex),
-     directionLightGameObjectIndices: array(directionLightIndex),
-     pointLightGameObjectIndices: array(pointLightIndex), */
-  /* geometryGameObjectIndices: array(geometryIndex) */
+  /* ambientLightGameObjectIndex: ambientLightIndex, */
+  directionLightGameObjectIndexData: componentGameObjectIndexData,
+  pointLightGameObjectIndexData: componentGameObjectIndexData,
   customGeometryGameObjectIndexData: componentGameObjectIndexData,
 };
 
@@ -186,6 +179,27 @@ type indices = {
 
 type basicCameraViews = {count: int};
 
+type ambientLight = {color: array(float)};
+
+type directionLight = {
+  color: array(float),
+  intensity: float,
+};
+
+type pointLight = {
+  color: array(float),
+  intensity: float,
+  constantAttenuation: float,
+  linearAttenuation: float,
+  quadraticAttenuation: float,
+  range: float,
+};
+
+type scene = {
+  gameObjects: array(gameObjectIndex),
+  ambientLight: option(ambientLight),
+};
+
 type wd = {
   asset,
   scene,
@@ -197,7 +211,8 @@ type wd = {
   buffers: array(buffer),
   bufferViews: array(bufferView),
   accessors: array(accessor),
-  /* TODO add ambientLights, directionLights, pointLights, */
+  directionLights: array(directionLight),
+  pointLights: array(pointLight),
   basicCameraViews,
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   transforms: array(transform),

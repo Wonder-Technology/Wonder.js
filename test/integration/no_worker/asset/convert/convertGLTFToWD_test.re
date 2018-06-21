@@ -351,11 +351,49 @@ let _ =
         asset |> expect == {version: "2.0", generator: "GLTF2WD"}
       )
     );
-    test("test scene", () =>
-      _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({scene}) =>
-        scene |> expect == {gameObjects: [|0|]}
+
+    describe("test scene", () => {
+      test("test gameObjects", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({scene}) =>
+          scene.gameObjects |> expect == [|0|]
+        )
+      );
+
+      test("test ambientLight", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({scene}) =>
+          scene.ambientLight |> expect == Some({color: [|1.0, 0.5, 0.2|]})
+        )
+      );
+    });
+
+    describe("test directionLights", () =>
+      test("test light gltf", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({directionLights}) =>
+          directionLights
+          |> expect == [|{color: [|0.5, 0.6, 0.8|], intensity: 1.}|]
+        )
       )
     );
+
+    describe("test pointLights", () =>
+      test("test light gltf", () =>
+        _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({pointLights}) =>
+          pointLights
+          |>
+          expect == [|
+                      {
+                        color: [|0., 0., 0.|],
+                        intensity: 2.5,
+                        constantAttenuation: 1.,
+                        linearAttenuation: 1.5,
+                        quadraticAttenuation: 0.,
+                        range: 55.5,
+                      },
+                    |]
+        )
+      )
+    );
+
     describe("test gameObjects", () => {
       test("test single node gltf", () =>
         _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({gameObjects}) =>
@@ -383,6 +421,7 @@ let _ =
         )
       );
     });
+
     describe("test camera data", () => {
       describe("test basicCameraViews", () => {
         test("test no data", () =>

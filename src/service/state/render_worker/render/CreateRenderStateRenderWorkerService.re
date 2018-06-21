@@ -8,7 +8,7 @@ open RenderWorkerBasicMaterialType;
 
 open RenderWorkerLightMaterialType;
 
-open RenderWorkerAmbientLightType;
+open RenderWorkerSceneType;
 
 open RenderWorkerDirectionLightType;
 
@@ -33,6 +33,7 @@ open ShaderType;
 let createRenderState =
     (
       {
+        sceneRecord,
         settingRecord,
         gpuDetectRecord,
         glslSenderRecord,
@@ -47,11 +48,7 @@ let createRenderState =
         browserDetectRecord,
       } as state: StateDataRenderWorkerType.renderWorkerState,
     ) => {
-  let {
-        localToWorldMatrices,
-        localToWorldMatrixCacheMap,
-        normalMatrixCacheMap,
-      } as transformRecord =
+  let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformRenderWorkerService.getRecord(state);
   let boxGeometryRecord =
     RecordBoxGeometryRenderWorkerService.getRecord(state);
@@ -61,8 +58,6 @@ let createRenderState =
     RecordBasicMaterialRenderWorkerService.getRecord(state);
   let lightMaterialRecord =
     RecordLightMaterialRenderWorkerService.getRecord(state);
-  let ambientLightRecord =
-    RecordAmbientLightRenderWorkerService.getRecord(state);
   let directionLightRecord =
     RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
@@ -82,6 +77,11 @@ let createRenderState =
     isSendTransformMatrixDataMap,
   } = sourceInstanceRecord;
   {
+    sceneRecord: {
+      ambientLight: {
+        color: sceneRecord.ambientLight.color,
+      },
+    },
     settingRecord: {
       gpu: settingRecord.gpu,
       instanceBuffer:
@@ -182,8 +182,7 @@ let createRenderState =
         arrayBufferViewSourceTextureRecord.isNeedUpdates
         |> OptionService.unsafeGet,
       flipYs:
-        arrayBufferViewSourceTextureRecord.flipYs
-        |> OptionService.unsafeGet,
+        arrayBufferViewSourceTextureRecord.flipYs |> OptionService.unsafeGet,
       widths:
         arrayBufferViewSourceTextureRecord.widths |> OptionService.unsafeGet,
       heights:
@@ -198,10 +197,6 @@ let createRenderState =
           state,
         ),
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
-    },
-    ambientLightRecord: {
-      index: ambientLightRecord.index,
-      colors: ambientLightRecord.colors,
     },
     directionLightRecord: {
       index: directionLightRecord.index,

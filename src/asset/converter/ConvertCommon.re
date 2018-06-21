@@ -36,3 +36,5 @@ let isBase64 = str =>
   |> Js.String.substring(~from=0, ~to_=5) === "data:";
 
 let buildDefaultName = (type_, index) => {j|$(type_)_$index|j};
+
+let getScene = (scenes, scene) => Array.unsafe_get(scenes, scene);

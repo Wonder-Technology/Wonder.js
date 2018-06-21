@@ -24,7 +24,7 @@ open RenderBasicSourceTextureType;
 
 open RenderArrayBufferViewSourceTextureType;
 
-open RenderAmbientLightType;
+open RenderSceneType;
 
 open RenderDirectionLightType;
 
@@ -161,6 +161,7 @@ and glslSenderRecord = {
   mutable lastSendGeometry: option((geometry, int)),
 }
 and renderState = {
+  sceneRecord,
   vboBufferRecord,
   typeArrayPoolRecord,
   glslSenderRecord,
@@ -172,7 +173,6 @@ and renderState = {
   lightMaterialRecord,
   basicSourceTextureRecord,
   arrayBufferViewSourceTextureRecord,
-  ambientLightRecord,
   directionLightRecord,
   pointLightRecord,
   transformRecord,

@@ -21,7 +21,6 @@ let createState = () => {
   sourceTextureRecord: None,
   basicSourceTextureRecord: None,
   arrayBufferViewSourceTextureRecord: None,
-  ambientLightRecord: RecordAmbientLightMainService.create(),
   directionLightRecord: RecordDirectionLightMainService.create(),
   pointLightRecord: RecordPointLightMainService.create(),
   boxGeometryRecord: RecordBoxGeometryMainService.create(),

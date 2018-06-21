@@ -1,7 +1,6 @@
-open SceneType;
+open RenderWorkerSceneType;
 
 let create = () => {
-  currentCameraGameObject: None,
   ambientLight: {
     color: AmbientLightService.getDefaultColor(),
   },

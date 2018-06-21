@@ -1,3 +1,8 @@
 open GameObjectType;
 
-type sceneRecord = {currentCameraGameObject: option(gameObject)};
+type ambientLight = {color: array(float)};
+
+type sceneRecord = {
+  currentCameraGameObject: option(gameObject),
+  ambientLight,
+};

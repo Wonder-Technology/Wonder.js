@@ -38,8 +38,6 @@ open BasicSourceTextureType;
 
 open ArrayBufferViewSourceTextureType;
 
-open AmbientLightType;
-
 open DirectionLightType;
 
 open PointLightType;
@@ -127,7 +125,6 @@ and state = {
   mutable sourceTextureRecord: option(sourceTextureRecord),
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
   mutable arrayBufferViewSourceTextureRecord: option(arrayBufferViewSourceTextureRecord),
-  mutable ambientLightRecord,
   mutable directionLightRecord,
   mutable pointLightRecord,
   mutable boxGeometryRecord,

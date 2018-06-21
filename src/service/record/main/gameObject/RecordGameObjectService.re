@@ -19,7 +19,6 @@ let create = () => {
   disposedCustomGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedAmbientLightArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedPointLightArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedMeshRendererComponentArray:
@@ -36,7 +35,6 @@ let create = () => {
   lightMaterialMap: WonderCommonlib.SparseMapService.createEmpty(),
   sourceInstanceMap: WonderCommonlib.SparseMapService.createEmpty(),
   objectInstanceMap: WonderCommonlib.SparseMapService.createEmpty(),
-  ambientLightMap: WonderCommonlib.SparseMapService.createEmpty(),
   directionLightMap: WonderCommonlib.SparseMapService.createEmpty(),
   pointLightMap: WonderCommonlib.SparseMapService.createEmpty(),
 };
@@ -60,7 +58,6 @@ let deepCopyForRestore =
         disposedCustomGeometryArray,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
-        disposedAmbientLightArray,
         disposedDirectionLightArray,
         disposedPointLightArray,
         disposedMeshRendererComponentArray,
@@ -75,7 +72,6 @@ let deepCopyForRestore =
         lightMaterialMap,
         sourceInstanceMap,
         objectInstanceMap,
-        ambientLightMap,
         directionLightMap,
         pointLightMap,
       } as record,
@@ -106,8 +102,6 @@ let deepCopyForRestore =
     disposedSourceInstanceArray |> SparseMapService.copy,
   disposedObjectInstanceArray:
     disposedObjectInstanceArray |> SparseMapService.copy,
-  disposedAmbientLightArray:
-    disposedAmbientLightArray |> SparseMapService.copy,
   disposedDirectionLightArray:
     disposedDirectionLightArray |> SparseMapService.copy,
   disposedPointLightArray: disposedPointLightArray |> SparseMapService.copy,
@@ -126,7 +120,6 @@ let deepCopyForRestore =
   lightMaterialMap: lightMaterialMap |> SparseMapService.copy,
   sourceInstanceMap: sourceInstanceMap |> SparseMapService.copy,
   objectInstanceMap: objectInstanceMap |> SparseMapService.copy,
-  ambientLightMap: ambientLightMap |> SparseMapService.copy,
   directionLightMap: directionLightMap |> SparseMapService.copy,
   pointLightMap: pointLightMap |> SparseMapService.copy,
 };

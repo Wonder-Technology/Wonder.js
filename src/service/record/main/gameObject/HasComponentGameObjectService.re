@@ -7,7 +7,9 @@ open ComponentMapService;
 let hasBasicCameraViewComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.basicCameraViewMap);
 
-let hasPerspectiveCameraProjectionComponent = (uid: int, gameObjectRecord) : bool =>
+let hasPerspectiveCameraProjectionComponent =
+    (uid: int, gameObjectRecord)
+    : bool =>
   hasComponent(uid, gameObjectRecord.perspectiveCameraProjectionMap);
 
 let hasMeshRendererComponent = (uid: int, gameObjectRecord) : bool =>
@@ -20,14 +22,14 @@ let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
   CurrentComponentDataMapRenderService.hasComponent(
     uid,
     gameObjectRecord.geometryDataMap,
-    CurrentComponentDataMapService.getBoxGeometryType()
+    CurrentComponentDataMapService.getBoxGeometryType(),
   );
 
 let hasGeometryComponent = (uid: int, gameObjectRecord) : bool =>
   CurrentComponentDataMapRenderService.hasComponent(
     uid,
     gameObjectRecord.geometryDataMap,
-    CurrentComponentDataMapService.getCustomGeometryType()
+    CurrentComponentDataMapService.getCustomGeometryType(),
   );
 
 let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>
@@ -35,9 +37,6 @@ let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>
 
 let hasLightMaterialComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.lightMaterialMap);
-
-let hasAmbientLightComponent = (uid: int, gameObjectRecord) : bool =>
-  hasComponent(uid, gameObjectRecord.ambientLightMap);
 
 let hasDirectionLightComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.directionLightMap);

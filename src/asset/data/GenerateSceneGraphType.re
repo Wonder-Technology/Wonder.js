@@ -1,4 +1,4 @@
-type nodeExtra = {material: option(int)};
+type nodeExtras = {material: option(int)};
 
 type nodeData = {
   gameObject: int,
@@ -8,7 +8,7 @@ type nodeData = {
   scale: option(ScaleType.scale),
   mesh: option(int),
   camera: option(int),
-  extras: option(nodeExtra),
+  extras: option(nodeExtras),
 };
 
 type attributes = {

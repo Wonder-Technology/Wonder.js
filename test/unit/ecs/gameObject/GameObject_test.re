@@ -190,23 +190,23 @@ let _ =
         );
       });
       describe("test light component", () => {
-        describe("unsafeGetGameObjectAmbientLightComponent", () =>
+        describe("unsafeGetGameObjectDirectionLightComponent", () =>
           test("get light component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, light) = AmbientLightAPI.createAmbientLight(state);
+            let (state, light) = DirectionLightAPI.createDirectionLight(state);
             let state =
-              state |> addGameObjectAmbientLightComponent(gameObject, light);
-            unsafeGetGameObjectAmbientLightComponent(gameObject, state)
+              state |> addGameObjectDirectionLightComponent(gameObject, light);
+            unsafeGetGameObjectDirectionLightComponent(gameObject, state)
             |> expect == light;
           })
         );
-        describe("hasGameObjectAmbientLightComponent", () =>
+        describe("hasGameObjectDirectionLightComponent", () =>
           test("has light component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, light) = AmbientLightAPI.createAmbientLight(state);
+            let (state, light) = DirectionLightAPI.createDirectionLight(state);
             let state =
-              state |> addGameObjectAmbientLightComponent(gameObject, light);
-            hasGameObjectAmbientLightComponent(gameObject, state)
+              state |> addGameObjectDirectionLightComponent(gameObject, light);
+            hasGameObjectDirectionLightComponent(gameObject, state)
             |> expect == true;
           })
         );
@@ -515,68 +515,6 @@ let _ =
           });
         });
         describe("dispose light component", () => {
-          describe("test ambient light component", () => {
-            test("test dispose one", () => {
-              TestTool.closeContractCheck();
-              open GameObjectType;
-              let (state, gameObject1, light1) =
-                AmbientLightTool.createGameObject(state^);
-              let (state, gameObject2, light2) =
-                AmbientLightTool.createGameObject(state);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject1);
-              (
-                AmbientLightTool.isAlive(light1, state),
-                AmbientLightTool.isAlive(light2, state),
-              )
-              |> expect == (false, true);
-            });
-            test("test dispose two", () => {
-              TestTool.closeContractCheck();
-              open GameObjectType;
-              let (state, gameObject1, light1) =
-                AmbientLightTool.createGameObject(state^);
-              let (state, gameObject2, light2) =
-                AmbientLightTool.createGameObject(state);
-              let (state, gameObject3, light3) =
-                AmbientLightTool.createGameObject(state);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject3);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject1);
-              (
-                AmbientLightTool.isAlive(light1, state),
-                AmbientLightTool.isAlive(light2, state),
-                AmbientLightTool.isAlive(light3, state),
-              )
-              |> expect == (false, true, false);
-            });
-            test("test dispose three", () => {
-              TestTool.closeContractCheck();
-              open GameObjectType;
-              let (state, gameObject1, light1) =
-                AmbientLightTool.createGameObject(state^);
-              let (state, gameObject2, light2) =
-                AmbientLightTool.createGameObject(state);
-              let (state, gameObject3, light3) =
-                AmbientLightTool.createGameObject(state);
-              let (state, gameObject4, light4) =
-                AmbientLightTool.createGameObject(state);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject1);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject2);
-              let state =
-                state |> GameObjectTool.disposeGameObject(gameObject3);
-              (
-                AmbientLightTool.isAlive(light1, state),
-                AmbientLightTool.isAlive(light2, state),
-                AmbientLightTool.isAlive(light3, state),
-                AmbientLightTool.isAlive(light4, state),
-              )
-              |> expect == (false, false, false, true);
-            });
-          });
           describe("test direction light component", () =>
             test("test dispose one", () => {
               TestTool.closeContractCheck();
@@ -1010,15 +948,6 @@ let _ =
                 )
                 |> expect == (false, false, true);
               };
-              test("new ambientLightMap should only has alive data", () =>
-                GameObjectType.(
-                  _test(
-                    AmbientLightTool.createGameObject,
-                    ({ambientLightMap}) => ambientLightMap,
-                    state,
-                  )
-                )
-              );
               test("new directionLightMap should only has alive data", () =>
                 GameObjectType.(
                   _test(
@@ -1355,11 +1284,6 @@ let _ =
                    (isAliveFunc(light1, state), isAliveFunc(light2, state))
                    |> expect == (false, false)
                  };
-                 test(
-                   "test ambient light component",
-                   () =>
-                     _test((AmbientLightTool.createGameObject, AmbientLightTool.isAlive), state)
-                 );
                  test(
                    "test direction light component",
                    () =>
@@ -1822,9 +1746,6 @@ let _ =
         test("unsafeGetGameObjectLightMaterialComponent should error", () =>
           _testTwoParamFunc(unsafeGetGameObjectLightMaterialComponent)
         );
-        test("unsafeGetGameObjectAmbientLightComponent should error", () =>
-          _testTwoParamFunc(unsafeGetGameObjectAmbientLightComponent)
-        );
         test("unsafeGetGameObjectMeshRendererComponent should error", () =>
           _testTwoParamFunc(unsafeGetGameObjectMeshRendererComponent)
         );
@@ -1877,12 +1798,6 @@ let _ =
         );
         test("disposeGameObjectLightMaterialComponent should error", () =>
           _testThreeParmFunc(disposeGameObjectLightMaterialComponent)
-        );
-        test("addGameObjectAmbientLightComponent should error", () =>
-          _testThreeParmFunc(addGameObjectAmbientLightComponent)
-        );
-        test("disposeGameObjectAmbientLightComponent should error", () =>
-          _testThreeParmFunc(disposeGameObjectAmbientLightComponent)
         );
         test("addGameObjectMeshRendererComponent should error", () =>
           _testThreeParmFunc(addGameObjectMeshRendererComponent)

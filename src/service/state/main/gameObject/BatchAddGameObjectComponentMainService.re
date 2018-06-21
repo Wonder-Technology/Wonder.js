@@ -307,21 +307,6 @@ let _batchAddLightMaterialComponent =
 
 let batchAddLightMaterialComponentForClone = _batchAddLightMaterialComponent;
 
-let batchAddAmbientLightComponentForClone =
-    (
-      uidArr: array(int),
-      componentArr: array(component),
-      {ambientLightRecord, gameObjectRecord} as state,
-    ) => {
-  ...state,
-  ambientLightRecord:
-    _batchAddComponent(
-      (uidArr, componentArr, gameObjectRecord.ambientLightMap),
-      AddAmbientLightService.handleAddComponent,
-      ambientLightRecord,
-    ),
-};
-
 let batchAddDirectionLightComponentForClone =
     (
       uidArr: array(int),

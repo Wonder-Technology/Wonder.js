@@ -305,8 +305,78 @@ let _convertToGeometryGameObjectIndexData = nodes => {
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
+let _convertToLightGameObjectIndexData =
+    (lightType, nodes, extensions)
+    : WDType.componentGameObjectIndexData =>
+  switch (extensions) {
+  | None => {gameObjectIndices: [||], componentIndices: [||]}
+  | Some(({khr_lights}: GLTFType.extensions)) =>
+    switch (khr_lights) {
+    | None => {gameObjectIndices: [||], componentIndices: [||]}
+    | Some({lights}) =>
+      let (lightActualIndexMap, _) =
+        lights
+        |> WonderCommonlib.ArrayService.reduceOneParami(
+             (.
+               (lightActualIndexMap, lightActualIndex),
+               {type_}: GLTFType.light,
+               lightIndex,
+             ) =>
+               switch (type_) {
+               | type_ when type_ === lightType => (
+                   lightActualIndexMap
+                   |> WonderCommonlib.SparseMapService.set(
+                        lightIndex,
+                        lightActualIndex,
+                      ),
+                   lightActualIndex |> succ,
+                 )
+               | _ => (lightActualIndexMap, lightActualIndex)
+               },
+             (WonderCommonlib.SparseMapService.createEmpty(), 0),
+           );
+      let (gameObjectIndices, componentIndices) =
+        nodes
+        |> WonderCommonlib.ArrayService.reduceOneParami(
+             (.
+               (gameObjectIndices, componentIndices),
+               {extensions}: GLTFType.node,
+               index,
+             ) =>
+               switch (extensions) {
+               | None => (gameObjectIndices, componentIndices)
+               | Some(({khr_lights}: GLTFType.nodeExtensions)) =>
+                 switch (khr_lights) {
+                 | None => (gameObjectIndices, componentIndices)
+                 | Some({light}) =>
+                   let {type_}: GLTFType.light =
+                     Array.unsafe_get(lights, light);
+                   switch (type_) {
+                   | type_ when type_ === lightType => (
+                       gameObjectIndices |> ArrayService.push(index),
+                       componentIndices
+                       |> ArrayService.push(
+                            lightActualIndexMap
+                            |> WonderCommonlib.SparseMapService.unsafeGet(
+                                 light,
+                               ),
+                          ),
+                     )
+                   | _ => (gameObjectIndices, componentIndices)
+                   };
+                 }
+               },
+             ([||], [||]),
+           );
+      (
+        {gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData
+      )
+      |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+    }
+  };
+
 let _convertToGameObjectIndexData =
-    ({nodes, meshes, cameras, materials}: GLTFType.gltf)
+    ({scenes, nodes, meshes, cameras, materials, extensions}: GLTFType.gltf)
     : WDType.gameObjectIndices => {
   let transformGameObjectIndexData =
     _convertToTransformGameObjectIndexData(nodes);
@@ -328,6 +398,10 @@ let _convertToGameObjectIndexData =
       _convertToLightMaterialGameObjectIndexData(nodes, meshes, materials),
     customGeometryGameObjectIndexData:
       _convertToGeometryGameObjectIndexData(nodes),
+    directionLightGameObjectIndexData:
+      _convertToLightGameObjectIndexData("directional", nodes, extensions),
+    pointLightGameObjectIndexData:
+      _convertToLightGameObjectIndexData("point", nodes, extensions),
   };
 };
 

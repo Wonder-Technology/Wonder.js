@@ -489,62 +489,6 @@ let hasGameObjectMeshRendererComponent =
   hasMeshRendererComponent(gameObject, state.gameObjectRecord);
 };
 
-let addGameObjectAmbientLightComponent =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  addAmbientLightComponent(gameObject, component, state);
-};
-
-let disposeGameObjectAmbientLightComponent =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  deferDisposeAmbientLightComponent(. gameObject, component, state);
-};
-
-let unsafeGetGameObjectAmbientLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  unsafeGetAmbientLightComponent(gameObject, state.gameObjectRecord);
-};
-
-let hasGameObjectAmbientLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  hasAmbientLightComponent(gameObject, state.gameObjectRecord);
-};
-
 let addGameObjectDirectionLightComponent =
     (
       gameObject: gameObject,

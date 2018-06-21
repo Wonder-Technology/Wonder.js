@@ -9,27 +9,39 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     |> RecordBoxGeometryMainService.deepCopyForRestore
     |> RecordCustomGeometryMainService.deepCopyForRestore
     |> RecordSourceInstanceMainService.deepCopyForRestore
-    |> RecordAmbientLightMainService.deepCopyForRestore
     |> RecordDirectionLightMainService.deepCopyForRestore
     |> RecordPointLightMainService.deepCopyForRestore
     |> RecordBasicSourceTextureMainService.deepCopyForRestore
     |> RecordArrayBufferViewSourceTextureMainService.deepCopyForRestore;
   {
     ...state,
-    gameObjectRecord: RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
+    gameObjectRecord:
+      RecordGameObjectService.deepCopyForRestore(state.gameObjectRecord),
     basicCameraViewRecord:
-      RecordBasicCameraViewService.deepCopyForRestore(state.basicCameraViewRecord),
+      RecordBasicCameraViewService.deepCopyForRestore(
+        state.basicCameraViewRecord,
+      ),
     perspectiveCameraProjectionRecord:
       RecordPerspectiveCameraProjectionService.deepCopyForRestore(
-        state.perspectiveCameraProjectionRecord
+        state.perspectiveCameraProjectionRecord,
       ),
-    meshRendererRecord: RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
-    typeArrayPoolRecord: RecordTypeArrayPoolService.deepCopyForRestore(state.typeArrayPoolRecord),
+    meshRendererRecord:
+      RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
+    typeArrayPoolRecord:
+      RecordTypeArrayPoolService.deepCopyForRestore(
+        state.typeArrayPoolRecord,
+      ),
     objectInstanceRecord:
-      RecordObjectInstanceService.deepCopyForRestore(state.objectInstanceRecord),
-    vboBufferRecord: RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
-    deviceManagerRecord: RecordDeviceManagerService.deepCopyForRestore(state.deviceManagerRecord),
+      RecordObjectInstanceService.deepCopyForRestore(
+        state.objectInstanceRecord,
+      ),
+    vboBufferRecord:
+      RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
+    deviceManagerRecord:
+      RecordDeviceManagerService.deepCopyForRestore(
+        state.deviceManagerRecord,
+      ),
     shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
-    glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord)
-  }
+    glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord),
+  };
 };

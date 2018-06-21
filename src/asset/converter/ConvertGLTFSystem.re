@@ -1,22 +1,34 @@
 open Js.Promise;
 
-let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
+let _convertToScene =
+    (
+      ambientLightArr: array(WDType.ambientLight),
+      {scenes, scene}: GLTFType.gltf,
+    )
+    : WDType.scene => {
   WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|only has one scene|j},
-                ~actual={j|not|j},
-              ),
-              () =>
-              scenes |> Js.Array.length == 1
-            )
-          )
-        )
-      ),
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|only has one scene|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        scenes |> Js.Array.length == 1
+      );
+
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|has one ambientLight at most|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        ambientLightArr |> Js.Array.length <= 1
+      );
+    },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   let scene =
@@ -26,22 +38,28 @@ let _convertToScene = ({scenes, scene}: GLTFType.gltf) : WDType.scene => {
     };
   {
     gameObjects:
-      Array.unsafe_get(scenes, scene).nodes |> OptionService.unsafeGet,
+      ConvertCommon.getScene(scenes, scene).nodes |> OptionService.unsafeGet,
+    ambientLight:
+      ambientLightArr |> Js.Array.length == 1 ?
+        Some({color: ambientLightArr[0].color}) : None,
   };
 };
 
 let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
-  let ({asset, scenes, scene, nodes}: GLTFType.gltf) as gltf =
+  let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
     gltf
     |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
     |> ConvertDefaultMaterialSystem.convert;
+
+  let (ambientLightArr, directionLightArr, pointLightArr) =
+    ConvertLightsSystem.convertToLights(gltf);
 
   {
     asset: {
       version: asset.version,
       generator: GLTFUtils.getGenerator(),
     },
-    scene: _convertToScene(gltf),
+    scene: _convertToScene(ambientLightArr, gltf),
     gameObjects: ConvertGameObjectsSystem.convert(gltf),
     indices: ConvertIndicesSystem.convertToIndices(gltf),
     transforms: ConvertTransformsSystem.convertToTransforms(gltf),
@@ -57,6 +75,8 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
     accessors: ConvertBuffersSystem.convertToAccessors(gltf),
     bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
     buffers: ConvertBuffersSystem.convertToBuffers(gltf),
+    directionLights: directionLightArr,
+    pointLights: pointLightArr,
   };
 };
 

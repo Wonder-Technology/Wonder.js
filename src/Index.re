@@ -74,14 +74,6 @@ let disposeGameObjectDirectionLightComponent = GameObjectAPI.disposeGameObjectDi
 
 let addGameObjectDirectionLightComponent = GameObjectAPI.addGameObjectDirectionLightComponent;
 
-let hasGameObjectAmbientLightComponent = GameObjectAPI.hasGameObjectAmbientLightComponent;
-
-let unsafeGetGameObjectAmbientLightComponent = GameObjectAPI.unsafeGetGameObjectAmbientLightComponent;
-
-let disposeGameObjectAmbientLightComponent = GameObjectAPI.disposeGameObjectAmbientLightComponent;
-
-let addGameObjectAmbientLightComponent = GameObjectAPI.addGameObjectAmbientLightComponent;
-
 let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
 
 let unsafeGetGameObjectMeshRendererComponent = GameObjectAPI.unsafeGetGameObjectMeshRendererComponent;
@@ -198,14 +190,6 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
-let setAmbientLightColor = AmbientLightAPI.setAmbientLightColor;
-
-let getAmbientLightColor = AmbientLightAPI.getAmbientLightColor;
-
-let unsafeGetAmbientLightGameObject = AmbientLightAPI.unsafeGetAmbientLightGameObject;
-
-let createAmbientLight = AmbientLightAPI.createAmbientLight;
-
 let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
 
 let getDirectionLightIntensity = DirectionLightAPI.getDirectionLightIntensity;
@@ -319,6 +303,10 @@ let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjection
 let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
 
 let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
+
+let setAmbientLightColor = SceneAPI.setAmbientLightColor;
+
+let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
@@ -550,14 +538,6 @@ let disposeGameObjectDirectionLightComponent = GameObjectAPI.disposeGameObjectDi
 
 let addGameObjectDirectionLightComponent = GameObjectAPI.addGameObjectDirectionLightComponent;
 
-let hasGameObjectAmbientLightComponent = GameObjectAPI.hasGameObjectAmbientLightComponent;
-
-let unsafeGetGameObjectAmbientLightComponent = GameObjectAPI.unsafeGetGameObjectAmbientLightComponent;
-
-let disposeGameObjectAmbientLightComponent = GameObjectAPI.disposeGameObjectAmbientLightComponent;
-
-let addGameObjectAmbientLightComponent = GameObjectAPI.addGameObjectAmbientLightComponent;
-
 let hasGameObjectMeshRendererComponent = GameObjectAPI.hasGameObjectMeshRendererComponent;
 
 let unsafeGetGameObjectMeshRendererComponent = GameObjectAPI.unsafeGetGameObjectMeshRendererComponent;
@@ -663,6 +643,10 @@ let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjection
 let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
 
 let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
+
+let setAmbientLightColor = SceneAPI.setAmbientLightColor;
+
+let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 

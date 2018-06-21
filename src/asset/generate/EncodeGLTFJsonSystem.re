@@ -81,7 +81,7 @@ let _encodeNodes = (nodeDataArr, state) => (
        let list =
          switch (extras) {
          | None => list
-         | Some(({material}: nodeExtra)) =>
+         | Some(({material}: nodeExtras)) =>
            let extraList = [];
            let extraList =
              switch (material) {

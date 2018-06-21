@@ -19,7 +19,6 @@ let _disposeComponents =
     disposedCustomGeometryArray,
     disposedSourceInstanceArray,
     disposedObjectInstanceArray,
-    disposedAmbientLightArray,
     disposedDirectionLightArray,
     disposedPointLightArray,
     disposedMeshRendererComponentArray,
@@ -60,9 +59,6 @@ let _disposeComponents =
   let state =
     disposedObjectInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state);
-  let state =
-    disposedAmbientLightArray
-    |> DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(state);
   let state =
     disposedDirectionLightArray
     |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(state);

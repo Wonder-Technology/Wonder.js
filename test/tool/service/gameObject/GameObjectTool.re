@@ -195,17 +195,6 @@ let disposeGameObjectMeshRendererComponent =
     [|component|],
   );
 
-let disposeGameObjectAmbientLightComponent =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) =>
-  DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(
-    state,
-    [|component|],
-  );
-
 let disposeGameObjectDirectionLightComponent =
     (
       gameObject: gameObject,

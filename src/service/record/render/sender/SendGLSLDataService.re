@@ -3,7 +3,7 @@ open GlType;
 open Gl;
 
 let getBufferSizeByType = (type_: string) =>
-  switch type_ {
+  switch (type_) {
   | "vec2" => 2
   | "vec3" => 3
   | _ =>
@@ -13,8 +13,8 @@ let getBufferSizeByType = (type_: string) =>
         ~description={j|invalide type_: $type_|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j||j}
-      )
+        ~params={j||j},
+      ),
     )
   };
 
@@ -23,7 +23,7 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
     {
       enableVertexAttribArray(pos, gl);
       Array.unsafe_set(vertexAttribHistoryArray, pos, true);
-      ()
+      ();
     } :
     ();
 
@@ -43,20 +43,14 @@ let enableVertexAttribArray = (gl, pos, vertexAttribHistoryArray) =>
      }
    ); */
 let sendMatrix3 =
-  [@bs]
-  (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
-      /* WonderLog.Log.log(("send matrix3: ", data)) |> ignore; */
-      uniformMatrix3fv(pos, false, data, gl)
-  );
+  (. gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+    /* WonderLog.Log.log(("send matrix3: ", data)) |> ignore; */
+    uniformMatrix3fv(pos, false, data, gl);
 
 let sendMatrix4 =
-  [@bs]
-  (
-    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
-      /* WonderLog.Log.log(("send matrix4: ", data)) |> ignore; */
-      uniformMatrix4fv(pos, false, data, gl)
-  );
+  (. gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+    /* WonderLog.Log.log(("send matrix4: ", data)) |> ignore; */
+    uniformMatrix4fv(pos, false, data, gl);
 
 let _getCache = (shaderCacheMap, name: string) =>
   shaderCacheMap |> WonderCommonlib.HashMapService.get(name);
@@ -71,24 +65,25 @@ let _queryIsNotCacheWithCache = (cache, x, y, z) => {
   let isNotCached = ref(false);
   if (Array.unsafe_get(cache, 0) !== x) {
     Array.unsafe_set(cache, 0, x);
-    isNotCached := true
+    isNotCached := true;
   };
   if (Array.unsafe_get(cache, 1) !== y) {
     Array.unsafe_set(cache, 1, y);
-    isNotCached := true
+    isNotCached := true;
   };
   if (Array.unsafe_get(cache, 2) !== z) {
     Array.unsafe_set(cache, 2, z);
-    isNotCached := true
+    isNotCached := true;
   };
-  isNotCached^
+  isNotCached^;
 };
 
-let _isNotCacheVector3AndSetCache = (shaderCacheMap, name: string, (x: float, y: float, z: float)) =>
+let _isNotCacheVector3AndSetCache =
+    (shaderCacheMap, name: string, (x: float, y: float, z: float)) =>
   switch (_getCache(shaderCacheMap, name)) {
   | None =>
     _setCache(shaderCacheMap, name, [|x, y, z|]) |> ignore;
-    true
+    true;
   | Some(cache) => _queryIsNotCacheWithCache(cache, x, y, z)
   };
 
@@ -96,80 +91,101 @@ let _isNotCacheNumberAndSetCache = (shaderCacheMap, name: string, value) =>
   switch (_getCache(shaderCacheMap, name)) {
   | None =>
     _setCache(shaderCacheMap, name, value) |> ignore;
-    true
+    true;
   | Some(cache) => cache !== value
   };
 
 let sendFloat =
-  [@bs]
-  (
-    (gl, shaderCacheMap: GLSLSenderType.shaderCacheMap, (name: string, pos: uniformLocation), value) =>
-      if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
-        /* WonderLog.Log.log(("send float1: ", name, value)) |> ignore; */
-        uniform1f(pos, value, gl)
-      } else {
-        ()
-      }
-  );
+  (.
+    gl,
+    shaderCacheMap: GLSLSenderType.shaderCacheMap,
+    (name: string, pos: uniformLocation),
+    value,
+  ) =>
+    if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
+      /* WonderLog.Log.log(("send float1: ", name, value)) |> ignore; */
+      uniform1f(
+        pos,
+        value,
+        gl,
+      );
+    } else {
+      ();
+    };
 
 let sendInt =
-  [@bs]
-  (
-    (
-      gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
-      (name: string, pos: uniformLocation),
-      value: int
-    ) =>
-      if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
-        uniform1i(pos, value, gl)
-      } else {
-        ()
-      }
-  );
+  (.
+    gl,
+    shaderCacheMap: GLSLSenderType.shaderCacheMap,
+    (name: string, pos: uniformLocation),
+    value: int,
+  ) =>
+    if (_isNotCacheNumberAndSetCache(shaderCacheMap |> Obj.magic, name, value)) {
+      uniform1i(pos, value, gl);
+    } else {
+      ();
+    };
 
 let sendFloat3 =
-  [@bs]
-  (
-    (
-      gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
-      (name: string, pos: uniformLocation),
-      [|x, y, z|]
-    ) =>
-      if (_isNotCacheVector3AndSetCache(shaderCacheMap, name, (x, y, z))) {
-        /* WonderLog.Log.log(("send float3: ", name, (x, y, z))) |> ignore; */
-        uniform3f(
-          pos,
-          x,
-          y,
-          z,
-          gl
-        )
-      } else {
-        ()
-      }
-  );
+  (.
+    gl,
+    shaderCacheMap: GLSLSenderType.shaderCacheMap,
+    (name: string, pos: uniformLocation),
+    valueArr,
+  ) => {
+    WonderLog.Contract.requireCheck(
+      () =>
+        WonderLog.(
+          Contract.(
+            Operators.(
+              test(
+                Log.buildAssertMessage(
+                  ~expect={j|valueArr.length === 3|j},
+                  ~actual={j|not|j},
+                ),
+                () =>
+                valueArr |> Js.Array.length == 3
+              )
+            )
+          )
+        ),
+      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+    );
+
+    let x = valueArr[0];
+    let y = valueArr[1];
+    let z = valueArr[2];
+
+    if (_isNotCacheVector3AndSetCache(shaderCacheMap, name, (x, y, z))) {
+      /* WonderLog.Log.log(("send float3: ", name, (x, y, z))) |> ignore; */
+      uniform3f(
+        pos,
+        x,
+        y,
+        z,
+        gl,
+      );
+    } else {
+      ();
+    };
+  };
 
 let sendVec3 =
-  [@bs]
-  (
-    (
-      gl,
-      shaderCacheMap: GLSLSenderType.shaderCacheMap,
-      (name: string, pos: uniformLocation),
-      (x, y, z) as dataTuple
-    ) =>
-      if (_isNotCacheVector3AndSetCache(shaderCacheMap, name, dataTuple)) {
-        /* WonderLog.Log.log(("send vec3: ", name, dataTuple)) |> ignore; */
-        uniform3f(
-          pos,
-          x,
-          y,
-          z,
-          gl
-        )
-      } else {
-        ()
-      }
-  );
+  (.
+    gl,
+    shaderCacheMap: GLSLSenderType.shaderCacheMap,
+    (name: string, pos: uniformLocation),
+    (x, y, z) as dataTuple,
+  ) =>
+    if (_isNotCacheVector3AndSetCache(shaderCacheMap, name, dataTuple)) {
+      /* WonderLog.Log.log(("send vec3: ", name, dataTuple)) |> ignore; */
+      uniform3f(
+        pos,
+        x,
+        y,
+        z,
+        gl,
+      );
+    } else {
+      ();
+    };

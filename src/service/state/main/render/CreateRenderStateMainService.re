@@ -8,7 +8,7 @@ open CustomGeometryType;
 
 open BasicMaterialType;
 
-open AmbientLightType;
+open SceneType;
 
 open DirectionLightType;
 
@@ -29,11 +29,11 @@ open BrowserDetectType;
 let createRenderState =
     (
       {
+        sceneRecord,
         settingRecord,
         gpuDetectRecord,
         glslSenderRecord,
         programRecord,
-        ambientLightRecord,
         directionLightRecord,
         pointLightRecord,
         vboBufferRecord,
@@ -140,9 +140,10 @@ let createRenderState =
         ),
       setFlipYFunc: OperateSourceTextureMainService.setFlipY,
     },
-    ambientLightRecord: {
-      index: ambientLightRecord.index,
-      colors: ambientLightRecord.colors,
+    sceneRecord: {
+      ambientLight: {
+        color: sceneRecord.ambientLight.color,
+      },
     },
     directionLightRecord: {
       index: directionLightRecord.index,

@@ -2,6 +2,71 @@ let convert = json : GLTFType.gltf =>
   GLTFType.(
     Json.(
       Decode.{
+        extensionsUsed:
+          json |> optional(field("extensionsUsed", array(string))),
+        extensions:
+          json
+          |> optional(
+               field("extensions", json =>
+                 {
+                   khr_lights:
+                     json
+                     |> optional(
+                          field("KHR_lights", json =>
+                            {
+                              lights:
+                                json
+                                |> field(
+                                     "lights",
+                                     array(json =>
+                                       {
+                                         type_: json |> field("type", string),
+                                         color:
+                                           json
+                                           |> optional(
+                                                field("color", array(float)),
+                                              ),
+                                         intensity:
+                                           json
+                                           |> optional(
+                                                field("intensity", float),
+                                              ),
+                                         constantAttenuation:
+                                           json
+                                           |> optional(
+                                                field(
+                                                  "constantAttenuation",
+                                                  float,
+                                                ),
+                                              ),
+                                         linearAttenuation:
+                                           json
+                                           |> optional(
+                                                field(
+                                                  "linearAttenuation",
+                                                  float,
+                                                ),
+                                              ),
+                                         quadraticAttenuation:
+                                           json
+                                           |> optional(
+                                                field(
+                                                  "quadraticAttenuation",
+                                                  float,
+                                                ),
+                                              ),
+                                         range:
+                                           json
+                                           |> optional(field("range", float)),
+                                       }
+                                     ),
+                                   ),
+                            }
+                          ),
+                        ),
+                 }
+               ),
+             ),
         asset:
           json
           |> field("asset", json =>
@@ -15,7 +80,31 @@ let convert = json : GLTFType.gltf =>
           |> field(
                "scenes",
                array(json =>
-                 {nodes: json |> optional(field("nodes", array(int)))}
+                 {
+                   nodes: json |> optional(field("nodes", array(int))),
+                   extensions:
+                     json
+                     |> optional(
+                          field("extensions", json =>
+                            (
+                              {
+                                khr_lights:
+                                  json
+                                  |> optional(
+                                       field("KHR_lights", json =>
+                                         (
+                                           {
+                                             light:
+                                               json |> field("light", int),
+                                           }: GLTFType.sceneKHRLightsExtension
+                                         )
+                                       ),
+                                     ),
+                              }: GLTFType.sceneExtensions
+                            )
+                          ),
+                        ),
+                 }
                ),
              ),
         scene: json |> optional(field("scene", int)),
@@ -187,6 +276,28 @@ let convert = json : GLTFType.gltf =>
                                      optimizedField("material", int),
                                    ),
                             }
+                          ),
+                        ),
+                   extensions:
+                     json
+                     |> optional(
+                          field("extensions", json =>
+                            (
+                              {
+                                khr_lights:
+                                  json
+                                  |> optional(
+                                       field("KHR_lights", json =>
+                                         (
+                                           {
+                                             light:
+                                               json |> field("light", int),
+                                           }: GLTFType.nodeKHRLightsExtension
+                                         )
+                                       ),
+                                     ),
+                              }: GLTFType.nodeExtensions
+                            )
                           ),
                         ),
                  }

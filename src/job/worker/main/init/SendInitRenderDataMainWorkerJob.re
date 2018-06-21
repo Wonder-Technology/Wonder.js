@@ -70,7 +70,6 @@ let _buildData = (operateType, canvas, stateData) => {
         settingRecord,
         workerInstanceRecord,
         gameObjectRecord,
-        ambientLightRecord,
         directionLightRecord,
         pointLightRecord,
         browserDetectRecord
@@ -144,7 +143,6 @@ let _buildData = (operateType, canvas, stateData) => {
         )
       ),
     "customGeometryData": {"buffer": customGeometryRecord.buffer},
-    "ambientLightData": {"buffer": ambientLightRecord.buffer, "index": ambientLightRecord.index},
     "directionLightData": {
       "buffer": directionLightRecord.buffer,
       "index": directionLightRecord.index

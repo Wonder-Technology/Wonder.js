@@ -101,54 +101,6 @@ let _ =
         });
       });
       describe("test clone light component", () => {
-        describe("test clone ambient light component", () => {
-          let _clone = (gameObject, state) => {
-            let (state, clonedGameObjectArr) =
-              _cloneGameObject(gameObject, 2, state);
-            (
-              state,
-              clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
-              clonedGameObjectArr
-              |> CloneTool.getFlattenClonedGameObjectArr
-              |> Js.Array.map(clonedGameObject =>
-                   unsafeGetGameObjectAmbientLightComponent(
-                     clonedGameObject,
-                     state,
-                   )
-                 ),
-            );
-          };
-          test("test clone specific count", () => {
-            open StateDataMainType;
-            let (state, gameObject1, light1) =
-              AmbientLightTool.createGameObject(state^);
-            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
-            clonedComponentArr |> Js.Array.length |> expect == 2;
-          });
-          describe("set cloned record", () =>
-            test("set color", () => {
-              open StateDataMainType;
-              let (state, gameObject1, light1) =
-                AmbientLightTool.createGameObject(state^);
-              let color1 = [|1., 0., 1.|];
-              let state =
-                state |> AmbientLightAPI.setAmbientLightColor(light1, color1);
-              let (state, _, clonedComponentArr) =
-                _clone(gameObject1, state);
-              (
-                AmbientLightAPI.getAmbientLightColor(
-                  clonedComponentArr[0],
-                  state,
-                ),
-                AmbientLightAPI.getAmbientLightColor(
-                  clonedComponentArr[1],
-                  state,
-                ),
-              )
-              |> expect == (color1, color1);
-            })
-          );
-        });
         describe("test clone direction light component", () => {
           let _clone = (gameObject, state) => {
             let (state, clonedGameObjectArr) =

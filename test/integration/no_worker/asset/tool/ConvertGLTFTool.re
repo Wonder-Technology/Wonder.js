@@ -8,6 +8,12 @@ let buildFakeBufferOfCesiumMilkTruck = () => {|data:application/octet-stream;bas
 
 let buildGLTFJson =
     (
+      ~extensions={|
+            {}
+            |},
+      ~extensionsUsed={|
+                []
+                |},
       ~asset={| {
         "version": "2.0"
     }|},
@@ -196,11 +202,138 @@ let buildGLTFJson =
     "images": $images,
     "samplers": $samplers,
     "bufferViews": $bufferViews,
-    "buffers": $buffers
+    "buffers": $buffers,
+    "extensions":$extensions,
+    "extensionsUsed": $extensionsUsed
 }
         |j};
 
 let buildGLTFJsonOfSingleNode = () => buildGLTFJson();
+
+let buildGLTFJsonOfLight = () =>
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes={|  [
+        {
+        "nodes": [0],
+        "extensions": {
+            "KHR_lights" : {
+                "light" : 2
+            }
+        }
+    }
+    ]|},
+    ~extensionsUsed={|
+        ["KHR_lights"]
+        |},
+    ~extensions={|
+        {
+            "KHR_lights": {
+                "lights": [
+                    {
+                        "color": [0.5, 0.6, 0.8],
+                        "type": "directional"
+                    },
+                    {
+                        "intensity": 2.5,
+"linearAttenuation": 1.5,
+"range": 55.5,
+
+                        "type": "point"
+                    },
+                    {
+                        "color": [1.0, 0.5, 0.2],
+                        "type": "ambient"
+                    }
+                ]
+            }
+        }
+        |},
+    ~nodes=
+      {| [
+        {
+            "children": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "mesh": 0,
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                -1.352329969406128,
+                0.4277220070362091,
+                -2.98022992950564e-8,
+                1.0
+            ]
+        },
+        {
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                10.5,
+                0.4277220070362091,
+                20.1,
+                1.0
+            ],
+            "extensions": {
+                "KHR_lights" : {
+                    "light" : 0
+                }
+            }
+        },
+        {
+
+            "mesh": 0,
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                3.0,
+                0.0,
+                0.0,
+                2.0,
+                0.0,
+                2.5,
+                0.0,
+                -2.9,
+                1.0
+            ],
+            "extensions": {
+                "KHR_lights" : {
+                    "light" : 1
+                }
+            }
+        }
+    ]|},
+    (),
+  );
 
 let buildGLTFJsonOfCesiumMilkTruck = () =>
   buildGLTFJson(
@@ -1287,6 +1420,7 @@ let buildNode =
       ~rotation=None,
       ~scale=None,
       ~extras=None,
+      ~extensions=None,
       (),
     )
     : GLTFType.node => {
@@ -1299,4 +1433,5 @@ let buildNode =
   rotation,
   scale,
   extras,
+  extensions,
 };

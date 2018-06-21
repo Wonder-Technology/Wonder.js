@@ -1,20 +1,24 @@
 open StateDataRenderWorkerType;
 
 let createState = () => {
+  sceneRecord: RecordRenderWorkerSceneService.create(),
   settingRecord: RecordRenderWorkerSettingService.create(),
   renderConfigRecord: None,
   basicMaterialRecord: None,
   lightMaterialRecord: None,
   basicSourceTextureRecord: None,
   arrayBufferViewSourceTextureRecord: None,
-  ambientLightRecord: None,
   directionLightRecord: None,
   pointLightRecord: None,
   transformRecord: None,
   boxGeometryRecord: RecordBoxGeometryRenderWorkerService.create(),
   customGeometryRecord: None,
   sourceInstanceRecord: RecordRenderWorkerSourceInstanceService.create(),
-  gpuDetectRecord: {extensionInstancedArrays: None, precision: None, maxTextureUnit: None},
+  gpuDetectRecord: {
+    extensionInstancedArrays: None,
+    precision: None,
+    maxTextureUnit: None,
+  },
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),
   programRecord: RecordProgramService.create(),
@@ -27,5 +31,5 @@ let createState = () => {
   globalTempRecord: RecordGlobalTempService.create(),
   vboBufferRecord: RecordVboBufferService.create(),
   workerDetectRecord: None,
-  browserDetectRecord: None
+  browserDetectRecord: None,
 };

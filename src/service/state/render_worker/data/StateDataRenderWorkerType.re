@@ -10,7 +10,7 @@ open RenderWorkerBasicSourceTextureType;
 
 open RenderWorkerArrayBufferViewSourceTextureType;
 
-open RenderWorkerAmbientLightType;
+open RenderWorkerSceneType;
 
 open RenderWorkerDirectionLightType;
 
@@ -53,6 +53,7 @@ open GlobalTempType;
 open BrowserDetectType;
 
 type renderWorkerState = {
+  mutable sceneRecord,
   mutable settingRecord,
   mutable renderConfigRecord: option(RenderConfigType.renderConfigRecord),
   mutable gpuDetectRecord,
@@ -67,11 +68,11 @@ type renderWorkerState = {
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
-  mutable arrayBufferViewSourceTextureRecord: option(arrayBufferViewSourceTextureRecord),
+  mutable arrayBufferViewSourceTextureRecord:
+    option(arrayBufferViewSourceTextureRecord),
   mutable transformRecord: option(transformRecord),
   mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
-  mutable ambientLightRecord: option(ambientLightRecord),
   mutable directionLightRecord: option(directionLightRecord),
   mutable pointLightRecord: option(pointLightRecord),
   mutable renderRecord,
@@ -79,7 +80,7 @@ type renderWorkerState = {
   mutable vboBufferRecord,
   mutable globalTempRecord,
   mutable workerDetectRecord: option(workerDetectRecord),
-  mutable browserDetectRecord: option(browserDetectRecord)
+  mutable browserDetectRecord: option(browserDetectRecord),
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

@@ -57,7 +57,6 @@ type gameObjectRecord = {
   mutable disposedCustomGeometryArray: array(int),
   mutable disposedSourceInstanceArray: array(int),
   mutable disposedObjectInstanceArray: array(int),
-  mutable disposedAmbientLightArray: array(int),
   mutable disposedDirectionLightArray: array(int),
   mutable disposedPointLightArray: array(int),
   mutable disposedMeshRendererComponentArray: array(int),
@@ -72,7 +71,6 @@ type gameObjectRecord = {
   mutable lightMaterialMap: gameObjectMaterialMap,
   mutable sourceInstanceMap: gameObjectSourceInstanceMap,
   mutable objectInstanceMap: gameObjectObjectInstanceMap,
-  mutable ambientLightMap: gameObjectLightMap,
   mutable directionLightMap: gameObjectLightMap,
   mutable pointLightMap: gameObjectLightMap
 };

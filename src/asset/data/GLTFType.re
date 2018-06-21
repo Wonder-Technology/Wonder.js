@@ -18,7 +18,14 @@ type nodeIndex = int;
 
 type meshIndex = int;
 
-type scene = {nodes: option(array(nodeIndex))};
+type sceneKHRLightsExtension = {light: int};
+
+type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
+
+type scene = {
+  nodes: option(array(nodeIndex)),
+  extensions: option(sceneExtensions),
+};
 
 type asset = {
   version: string,
@@ -141,7 +148,11 @@ type material = {
   name: option(string),
 };
 
-type nodeExtra = {material: option(int)};
+type nodeExtras = {material: option(int)};
+
+type nodeKHRLightsExtension = {light: int};
+
+type nodeExtensions = {khr_lights: option(nodeKHRLightsExtension)};
 
 type node = {
   name: option(string),
@@ -152,7 +163,8 @@ type node = {
   translation: option(array(float)),
   rotation: option(array(float)),
   scale: option(array(float)),
-  extras: option(nodeExtra),
+  extras: option(nodeExtras),
+  extensions: option(nodeExtensions),
 };
 
 type attributes = {
@@ -173,6 +185,22 @@ type mesh = {
   name: option(string),
 };
 
+/* TODO support spot light */
+type light = {
+  type_: string,
+  color: option(array(float)),
+  /* TODO remove intensity, range when implement pbr? */
+  intensity: option(float),
+  constantAttenuation: option(float),
+  linearAttenuation: option(float),
+  quadraticAttenuation: option(float),
+  range: option(float),
+};
+
+type khrLightsExtension = {lights: array(light)};
+
+type extensions = {khr_lights: option(khrLightsExtension)};
+
 type gltf = {
   asset,
   scenes: array(scene),
@@ -187,4 +215,6 @@ type gltf = {
   nodes: array(node),
   meshes: array(mesh),
   materials: option(array(material)),
+  extensionsUsed: option(array(string)),
+  extensions: option(extensions),
 };

@@ -1242,38 +1242,6 @@ let _ =
         );
       });
       describe("deep copy light record", () => {
-        describe("test ambient light", () => {
-          describe("copy type array record", () =>
-            test("copy colors", () =>
-              _testCopyTypeArraySingleValue(
-                (
-                  AmbientLightTool.createGameObject,
-                  AmbientLightAPI.getAmbientLightColor,
-                  AmbientLightAPI.setAmbientLightColor,
-                  () => ([|1., 1., 0.|], [|0., 1., 0.|]),
-                ),
-                state,
-              )
-            )
-          );
-          test("shadow copy mappedIndexMap, gameObjectMap", () =>
-            StateDataMainType.(
-              AmbientLightType.(
-                MainStateTool.testShadowCopyArrayLikeMapData(
-                  state => {
-                    let {mappedIndexMap, gameObjectMap} =
-                      AmbientLightTool.getRecord(state);
-                    [|
-                      mappedIndexMap |> Obj.magic,
-                      gameObjectMap |> Obj.magic,
-                    |];
-                  },
-                  state^,
-                )
-              )
-            )
-          );
-        });
         describe("test direction light", () => {
           describe("copy type array record", () => {
             test("copy colors", () =>
@@ -1460,7 +1428,7 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n        disposedAmbientLightArray,\n        disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, ambientLightMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n        disposedBoxGeometryArray,\n        disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryDataMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -1481,7 +1449,6 @@ let _ =
                     disposedCustomGeometryArray,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
-                    disposedAmbientLightArray,
                     disposedDirectionLightArray,
                     disposedPointLightArray,
                     disposedMeshRendererComponentArray,
@@ -1493,7 +1460,6 @@ let _ =
                     meshRendererMap,
                     basicMaterialMap,
                     lightMaterialMap,
-                    ambientLightMap,
                     directionLightMap,
                     pointLightMap,
                     sourceInstanceMap,
@@ -1515,7 +1481,6 @@ let _ =
                     disposedCustomGeometryArray |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,
-                    disposedAmbientLightArray |> Obj.magic,
                     disposedDirectionLightArray |> Obj.magic,
                     disposedPointLightArray |> Obj.magic,
                     disposedMeshRendererComponentArray |> Obj.magic,
@@ -1527,7 +1492,6 @@ let _ =
                     meshRendererMap |> Obj.magic,
                     basicMaterialMap |> Obj.magic,
                     lightMaterialMap |> Obj.magic,
-                    ambientLightMap |> Obj.magic,
                     directionLightMap |> Obj.magic,
                     pointLightMap |> Obj.magic,
                     sourceInstanceMap |> Obj.magic,
@@ -2256,43 +2220,7 @@ let _ =
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
           (state, gameObject1, gameObject2, light1, light2);
         };
-        describe("test ambient light", () =>
-          test("test restore typeArrays", () => {
-            open AmbientLightType;
-            let (state, gameObject1, gameObject2, light1, light2) =
-              _prepareLightData(AmbientLightTool.createGameObject, state);
-            let state =
-              AmbientLightAPI.setAmbientLightColor(
-                light2,
-                [|0., 0.5, 0.|],
-                state,
-              );
-            let copiedState = MainStateTool.deepCopyForRestore(state);
-            let currentState =
-              AmbientLightAPI.setAmbientLightColor(
-                light1,
-                [|0.5, 0.1, 1.|],
-                state,
-              );
-            let currentState = AllMaterialTool.pregetGLSLData(currentState);
-            let _ = MainStateTool.restore(currentState, copiedState);
-            let {colors} =
-              MainStateTool.unsafeGetState() |> AmbientLightTool.getRecord;
-            colors
-            |>
-            expect == Float32Array.make([|
-                        1.,
-                        1.,
-                        1.,
-                        0.,
-                        0.5,
-                        0.,
-                        1.,
-                        1.,
-                        1.,
-                      |]);
-          })
-        );
+
         describe("test direction light", () =>
           test("test restore typeArrays", () => {
             open DirectionLightType;

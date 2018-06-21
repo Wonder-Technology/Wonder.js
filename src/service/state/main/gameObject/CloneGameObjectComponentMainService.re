@@ -137,18 +137,6 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
-         [@bs] GetComponentGameObjectService.getAmbientLightComponent(uid, gameObjectRecord),
-         countRangeArr,
-         clonedGameObjectArr
-       ),
-       (
-         CloneComponentGameObjectMainService.cloneAmbientLightComponent,
-         BatchAddGameObjectComponentMainService.batchAddAmbientLightComponentForClone
-       )
-     )
-  |> _clone(
-       (
-         uid,
          [@bs] GetComponentGameObjectService.getDirectionLightComponent(uid, gameObjectRecord),
          countRangeArr,
          clonedGameObjectArr

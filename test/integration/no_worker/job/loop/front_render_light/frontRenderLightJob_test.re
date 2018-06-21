@@ -44,7 +44,6 @@ let _ =
       let _prepare = (sandbox, state) => {
         let (state, _, _, _, _) =
           FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-        let (state, _, _) = AmbientLightTool.createGameObject(state);
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         state;
       };
@@ -54,7 +53,6 @@ let _ =
             sandbox,
             state,
           );
-        let (state, _, _) = AmbientLightTool.createGameObject(state);
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         state;
       };
@@ -94,7 +92,6 @@ let _ =
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           let points = getGeometryPointsFunc(state);
-          /* WonderLog.Log.print(points) |> ignore; */
           bufferData
           |> withThreeArgs(array_buffer, points, static_draw)
           |> expect
@@ -348,7 +345,6 @@ let _ =
           let _prepare = (sandbox, state) => {
             let (state, _, geometry, _, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _) = AmbientLightTool.createGameObject(state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             (state, geometry);
           };
@@ -492,10 +488,9 @@ let _ =
       let _prepare = (sandbox, state) => {
         let (state, gameObject, _, material, _) =
           FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-        let (state, _, light) = AmbientLightTool.createGameObject(state);
         let (state, _, cameraTransform, _) =
           CameraTool.createCameraGameObject(state);
-        (state, gameObject, material, light, cameraTransform);
+        (state, gameObject, material, cameraTransform);
       };
       describe("test sended data per shader", () => {
         let _testSendShaderUniformDataOnlyOnce =
@@ -621,8 +616,6 @@ let _ =
                    let _prepare = (sandbox, state) => {
                      let (state, gameObject, _, material, _) =
                        FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-                     let (state, _, light) =
-                       AmbientLightTool.createGameObject(state);
                      let (state, _, cameraTransform, _) =
                        CameraTool.createCameraGameObject(state);
                      (state, gameObject, material, light, cameraTransform)
@@ -654,8 +647,8 @@ let _ =
                  }
                )
            ); */
-        describe("test send light record", () => {
-          describe("test send ambient light record", () => {
+        describe("test send light data", () => {
+          describe("test send ambient light data", () => {
             let _setFakeGl = (sandbox, state) => {
               let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
               let pos = 0;
@@ -678,80 +671,37 @@ let _ =
               (state, pos, uniform3f);
             };
             test("send u_ambient", () => {
-              let (state, gameObject, material, light, cameraTransform) =
+              let (state, gameObject, material, cameraTransform) =
                 _prepare(sandbox, state^);
               let state =
-                state
-                |> AmbientLightAPI.setAmbientLightColor(
-                     light,
-                     [|1., 0., 0.5|],
-                   );
+                SceneAPI.setAmbientLightColor([|1., 0., 0.5|], state);
               let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
+
               let state =
                 state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
               uniform3f
               |> expect
-              |> toCalledWith([|
-                   /* [|pos|]
-                      |> Js.Array.concat([10., 2., 3.] |> Obj.magic |> Array.of_list) */
-                   pos |> Obj.magic,
-                   1.,
-                   0.,
-                   0.5,
-                 |]);
+              |> toCalledWith([|pos |> Obj.magic, 1., 0., 0.5|]);
             });
+
             test("send shader record only once", () => {
-              let (state, gameObject, material, light, cameraTransform) =
+              let (state, gameObject, material, cameraTransform) =
                 _prepare(sandbox, state^);
               let (state, gameObject2, _, _, _) =
                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
               let state =
-                state
-                |> AmbientLightAPI.setAmbientLightColor(
-                     light,
-                     [|1., 0., 0.5|],
-                   );
+                SceneAPI.setAmbientLightColor([|1., 0., 0.5|], state);
               let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
+
               let state =
                 state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
               uniform3f |> withOneArg(pos) |> getCallCount |> expect == 1;
             });
-            test("test send after dispose one", () => {
-              let (state, gameObject, material, light, cameraTransform) =
-                _prepare(sandbox, state^);
-              let lightGameObject1 =
-                AmbientLightAPI.unsafeGetAmbientLightGameObject(light, state);
-              let (state, lightGameObject2, light2) =
-                AmbientLightTool.createGameObject(state);
-              let (state, lightGameObject3, light3) =
-                AmbientLightTool.createGameObject(state);
-              let color1 = [|1., 0., 0.5|];
-              let color2 = [|0., 1., 0.5|];
-              let color3 = [|0., 0., 1.|];
-              let state =
-                state |> AmbientLightAPI.setAmbientLightColor(light, color1);
-              let state =
-                state |> AmbientLightAPI.setAmbientLightColor(light2, color2);
-              let state =
-                state |> AmbientLightAPI.setAmbientLightColor(light3, color3);
-              let state =
-                state |> GameObjectTool.disposeGameObject(lightGameObject1);
-              let (state, pos, uniform3f) = _setFakeGl(sandbox, state);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              let stub = uniform3f |> withOneArg(pos);
-              (
-                stub |> Obj.magic |> getSpecificArg(0),
-                stub |> Obj.magic |> getSpecificArg(1),
-              )
-              |>
-              expect == (
-                          [pos |> Obj.magic, ...color3 |> Array.to_list],
-                          [pos |> Obj.magic, ...color2 |> Array.to_list],
-                        );
-            });
           });
-          describe("test send direction light record", () => {
+
+          describe("test send direction light data", () => {
             let _prepareOne = (sandbox, state) =>
               FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
                 sandbox,
@@ -789,7 +739,7 @@ let _ =
                 nameArr,
                 state,
               );
-            describe("send structure record", () => {
+            describe("send structure data", () => {
               describe("send position", () => {
                 test("test one light", () => {
                   let (
@@ -978,7 +928,8 @@ let _ =
               );
             });
           });
-          describe("test send point light record", () => {
+
+          describe("test send point light data", () => {
             let _prepareOne = (sandbox, state) => {
               let (state, gameObject, _, material, _) =
                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -999,7 +950,7 @@ let _ =
                 nameArr,
                 state,
               );
-            describe("send structure record", () => {
+            describe("send structure data", () => {
               describe("send position", () =>
                 test("test four lights", () => {
                   let (
@@ -1270,7 +1221,7 @@ let _ =
           });
         });
       });
-      describe("test send light material record", () => {
+      describe("test send light material data", () => {
         GLSLSenderTool.JudgeSendUniformData.testSendFloat(
           sandbox,
           "u_shininess",

@@ -89,17 +89,6 @@ let cloneLightMaterialComponent =
     state
   );
 
-let cloneAmbientLightComponent =
-    (sourceComponent: component, countRangeArr: array(int), {ambientLightRecord} as state) => {
-  let (ambientLightRecord, componentArr) =
-    CloneAmbientLightService.handleCloneComponent(
-      sourceComponent,
-      countRangeArr,
-      ambientLightRecord
-    );
-  ({...state, ambientLightRecord}, componentArr)
-};
-
 let cloneDirectionLightComponent =
     (sourceComponent: component, countRangeArr: array(int), {directionLightRecord} as state) => {
   let (directionLightRecord, componentArr) =

@@ -59,10 +59,6 @@ let batchDispose =
     |> batchDisposeLightMaterialComponentFunc(state);
   let state =
     state
-    |> BatchGetComponentGameObjectMainService.batchGetAmbientLightComponent(uidArray)
-    |> DisposeComponentGameObjectMainService.batchDisposeAmbientLightComponent(state);
-  let state =
-    state
     |> BatchGetComponentGameObjectMainService.batchGetDirectionLightComponent(uidArray)
     |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(state);
   let state =

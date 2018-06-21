@@ -136,19 +136,6 @@ let deferDisposeObjectInstanceComponent =
     },
   };
 
-let deferDisposeAmbientLightComponent =
-  (. uid, component: component, {gameObjectRecord} as state) => {
-    ...state,
-    gameObjectRecord: {
-      ...gameObjectRecord,
-      ambientLightMap:
-        _removeComponent(uid, gameObjectRecord.ambientLightMap),
-      disposedAmbientLightArray:
-        gameObjectRecord.disposedAmbientLightArray
-        |> ArrayService.push(component),
-    },
-  };
-
 let deferDisposeDirectionLightComponent =
   (. uid, component: component, {gameObjectRecord} as state) => {
     ...state,
@@ -318,17 +305,6 @@ let batchDisposeLightMaterialComponentForWorker =
              ),
       }),
   };
-};
-
-let batchDisposeAmbientLightComponent =
-    ({ambientLightRecord} as state, componentArray: array(component)) => {
-  ...state,
-  ambientLightRecord:
-    ComponentMapService.batchDisposeComponent(
-      ambientLightRecord,
-      DisposeAmbientLightService.handleBatchDisposeComponent,
-      componentArray,
-    ),
 };
 
 let batchDisposeDirectionLightComponent =

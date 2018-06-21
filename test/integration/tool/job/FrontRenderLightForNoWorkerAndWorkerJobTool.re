@@ -2,7 +2,6 @@ open Sinon;
 
 let prepareForUseProgramCase = (sandbox, state) => {
   let (state, _, _, _, _) = FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-  let (state, _, _) = AmbientLightTool.createGameObject(state);
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   state
 };
