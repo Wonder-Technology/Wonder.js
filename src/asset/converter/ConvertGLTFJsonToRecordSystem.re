@@ -176,10 +176,10 @@ let convert = json : GLTFType.gltf =>
                      |> optimizedOptional(
                           optimizedField("children", array(int)),
                         ),
-                   extension:
+                   extras:
                      json
                      |> optimizedOptional(
-                          optimizedField("extension", json =>
+                          optimizedField("extras", json =>
                             {
                               material:
                                 json

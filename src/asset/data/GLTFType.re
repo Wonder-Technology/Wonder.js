@@ -141,7 +141,7 @@ type material = {
   name: option(string),
 };
 
-type nodeExtension = {material: option(int)};
+type nodeExtra = {material: option(int)};
 
 type node = {
   name: option(string),
@@ -152,7 +152,7 @@ type node = {
   translation: option(array(float)),
   rotation: option(array(float)),
   scale: option(array(float)),
-  extension: option(nodeExtension),
+  extras: option(nodeExtra),
 };
 
 type attributes = {

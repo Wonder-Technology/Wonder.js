@@ -1286,7 +1286,7 @@ let buildNode =
       ~translation=None,
       ~rotation=None,
       ~scale=None,
-      ~extension=None,
+      ~extras=None,
       (),
     )
     : GLTFType.node => {
@@ -1298,5 +1298,5 @@ let buildNode =
   translation,
   rotation,
   scale,
-  extension,
+  extras,
 };

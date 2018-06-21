@@ -248,10 +248,10 @@ let _convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (gameObjectIndices, componentIndices),
-           {mesh, extension}: GLTFType.node,
+           {mesh, extras}: GLTFType.node,
            index,
          ) =>
-           switch (extension) {
+           switch (extras) {
            | None =>
              switch (mesh) {
              | None => (gameObjectIndices, componentIndices)

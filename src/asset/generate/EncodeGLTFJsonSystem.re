@@ -19,7 +19,7 @@ let _encodeNodes = (nodeDataArr, state) => (
            scale,
            mesh,
            camera,
-           extension,
+           extras,
          }: nodeData,
        ) => {
        let list = [];
@@ -79,20 +79,20 @@ let _encodeNodes = (nodeDataArr, state) => (
          };
 
        let list =
-         switch (extension) {
+         switch (extras) {
          | None => list
-         | Some(({material}: nodeExtension)) =>
-           let extensionList = [];
-           let extensionList =
+         | Some(({material}: nodeExtra)) =>
+           let extraList = [];
+           let extraList =
              switch (material) {
-             | None => extensionList
+             | None => extraList
              | Some(material) => [
                  ("material", material |> int),
-                 ...extensionList,
+                 ...extraList,
                ]
              };
 
-           [("extension", extensionList |> object_), ...list];
+           [("extras", extraList |> object_), ...list];
          };
 
        list |> List.rev |> object_;

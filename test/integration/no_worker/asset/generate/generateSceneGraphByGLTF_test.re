@@ -33,7 +33,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          {|"nodes":[{"name":"gameObject_0","translation":[10,20,30],"mesh":0,"extension":{"material":0}}]|},
+          {|"nodes":[{"name":"gameObject_0","translation":[10,20,30],"mesh":0,"extras":{"material":0}}]|},
           state,
         );
       })
@@ -82,7 +82,7 @@ let _ =
         0.5
       ],
       "mesh": 0,
-      "extension": {
+      "extras": {
         "material": 0
       }
     },
@@ -106,28 +106,28 @@ let _ =
         -0.9960774183273315
       ],
       "mesh": 0,
-      "extension": {
+      "extras": {
         "material": 0
       }
     },
     {
       "name": "Cesium_Milk_Truck_0",
       "mesh": 1,
-      "extension": {
+      "extras": {
         "material": 1
       }
     },
     {
       "name": "Cesium_Milk_Truck_1",
       "mesh": 2,
-      "extension": {
+      "extras": {
         "material": 2
       }
     },
     {
       "name": "Cesium_Milk_Truck_2",
       "mesh": 3,
-      "extension": {
+      "extras": {
         "material": 3
       }
     }
@@ -311,7 +311,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfCameras(),
           {|
-            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extension":{"material":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
+            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"material":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
             |},
           state,
         );

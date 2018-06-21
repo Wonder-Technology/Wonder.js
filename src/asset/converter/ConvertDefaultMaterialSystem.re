@@ -31,10 +31,10 @@ let _isNeedAddDefaultMaterialByJudgeMesh = (mesh, meshes) => {
   ConvertCommon.getPrimitiveData(primitives).material |> Js.Option.isNone;
 };
 
-let _isNeedAddDefaultMaterial = ({extension, mesh}: GLTFType.node, meshes) =>
+let _isNeedAddDefaultMaterial = ({extras, mesh}: GLTFType.node, meshes) =>
   switch (mesh) {
   | Some(mesh) =>
-    switch (extension) {
+    switch (extras) {
     | Some({material}) =>
       switch (material) {
       | None => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
@@ -51,18 +51,18 @@ let _setDefaultMaterial =
   nodes:
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. newNodes, ({extension}: GLTFType.node) as node) =>
+         (. newNodes, ({extras}: GLTFType.node) as node) =>
            _isNeedAddDefaultMaterial(node, meshes) ?
              newNodes
              |> ArrayService.push(
                   {
                     ...node,
-                    extension:
-                      switch (extension) {
+                    extras:
+                      switch (extras) {
                       | None => Some({material: Some(defaultMaterialIndex)})
-                      | Some(extension) =>
+                      | Some(extras) =>
                         Some({
-                          ...extension,
+                          ...extras,
                           material: Some(defaultMaterialIndex),
                         })
                       },

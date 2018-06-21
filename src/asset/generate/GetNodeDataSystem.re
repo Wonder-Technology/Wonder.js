@@ -412,7 +412,7 @@ let rec _getNodeData =
                   },
                 mesh: meshIndex,
                 camera: cameraIndex,
-                extension:
+                extras:
                   switch (materialIndex) {
                   | None => None
                   | Some(materialIndex) =>
