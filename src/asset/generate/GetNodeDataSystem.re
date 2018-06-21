@@ -222,17 +222,45 @@ let _getCameraData =
     (Some(cameraIndex), cameraData, cameraIndex |> succ);
   };
 
+let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
+  switch (
+    GetComponentGameObjectService.getDirectionLightComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | None =>
+    switch (
+      GetComponentGameObjectService.getPointLightComponent(.
+        gameObject,
+        gameObjectRecord,
+      )
+    ) {
+    | None => (None, None, lightIndex)
+
+    | Some(light) =>
+      let lightData = Some(("point", light));
+
+      (Some(lightIndex), lightData, lightIndex |> succ);
+    }
+
+  | Some(light) =>
+    let lightData = Some(("directional", light));
+
+    (Some(lightIndex), lightData, lightIndex |> succ);
+  };
+
 let rec _getNodeData =
         (
           state,
-          (nodeIndex, meshIndex, materialIndex, cameraIndex),
+          (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
           (
             (boxGeometryDataMap, customGeometryDataMap),
             lightMaterialDataMap,
             gameObjectChildrenMap,
             gameObjectNodeIndexMap,
           ),
-          (meshPointDataMap, materialDataMap, cameraDataMap),
+          (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
           (transformArr, nodeDataArr),
         ) =>
   transformArr
@@ -240,14 +268,14 @@ let rec _getNodeData =
        (.
          (
            {gameObjectRecord} as state,
-           (nodeIndex, meshIndex, materialIndex, cameraIndex),
+           (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
            (
              (boxGeometryDataMap, customGeometryDataMap),
              lightMaterialDataMap,
              gameObjectChildrenMap,
              gameObjectNodeIndexMap,
            ),
-           (meshPointDataMap, materialDataMap, cameraDataMap),
+           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
            nodeDataArr,
          ),
          transform,
@@ -342,6 +370,20 @@ let rec _getNodeData =
                 )
            };
 
+         let (lightIndex, lightData, newLightIndex) =
+           _getLightData((gameObject, lightIndex), state);
+
+         let lightDataMap =
+           switch (lightIndex) {
+           | None => lightDataMap
+           | Some(lightIndex) =>
+             lightDataMap
+             |> WonderCommonlib.SparseMapService.set(
+                  lightIndex,
+                  lightData |> OptionService.unsafeGet,
+                )
+           };
+
          let gameObjectChildrenMap =
            switch (childrenGameObjectArr |> Js.Array.length) {
            | 0 => gameObjectChildrenMap
@@ -418,32 +460,44 @@ let rec _getNodeData =
                   | Some(materialIndex) =>
                     Some({material: Some(materialIndex)})
                   },
+                extensions:
+                  switch (lightIndex) {
+                  | None => None
+                  | Some(lightIndex) =>
+                    Some({khr_lights: Some({light: lightIndex})})
+                  },
               }: nodeData,
             );
 
          _getNodeData(
            state,
-           (newNodeIndex, newMeshIndex, newMaterialIndex, newCameraIndex),
+           (
+             newNodeIndex,
+             newMeshIndex,
+             newMaterialIndex,
+             newCameraIndex,
+             newLightIndex,
+           ),
            (
              (boxGeometryDataMap, customGeometryDataMap),
              lightMaterialDataMap,
              gameObjectChildrenMap,
              gameObjectNodeIndexMap,
            ),
-           (meshPointDataMap, materialDataMap, cameraDataMap),
+           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
            (childrenTransformArr, nodeDataArr),
          );
        },
        (
          state,
-         (nodeIndex, meshIndex, materialIndex, cameraIndex),
+         (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
          (
            (boxGeometryDataMap, customGeometryDataMap),
            lightMaterialDataMap,
            gameObjectChildrenMap,
            gameObjectNodeIndexMap,
          ),
-         (meshPointDataMap, materialDataMap, cameraDataMap),
+         (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
          nodeDataArr,
        ),
      );
@@ -451,19 +505,19 @@ let rec _getNodeData =
 let getAllNodeData = (sceneGameObject, state) => {
   let (
     state,
-    (nodeIndex, meshIndex, materialIndex, cameraIndex),
+    (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
     (
       (boxGeometryDataMap, customGeometryDataMap),
       lightMaterialDataMap,
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
     nodeDataArr,
   ) =
     _getNodeData(
       state,
-      (0, 0, 0, 0),
+      (0, 0, 0, 0, 0),
       (
         (
           WonderCommonlib.SparseMapService.createEmpty(),
@@ -474,6 +528,7 @@ let getAllNodeData = (sceneGameObject, state) => {
         WonderCommonlib.SparseMapService.createEmpty(),
       ),
       (
+        WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
@@ -491,19 +546,23 @@ let getAllNodeData = (sceneGameObject, state) => {
 
   (
     state,
-    (nodeIndex, meshIndex, materialIndex, cameraIndex),
+    (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
     (
       (boxGeometryDataMap, customGeometryDataMap),
       lightMaterialDataMap,
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
     nodeDataArr,
   );
 
   let nodeDataArr =
     _setChildren(gameObjectChildrenMap, gameObjectNodeIndexMap, nodeDataArr);
 
-  (state, (meshPointDataMap, materialDataMap, cameraDataMap), nodeDataArr);
+  (
+    state,
+    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    nodeDataArr,
+  );
 };

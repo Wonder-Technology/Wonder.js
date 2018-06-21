@@ -9,7 +9,7 @@ open GenerateSceneGraphType;
 let generateEmbededGLTF = (sceneGameObject, imageBase64Map, state) => {
   let (
     state,
-    (meshPointDataMap, materialDataMap, cameraDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
     nodeDataArr,
   ) =
     GetNodeDataSystem.getAllNodeData(sceneGameObject, state);
@@ -24,6 +24,11 @@ let generateEmbededGLTF = (sceneGameObject, imageBase64Map, state) => {
 
   let cameraDataArr = BuildCameraDataSystem.build(cameraDataMap, state);
 
+  let lightDataArr = BuildLightDataSystem.build(lightDataMap, state);
+
+  let extensionsUsedArr =
+    BuildExtensionDataSystem.buildExtensionsUsed(lightDataArr);
+
   EncodeGLTFJsonSystem.encode(
     (buffer, totalByteLength),
     (
@@ -36,6 +41,8 @@ let generateEmbededGLTF = (sceneGameObject, imageBase64Map, state) => {
       samplerDataArr,
       imageBase64Arr,
       cameraDataArr,
+      lightDataArr,
+      extensionsUsedArr,
     ),
     state,
   );

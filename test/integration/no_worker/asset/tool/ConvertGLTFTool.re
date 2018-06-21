@@ -305,7 +305,6 @@ let buildGLTFJsonOfLight = () =>
             }
         },
         {
-
             "mesh": 0,
             "matrix": [
                 1.0,

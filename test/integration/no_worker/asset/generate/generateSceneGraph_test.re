@@ -46,7 +46,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          {|"scene": 0, "scenes": [{"nodes": [0]}]|},
+          {|"scene": 0, "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0]}]|},
           state,
         );
       })

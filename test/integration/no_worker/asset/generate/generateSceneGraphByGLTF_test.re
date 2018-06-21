@@ -390,4 +390,146 @@ let _ =
         })
       );
     });
+
+    describe("test light", () => {
+      testPromise("test scenes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          {|
+  "scenes": [
+    {
+      "extensions": {
+        "KHR_lights": {
+          "light": 2
+        }
+      },
+      "nodes": [
+        0
+      ]
+    }
+  ],
+|},
+          state,
+        );
+      });
+
+      testPromise("test extensions", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          {|
+  "extensions": {
+    "KHR_lights": {
+      "lights": [
+        {
+          "intensity": 1,
+          "color": [
+            0.5,
+            0.5,
+            1
+          ],
+          "type": "directional"
+        },
+        {
+          "range": 55.5,
+          "quadraticAttenuation": 0,
+          "linearAttenuation": 1.5,
+          "constantAttenuation": 1,
+          "intensity": 2.5,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "type": "point"
+        },
+        {
+          "color": [
+            1,
+            0.5,
+            1
+          ],
+          "type": "ambient"
+        }
+      ]
+    }
+  },
+|},
+          state,
+        );
+      });
+
+      testPromise("test nodes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          {|
+  "nodes": [
+    {
+      "name": "gameObject_0",
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "gameObject_1",
+      "translation": [
+        -1.352329969406128,
+        0.4277220070362091,
+        -2.98022992950564e-8
+      ],
+      "mesh": 0,
+      "extras": {
+        "material": 0
+      }
+    },
+    {
+      "name": "gameObject_2",
+      "translation": [
+        10.5,
+        0.4277220070362091,
+        20.100000381469727
+      ],
+      "extensions": {
+        "light": 0
+      }
+    },
+    {
+      "name": "gameObject_3",
+      "translation": [
+        2.5,
+        0,
+        -2.9000000953674316
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        1.1180340051651
+      ],
+      "scale": [
+        1,
+        1,
+        2
+      ],
+      "mesh": 0,
+      "extras": {
+        "material": 0
+      },
+      "extensions": {
+        "light": 1
+      }
+    }
+  ],
+|},
+          state,
+        );
+      });
+    });
   });

@@ -85,6 +85,7 @@ let convert = (gltfFileContent: string) => {
     ConvertGLTFJsonToRecordSystem.convert(
       gltfFileContent |> Js.Json.parseExn,
     );
+
   /* ConvertImagesSystem.buildImageArray(gltf)
      |> then_(imageArr =>
           (

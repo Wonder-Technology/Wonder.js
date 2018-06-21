@@ -20,6 +20,7 @@ let _encodeNodes = (nodeDataArr, state) => (
            mesh,
            camera,
            extras,
+           extensions,
          }: nodeData,
        ) => {
        let list = [];
@@ -95,12 +96,26 @@ let _encodeNodes = (nodeDataArr, state) => (
            [("extras", extraList |> object_), ...list];
          };
 
+       let list =
+         switch (extensions) {
+         | None => list
+         | Some(({khr_lights}: nodeExtensions)) =>
+           let extensionList = [];
+           let extensionList =
+             switch (khr_lights) {
+             | None => extensionList
+             | Some({light}) => [("light", light |> int), ...extensionList]
+             };
+
+           [("extensions", extensionList |> object_), ...list];
+         };
+
        list |> List.rev |> object_;
      })
   |> jsonArray,
 );
 
-let _encodeCameras = (cameraDataArr, state) => (
+let _encodeCameras = cameraDataArr => (
   "cameras",
   cameraDataArr
   |> Js.Array.map(({type_, perspective}: cameraData) => {
@@ -135,7 +150,43 @@ let _encodeCameras = (cameraDataArr, state) => (
   |> jsonArray,
 );
 
-let _encodeMaterials = (materialDataArr, state) => (
+let _encodeScenes = (extensionsUsedArr, lightDataArr, state) => {
+  let sceneList = [("nodes", [|0|] |> intArray)];
+
+  (
+    "scenes",
+    [|
+      (
+        extensionsUsedArr |> Js.Array.includes("KHR_lights") ?
+          [
+            (
+              "extensions",
+              [
+                (
+                  "KHR_lights",
+                  [
+                    (
+                      "light",
+                      BuildLightDataSystem.getAmbientLightIndex(lightDataArr)
+                      |> int,
+                    ),
+                  ]
+                  |> object_,
+                ),
+              ]
+              |> object_,
+            ),
+            ...sceneList,
+          ] :
+          sceneList
+      )
+      |> object_,
+    |]
+    |> jsonArray,
+  );
+};
+
+let _encodeMaterials = materialDataArr => (
   "materials",
   materialDataArr
   |> Js.Array.map(({baseColorFactor, baseColorTexture, name}: materialData) => {
@@ -180,7 +231,7 @@ let _encodeMaterials = (materialDataArr, state) => (
   |> jsonArray,
 );
 
-let _encodeTextures = (textureDataArr, state) => (
+let _encodeTextures = textureDataArr => (
   "textures",
   textureDataArr
   |> Js.Array.map(({name, sampler, source}: textureData) => {
@@ -203,7 +254,7 @@ let _encodeTextures = (textureDataArr, state) => (
   |> jsonArray,
 );
 
-let _encodeSamplers = (samplerDataArr, state) => (
+let _encodeSamplers = samplerDataArr => (
   "samplers",
   samplerDataArr
   |> Js.Array.map(({wrapS, wrapT, magFilter, minFilter}: samplerData) => {
@@ -219,7 +270,7 @@ let _encodeSamplers = (samplerDataArr, state) => (
   |> jsonArray,
 );
 
-let _encodeImages = (imageBase64Arr, state) => (
+let _encodeImages = imageBase64Arr => (
   "images",
   imageBase64Arr
   |> Js.Array.map((base64Str: string) => {
@@ -230,7 +281,7 @@ let _encodeImages = (imageBase64Arr, state) => (
   |> jsonArray,
 );
 
-let _encodeMeshes = (meshDataArr, state) => (
+let _encodeMeshes = meshDataArr => (
   "meshes",
   meshDataArr
   |> Js.Array.map(({primitives, name}: meshData) => {
@@ -281,6 +332,101 @@ let _encodeMeshes = (meshDataArr, state) => (
   |> jsonArray,
 );
 
+let _encodeExtensionsUsed = extensionsUsedArr => (
+  "extensionsUsedArr",
+  extensionsUsedArr |> stringArray,
+);
+
+let _encodeExtensions = lightDataArr => (
+  "extensions",
+  [
+    (
+      "KHR_lights",
+      [
+        (
+          "lights",
+          lightDataArr
+          |> Js.Array.map(
+               (
+                 {
+                   type_,
+                   color,
+                   intensity,
+                   constantAttenuation,
+                   linearAttenuation,
+                   quadraticAttenuation,
+                   range,
+                 }: lightData,
+               ) => {
+               let khrLightsExtensionList = [("type", type_ |> string)];
+
+               let khrLightsExtensionList =
+                 switch (color) {
+                 | None => khrLightsExtensionList
+                 | Some(color) => [
+                     ("color", color |> numberArray),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               let khrLightsExtensionList =
+                 switch (intensity) {
+                 | None => khrLightsExtensionList
+                 | Some(intensity) => [
+                     ("intensity", intensity |> float),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               let khrLightsExtensionList =
+                 switch (constantAttenuation) {
+                 | None => khrLightsExtensionList
+                 | Some(constantAttenuation) => [
+                     ("constantAttenuation", constantAttenuation |> float),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               let khrLightsExtensionList =
+                 switch (linearAttenuation) {
+                 | None => khrLightsExtensionList
+                 | Some(linearAttenuation) => [
+                     ("linearAttenuation", linearAttenuation |> float),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               let khrLightsExtensionList =
+                 switch (quadraticAttenuation) {
+                 | None => khrLightsExtensionList
+                 | Some(quadraticAttenuation) => [
+                     ("quadraticAttenuation", quadraticAttenuation |> float),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               let khrLightsExtensionList =
+                 switch (range) {
+                 | None => khrLightsExtensionList
+                 | Some(range) => [
+                     ("range", range |> float),
+                     ...khrLightsExtensionList,
+                   ]
+                 };
+
+               khrLightsExtensionList |> object_;
+             })
+          |> jsonArray,
+        ),
+      ]
+      |> object_,
+    ),
+  ]
+  |> object_,
+);
+
+let _hasExtensions = lightDataArr => lightDataArr |> Js.Array.length > 0;
+
 let encode =
     (
       (buffer, totalByteLength),
@@ -294,10 +440,12 @@ let encode =
         samplerDataArr,
         imageBase64Arr,
         cameraDataArr,
+        lightDataArr,
+        extensionsUsedArr,
       ),
       state,
-    ) =>
-  [
+    ) => {
+  let list = [
     (
       "asset",
       [
@@ -307,16 +455,13 @@ let encode =
       |> object_,
     ),
     ("scene", 0 |> int),
-    (
-      "scenes",
-      [|[("nodes", [|0|] |> intArray)] |> object_|] |> jsonArray,
-    ),
-    _encodeCameras(cameraDataArr, state),
+    _encodeScenes(extensionsUsedArr, lightDataArr, state),
+    _encodeCameras(cameraDataArr),
     _encodeNodes(nodeDataArr, state),
-    _encodeMaterials(materialDataArr, state),
-    _encodeTextures(textureDataArr, state),
-    _encodeSamplers(samplerDataArr, state),
-    _encodeImages(imageBase64Arr, state),
+    _encodeMaterials(materialDataArr),
+    _encodeTextures(textureDataArr),
+    _encodeSamplers(samplerDataArr),
+    _encodeImages(imageBase64Arr),
     (
       "buffers",
       [|
@@ -356,6 +501,16 @@ let encode =
          )
       |> jsonArray,
     ),
-    _encodeMeshes(meshDataArr, state),
-  ]
-  |> object_;
+    _encodeMeshes(meshDataArr),
+  ];
+
+  let list =
+    extensionsUsedArr |> Js.Array.length > 0 ?
+      [_encodeExtensionsUsed(extensionsUsedArr), ...list] : list;
+
+  let list =
+    _hasExtensions(lightDataArr) ?
+      [_encodeExtensions(lightDataArr), ...list] : list;
+
+  list |> object_;
+};

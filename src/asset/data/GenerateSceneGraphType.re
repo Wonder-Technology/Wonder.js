@@ -1,5 +1,9 @@
 type nodeExtras = {material: option(int)};
 
+type nodeKHRLightsExtension = {light: int};
+
+type nodeExtensions = {khr_lights: option(nodeKHRLightsExtension)};
+
 type nodeData = {
   gameObject: int,
   children: option(array(int)),
@@ -9,6 +13,7 @@ type nodeData = {
   mesh: option(int),
   camera: option(int),
   extras: option(nodeExtras),
+  extensions: option(nodeExtensions),
 };
 
 type attributes = {
@@ -70,6 +75,16 @@ type perspectiveCameraData = {
 type cameraData = {
   type_: string,
   perspective: perspectiveCameraData,
+};
+
+type lightData = {
+  type_: string,
+  color: option(array(float)),
+  intensity: option(float),
+  constantAttenuation: option(float),
+  linearAttenuation: option(float),
+  quadraticAttenuation: option(float),
+  range: option(float),
 };
 
 type point =

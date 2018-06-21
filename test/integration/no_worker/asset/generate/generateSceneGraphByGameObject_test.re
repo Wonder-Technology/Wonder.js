@@ -1739,6 +1739,287 @@ let _ =
       });
     });
 
+    describe("test light", () => {
+      let _createDirectionLightGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, gameObject, light) =
+          DirectionLightTool.createGameObject(state);
+
+        let color = [|0., 0., 1.|];
+        let intensity = 1.5;
+
+        let state =
+          state
+          |> DirectionLightAPI.setDirectionLightColor(light, color)
+          |> DirectionLightAPI.setDirectionLightIntensity(light, intensity);
+
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (light, (color, intensity)),
+        );
+      };
+
+      let _createPointLightGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, gameObject, light) =
+          PointLightTool.createGameObject(state);
+
+        let color = [|1., 0., 0.5|];
+        let intensity = 3.5;
+        let constant = 4.5;
+        let linear = 5.;
+        let quadratic = 6.5;
+        let range = 32.;
+
+        let state =
+          state
+          |> PointLightAPI.setPointLightColor(light, color)
+          |> PointLightAPI.setPointLightIntensity(light, intensity)
+          |> PointLightAPI.setPointLightConstant(light, constant)
+          |> PointLightAPI.setPointLightLinear(light, linear)
+          |> PointLightAPI.setPointLightQuadratic(light, quadratic)
+          |> PointLightAPI.setPointLightRange(light, range);
+
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (light, (color, intensity, constant, linear, quadratic, range)),
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, sceneGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            sceneGameObject,
+            state,
+          );
+
+        let ambientLightColor = [|0.5, 0.5, 1.|];
+
+        let state = SceneAPI.setAmbientLightColor(ambientLightColor, state);
+
+        let (state, gameObject1, transform1, (light1, (color1, intensity1))) =
+          _createDirectionLightGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          transform3,
+          (
+            light3,
+            (color3, intensity3, constant3, linear3, quadratic3, range3),
+          ),
+        ) =
+          _createPointLightGameObject(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        );
+      };
+
+      test("test extensions", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          sceneGameObject,
+          {j|
+  "extensions": {
+    "KHR_lights": {
+      "lights": [
+        {
+          "intensity": $intensity1,
+          "color": [$color1],
+          "type": "directional"
+        },
+        {
+          "range": $range3,
+          "quadraticAttenuation": $quadratic3,
+          "linearAttenuation": $linear3,
+          "constantAttenuation": $constant3,
+          "intensity": $intensity3,
+          "color": [$color3],
+          "type": "point"
+        },
+        {
+          "color": [$ambientLightColor],
+          "type": "ambient"
+        }
+      ]
+    }
+  },
+                |j},
+          state,
+        );
+      });
+      test("test scenes", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          sceneGameObject,
+          {j|
+  "scenes": [
+    {
+      "extensions": {
+        "KHR_lights": {
+          "light": 2
+        }
+      },
+      "nodes": [
+        0
+      ]
+    }
+  ],
+                |j},
+          state,
+        );
+      });
+      test("test nodes", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          sceneGameObject,
+          {j|
+  "nodes": [
+    {
+      "children": [
+        1,
+        2
+      ]
+    },
+    {
+      "extensions": {
+        "light": 0
+      }
+    },
+    {
+      "children": [
+        3
+      ],
+      "translation": [
+        10,
+        11,
+        12.5
+      ],
+      "rotation": [
+        0,
+        1,
+        2.5,
+        1
+      ],
+      "scale": [
+        2,
+        3.5,
+        1.5
+      ],
+      "mesh": 0,
+      "extras": {
+        "material": 0
+      }
+    },
+    {
+      "extensions": {
+        "light": 1
+      }
+    }
+  ],
+                |j},
+          state,
+        );
+      });
+    });
+
     describe("optimize", () =>
       describe("get image base64 from map", () => {
         let _prepareGameObject = state => {

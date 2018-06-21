@@ -361,7 +361,7 @@ let _ =
 
       test("test ambientLight", () =>
         _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({scene}) =>
-          scene.ambientLight |> expect == Some({color: [|1.0, 0.5, 0.2|]})
+          scene.ambientLight |> expect == Some({color: [|1., 0.5, 1.|]})
         )
       );
     });
@@ -370,7 +370,7 @@ let _ =
       test("test light gltf", () =>
         _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({directionLights}) =>
           directionLights
-          |> expect == [|{color: [|0.5, 0.6, 0.8|], intensity: 1.}|]
+          |> expect == [|{color: [|0.5, 0.5, 1.|], intensity: 1.}|]
         )
       )
     );
