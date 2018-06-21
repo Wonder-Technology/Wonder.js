@@ -104,7 +104,10 @@ let _encodeNodes = (nodeDataArr, state) => (
            let extensionList =
              switch (khr_lights) {
              | None => extensionList
-             | Some({light}) => [("light", light |> int), ...extensionList]
+             | Some({light}) => [
+                 ("KHR_lights", [("light", light |> int)] |> object_),
+                 ...extensionList,
+               ]
              };
 
            [("extensions", extensionList |> object_), ...list];

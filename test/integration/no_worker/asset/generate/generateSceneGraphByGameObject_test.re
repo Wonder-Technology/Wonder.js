@@ -1980,7 +1980,9 @@ let _ =
     },
     {
       "extensions": {
-        "light": 0
+        "KHR_lights": {
+          "light": 0
+        }
       }
     },
     {
@@ -2010,11 +2012,76 @@ let _ =
     },
     {
       "extensions": {
-        "light": 1
+        "KHR_lights": {
+          "light": 1
+        }
       }
     }
   ],
                 |j},
+          state,
+        );
+      });
+
+      testPromise("test directionLight data", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+          sceneGameObject,
+          ((state, sceneGameObject)) =>
+            AssembleWDSystemTool.getAllDirectionLightData(
+              sceneGameObject,
+              state,
+            )
+            |> expect == [|(color1, intensity1)|],
+          state,
+        );
+      });
+
+      testPromise("test pointLight data", () => {
+        let (
+          state,
+          (sceneGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+          sceneGameObject,
+          ((state, sceneGameObject)) =>
+            AssembleWDSystemTool.getAllPointLightData(sceneGameObject, state)
+            |>
+            expect == [|
+                        (
+                          color3,
+                          intensity3,
+                          constant3,
+                          linear3,
+                          quadratic3,
+                          range3,
+                        ),
+                      |],
           state,
         );
       });

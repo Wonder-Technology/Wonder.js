@@ -81,6 +81,43 @@ let getAllGameObjects = (sceneGameObject, state) => {
      );
 };
 
+let getAllDirectionLightData = (sceneGameObject, state) =>
+  getAllGameObjects(sceneGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectDirectionLightComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectDirectionLightComponent(
+         gameObject,
+         state,
+       )
+     )
+  |> Js.Array.map(light =>
+       (
+         DirectionLightAPI.getDirectionLightColor(light, state),
+         DirectionLightAPI.getDirectionLightIntensity(light, state),
+       )
+     );
+
+let getAllPointLightData = (sceneGameObject, state) =>
+  getAllGameObjects(sceneGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectPointLightComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectPointLightComponent(gameObject, state)
+     )
+  |> Js.Array.map(light =>
+       (
+         PointLightAPI.getPointLightColor(light, state),
+         PointLightAPI.getPointLightIntensity(light, state),
+         PointLightAPI.getPointLightConstant(light, state),
+         PointLightAPI.getPointLightLinear(light, state),
+         PointLightAPI.getPointLightQuadratic(light, state),
+         PointLightAPI.getPointLightRange(light, state),
+       )
+     );
+
 let getAllGeometryData = (sceneGameObject, state) =>
   getAllGameObjects(sceneGameObject, state)
   |> Js.Array.filter(gameObject =>
@@ -114,5 +151,4 @@ let getAllGeometryData = (sceneGameObject, state) =>
          );
      });
 
-
-     let batchCreate = BatchCreateSystem.batchCreate;
+let batchCreate = BatchCreateSystem.batchCreate;

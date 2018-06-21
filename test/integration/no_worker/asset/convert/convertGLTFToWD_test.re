@@ -865,6 +865,25 @@ let _ =
             )
           );
         });
+
+
+        describe("test directionLightGameObjectIndexData", () => {
+          test("test light gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({indices}) =>
+              indices.gameObjectIndices.directionLightGameObjectIndexData
+              |> expect == _buildComponentIndexData([|2|], [|0|])
+            )
+          );
+        });
+
+        describe("test pointLightGameObjectIndexData", () => {
+          test("test light gltf", () =>
+            _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({indices}) =>
+              indices.gameObjectIndices.pointLightGameObjectIndexData
+              |> expect == _buildComponentIndexData([|3|], [|0|])
+            )
+          );
+        })
       });
       describe("test materialIndices", () => {
         let _buildIndexData = (materialIndices, mapIndices) => {

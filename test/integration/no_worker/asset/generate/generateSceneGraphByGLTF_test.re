@@ -497,7 +497,9 @@ let _ =
         20.100000381469727
       ],
       "extensions": {
-        "light": 0
+        "KHR_lights": {
+          "light": 0
+        }
       }
     },
     {
@@ -523,7 +525,9 @@ let _ =
         "material": 0
       },
       "extensions": {
-        "light": 1
+        "KHR_lights": {
+          "light": 1
+        }
       }
     }
   ],
