@@ -136,18 +136,12 @@ type childrenTransformIndexData = {
   childrenTransformIndices: array(array(transformIndex)),
 };
 
-/* type ambientLightGameObjectIndexData = {
-     gameObjectIndex,
-     componentIndex: ambientLightIndex,
-   }; */
-
 type gameObjectIndices = {
   childrenTransformIndexData,
   transformGameObjectIndexData: componentGameObjectIndexData,
   basicCameraViewGameObjectIndexData: componentGameObjectIndexData,
   perspectiveCameraProjectionGameObjectIndexData: componentGameObjectIndexData,
   lightMaterialGameObjectIndexData: componentGameObjectIndexData,
-  /* ambientLightGameObjectIndex: ambientLightIndex, */
   directionLightGameObjectIndexData: componentGameObjectIndexData,
   pointLightGameObjectIndexData: componentGameObjectIndexData,
   customGeometryGameObjectIndexData: componentGameObjectIndexData,

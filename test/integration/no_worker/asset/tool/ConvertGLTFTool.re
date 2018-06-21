@@ -231,7 +231,7 @@ let buildGLTFJsonOfLight = () =>
             "KHR_lights": {
                 "lights": [
                     {
-                        "color": [0.5, 0.6, 0.8],
+                        "color": [0.5, 0.5, 1.0],
                         "type": "directional"
                     },
                     {
@@ -242,7 +242,7 @@ let buildGLTFJsonOfLight = () =>
                         "type": "point"
                     },
                     {
-                        "color": [1.0, 0.5, 0.2],
+                        "color": [1.0, 0.5, 1.0],
                         "type": "ambient"
                     }
                 ]

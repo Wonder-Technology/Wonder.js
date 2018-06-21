@@ -224,6 +224,55 @@ let _batchCreateBasicSourceTextureArr =
   (state, indexArr);
 };
 
+let _batchCreateDirectionLightArr =
+    ({directionLights}, {directionLightRecord} as state) => {
+  let {index, mappedIndexMap}: DirectionLightType.directionLightRecord = directionLightRecord;
+
+  let newIndex = index + (directionLights |> Js.Array.length);
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> _checkNotExceedMaxCountByIndex(
+         BufferDirectionLightService.getBufferMaxCount(),
+       );
+
+  state.directionLightRecord = {
+    ...directionLightRecord,
+    index: newIndex,
+    mappedIndexMap:
+      indexArr
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. mappedIndexMap, index) =>
+             mappedIndexMap |> MappedIndexService.setMappedIndex(index, index),
+           mappedIndexMap,
+         ),
+  };
+  (state, indexArr);
+};
+
+let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) => {
+  let {index, mappedIndexMap}: PointLightType.pointLightRecord = pointLightRecord;
+
+  let newIndex = index + (pointLights |> Js.Array.length);
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> _checkNotExceedMaxCountByIndex(
+         BufferPointLightService.getBufferMaxCount(),
+       );
+
+  state.pointLightRecord = {
+    ...pointLightRecord,
+    index: newIndex,
+    mappedIndexMap:
+      indexArr
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. mappedIndexMap, index) =>
+             mappedIndexMap |> MappedIndexService.setMappedIndex(index, index),
+           mappedIndexMap,
+         ),
+  };
+  (state, indexArr);
+};
+
 let batchCreate = (wdRecord, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wdRecord, state);
   let (state, transformArr) = _batchCreateTransform(wdRecord, state);
@@ -233,11 +282,12 @@ let batchCreate = (wdRecord, state) => {
     _batchCreateBasicCameraView(wdRecord, state);
   let (state, perspectiveCameraProjectionArr) =
     _batchCreatePerspectiveCameraProjection(wdRecord, state);
-
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wdRecord, state);
-
   let (state, basicSourceTextureArr) =
     _batchCreateBasicSourceTextureArr(wdRecord, state);
+  let (state, directionLightArr) =
+    _batchCreateDirectionLightArr(wdRecord, state);
+  let (state, pointLightArr) = _batchCreatePointLightArr(wdRecord, state);
 
   (
     state,
@@ -248,6 +298,8 @@ let batchCreate = (wdRecord, state) => {
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
       lightMaterialArr,
+      directionLightArr,
+      pointLightArr,
     ),
     basicSourceTextureArr,
   );

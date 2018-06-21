@@ -307,7 +307,7 @@ let _batchAddLightMaterialComponent =
 
 let batchAddLightMaterialComponentForClone = _batchAddLightMaterialComponent;
 
-let batchAddDirectionLightComponentForClone =
+let _batchAddDirectionLightComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -322,7 +322,9 @@ let batchAddDirectionLightComponentForClone =
     ),
 };
 
-let batchAddPointLightComponentForClone =
+let batchAddDirectionLightComponentForClone = _batchAddDirectionLightComponent;
+
+let _batchAddPointLightComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -337,6 +339,8 @@ let batchAddPointLightComponentForClone =
     ),
 };
 
+let batchAddPointLightComponentForClone = _batchAddPointLightComponent;
+
 let batchAddTransformComponentForCreate = _batchAddTransformComponent;
 
 let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
@@ -348,3 +352,7 @@ let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspective
 let batchAddLightMaterialComponentForCreate = _batchAddLightMaterialComponent;
 
 let batchAddMeshRendererComponentForCreate = _batchAddMeshRendererComponent;
+
+let batchAddDirectionLightComponentForCreate = _batchAddDirectionLightComponent;
+
+let batchAddPointLightComponentForCreate = _batchAddPointLightComponent;

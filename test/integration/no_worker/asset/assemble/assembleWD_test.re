@@ -203,6 +203,7 @@ let _ =
         })
       );
     });
+
     describe("test customGeometrys", () => {
       open Js.Typed_array;
 
@@ -1187,6 +1188,82 @@ let _ =
                )
             |> Js.Array.length
             |> expect == 5,
+          state^,
+        )
+      )
+    );
+
+    describe("test directionLights", () =>
+      testPromise("test set color, intensity", () =>
+        AssembleWDSystemTool.testResult(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ((state, sceneGameObject)) =>
+            _getAllGameObjects(sceneGameObject, state)
+            |> Js.Array.filter(gameObject =>
+                 GameObjectAPI.hasGameObjectDirectionLightComponent(
+                   gameObject,
+                   state,
+                 )
+               )
+            |> Js.Array.map(gameObject =>
+                 GameObjectAPI.unsafeGetGameObjectDirectionLightComponent(
+                   gameObject,
+                   state,
+                 )
+               )
+            |> Js.Array.map(light =>
+                 (
+                   DirectionLightAPI.getDirectionLightColor(light, state),
+                   DirectionLightAPI.getDirectionLightIntensity(light, state),
+                 )
+               )
+            |> expect == [|([|0.5, 0.5, 1.|], 1.)|],
+          state^,
+        )
+      )
+    );
+
+    describe("test pointLights", () =>
+      testPromise(
+        "test set color, intensity, constant, linear, quadratic, range", () =>
+        AssembleWDSystemTool.testResult(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ((state, sceneGameObject)) =>
+            _getAllGameObjects(sceneGameObject, state)
+            |> Js.Array.filter(gameObject =>
+                 GameObjectAPI.hasGameObjectPointLightComponent(
+                   gameObject,
+                   state,
+                 )
+               )
+            |> Js.Array.map(gameObject =>
+                 GameObjectAPI.unsafeGetGameObjectPointLightComponent(
+                   gameObject,
+                   state,
+                 )
+               )
+            |> Js.Array.map(light =>
+                 (
+                   PointLightAPI.getPointLightColor(light, state),
+                   PointLightAPI.getPointLightIntensity(light, state),
+                   PointLightAPI.getPointLightConstant(light, state),
+                   PointLightAPI.getPointLightLinear(light, state),
+                   PointLightAPI.getPointLightQuadratic(light, state),
+                   PointLightAPI.getPointLightRange(light, state),
+                 )
+               )
+            |> expect == [|([|0., 0., 0.|], 2.5, 1., 1.5, 0., 55.5)|],
+          state^,
+        )
+      )
+    );
+
+    describe("test ambientLight", () =>
+      testPromise("test set color", () =>
+        AssembleWDSystemTool.testResult(
+          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ((state, sceneGameObject)) =>
+            SceneAPI.getAmbientLightColor(state) |> expect == [|1., 0.5, 1.|],
           state^,
         )
       )
