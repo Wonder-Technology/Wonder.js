@@ -1,3 +1,76 @@
+<a name="1.0.0-alpha.20"></a>
+# [1.0.0-alpha.20](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.19...v1.0.0-alpha.20) (2018-06-22)
+
+
+### Bug Fixes
+
+* **basicMaterial:** fix BasicMaterialAPI->hasLightMaterialMap: rename to hasBasicMaterialMap ([4fd3f83](https://github.com/Wonder-Technology/Wonder.js/commit/4fd3f83))
+* **boxGeometry:** fix front render light->boxGeometry->normals: now can send normals ([47b3cfe](https://github.com/Wonder-Technology/Wonder.js/commit/47b3cfe))
+* **shader:** fix "should send uniform data which has different shaders but the same materials" ([e638a0e](https://github.com/Wonder-Technology/Wonder.js/commit/e638a0e))
+* **texture:** fix Gl.re->getRepeat: now use REPEAT ([5ed078c](https://github.com/Wonder-Technology/Wonder.js/commit/5ed078c))
+
+
+### Features
+
+* **asset:** add "generateEmbededWD" logic(draft); rename GameObjectAPI->unsafeGetGameObjectCustomGeometryComponent to unsafeGetGameObjectGeometryComponent ([decc286](https://github.com/Wonder-Technology/Wonder.js/commit/decc286))
+* **asset:** add "load wd" ([d9bb3d2](https://github.com/Wonder-Technology/Wonder.js/commit/d9bb3d2))
+* **asset:** add asset_benchmark.html ([d0e8c17](https://github.com/Wonder-Technology/Wonder.js/commit/d0e8c17))
+* **asset:** add basicSourceTexture,lightMaterial->name ([39a110f](https://github.com/Wonder-Technology/Wonder.js/commit/39a110f))
+* **asset:** add gameObject->name ([503620a](https://github.com/Wonder-Technology/Wonder.js/commit/503620a))
+* **asset:** assemble: add "basicCameraView", "perspectiveCameraProjection" logic ([fe0ae1b](https://github.com/Wonder-Technology/Wonder.js/commit/fe0ae1b))
+* **asset:** assemble: add "lightMaterial", "texture", "image" logic(pass compile) ([8d301e8](https://github.com/Wonder-Technology/Wonder.js/commit/8d301e8))
+* **asset:** assemble: add "meshRenderer" ([f76a26f](https://github.com/Wonder-Technology/Wonder.js/commit/f76a26f))
+* **asset:** assemble: add light ([2e063a9](https://github.com/Wonder-Technology/Wonder.js/commit/2e063a9))
+* **asset:** assemble: pass test ([1db1ec4](https://github.com/Wonder-Technology/Wonder.js/commit/1db1ec4))
+* **asset:** begin asset: add WDType ([3745e0a](https://github.com/Wonder-Technology/Wonder.js/commit/3745e0a))
+* **asset:** convert: add "default scene", "default material" ([a3fe47b](https://github.com/Wonder-Technology/Wonder.js/commit/a3fe47b))
+* **asset:** fix assemble->camera->aspect->not has aspect data: now compute it in initCameraJob,updateCameraJob ([ba45f43](https://github.com/Wonder-Technology/Wonder.js/commit/ba45f43))
+* **asset:** fix assemble->texture: now not flipY ([904b31a](https://github.com/Wonder-Technology/Wonder.js/commit/904b31a))
+* **asset:** fix convert->camera->fovy: now convert radians to degree ([aeb3e58](https://github.com/Wonder-Technology/Wonder.js/commit/aeb3e58))
+* **asset:** fix convert->convert default material: add default material to node->extension prior ([de3ea86](https://github.com/Wonder-Technology/Wonder.js/commit/de3ea86))
+* **asset:** fix convert->multi primitives: now newNodesOfMultiPrimitives should has no matrix data ([f1c0dec](https://github.com/Wonder-Technology/Wonder.js/commit/f1c0dec))
+* **asset:** fix convert: should only exec convert once ([30c178a](https://github.com/Wonder-Technology/Wonder.js/commit/30c178a))
+* **asset:** fix generate->generate by gltf->camera: can handle no aspectRatio,zfar data case ([106ac90](https://github.com/Wonder-Technology/Wonder.js/commit/106ac90))
+* **asset:** fix generate->generate by gltf: if gltf->mesh has no normal, the result should has no n ([8bd47b0](https://github.com/Wonder-Technology/Wonder.js/commit/8bd47b0))
+* **asset:** fix generate->light->nodes->extensions ([b679f97](https://github.com/Wonder-Technology/Wonder.js/commit/b679f97))
+* **asset:** generate: add "build material data" logic ([fdcf9b1](https://github.com/Wonder-Technology/Wonder.js/commit/fdcf9b1))
+* **asset:** generate: add "camera" ([7618ce2](https://github.com/Wonder-Technology/Wonder.js/commit/7618ce2))
+* **asset:** generate: add light ([3276c86](https://github.com/Wonder-Technology/Wonder.js/commit/3276c86))
+* **asset:** gltf->node add extension->material ([754981a](https://github.com/Wonder-Technology/Wonder.js/commit/754981a))
+* **asset:** optimize assemble: remove curry->texture ([674575a](https://github.com/Wonder-Technology/Wonder.js/commit/674575a))
+* **asset:** optimize ConvertBufferSystem->_decodeArrayBuffer: use for instead of range ([7c570cb](https://github.com/Wonder-Technology/Wonder.js/commit/7c570cb))
+* **asset:** optimize generate: get image base64 from map ([84e326a](https://github.com/Wonder-Technology/Wonder.js/commit/84e326a))
+* **asset:** rename "extension" to "extra" ([4f6144e](https://github.com/Wonder-Technology/Wonder.js/commit/4f6144e))
+* **camera:** fix camera compile error;pass all u,i tests ([41d51a8](https://github.com/Wonder-Technology/Wonder.js/commit/41d51a8))
+* **convert:** add "assemble wd" -> "custom geometry" logic ([66a591d](https://github.com/Wonder-Technology/Wonder.js/commit/66a591d))
+* **convert:** add "assemble wd" -> "gameObject, transform, scene" logic ([f184a10](https://github.com/Wonder-Technology/Wonder.js/commit/f184a10))
+* **convert:** add "convert gltf to wd" ([20e935e](https://github.com/Wonder-Technology/Wonder.js/commit/20e935e))
+* **convert:** optimize ConvertGLTFSystem->_convertGLTFJsonToRecord-> parse "nodes": use optimized o ([e5cbc8d](https://github.com/Wonder-Technology/Wonder.js/commit/e5cbc8d))
+* **customGeometry:** add "compute vertex normals" logic ([8f070fe](https://github.com/Wonder-Technology/Wonder.js/commit/8f070fe))
+* **customGeometry:** now "compute vertex normals" when get normals(when render) ([c966d70](https://github.com/Wonder-Technology/Wonder.js/commit/c966d70))
+* **data-json:** update data/ shader.json,shader_lib.json data ([53ef9c0](https://github.com/Wonder-Technology/Wonder.js/commit/53ef9c0))
+* **gameObject:** add name ([5d7bb71](https://github.com/Wonder-Technology/Wonder.js/commit/5d7bb71))
+* **gameObject:** now can replace component ([e290abe](https://github.com/Wonder-Technology/Wonder.js/commit/e290abe))
+* **light:** ambient light now set to scene; asset->convert: add light ([e889e2f](https://github.com/Wonder-Technology/Wonder.js/commit/e889e2f))
+* **shader:** basic_map, diffuse_map shader now use u_color/u_diffuse ([83a121c](https://github.com/Wonder-Technology/Wonder.js/commit/83a121c))
+* **shader:** fix render_basic shader->basic_map: u_color should only define once ([eadd92d](https://github.com/Wonder-Technology/Wonder.js/commit/eadd92d))
+* **texture:** add "generateMipmap" ([c96b71c](https://github.com/Wonder-Technology/Wonder.js/commit/c96b71c))
+* **texture:** fix TextureFilterService.re->getGlFilte->NEAREST_MIPMAP_LINEAR ([e2e107c](https://github.com/Wonder-Technology/Wonder.js/commit/e2e107c))
+* **texture:** set unpack_colorspace_conversion_webgl to be none ([c568d3c](https://github.com/Wonder-Technology/Wonder.js/commit/c568d3c))
+* lightMaterial and basicSourceTexture: add name ([69162e1](https://github.com/Wonder-Technology/Wonder.js/commit/69162e1))
+* remove unused log ([cfa8118](https://github.com/Wonder-Technology/Wonder.js/commit/cfa8118))
+* **transform:** add "rotation", "scale" logic; asset->assemble->transform: add correspond logic ([652de3f](https://github.com/Wonder-Technology/Wonder.js/commit/652de3f))
+* **transform:** fix matrix->"get rotation tuple" ([9259867](https://github.com/Wonder-Technology/Wonder.js/commit/9259867))
+* upgrade reason,bs-platform version ([0ba4e04](https://github.com/Wonder-Technology/Wonder.js/commit/0ba4e04))
+
+
+### Performance Improvements
+
+* **shader:** shader_libs.json->buffer use VboBufferType.bufferEnum instead of string ([4dcc937](https://github.com/Wonder-Technology/Wonder.js/commit/4dcc937))
+* **transform:** updateTransformMainService->updateAndSetPositionByTuple: now not markHierachyDirty( ([7a74160](https://github.com/Wonder-Technology/Wonder.js/commit/7a74160))
+
+
+
 <a name="1.0.0-alpha.19"></a>
 # [1.0.0-alpha.19](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.18.4...v1.0.0-alpha.19) (2018-05-21)
 
