@@ -1,3 +1,5 @@
+open Js.Typed_array;
+
 open GenerateSceneGraphType;
 
 let _addBufferViewData =
@@ -97,9 +99,49 @@ let _addAllPointData =
   );
 };
 
-let build = meshPointDataMap => {
-  open Js.Typed_array;
+let _addMeshData =
+    (
+      (vertexIndex, normalIndex, texCoordIndex, indexIndex),
+      texCoords,
+      meshDataArr,
+    ) =>
+  meshDataArr
+  |> ArrayService.push(
+       {
+         primitives: {
+           attributes: {
+             position: vertexIndex |> OptionService.unsafeGet,
+             normal: normalIndex,
+             texCoord_0:
+               switch (texCoords) {
+               | None => None
+               | Some(_) => texCoordIndex
+               },
+           },
+           indices: indexIndex |> OptionService.unsafeGet,
+           material: None,
+         },
+         name: None,
+       }: meshData,
+     );
 
+let _setTotalByteLength =
+    (
+      (verticesLength, normalsLength, texCoordsLength, indicesLength),
+      bufferViewOffset,
+      totalByteLength,
+    ) => (
+  totalByteLength
+  + (
+    Float32Array._BYTES_PER_ELEMENT
+    * (verticesLength + normalsLength + texCoordsLength)
+    + Uint16Array._BYTES_PER_ELEMENT
+    * indicesLength
+  ),
+  bufferViewOffset,
+);
+
+let build = meshPointDataMap => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -157,38 +199,24 @@ let build = meshPointDataMap => {
              );
 
            (
-             (
-               totalByteLength
-               + (
-                 Float32Array._BYTES_PER_ELEMENT
-                 * (verticesLength + normalsLength + texCoordsLength)
-                 + Uint16Array._BYTES_PER_ELEMENT
-                 * indicesLength
+             _setTotalByteLength(
+               (
+                 verticesLength,
+                 normalsLength,
+                 texCoordsLength,
+                 indicesLength,
                ),
                bufferViewOffset,
+               totalByteLength,
              ),
              (
                bufferViewDataArr,
                accessorDataArr,
-               meshDataArr
-               |> ArrayService.push(
-                    {
-                      primitives: {
-                        attributes: {
-                          position: vertexIndex |> OptionService.unsafeGet,
-                          normal: normalIndex,
-                          texCoord_0:
-                            switch (texCoords) {
-                            | None => None
-                            | Some(_) => texCoordIndex
-                            },
-                        },
-                        indices: indexIndex |> OptionService.unsafeGet,
-                        material: None,
-                      },
-                      name: None,
-                    }: meshData,
-                  ),
+               _addMeshData(
+                 (vertexIndex, normalIndex, texCoordIndex, indexIndex),
+                 texCoords,
+                 meshDataArr,
+               ),
              ),
            );
          },

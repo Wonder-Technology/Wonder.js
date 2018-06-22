@@ -6,23 +6,83 @@ open StateDataMainType;
 
 open GenerateSceneGraphType;
 
+let _encodeNodeTransform = ({translation, rotation, scale}: nodeData, list) => {
+  let list =
+    switch (translation) {
+    | None => list
+    | Some(translation) => [
+        ("translation", translation |> positionTupleToArray |> numberArray),
+        ...list,
+      ]
+    };
+
+  let list =
+    switch (rotation) {
+    | None => list
+    | Some(rotation) => [
+        ("rotation", rotation |> rotationTupleToArray |> numberArray),
+        ...list,
+      ]
+    };
+
+  switch (scale) {
+  | None => list
+  | Some(scale) => [
+      ("scale", scale |> scaleTupleToArray |> numberArray),
+      ...list,
+    ]
+  };
+};
+
+let _encodeNodeComponents =
+    ({mesh, camera, extras, extensions}: nodeData, list) => {
+  let list =
+    switch (mesh) {
+    | None => list
+    | Some(mesh) => [("mesh", mesh |> int), ...list]
+    };
+
+  let list =
+    switch (camera) {
+    | None => list
+    | Some(camera) => [("camera", camera |> int), ...list]
+    };
+
+  let list =
+    switch (extras) {
+    | None => list
+    | Some(({material}: nodeExtras)) =>
+      let extraList = [];
+      let extraList =
+        switch (material) {
+        | None => extraList
+        | Some(material) => [("material", material |> int), ...extraList]
+        };
+
+      [("extras", extraList |> object_), ...list];
+    };
+
+  switch (extensions) {
+  | None => list
+  | Some(({khr_lights}: nodeExtensions)) =>
+    let extensionList = [];
+    let extensionList =
+      switch (khr_lights) {
+      | None => extensionList
+      | Some({light}) => [
+          ("KHR_lights", [("light", light |> int)] |> object_),
+          ...extensionList,
+        ]
+      };
+
+    [("extensions", extensionList |> object_), ...list];
+  };
+};
+
 let _encodeNodes = (nodeDataArr, state) => (
   "nodes",
   nodeDataArr
-  |> Js.Array.map(
-       (
-         {
-           gameObject,
-           children,
-           translation,
-           rotation,
-           scale,
-           mesh,
-           camera,
-           extras,
-           extensions,
-         }: nodeData,
-       ) => {
+  |> Js.Array.map((({gameObject, children}: nodeData) as nodeData) => {
        let list = [];
 
        let list =
@@ -38,118 +98,40 @@ let _encodeNodes = (nodeDataArr, state) => (
          };
 
        let list =
-         switch (translation) {
-         | None => list
-         | Some(translation) => [
-             (
-               "translation",
-               translation |> positionTupleToArray |> numberArray,
-             ),
-             ...list,
-           ]
-         };
-
-       let list =
-         switch (rotation) {
-         | None => list
-         | Some(rotation) => [
-             ("rotation", rotation |> rotationTupleToArray |> numberArray),
-             ...list,
-           ]
-         };
-
-       let list =
-         switch (scale) {
-         | None => list
-         | Some(scale) => [
-             ("scale", scale |> scaleTupleToArray |> numberArray),
-             ...list,
-           ]
-         };
-
-       let list =
-         switch (mesh) {
-         | None => list
-         | Some(mesh) => [("mesh", mesh |> int), ...list]
-         };
-
-       let list =
-         switch (camera) {
-         | None => list
-         | Some(camera) => [("camera", camera |> int), ...list]
-         };
-
-       let list =
-         switch (extras) {
-         | None => list
-         | Some(({material}: nodeExtras)) =>
-           let extraList = [];
-           let extraList =
-             switch (material) {
-             | None => extraList
-             | Some(material) => [
-                 ("material", material |> int),
-                 ...extraList,
-               ]
-             };
-
-           [("extras", extraList |> object_), ...list];
-         };
-
-       let list =
-         switch (extensions) {
-         | None => list
-         | Some(({khr_lights}: nodeExtensions)) =>
-           let extensionList = [];
-           let extensionList =
-             switch (khr_lights) {
-             | None => extensionList
-             | Some({light}) => [
-                 ("KHR_lights", [("light", light |> int)] |> object_),
-                 ...extensionList,
-               ]
-             };
-
-           [("extensions", extensionList |> object_), ...list];
-         };
+         list
+         |> _encodeNodeTransform(nodeData)
+         |> _encodeNodeComponents(nodeData);
 
        list |> List.rev |> object_;
      })
   |> jsonArray,
 );
 
+let _encodePerspectiveCamera = ({near, far, fovy, aspect}) => {
+  let perspectiveList = [("znear", near |> float), ("yfov", fovy |> float)];
+
+  let perspectiveList =
+    switch (far) {
+    | None => perspectiveList
+    | Some(far) => [("zfar", far |> float), ...perspectiveList]
+    };
+
+  switch (aspect) {
+  | None => perspectiveList
+  | Some(aspect) => [("aspectRatio", aspect |> float), ...perspectiveList]
+  };
+};
+
 let _encodeCameras = cameraDataArr => (
   "cameras",
   cameraDataArr
-  |> Js.Array.map(({type_, perspective}: cameraData) => {
-       let {near, far, fovy, aspect} = perspective;
-
-       let perspectiveList = [
-         ("znear", near |> float),
-         ("yfov", fovy |> float),
-       ];
-
-       let perspectiveList =
-         switch (far) {
-         | None => perspectiveList
-         | Some(far) => [("zfar", far |> float), ...perspectiveList]
-         };
-
-       let perspectiveList =
-         switch (aspect) {
-         | None => perspectiveList
-         | Some(aspect) => [
-             ("aspectRatio", aspect |> float),
-             ...perspectiveList,
-           ]
-         };
-
+  |> Js.Array.map(({type_, perspective}: cameraData) =>
        [
          ("type", type_ |> string),
-         ("perspective", perspectiveList |> object_),
+         ("perspective", _encodePerspectiveCamera(perspective) |> object_),
        ]
-       |> object_;
-     })
+       |> object_
+     )
   |> jsonArray,
 );
 
@@ -284,6 +266,30 @@ let _encodeImages = imageBase64Arr => (
   |> jsonArray,
 );
 
+let _encodeAttributes = (position, normal, texCoord_0, indices) => {
+  let attributesList = [("POSITION", position |> int)];
+
+  let attributesList =
+    switch (normal) {
+    | None => attributesList
+    | Some(normal) => [("NORMAL", normal |> int), ...attributesList]
+    };
+
+  let attributesList =
+    switch (texCoord_0) {
+    | None => attributesList
+    | Some(texCoord_0) => [
+        ("TEXCOORD_0", texCoord_0 |> int),
+        ...attributesList,
+      ]
+    };
+
+  [
+    ("attributes", attributesList |> List.rev |> object_),
+    ("indices", indices |> int),
+  ];
+};
+
 let _encodeMeshes = meshDataArr => (
   "meshes",
   meshDataArr
@@ -292,27 +298,8 @@ let _encodeMeshes = meshDataArr => (
 
        let {position, normal, texCoord_0}: attributes = attributes;
 
-       let attributesList = [("POSITION", position |> int)];
-
-       let attributesList =
-         switch (normal) {
-         | None => attributesList
-         | Some(normal) => [("NORMAL", normal |> int), ...attributesList]
-         };
-
-       let attributesList =
-         switch (texCoord_0) {
-         | None => attributesList
-         | Some(texCoord_0) => [
-             ("TEXCOORD_0", texCoord_0 |> int),
-             ...attributesList,
-           ]
-         };
-
-       let primitivesList = [
-         ("attributes", attributesList |> List.rev |> object_),
-         ("indices", indices |> int),
-       ];
+       let primitivesList =
+         _encodeAttributes(position, normal, texCoord_0, indices);
 
        let primitivesList =
          switch (material) {
@@ -340,6 +327,71 @@ let _encodeExtensionsUsed = extensionsUsedArr => (
   extensionsUsedArr |> stringArray,
 );
 
+let _encodeLights =
+    (
+      {
+        type_,
+        color,
+        intensity,
+        constantAttenuation,
+        linearAttenuation,
+        quadraticAttenuation,
+        range,
+      }: lightData,
+    ) => {
+  let khrLightsExtensionList = [("type", type_ |> string)];
+
+  let khrLightsExtensionList =
+    switch (color) {
+    | None => khrLightsExtensionList
+    | Some(color) => [
+        ("color", color |> numberArray),
+        ...khrLightsExtensionList,
+      ]
+    };
+
+  let khrLightsExtensionList =
+    switch (intensity) {
+    | None => khrLightsExtensionList
+    | Some(intensity) => [
+        ("intensity", intensity |> float),
+        ...khrLightsExtensionList,
+      ]
+    };
+
+  let khrLightsExtensionList =
+    switch (constantAttenuation) {
+    | None => khrLightsExtensionList
+    | Some(constantAttenuation) => [
+        ("constantAttenuation", constantAttenuation |> float),
+        ...khrLightsExtensionList,
+      ]
+    };
+
+  let khrLightsExtensionList =
+    switch (linearAttenuation) {
+    | None => khrLightsExtensionList
+    | Some(linearAttenuation) => [
+        ("linearAttenuation", linearAttenuation |> float),
+        ...khrLightsExtensionList,
+      ]
+    };
+
+  let khrLightsExtensionList =
+    switch (quadraticAttenuation) {
+    | None => khrLightsExtensionList
+    | Some(quadraticAttenuation) => [
+        ("quadraticAttenuation", quadraticAttenuation |> float),
+        ...khrLightsExtensionList,
+      ]
+    };
+
+  switch (range) {
+  | None => khrLightsExtensionList
+  | Some(range) => [("range", range |> float), ...khrLightsExtensionList]
+  };
+};
+
 let _encodeExtensions = lightDataArr => (
   "extensions",
   [
@@ -349,81 +401,62 @@ let _encodeExtensions = lightDataArr => (
         (
           "lights",
           lightDataArr
-          |> Js.Array.map(
-               (
-                 {
-                   type_,
-                   color,
-                   intensity,
-                   constantAttenuation,
-                   linearAttenuation,
-                   quadraticAttenuation,
-                   range,
-                 }: lightData,
-               ) => {
-               let khrLightsExtensionList = [("type", type_ |> string)];
-
-               let khrLightsExtensionList =
-                 switch (color) {
-                 | None => khrLightsExtensionList
-                 | Some(color) => [
-                     ("color", color |> numberArray),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               let khrLightsExtensionList =
-                 switch (intensity) {
-                 | None => khrLightsExtensionList
-                 | Some(intensity) => [
-                     ("intensity", intensity |> float),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               let khrLightsExtensionList =
-                 switch (constantAttenuation) {
-                 | None => khrLightsExtensionList
-                 | Some(constantAttenuation) => [
-                     ("constantAttenuation", constantAttenuation |> float),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               let khrLightsExtensionList =
-                 switch (linearAttenuation) {
-                 | None => khrLightsExtensionList
-                 | Some(linearAttenuation) => [
-                     ("linearAttenuation", linearAttenuation |> float),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               let khrLightsExtensionList =
-                 switch (quadraticAttenuation) {
-                 | None => khrLightsExtensionList
-                 | Some(quadraticAttenuation) => [
-                     ("quadraticAttenuation", quadraticAttenuation |> float),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               let khrLightsExtensionList =
-                 switch (range) {
-                 | None => khrLightsExtensionList
-                 | Some(range) => [
-                     ("range", range |> float),
-                     ...khrLightsExtensionList,
-                   ]
-                 };
-
-               khrLightsExtensionList |> object_;
-             })
+          |> Js.Array.map(lightData => _encodeLights(lightData) |> object_)
           |> jsonArray,
         ),
       ]
       |> object_,
     ),
+  ]
+  |> object_,
+);
+
+let _encodeBuffers = (totalByteLength, buffer) => (
+  "buffers",
+  [|
+    [
+      ("byteLength", totalByteLength |> int),
+      ("uri", Base64ArrayBufferCommon.encode(buffer) |> string),
+    ]
+    |> object_,
+  |]
+  |> jsonArray,
+);
+
+let _encodeBufferViews = bufferViewDataArr => (
+  "bufferViews",
+  bufferViewDataArr
+  |> Js.Array.map(({buffer, byteOffset, byteLength}: bufferViewData) =>
+       [
+         ("buffer", buffer |> int),
+         ("byteOffset", byteOffset |> int),
+         ("byteLength", byteLength |> int),
+       ]
+       |> object_
+     )
+  |> jsonArray,
+);
+
+let _encodeAccessors = accessorDataArr => (
+  "accessors",
+  accessorDataArr
+  |> Js.Array.map(({bufferView, componentType, count, type_}: accessorData) =>
+       [
+         ("bufferView", bufferView |> int),
+         ("componentType", componentType |> int),
+         ("count", count |> int),
+         ("type", type_ |> string),
+       ]
+       |> object_
+     )
+  |> jsonArray,
+);
+
+let _encodeAsset = () => (
+  "asset",
+  [
+    ("version", "2.0" |> string),
+    ("generator", GLTFUtils.getGenerator() |> string),
   ]
   |> object_,
 );
@@ -449,14 +482,7 @@ let encode =
       state,
     ) => {
   let list = [
-    (
-      "asset",
-      [
-        ("version", "2.0" |> string),
-        ("generator", GLTFUtils.getGenerator() |> string),
-      ]
-      |> object_,
-    ),
+    _encodeAsset(),
     ("scene", 0 |> int),
     _encodeScenes(extensionsUsedArr, lightDataArr, state),
     _encodeCameras(cameraDataArr),
@@ -465,45 +491,9 @@ let encode =
     _encodeTextures(textureDataArr),
     _encodeSamplers(samplerDataArr),
     _encodeImages(imageBase64Arr),
-    (
-      "buffers",
-      [|
-        [
-          ("byteLength", totalByteLength |> int),
-          ("uri", Base64ArrayBufferCommon.encode(buffer) |> string),
-        ]
-        |> object_,
-      |]
-      |> jsonArray,
-    ),
-    (
-      "bufferViews",
-      bufferViewDataArr
-      |> Js.Array.map(({buffer, byteOffset, byteLength}: bufferViewData) =>
-           [
-             ("buffer", buffer |> int),
-             ("byteOffset", byteOffset |> int),
-             ("byteLength", byteLength |> int),
-           ]
-           |> object_
-         )
-      |> jsonArray,
-    ),
-    (
-      "accessors",
-      accessorDataArr
-      |> Js.Array.map(
-           ({bufferView, componentType, count, type_}: accessorData) =>
-           [
-             ("bufferView", bufferView |> int),
-             ("componentType", componentType |> int),
-             ("count", count |> int),
-             ("type", type_ |> string),
-           ]
-           |> object_
-         )
-      |> jsonArray,
-    ),
+    _encodeBuffers(totalByteLength, buffer),
+    _encodeBufferViews(bufferViewDataArr),
+    _encodeAccessors(accessorDataArr),
     _encodeMeshes(meshDataArr),
   ];
 

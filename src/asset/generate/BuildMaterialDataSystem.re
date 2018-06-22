@@ -113,6 +113,105 @@ let _addTextureData =
        }: GenerateSceneGraphType.textureData,
      );
 
+let _buildNoDiffuseMap =
+    (
+      (lightMaterial, name),
+      (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+      (textureIndexMap, samplerIndexMap, imageMap),
+      state,
+    ) => {
+  let diffuseColor =
+    OperateLightMaterialMainService.getDiffuseColor(lightMaterial, state);
+
+  (
+    (
+      materialDataArr
+      |> ArrayService.push(
+           {
+             baseColorFactor:
+               Some([|
+                 diffuseColor[0],
+                 diffuseColor[1],
+                 diffuseColor[2],
+                 1.0,
+               |]),
+             baseColorTexture: None,
+             name,
+           }: GenerateSceneGraphType.materialData,
+         ),
+      textureDataArr,
+      samplerDataArr,
+      imageBase64Arr,
+    ),
+    (textureIndexMap, samplerIndexMap, imageMap),
+  );
+};
+
+let _buildDiffuseMap =
+    (
+      (diffuseMap, name),
+      (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+      (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+      state,
+    ) =>
+  switch (textureIndexMap |> WonderCommonlib.SparseMapService.get(diffuseMap)) {
+  | Some(existedTextureIndex) => (
+      (
+        materialDataArr
+        |> ArrayService.push(
+             {
+               baseColorFactor: None,
+               baseColorTexture: Some(existedTextureIndex),
+               name,
+             }: GenerateSceneGraphType.materialData,
+           ),
+        textureDataArr,
+        samplerDataArr,
+        imageBase64Arr,
+      ),
+      (textureIndexMap, samplerIndexMap, imageMap),
+    )
+
+  | None =>
+    let textureIndex = textureDataArr |> Js.Array.length;
+
+    let textureIndexMap =
+      textureIndexMap
+      |> WonderCommonlib.SparseMapService.set(diffuseMap, textureIndex);
+
+    let (samplerIndex, samplerIndexMap, samplerDataArr) =
+      _addSamplerData(diffuseMap, samplerIndexMap, state, samplerDataArr);
+
+    let (imageIndex, imageMap, imageBase64Arr) =
+      _addImageData(
+        (diffuseMap, imageMap, state),
+        imageBase64Map,
+        imageBase64Arr,
+      );
+
+    (
+      (
+        materialDataArr
+        |> ArrayService.push(
+             {
+               baseColorFactor: None,
+               baseColorTexture: Some(textureIndex),
+               name,
+             }: GenerateSceneGraphType.materialData,
+           ),
+        _addTextureData(
+          diffuseMap,
+          (samplerIndex, imageIndex),
+          state,
+          textureDataArr,
+        ),
+        samplerDataArr,
+        imageBase64Arr,
+      ),
+      (textureIndexMap, samplerIndexMap, imageMap),
+    );
+  };
+
 let build = (materialDataMap, imageBase64Map, state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -145,104 +244,30 @@ let build = (materialDataMap, imageBase64Map, state) => {
 
            switch (diffuseMap) {
            | None =>
-             let diffuseColor =
-               OperateLightMaterialMainService.getDiffuseColor(
-                 lightMaterial,
-                 state,
-               );
-
-             (
+             _buildNoDiffuseMap(
+               (lightMaterial, name),
                (
-                 materialDataArr
-                 |> ArrayService.push(
-                      {
-                        baseColorFactor:
-                          Some([|
-                            diffuseColor[0],
-                            diffuseColor[1],
-                            diffuseColor[2],
-                            1.0,
-                          |]),
-                        baseColorTexture: None,
-                        name,
-                      }: GenerateSceneGraphType.materialData,
-                    ),
+                 materialDataArr,
                  textureDataArr,
                  samplerDataArr,
                  imageBase64Arr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap),
-             );
+               state,
+             )
 
            | Some(diffuseMap) =>
-             switch (
-               textureIndexMap
-               |> WonderCommonlib.SparseMapService.get(diffuseMap)
-             ) {
-             | Some(existedTextureIndex) => (
-                 (
-                   materialDataArr
-                   |> ArrayService.push(
-                        {
-                          baseColorFactor: None,
-                          baseColorTexture: Some(existedTextureIndex),
-                          name,
-                        }: GenerateSceneGraphType.materialData,
-                      ),
-                   textureDataArr,
-                   samplerDataArr,
-                   imageBase64Arr,
-                 ),
-                 (textureIndexMap, samplerIndexMap, imageMap),
-               )
-
-             | None =>
-               let textureIndex = textureDataArr |> Js.Array.length;
-
-               let textureIndexMap =
-                 textureIndexMap
-                 |> WonderCommonlib.SparseMapService.set(
-                      diffuseMap,
-                      textureIndex,
-                    );
-
-               let (samplerIndex, samplerIndexMap, samplerDataArr) =
-                 _addSamplerData(
-                   diffuseMap,
-                   samplerIndexMap,
-                   state,
-                   samplerDataArr,
-                 );
-
-               let (imageIndex, imageMap, imageBase64Arr) =
-                 _addImageData(
-                   (diffuseMap, imageMap, state),
-                   imageBase64Map,
-                   imageBase64Arr,
-                 );
-
+             _buildDiffuseMap(
+               (diffuseMap, name),
                (
-                 (
-                   materialDataArr
-                   |> ArrayService.push(
-                        {
-                          baseColorFactor: None,
-                          baseColorTexture: Some(textureIndex),
-                          name,
-                        }: GenerateSceneGraphType.materialData,
-                      ),
-                   _addTextureData(
-                     diffuseMap,
-                     (samplerIndex, imageIndex),
-                     state,
-                     textureDataArr,
-                   ),
-                   samplerDataArr,
-                   imageBase64Arr,
-                 ),
-                 (textureIndexMap, samplerIndexMap, imageMap),
-               );
-             }
+                 materialDataArr,
+                 textureDataArr,
+                 samplerDataArr,
+                 imageBase64Arr,
+               ),
+               (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+               state,
+             )
            };
          },
          (

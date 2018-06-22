@@ -46,6 +46,97 @@ let _setChildren =
        [||],
      );
 
+let _getBoxGeometryData =
+    (
+      (gameObject, meshIndex),
+      geometry,
+      (boxGeometryDataMap, customGeometryDataMap),
+      state,
+    ) =>
+  switch (
+    boxGeometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
+  ) {
+  | Some((existedMeshIndex, pointData)) => (
+      Some(existedMeshIndex),
+      pointData,
+      meshIndex,
+      (boxGeometryDataMap, customGeometryDataMap),
+    )
+
+  | None =>
+    let pointData =
+      Some((
+        GetBoxGeometryVerticesMainService.getVertices(. state),
+        GetBoxGeometryNormalsMainService.getNormals(. state),
+        _hasMap(gameObject, state) ?
+          Some(GetBoxGeometryTexCoordsMainService.getTexCoords(. state)) :
+          None,
+        GetBoxGeometryIndicesMainService.getIndices(. state),
+      ));
+
+    (
+      Some(meshIndex),
+      pointData,
+      meshIndex |> succ,
+      (
+        boxGeometryDataMap
+        |> WonderCommonlib.SparseMapService.set(
+             geometry,
+             (meshIndex, pointData),
+           ),
+        customGeometryDataMap,
+      ),
+    );
+  };
+
+let _getCustomGeometryData =
+    (
+      (gameObject, meshIndex),
+      geometry,
+      (boxGeometryDataMap, customGeometryDataMap),
+      state,
+    ) =>
+  switch (
+    customGeometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
+  ) {
+  | Some((existedMeshIndex, pointData)) => (
+      Some(existedMeshIndex),
+      pointData,
+      meshIndex,
+      (boxGeometryDataMap, customGeometryDataMap),
+    )
+
+  | None =>
+    let pointData =
+      Some((
+        VerticesCustomGeometryMainService.getVertices(. geometry, state),
+        NormalsCustomGeometryMainService.getNormals(. geometry, state),
+        _hasMap(gameObject, state) ?
+          Some(
+            TexCoordsCustomGeometryMainService.getTexCoords(.
+              geometry,
+              state,
+            ),
+          ) :
+          None,
+        IndicesCustomGeometryMainService.getIndices(. geometry, state),
+      ));
+
+    (
+      Some(meshIndex),
+      pointData,
+      meshIndex |> succ,
+      (
+        boxGeometryDataMap,
+        customGeometryDataMap
+        |> WonderCommonlib.SparseMapService.set(
+             geometry,
+             (meshIndex, pointData),
+           ),
+      ),
+    );
+  };
+
 let _getMeshData =
     (
       (gameObject, meshIndex),
@@ -68,87 +159,20 @@ let _getMeshData =
   | Some((geometry, type_)) =>
     switch (type_) {
     | type_ when type_ === CurrentComponentDataMapService.getBoxGeometryType() =>
-      switch (
-        boxGeometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
-      ) {
-      | Some((existedMeshIndex, pointData)) => (
-          Some(existedMeshIndex),
-          pointData,
-          meshIndex,
-          (boxGeometryDataMap, customGeometryDataMap),
-        )
-
-      | None =>
-        let pointData =
-          Some((
-            GetBoxGeometryVerticesMainService.getVertices(. state),
-            GetBoxGeometryNormalsMainService.getNormals(. state),
-            _hasMap(gameObject, state) ?
-              Some(
-                GetBoxGeometryTexCoordsMainService.getTexCoords(. state),
-              ) :
-              None,
-            GetBoxGeometryIndicesMainService.getIndices(. state),
-          ));
-
-        (
-          Some(meshIndex),
-          pointData,
-          meshIndex |> succ,
-          (
-            boxGeometryDataMap
-            |> WonderCommonlib.SparseMapService.set(
-                 geometry,
-                 (meshIndex, pointData),
-               ),
-            customGeometryDataMap,
-          ),
-        );
-      }
-
+      _getBoxGeometryData(
+        (gameObject, meshIndex),
+        geometry,
+        (boxGeometryDataMap, customGeometryDataMap),
+        state,
+      )
     | type_
         when type_ === CurrentComponentDataMapService.getCustomGeometryType() =>
-      switch (
-        customGeometryDataMap
-        |> WonderCommonlib.SparseMapService.get(geometry)
-      ) {
-      | Some((existedMeshIndex, pointData)) => (
-          Some(existedMeshIndex),
-          pointData,
-          meshIndex,
-          (boxGeometryDataMap, customGeometryDataMap),
-        )
-
-      | None =>
-        let pointData =
-          Some((
-            VerticesCustomGeometryMainService.getVertices(. geometry, state),
-            NormalsCustomGeometryMainService.getNormals(. geometry, state),
-            _hasMap(gameObject, state) ?
-              Some(
-                TexCoordsCustomGeometryMainService.getTexCoords(.
-                  geometry,
-                  state,
-                ),
-              ) :
-              None,
-            IndicesCustomGeometryMainService.getIndices(. geometry, state),
-          ));
-
-        (
-          Some(meshIndex),
-          pointData,
-          meshIndex |> succ,
-          (
-            boxGeometryDataMap,
-            customGeometryDataMap
-            |> WonderCommonlib.SparseMapService.set(
-                 geometry,
-                 (meshIndex, pointData),
-               ),
-          ),
-        );
-      }
+      _getCustomGeometryData(
+        (gameObject, meshIndex),
+        geometry,
+        (boxGeometryDataMap, customGeometryDataMap),
+        state,
+      )
     | _ =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -250,6 +274,177 @@ let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
     (Some(lightIndex), lightData, lightIndex |> succ);
   };
 
+let _addNodeData =
+    (
+      gameObject,
+      (
+        transform,
+        localPositions,
+        localRotations,
+        localScales,
+        defaultLocalPosition,
+        defaultLocalRotation,
+        defaultLocalScale,
+      ),
+      (meshIndex, cameraIndex, materialIndex, lightIndex),
+      nodeDataArr,
+    ) =>
+  nodeDataArr
+  |> ArrayService.push(
+       {
+         gameObject,
+         children: None,
+         translation:
+           switch (
+             ModelMatrixTransformService.getLocalPositionTuple(
+               transform,
+               localPositions,
+             )
+           ) {
+           | (x, y, z)
+               when
+                 x === defaultLocalPosition[0]
+                 && y === defaultLocalPosition[1]
+                 && z === defaultLocalPosition[2] =>
+             None
+           | localPosition => Some(localPosition)
+           },
+         rotation:
+           switch (
+             ModelMatrixTransformService.getLocalRotationTuple(
+               transform,
+               localRotations,
+             )
+           ) {
+           | (x, y, z, w)
+               when
+                 x === defaultLocalRotation[0]
+                 && y === defaultLocalRotation[1]
+                 && z === defaultLocalRotation[2]
+                 && w === defaultLocalRotation[3] =>
+             None
+           | localRotation => Some(localRotation)
+           },
+         scale:
+           switch (
+             ModelMatrixTransformService.getLocalScaleTuple(
+               transform,
+               localScales,
+             )
+           ) {
+           | (x, y, z)
+               when
+                 x === defaultLocalScale[0]
+                 && y === defaultLocalScale[1]
+                 && z === defaultLocalScale[2] =>
+             None
+           | localScale => Some(localScale)
+           },
+         mesh: meshIndex,
+         camera: cameraIndex,
+         extras:
+           switch (materialIndex) {
+           | None => None
+           | Some(materialIndex) => Some({material: Some(materialIndex)})
+           },
+         extensions:
+           switch (lightIndex) {
+           | None => None
+           | Some(lightIndex) =>
+             Some({khr_lights: Some({light: lightIndex})})
+           },
+       }: nodeData,
+     );
+
+let _getComponentData =
+    (
+      (
+        gameObject,
+        state,
+        (meshIndex, materialIndex, cameraIndex, lightIndex),
+        ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
+        (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+      ),
+    ) => {
+  let (
+    meshIndex,
+    pointData,
+    newMeshIndex,
+    (boxGeometryDataMap, customGeometryDataMap),
+  ) =
+    _getMeshData(
+      (gameObject, meshIndex),
+      (boxGeometryDataMap, customGeometryDataMap),
+      state,
+    );
+
+  let meshPointDataMap =
+    switch (meshIndex) {
+    | None => meshPointDataMap
+    | Some(meshIndex) =>
+      meshPointDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           meshIndex,
+           pointData |> OptionService.unsafeGet,
+         )
+    };
+
+  let (materialIndex, materialData, newMaterialIndex, lightMaterialDataMap) =
+    _getLightMaterialData(
+      (gameObject, materialIndex),
+      lightMaterialDataMap,
+      state,
+    );
+
+  let materialDataMap =
+    switch (materialIndex) {
+    | None => materialDataMap
+    | Some(materialIndex) =>
+      materialDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           materialIndex,
+           materialData |> OptionService.unsafeGet,
+         )
+    };
+
+  /* TODO support ortho camera */
+  let (cameraIndex, cameraData, newCameraIndex) =
+    _getCameraData((gameObject, cameraIndex), state);
+
+  let cameraDataMap =
+    switch (cameraIndex) {
+    | None => cameraDataMap
+    | Some(cameraIndex) =>
+      cameraDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           cameraIndex,
+           cameraData |> OptionService.unsafeGet,
+         )
+    };
+
+  let (lightIndex, lightData, newLightIndex) =
+    _getLightData((gameObject, lightIndex), state);
+
+  let lightDataMap =
+    switch (lightIndex) {
+    | None => lightDataMap
+    | Some(lightIndex) =>
+      lightDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           lightIndex,
+           lightData |> OptionService.unsafeGet,
+         )
+    };
+
+  (
+    state,
+    (meshIndex, materialIndex, cameraIndex, lightIndex),
+    (newMeshIndex, newMaterialIndex, newCameraIndex, newLightIndex),
+    ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
+    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+  );
+};
+
 let rec _getNodeData =
         (
           state,
@@ -309,81 +504,6 @@ let rec _getNodeData =
                 )
               );
 
-         let (
-           meshIndex,
-           pointData,
-           newMeshIndex,
-           (boxGeometryDataMap, customGeometryDataMap),
-         ) =
-           _getMeshData(
-             (gameObject, meshIndex),
-             (boxGeometryDataMap, customGeometryDataMap),
-             state,
-           );
-
-         let meshPointDataMap =
-           switch (meshIndex) {
-           | None => meshPointDataMap
-           | Some(meshIndex) =>
-             meshPointDataMap
-             |> WonderCommonlib.SparseMapService.set(
-                  meshIndex,
-                  pointData |> OptionService.unsafeGet,
-                )
-           };
-
-         let (
-           materialIndex,
-           materialData,
-           newMaterialIndex,
-           lightMaterialDataMap,
-         ) =
-           _getLightMaterialData(
-             (gameObject, materialIndex),
-             lightMaterialDataMap,
-             state,
-           );
-
-         let materialDataMap =
-           switch (materialIndex) {
-           | None => materialDataMap
-           | Some(materialIndex) =>
-             materialDataMap
-             |> WonderCommonlib.SparseMapService.set(
-                  materialIndex,
-                  materialData |> OptionService.unsafeGet,
-                )
-           };
-
-         /* TODO support ortho camera */
-         let (cameraIndex, cameraData, newCameraIndex) =
-           _getCameraData((gameObject, cameraIndex), state);
-
-         let cameraDataMap =
-           switch (cameraIndex) {
-           | None => cameraDataMap
-           | Some(cameraIndex) =>
-             cameraDataMap
-             |> WonderCommonlib.SparseMapService.set(
-                  cameraIndex,
-                  cameraData |> OptionService.unsafeGet,
-                )
-           };
-
-         let (lightIndex, lightData, newLightIndex) =
-           _getLightData((gameObject, lightIndex), state);
-
-         let lightDataMap =
-           switch (lightIndex) {
-           | None => lightDataMap
-           | Some(lightIndex) =>
-             lightDataMap
-             |> WonderCommonlib.SparseMapService.set(
-                  lightIndex,
-                  lightData |> OptionService.unsafeGet,
-                )
-           };
-
          let gameObjectChildrenMap =
            switch (childrenGameObjectArr |> Js.Array.length) {
            | 0 => gameObjectChildrenMap
@@ -399,80 +519,31 @@ let rec _getNodeData =
            gameObjectNodeIndexMap
            |> WonderCommonlib.SparseMapService.set(gameObject, nodeIndex);
 
-         let newNodeIndex = nodeIndex |> succ;
-
-         nodeDataArr
-         |> ArrayService.push(
-              {
-                gameObject,
-                children: None,
-                translation:
-                  switch (
-                    ModelMatrixTransformService.getLocalPositionTuple(
-                      transform,
-                      localPositions,
-                    )
-                  ) {
-                  | (x, y, z)
-                      when
-                        x === defaultLocalPosition[0]
-                        && y === defaultLocalPosition[1]
-                        && z === defaultLocalPosition[2] =>
-                    None
-                  | localPosition => Some(localPosition)
-                  },
-                rotation:
-                  switch (
-                    ModelMatrixTransformService.getLocalRotationTuple(
-                      transform,
-                      localRotations,
-                    )
-                  ) {
-                  | (x, y, z, w)
-                      when
-                        x === defaultLocalRotation[0]
-                        && y === defaultLocalRotation[1]
-                        && z === defaultLocalRotation[2]
-                        && w === defaultLocalRotation[3] =>
-                    None
-                  | localRotation => Some(localRotation)
-                  },
-                scale:
-                  switch (
-                    ModelMatrixTransformService.getLocalScaleTuple(
-                      transform,
-                      localScales,
-                    )
-                  ) {
-                  | (x, y, z)
-                      when
-                        x === defaultLocalScale[0]
-                        && y === defaultLocalScale[1]
-                        && z === defaultLocalScale[2] =>
-                    None
-                  | localScale => Some(localScale)
-                  },
-                mesh: meshIndex,
-                camera: cameraIndex,
-                extras:
-                  switch (materialIndex) {
-                  | None => None
-                  | Some(materialIndex) =>
-                    Some({material: Some(materialIndex)})
-                  },
-                extensions:
-                  switch (lightIndex) {
-                  | None => None
-                  | Some(lightIndex) =>
-                    Some({khr_lights: Some({light: lightIndex})})
-                  },
-              }: nodeData,
-            );
+         let (
+           state,
+           (meshIndex, materialIndex, cameraIndex, lightIndex),
+           (newMeshIndex, newMaterialIndex, newCameraIndex, newLightIndex),
+           (
+             (boxGeometryDataMap, customGeometryDataMap),
+             lightMaterialDataMap,
+           ),
+           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+         ) =
+           _getComponentData((
+             gameObject,
+             state,
+             (meshIndex, materialIndex, cameraIndex, lightIndex),
+             (
+               (boxGeometryDataMap, customGeometryDataMap),
+               lightMaterialDataMap,
+             ),
+             (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+           ));
 
          _getNodeData(
            state,
            (
-             newNodeIndex,
+             nodeIndex |> succ,
              newMeshIndex,
              newMaterialIndex,
              newCameraIndex,
@@ -485,7 +556,23 @@ let rec _getNodeData =
              gameObjectNodeIndexMap,
            ),
            (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
-           (childrenTransformArr, nodeDataArr),
+           (
+             childrenTransformArr,
+             _addNodeData(
+               gameObject,
+               (
+                 transform,
+                 localPositions,
+                 localRotations,
+                 localScales,
+                 defaultLocalPosition,
+                 defaultLocalRotation,
+                 defaultLocalScale,
+               ),
+               (meshIndex, cameraIndex, materialIndex, lightIndex),
+               nodeDataArr,
+             ),
+           ),
          );
        },
        (

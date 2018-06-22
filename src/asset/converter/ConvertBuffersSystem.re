@@ -19,6 +19,47 @@ let convertToBuffers = ({buffers}: GLTFType.gltf) : array(WDType.buffer) =>
        [||],
      );
 
+let _convertComponentType = componentType =>
+  switch (componentType) {
+  | 5120 => WDType.BYTE
+  | 5121 => WDType.UNSIGNED_BYTE
+  | 5122 => WDType.SHORT
+  | 5123 => WDType.UNSIGNED_SHORT
+  | 5125 => WDType.UNSIGNED_INT
+  | 5126 => WDType.FLOAT
+  | componentType =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_convertToAccessors",
+        ~description={j|unknown componentType: $componentType|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  };
+
+let _convertType = type_ =>
+  switch (type_) {
+  | "SCALAR" => WDType.SCALAR
+  | "VEC2" => WDType.VEC2
+  | "VEC3" => WDType.VEC3
+  | "VEC4" => WDType.VEC4
+  | "MAT2" => WDType.MAT2
+  | "MAT3" => WDType.MAT3
+  | "MAT4" => WDType.MAT4
+  | type_ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_convertToAccessors",
+        ~description={j|unknown type_:$type_|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  };
+
 let convertToAccessors =
     ({accessors}: GLTFType.gltf)
     : array(WDType.accessor) =>
@@ -51,46 +92,8 @@ let convertToAccessors =
                   | Some(byteOffset) => byteOffset
                   },
                 count,
-                componentType:
-                  switch (componentType) {
-                  | 5120 => WDType.BYTE
-                  | 5121 => WDType.UNSIGNED_BYTE
-                  | 5122 => WDType.SHORT
-                  | 5123 => WDType.UNSIGNED_SHORT
-                  | 5125 => WDType.UNSIGNED_INT
-                  | 5126 => WDType.FLOAT
-                  | componentType =>
-                    WonderLog.Log.fatal(
-                      WonderLog.Log.buildFatalMessage(
-                        ~title="_convertToAccessors",
-                        ~description=
-                          {j|unknown componentType: $componentType|j},
-                        ~reason="",
-                        ~solution={j||j},
-                        ~params={j||j},
-                      ),
-                    )
-                  },
-                type_:
-                  switch (type_) {
-                  | "SCALAR" => WDType.SCALAR
-                  | "VEC2" => WDType.VEC2
-                  | "VEC3" => WDType.VEC3
-                  | "VEC4" => WDType.VEC4
-                  | "MAT2" => WDType.MAT2
-                  | "MAT3" => WDType.MAT3
-                  | "MAT4" => WDType.MAT4
-                  | type_ =>
-                    WonderLog.Log.fatal(
-                      WonderLog.Log.buildFatalMessage(
-                        ~title="_convertToAccessors",
-                        ~description={j|unknown type_:$type_|j},
-                        ~reason="",
-                        ~solution={j||j},
-                        ~params={j||j},
-                      ),
-                    )
-                  },
+                componentType: _convertComponentType(componentType),
+                type_: _convertType(type_),
               }: WDType.accessor,
             ),
        [||],

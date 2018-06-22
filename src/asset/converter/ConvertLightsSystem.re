@@ -10,6 +10,50 @@ let _getIntensity = intensity =>
   | Some(intensity) => intensity
   };
 
+let _convertPointLights =
+    (
+      (ambientLightArr, directionLightArr, pointLightArr),
+      {
+        type_,
+        color,
+        intensity,
+        constantAttenuation,
+        linearAttenuation,
+        quadraticAttenuation,
+        range,
+      }: GLTFType.light,
+    ) => (
+  ambientLightArr,
+  directionLightArr,
+  pointLightArr
+  |> ArrayService.push(
+       {
+         color: _getColor(color),
+         intensity: _getIntensity(intensity),
+         constantAttenuation:
+           switch (constantAttenuation) {
+           | None => 1.
+           | Some(constantAttenuation) => constantAttenuation
+           },
+         linearAttenuation:
+           switch (linearAttenuation) {
+           | None => 0.
+           | Some(linearAttenuation) => linearAttenuation
+           },
+         quadraticAttenuation:
+           switch (quadraticAttenuation) {
+           | None => 0.
+           | Some(quadraticAttenuation) => quadraticAttenuation
+           },
+         range:
+           switch (range) {
+           | None => RecordPointLightMainService.getDefaultRange()
+           | Some(range) => range
+           },
+       }: WDType.pointLight,
+     ),
+);
+
 let convertToLights = ({extensions}: GLTFType.gltf) =>
   switch (extensions) {
   | None => ([||], [||], [||])
@@ -21,15 +65,7 @@ let convertToLights = ({extensions}: GLTFType.gltf) =>
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (.
              (ambientLightArr, directionLightArr, pointLightArr),
-             {
-               type_,
-               color,
-               intensity,
-               constantAttenuation,
-               linearAttenuation,
-               quadraticAttenuation,
-               range,
-             }: GLTFType.light,
+             ({type_, color, intensity}: GLTFType.light) as lightData,
            ) =>
              switch (type_) {
              | "ambient" => (
@@ -51,37 +87,10 @@ let convertToLights = ({extensions}: GLTFType.gltf) =>
                     ),
                  pointLightArr,
                )
-             | "point" => (
-                 ambientLightArr,
-                 directionLightArr,
-                 pointLightArr
-                 |> ArrayService.push(
-                      {
-                        color: _getColor(color),
-                        intensity: _getIntensity(intensity),
-                        constantAttenuation:
-                          switch (constantAttenuation) {
-                          | None => 1.
-                          | Some(constantAttenuation) => constantAttenuation
-                          },
-                        linearAttenuation:
-                          switch (linearAttenuation) {
-                          | None => 0.
-                          | Some(linearAttenuation) => linearAttenuation
-                          },
-                        quadraticAttenuation:
-                          switch (quadraticAttenuation) {
-                          | None => 0.
-                          | Some(quadraticAttenuation) => quadraticAttenuation
-                          },
-                        range:
-                          switch (range) {
-                          | None =>
-                            RecordPointLightMainService.getDefaultRange()
-                          | Some(range) => range
-                          },
-                      }: WDType.pointLight,
-                    ),
+             | "point" =>
+               _convertPointLights(
+                 (ambientLightArr, directionLightArr, pointLightArr),
+                 lightData,
                )
              | _ => (ambientLightArr, directionLightArr, pointLightArr)
              },
