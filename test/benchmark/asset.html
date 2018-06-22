@@ -30,22 +30,26 @@
 
 
     <script src="./gltfTool.js"></script>
+    <script src="./wdData.js"></script>
     <script src="./base64DataTool.js"></script>
 
     <script>
         function _disposeAll(gameObject, state) {
-            function _getAllChildren(gameObject, state, childrenArr) {
+            function _getAllChildrenTransform(transform, state, childrenArr) {
                 return wd.unsafeGetTransformChildren(
-                    wd.unsafeGetGameObjectTransformComponent(gameObject, state),
+                    transform,
                     state
                 ).reduce((childrenArr, child) => {
                     childrenArr.push(child);
 
-                    return _getAllChildren(child, state, childrenArr);
+                    return _getAllChildrenTransform(child, state, childrenArr);
                 }, childrenArr);
             }
 
-            return wd.batchDisposeGameObject(_getAllChildren(gameObject, state, []), state)
+            return wd.batchDisposeGameObject(_getAllChildrenTransform(wd.unsafeGetGameObjectTransformComponent(gameObject, state), state, [])
+                .map((transform) => {
+                    return wd.unsafeGetTransformGameObject(transform, state)
+                }), state)
         };
 
         window.onload = function () {
@@ -94,8 +98,7 @@
 
 
             function _createLightsAndCamera(isCreateCamera, state) {
-                var record = LightTool.createAmbientLight(state);
-                var state = record[0];
+                var state = LightTool.setAmbientLight(state);
 
 
 
@@ -117,7 +120,17 @@
 
 
 
-                // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+                var record = LightTool.createPointLight(state);
+                var state = record[0];
+                var pointLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
 
 
                 if (isCreateCamera) {
@@ -138,7 +151,7 @@
                         );
                 }
 
-                return state
+                return [state, directionLightObj, pointLightObj]
             }
 
 
@@ -167,13 +180,13 @@
                         console.log(n1 - n0)
 
 
-                        var state =
-                            _disposeAll(sceneGameObject, state);
+                        // var state =
+                        //     _disposeAll(sceneGameObject, state);
 
 
                         wd.assembleWD(wdRecord, state)
                             .forEach(([state, sceneGameObject]) => {
-                                var state = _createLightsAndCamera(isCreateCamera, state);
+                                // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
 
                                 wd.startDirector(state);
@@ -185,9 +198,7 @@
             }
 
 
-
-            function _testGenerateEmbededWDByGameObject(map1, map2, state$) {
-
+            function _generateWDByGameObject(map1, map2, state$) {
                 var data = LightBoxesTool.createBoxWithMap(map1, map2, state$);
                 var state = data[0];
                 var box = data[1];
@@ -211,6 +222,8 @@
                 var record = LightBoxesTool.setPosition(newBoxes, state);
                 var state = record[0];
 
+                // var newBoxes = [box];
+
 
                 var [state, sceneGameObject] = wd.createGameObject(state);
 
@@ -228,8 +241,19 @@
 
 
 
+                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
-                var gameObjects = newBoxes.concat([camera]);
+
+
+
+
+
+
+                var gameObjects = newBoxes.concat([
+                    camera,
+                    directionLightObj,
+                    pointLightObj
+                ]);
 
                 var state = gameObjects.reduce((state, box) => {
                     return wd.setTransformParent(
@@ -242,14 +266,26 @@
 
 
 
+
                 var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state);
 
-                var state =
-                    _disposeAll(sceneGameObject, state);
+                console.log(
+                    JSON.stringify(wdRecord)
+                );
 
-                wd.assembleWD(wdRecord, state)
+                return state;
+            }
+
+            function _testGenerateEmbededWDByGameObject(map1, map2, state$) {
+                // var state =
+                //     _disposeAll(sceneGameObject, state);
+
+                var state = state$;
+
+                wd.assembleWD(
+                    wdData, state)
                     .forEach(([state, sceneGameObject]) => {
-                        var state = _createLightsAndCamera(false, state);
+                        var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
 
                         wd.startDirector(state);
@@ -295,7 +331,7 @@
 
 
 
-                        var state = _createLightsAndCamera(isCreateCamera, state);
+                        var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
 
                         wd.startDirector(state);
@@ -327,21 +363,21 @@
                         truckImageBase64,
                         imageBase64Map);
 
-                _testGenerateEmbededWDByGLTF(
-                    getGLTFJsonOfTruck(),
-                    // getGLTFJsonOf2CylinderEngine(),
-                    // getGLTFJsonOfVC(),
-                    // getGLTFJsonOfCamera(),
-                    // getGLTFJsonOfDuck(),
-                    // false,
-                    imageBase64Map,
+                // _testGenerateEmbededWDByGLTF(
+                //     // getGLTFJsonOfTruck(),
+                //     // getGLTFJsonOf2CylinderEngine(),
+                //     // getGLTFJsonOfVC(),
+                //     // getGLTFJsonOfCamera(),
+                //     getGLTFJsonOfDuck(),
+                //     // false,
+                //     imageBase64Map,
 
-                    true,
+                //     false,
 
-                    state$);
+                //     state$);
 
 
-                // _testGenerateEmbededWDByGameObject(map1, map2, state$);
+                _testGenerateEmbededWDByGameObject(map1, map2, state$);
 
 
                 // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())

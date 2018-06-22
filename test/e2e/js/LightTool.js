@@ -1,18 +1,9 @@
 var LightTool = (function () {
     return {
-        createAmbientLight: function (state) {
-            var [state, light] = wd.createAmbientLight(state);
+        setAmbientLight: function (state) {
+            var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
 
-            var state = wd.setAmbientLightColor(light, [0.2, 0.2, 0.2], state);
-
-
-            var [state, obj] = wd.createGameObject(state);
-
-
-
-            state = wd.addGameObjectAmbientLightComponent(obj, light, state);
-
-            return [state, obj];
+            return state;
         },
         createDirectionLight: function (state) {
             var [state, light] = wd.createDirectionLight(state);
@@ -80,8 +71,7 @@ var LightTool = (function () {
             return [state, obj];
         },
         createLights: function (directionLightPos, pointLightPos, state) {
-            var record = LightTool.createAmbientLight(state);
-            var state = record[0];
+            var state = LightTool.setAmbientLight(state);
 
 
 
@@ -100,11 +90,11 @@ var LightTool = (function () {
 
             var record = LightTool.createPointLight(state);
             var state = record[0];
-            var directionLightObj = record[1];
+            var pointLightObj = record[1];
 
 
 
-            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+            var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
 
             state = wd.setTransformLocalPosition(transform, pointLightPos, state);
 
