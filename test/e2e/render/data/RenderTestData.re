@@ -32,7 +32,7 @@ let renderTestData = {
          )
   },
   testData: [
-    {
+    /* {
       name: "basic_box",
       bodyFuncStr: {|
                     ReplaceFetchTool.replaceFetchForTest();
@@ -103,7 +103,9 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}]
     },
-    {
+    */
+    
+    /* {
       name: "light_box",
       bodyFuncStr: {|
                        ReplaceFetchTool.replaceFetchForTest();
@@ -350,8 +352,9 @@ let renderTestData = {
       diffPercent: Some(0.00001),
       threshold: None,
       frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
-    },
-    {
+    }, */
+
+    /* {
       name: "redo_undo_map",
       bodyFuncStr: {|
         ReplaceFetchTool.replaceFetchForTest();
@@ -411,7 +414,9 @@ let renderTestData = {
       diffPercent: Some(0.00001),
       threshold: None,
       frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
-    },
+    } */
+
+    
     {
       name: "basic_box_map+light_box_map",
       bodyFuncStr: {|

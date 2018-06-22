@@ -125,7 +125,7 @@
     "glsls": [
       {
         "type": "fs",
-        "name": "webgl1_basic_color_fragment"
+        "name": "webgl1_no_basic_map_fragment"
       }
     ],
     "variables": {

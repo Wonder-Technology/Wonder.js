@@ -131,6 +131,9 @@ var LightBoxesTool = (function () {
             var material = wd.unsafeGetGameObjectLightMaterialComponent(obj, state);
 
 
+            var state = wd.setLightMaterialDiffuseColor(material, [0.5, 0.8, 0.8], state);
+
+
             var state = wd.setLightMaterialDiffuseMap(material, map1, state);
 
 

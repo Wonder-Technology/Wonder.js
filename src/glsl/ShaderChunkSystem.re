@@ -857,7 +857,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 |}))
 
-|> set("webgl1_basic_color_fragment", _buildChunk(({|
+|> set("webgl1_no_basic_map_fragment", _buildChunk(({|
 
 |},{|
 
@@ -900,7 +900,7 @@ varying vec2 v_mapCoord0;
 |},{|
 
 |}),{|
-totalColor = vec4(totalColor.rgb * texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, totalColor.a);
+vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, 1.0);
 |}))
 
     };

@@ -30,7 +30,8 @@ let buildRenderConfig =
     {
       "name": "basic_map",
       "condition": "basic_has_map",
-      "pass": "basic_map"
+      "pass": "basic_map",
+      "fail": "no_basic_map"
     },
     {
       "name": "common_light_map",
@@ -79,9 +80,6 @@ let buildRenderConfig =
         },
         {
           "name": "basic"
-        },
-        {
-          "name": "basic_color"
         },
         {
           "type": "dynamic_branch",
@@ -292,25 +290,6 @@ let buildRenderConfig =
     ]
   },
   {
-    "name": "basic_color",
-    "glsls": [
-      {
-        "type": "fs",
-        "name": "webgl1_basic_color_fragment"
-      }
-    ],
-    "variables": {
-      "uniforms": [
-        {
-          "name": "u_color",
-          "field": "color",
-          "type": "float3",
-          "from": "basicMaterial"
-        }
-      ]
-    }
-  },
-  {
     "name": "basic_map",
     "glsls": [
       {
@@ -341,6 +320,25 @@ let buildRenderConfig =
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
+          "from": "basicMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "no_basic_map",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_no_basic_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_color",
+          "field": "color",
+          "type": "float3",
           "from": "basicMaterial"
         }
       ]
