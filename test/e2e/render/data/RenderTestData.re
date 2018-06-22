@@ -22,20 +22,21 @@ let renderTestData = {
       "./test/e2e/js/BasicMaterialTool.js",
       "./test/e2e/js/LightMaterialTool.js",
       "./test/e2e/js/TextureTool.js",
-      "./dist/wd.js"
+      "./test/e2e/js/PrepareTool.js",
+      "./dist/wd.js",
     ],
-    replaceForDebug: (htmlStr) =>
+    replaceForDebug: htmlStr =>
       htmlStr
       |> Js.String.replaceByRe(
            [%re {|/\.\/test\/e2e\/render\/config\//g|}],
-           "../../../../test/e2e/render/config/"
-         )
+           "../../../../test/e2e/render/config/",
+         ),
   },
   testData: [
     {
       name: "basic_box",
       bodyFuncStr: {|
-                    ReplaceFetchTool.replaceFetchForTest();
+                   PrepareTool.prepareForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
@@ -64,13 +65,13 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
     {
       name: "instance_basic_box",
       bodyFuncStr: {|
 
-                       ReplaceFetchTool.replaceFetchForTest();
+                      PrepareTool.prepareForTest();
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
@@ -101,14 +102,12 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
-   
-    
     {
       name: "light_box",
       bodyFuncStr: {|
-                       ReplaceFetchTool.replaceFetchForTest();
+                      PrepareTool.prepareForTest();
 
 
 
@@ -151,13 +150,13 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
     {
       name: "instance_light_box",
       bodyFuncStr: {|
 
-                       ReplaceFetchTool.replaceFetchForTest();
+                      PrepareTool.prepareForTest();
 
 
 
@@ -197,12 +196,12 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
     {
       name: "custom_geometry_basic_material",
       bodyFuncStr: {|
-                    ReplaceFetchTool.replaceFetchForTest();
+                   PrepareTool.prepareForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
@@ -250,12 +249,12 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
     {
       name: "custom_geometry_light_material",
       bodyFuncStr: {|
-                    ReplaceFetchTool.replaceFetchForTest();
+                   PrepareTool.prepareForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
@@ -309,12 +308,12 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
+      frameData: [{timePath: [16]}],
     },
     {
       name: "redo_undo",
       bodyFuncStr: {|
-                       ReplaceFetchTool.replaceFetchForTest();
+                      PrepareTool.prepareForTest();
 
 
 
@@ -351,19 +350,22 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
+      frameData: [
+        {timePath: [16]},
+        {timePath: [16, 32]},
+        {timePath: [16, 32, 48]},
+      ],
     },
-
     {
       name: "redo_undo_map",
       bodyFuncStr: {|
-        ReplaceFetchTool.replaceFetchForTest();
+       PrepareTool.prepareForTest();
 
 
         return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
-            return window.loadImage("./test/e2e/asset/1.jpg")
+            return window.loadImageSrc("./test/e2e/asset/1.jpg")
                 .then((image1DataArr) => {
-                    return window.loadImage("./test/e2e/asset/2.jpg")
+                    return window.loadImageSrc("./test/e2e/asset/2.jpg")
                         .then((image2DataArr) => {
                             return initSample(
                                 TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
@@ -413,19 +415,23 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}, {timePath: [16, 32]}, {timePath: [16, 32, 48]}]
+      frameData: [
+        {timePath: [16]},
+        {timePath: [16, 32]},
+        {timePath: [16, 32, 48]},
+      ],
     },
     {
       name: "basic_box_map+light_box_map",
       bodyFuncStr: {|
-                       ReplaceFetchTool.replaceFetchForTest();
+                      PrepareTool.prepareForTest();
 
 
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-            return window.loadImage("./test/e2e/asset/1.jpg")
+            return window.loadImageSrc("./test/e2e/asset/1.jpg")
                 .then((image1DataArr) => {
-                    return window.loadImage("./test/e2e/asset/2.jpg")
+                    return window.loadImageSrc("./test/e2e/asset/2.jpg")
                         .then((image2DataArr) => {
                             return initSample(
                                 TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
@@ -482,7 +488,29 @@ let renderTestData = {
       distance: None,
       diffPercent: Some(0.00001),
       threshold: None,
-      frameData: [{timePath: [16]}]
-    }
-  ]
-}
+      frameData: [{timePath: [16]}],
+    },
+    {
+      name: "load_wd",
+      bodyFuncStr: {|
+                   PrepareTool.prepareForTest();
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+
+                return AssetTool.loadWD("./test/e2e/asset/wd/truck_light.wd", function ([state, gameObject]) {
+                    return initSample(state, gameObject);
+                });
+                    });
+
+            function initSample(state, gameObject) {
+                wd.startDirector(state);
+            }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}],
+    },
+  ],
+};

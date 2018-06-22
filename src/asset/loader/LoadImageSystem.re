@@ -3,11 +3,14 @@ open Js.Promise;
 let _loadImage = [%bs.raw
   {|
   function(base64Str, resolve, reject){
-        if (typeof window.loadImage_wonder === "undefined") {
-window.loadImage_wonder = function(base64Str, resolve, reject){
+        if (typeof window.loadImageBase64_wonder === "undefined") {
+window.loadImageBase64_wonder = function(base64Str, resolve, reject){
                     var image = new Image();
+
                     image.src = base64Str;
                     image.onload = (function () {
+
+                    /* throw new Error("finish"); */
                         return resolve(image);
                       });
                     return image.onerror = (function (e) {
@@ -16,7 +19,7 @@ window.loadImage_wonder = function(base64Str, resolve, reject){
 };
         }
 
-window.loadImage_wonder(base64Str, resolve, reject)
+window.loadImageBase64_wonder(base64Str, resolve, reject)
   }
   |}
 ];

@@ -30,14 +30,8 @@ var TextureTool = (function () {
     return {
         buildArrayBufferViewSourceTextureFromImageDataArr: function (arg) {
             if (!!arg.width && !!arg.height) {
-                var image = arg;
-
-                var [map, state] = _createBasicSourceTexture(image, wd.unsafeGetState());
-
-
-                wd.setState(state);
-
-                return map;
+                /*! for e2e->run test in browser */
+                return TextureTool.buildBasicSourceTextureFromImageDataArr(arg);
             }
             else {
                 var imageDataArr = arg;
@@ -52,6 +46,16 @@ var TextureTool = (function () {
 
                 return map;
             }
+        },
+        buildBasicSourceTextureFromImageDataArr: function (arg) {
+            var image = arg;
+
+            var [map, state] = _createBasicSourceTexture(image, wd.unsafeGetState());
+
+
+            wd.setState(state);
+
+            return map;
         },
         createTwoArrayBufferViewSourceTextures: function (source1, source2, size1, size2, state) {
             var [map1, state] = _createArrayBufferViewSourceTexture(source1, size1, state);

@@ -1370,7 +1370,7 @@ let buildGLTFJsonOfTexture = () =>
 let buildFakeLoadImage = [%bs.raw
   {|
     function(){
-        window.loadImage_wonder = function(base64Str, resolve, reject){
+        window.loadImageBase64_wonder = function(base64Str, resolve, reject){
             resolve(base64Str)
         }
     }
