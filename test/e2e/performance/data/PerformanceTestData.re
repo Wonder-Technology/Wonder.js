@@ -13,6 +13,7 @@ let performanceTestData = {
     benchmarkPath: "./test/e2e/performance/benchmark/",
     baseDir: "./dist/base",
     scriptFilePathList: [
+      "./test/e2e/asset/gltf/truck.js",
       "./test/e2e/js/AssetTool.js",
       "./test/e2e/js/ReplaceFetchTool.js",
       "./test/e2e/js/ScheduleTool.js",
@@ -1483,6 +1484,42 @@ let performanceTestData = {
                   return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                   }
                   |},
+          errorRate: 10,
+        },
+      ],
+    },
+    {
+      name: "asset",
+      caseList: [
+        {
+          name: "convertGLTFToWD_assembleWD_generateEmbededWD_truck",
+          bodyFuncStr: {|
+                           PrepareTool.prepareForTest();
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                var n1 = performance.now();
+
+                var wdRecord = wd.convertGLTFToWD(getGLTFJsonOfTruck());
+
+                var n2 = performance.now();
+
+                var n3 = null;
+                var n4 = null;
+
+                return wd.assembleWD(wdRecord, wd.unsafeGetState())
+                    .forEach(([state, sceneGameObject]) => {
+                        n3 = performance.now();
+
+                        var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state);
+
+                        n4 = performance.now();
+                    })
+                    .then(() => {
+                        return { "textArray": ["convert", "assemble", "generate"], "timeArray": [n1, n2, n3, n4] };
+                    })
+            });
+       |},
           errorRate: 10,
         },
       ],
