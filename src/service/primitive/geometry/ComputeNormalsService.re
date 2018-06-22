@@ -68,9 +68,6 @@ let computeVertexNormals = (vertices, indices) => {
         let pc = _getPosition(vertices, vc);
         let v0 = Vector3Service.sub(Float, pc, pb);
         let v1 = Vector3Service.sub(Float, pa, pb);
-        /*!
-          TODO need Vector3Service.normalize???
-          */
         let (faceNormalX, faceNormalY, faceNormalZ) as faceNormalTuple =
           Vector3Service.cross(v0, v1);
         _compute(

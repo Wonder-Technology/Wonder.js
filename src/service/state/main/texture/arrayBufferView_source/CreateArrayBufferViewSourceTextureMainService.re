@@ -10,7 +10,6 @@ let create =
         state |> RecordArrayBufferViewSourceTextureMainService.getRecord;
       let (index, newIndex, disposedIndexArray) =
         IndexComponentService.generateIndex(index, disposedIndexArray);
-      /* TODO test */
       let index = IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(index, state);
       state.arrayBufferViewSourceTextureRecord =
         Some({...arrayBufferViewSourceTextureRecord, index: newIndex});

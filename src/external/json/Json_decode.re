@@ -62,7 +62,6 @@ let nullable = (decode, json) =>
     Js.Null.return(decode(json));
   };
 
-/* TODO: remove this? */
 let nullAs = (value, json) =>
   if ((Obj.magic(json): Js.null('a)) === Js.null) {
     value;
