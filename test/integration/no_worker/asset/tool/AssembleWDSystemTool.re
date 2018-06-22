@@ -23,11 +23,11 @@ let testResult = (gltfJson, testFunc, state) => {
   open Js.Promise;
   let result = ref(Obj.magic(1));
 
-  ConvertGLTFTool.testResult(gltfJson, data =>
-    AssembleWDSystem.assemble(data, state)
-    |> Most.forEach(data => result := data)
-    |> then_(() => testFunc(result^) |> resolve)
-  );
+  ConvertGLTFTool.buildFakeLoadImage();
+
+  AssembleWDAPI.assembleGLTF(gltfJson, state)
+  |> Most.forEach(data => result := data)
+  |> then_(() => testFunc(result^) |> resolve);
 };
 
 let _getChildren = (parent, state) =>

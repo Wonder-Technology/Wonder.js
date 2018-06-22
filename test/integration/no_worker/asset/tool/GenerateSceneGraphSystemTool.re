@@ -55,13 +55,12 @@ let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
 
   ConvertGLTFTool.buildFakeLoadImage();
 
-  ConvertGLTFSystem.convert(gltfJson)
-  |. AssembleWDSystem.assemble(state^)
+  AssembleWDAPI.assembleGLTF(gltfJson, state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
        let (state, sceneGameObject) = result^;
 
-       GenerateSceneGraphSystem.generateEmbededGLTF(
+       GenerateSceneGraphAPI.generateEmbededGLTF(
          sceneGameObject,
          WonderCommonlib.SparseMapService.createEmpty(),
          state,
@@ -72,7 +71,7 @@ let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
 };
 
 let testGLTFResultByGameObject = (sceneGameObject, targetJson, state) =>
-  GenerateSceneGraphSystem.generateEmbededGLTF(
+  GenerateSceneGraphAPI.generateEmbededGLTF(
     sceneGameObject,
     WonderCommonlib.SparseMapService.createEmpty(),
     state,
@@ -95,13 +94,12 @@ let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
 
   ConvertGLTFTool.buildFakeLoadImage();
 
-  ConvertGLTFSystem.convert(gltfJson)
-  |. AssembleWDSystem.assemble(state^)
+  AssembleWDAPI.assembleGLTF(gltfJson, state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
        let (state, sceneGameObject) = result^;
 
-       GenerateSceneGraphSystem.generateEmbededWD(
+       GenerateSceneGraphAPI.generateEmbededWD(
          sceneGameObject,
          WonderCommonlib.SparseMapService.createEmpty(),
          state,
@@ -121,7 +119,7 @@ let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) => {
   let result = ref(Obj.magic(1));
 
   let (state, data) =
-    GenerateSceneGraphSystem.generateEmbededWD(
+    GenerateSceneGraphAPI.generateEmbededWD(
       sceneGameObject,
       WonderCommonlib.SparseMapService.createEmpty(),
       state,

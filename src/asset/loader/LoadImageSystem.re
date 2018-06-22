@@ -8,12 +8,12 @@ window.loadImageBase64_wonder = function(base64Str, resolve, reject){
                     var image = new Image();
 
                     image.src = base64Str;
-                    image.onload = (function () {
 
-                    /* throw new Error("finish"); */
+                    image.onload = (function () {
                         return resolve(image);
                       });
-                    return image.onerror = (function (e) {
+
+                    image.onerror = (function (e) {
                               return reject(e);
                             });
 };
