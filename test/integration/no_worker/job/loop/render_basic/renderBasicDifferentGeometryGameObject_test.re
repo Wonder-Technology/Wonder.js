@@ -208,7 +208,7 @@ let _ =
                        (state, geometry)
                      }; */
                   test(
-                    "if lastSendGeometry === geometryIndex && last type_ === type_, not send",
+                    "if lastSendGeometryData === geometryIndex && last type_ === type_, not send",
                     () => {
                       let (state, _, geometry, _, _) =
                         RenderBasicJobTool.prepareGameObject(sandbox, state^);

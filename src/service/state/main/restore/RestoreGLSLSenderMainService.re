@@ -68,8 +68,8 @@ let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
            drawPointsFuncMap
          ), */
       vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
-      lastSendMaterial: None,
-      lastSendGeometry: None
+      lastSendMaterialData: None,
+      lastSendGeometryData: None
     }
   }
 };

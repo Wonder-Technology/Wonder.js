@@ -348,7 +348,7 @@ let _ =
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             (state, geometry);
           };
-          test("if lastSendGeometry === geometryIndex, not send", () => {
+          test("if lastSendGeometryData === geometryIndex, not send", () => {
             let (state, geometry) = _prepare(sandbox, state^);
             let (state, _, _, _, _) =
               FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
@@ -1484,7 +1484,65 @@ let _ =
           },
         (),
       );
+
+      describe("fix bug", () => {
+        let _prepare = state => {
+          let (state, gameObject1, _, _, _, _) =
+            RenderBasicJobTool.prepareGameObjectWithCreatedMap(
+              sandbox,
+              state,
+            );
+          let (state, gameObject2, _, _, _, _) =
+            FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
+              sandbox,
+              state,
+            );
+          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos1 = 0;
+          let pos2 = 1;
+          let getUniformLocation =
+            GLSLLocationTool.getUniformLocation(
+              ~pos=pos1,
+              sandbox,
+              "u_color",
+            );
+          let getUniformLocation =
+            GLSLLocationTool.stubLocation(
+              getUniformLocation,
+              pos2,
+              sandbox,
+              "u_diffuse",
+            );
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~uniform3f,
+                   ~getUniformLocation,
+                   (),
+                 ),
+               );
+
+          (state, (pos1, pos2), uniform3f);
+        };
+
+        test("should send uniform data which has different shaders but the same materials", () => {
+          let (state, (pos1, pos2), uniform3f) = _prepare(state^);
+
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          (
+            SinonTool.calledWith(uniform3f, pos1),
+            SinonTool.calledWith(uniform3f, pos2),
+          )
+          |> expect == (true, true);
+        });
+      });
     });
+
     describe("bind map", () => {
       test("if not has map, not bind", () => {
         let (state, gameObject, _, _, _) =

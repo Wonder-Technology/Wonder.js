@@ -18,7 +18,7 @@ let _getOrCreateBuffer =
         (getVerticesFunc, getTexCoordsFunc, getNormalsFunc, getIndicesFunc),
       ),
       state,
-    ) => {
+    ) =>
   switch (buffer) {
   | VERTEX =>
     ArrayBufferRenderService.getOrCreateBuffer(
@@ -59,7 +59,6 @@ let _getOrCreateBuffer =
       ),
     )
   };
-};
 
 let _directlySendAttributeData =
     (
@@ -92,14 +91,14 @@ let _directlySendAttributeData =
 
 let _sendAttributeData =
     (gl, (shaderIndex, geometryIndex, geometryType) as indexTuple, state) => {
-  let {lastSendGeometry} as record = state.glslSenderRecord;
-  switch (lastSendGeometry) {
+  let {lastSendGeometryData} as record = state.glslSenderRecord;
+  switch (lastSendGeometryData) {
   | Some((lastSendGeometryIndex, lastSendGeometryType))
       when
         lastSendGeometryIndex === geometryIndex
         && lastSendGeometryType === geometryType => state
   | _ =>
-    record.lastSendGeometry = Some((geometryIndex, geometryType));
+    record.lastSendGeometryData = Some((geometryIndex, geometryType));
     _directlySendAttributeData(gl, indexTuple, state);
   };
 };
@@ -162,11 +161,12 @@ let render =
     |> UseProgramRenderService.use(gl, program)
     |> _sendAttributeData(gl, (shaderIndex, geometryIndex, geometryType))
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
-  let {lastSendMaterial} as record = state.glslSenderRecord;
-  switch (lastSendMaterial) {
-  | Some(lastSendMaterial) when lastSendMaterial === materialIndex => state
+  let {lastSendMaterialData} as record = state.glslSenderRecord;
+  switch (lastSendMaterialData) {
+  | Some((lastSendMaterial, lastSendShader))
+      when lastSendMaterial === materialIndex && lastSendShader === shaderIndex => state
   | _ =>
-    record.lastSendMaterial = Some(materialIndex);
+    record.lastSendMaterialData = Some((materialIndex, shaderIndex));
     let state =
       state
       |> _sendUniformRenderObjectMaterialData(gl, shaderIndex, materialIndex);

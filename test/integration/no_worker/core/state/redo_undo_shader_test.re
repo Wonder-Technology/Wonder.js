@@ -4,7 +4,7 @@ open Js.Typed_array;
 
 let _ =
   describe(
-    "test redo,undo shader record",
+    "test redo,undo shader data",
     () => {
       open Expect;
       open Expect.Operators;
@@ -61,16 +61,16 @@ let _ =
             "restore glsl sender record to target state",
             () => {
               test(
-                "clear last send record",
+                "clear last send data",
                 () => {
                   let (state, shaderIndex1, data1, func1, history1) =
                     _prepareGLSLSenderData(state^);
                   let (currentState, _, _, _, _) =
                     _prepareGLSLSenderData(MainStateTool.createNewCompleteState(sandbox));
                   let newState = MainStateTool.restore(currentState, state);
-                  let {lastSendMaterial, lastSendGeometry}: StateRenderType.glslSenderRecord =
+                  let {lastSendMaterialData, lastSendGeometryData}: StateRenderType.glslSenderRecord =
                     newState |> GLSLSenderTool.getGLSLSenderRecord;
-                  (lastSendMaterial, lastSendGeometry) |> expect == (None, None)
+                  (lastSendMaterialData, lastSendGeometryData) |> expect == (None, None)
                 }
               );
               test(
@@ -253,7 +253,7 @@ let _ =
                 }
               );
               describe(
-                "test restore record",
+                "test restore data",
                 () => {
                   let _prepareState1 = (state) => {
                     open ShaderType;
@@ -419,7 +419,7 @@ let _ =
                     )
                   };
                   describe(
-                    "test restore shader record",
+                    "test restore shader data",
                     () => {
                       describe(
                         "test index",
@@ -470,7 +470,7 @@ let _ =
                     }
                   );
                   describe(
-                    "test restore program record",
+                    "test restore program data",
                     () =>
                       describe(
                         "test programMap",
@@ -509,7 +509,7 @@ let _ =
                       )
                   );
                   describe(
-                    "test restore glsl location record",
+                    "test restore glsl location data",
                     () =>
                       describe(
                         "test attributeLocationMap, uniformLocationMap",
@@ -559,7 +559,7 @@ let _ =
                       )
                   );
                   describe(
-                    "test restore glsl sender record",
+                    "test restore glsl sender data",
                     () =>
                       describe(
                         "test uniformShaderSendNoCachableDataMap",

@@ -266,7 +266,7 @@ let _ =
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             (state, geometry);
           };
-          test("if lastSendGeometry === geometryIndex, not send", () => {
+          test("if lastSendGeometryData === geometryIndex, not send", () => {
             let (state, geometry) = _prepare(sandbox, state^);
             let (state, _, _, _, _) =
               RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
@@ -607,6 +607,7 @@ let _ =
                     state
                     |> RenderJobsTool.init
                     |> DirectorTool.runWithDefaultTime;
+
                   uniformMatrix4fv
                   |> withOneArg(pos)
                   |> getCall(1)
@@ -696,49 +697,48 @@ let _ =
           prepareSendUniformData =>
             describe("test two gameObjects", () =>
               test(
-                "if only set first one's color, second one's sended u_color record shouldn't be affect",
-                () => {
-                  let name = "u_color";
-                  let (state, _, (_, material1), _, _) =
-                    prepareSendUniformData(
-                      sandbox,
-                      RenderBasicJobTool.prepareGameObject,
-                      state^,
-                    );
-                  let (state, gameObject2, _, material2, _) =
-                    RenderBasicJobTool.prepareGameObject(sandbox, state);
-                  let state =
-                    state
-                    |> BasicMaterialAPI.setBasicMaterialColor(
-                         material1,
-                         [|0., 1., 0.2|],
-                       );
-                  let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                  let pos = 0;
-                  let getUniformLocation =
-                    GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~uniform3f,
-                           ~getUniformLocation,
-                           (),
-                         ),
-                       );
-                  let state =
-                    state
-                    |> RenderJobsTool.init
-                    |> DirectorTool.runWithDefaultTime;
-                  let defaultData = [1., 1., 1.];
-                  uniform3f
-                  |> withOneArg(pos)
-                  |> getCall(1)
-                  |> getArgs
-                  |> expect == [pos, ...defaultData |> Obj.magic];
-                },
-              )
+                "if only set first one's color, second one's sended u_color record shouldn't be affect", () => {
+                let name = "u_color";
+                let (state, _, (_, material1), _, _) =
+                  prepareSendUniformData(
+                    sandbox,
+                    RenderBasicJobTool.prepareGameObject,
+                    state^,
+                  );
+                let (state, gameObject2, _, material2, _) =
+                  RenderBasicJobTool.prepareGameObject(sandbox, state);
+                let state =
+                  state
+                  |> BasicMaterialAPI.setBasicMaterialColor(
+                       material1,
+                       [|0., 1., 0.2|],
+                     );
+                let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                let pos = 0;
+                let getUniformLocation =
+                  GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~uniform3f,
+                         ~getUniformLocation,
+                         (),
+                       ),
+                     );
+                let state =
+                  state
+                  |> RenderJobsTool.init
+                  |> DirectorTool.runWithDefaultTime;
+                let defaultData = [1., 1., 1.];
+
+                uniform3f
+                |> withOneArg(pos)
+                |> getCall(1)
+                |> getArgs
+                |> expect == [pos, ...defaultData |> Obj.magic];
+              })
             ),
         (),
       );
@@ -1777,7 +1777,7 @@ let _ =
 
     describe("optimize", () =>
       test(
-        "if lastSendMaterial === materialIndex, not bind and not update", () => {
+        "if lastSendMaterialData === shaderIndex, not bind and not update", () => {
         let (state, gameObject1, _, material1, _, map1) =
           RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state^);
         let (state, gameObject2, _, material2, _) =
@@ -1844,7 +1844,7 @@ let _ =
             (state, bindBuffer, element_array_buffer);
           };
           describe("optimize", () => {
-            test("if lastSendGeometry === geometryIndex, not bind", () => {
+            test("if lastSendGeometryData === geometryIndex, not bind", () => {
               let (state, _, geometry, _, _) =
                 RenderBasicJobTool.prepareGameObject(sandbox, state^);
               let (state, _, _, _) =

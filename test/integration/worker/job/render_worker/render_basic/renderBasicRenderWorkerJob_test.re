@@ -188,7 +188,7 @@ let _ =
                  (state, geometry)
                };
                test(
-                 "if lastSendGeometry === geometryIndex, not send",
+                 "if lastSendGeometryData === geometryIndex, not send",
                  () => {
                    let (state, geometry) = _prepare(sandbox, state^);
                    let (state, _, _, _, _) =

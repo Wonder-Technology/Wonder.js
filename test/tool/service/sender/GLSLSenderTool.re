@@ -12,7 +12,7 @@ let disableVertexAttribArray = (state: StateDataMainType.state) => {
 };
 
 let clearLastSendGeometry = (state: StateDataMainType.state) => {
-  state.glslSenderRecord.lastSendGeometry = None;
+  state.glslSenderRecord.lastSendGeometryData = None;
   state;
 };
 

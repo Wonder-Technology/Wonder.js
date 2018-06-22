@@ -12,6 +12,6 @@ let create = () => {
   uniformInstanceSendNoCachableDataMap: WonderCommonlib.SparseMapService.createEmpty(),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
-  lastSendMaterial: None,
-  lastSendGeometry: None
+  lastSendMaterialData: None,
+  lastSendGeometryData: None
 };

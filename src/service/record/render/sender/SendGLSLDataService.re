@@ -156,6 +156,10 @@ let sendFloat3 =
     let y = valueArr[1];
     let z = valueArr[2];
 
+    WonderLog.Log.print(
+valueArr
+    ) |> ignore;
+
     if (_isNotCacheVector3AndSetCache(shaderCacheMap, name, (x, y, z))) {
       /* WonderLog.Log.log(("send float3: ", name, (x, y, z))) |> ignore; */
       uniform3f(

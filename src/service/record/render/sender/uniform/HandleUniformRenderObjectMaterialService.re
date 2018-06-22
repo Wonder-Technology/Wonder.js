@@ -13,9 +13,9 @@ let addUniformSendDataByType =
         shaderSendNoCachableDataArr,
         shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
-        instanceSendNoCachableDataArr
+        instanceSendNoCachableDataArr,
       ),
-      getDataFunc
+      getDataFunc,
     ) => (
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr
@@ -25,13 +25,13 @@ let addUniformSendDataByType =
          name,
          pos,
          sendDataFunc: SendUniformService.getSendCachableDataByType(type_),
-         getDataFunc: getDataFunc |> Obj.magic
-       }: uniformRenderObjectSendMaterialData
+         getDataFunc: getDataFunc |> Obj.magic,
+       }: uniformRenderObjectSendMaterialData,
      ),
   shaderSendNoCachableDataArr,
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
-  instanceSendNoCachableDataArr
+  instanceSendNoCachableDataArr,
 );
 
 let addUniformTextureSendDataByType =
@@ -43,9 +43,9 @@ let addUniformTextureSendDataByType =
         shaderSendNoCachableDataArr,
         shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
-        instanceSendNoCachableDataArr
+        instanceSendNoCachableDataArr,
       ),
-      getDataFunc
+      getDataFunc,
     ) => (
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr
@@ -56,23 +56,30 @@ let addUniformTextureSendDataByType =
          pos,
          /* sendDataFunc: SendTextureRenderService.sendData |> Obj.magic, */
          sendDataFunc: SendGLSLDataService.sendInt |> Obj.magic,
-         getDataFunc: getDataFunc |> Obj.magic
-       }: uniformRenderObjectSendMaterialData
+         getDataFunc: getDataFunc |> Obj.magic,
+       }: uniformRenderObjectSendMaterialData,
      ),
   shaderSendNoCachableDataArr,
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
-  instanceSendNoCachableDataArr
+  instanceSendNoCachableDataArr,
 );
 
 let setToUniformSendMap =
-    (shaderIndex, uniformRenderObjectSendMaterialDataMap, renderObjectSendMaterialDataArr) =>
+    (
+      shaderIndex,
+      uniformRenderObjectSendMaterialDataMap,
+      renderObjectSendMaterialDataArr,
+    ) =>
   uniformRenderObjectSendMaterialDataMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, renderObjectSendMaterialDataArr)
+  |> WonderCommonlib.SparseMapService.set(
+       shaderIndex,
+       renderObjectSendMaterialDataArr,
+     )
   |> ignore;
 
 let unsafeGetUniformSendData = (shaderIndex: int, glslSenderRecord) =>
   HandleUniformConfigDataMapService.unsafeGetUniformSendData(
     shaderIndex,
-    glslSenderRecord.uniformRenderObjectSendMaterialDataMap
+    glslSenderRecord.uniformRenderObjectSendMaterialDataMap,
   );
