@@ -1497,7 +1497,7 @@ let performanceTestData = {
                            PrepareTool.prepareForTest();
 
 
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+            return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
                 var n1 = performance.now();
 
                 var wdRecord = wd.convertGLTFToWD(getGLTFJsonOfTruck());
