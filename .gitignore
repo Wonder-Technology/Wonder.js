@@ -18,7 +18,7 @@ dist/base
 npm-debug
 
 
-test/e2e/**/report
+test/e2e/render/report
 
 test/e2e/render/screenshot
 
