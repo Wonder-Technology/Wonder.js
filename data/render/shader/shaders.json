@@ -21,7 +21,8 @@
     {
       "name": "basic_map",
       "condition": "basic_has_map",
-      "pass": "basic_map"
+      "pass": "basic_map",
+      "fail": "no_basic_map"
     },
     {
       "name": "common_light_map",
@@ -70,9 +71,6 @@
         },
         {
           "name": "basic"
-        },
-        {
-          "name": "basic_color"
         },
         {
           "type": "dynamic_branch",
