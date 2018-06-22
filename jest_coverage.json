@@ -15,6 +15,7 @@
   "coveragePathIgnorePatterns": [
     "<rootDir>/lib/es6_global/src/.+/Director.*",
     "<rootDir>/lib/es6_global/src/service/atom/",
+    "<rootDir>/lib/es6_global/src/service/primitive/",
     "<rootDir>/lib/es6_global/src/external/",
     "<rootDir>/lib/es6_global/src/.+/LoaderManagerAPI.js",
     "<rootDir>/lib/es6_global/src/Index.*",
