@@ -1,14 +1,14 @@
-let _buildMultiPrimitivesMeshName = (meshName, primitiveIndex) =>
-  switch (meshName) {
+let _buildMultiPrimitivesName = (name, primitiveIndex) =>
+  switch (name) {
   | None => None
-  | Some(meshName) => Some({j|$(meshName)_$primitiveIndex|j})
+  | Some(name) => Some({j|$(name)_$primitiveIndex|j})
   };
 
+let _buildMultiPrimitivesMeshName = (meshName, primitiveIndex) =>
+  _buildMultiPrimitivesName(meshName, primitiveIndex);
+
 let _buildMultiPrimitivesNodeName = (nodeName, primitiveIndex) =>
-  switch (nodeName) {
-  | None => None
-  | Some(nodeName) => Some({j|$(nodeName)_$primitiveIndex|j})
-  };
+  _buildMultiPrimitivesName(nodeName, primitiveIndex);
 
 let _buildMultiPrimitivesMeshMap = meshes => {
   let (multiPrimitivesMeshMap, newMeshIndex) =
@@ -118,7 +118,7 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
                                children: None,
                                mesh: Some(meshIndex),
                                extras: None,
-                               extensions: None
+                               extensions: None,
                              }: GLTFType.node,
                            ),
                       newNodesOfMultiPrimitives,
