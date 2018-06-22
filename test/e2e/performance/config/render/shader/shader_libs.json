@@ -121,25 +121,6 @@
     ]
   },
   {
-    "name": "basic_color",
-    "glsls": [
-      {
-        "type": "fs",
-        "name": "webgl1_no_basic_map_fragment"
-      }
-    ],
-    "variables": {
-      "uniforms": [
-        {
-          "name": "u_color",
-          "field": "color",
-          "type": "float3",
-          "from": "basicMaterial"
-        }
-      ]
-    }
-  },
-  {
     "name": "basic_map",
     "glsls": [
       {
@@ -161,9 +142,34 @@
       ],
       "uniforms": [
         {
+          "name": "u_color",
+          "field": "color",
+          "type": "float3",
+          "from": "basicMaterial"
+        },
+        {
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
+          "from": "basicMaterial"
+        }
+      ]
+    }
+  },
+  {
+    "name": "no_basic_map",
+    "glsls": [
+      {
+        "type": "fs",
+        "name": "webgl1_no_basic_map_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_color",
+          "field": "color",
+          "type": "float3",
           "from": "basicMaterial"
         }
       ]
@@ -314,6 +320,12 @@
     ],
     "variables": {
       "uniforms": [
+        {
+          "name": "u_diffuse",
+          "field": "diffuseColor",
+          "type": "float3",
+          "from": "lightMaterial"
+        },
         {
           "name": "u_diffuseMapSampler",
           "field": "diffuseMap",

@@ -30,14 +30,17 @@ let performanceTestData = {
       "./test/e2e/js/RandomTool.js",
       "./test/e2e/js/TextureTool.js",
       "./test/e2e/js/PrepareTool.js",
-      "./dist/wd.js"
+      "./dist/wd.js",
     ],
     replaceBodyFuncStrWhenDebug:
       Some(
-        (bodyFuncStr) =>
+        bodyFuncStr =>
           bodyFuncStr
-          |> Js.String.replaceByRe([%re {|/\.\/test\/e2e\//g|}], "../../../../test/e2e/")
-      )
+          |> Js.String.replaceByRe(
+               [%re {|/\.\/test\/e2e\//g|}],
+               "../../../../test/e2e/",
+             ),
+      ),
   },
   testDataList: [
     {
@@ -99,7 +102,7 @@ let performanceTestData = {
        return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4]};
        }
        |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "create_5k_boxes+transform",
@@ -163,7 +166,7 @@ let performanceTestData = {
                      return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
                      }
                      |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "create_5k_boxes+transform+set_parent",
@@ -232,7 +235,7 @@ let performanceTestData = {
                      return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] };
                      }
                      |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "create_dispose_1k_boxes",
@@ -304,7 +307,7 @@ let performanceTestData = {
                      }
 
                      |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "create_dispose_1k_cloned_boxes_map",
@@ -380,9 +383,9 @@ let performanceTestData = {
                      }
 
                      |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "basic_triangles",
@@ -463,9 +466,9 @@ let performanceTestData = {
                      }
 
                      |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "instance_basic_boxes",
@@ -524,7 +527,7 @@ let performanceTestData = {
 
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "static_batch_create_5k_boxes",
@@ -570,7 +573,7 @@ let performanceTestData = {
 
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_10k_boxes+transform",
@@ -627,7 +630,7 @@ let performanceTestData = {
                   return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_10k_boxes+transform+set_parent",
@@ -687,7 +690,7 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_dispose_200(sourceInstance box)*5(objectInstance box)",
@@ -750,7 +753,7 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_dispose_1[(sourceInstance box)*2k(objectInstance box)",
@@ -813,9 +816,9 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "light_boxes",
@@ -900,7 +903,7 @@ let performanceTestData = {
        return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4]};
        }
        |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "create_dispose_1k_cloned_boxes_map",
@@ -992,9 +995,9 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "instance_light_boxes",
@@ -1061,7 +1064,7 @@ let performanceTestData = {
 
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "static_batch_create_3k_boxes",
@@ -1113,7 +1116,7 @@ let performanceTestData = {
 
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_5k_boxes+transform",
@@ -1177,7 +1180,7 @@ let performanceTestData = {
                   return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                   }
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_dispose_100(sourceInstance box)*4(objectInstance box)",
@@ -1246,7 +1249,7 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
+          errorRate: 10,
         },
         {
           name: "dynamic_hardware_create_dispose_1[(sourceInstance box)*1k(objectInstance box)",
@@ -1315,9 +1318,9 @@ let performanceTestData = {
                   }
 
                   |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "basic_light_geometrys_boxes",
@@ -1417,9 +1420,9 @@ let performanceTestData = {
                   return {"textArray": ["prepare", "init", "loopBody1", "loopBody2"], "timeArray": [n1, n2, n3, n4, n5] };
       }
        |},
-          errorRate: 10
-        }
-      ]
+          errorRate: 10,
+        },
+      ],
     },
     {
       name: "redo_undo",
@@ -1480,9 +1483,9 @@ let performanceTestData = {
                   return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
                   }
                   |},
-          errorRate: 10
-        }
-      ]
-    }
-  ]
+          errorRate: 10,
+        },
+      ],
+    },
+  ],
 };
