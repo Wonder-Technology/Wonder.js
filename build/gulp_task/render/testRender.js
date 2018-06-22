@@ -12,3 +12,10 @@ gulp.task("testRenderInLocal", function (done) {
 
     test.testInLocal("generate correct image...", reportFilePath, "render", testRender.generateCorrectImage, testRender.generateReport, testRender.runTest, done);
 });
+
+
+gulp.task("testFastRender", function (done) {
+    var reportFilePath = path.join(process.cwd(), "./test/e2e/render/report/report.html");
+
+    test.fastTest("generate correct image...", reportFilePath, "render", testRender.generateCorrectImage, testRender.generateReport, testRender.runTest, done);
+});

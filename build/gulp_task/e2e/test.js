@@ -240,5 +240,14 @@ module.exports = {
             });
         });
 
+    },
+
+
+    fastTest: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, done) {
+        var configFilePath = this.getE2eConfigFilePath();
+
+        _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [], done);
     }
+
+
 }
