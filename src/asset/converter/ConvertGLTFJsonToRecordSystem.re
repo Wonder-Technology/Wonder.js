@@ -95,6 +95,8 @@ let _convertImages = json =>
            {
              uri: json |> optional(field("uri", string)),
              name: json |> optional(field("name", string)),
+             bufferView: json |> optional(field("bufferView", int)),
+             mimeType: json |> optional(field("mimeType", string)),
            }
          ),
        ),

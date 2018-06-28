@@ -69,32 +69,71 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
     lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
     customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
     basicSourceTextures:
-      ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
+      ConvertTexturesSystem.convertToBasicSourceTextures(gltf) |. Some,
+    arrayBufferViewSourceTextures: None,
     samplers: ConvertTexturesSystem.convertToSamplers(gltf),
-    images: ConvertImagesSystem.convertToImages(gltf),
+    uriImages: ConvertImagesSystem.convertToUriImages(gltf) |. Some,
+    uint8ArrayImages: None,
     accessors: ConvertBuffersSystem.convertToAccessors(gltf),
     bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
-    buffers: ConvertBuffersSystem.convertToBuffers(gltf),
+    buffers: ConvertBuffersSystem.convertToBuffers(None, gltf),
     directionLights: directionLightArr,
     pointLights: pointLightArr,
   };
 };
 
-let convert = (gltfFileContent: string) => {
-  let gltf =
+let _convertGLBToWD = (gltf: GLTFType.gltf, binBuffer) : WDType.wd => {
+  let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
+    gltf
+    |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
+    |> ConvertDefaultMaterialSystem.convert;
+
+  let (ambientLightArr, directionLightArr, pointLightArr) =
+    ConvertLightsSystem.convertToLights(gltf);
+
+  {
+    asset: {
+      version: asset.version,
+      generator: GLTFUtils.getGenerator(),
+    },
+    scene: _convertToScene(ambientLightArr, gltf),
+    gameObjects: ConvertGameObjectsSystem.convert(gltf),
+    indices: ConvertIndicesSystem.convertToIndices(gltf),
+    transforms: ConvertTransformsSystem.convertToTransforms(gltf),
+    basicCameraViews: ConvertCamerasSystem.convertToBasicCameraViews(gltf),
+    perspectiveCameraProjections:
+      ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
+    lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
+    customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
+    basicSourceTextures: None,
+    arrayBufferViewSourceTextures:
+      ConvertTexturesSystem.convertToArrayBufferViewSourceTextures(gltf)
+      |. Some,
+    samplers: ConvertTexturesSystem.convertToSamplers(gltf),
+    uriImages: None,
+    uint8ArrayImages:
+      ConvertImagesSystem.convertToUint8ArrayImages(binBuffer, gltf) |. Some,
+    accessors: ConvertBuffersSystem.convertToAccessors(gltf),
+    bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
+    buffers: ConvertBuffersSystem.convertToBuffers(Some(binBuffer), gltf),
+    directionLights: directionLightArr,
+    pointLights: pointLightArr,
+  };
+};
+
+let convert = (gltfFileContent: string) =>
+  _convertGLTFToWD(
     ConvertGLTFJsonToRecordSystem.convert(
       gltfFileContent |> Js.Json.parseExn,
-    );
+    ),
+  );
 
-  /* ConvertImagesSystem.buildImageArray(gltf)
-     |> then_(imageArr =>
-          (
-            _convertGLTFToWD(gltf),
-            imageArr,
-            ConvertBuffersSystem.buildBufferArray(gltf),
-          )
-          |> resolve
-        )
-     |> Most.fromPromise; */
-  _convertGLTFToWD(gltf);
+let convertGlb = (glb: Js.Typed_array.ArrayBuffer.t) => {
+  let (gltfFileContent, binBuffer) = ConvertGlbToGLTFSystem.convert(glb);
+  _convertGLBToWD(
+    ConvertGLTFJsonToRecordSystem.convert(
+      gltfFileContent |> Js.Json.parseExn,
+    ),
+    binBuffer,
+  );
 };

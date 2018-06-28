@@ -99,6 +99,8 @@ type camera = {
 type image = {
   uri: option(string),
   name: option(string),
+  bufferView: option(int),
+  mimeType: option(string),
 };
 
 /* type magFilter =

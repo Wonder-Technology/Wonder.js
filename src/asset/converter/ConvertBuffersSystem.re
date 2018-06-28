@@ -1,20 +1,20 @@
-let convertToBuffers = ({buffers}: GLTFType.gltf) : array(WDType.buffer) =>
+let convertToBuffers =
+    (binBuffer, {buffers}: GLTFType.gltf)
+    : array(WDType.buffer) =>
   buffers
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. arr, {uri, byteLength}: GLTFType.buffer) =>
          switch (uri) {
          | None =>
-           WonderLog.Log.fatal(
-             WonderLog.Log.buildFatalMessage(
-               ~title="_convertToBuffers",
-               ~description={j|uri should exist|j},
-               ~reason="",
-               ~solution={j||j},
-               ~params={j||j},
-             ),
-           )
+           arr
+           |> ArrayService.push(
+                {uri: None, byteLength, buffer: binBuffer}: WDType.buffer,
+              )
          | Some(uri) =>
-           arr |> ArrayService.push({uri, byteLength}: WDType.buffer)
+           arr
+           |> ArrayService.push(
+                {uri: Some(uri), byteLength, buffer: None}: WDType.buffer,
+              )
          },
        [||],
      );

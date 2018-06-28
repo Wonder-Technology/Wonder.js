@@ -210,7 +210,6 @@ let optimizedField = (key, decode, json) =>
     /* decode(value) */
     /* | None => raise @@ DecodeError({j|Expected field '$(key)'|j}) */
     | None =>
-      /* WonderLog.Log.print((key)) |> ignore;  */
       Obj.magic(1000)
     };
   } else {

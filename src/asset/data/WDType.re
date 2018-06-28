@@ -95,7 +95,8 @@ type accessor = {
 };
 
 type buffer = {
-  uri: string,
+  uri: option(string),
+  buffer: option(Js.Typed_array.ArrayBuffer.t),
   byteLength: int,
 };
 
@@ -111,9 +112,26 @@ type bufferView = {
   /* target: bufferViewTarget */
 };
 
-type image = {uri: string};
+type uriImage = {uriBase64: string};
+
+type mimeType = 
+  | PNG
+  | JPEG
+  | UNKNOWN;
+
+type uint8ArrayImage = {
+  uint8Array: Js.Typed_array.Uint8Array.t,
+  mimeType,
+  width: int,
+  height: int,
+};
 
 type basicSourceTextures = {
+  count: int,
+  names: array(string),
+};
+
+type arrayBufferViewSourceTextures = {
   count: int,
   names: array(string),
 };
@@ -199,8 +217,10 @@ type wd = {
   scene,
   indices,
   gameObjects,
-  images: array(image),
-  basicSourceTextures,
+  uriImages: option(array(uriImage)),
+  uint8ArrayImages: option(array(uint8ArrayImage)),
+  basicSourceTextures: option(basicSourceTextures),
+  arrayBufferViewSourceTextures: option(arrayBufferViewSourceTextures),
   samplers: array(sampler),
   buffers: array(buffer),
   bufferViews: array(bufferView),

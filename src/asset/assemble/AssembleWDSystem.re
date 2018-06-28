@@ -9,36 +9,60 @@ open Js.Promise;
 let _getSourcePath = (filePath, sourceRelativePath) =>
   PathService.resolve(filePath, sourceRelativePath);
 
-let _buildImageArray = (images: array(image)) => {
-  let imageArr = [||];
-  images
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. streamArr, {uri}: image) =>
-         switch (ConvertCommon.isBase64(uri)) {
-         | false =>
-           WonderLog.Log.fatal(
-             WonderLog.Log.buildFatalMessage(
-               ~title="_buildImageArray",
-               ~description={j|only support base64 uri|j},
-               ~reason="",
-               ~solution={j||j},
-               ~params={j||j},
-             ),
-           )
-         | true =>
-           streamArr
-           |> ArrayService.push(
-                LoadImageSystem.loadBase64Image(uri)
-                |> Most.tap(image =>
-                     imageArr |> ArrayService.push(image) |> ignore
-                   ),
-              )
-         },
-       [||],
-     )
+let _buildImageArray = (uriImages, uint8ArrayImages) => {
+  let imageBase64Arr = [||];
+  let imageUint8ArrayArr = [||];
+
+  (
+    switch (uriImages) {
+    | Some(uriImages) =>
+      uriImages
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. streamArr, {uriBase64}: uriImage) =>
+             switch (ConvertCommon.isBase64(uriBase64)) {
+             | false =>
+               WonderLog.Log.fatal(
+                 WonderLog.Log.buildFatalMessage(
+                   ~title="_buildImageArray",
+                   ~description={j|only support base64 uri|j},
+                   ~reason="",
+                   ~solution={j||j},
+                   ~params={j||j},
+                 ),
+               )
+             | true =>
+               streamArr
+               |> ArrayService.push(
+                    LoadImageSystem.loadBase64Image(uriBase64)
+                    |> Most.tap(image =>
+                         imageBase64Arr |> ArrayService.push(image) |> ignore
+                       ),
+                  )
+             },
+           [||],
+         )
+
+    | None =>
+      uint8ArrayImages
+      |> OptionService.unsafeGet
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. streamArr, uint8ArrayImage) => {
+             imageUint8ArrayArr
+             |> ArrayService.push(uint8ArrayImage)
+             |> ignore;
+             streamArr;
+           },
+           [||],
+         )
+    }
+  )
   |> Most.mergeArray
   |> Most.drain
-  |> then_(() => imageArr |> resolve);
+  |> then_(() =>
+       (imageBase64Arr, imageUint8ArrayArr)
+       |> AssembleCommon.getOnlyHasOneTypeImage
+       |> resolve
+     );
 };
 
 let _decodeArrayBuffer = (base64Str: string) => {
@@ -64,31 +88,38 @@ let _decodeArrayBuffer = (base64Str: string) => {
 let _buildBufferArray = (buffers: array(buffer)) =>
   buffers
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. arrayBufferArr, {uri}: buffer) =>
-         switch (ConvertCommon.isBase64(uri)) {
-         | false =>
-           WonderLog.Log.fatal(
-             WonderLog.Log.buildFatalMessage(
-               ~title="_buildBufferArray",
-               ~description={j|only support base64 uri|j},
-               ~reason="",
-               ~solution={j||j},
-               ~params={j||j},
-             ),
-           )
-         | true =>
-           arrayBufferArr |> ArrayService.push(_decodeArrayBuffer(uri))
+       (. arrayBufferArr, {uri, buffer}: buffer) =>
+         switch (uri) {
+         | Some(uri) =>
+           switch (ConvertCommon.isBase64(uri)) {
+           | false =>
+             WonderLog.Log.fatal(
+               WonderLog.Log.buildFatalMessage(
+                 ~title="_buildBufferArray",
+                 ~description={j|only support base64 uri|j},
+                 ~reason="",
+                 ~solution={j||j},
+                 ~params={j||j},
+               ),
+             )
+           | true =>
+             arrayBufferArr |> ArrayService.push(_decodeArrayBuffer(uri))
+           }
+         | None =>
+           arrayBufferArr
+           |> ArrayService.push(buffer |> OptionService.unsafeGet)
          },
        [||],
      );
 
-let assemble = ({indices, buffers, images} as wdRecord, state) =>
-  _buildImageArray(images)
-  |> then_(imageArr =>
+let assemble =
+    ({indices, buffers, uriImages, uint8ArrayImages} as wdRecord, state) =>
+  _buildImageArray(uriImages, uint8ArrayImages)
+  |> then_(imageArrTuple =>
        BatchCreateSystem.batchCreate(wdRecord, state)
        |> BatchOperateSystem.batchOperate(
             wdRecord,
-            imageArr,
+            imageArrTuple,
             _buildBufferArray(buffers),
           )
        |> BuildSceneGameObjectSystem.build(wdRecord)

@@ -39,6 +39,21 @@ let convertToBasicSourceTextures =
     },
 };
 
+let convertToArrayBufferViewSourceTextures =
+    (({textures, images}: GLTFType.gltf) as gltf)
+    : WDType.arrayBufferViewSourceTextures => {
+  count:
+    switch (textures) {
+    | None => 0
+    | Some(textures) => ConvertCommon.getCount(textures)
+    },
+  names:
+    switch (textures) {
+    | None => [||]
+    | Some(textures) => _getNames(textures, images)
+    },
+};
+
 let _convertMagFilter = magFilter =>
   switch (magFilter) {
   | None => SourceTextureType.LINEAR

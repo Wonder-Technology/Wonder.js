@@ -2,6 +2,8 @@ let assembleGLTF = AssembleWDAPI.assembleGLTF;
 
 let assembleWD = AssembleWDAPI.assembleWD;
 
+let convertGLBToWD = ConverterAPI.convertGLBToWD;
+
 let convertGLTFToWD = ConverterAPI.convertGLTFToWD;
 
 let generateEmbededWD = GenerateSceneGraphAPI.generateEmbededWD;

@@ -17,7 +17,7 @@ type arrayBufferViewSourceTextureRecord = {
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, Js.Typed_array.Uint8Array.t)),
   needInitedTextureIndexArray: array(int),
-  /* nameMap: WonderCommonlib.HashMapService.t(string), */
+  nameMap: WonderCommonlib.SparseMapService.t(string),
 };
 
 external arrayArrayBufferViewSourceToSparseMap :

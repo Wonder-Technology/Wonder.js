@@ -618,7 +618,10 @@ let _ =
           ConvertGLTFTool.buildGLTFJsonOfTexture(), ({basicSourceTextures}) =>
           basicSourceTextures
           |>
-          expect == {count: 3, names: [|"texture_0", "texture0", "image0"|]}
+          expect == Some({
+                      count: 3,
+                      names: [|"texture_0", "texture0", "image0"|],
+                    })
         )
       )
     );
@@ -638,12 +641,16 @@ let _ =
         )
       )
     );
-    describe("test images", () =>
+    describe("test uriImages", () =>
       test("test", () =>
-        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({images}) =>
-          images
+        _test(ConvertGLTFTool.buildGLTFJsonOfSingleNode(), ({uriImages}) =>
+          uriImages
           |>
-          expect == [|{uri: ConvertGLTFTool.buildFakeImageOfSingleNode()}|]
+          expect == Some([|
+                      {
+                        uriBase64: ConvertGLTFTool.buildFakeImageOfSingleNode(),
+                      },
+                    |])
         )
       )
     );
@@ -740,8 +747,10 @@ let _ =
           |>
           expect == [|
                       {
-                        uri: ConvertGLTFTool.buildFakeBufferOfSingleNode(),
+                        uri:
+                          Some(ConvertGLTFTool.buildFakeBufferOfSingleNode()),
                         byteLength: 840,
+                        buffer: None,
                       },
                     |]
         )
@@ -866,24 +875,23 @@ let _ =
           );
         });
 
-
-        describe("test directionLightGameObjectIndexData", () => {
+        describe("test directionLightGameObjectIndexData", () =>
           test("test light gltf", () =>
             _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({indices}) =>
               indices.gameObjectIndices.directionLightGameObjectIndexData
               |> expect == _buildComponentIndexData([|2|], [|0|])
             )
-          );
-        });
+          )
+        );
 
-        describe("test pointLightGameObjectIndexData", () => {
+        describe("test pointLightGameObjectIndexData", () =>
           test("test light gltf", () =>
             _test(ConvertGLTFTool.buildGLTFJsonOfLight(), ({indices}) =>
               indices.gameObjectIndices.pointLightGameObjectIndexData
               |> expect == _buildComponentIndexData([|3|], [|0|])
             )
-          );
-        })
+          )
+        );
       });
       describe("test materialIndices", () => {
         let _buildIndexData = (materialIndices, mapIndices) => {

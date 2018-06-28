@@ -119,31 +119,56 @@ let _getBatchComponentGameObjectData =
 };
 
 let _getBatchTextureData =
-    (
-      lightMaterialArr,
-      basicSourceTextureArr,
-      imageArr,
-      {indices, images, samplers},
-    ) => (
+    (lightMaterialArr, textureArr, imageArr, {indices, samplers}) => (
   (
     indices.materialIndices.diffuseMapMaterialIndices.materialIndices
     |> _getBatchArrByIndices(lightMaterialArr),
     indices.materialIndices.diffuseMapMaterialIndices.mapIndices
-    |> _getBatchArrByIndices(basicSourceTextureArr),
+    |> _getBatchArrByIndices(textureArr),
   ),
   (
     indices.samplerTextureIndices.textureIndices
-    |> _getBatchArrByIndices(basicSourceTextureArr),
+    |> _getBatchArrByIndices(textureArr),
     indices.samplerTextureIndices.samplerIndices
     |> _getBatchArrByIndices(samplers),
   ),
   (
     indices.imageTextureIndices.textureIndices
-    |> _getBatchArrByIndices(basicSourceTextureArr),
+    |> _getBatchArrByIndices(textureArr),
     indices.imageTextureIndices.imageIndices
     |> _getBatchArrByIndices(imageArr),
   ),
 );
+
+let _getBatchAllTypeTextureData =
+    (
+      lightMaterialArr,
+      (basicSourceTextureArr, arrayBufferViewSourceTextureArr),
+      (imageBase64Arr, imageUint8ArrayArr),
+      wdRecord,
+    ) =>
+  switch (basicSourceTextureArr) {
+  | Some(basicSourceTextureArr) => (
+      _getBatchTextureData(
+        lightMaterialArr,
+        basicSourceTextureArr,
+        imageBase64Arr |> OptionService.unsafeGet,
+        wdRecord,
+      )
+      |. Some,
+      None,
+    )
+  | None => (
+      None,
+      _getBatchTextureData(
+        lightMaterialArr,
+        arrayBufferViewSourceTextureArr |> OptionService.unsafeGet,
+        imageUint8ArrayArr |> OptionService.unsafeGet,
+        wdRecord,
+      )
+      |. Some,
+    )
+  };
 
 let _getAccessorTypeSize = ({type_}) =>
   switch (type_) {
@@ -451,29 +476,54 @@ let _batchSetName = (targets, names, setNameFunc, state) =>
 
 let _batchSetNames =
     (
-      (gameObjectArr, basicSourceTextureArr),
+      (
+        gameObjectArr,
+        (basicSourceTextureArr, arrayBufferViewSourceTextureArr),
+      ),
       (
         gameObjects: WDType.gameObjects,
-        basicSourceTextures: WDType.basicSourceTextures,
+        (
+          basicSourceTextures: option(WDType.basicSourceTextures),
+          arrayBufferViewSourceTextures,
+        ),
       ),
       state,
-    ) =>
-  state
-  |> _batchSetName(
-       gameObjectArr,
-       gameObjects.names,
-       NameGameObjectMainService.setName,
-     )
-  |> _batchSetName(
-       basicSourceTextureArr,
-       basicSourceTextures.names,
-       NameBasicSourceTextureMainService.setName,
-     );
+    ) => {
+  let state =
+    state
+    |> _batchSetName(
+         gameObjectArr,
+         gameObjects.names,
+         NameGameObjectMainService.setName,
+       );
+
+  switch (basicSourceTextureArr) {
+  | Some(basicSourceTextureArr) =>
+    state
+    |> _batchSetName(
+         basicSourceTextureArr,
+         OptionService.unsafeGet(basicSourceTextures).names,
+         NameBasicSourceTextureMainService.setName,
+       )
+  | None =>
+    state
+    |> _batchSetName(
+         arrayBufferViewSourceTextureArr |> OptionService.unsafeGet,
+         OptionService.unsafeGet(arrayBufferViewSourceTextures).names,
+         NameArrayBufferViewSourceTextureMainService.setName,
+       )
+  };
+};
 
 let batchOperate =
     (
-      {indices, gameObjects, basicSourceTextures} as wdRecord,
-      imageArr,
+      {
+        indices,
+        gameObjects,
+        basicSourceTextures,
+        arrayBufferViewSourceTextures,
+      } as wdRecord,
+      imageArrTuple,
       bufferArr,
       (
         state,
@@ -487,14 +537,14 @@ let batchOperate =
           directionLightArr,
           pointLightArr,
         ),
-        basicSourceTextureArr,
+        textureArrTuple,
       ),
     ) => {
   let state =
     state
     |> _batchSetNames(
-         (gameObjectArr, basicSourceTextureArr),
-         (gameObjects, basicSourceTextures),
+         (gameObjectArr, textureArrTuple),
+         (gameObjects, (basicSourceTextures, arrayBufferViewSourceTextures)),
        );
   let (
     (
@@ -534,17 +584,14 @@ let batchOperate =
       wdRecord,
       state,
     );
-  let (
-    (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
-    (samplerBasicSourceTextures, basicSourceTextureSamplers),
-    (imageBasicSourceTextures, basicSourceTextureImages),
-  ) =
-    _getBatchTextureData(
+  let (basicSourceTextureData, arrayBufferSourceTextureData) =
+    _getBatchAllTypeTextureData(
       lightMaterialArr,
-      basicSourceTextureArr,
-      imageArr,
+      textureArrTuple,
+      imageArrTuple,
       wdRecord,
     );
+
   (
     state
     |> _batchSetTransformData(wdRecord, gameObjectTransforms)
@@ -597,9 +644,8 @@ let batchOperate =
          gameObjectPointLights,
        )
     |> BatchSetTextureAllDataSystem.batchSet(
-         (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
-         (samplerBasicSourceTextures, basicSourceTextureSamplers),
-         (imageBasicSourceTextures, basicSourceTextureImages),
+         basicSourceTextureData,
+         arrayBufferSourceTextureData,
        ),
     gameObjectArr,
   );

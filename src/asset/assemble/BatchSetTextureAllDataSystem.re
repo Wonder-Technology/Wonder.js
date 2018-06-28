@@ -75,7 +75,7 @@ let _batchSetNewDiffueMaps =
   };
 };
 
-let _batchSetTextureData =
+let _batchSetBasicSourceTextureData =
     (
       samplerBasicSourceTextures,
       basicSourceTextureSamplers,
@@ -135,7 +135,7 @@ let _batchSetTextureData =
   };
 };
 
-let _batchSetTextureSources =
+let _batchSetBasicSourceTextureSources =
     (
       imageBasicSourceTextures,
       basicSourceTextureImages,
@@ -155,23 +155,141 @@ let _batchSetTextureSources =
        state,
      );
 
-let batchSet =
+let _batchSetArrayBufferViewSourceTextureData =
     (
+      samplerArrayBufferViewSourceTextures,
+      arrayBufferViewSourceTextureSamplers,
+      {settingRecord} as state,
+    ) => {
+  let (
+        {wrapSs, wrapTs, minFilters, magFilters}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
+      ) as arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+
+  let (wrapSs, wrapTs, magFilters, minFilters) =
+    samplerArrayBufferViewSourceTextures
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (wrapSs, wrapTs, magFilters, minFilters),
+           arrayBufferViewSourceTexture,
+           index,
+         ) => {
+           let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
+             Array.unsafe_get(arrayBufferViewSourceTextureSamplers, index);
+
+           (
+             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
+               arrayBufferViewSourceTexture,
+               wrapS |> SourceTextureType.wrapToUint8,
+               wrapSs,
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
+               arrayBufferViewSourceTexture,
+               wrapT |> SourceTextureType.wrapToUint8,
+               wrapTs,
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
+               arrayBufferViewSourceTexture,
+               magFilter |> SourceTextureType.filterToUint8,
+               magFilters,
+             ),
+             OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
+               arrayBufferViewSourceTexture,
+               minFilter |> SourceTextureType.filterToUint8,
+               minFilters,
+             ),
+           );
+         },
+         (wrapSs, wrapTs, magFilters, minFilters),
+       );
+
+  {
+    ...state,
+    arrayBufferViewSourceTextureRecord:
+      Some({
+        ...arrayBufferViewSourceTextureRecord,
+        wrapSs,
+        wrapTs,
+        magFilters,
+        minFilters,
+      }),
+  };
+};
+
+let _batchSetArrayBufferViewSourceTextureSizeAndSources =
+    (
+      imageArrayBufferViewSourceTextures,
+      arrayBufferViewSourceTextureImages,
+      {settingRecord} as state,
+    ) =>
+  imageArrayBufferViewSourceTextures
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, arrayBufferViewSourceTexture, index) => {
+         let {uint8Array, width, height} =
+           Array.unsafe_get(arrayBufferViewSourceTextureImages, index);
+
+         state
+         |> OperateArrayBufferViewSourceTextureMainService.setSource(
+              arrayBufferViewSourceTexture,
+              uint8Array,
+            )
+         |> OperateArrayBufferViewSourceTextureMainService.setWidth(
+              arrayBufferViewSourceTexture,
+              width,
+            )
+         |> OperateArrayBufferViewSourceTextureMainService.setHeight(
+              arrayBufferViewSourceTexture,
+              height,
+            );
+       },
+       state,
+     );
+
+let batchSet = (basicSourceTextureData, arrayBufferSourceTextureData, state) =>
+  switch (basicSourceTextureData) {
+  | Some((
       (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
       (samplerBasicSourceTextures, basicSourceTextureSamplers),
       (imageBasicSourceTextures, basicSourceTextureImages),
-      state,
-    ) =>
-  state
-  |> _batchSetNewDiffueMaps(
-       diffuseMapLightMaterials,
-       lightMaterialDiffuseMaps,
-     )
-  |> _batchSetTextureData(
-       samplerBasicSourceTextures,
-       basicSourceTextureSamplers,
-     )
-  |> _batchSetTextureSources(
-       imageBasicSourceTextures,
-       basicSourceTextureImages,
-     );
+    )) =>
+    state
+    |> _batchSetNewDiffueMaps(
+         diffuseMapLightMaterials,
+         lightMaterialDiffuseMaps,
+       )
+    |> _batchSetBasicSourceTextureData(
+         samplerBasicSourceTextures,
+         basicSourceTextureSamplers,
+       )
+    |> _batchSetBasicSourceTextureSources(
+         imageBasicSourceTextures,
+         basicSourceTextureImages,
+       )
+  | None =>
+    let (
+      (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
+      (
+        samplerArrayBufferViewSourceTextures,
+        arrayBufferViewSourceTextureSamplers,
+      ),
+      (
+        imageArrayBufferViewSourceTextures,
+        arrayBufferViewSourceTextureImages,
+      ),
+    ) =
+      arrayBufferSourceTextureData |> OptionService.unsafeGet;
+
+    state
+    |> _batchSetNewDiffueMaps(
+         diffuseMapLightMaterials,
+         lightMaterialDiffuseMaps,
+       )
+    |> _batchSetArrayBufferViewSourceTextureData(
+         samplerArrayBufferViewSourceTextures,
+         arrayBufferViewSourceTextureSamplers,
+       )
+    |> _batchSetArrayBufferViewSourceTextureSizeAndSources(
+         imageArrayBufferViewSourceTextures,
+         arrayBufferViewSourceTextureImages,
+       );
+  };

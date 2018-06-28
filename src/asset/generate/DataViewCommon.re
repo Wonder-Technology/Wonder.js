@@ -14,6 +14,18 @@ let getUint16_1 =
     offset + 2,
   );
 
+let getUint32_1 =
+  (. offset, dataView) => (
+    DataView.getUint32LittleEndian(dataView, offset),
+    offset + 4,
+  );
+
+let getInt32_1 =
+  (. offset, dataView) => (
+    DataView.getInt32LittleEndian(dataView, offset),
+    offset + 4,
+  );
+
 let writeFloat =
   (. value, offset, dataView) => {
     DataView.setFloat32LittleEndian(dataView, offset, value);
