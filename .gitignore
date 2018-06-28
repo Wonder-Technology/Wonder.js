@@ -18,6 +18,8 @@ dist/base
 npm-debug
 
 
+test/e2e/performance/report
+
 test/e2e/render/report
 
 test/e2e/render/screenshot
