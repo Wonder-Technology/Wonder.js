@@ -940,19 +940,7 @@ let _ =
         );
 
       let _getAllLightMaterials = (sceneGameObject, state) =>
-        _getAllGameObjects(sceneGameObject, state)
-        |> Js.Array.filter(gameObject =>
-             GameObjectAPI.hasGameObjectLightMaterialComponent(
-               gameObject,
-               state,
-             )
-           )
-        |> Js.Array.map(gameObject =>
-             GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
-               gameObject,
-               state,
-             )
-           );
+        AssembleWDSystemTool.getAllLightMaterials(sceneGameObject, state);
 
       describe("test set material name", () =>
         testPromise("test", () =>
@@ -1026,19 +1014,7 @@ let _ =
 
       describe("test diffuseMaps", () => {
         let _getAllDiffuseMaps = (sceneGameObject, state) =>
-          _getAllLightMaterials(sceneGameObject, state)
-          |> Js.Array.filter(lightMaterial =>
-               LightMaterialAPI.hasLightMaterialDiffuseMap(
-                 lightMaterial,
-                 state,
-               )
-             )
-          |> Js.Array.map(lightMaterial =>
-               LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
-                 lightMaterial,
-                 state,
-               )
-             );
+          AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state);
 
         describe("test set texture name", () =>
           testPromise("test", () =>

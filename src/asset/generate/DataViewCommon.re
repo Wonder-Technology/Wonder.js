@@ -20,11 +20,8 @@ let getUint32_1 =
     offset + 4,
   );
 
-let getInt32_1 =
-  (. offset, dataView) => (
-    DataView.getInt32LittleEndian(dataView, offset),
-    offset + 4,
-  );
+let getInt32_1BigEndian =
+  (. offset, dataView) => (DataView.getInt32(dataView, offset), offset + 4);
 
 let writeFloat =
   (. value, offset, dataView) => {

@@ -472,3 +472,41 @@ let setArrayBufferViewSourceTextureHeight =
     height,
     state,
   );
+
+let unsafeGetArrayBufferViewSourceTextureName =
+    (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordArrayBufferViewSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  NameArrayBufferViewSourceTextureMainService.unsafeGetName(texture, state);
+
+let setArrayBufferViewSourceTextureName =
+    (texture, name, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordArrayBufferViewSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  NameArrayBufferViewSourceTextureMainService.setName(. texture, name, state);

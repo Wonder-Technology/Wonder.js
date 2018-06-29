@@ -208,24 +208,21 @@ let _batchCreateBasicSourceTextureArr =
            BufferSettingService.getBasicSourceTextureCount(settingRecord),
          );
 
-    let notFlipY = BufferSourceTextureService.getFlipYTypeArrayValue(false);
-
     state.basicSourceTextureRecord =
-      Some({
-        ...basicSourceTextureRecord,
-        index: newIndex,
-        flipYs:
-          indexArr
-          |> WonderCommonlib.ArrayService.reduceOneParam(
-               (. flipYs, index) =>
-                 OperateTypeArrayBasicSourceTextureService.setFlipY(
-                   index,
-                   notFlipY,
-                   flipYs,
-                 ),
-               flipYs,
+      Some({...basicSourceTextureRecord, index: newIndex});
+
+    let state =
+      indexArr
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. state, index) =>
+             OperateBasicSourceTextureMainService.setFlipY(
+               index,
+               false,
+               state,
              ),
-      });
+           state,
+         );
+
     (state, indexArr |. Some);
   };
 
@@ -244,6 +241,7 @@ let _batchCreateArrayBufferViewSourceTextureArr =
     );
 
     let newIndex = index + arrayBufferViewSourceTextures.count;
+
     let indexArr =
       ArrayService.range(index, newIndex - 1)
       |> Js.Array.map(index =>
@@ -253,29 +251,26 @@ let _batchCreateArrayBufferViewSourceTextureArr =
            )
          )
       |> _checkNotExceedMaxCountByIndex(
-           BufferSettingService.getArrayBufferViewSourceTextureCount(
-             settingRecord,
+           BufferArrayBufferViewSourceTextureMainService.getMaxArrayBufferViewSourceTextureIndex(
+             state,
            ),
          );
 
-    let notFlipY = BufferSourceTextureService.getFlipYTypeArrayValue(false);
-
     state.arrayBufferViewSourceTextureRecord =
-      Some({
-        ...arrayBufferViewSourceTextureRecord,
-        index: newIndex,
-        flipYs:
-          indexArr
-          |> WonderCommonlib.ArrayService.reduceOneParam(
-               (. flipYs, index) =>
-                 OperateTypeArrayArrayBufferViewSourceTextureService.setFlipY(
-                   index,
-                   notFlipY,
-                   flipYs,
-                 ),
-               flipYs,
+      Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
+
+    let state =
+      indexArr
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. state, index) =>
+             OperateArrayBufferViewSourceTextureMainService.setFlipY(
+               index,
+               false,
+               state,
              ),
-      });
+           state,
+         );
+
     (state, indexArr |. Some);
   };
 

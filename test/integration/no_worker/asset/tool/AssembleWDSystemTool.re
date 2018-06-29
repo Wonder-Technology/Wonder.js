@@ -30,6 +30,18 @@ let testResult = (gltfJson, testFunc, state) => {
   |> then_(() => testFunc(result^) |> resolve);
 };
 
+let testGlb = (glbFilePath, testFunc, state) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  ConvertGLBTool.testResult(glbFilePath, wdRecord =>
+    AssembleWDAPI.assembleWD(wdRecord, state)
+    |> Most.forEach(data => result := data)
+    |> then_(() => testFunc(result^) |> resolve)
+  );
+};
+
 let _getChildren = (parent, state) =>
   TransformAPI.unsafeGetTransformChildren(parent, state)
   |> Js.Array.sortInPlace;
@@ -152,3 +164,24 @@ let getAllGeometryData = (sceneGameObject, state) =>
      });
 
 let batchCreate = BatchCreateSystem.batchCreate;
+
+let getAllLightMaterials = (sceneGameObject, state) =>
+  getAllGameObjects(sceneGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectLightMaterialComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
+         gameObject,
+         state,
+       )
+     );
+
+let getAllDiffuseMaps = (sceneGameObject, state) =>
+  getAllLightMaterials(sceneGameObject, state)
+  |> Js.Array.filter(lightMaterial =>
+       LightMaterialAPI.hasLightMaterialDiffuseMap(lightMaterial, state)
+     )
+  |> Js.Array.map(lightMaterial =>
+       LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(lightMaterial, state)
+     );

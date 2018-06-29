@@ -60,7 +60,7 @@ let _buildImageArray = (uriImages, uint8ArrayImages) => {
   |> Most.drain
   |> then_(() =>
        (imageBase64Arr, imageUint8ArrayArr)
-       |> AssembleCommon.getOnlyHasOneTypeImage
+       |> AssembleCommon.getOnlyHasOneTypeImage(uriImages, uint8ArrayImages)
        |> resolve
      );
 };

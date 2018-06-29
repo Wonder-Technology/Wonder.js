@@ -256,6 +256,7 @@ let getFlipY = (texture, state) : bool => {
 let setFlipY = (texture, flipY: bool, state) => {
   let {flipYs} =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+
   OperateTypeArrayArrayBufferViewSourceTextureService.setFlipY(
     IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,

@@ -51,8 +51,7 @@ let _u16 = [%raw
 ];
 
 let _getJpgSize = [%raw
-  (buf, len) => {|
-
+  buf => {|
     /**
      * Start of frame markers.
      */
@@ -74,6 +73,9 @@ let _getJpgSize = [%raw
     };
 
 
+      return [2048, 2048];
+
+    var len = buf.length;
 
     var o = 0;
 
@@ -127,19 +129,23 @@ let convertToUint8ArrayImages =
              );
            let dataView = DataViewCommon.create(arrayBuffer);
 
+           let uint8Array = Js.Typed_array.Uint8Array.fromBuffer(arrayBuffer);
+
            let (width, height) =
              /* TODO test */
              switch (mimeType) {
              | WDType.PNG =>
-               let (width, _) = DataViewCommon.getInt32_1(. 16, dataView);
-               let (height, _) = DataViewCommon.getInt32_1(. 20, dataView);
+               let (width, _) =
+                 DataViewCommon.getInt32_1BigEndian(. 16, dataView);
+               let (height, _) =
+                 DataViewCommon.getInt32_1BigEndian(. 20, dataView);
 
-               (width, height);
+               (width, height)
              | WDType.JPEG =>
                _getJpgSize(
-                 arrayBuffer,
-                 arrayBuffer |> Js.Typed_array.ArrayBuffer.byteLength,
+                 uint8Array,
                )
+               |> WonderLog.Log.print
              | _ =>
                WonderLog.Log.fatal(
                  WonderLog.Log.buildFatalMessage(
@@ -154,13 +160,7 @@ let convertToUint8ArrayImages =
 
            arr
            |> ArrayService.push(
-                {
-                  uint8Array:
-                    Js.Typed_array.Uint8Array.fromBuffer(arrayBuffer),
-                  mimeType,
-                  width,
-                  height,
-                }: WDType.uint8ArrayImage,
+                {uint8Array, mimeType, width, height}: WDType.uint8ArrayImage,
               );
          },
          [||],

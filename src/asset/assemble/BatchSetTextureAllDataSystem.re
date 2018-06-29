@@ -78,62 +78,35 @@ let _batchSetNewDiffueMaps =
 let _batchSetBasicSourceTextureData =
     (
       samplerBasicSourceTextures,
-      basicSourceTextureSamplers,
+      arrayBufferViewSourceTextureSamplers,
       {settingRecord} as state,
-    ) => {
-  let (
-        {wrapSs, wrapTs, minFilters, magFilters}: BasicSourceTextureType.basicSourceTextureRecord
-      ) as basicSourceTextureRecord =
-    RecordBasicSourceTextureMainService.getRecord(state);
+    ) =>
+  samplerBasicSourceTextures
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, arrayBufferViewSourceTexture, index) => {
+         let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
+           Array.unsafe_get(arrayBufferViewSourceTextureSamplers, index);
 
-  let (wrapSs, wrapTs, magFilters, minFilters) =
-    samplerBasicSourceTextures
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           (wrapSs, wrapTs, magFilters, minFilters),
-           basicSourceTexture,
-           index,
-         ) => {
-           let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
-             Array.unsafe_get(basicSourceTextureSamplers, index);
-           (
-             OperateTypeArrayBasicSourceTextureService.setWrapS(
-               basicSourceTexture,
-               wrapS |> SourceTextureType.wrapToUint8,
-               wrapSs,
-             ),
-             OperateTypeArrayBasicSourceTextureService.setWrapT(
-               basicSourceTexture,
-               wrapT |> SourceTextureType.wrapToUint8,
-               wrapTs,
-             ),
-             OperateTypeArrayBasicSourceTextureService.setMagFilter(
-               basicSourceTexture,
-               magFilter |> SourceTextureType.filterToUint8,
-               magFilters,
-             ),
-             OperateTypeArrayBasicSourceTextureService.setMinFilter(
-               basicSourceTexture,
-               minFilter |> SourceTextureType.filterToUint8,
-               minFilters,
-             ),
-           );
-         },
-         (wrapSs, wrapTs, magFilters, minFilters),
-       );
-
-  {
-    ...state,
-    basicSourceTextureRecord:
-      Some({
-        ...basicSourceTextureRecord,
-        wrapSs,
-        wrapTs,
-        magFilters,
-        minFilters,
-      }),
-  };
-};
+         state
+         |> OperateBasicSourceTextureMainService.setWrapS(
+              arrayBufferViewSourceTexture,
+              wrapS |> SourceTextureType.wrapToUint8,
+            )
+         |> OperateBasicSourceTextureMainService.setWrapT(
+              arrayBufferViewSourceTexture,
+              wrapT |> SourceTextureType.wrapToUint8,
+            )
+         |> OperateBasicSourceTextureMainService.setMagFilter(
+              arrayBufferViewSourceTexture,
+              magFilter |> SourceTextureType.filterToUint8,
+            )
+         |> OperateBasicSourceTextureMainService.setMinFilter(
+              arrayBufferViewSourceTexture,
+              minFilter |> SourceTextureType.filterToUint8,
+            );
+       },
+       state,
+     );
 
 let _batchSetBasicSourceTextureSources =
     (
@@ -160,61 +133,33 @@ let _batchSetArrayBufferViewSourceTextureData =
       samplerArrayBufferViewSourceTextures,
       arrayBufferViewSourceTextureSamplers,
       {settingRecord} as state,
-    ) => {
-  let (
-        {wrapSs, wrapTs, minFilters, magFilters}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
-      ) as arrayBufferViewSourceTextureRecord =
-    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+    ) =>
+  samplerArrayBufferViewSourceTextures
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, arrayBufferViewSourceTexture, index) => {
+         let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
+           Array.unsafe_get(arrayBufferViewSourceTextureSamplers, index);
 
-  let (wrapSs, wrapTs, magFilters, minFilters) =
-    samplerArrayBufferViewSourceTextures
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           (wrapSs, wrapTs, magFilters, minFilters),
-           arrayBufferViewSourceTexture,
-           index,
-         ) => {
-           let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
-             Array.unsafe_get(arrayBufferViewSourceTextureSamplers, index);
-
-           (
-             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
-               arrayBufferViewSourceTexture,
-               wrapS |> SourceTextureType.wrapToUint8,
-               wrapSs,
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
-               arrayBufferViewSourceTexture,
-               wrapT |> SourceTextureType.wrapToUint8,
-               wrapTs,
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
-               arrayBufferViewSourceTexture,
-               magFilter |> SourceTextureType.filterToUint8,
-               magFilters,
-             ),
-             OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
-               arrayBufferViewSourceTexture,
-               minFilter |> SourceTextureType.filterToUint8,
-               minFilters,
-             ),
-           );
-         },
-         (wrapSs, wrapTs, magFilters, minFilters),
-       );
-
-  {
-    ...state,
-    arrayBufferViewSourceTextureRecord:
-      Some({
-        ...arrayBufferViewSourceTextureRecord,
-        wrapSs,
-        wrapTs,
-        magFilters,
-        minFilters,
-      }),
-  };
-};
+         state
+         |> OperateArrayBufferViewSourceTextureMainService.setWrapS(
+              arrayBufferViewSourceTexture,
+              wrapS |> SourceTextureType.wrapToUint8,
+            )
+         |> OperateArrayBufferViewSourceTextureMainService.setWrapT(
+              arrayBufferViewSourceTexture,
+              wrapT |> SourceTextureType.wrapToUint8,
+            )
+         |> OperateArrayBufferViewSourceTextureMainService.setMagFilter(
+              arrayBufferViewSourceTexture,
+              magFilter |> SourceTextureType.filterToUint8,
+            )
+         |> OperateArrayBufferViewSourceTextureMainService.setMinFilter(
+              arrayBufferViewSourceTexture,
+              minFilter |> SourceTextureType.filterToUint8,
+            );
+       },
+       state,
+     );
 
 let _batchSetArrayBufferViewSourceTextureSizeAndSources =
     (

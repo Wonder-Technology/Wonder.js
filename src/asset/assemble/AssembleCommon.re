@@ -35,7 +35,8 @@ let checkNotDisposedBefore = disposedIndexArray =>
 
 let _isArrayEmpty = arr => arr |> Js.Array.length === 0;
 
-let getOnlyHasOneTypeImage = ((imageBase64Arr, imageUint8ArrayArr)) => {
+let getOnlyHasOneTypeImage =
+    (uriImages, uint8ArrayImages, (imageBase64Arr, imageUint8ArrayArr)) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -48,10 +49,14 @@ let getOnlyHasOneTypeImage = ((imageBase64Arr, imageUint8ArrayArr)) => {
               ),
               () =>
               (
-                _isArrayEmpty(imageBase64Arr)
-                && ! _isArrayEmpty(imageUint8ArrayArr)
-                || _isArrayEmpty(imageUint8ArrayArr)
-                && ! _isArrayEmpty(imageBase64Arr)
+                uriImages
+                |> Js.Option.isNone
+                && uint8ArrayImages
+                |> Js.Option.isSome
+                || uint8ArrayImages
+                |> Js.Option.isNone
+                && uriImages
+                |> Js.Option.isSome
               )
               |> assertTrue
             )
@@ -61,6 +66,6 @@ let getOnlyHasOneTypeImage = ((imageBase64Arr, imageUint8ArrayArr)) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  _isArrayEmpty(imageBase64Arr) ?
+  uriImages |> Js.Option.isNone ?
     (None, Some(imageUint8ArrayArr)) : (Some(imageBase64Arr), None);
 };

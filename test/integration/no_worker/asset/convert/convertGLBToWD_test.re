@@ -4,6 +4,8 @@ open Js.Promise;
 
 open WDType;
 
+open Js.Typed_array;
+
 let _ =
   describe("convert glb to wd", () => {
     open Expect;
@@ -12,58 +14,59 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
-    let convertUint8ArrayToBuffer = [%raw
-      uint8Array => {|
-      {
-           var buf = new Buffer(uint8Array.byteLength);
-
-           for (var i = 0; i < buf.length; ++i) {
-               buf[i] = uint8Array[i];
-           }
-
-           return buf;
-       }
-      |}
-    ];
-
-    let buildFakeTextDecoder = [%raw
-      convertUint8ArrayToBufferFunc => {|
-        var TextDecoder = function(utfLabel){
-        };
-
-        TextDecoder.prototype.decode = (uint8Array) => {
-          var buffer = convertUint8ArrayToBufferFunc(uint8Array);
-
-          return buffer.toString("utf8");
-        };
-
-        window.TextDecoder = TextDecoder;
-    |}
-    ];
-
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("test", () =>
-      test("aaaa", () => {
-        buildFakeTextDecoder(convertUint8ArrayToBuffer);
+    /* TODO test jpg data */
 
-        let buffer =
-          NodeExtend.readFileBufferSync(
-            Node.Path.join([|
-              Node.Process.cwd(),
-              "./test/res/",
-              "BoxTextured.glb",
-            |]),
-          );
+    describe("test uint8ArrayImages", () =>
+      test("test", () =>
+        ConvertGLBTool.testResult(
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ({uint8ArrayImages}) => {
+            let uint8ArrayImages = uint8ArrayImages |> OptionService.unsafeGet;
+            let uint8ArrayImage = uint8ArrayImages[0];
 
-        /* WonderLog.Log.print(buffer##buffer) |> ignore; */
+            (
+              uint8ArrayImages |> Js.Array.length,
+              ConvertGLBTool.getUint8ArrayLengthFromWDData(uint8ArrayImage),
+              uint8ArrayImage.width,
+              uint8ArrayImage.height,
+            )
+            |> expect == (1, 23516, 256, 256);
+          },
+        )
+      )
+    );
 
-        ConverterAPI.convertGLBToWD(buffer##buffer)
-        |> expect == (1 |> Obj.magic);
-      })
+    describe("test uriImages", () =>
+      test("should be none", () =>
+        ConvertGLBTool.testResult(
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"), ({uriImages}) =>
+          uriImages |> Js.Option.isNone |> expect == true
+        )
+      )
+    );
+
+    describe("test buffers", () =>
+      test("should has no uri, but has byteLength and buffer", () =>
+        ConvertGLBTool.testResult(
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ({buffers}) => {
+            let {uri, buffer, byteLength} = buffers[0];
+
+            (
+              buffers |> Js.Array.length,
+              uri |> Js.Option.isNone,
+              buffer |> OptionService.unsafeGet |> ArrayBuffer.byteLength,
+              byteLength,
+            )
+            |> expect == (1, true, 24360, 24360);
+          },
+        )
+      )
     );
   });
