@@ -114,27 +114,22 @@ type bufferView = {
 
 type uriImage = {uriBase64: string};
 
-type mimeType = 
+type mimeType =
   | PNG
   | JPEG
   | UNKNOWN;
 
-type uint8ArrayImage = {
-  uint8Array: Js.Typed_array.Uint8Array.t,
-  mimeType,
-  width: int,
-  height: int,
-};
+type blobImage = {objectUrl: string};
 
 type basicSourceTextures = {
   count: int,
   names: array(string),
 };
 
-type arrayBufferViewSourceTextures = {
+/* type arrayBufferViewSourceTextures = {
   count: int,
   names: array(string),
-};
+}; */
 
 type sampler = {
   /* TODO add format, type_, ... */
@@ -218,9 +213,9 @@ type wd = {
   indices,
   gameObjects,
   uriImages: option(array(uriImage)),
-  uint8ArrayImages: option(array(uint8ArrayImage)),
-  basicSourceTextures: option(basicSourceTextures),
-  arrayBufferViewSourceTextures: option(arrayBufferViewSourceTextures),
+  blobImages: option(array(blobImage)),
+  basicSourceTextures,
+  /* arrayBufferViewSourceTextures: option(arrayBufferViewSourceTextures), */
   samplers: array(sampler),
   buffers: array(buffer),
   bufferViews: array(bufferView),

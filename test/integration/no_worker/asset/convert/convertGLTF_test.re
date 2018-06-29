@@ -10,7 +10,7 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
-    let _buildFakeLoadImage = ConvertGLTFTool.buildFakeLoadImage;
+    let _buildFakeLoadImage = ConvertTool.buildFakeLoadImage;
 
     let _test = (gltfJson, testFunc) =>
       ConvertGLTFTool.testResult(gltfJson, testFunc);
@@ -40,7 +40,7 @@ let _ =
           (),
         );
       let _test = (gltfJson, testFunc) => {
-        _buildFakeLoadImage();
+        ConvertTool.buildFakeLoadImage();
         [||]
         |> ArrayService.push(ConvertGLTFSystem.convert(gltfJson))
         |> testFunc;

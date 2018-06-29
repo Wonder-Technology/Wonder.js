@@ -12,7 +12,7 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
-    let _buildFakeLoadImage = ConvertGLTFTool.buildFakeLoadImage;
+    let _buildFakeLoadImage = ConvertTool.buildFakeLoadImage;
 
     let _test = (gltfJson, testFunc) =>
       ConvertGLTFTool.testResult(gltfJson, testFunc);
@@ -618,10 +618,7 @@ let _ =
           ConvertGLTFTool.buildGLTFJsonOfTexture(), ({basicSourceTextures}) =>
           basicSourceTextures
           |>
-          expect == Some({
-                      count: 3,
-                      names: [|"texture_0", "texture0", "image0"|],
-                    })
+          expect == {count: 3, names: [|"texture_0", "texture0", "image0"|]}
         )
       )
     );

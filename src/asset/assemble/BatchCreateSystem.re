@@ -185,94 +185,85 @@ let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => 
 };
 
 let _batchCreateBasicSourceTextureArr =
-    ({basicSourceTextures}, {settingRecord} as state) =>
-  switch (basicSourceTextures) {
-  | None => (state, None)
-  | Some(basicSourceTextures) =>
-    let ({index, flipYs}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
-      RecordBasicSourceTextureMainService.getRecord(state);
+    ({basicSourceTextures}, {settingRecord} as state) => {
+  let ({index, flipYs}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
 
-    AssembleCommon.checkNotDisposedBefore(
-      basicSourceTextureRecord.disposedIndexArray,
-    );
+  AssembleCommon.checkNotDisposedBefore(
+    basicSourceTextureRecord.disposedIndexArray,
+  );
 
-    let newIndex = index + basicSourceTextures.count;
-    let indexArr =
-      ArrayService.range(index, newIndex - 1)
-      |> Js.Array.map(index =>
-           IndexSourceTextureMainService.generateBasicSourceTextureIndex(
-             index,
-           )
-         )
-      |> _checkNotExceedMaxCountByIndex(
-           BufferSettingService.getBasicSourceTextureCount(settingRecord),
-         );
+  let newIndex = index + basicSourceTextures.count;
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> Js.Array.map(index =>
+         IndexSourceTextureMainService.generateBasicSourceTextureIndex(index)
+       )
+    |> _checkNotExceedMaxCountByIndex(
+         BufferSettingService.getBasicSourceTextureCount(settingRecord),
+       );
 
-    state.basicSourceTextureRecord =
-      Some({...basicSourceTextureRecord, index: newIndex});
+  state.basicSourceTextureRecord =
+    Some({...basicSourceTextureRecord, index: newIndex});
 
-    let state =
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. state, index) =>
-             OperateBasicSourceTextureMainService.setFlipY(
-               index,
-               false,
-               state,
-             ),
-           state,
-         );
+  let state =
+    indexArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. state, index) =>
+           OperateBasicSourceTextureMainService.setFlipY(index, false, state),
+         state,
+       );
 
-    (state, indexArr |. Some);
-  };
+  (state, indexArr);
+};
 
-let _batchCreateArrayBufferViewSourceTextureArr =
-    ({arrayBufferViewSourceTextures}, {settingRecord} as state) =>
-  switch (arrayBufferViewSourceTextures) {
-  | None => (state, None)
-  | Some(arrayBufferViewSourceTextures) =>
-    let (
-          {index, flipYs}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
-        ) as arrayBufferViewSourceTextureRecord =
-      RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+/* let _batchCreateArrayBufferViewSourceTextureArr =
+     ({arrayBufferViewSourceTextures}, {settingRecord} as state) =>
+   switch (arrayBufferViewSourceTextures) {
+   | None => (state, None)
+   | Some(arrayBufferViewSourceTextures) =>
+     let (
+           {index, flipYs}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
+         ) as arrayBufferViewSourceTextureRecord =
+       RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
-    AssembleCommon.checkNotDisposedBefore(
-      arrayBufferViewSourceTextureRecord.disposedIndexArray,
-    );
+     AssembleCommon.checkNotDisposedBefore(
+       arrayBufferViewSourceTextureRecord.disposedIndexArray,
+     );
 
-    let newIndex = index + arrayBufferViewSourceTextures.count;
+     let newIndex = index + arrayBufferViewSourceTextures.count;
 
-    let indexArr =
-      ArrayService.range(index, newIndex - 1)
-      |> Js.Array.map(index =>
-           IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(
-             index,
-             state,
-           )
-         )
-      |> _checkNotExceedMaxCountByIndex(
-           BufferArrayBufferViewSourceTextureMainService.getMaxArrayBufferViewSourceTextureIndex(
-             state,
-           ),
-         );
+     let indexArr =
+       ArrayService.range(index, newIndex - 1)
+       |> Js.Array.map(index =>
+            IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(
+              index,
+              state,
+            )
+          )
+       |> _checkNotExceedMaxCountByIndex(
+            BufferArrayBufferViewSourceTextureMainService.getMaxArrayBufferViewSourceTextureIndex(
+              state,
+            ),
+          );
 
-    state.arrayBufferViewSourceTextureRecord =
-      Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
+     state.arrayBufferViewSourceTextureRecord =
+       Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
 
-    let state =
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. state, index) =>
-             OperateArrayBufferViewSourceTextureMainService.setFlipY(
-               index,
-               false,
-               state,
-             ),
-           state,
-         );
+     let state =
+       indexArr
+       |> WonderCommonlib.ArrayService.reduceOneParam(
+            (. state, index) =>
+              OperateArrayBufferViewSourceTextureMainService.setFlipY(
+                index,
+                false,
+                state,
+              ),
+            state,
+          );
 
-    (state, indexArr |. Some);
-  };
+     (state, indexArr |. Some);
+   }; */
 
 let _batchCreateDirectionLightArr =
     ({directionLights}, {directionLightRecord} as state) => {
@@ -335,8 +326,8 @@ let batchCreate = (wdRecord, state) => {
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wdRecord, state);
   let (state, basicSourceTextureArr) =
     _batchCreateBasicSourceTextureArr(wdRecord, state);
-  let (state, arrayBufferViewSourceTextureArr) =
-    _batchCreateArrayBufferViewSourceTextureArr(wdRecord, state);
+  /* let (state, arrayBufferViewSourceTextureArr) =
+     _batchCreateArrayBufferViewSourceTextureArr(wdRecord, state); */
   let (state, directionLightArr) =
     _batchCreateDirectionLightArr(wdRecord, state);
   let (state, pointLightArr) = _batchCreatePointLightArr(wdRecord, state);
@@ -353,9 +344,9 @@ let batchCreate = (wdRecord, state) => {
       directionLightArr,
       pointLightArr,
     ),
-    (basicSourceTextureArr, arrayBufferViewSourceTextureArr),
-  )
-  |> WonderLog.Contract.ensureCheck(
+    basicSourceTextureArr,
+  );
+  /* |> WonderLog.Contract.ensureCheck(
        (
          (
            state,
@@ -369,7 +360,7 @@ let batchCreate = (wdRecord, state) => {
              directionLightArr,
              pointLightArr,
            ),
-           (basicSourceTextureArr, arrayBufferViewSourceTextureArr),
+           basicSourceTextureArr,
          ),
        ) =>
          WonderLog.(
@@ -397,5 +388,5 @@ let batchCreate = (wdRecord, state) => {
            )
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
+     ); */
 };

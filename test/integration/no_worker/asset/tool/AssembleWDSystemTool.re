@@ -23,19 +23,19 @@ let testResult = (gltfJson, testFunc, state) => {
   open Js.Promise;
   let result = ref(Obj.magic(1));
 
-  ConvertGLTFTool.buildFakeLoadImage();
+  ConvertTool.buildFakeLoadImage();
 
   AssembleWDAPI.assembleGLTF(gltfJson, state)
   |> Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
 
-let testGlb = (glbFilePath, testFunc, state) => {
+let testGlb = (sandbox, glbFilePath, testFunc, state) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
 
-  ConvertGLBTool.testResult(glbFilePath, wdRecord =>
+  ConvertGLBTool.testResult(sandbox, glbFilePath, wdRecord =>
     AssembleWDAPI.assembleWD(wdRecord, state)
     |> Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)

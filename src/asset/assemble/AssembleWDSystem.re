@@ -9,9 +9,9 @@ open Js.Promise;
 let _getSourcePath = (filePath, sourceRelativePath) =>
   PathService.resolve(filePath, sourceRelativePath);
 
-let _buildImageArray = (uriImages, uint8ArrayImages) => {
+let _buildImageArray = (uriImages, blobImages) => {
   let imageBase64Arr = [||];
-  let imageUint8ArrayArr = [||];
+  let imageBlobObjectUrlArr = [||];
 
   (
     switch (uriImages) {
@@ -43,15 +43,19 @@ let _buildImageArray = (uriImages, uint8ArrayImages) => {
          )
 
     | None =>
-      uint8ArrayImages
+      blobImages
       |> OptionService.unsafeGet
       |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. streamArr, uint8ArrayImage) => {
-             imageUint8ArrayArr
-             |> ArrayService.push(uint8ArrayImage)
-             |> ignore;
-             streamArr;
-           },
+           (. streamArr, {objectUrl}: blobImage) =>
+             streamArr
+             |> ArrayService.push(
+                  LoadImageSystem.loadBlobImage(objectUrl)
+                  |> Most.tap(image =>
+                       imageBlobObjectUrlArr
+                       |> ArrayService.push(image)
+                       |> ignore
+                     ),
+                ),
            [||],
          )
     }
@@ -59,8 +63,8 @@ let _buildImageArray = (uriImages, uint8ArrayImages) => {
   |> Most.mergeArray
   |> Most.drain
   |> then_(() =>
-       (imageBase64Arr, imageUint8ArrayArr)
-       |> AssembleCommon.getOnlyHasOneTypeImage(uriImages, uint8ArrayImages)
+       (imageBase64Arr, imageBlobObjectUrlArr)
+       |> AssembleCommon.getOnlyHasOneTypeImage(uriImages, blobImages)
        |> resolve
      );
 };
@@ -112,9 +116,8 @@ let _buildBufferArray = (buffers: array(buffer)) =>
        [||],
      );
 
-let assemble =
-    ({indices, buffers, uriImages, uint8ArrayImages} as wdRecord, state) =>
-  _buildImageArray(uriImages, uint8ArrayImages)
+let assemble = ({indices, buffers, uriImages, blobImages} as wdRecord, state) =>
+  _buildImageArray(uriImages, blobImages)
   |> then_(imageArrTuple =>
        BatchCreateSystem.batchCreate(wdRecord, state)
        |> BatchOperateSystem.batchOperate(

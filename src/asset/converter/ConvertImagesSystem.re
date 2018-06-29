@@ -111,56 +111,29 @@ let _getJpgSize = [%raw
     |}
 ];
 
-let convertToUint8ArrayImages =
+let convertToBlobImages =
     (binBuffer, ({images}: GLTFType.gltf) as gltf)
-    : array(WDType.uint8ArrayImage) =>
+    : array(WDType.blobImage) =>
   switch (images) {
   | None => [||]
   | Some(images) =>
     images
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. arr, {bufferView, mimeType}: GLTFType.image) => {
-           let mimeType = _getMimeType(mimeType |> OptionService.unsafeGet);
+         (. arr, {bufferView}: GLTFType.image) => {
            let arrayBuffer =
              _getArrayBuffer(
                binBuffer,
                bufferView |> OptionService.unsafeGet,
                gltf,
              );
-           let dataView = DataViewCommon.create(arrayBuffer);
-
-           let uint8Array = Js.Typed_array.Uint8Array.fromBuffer(arrayBuffer);
-
-           let (width, height) =
-             /* TODO test */
-             switch (mimeType) {
-             | WDType.PNG =>
-               let (width, _) =
-                 DataViewCommon.getInt32_1BigEndian(. 16, dataView);
-               let (height, _) =
-                 DataViewCommon.getInt32_1BigEndian(. 20, dataView);
-
-               (width, height)
-             | WDType.JPEG =>
-               _getJpgSize(
-                 uint8Array,
-               )
-               |> WonderLog.Log.print
-             | _ =>
-               WonderLog.Log.fatal(
-                 WonderLog.Log.buildFatalMessage(
-                   ~title="convertToUint8ArrayImages",
-                   ~description={j|can't get width/height of unknown type|j},
-                   ~reason="",
-                   ~solution={j||j},
-                   ~params={j||j},
-                 ),
-               )
-             };
 
            arr
            |> ArrayService.push(
-                {uint8Array, mimeType, width, height}: WDType.uint8ArrayImage,
+                {
+                  objectUrl:
+                    Blob.newBlobFromArrayBuffer([|arrayBuffer|])
+                    |> Blob.createObjectURL,
+                }: WDType.blobImage,
               );
          },
          [||],

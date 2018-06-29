@@ -53,7 +53,7 @@ let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
 
   let result = ref(Obj.magic(1));
 
-  ConvertGLTFTool.buildFakeLoadImage();
+  ConvertTool.buildFakeLoadImage();
 
   AssembleWDAPI.assembleGLTF(gltfJson, state^)
   |> Most.forEach(data => result := data)
@@ -92,7 +92,7 @@ let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
 
   let result = ref(Obj.magic(1));
 
-  ConvertGLTFTool.buildFakeLoadImage();
+  ConvertTool.buildFakeLoadImage();
 
   AssembleWDAPI.assembleGLTF(gltfJson, state^)
   |> Most.forEach(data => result := data)

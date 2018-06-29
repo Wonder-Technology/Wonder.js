@@ -27,19 +27,33 @@ let buildFakeTextDecoder = [%raw
     |}
 ];
 
+let buildFakeURL = [%raw
+  sandbox => {|
+        var URL = {
+          createObjectURL: sandbox.stub(),
+          revokeObjectURL: sandbox.stub()
+        };
+
+        URL.createObjectURL.onCall(0).returns("object_url0");
+        URL.createObjectURL.onCall(1).returns("object_url1");
+        URL.createObjectURL.onCall(2).returns("object_url2");
+        URL.createObjectURL.onCall(3).returns("object_url3");
+        URL.createObjectURL.onCall(4).returns("object_url4");
+        URL.createObjectURL.onCall(5).returns("object_url5");
+
+        window.URL = URL;
+    |}
+];
+
 let buildGLBFilePath = glbFileName =>
   Node.Path.join([|Node.Process.cwd(), "./test/res/", glbFileName|]);
 
-let testResult = (glbFilePath, testFunc) => {
+let testResult = (sandbox, glbFilePath, testFunc) => {
+  ConvertTool.buildFakeLoadImage();
   buildFakeTextDecoder(_convertUint8ArrayToBuffer);
+  buildFakeURL(sandbox);
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
   testFunc(ConverterAPI.convertGLBToWD(buffer##buffer));
 };
-
-let getUint8ArrayLength = uint8Array =>
-  uint8Array |> Js.Typed_array.Uint8Array.length;
-
-let getUint8ArrayLengthFromWDData = ({uint8Array}: WDType.uint8ArrayImage) =>
-  uint8Array |> getUint8ArrayLength;

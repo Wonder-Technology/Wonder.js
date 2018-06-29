@@ -69,11 +69,11 @@ let _convertGLTFToWD = (gltf: GLTFType.gltf) : WDType.wd => {
     lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
     customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
     basicSourceTextures:
-      ConvertTexturesSystem.convertToBasicSourceTextures(gltf) |. Some,
-    arrayBufferViewSourceTextures: None,
+      ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
+    /* arrayBufferViewSourceTextures: None, */
     samplers: ConvertTexturesSystem.convertToSamplers(gltf),
     uriImages: ConvertImagesSystem.convertToUriImages(gltf) |. Some,
-    uint8ArrayImages: None,
+    blobImages: None,
     accessors: ConvertBuffersSystem.convertToAccessors(gltf),
     bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
     buffers: ConvertBuffersSystem.convertToBuffers(None, gltf),
@@ -105,14 +105,15 @@ let _convertGLBToWD = (gltf: GLTFType.gltf, binBuffer) : WDType.wd => {
       ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
     lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
     customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
-    basicSourceTextures: None,
-    arrayBufferViewSourceTextures:
-      ConvertTexturesSystem.convertToArrayBufferViewSourceTextures(gltf)
-      |. Some,
+    basicSourceTextures:
+      ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
+    /* arrayBufferViewSourceTextures:
+       ConvertTexturesSystem.convertToArrayBufferViewSourceTextures(gltf)
+       |. Some, */
     samplers: ConvertTexturesSystem.convertToSamplers(gltf),
     uriImages: None,
-    uint8ArrayImages:
-      ConvertImagesSystem.convertToUint8ArrayImages(binBuffer, gltf) |. Some,
+    blobImages:
+      ConvertImagesSystem.convertToBlobImages(binBuffer, gltf) |. Some,
     accessors: ConvertBuffersSystem.convertToAccessors(gltf),
     bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
     buffers: ConvertBuffersSystem.convertToBuffers(Some(binBuffer), gltf),

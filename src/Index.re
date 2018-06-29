@@ -1,3 +1,5 @@
+let assembleGLB = AssembleWDAPI.assembleGLB;
+
 let assembleGLTF = AssembleWDAPI.assembleGLTF;
 
 let assembleWD = AssembleWDAPI.assembleWD;
@@ -351,6 +353,10 @@ let getSparseMapValue = SparseMapAPI.getSparseMapValue;
 let unsafeGetSparseMapValue = SparseMapAPI.unsafeGetSparseMapValue;
 
 let createSparseMap = SparseMapAPI.createSparseMap;
+
+let setArrayBufferViewSourceTextureName = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureName;
+
+let unsafeGetArrayBufferViewSourceTextureName = ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureName;
 
 let setArrayBufferViewSourceTextureHeight = ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureHeight;
 

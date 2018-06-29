@@ -23,6 +23,13 @@ var PrepareTool = (function () {
         else {
             /*! do nothing */
         }
+
+        if (typeof window.loadImageBlob_wonder === "undefined") {
+            /*! do nothing */
+        }
+        else {
+            /*! do nothing */
+        }
     };
 
 

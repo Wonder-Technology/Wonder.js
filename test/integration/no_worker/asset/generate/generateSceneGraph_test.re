@@ -10,7 +10,7 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
-    beforeAllPromise(() => ConvertGLTFTool.buildFakeLoadImage());
+    beforeAllPromise(() => ConvertTool.buildFakeLoadImage());
     beforeEach(() => {
       sandbox := createSandbox();
 

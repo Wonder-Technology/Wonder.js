@@ -29,7 +29,7 @@ let _ =
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
 
-      ConvertGLTFTool.buildFakeLoadImage();
+      ConvertTool.buildFakeLoadImage();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

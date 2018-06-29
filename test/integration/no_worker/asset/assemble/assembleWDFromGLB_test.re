@@ -31,12 +31,12 @@ let _ =
         /* TODO test set texture name  */
         /* describe("test set texture name", () =>
              testPromise("test", () =>
-           AssembleWDSystemTool.testGlb(
+           AssembleWDSystemTool.testGlb(sandbox^,
              ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
                  ((state, sceneGameObject)) =>
                    _getAllDiffuseMaps(sceneGameObject, state)
                    |> Js.Array.map(diffuseMap =>
-                        ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureName(
+                        BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                           diffuseMap,
                           state,
                         )
@@ -49,11 +49,12 @@ let _ =
 
         testPromise("set not flipY", () =>
           AssembleWDSystemTool.testGlb(
+            sandbox^,
             ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
-                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureFlipY(
+                   BasicSourceTextureAPI.getBasicSourceTextureFlipY(
                      diffuseMap,
                      state,
                    )
@@ -66,24 +67,25 @@ let _ =
 
         testPromise("test set other data", () =>
           AssembleWDSystemTool.testGlb(
+            sandbox^,
             ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    (
-                     ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMagFilter(
+                     BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
                        diffuseMap,
                        state,
                      ),
-                     ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMinFilter(
+                     BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
                        diffuseMap,
                        state,
                      ),
-                     ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapS(
+                     BasicSourceTextureAPI.getBasicSourceTextureWrapS(
                        diffuseMap,
                        state,
                      ),
-                     ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapT(
+                     BasicSourceTextureAPI.getBasicSourceTextureWrapT(
                        diffuseMap,
                        state,
                      ),
@@ -102,23 +104,21 @@ let _ =
             state^,
           )
         );
-
         testPromise("test set source", () =>
-          AssembleWDSystemTool.testGlb(
-            ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureSource(
-                     diffuseMap,
-                     state,
-                   )
-                   |> ConvertGLBTool.getUint8ArrayLength
-                 )
-              |> expect == [|23516|],
-            state^,
-          )
-        );
+             AssembleWDSystemTool.testGlb(sandbox^,
+               ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+               ((state, sceneGameObject)) =>
+                 AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                 |> Js.Array.map(diffuseMap =>
+                      BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                        diffuseMap,
+                        state,
+                      )
+                    )
+                 |> expect == [|"object_url0" |> Obj.magic|],
+               state^,
+             )
+           );
       })
     );
   });

@@ -447,7 +447,7 @@ let _ =
       );
     };
 
-    beforeAllPromise(() => ConvertGLTFTool.buildFakeLoadImage());
+    beforeAllPromise(() => ConvertTool.buildFakeLoadImage());
     beforeEach(() => {
       sandbox := createSandbox();
 

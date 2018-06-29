@@ -22,30 +22,26 @@ let _ =
 
     /* TODO test jpg data */
 
-    describe("test uint8ArrayImages", () =>
+    describe("test blobImages", () =>
       test("test", () =>
         ConvertGLBTool.testResult(
+          sandbox^,
           ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ({uint8ArrayImages}) => {
-            let uint8ArrayImages = uint8ArrayImages |> OptionService.unsafeGet;
-            let uint8ArrayImage = uint8ArrayImages[0];
+          ({blobImages}) => {
+            let blobImages = blobImages |> OptionService.unsafeGet;
+            let blobImage = blobImages[0];
 
-            (
-              uint8ArrayImages |> Js.Array.length,
-              ConvertGLBTool.getUint8ArrayLengthFromWDData(uint8ArrayImage),
-              uint8ArrayImage.width,
-              uint8ArrayImage.height,
-            )
-            |> expect == (1, 23516, 256, 256);
+            blobImage.objectUrl |> expect == "object_url0";
           },
         )
       )
     );
-
     describe("test uriImages", () =>
       test("should be none", () =>
         ConvertGLBTool.testResult(
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"), ({uriImages}) =>
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ({uriImages}) =>
           uriImages |> Js.Option.isNone |> expect == true
         )
       )
@@ -54,6 +50,7 @@ let _ =
     describe("test buffers", () =>
       test("should has no uri, but has byteLength and buffer", () =>
         ConvertGLBTool.testResult(
+          sandbox^,
           ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
           ({buffers}) => {
             let {uri, buffer, byteLength} = buffers[0];
@@ -69,4 +66,36 @@ let _ =
         )
       )
     );
+    /* test("aaaa", () =>
+               ConvertGLBTool.testResult(
+                 ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+                 ({blobImages}) => {
+                   let blobImages = blobImages |> OptionService.unsafeGet;
+                   let blobImage = blobImages[0];
+
+
+       Node.Fs.writeFileSync(
+       Node.Path.join([|Node.Process.cwd(), "./test/res/", "test.png"|]),
+
+       blobImage.uint8Array |> Uint8Array.buffer
+       |>WonderLog.Log.print
+
+       |> Obj.magic
+       |>
+       Node.Buffer.fromString
+
+       |> Obj.magic
+
+
+
+       ,
+       `binary
+
+       );
+
+       1
+                   |> expect == 1
+                 },
+               )
+             ) */
   });
