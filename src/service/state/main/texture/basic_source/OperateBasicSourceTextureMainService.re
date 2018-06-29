@@ -101,11 +101,11 @@ let getFormat = (texture, state) => {
   OperateTypeArrayBasicSourceTextureService.getFormat(texture, formats);
 };
 
-let setFormat = (texture, filter, state) => {
+let setFormat = (texture, format, state) => {
   let {formats} = RecordBasicSourceTextureMainService.getRecord(state);
   OperateTypeArrayBasicSourceTextureService.setFormat(
     texture,
-    filter,
+    format,
     formats,
   )
   |> ignore;

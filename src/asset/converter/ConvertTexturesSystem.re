@@ -24,35 +24,80 @@ let _getNames = (textures, images) =>
        [||],
      );
 
+let _isBase64Image = uri =>
+  switch (uri) {
+  | Some(uri) => ConvertCommon.isBase64(uri)
+
+  | None => false
+  };
+
+let _getFormat = mimeType =>
+  switch (mimeType) {
+  | "image/png" => SourceTextureType.RGBA
+  | "image/jpeg" => SourceTextureType.RGB
+  | mimeType =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="convertToBasicSourceTextures",
+        ~description={j|unknown mimeType|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|mimeType: $mimeType|j},
+      ),
+    )
+  };
+
 let convertToBasicSourceTextures =
     (({textures, images}: GLTFType.gltf) as gltf)
-    : WDType.basicSourceTextures => {
-  count:
-    switch (textures) {
-    | None => 0
-    | Some(textures) => ConvertCommon.getCount(textures)
-    },
-  names:
-    switch (textures) {
-    | None => [||]
-    | Some(textures) => _getNames(textures, images)
-    },
-};
+    : array(WDType.basicSourceTexture) =>
+  switch (textures) {
+  | None => [||]
+  | Some(textures) =>
+    textures
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. arr, ({name, source}: GLTFType.texture) as texture, index) =>
+           arr
+           |> ArrayService.push(
+                {
+                  name:
+                    switch (name) {
+                    | Some(name) => name
+                    | None =>
+                      switch (source) {
+                      | None => _buildDefaultName(index)
+                      | Some(source) =>
+                        let {name}: GLTFType.image =
+                          Array.unsafe_get(
+                            images |> OptionService.unsafeGet,
+                            source,
+                          );
 
-/* let convertToArrayBufferViewSourceTextures =
-    (({textures, images}: GLTFType.gltf) as gltf)
-    : WDType.arrayBufferViewSourceTextures => {
-  count:
-    switch (textures) {
-    | None => 0
-    | Some(textures) => ConvertCommon.getCount(textures)
-    },
-  names:
-    switch (textures) {
-    | None => [||]
-    | Some(textures) => _getNames(textures, images)
-    },
-}; */
+                        switch (name) {
+                        | Some(name) => name
+                        | None => _buildDefaultName(index)
+                        };
+                      }
+                    },
+                  format: {
+                    let ({uri, mimeType}: GLTFType.image) as image =
+                      Array.unsafe_get(
+                        images |> OptionService.unsafeGet,
+                        source |> OptionService.unsafeGet,
+                      );
+
+                    _isBase64Image(uri) ?
+                      _getFormat(
+                        uri
+                        |> OptionService.unsafeGet
+                        |> ConvertCommon.getBase64MimeType,
+                      ) :
+                      _getFormat(mimeType |> OptionService.unsafeGet);
+                  },
+                }: WDType.basicSourceTexture,
+              ),
+         [||],
+       )
+  };
 
 let _convertMagFilter = magFilter =>
   switch (magFilter) {

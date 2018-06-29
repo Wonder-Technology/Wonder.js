@@ -121,15 +121,10 @@ type mimeType =
 
 type blobImage = {objectUrl: string};
 
-type basicSourceTextures = {
-  count: int,
-  names: array(string),
+type basicSourceTexture = {
+  name: string,
+  format: SourceTextureType.format,
 };
-
-/* type arrayBufferViewSourceTextures = {
-  count: int,
-  names: array(string),
-}; */
 
 type sampler = {
   /* TODO add format, type_, ... */
@@ -214,8 +209,7 @@ type wd = {
   gameObjects,
   uriImages: option(array(uriImage)),
   blobImages: option(array(blobImage)),
-  basicSourceTextures,
-  /* arrayBufferViewSourceTextures: option(arrayBufferViewSourceTextures), */
+  basicSourceTextures: array(basicSourceTexture),
   samplers: array(sampler),
   buffers: array(buffer),
   bufferViews: array(bufferView),

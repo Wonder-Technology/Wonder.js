@@ -33,13 +33,6 @@ let convertToUriImages =
        )
   };
 
-let _getMimeType = mimeType =>
-  switch (mimeType) {
-  | "image/png" => WDType.PNG
-  | "image/jpeg" => WDType.JPEG
-  | _ => WDType.UNKNOWN
-  };
-
 /**
  * Uint16BE.
  */

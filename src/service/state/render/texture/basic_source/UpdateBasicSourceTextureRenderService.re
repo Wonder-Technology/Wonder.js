@@ -71,6 +71,7 @@ let update =
         textureInTypeArray,
         formats,
       )
+      |> SourceTextureType.uint8ToFormat
       |> TextureFormatService.getGlFormat(gl);
     let glType =
       OperateTypeArrayBasicSourceTextureService.getType(

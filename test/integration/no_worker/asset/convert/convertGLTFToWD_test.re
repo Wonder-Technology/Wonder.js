@@ -618,7 +618,11 @@ let _ =
           ConvertGLTFTool.buildGLTFJsonOfTexture(), ({basicSourceTextures}) =>
           basicSourceTextures
           |>
-          expect == {count: 3, names: [|"texture_0", "texture0", "image0"|]}
+          expect == [|
+                      {name: "texture_0", format: SourceTextureType.RGBA},
+                      {name: "texture0", format: SourceTextureType.RGBA},
+                      {name: "image0", format: SourceTextureType.RGBA},
+                    |]
         )
       )
     );

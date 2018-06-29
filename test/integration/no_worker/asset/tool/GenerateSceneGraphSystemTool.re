@@ -163,8 +163,8 @@ let _buildFakeCanvas = (sandbox, context, (base64Str1, base64Str2)) =>
 let prepareCanvas = sandbox => {
   let context = _buildFakeContext(sandbox);
 
-  let base64Str1 = "data:aaa";
-  let base64Str2 = "data:bbb";
+  let base64Str1 = "data:image/png;base64,aaa";
+  let base64Str2 = "data:image/jpeg;base64,bbb";
 
   let canvas =
     SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(

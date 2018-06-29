@@ -11,7 +11,7 @@ let getDefaultMagFilter = () => SourceTextureType.LINEAR;
 let getDefaultMinFilter = () => SourceTextureType.NEAREST;
 
 /* let getDefaultFormat = () => TextureFormatService.getRgba(); */
-let getDefaultFormat = () => TextureFormatService.getRgb();
+let getDefaultFormat = () => SourceTextureType.RGBA;
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 

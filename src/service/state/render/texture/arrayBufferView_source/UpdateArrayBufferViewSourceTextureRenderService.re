@@ -12,7 +12,7 @@ open BrowserDetectType;
          }
          |}
    ]; */
-   
+
 let _drawTexture =
     (gl, (target, index, source, glFormat, glType), (width, height)) => {
   WonderLog.Contract.requireCheck(
@@ -121,6 +121,7 @@ let update =
         textureInTypeArray,
         formats,
       )
+      |> SourceTextureType.uint8ToFormat
       |> TextureFormatService.getGlFormat(gl);
     let glType =
       OperateTypeArrayArrayBufferViewSourceTextureService.getType(

@@ -264,7 +264,8 @@ let getBasicSourceTextureFormat = (texture, state: StateDataMainType.state) =>
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.getFormat(texture, state);
+  OperateBasicSourceTextureMainService.getFormat(texture, state)
+  |> uint8ToFormat;
 
 let setBasicSourceTextureFormat =
     (texture, format, state: StateDataMainType.state) =>
@@ -283,7 +284,11 @@ let setBasicSourceTextureFormat =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateBasicSourceTextureMainService.setFormat(texture, format, state);
+  OperateBasicSourceTextureMainService.setFormat(
+    texture,
+    format |> formatToUint8,
+    state,
+  );
 
 let getBasicSourceTextureType = (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(

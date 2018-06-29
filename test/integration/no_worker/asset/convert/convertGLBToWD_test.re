@@ -20,22 +20,39 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    /* TODO test jpg data */
-
-    describe("test blobImages", () =>
-      test("test", () =>
+    describe("test blobImages", () => {
+      test("test only png image", () =>
         ConvertGLBTool.testResult(
           sandbox^,
           ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
           ({blobImages}) => {
             let blobImages = blobImages |> OptionService.unsafeGet;
-            let blobImage = blobImages[0];
 
-            blobImage.objectUrl |> expect == "object_url0";
+            blobImages |> expect == [|{objectUrl: "object_url0"}|];
           },
         )
-      )
-    );
+      );
+
+      test("test jpeg and png images", () =>
+        ConvertGLBTool.testResult(
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+          ({blobImages}) => {
+            let blobImages = blobImages |> OptionService.unsafeGet;
+
+            blobImages
+            |>
+            expect == [|
+                        {objectUrl: "object_url0"},
+                        {objectUrl: "object_url1"},
+                        {objectUrl: "object_url2"},
+                        {objectUrl: "object_url3"},
+                      |];
+          },
+        )
+      );
+    });
+
     describe("test uriImages", () =>
       test("should be none", () =>
         ConvertGLBTool.testResult(
@@ -46,6 +63,44 @@ let _ =
         )
       )
     );
+
+    describe("test basicSourceTextures", () => {
+      test("test only png image", () =>
+        ConvertGLBTool.testResult(
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ({basicSourceTextures}) =>
+          basicSourceTextures
+          |>
+          expect == [|
+                      {
+                        name: "CesiumLogoFlat.png",
+                        format: SourceTextureType.RGBA,
+                      },
+                    |]
+        )
+      );
+
+      test("test jpeg and png images", () =>
+        ConvertGLBTool.testResult(
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+          ({basicSourceTextures}) =>
+          basicSourceTextures
+          |>
+          expect == [|
+                      {name: "texture_0", format: SourceTextureType.RGB},
+                      {name: "texture_1", format: SourceTextureType.RGB},
+                      {name: "texture_2", format: SourceTextureType.RGB},
+                      {name: "texture_3", format: SourceTextureType.RGBA},
+                      {name: "texture_4", format: SourceTextureType.RGBA},
+                      {name: "texture_5", format: SourceTextureType.RGBA},
+                      {name: "texture_6", format: SourceTextureType.RGBA},
+                      {name: "texture_7", format: SourceTextureType.RGBA},
+                    |]
+        )
+      );
+    });
 
     describe("test buffers", () =>
       test("should has no uri, but has byteLength and buffer", () =>
@@ -66,36 +121,4 @@ let _ =
         )
       )
     );
-    /* test("aaaa", () =>
-               ConvertGLBTool.testResult(
-                 ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
-                 ({blobImages}) => {
-                   let blobImages = blobImages |> OptionService.unsafeGet;
-                   let blobImage = blobImages[0];
-
-
-       Node.Fs.writeFileSync(
-       Node.Path.join([|Node.Process.cwd(), "./test/res/", "test.png"|]),
-
-       blobImage.uint8Array |> Uint8Array.buffer
-       |>WonderLog.Log.print
-
-       |> Obj.magic
-       |>
-       Node.Buffer.fromString
-
-       |> Obj.magic
-
-
-
-       ,
-       `binary
-
-       );
-
-       1
-                   |> expect == 1
-                 },
-               )
-             ) */
   });

@@ -213,7 +213,7 @@ let _ =
       let state = state |> setBasicSourceTextureMagFilter(texture2, LINEAR);
       let state = state |> setBasicSourceTextureMinFilter(texture2, LINEAR);
       let state = state |> setBasicSourceTextureType(texture2, 1);
-      let state = state |> setBasicSourceTextureFormat(texture2, 2);
+      let state = state |> setBasicSourceTextureFormat(texture2, ALPHA);
       (state, texture1, texture2, texture3);
     };
     let _prepareArrayBufferViewSourceTextureData = state => {
@@ -2400,7 +2400,9 @@ let _ =
             let defaultMinFilter =
               BasicSourceTextureTool.getDefaultMinFilter()
               |> SourceTextureType.filterToUint8;
-            let defaultFormat = BasicSourceTextureTool.getDefaultFormat();
+            let defaultFormat =
+              BasicSourceTextureTool.getDefaultFormat()
+              |> SourceTextureType.formatToUint8;
             let defaultType = BasicSourceTextureTool.getDefaultType();
             let defaultIsNeedUpdate =
               BasicSourceTextureTool.getDefaultIsNeedUpdate();
@@ -2497,7 +2499,7 @@ let _ =
             let currentState =
               ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT(
                 texture4,
-                SourceTextureType.MIRRORED_REPEAT ,
+                SourceTextureType.MIRRORED_REPEAT,
                 currentState,
               );
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
@@ -2515,7 +2517,8 @@ let _ =
               ArrayBufferViewSourceTextureTool.getDefaultMinFilter()
               |> SourceTextureType.filterToUint8;
             let defaultFormat =
-              ArrayBufferViewSourceTextureTool.getDefaultFormat();
+              ArrayBufferViewSourceTextureTool.getDefaultFormat()
+              |> SourceTextureType.formatToUint8;
             let defaultType =
               ArrayBufferViewSourceTextureTool.getDefaultType();
             let defaultIsNeedUpdate =

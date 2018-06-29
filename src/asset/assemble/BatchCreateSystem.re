@@ -193,7 +193,7 @@ let _batchCreateBasicSourceTextureArr =
     basicSourceTextureRecord.disposedIndexArray,
   );
 
-  let newIndex = index + basicSourceTextures.count;
+  let newIndex = index + (basicSourceTextures |> Js.Array.length);
   let indexArr =
     ArrayService.range(index, newIndex - 1)
     |> Js.Array.map(index =>

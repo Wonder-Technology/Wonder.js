@@ -34,7 +34,7 @@ let setAllTypeArrDataToDefault =
     getDefaultMagFilter() |> SourceTextureType.filterToUint8;
   let defaultMinFilter =
     getDefaultMinFilter() |> SourceTextureType.filterToUint8;
-  let defaultFormat = getDefaultFormat();
+  let defaultFormat = getDefaultFormat() |> SourceTextureType.formatToUint8;
   let defaultType = getDefaultType();
   let defaultIsNeedUpdate = getDefaultIsNeedUpdate();
   let defaultFlipY = getDefaultFlipY();

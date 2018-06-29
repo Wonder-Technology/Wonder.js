@@ -145,7 +145,7 @@ let _ =
     describe("setBasicSourceTextureFormat", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let format = 1;
+        let format = SourceTextureType.RGB;
         let state = state |> setBasicSourceTextureFormat(texture, format);
         getBasicSourceTextureFormat(texture, state) |> expect == format;
       })

@@ -19,6 +19,17 @@ type isFlipY =
   | NOT_FLIPY
   | FLIPY;
 
+type format =
+  | RGB
+  | RGBA
+  | ALPHA
+  | LUMINANCE
+  | LUMINANCEALPHA
+  | RGBS3TCDXT1
+  | RGBAS3TCDXT1
+  | RGBAS3TCDXT3
+  | RGBAS3TCDXT5;
+
 type sourceTextureRecord = {buffer: WorkerType.sharedArrayBuffer};
 
 external uint8ToWrap : Js.Typed_array.Uint8Array.elt => wrap = "%identity";
@@ -31,6 +42,10 @@ external filterToUint8 : filter => Js.Typed_array.Uint8Array.elt = "%identity";
 
 external uint8ToIsNeedUpdate : Js.Typed_array.Uint8Array.elt => isNeedUpdate =
   "%identity";
+
+external formatToUint8 : format => Js.Typed_array.Uint8Array.elt = "%identity";
+
+external uint8ToFormat : Js.Typed_array.Uint8Array.elt => format = "%identity";
 
 external isNeedUpdateToUint8 : isNeedUpdate => Js.Typed_array.Uint8Array.elt =
   "%identity";

@@ -145,3 +145,16 @@ let batchSet =
        imageBasicSourceTextures,
        basicSourceTextureImages,
      );
+
+let batchSetFormat = (basicSourceTextureArr, basicSourceTextures, state) =>
+  basicSourceTextureArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, basicSourceTexture, index) =>
+         OperateBasicSourceTextureMainService.setFormat(
+           basicSourceTexture,
+           Array.unsafe_get(basicSourceTextures, index).format
+           |> SourceTextureType.formatToUint8,
+           state,
+         ),
+       state,
+     );
