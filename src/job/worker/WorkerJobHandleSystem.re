@@ -51,6 +51,7 @@ let _getWorkerJobHandles = () => [
   ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
   ("get_render_data", GetRenderDataRenderWorkerJob.execJob),
   ("get_instance_data", GetInstanceDataRenderWorkerJob.execJob),
+  ("get_ambient_light_data", GetAmbientLightDataRenderWorkerJob.execJob),
   ("get_direction_light_data", GetDirectionLightDataRenderWorkerJob.execJob),
   ("get_point_light_data", GetPointLightDataRenderWorkerJob.execJob),
   ("init_material_for_render", InitMaterialForRenderRenderWorkerJob.execJob),

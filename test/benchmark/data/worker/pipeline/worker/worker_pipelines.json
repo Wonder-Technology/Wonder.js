@@ -79,6 +79,9 @@
                         "name": "get_instance_data"
                     },
                     {
+                        "name": "get_ambient_light_data"
+                    },
+                    {
                         "name": "get_direction_light_data"
                     },
                     {

@@ -12,14 +12,8 @@ let setCurrentCameraGameObject = (uid, state) => {
     CameraSceneMainService.setCurrentCameraGameObject(uid, state.sceneRecord),
 };
 
-let getAmbientLightColor = ({sceneRecord}) =>
-  AmbientLightSceneMainService.getAmbientLightColor(sceneRecord);
+let getAmbientLightColor = state =>
+  AmbientLightSceneMainService.getAmbientLightColor(state);
 
-let setAmbientLightColor = (color, state) => {
-  ...state,
-  sceneRecord:
-    AmbientLightSceneMainService.setAmbientLightColor(
-      color,
-      state.sceneRecord,
-    ),
-};
+let setAmbientLightColor = (color, state) =>
+  AmbientLightSceneMainService.setAmbientLightColor(color, state);

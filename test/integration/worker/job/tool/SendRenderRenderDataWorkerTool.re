@@ -1,14 +1,20 @@
 let buildRenderRenderData =
-    (~basicSourceTextureData=Sinon.matchAny, ~arrayBufferViewSourceTextureData=Sinon.matchAny, ()) => {
+    (
+      ~basicSourceTextureData=Sinon.matchAny,
+      ~arrayBufferViewSourceTextureData=Sinon.matchAny,
+      ~materialData=Sinon.matchAny,
+      (),
+    ) => {
   "operateType": Sinon.matchAny,
+  "ambientLightData": Sinon.matchAny,
   "directionLightData": Sinon.matchAny,
   "pointLightData": Sinon.matchAny,
   "initData": {
-    "materialData": Sinon.matchAny,
+    "materialData": materialData,
     "textureData": {
       "basicSourceTextureData": basicSourceTextureData,
-      "arrayBufferViewSourceTextureData": arrayBufferViewSourceTextureData
-    }
+      "arrayBufferViewSourceTextureData": arrayBufferViewSourceTextureData,
+    },
   },
-  "renderData": Sinon.matchAny
+  "renderData": Sinon.matchAny,
 };

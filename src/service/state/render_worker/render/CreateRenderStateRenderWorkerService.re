@@ -33,7 +33,6 @@ open ShaderType;
 let createRenderState =
     (
       {
-        sceneRecord,
         settingRecord,
         gpuDetectRecord,
         glslSenderRecord,
@@ -79,7 +78,8 @@ let createRenderState =
   {
     sceneRecord: {
       ambientLight: {
-        color: sceneRecord.ambientLight.color,
+        color:
+          AmbientLightSceneRenderWorkerService.getAmbientLightColor(state),
       },
     },
     settingRecord: {

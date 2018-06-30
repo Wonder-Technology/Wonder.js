@@ -29,7 +29,6 @@ open BrowserDetectType;
 let createRenderState =
     (
       {
-        sceneRecord,
         settingRecord,
         gpuDetectRecord,
         glslSenderRecord,
@@ -142,7 +141,7 @@ let createRenderState =
     },
     sceneRecord: {
       ambientLight: {
-        color: sceneRecord.ambientLight.color,
+        color: AmbientLightSceneMainService.getAmbientLightColor(state),
       },
     },
     directionLightRecord: {

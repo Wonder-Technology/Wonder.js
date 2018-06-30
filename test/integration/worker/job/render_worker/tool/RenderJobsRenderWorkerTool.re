@@ -8,14 +8,20 @@ let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   open Sinon;
   let state = prepareFunc(sandbox, state);
   let program = Obj.magic(1);
-  let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
+  let createProgram =
+    createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
   let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
     |> FakeGlWorkerTool.setFakeGl(
-         FakeGlWorkerTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ())
+         FakeGlWorkerTool.buildFakeGl(
+           ~sandbox,
+           ~createProgram,
+           ~useProgram,
+           (),
+         ),
        );
-  (state, program, useProgram)
+  (state, program, useProgram);
 };
 
 let init = (completeFunc, state) => {
@@ -23,9 +29,9 @@ let init = (completeFunc, state) => {
     "data":
       SendInitRenderDataMainWorkerJob._buildData(
         "",
-        {"getContext": (_) => [@bs] GlTool.unsafeGetGl(state) |> Obj.magic},
-        MainStateTool.getStateData()
-      )
+        {"getContext": _ => GlTool.unsafeGetGl(. state) |> Obj.magic},
+        MainStateTool.getStateData(),
+      ),
   };
   let renderWorkerState = RenderWorkerStateTool.getState();
   /* let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData(); */
@@ -39,8 +45,8 @@ let init = (completeFunc, state) => {
              WorkerJobTool.buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage(),
            ~mainLoopPipelines=
              WorkerJobTool.buildMainLoopPipelinesConfigWithoutMessageExceptDisposeMessage(),
-           ()
-         )
+           (),
+         ),
        );
   let state = MainStateTool.setState(state);
   MainStateTool.unsafeGetState()
@@ -48,64 +54,72 @@ let init = (completeFunc, state) => {
        MainStateTool.getStateData(),
        (
          WorkerJobHandleSystem.createMainInitJobHandleMap,
-         WorkerJobHandleSystem.getMainInitJobHandle
-       )
+         WorkerJobHandleSystem.getMainInitJobHandle,
+       ),
      )
   |> Most.drain
-  |> then_(
-       (_) =>
-         [|
-           CreateGlRenderWorkerJob.execJob(None),
-           SetViewportRenderWorkerJob.execJob(None),
-           InitTransformRenderWorkerJob.execJob(None),
-           InitStateRenderWorkerJob.execJob(None),
-           GetRenderConfigDataRenderWorkerJob.execJob(None),
-           GetSettingDataRenderWorkerJob.execJob(None),
-           GetMaterialDataRenderWorkerJob.execJob(None),
-           GetBrowserDetectDataRenderWorkerJob.execJob(None),
-           PregetGLSLDataRenderWorkerJob.execJob(None),
-           InitInstanceRenderWorkerJob.execJob(None),
-           InitCustomGeometryRenderWorkerJob.execJob(None),
-           InitBasicMaterialRenderWorkerJob.execJob(None),
-           InitDirectionLightRenderWorkerJob.execJob(None),
-           InitPointLightRenderWorkerJob.execJob(None),
-           InitLightMaterialRenderWorkerJob.execJob(None),
-           InitTextureRenderWorkerJob.execJob(None)
-         |]
-         |> concatStreamFuncArray(initData, RenderWorkerStateTool.getStateData())
-         |> Most.drain
-         |> then_(
-              (_) =>
-                MainStateTool.unsafeGetState()
-                |> SendInitRenderDataMainWorkerJob._clearData
-                |> MainStateTool.setState
-                |> completeFunc
-            )
-     )
+  |> then_(_ =>
+       [|
+         CreateGlRenderWorkerJob.execJob(None),
+         SetViewportRenderWorkerJob.execJob(None),
+         InitTransformRenderWorkerJob.execJob(None),
+         InitStateRenderWorkerJob.execJob(None),
+         GetRenderConfigDataRenderWorkerJob.execJob(None),
+         GetSettingDataRenderWorkerJob.execJob(None),
+         GetMaterialDataRenderWorkerJob.execJob(None),
+         GetBrowserDetectDataRenderWorkerJob.execJob(None),
+         PregetGLSLDataRenderWorkerJob.execJob(None),
+         InitInstanceRenderWorkerJob.execJob(None),
+         InitCustomGeometryRenderWorkerJob.execJob(None),
+         InitBasicMaterialRenderWorkerJob.execJob(None),
+         InitDirectionLightRenderWorkerJob.execJob(None),
+         InitPointLightRenderWorkerJob.execJob(None),
+         InitLightMaterialRenderWorkerJob.execJob(None),
+         InitTextureRenderWorkerJob.execJob(None),
+       |]
+       |> concatStreamFuncArray(
+            initData,
+            RenderWorkerStateTool.getStateData(),
+          )
+       |> Most.drain
+       |> then_(_ =>
+            MainStateTool.unsafeGetState()
+            |> SendInitRenderDataMainWorkerJob._clearData
+            |> MainStateTool.setState
+            |> completeFunc
+          )
+     );
 };
 
 let execMainLoopJobs = (sandbox, completeFunc) => {
   let state = MainInitJobMainWorkerTool.prepare();
-  let renderWorker = WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
-  let postMessageToRenderWorker = WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
+  let renderWorker =
+    WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
+  let postMessageToRenderWorker =
+    WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
   state
   |> WorkerJobWorkerTool.getMainLoopJobStream(
        MainStateTool.getStateData(),
        (
          WorkerJobHandleSystem.createMainLoopJobHandleMap,
-         WorkerJobHandleSystem.getMainLoopJobHandle
-       )
+         WorkerJobHandleSystem.getMainLoopJobHandle,
+       ),
      )
   |> Most.drain
-  |> then_(() => completeFunc(postMessageToRenderWorker))
+  |> then_(() => completeFunc(postMessageToRenderWorker));
 };
 
 let render = (postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
   let drawData = {
-    "data": SendRenderDataMainWorkerJob._buildData("", MainStateTool.getStateData())
+    "data":
+      SendRenderDataMainWorkerJob._buildData(
+        "",
+        MainStateTool.getStateData(),
+      ),
   };
   [|
+    GetAmbientLightDataRenderWorkerJob.execJob(None),
     GetDirectionLightDataRenderWorkerJob.execJob(None),
     GetPointLightDataRenderWorkerJob.execJob(None),
     GetInstanceDataRenderWorkerJob.execJob(None),
@@ -117,21 +131,27 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     SendUniformShaderDataRenderWorkerJob.execJob(None),
     RenderBasicRenderWorkerJob.execJob(None),
     FrontRenderLightRenderWorkerJob.execJob(None),
-    CommitRenderWorkerJob.execJob(None)
+    CommitRenderWorkerJob.execJob(None),
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
   |> Most.drain
-  |> then_(() => completeFunc(postMessageToRenderWorker))
+  |> then_(() => completeFunc(postMessageToRenderWorker));
 };
 
 let mainLoopAndRender =
-    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+    (
+      ~completeFunc,
+      ~state,
+      ~sandbox,
+      ~beforeExecRenderRenderWorkerJobsFunc=state => (),
+      (),
+    ) =>
   execMainLoopJobs(
     sandbox,
-    (postMessageToRenderWorker) => {
+    postMessageToRenderWorker => {
       beforeExecRenderRenderWorkerJobsFunc(postMessageToRenderWorker);
-      render(postMessageToRenderWorker, completeFunc)
-    }
+      render(postMessageToRenderWorker, completeFunc);
+    },
   );
 
 let dispose = (postMessageToRenderWorker, completeFunc) => {
@@ -142,13 +162,13 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
          "operateType": "DISPOSE",
          "boxGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
          "customGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
-         "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny
+         "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
        })
     |> Obj.magic
     |> getSpecificArg(0)
     |> List.hd;
   let disposeData = {
-    "data": args
+    "data": args,
     /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
          "",
          (
@@ -158,32 +178,47 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
          )
        ) */
   };
-  [|DisposeVboRenderWorkerJob.execJob(None), DisposeSourceInstanceRenderWorkerJob.execJob(None)|]
+  [|
+    DisposeVboRenderWorkerJob.execJob(None),
+    DisposeSourceInstanceRenderWorkerJob.execJob(None),
+  |]
   |> concatStreamFuncArray(disposeData, RenderWorkerStateTool.getStateData())
   |> Most.drain
-  |> then_(() => completeFunc(postMessageToRenderWorker))
+  |> then_(() => completeFunc(postMessageToRenderWorker));
 };
 
 let mainLoopAndDispose =
-    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+    (
+      ~completeFunc,
+      ~state,
+      ~sandbox,
+      ~beforeExecRenderRenderWorkerJobsFunc=state => (),
+      (),
+    ) =>
   execMainLoopJobs(
     sandbox,
-    (postMessageToRenderWorker) => {
+    postMessageToRenderWorker => {
       beforeExecRenderRenderWorkerJobsFunc(postMessageToRenderWorker);
-      dispose(postMessageToRenderWorker, completeFunc)
-    }
+      dispose(postMessageToRenderWorker, completeFunc);
+    },
   );
 
 let initAndMainLoopAndRender =
-    (~completeFunc, ~state, ~sandbox, ~beforeExecRenderRenderWorkerJobsFunc=(state) => (), ()) =>
+    (
+      ~completeFunc,
+      ~state,
+      ~sandbox,
+      ~beforeExecRenderRenderWorkerJobsFunc=state => (),
+      (),
+    ) =>
   init(
-    (state) =>
+    state =>
       mainLoopAndRender(
         ~completeFunc,
         ~state,
         ~sandbox,
         ~beforeExecRenderRenderWorkerJobsFunc,
-        ()
+        (),
       ),
-    state
+    state,
   );

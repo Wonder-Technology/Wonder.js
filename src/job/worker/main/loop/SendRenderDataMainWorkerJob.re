@@ -4,7 +4,8 @@ open RenderType;
 
 open RenderCameraType;
 
-let _buildMaterialData = (materialArrayForWorkerInit, gameObjectMap, gameObjectRecord) =>
+let _buildMaterialData =
+    (materialArrayForWorkerInit, gameObjectMap, gameObjectRecord) =>
   materialArrayForWorkerInit
   |> WonderCommonlib.ArrayService.removeDuplicateItems
   |> Js.Array.reduce(
@@ -15,25 +16,35 @@ let _buildMaterialData = (materialArrayForWorkerInit, gameObjectMap, gameObjectR
               JudgeInstanceMainService.isSourceInstance(
                 materialIndex,
                 gameObjectMap,
-                gameObjectRecord
-              )
+                gameObjectRecord,
+              ),
             )),
-       [||]
+       [||],
      );
 
-let _removeAddedSourceDataDuplicateItems = (needAddedSourceDataArray) =>
+let _removeAddedSourceDataDuplicateItems = needAddedSourceDataArray =>
   needAddedSourceDataArray
-  |> ArrayService.removeDuplicateItems([@bs] (((texture, source)) => Js.Int.toString(texture)));
+  |> ArrayService.removeDuplicateItems((. (texture, source)) =>
+       Js.Int.toString(texture)
+     );
 
 let _buildData = (operateType, stateData) => {
-  let {settingRecord, gameObjectRecord, directionLightRecord, pointLightRecord} as state =
+  let {
+        settingRecord,
+        gameObjectRecord,
+        directionLightRecord,
+        pointLightRecord,
+      } as state =
     StateDataMainService.unsafeGetState(stateData);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  let basicRenderObjectRecord = OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
-  let lightRenderObjectRecord = OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
+  let basicRenderObjectRecord =
+    OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
+  let lightRenderObjectRecord =
+    OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
-  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   let cameraData = OperateRenderMainService.getCameraRecord(state);
@@ -43,20 +54,27 @@ let _buildData = (operateType, stateData) => {
     | None => (false, Js.Nullable.null)
     | Some({vMatrix, pMatrix, position}) => (
         true,
-        Js.Nullable.return({"vMatrix": vMatrix, "pMatrix": pMatrix, "position": position})
+        Js.Nullable.return({
+          "vMatrix": vMatrix,
+          "pMatrix": pMatrix,
+          "position": position,
+        }),
       )
     };
   /* WonderLog.Log.print("send render data") |> ignore; */
   {
     "operateType": operateType,
+    "ambientLightData": {
+      "color": AmbientLightSceneMainService.getAmbientLightColor(state),
+    },
     "directionLightData": {
       "index": directionLightRecord.index,
       "positionMap":
         PositionLightMainService.buildPositionMap(
           directionLightRecord.index,
           PositionDirectionLightMainService.getPosition,
-          state
-        )
+          state,
+        ),
     },
     "pointLightData": {
       "index": pointLightRecord.index,
@@ -64,8 +82,8 @@ let _buildData = (operateType, stateData) => {
         PositionLightMainService.buildPositionMap(
           pointLightRecord.index,
           PositionPointLightMainService.getPosition,
-          state
-        )
+          state,
+        ),
     },
     "initData": {
       "materialData": {
@@ -74,27 +92,28 @@ let _buildData = (operateType, stateData) => {
             _buildMaterialData(
               basicMaterialRecord.materialArrayForWorkerInit,
               basicMaterialRecord.gameObjectMap,
-              gameObjectRecord
-            )
+              gameObjectRecord,
+            ),
         },
         "lightMaterialData": {
           "materialDataForWorkerInit":
             _buildMaterialData(
               lightMaterialRecord.materialArrayForWorkerInit,
               lightMaterialRecord.gameObjectMap,
-              gameObjectRecord
-            )
-        }
+              gameObjectRecord,
+            ),
+        },
       },
       "textureData": {
         "basicSourceTextureData": {
           "needAddedImageDataArray":
             OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-              basicSourceTextureRecord.needAddedSourceArray |> _removeAddedSourceDataDuplicateItems
+              basicSourceTextureRecord.needAddedSourceArray
+              |> _removeAddedSourceDataDuplicateItems,
             ),
           "needInitedTextureIndexArray":
             basicSourceTextureRecord.needInitedTextureIndexArray
-            |> WonderCommonlib.ArrayService.removeDuplicateItems
+            |> WonderCommonlib.ArrayService.removeDuplicateItems,
         },
         "arrayBufferViewSourceTextureData": {
           "needAddedSourceArray":
@@ -102,9 +121,9 @@ let _buildData = (operateType, stateData) => {
             |> _removeAddedSourceDataDuplicateItems,
           "needInitedTextureIndexArray":
             arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
-            |> WonderCommonlib.ArrayService.removeDuplicateItems
-        }
-      }
+            |> WonderCommonlib.ArrayService.removeDuplicateItems,
+        },
+      },
     },
     "renderData": {
       "isRender": isRender,
@@ -112,39 +131,45 @@ let _buildData = (operateType, stateData) => {
       "basic": {
         "buffer": basicRenderObjectRecord.buffer,
         "count": basicRenderObjectRecord.count,
-        "bufferCount": BufferSettingService.getBasicMaterialCount(settingRecord)
+        "bufferCount":
+          BufferSettingService.getBasicMaterialCount(settingRecord),
       },
       "light": {
         "buffer": lightRenderObjectRecord.buffer,
         "count": lightRenderObjectRecord.count,
-        "bufferCount": BufferSettingService.getLightMaterialCount(settingRecord)
+        "bufferCount":
+          BufferSettingService.getLightMaterialCount(settingRecord),
       },
       "sourceInstance": {
-        "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
-      }
-    }
-  }
+        "objectInstanceTransformIndexMap":
+          sourceInstanceRecord.objectInstanceTransformIndexMap,
+      },
+    },
+  };
 };
 
-let _clearData = (state) => {
-  InitBasicMaterialService.clearDataForWorkerInit(RecordBasicMaterialMainService.getRecord(state))
+let _clearData = state => {
+  InitBasicMaterialService.clearDataForWorkerInit(
+    RecordBasicMaterialMainService.getRecord(state),
+  )
   |> ignore;
-  InitLightMaterialService.clearDataForWorkerInit(RecordLightMaterialMainService.getRecord(state))
+  InitLightMaterialService.clearDataForWorkerInit(
+    RecordLightMaterialMainService.getRecord(state),
+  )
   |> ignore;
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
-  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
+  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
 };
 
 let execJob = (flags, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let {workerInstanceRecord} as state = StateDataMainService.unsafeGetState(stateData);
-      let operateType = JobConfigUtils.getOperateType(flags);
-      WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
-      |> WorkerService.postMessage(_buildData(operateType, stateData));
-      let state = state |> _clearData;
-      StateDataMainService.setState(stateData, state);
-      Some(operateType)
-    }
-  );
+  MostUtils.callFunc(() => {
+    let {workerInstanceRecord} as state =
+      StateDataMainService.unsafeGetState(stateData);
+    let operateType = JobConfigUtils.getOperateType(flags);
+    WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
+    |> WorkerService.postMessage(_buildData(operateType, stateData));
+    let state = state |> _clearData;
+    StateDataMainService.setState(stateData, state);
+    Some(operateType);
+  });

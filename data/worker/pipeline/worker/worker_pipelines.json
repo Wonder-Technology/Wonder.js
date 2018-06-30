@@ -56,9 +56,6 @@
                         "name": "init_basic_material"
                     },
                     {
-                        "name": "init_ambient_light"
-                    },
-                    {
                         "name": "init_direction_light"
                     },
                     {
@@ -80,6 +77,9 @@
                     },
                     {
                         "name": "get_instance_data"
+                    },
+                    {
+                        "name": "get_ambient_light_data"
                     },
                     {
                         "name": "get_direction_light_data"
