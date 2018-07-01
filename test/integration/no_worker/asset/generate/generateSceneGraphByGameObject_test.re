@@ -1445,6 +1445,74 @@ let _ =
           state,
         );
       });
+
+      describe("contract check", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+
+          let (state, sceneGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              sceneGameObject,
+              state,
+            );
+
+          let (state, texture) =
+            ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+              state,
+            );
+
+          let state =
+            ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+              texture,
+              Uint8Array.make([||]),
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            (transform1, (localPos1, localRotation1, localScale1)),
+            geometry1,
+            (material1, texture1),
+            meshRenderer1,
+          ) =
+            _createGameObjectWithShareTexture(texture, state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
+               );
+
+          (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (material1, texture1),
+          );
+        };
+
+        test("should only has basicSourceTexture", () => {
+          let (
+            state,
+            (sceneGameObject, sceneGameObjectTransform),
+            (material1, texture1),
+          ) =
+            _prepareGameObject(state);
+          TestTool.openContractCheck();
+
+          expect(() =>
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              sceneGameObject,
+              {||},
+              state,
+            )
+          )
+          |> toThrowMessage("expect map be basicSourceTexture");
+        });
+      });
     });
 
     describe("test basic material", () => {

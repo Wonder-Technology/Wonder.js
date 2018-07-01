@@ -153,7 +153,30 @@ let _buildDiffuseMap =
       (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
       (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
       state,
-    ) =>
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|map be basicSourceTexture|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              TypeSourceTextureMainService.isBasicSourceTexture(
+                diffuseMap,
+                state,
+              )
+              |> assertTrue
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   switch (textureIndexMap |> WonderCommonlib.SparseMapService.get(diffuseMap)) {
   | Some(existedTextureIndex) => (
       (
@@ -211,6 +234,7 @@ let _buildDiffuseMap =
       (textureIndexMap, samplerIndexMap, imageMap),
     );
   };
+};
 
 let build = (materialDataMap, imageBase64Map, state) => {
   WonderLog.Contract.requireCheck(
