@@ -1,8 +1,15 @@
 open BlobType;
 
-[@bs.new]
-external newBlobFromArrayBuffer : array(Js.Typed_array.ArrayBuffer.t) => blob =
-  "Blob";
+/* [@bs.new]
+   external newBlobFromArrayBuffer :
+     (array(Js.Typed_array.ArrayBuffer.t), Js.t({. type: string})) => blob =
+     "Blob"; */
+
+let newBlobFromArrayBuffer = [%raw
+  (arrayBuffer, type_) => {|
+return new Blob([arrayBuffer], {type: type_})
+  |}
+];
 
 let createObjectURL = [%raw
   blob => {|
@@ -12,6 +19,6 @@ let createObjectURL = [%raw
 
 let revokeObjectURL = [%raw
   blob => {|
-     return URL.revokeObjectURL( blob )
+     URL.revokeObjectURL( blob );
     |}
 ];

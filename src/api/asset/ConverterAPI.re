@@ -1,4 +1,4 @@
-let convertGLTFToWD = (gltfFileContent: string) =>
-  ConvertGLTFSystem.convert(gltfFileContent);
+/* let convertGLTFToWDB = (gltfFileContent: string) =>
+  ConvertGLTFSystem.convert(gltfFileContent); */
 
-let convertGLBToWD = glb => ConvertGLTFSystem.convertGlb(glb);
+let convertGLBToWDB = glb => ConvertGLTFSystem.convertGLB(glb);

@@ -59,6 +59,12 @@ type textureData = {
   source: int,
 };
 
+type imageData = {
+  bufferView: int,
+  mimeType: string,
+  uint8Array: Js.Typed_array.Uint8Array.t,
+};
+
 type materialData = {
   baseColorFactor: option(array(float)),
   baseColorTexture: option(int),

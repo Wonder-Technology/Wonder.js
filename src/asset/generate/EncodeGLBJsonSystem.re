@@ -255,11 +255,14 @@ let _encodeSamplers = samplerDataArr => (
   |> jsonArray,
 );
 
-let _encodeImages = imageBase64Arr => (
+let _encodeImages = imageUint8DataArr => (
   "images",
-  imageBase64Arr
-  |> Js.Array.map((base64Str: string) => {
-       let list = [("uri", base64Str |> string)];
+  imageUint8DataArr
+  |> Js.Array.map(({bufferView, mimeType}) => {
+       let list = [
+         ("bufferView", bufferView |> int),
+         ("mimeType", mimeType |> string),
+       ];
 
        list |> object_;
      })
@@ -411,16 +414,9 @@ let _encodeExtensions = lightDataArr => (
   |> object_,
 );
 
-let _encodeBuffers = (totalByteLength, buffer) => (
+let _encodeBuffers = totalByteLength => (
   "buffers",
-  [|
-    [
-      ("byteLength", totalByteLength |> int),
-      ("uri", Base64ArrayBufferCommon.encode(buffer) |> string),
-    ]
-    |> object_,
-  |]
-  |> jsonArray,
+  [|[("byteLength", totalByteLength |> int)] |> object_|] |> jsonArray,
 );
 
 let _encodeBufferViews = bufferViewDataArr => (
@@ -465,7 +461,7 @@ let _hasExtensions = lightDataArr => lightDataArr |> Js.Array.length > 0;
 
 let encode =
     (
-      (buffer, totalByteLength),
+      totalByteLength,
       (
         nodeDataArr,
         bufferViewDataArr,
@@ -474,7 +470,7 @@ let encode =
         materialDataArr,
         textureDataArr,
         samplerDataArr,
-        imageBase64Arr,
+        imageUint8DataArr,
         cameraDataArr,
         lightDataArr,
         extensionsUsedArr,
@@ -490,8 +486,8 @@ let encode =
     _encodeMaterials(materialDataArr),
     _encodeTextures(textureDataArr),
     _encodeSamplers(samplerDataArr),
-    _encodeImages(imageBase64Arr),
-    _encodeBuffers(totalByteLength, buffer),
+    _encodeImages(imageUint8DataArr),
+    _encodeBuffers(totalByteLength),
     _encodeBufferViews(bufferViewDataArr),
     _encodeAccessors(accessorDataArr),
     _encodeMeshes(meshDataArr),

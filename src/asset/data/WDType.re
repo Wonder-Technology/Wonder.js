@@ -94,11 +94,13 @@ type accessor = {
   type_: accessorType,
 };
 
-type buffer = {
+/* type buffer = {
   uri: option(string),
   buffer: option(Js.Typed_array.ArrayBuffer.t),
   byteLength: int,
-};
+}; */
+
+/* type wdbBuffer = {byteLength: int}; */
 
 /* type bufferViewTarget =
    | ARRAY_BUFFER
@@ -112,14 +114,19 @@ type bufferView = {
   /* target: bufferViewTarget */
 };
 
-type uriImage = {uriBase64: string};
+/* type uriImage = {uriBase64: string};
 
-type mimeType =
+/* type mimeType =
   | PNG
   | JPEG
-  | UNKNOWN;
+  | UNKNOWN; */
 
-type blobImage = {objectUrl: string};
+type blobImage = {objectUrl: string}; */
+
+type image = {
+  bufferView: bufferViewIndex,
+  mimeType: string,
+};
 
 type basicSourceTexture = {
   name: string,
@@ -202,7 +209,7 @@ type scene = {
   ambientLight: option(ambientLight),
 };
 
-type wd = {
+/* type wd = {
   asset,
   scene,
   indices,
@@ -212,6 +219,26 @@ type wd = {
   basicSourceTextures: array(basicSourceTexture),
   samplers: array(sampler),
   buffers: array(buffer),
+  bufferViews: array(bufferView),
+  accessors: array(accessor),
+  directionLights: array(directionLight),
+  pointLights: array(pointLight),
+  basicCameraViews,
+  perspectiveCameraProjections: array(perspectiveCameraProjection),
+  transforms: array(transform),
+  customGeometrys: array(option(customGeometry)),
+  lightMaterials: array(lightMaterial),
+}; */
+
+type wd = {
+  asset,
+  scene,
+  indices,
+  gameObjects,
+  images: option(array(image)),
+  basicSourceTextures: array(basicSourceTexture),
+  samplers: array(sampler),
+  buffers: array(int),
   bufferViews: array(bufferView),
   accessors: array(accessor),
   directionLights: array(directionLight),

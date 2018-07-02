@@ -1,7 +1,7 @@
 open StateDataMainType;
 
-let generateEmbededGLTF = (sceneGameObject, imageBase64Map, state) =>
-  GenerateGLTFSystem.generateEmbededGLTF(sceneGameObject, imageBase64Map, state);
+let generateGLBData = (sceneGameObject, imageBase64Map, state) =>
+  GenerateGLBSystem.generateGLBData(sceneGameObject, imageBase64Map, state);
 
-let generateEmbededWD = (sceneGameObject, imageBase64Map, state) =>
-  GenerateWDSystem.generateEmbededWD(sceneGameObject, imageBase64Map, state);
+let generateWDB = (sceneGameObject, imageBase64Map, state) =>
+  GenerateWDBSystem.generateWDB(sceneGameObject, imageBase64Map, state);

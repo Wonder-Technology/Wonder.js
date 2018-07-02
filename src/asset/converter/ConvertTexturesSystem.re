@@ -89,7 +89,7 @@ let convertToBasicSourceTextures =
                       _getFormat(
                         uri
                         |> OptionService.unsafeGet
-                        |> ConvertCommon.getBase64MimeType,
+                        |> BinaryUtils.getBase64MimeType,
                       ) :
                       _getFormat(mimeType |> OptionService.unsafeGet);
                   },

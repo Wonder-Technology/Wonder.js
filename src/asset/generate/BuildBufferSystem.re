@@ -3,6 +3,9 @@ open Js.Typed_array;
 let _getFloat1 =
   (. typeArray, index) => Float32Array.unsafe_get(typeArray, index);
 
+let _getUint8_1 =
+  (. typeArray, index) => Uint8Array.unsafe_get(typeArray, index);
+
 let _getUint16_1 =
   (. typeArray, index) => Uint16Array.unsafe_get(typeArray, index);
 
@@ -21,7 +24,7 @@ let _fillBuffer =
   (dataView, offset^);
 };
 
-let build = (totalByteLength, meshPointDataMap) => {
+let build = (totalByteLength, meshPointDataMap, imageUint8DataArr) => {
   let buffer = ArrayBuffer.make(totalByteLength);
 
   let dataView = DataViewCommon.create(buffer);
@@ -72,5 +75,20 @@ let build = (totalByteLength, meshPointDataMap) => {
          },
          (dataView, 0),
        );
+
+  let (dataView, offset) =
+    imageUint8DataArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           (dataView, offset),
+           {uint8Array}: GenerateSceneGraphType.imageData,
+         ) =>
+           _fillBuffer(
+             (dataView, uint8Array, uint8Array |> Uint8Array.length, offset),
+             (DataViewCommon.writeUint8_1, _getUint8_1),
+           ),
+         (dataView, offset),
+       );
+
   buffer;
 };

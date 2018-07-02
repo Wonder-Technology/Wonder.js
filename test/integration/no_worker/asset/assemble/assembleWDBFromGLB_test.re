@@ -1,9 +1,9 @@
-open Wonder_jest;
+/* open Wonder_jest;
 
 open Js.Promise;
 
 let _ =
-  describe("assemble wd from glb", () => {
+  describe("assemble wdb from glb", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -30,11 +30,11 @@ let _ =
       describe("test diffuseMaps", () => {
         describe("test set texture name", () =>
           testPromise("test", () =>
-            AssembleWDSystemTool.testGlb(
+            AssembleWDBSystemTool.testGLB(
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                        diffuseMap,
@@ -48,11 +48,11 @@ let _ =
         );
 
         testPromise("set not flipY", () =>
-          AssembleWDSystemTool.testGlb(
+          AssembleWDBSystemTool.testGLB(
             sandbox^,
             ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
-              AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    BasicSourceTextureAPI.getBasicSourceTextureFlipY(
                      diffuseMap,
@@ -66,11 +66,11 @@ let _ =
         );
 
         testPromise("test set other data", () =>
-          AssembleWDSystemTool.testGlb(
+          AssembleWDBSystemTool.testGLB(
             sandbox^,
             ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
-              AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    (
                      BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
@@ -106,11 +106,11 @@ let _ =
         );
 
         testPromise("test set source", () =>
-          AssembleWDSystemTool.testGlb(
+          AssembleWDBSystemTool.testGLB(
             sandbox^,
             ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
-              AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
                      diffuseMap,
@@ -124,11 +124,11 @@ let _ =
 
         describe("test set format", () => {
           testPromise("png source should set RGBA format", () =>
-            AssembleWDSystemTool.testGlb(
+            AssembleWDBSystemTool.testGLB(
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.getBasicSourceTextureFormat(
                        diffuseMap,
@@ -141,11 +141,11 @@ let _ =
           );
 
           testPromise("jpeg source should set RGB format", () =>
-            AssembleWDSystemTool.testGlb(
+            AssembleWDBSystemTool.testGLB(
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.getBasicSourceTextureFormat(
                        diffuseMap,
@@ -170,4 +170,4 @@ let _ =
         });
       })
     );
-  });
+  }); */

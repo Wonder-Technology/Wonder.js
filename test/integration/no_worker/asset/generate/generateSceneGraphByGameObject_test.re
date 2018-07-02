@@ -1,4 +1,4 @@
-open Wonder_jest;
+/* open Wonder_jest;
 
 open Js.Typed_array;
 
@@ -692,7 +692,7 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sceneGameObject,
             ((state, sceneGameObject)) =>
-              AssembleWDSystemTool.getAllGeometryData(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllGeometryData(sceneGameObject, state)
               |>
               expect == [|
                           (
@@ -1066,7 +1066,7 @@ let _ =
             ((state, sceneGameObject)) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
-              AssembleWDSystemTool.getAllGeometryData(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllGeometryData(sceneGameObject, state)
               |>
               expect == [|
                           (
@@ -2110,7 +2110,7 @@ let _ =
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sceneGameObject,
           ((state, sceneGameObject)) =>
-            AssembleWDSystemTool.getAllDirectionLightData(
+            AssembleWDBSystemTool.getAllDirectionLightData(
               sceneGameObject,
               state,
             )
@@ -2138,7 +2138,7 @@ let _ =
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sceneGameObject,
           ((state, sceneGameObject)) =>
-            AssembleWDSystemTool.getAllPointLightData(sceneGameObject, state)
+            AssembleWDBSystemTool.getAllPointLightData(sceneGameObject, state)
             |>
             expect == [|
                         (
@@ -2282,4 +2282,4 @@ let _ =
         });
       })
     );
-  });
+  }); */

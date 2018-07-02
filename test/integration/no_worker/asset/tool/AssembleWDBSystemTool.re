@@ -19,28 +19,28 @@ let buildGLTFJsonOfMultiSceneGameObjects = () =>
     (),
   );
 
-let testResult = (gltfJson, testFunc, state) => {
+/* let testResult = (gltfJson, testFunc, state) => {
   open Js.Promise;
   let result = ref(Obj.magic(1));
 
   ConvertTool.buildFakeLoadImage();
 
-  AssembleWDAPI.assembleGLTF(gltfJson, state)
+  AssembleWDBAPI.assembleGLTF(gltfJson, state)
   |> Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
-};
+}; */
 
-let testGlb = (sandbox, glbFilePath, testFunc, state) => {
+/* let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, wdRecord =>
-    AssembleWDAPI.assembleWD(wdRecord, state)
+    AssembleWDBAPI.assembleWD(wdRecord, state)
     |> Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );
-};
+}; */
 
 let _getChildren = (parent, state) =>
   TransformAPI.unsafeGetTransformChildren(parent, state)

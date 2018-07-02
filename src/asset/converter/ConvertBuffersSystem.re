@@ -1,21 +1,9 @@
-let convertToBuffers =
-    (binBuffer, {buffers}: GLTFType.gltf)
-    : array(WDType.buffer) =>
+let convertToBuffers = ({buffers}: GLTFType.gltf) : array(int) =>
   buffers
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. arr, {uri, byteLength}: GLTFType.buffer) =>
-         switch (uri) {
-         | None =>
-           arr
-           |> ArrayService.push(
-                {uri: None, byteLength, buffer: binBuffer}: WDType.buffer,
-              )
-         | Some(uri) =>
-           arr
-           |> ArrayService.push(
-                {uri: Some(uri), byteLength, buffer: None}: WDType.buffer,
-              )
-         },
+       (. arr, {byteLength}: GLTFType.buffer) =>
+         /* let buffer = byteLength; */
+         arr |> ArrayService.push(byteLength),
        [||],
      );
 

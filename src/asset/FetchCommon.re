@@ -2,5 +2,8 @@ open Js.Promise;
 
 open Most;
 
-let createFetchJsonStream = (jsonFilePath, fetchFunc) =>
-  fromPromise(fetchFunc(jsonFilePath) |> then_(Fetch.Response.json));
+let createFetchJsonStream = (filePath, fetchFunc) =>
+  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.json));
+
+let createFetchArrayBufferStream = (filePath, fetchFunc) =>
+  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.arrayBuffer));

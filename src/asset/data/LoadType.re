@@ -1,1 +1,3 @@
-external jsonToWDRecord : Js.Json.t => WDType.wd = "%identity";
+external fetchArrayBufferToArrayBuffer :
+  Fetch.arrayBuffer => Js.Typed_array.ArrayBuffer.t =
+  "%identity";

@@ -61,44 +61,121 @@ let _convertImageToBase64 = [%raw
     var canvas = document.createElement("canvas");
     var ctx = canvas.getContext("2d");
     var dataURL = null;
-
     canvas.height = width;
     canvas.width = height;
-
     ctx.drawImage(image, 0, 0);
-
     return canvas.toDataURL();
     |}
 ];
 
+let _getLastBufferViewOffset = bufferViewDataArr => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|bufferViewDataArr.length >= 1|j},
+                ~actual={j|is 0|j},
+              ),
+              () =>
+              bufferViewDataArr |> Js.Array.length >= 1
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = bufferViewDataArr[(
+                                                                    bufferViewDataArr
+                                                                    |> Js.Array.length
+                                                                    )
+                                                                    - 1];
+
+  byteOffset + byteLength;
+};
+
+let _convertBase64MimeTypeToWDBMimeType = mimeType =>
+  switch (mimeType) {
+  | "image/png"
+  | "image/jpeg" => mimeType
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_convertBase64MimeTypeToWDBMimeType",
+        ~description={j|unknown mimeType: $mimeType|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  };
+
 let _addImageData =
-    ((texture, imageMap, state), imageBase64Map, imageBase64Arr) => {
+    (
+      (texture, imageMap, state),
+      imageBase64Map,
+      imageUint8DataArr,
+      (totalByteLength, bufferViewDataArr),
+    ) => {
+  open Js.Typed_array;
+
   let source =
     OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
 
   switch (imageMap |> SparseMapService.indexOf(source)) {
   | imageIndex when imageIndex === (-1) =>
-    let imageIndex = imageBase64Arr |> Js.Array.length;
+    let imageIndex = imageUint8DataArr |> Js.Array.length;
+
+    let imageBase64 =
+      switch (imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)) {
+      | None =>
+        _convertImageToBase64(
+          TextureSizeService.getWidth(source),
+          TextureSizeService.getHeight(source),
+          source,
+        )
+      | Some(base64Str) => base64Str
+      };
+
+    let imageUint8Array = BinaryUtils.convertBase64ToBinary(imageBase64);
+
+    let imageUint8ArrayByteLength =
+      imageUint8Array |> Uint8Array.byteLength |> BinaryUtils.alignedLength;
 
     (
       imageIndex,
       imageMap |> WonderCommonlib.SparseMapService.set(imageIndex, source),
-      imageBase64Arr
+      imageUint8DataArr
       |> ArrayService.push(
-           switch (
-             imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)
-           ) {
-           | None =>
-             _convertImageToBase64(
-               TextureSizeService.getWidth(source),
-               TextureSizeService.getHeight(source),
-               source,
-             )
-           | Some(base64Str) => base64Str
-           },
+           {
+             bufferView: bufferViewDataArr |> Js.Array.length,
+             mimeType:
+               BinaryUtils.getBase64MimeType(imageBase64)
+               |> _convertBase64MimeTypeToWDBMimeType,
+             uint8Array: imageUint8Array,
+           }: GenerateSceneGraphType.imageData,
          ),
+      (
+        totalByteLength + imageUint8ArrayByteLength,
+        bufferViewDataArr
+        |> ArrayService.push(
+             {
+               buffer: 0,
+               byteOffset: _getLastBufferViewOffset(bufferViewDataArr),
+               byteLength: imageUint8ArrayByteLength,
+             }: GenerateSceneGraphType.bufferViewData,
+           ),
+      ),
     );
-  | imageIndex => (imageIndex, imageMap, imageBase64Arr)
+  | imageIndex => (
+      imageIndex,
+      imageMap,
+      imageUint8DataArr,
+      (totalByteLength, bufferViewDataArr),
+    )
   };
 };
 
@@ -116,8 +193,9 @@ let _addTextureData =
 let _buildNoDiffuseMap =
     (
       (lightMaterial, name),
-      (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+      (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
       (textureIndexMap, samplerIndexMap, imageMap),
+      (totalByteLength, bufferViewDataArr),
       state,
     ) => {
   let diffuseColor =
@@ -141,17 +219,19 @@ let _buildNoDiffuseMap =
          ),
       textureDataArr,
       samplerDataArr,
-      imageBase64Arr,
+      imageUint8DataArr,
     ),
     (textureIndexMap, samplerIndexMap, imageMap),
+    (totalByteLength, bufferViewDataArr),
   );
 };
 
 let _buildDiffuseMap =
     (
       (diffuseMap, name),
-      (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+      (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
       (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+      (totalByteLength, bufferViewDataArr),
       state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -190,9 +270,10 @@ let _buildDiffuseMap =
            ),
         textureDataArr,
         samplerDataArr,
-        imageBase64Arr,
+        imageUint8DataArr,
       ),
       (textureIndexMap, samplerIndexMap, imageMap),
+      (totalByteLength, bufferViewDataArr),
     )
 
   | None =>
@@ -205,11 +286,17 @@ let _buildDiffuseMap =
     let (samplerIndex, samplerIndexMap, samplerDataArr) =
       _addSamplerData(diffuseMap, samplerIndexMap, state, samplerDataArr);
 
-    let (imageIndex, imageMap, imageBase64Arr) =
+    let (
+      imageIndex,
+      imageMap,
+      imageUint8DataArr,
+      (totalByteLength, bufferViewDataArr),
+    ) =
       _addImageData(
         (diffuseMap, imageMap, state),
         imageBase64Map,
-        imageBase64Arr,
+        imageUint8DataArr,
+        (totalByteLength, bufferViewDataArr),
       );
 
     (
@@ -229,14 +316,21 @@ let _buildDiffuseMap =
           textureDataArr,
         ),
         samplerDataArr,
-        imageBase64Arr,
+        imageUint8DataArr,
       ),
       (textureIndexMap, samplerIndexMap, imageMap),
+      (totalByteLength, bufferViewDataArr),
     );
   };
 };
 
-let build = (materialDataMap, imageBase64Map, state) => {
+let build =
+    (
+      materialDataMap,
+      imageBase64Map,
+      (totalByteLength, bufferViewDataArr),
+      state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -248,15 +342,22 @@ let build = (materialDataMap, imageBase64Map, state) => {
   );
 
   let (
-    (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+    (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
     (textureIndexMap, samplerIndexMap, imageMap),
+    (totalByteLength, bufferViewDataArr),
   ) =
     materialDataMap
     |> SparseMapService.reduceValid(
          (.
            (
-             (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr),
+             (
+               materialDataArr,
+               textureDataArr,
+               samplerDataArr,
+               imageUint8DataArr,
+             ),
              (textureIndexMap, samplerIndexMap, imageMap),
+             (totalByteLength, bufferViewDataArr),
            ),
            (lightMaterial, name),
          ) => {
@@ -274,9 +375,10 @@ let build = (materialDataMap, imageBase64Map, state) => {
                  materialDataArr,
                  textureDataArr,
                  samplerDataArr,
-                 imageBase64Arr,
+                 imageUint8DataArr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap),
+               (totalByteLength, bufferViewDataArr),
                state,
              )
 
@@ -287,9 +389,10 @@ let build = (materialDataMap, imageBase64Map, state) => {
                  materialDataArr,
                  textureDataArr,
                  samplerDataArr,
-                 imageBase64Arr,
+                 imageUint8DataArr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+               (totalByteLength, bufferViewDataArr),
                state,
              )
            };
@@ -297,7 +400,14 @@ let build = (materialDataMap, imageBase64Map, state) => {
          (
            ([||], [||], [||], [||]),
            ([||], WonderCommonlib.HashMapService.createEmpty(), [||]),
+           (totalByteLength, bufferViewDataArr),
          ),
        );
-  (materialDataArr, textureDataArr, samplerDataArr, imageBase64Arr);
+  (
+    materialDataArr,
+    textureDataArr,
+    samplerDataArr,
+    imageUint8DataArr,
+    (totalByteLength, bufferViewDataArr),
+  );
 };

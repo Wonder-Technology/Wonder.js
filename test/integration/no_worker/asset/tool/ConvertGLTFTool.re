@@ -1367,10 +1367,10 @@ let buildGLTFJsonOfTexture = () =>
     (),
   );
 
-let testResult = (gltfJson, testFunc) => {
+/* let testResult = (gltfJson, testFunc) => {
   ConvertTool.buildFakeLoadImage();
-  ConverterAPI.convertGLTFToWD(gltfJson) |> testFunc;
-};
+  ConverterAPI.convertGLTFToWDB(gltfJson) |> testFunc;
+}; */
 
 let getDefaultDiffuseColor = () => [|1., 1., 1.|];
 

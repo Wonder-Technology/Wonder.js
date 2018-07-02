@@ -30,9 +30,22 @@ let writeFloat =
     offset + 4;
   };
 
+let writeUint8_1 =
+  (. value, offset, dataView) => {
+    DataView.setUint8(dataView, offset, value);
+
+    offset + 1;
+  };
+
 let writeUint16_1 =
   (. value, offset, dataView) => {
     DataView.setUint16LittleEndian(dataView, offset, value);
     /* (dataView, offset + 2); */
     offset + 2;
   };
+
+let writeUint32_1BigEndian = (value, offset, dataView) => {
+  DataView.setUint32(dataView, offset, value);
+
+  offset + 4;
+};

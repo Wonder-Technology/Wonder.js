@@ -1500,7 +1500,7 @@ let performanceTestData = {
             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
                 var n1 = performance.now();
 
-                var wdRecord = wd.convertGLTFToWD(getGLTFJsonOfTruck());
+                var wdRecord = wd.convertGLTFToWDB(getGLTFJsonOfTruck());
 
                 var n2 = performance.now();
 
@@ -1511,7 +1511,7 @@ let performanceTestData = {
                     .forEach(([state, sceneGameObject]) => {
                         n3 = performance.now();
 
-                        var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state);
+                        var [state, wdRecord] = wd.generateWDB(sceneGameObject, wd.createSparseMap(), state);
 
                         n4 = performance.now();
                     })

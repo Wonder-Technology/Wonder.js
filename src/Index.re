@@ -1,16 +1,8 @@
-let assembleGLB = AssembleWDAPI.assembleGLB;
+let assembleGLB = AssembleWDBAPI.assembleGLB;
 
-let assembleGLTF = AssembleWDAPI.assembleGLTF;
+let convertGLBToWDB = ConverterAPI.convertGLBToWDB;
 
-let assembleWD = AssembleWDAPI.assembleWD;
-
-let convertGLBToWD = ConverterAPI.convertGLBToWD;
-
-let convertGLTFToWD = ConverterAPI.convertGLTFToWD;
-
-let generateEmbededWD = GenerateSceneGraphAPI.generateEmbededWD;
-
-let generateEmbededGLTF = GenerateSceneGraphAPI.generateEmbededGLTF;
+let generateWDB = GenerateSceneGraphAPI.generateWDB;
 
 let loadWD = LoaderManagerAPI.loadWD;
 

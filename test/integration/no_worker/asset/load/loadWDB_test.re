@@ -1,9 +1,9 @@
-open Wonder_jest;
+/* open Wonder_jest;
 
 open Js.Promise;
 
 let _ =
-  describe("load wd", () => {
+  describe("load wdb", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -37,11 +37,11 @@ let _ =
       let fetchFunc =
         _buildFakeFetch(sandbox, ConvertGLTFTool.buildGLTFJsonOfSingleNode());
 
-      LoadWDTool.load(~wdPath="../singleNode.wd", ~fetchFunc, ())
+      LoadWDBTool.load(~wdPath="../singleNode.wd", ~fetchFunc, ())
       |> then_(((state, gameObject)) =>
-           AssembleWDSystemTool.getAllGameObjects(gameObject, state)
+           AssembleWDBSystemTool.getAllGameObjects(gameObject, state)
            |> expect == [|gameObject|]
            |> resolve
          );
     });
-  });
+  }); */

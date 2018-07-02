@@ -27,6 +27,21 @@ let buildFakeTextDecoder = [%raw
     |}
 ];
 
+let buildFakeTextEncoder = [%raw
+  () => {|
+        var TextEncoder = function(){
+        };
+
+        TextEncoder.prototype.encnode = (str) => {
+          var buffer = Buffer.from(str, "utf8");
+
+          return buffer;
+        };
+
+        window.TextEncoder = TextEncoder;
+    |}
+];
+
 let buildFakeURL = [%raw
   sandbox => {|
         var URL = {
@@ -51,9 +66,15 @@ let buildGLBFilePath = glbFileName =>
 let testResult = (sandbox, glbFilePath, testFunc) => {
   ConvertTool.buildFakeLoadImage();
   buildFakeTextDecoder(_convertUint8ArrayToBuffer);
+  buildFakeTextEncoder();
   buildFakeURL(sandbox);
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
-  testFunc(ConverterAPI.convertGLBToWD(buffer##buffer));
+  let wdb = ConverterAPI.convertGLBToWDB(buffer##buffer);
+
+  let (wdFileContent, binBuffer) =
+    BinaryUtils.decode(wdb, AssembleWDBSystem._checkWDB);
+
+  testFunc((wdFileContent |> Js.Json.parseExn |> Obj.magic, binBuffer));
 };

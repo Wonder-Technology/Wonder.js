@@ -1,12 +1,12 @@
-let generateEmbededGLTF = (sceneGameObject, imageBase64Map, state) =>
-  GenerateSceneGraphSystem.generateEmbededGLTF(
+/* let generateGLBData = (sceneGameObject, imageBase64Map, state) =>
+  GenerateSceneGraphSystem.generateGLBData(
     sceneGameObject,
     imageBase64Map,
     state,
-  );
+  ); */
 
-let generateEmbededWD = (sceneGameObject, imageBase64Map, state) =>
-  GenerateSceneGraphSystem.generateEmbededWD(
+let generateWDB = (sceneGameObject, imageBase64Map, state) =>
+  GenerateSceneGraphSystem.generateWDB(
     sceneGameObject,
     imageBase64Map,
     state,

@@ -141,28 +141,29 @@ let _getBatchTextureData =
 );
 
 let _getBatchAllTypeTextureData =
-    (
-      lightMaterialArr,
-      basicSourceTextureArr,
-      (imageBase64Arr, imageBlobObjectUrlArr),
-      wdRecord,
-    ) =>
-  switch (imageBase64Arr) {
-  | Some(imageBase64Arr) =>
-    _getBatchTextureData(
-      lightMaterialArr,
-      basicSourceTextureArr,
-      imageBase64Arr,
-      wdRecord,
-    )
-  | None =>
-    _getBatchTextureData(
-      lightMaterialArr,
-      basicSourceTextureArr,
-      imageBlobObjectUrlArr |> OptionService.unsafeGet,
-      wdRecord,
-    )
-  };
+    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wdRecord) =>
+  /* switch (imageBase64Arr) {
+     | Some(imageBase64Arr) =>
+       _getBatchTextureData(
+         lightMaterialArr,
+         basicSourceTextureArr,
+         imageBase64Arr,
+         wdRecord,
+       )
+     | None =>
+       _getBatchTextureData(
+         lightMaterialArr,
+         basicSourceTextureArr,
+         blobObjectUrlImageArr |> OptionService.unsafeGet,
+         wdRecord,
+       )
+     }; */
+  _getBatchTextureData(
+    lightMaterialArr,
+    basicSourceTextureArr,
+    blobObjectUrlImageArr,
+    wdRecord,
+  );
 
 let _getAccessorTypeSize = ({type_}) =>
   switch (type_) {
@@ -502,7 +503,7 @@ let batchOperate =
         basicSourceTextures,
         /* arrayBufferViewSourceTextures, */
       } as wdRecord,
-      imageArrTuple,
+      blobObjectUrlImageArr,
       bufferArr,
       (
         state,
@@ -575,7 +576,7 @@ let batchOperate =
     _getBatchAllTypeTextureData(
       lightMaterialArr,
       basicSourceTextureArr,
-      imageArrTuple,
+      blobObjectUrlImageArr,
       wdRecord,
     );
 
