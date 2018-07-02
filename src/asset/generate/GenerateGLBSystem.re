@@ -87,21 +87,24 @@ let generateGLBData = (sceneGameObject, imageBase64Map, state) => {
   let extensionsUsedArr =
     BuildExtensionDataSystem.buildExtensionsUsed(lightDataArr);
 
-  EncodeGLBJsonSystem.encode(
-    totalByteLength,
-    (
-      nodeDataArr,
-      bufferViewDataArr,
-      accessorDataArr,
-      meshDataArr,
-      materialDataArr,
-      textureDataArr,
-      samplerDataArr,
-      imageUint8DataArr,
-      cameraDataArr,
-      lightDataArr,
-      extensionsUsedArr,
+  (
+    EncodeGLBJsonSystem.encode(
+      totalByteLength,
+      (
+        nodeDataArr,
+        bufferViewDataArr,
+        accessorDataArr,
+        meshDataArr,
+        materialDataArr,
+        textureDataArr,
+        samplerDataArr,
+        imageUint8DataArr,
+        cameraDataArr,
+        lightDataArr,
+        extensionsUsedArr,
+      ),
+      state,
     ),
-    state,
+    buffer,
   );
 };

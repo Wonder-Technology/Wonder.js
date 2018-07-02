@@ -1,5 +1,18 @@
 open Js.Typed_array;
 
+let alignedLength = (value: int) : int =>
+  switch (value) {
+  | 0 => value
+  | value =>
+    let alignValue = 4;
+    switch (value mod alignValue) {
+    | 0 => value
+    | multiple => value + (alignValue - multiple)
+    };
+  };
+
+let _removeAlignedEmptyChars = decodedStr => decodedStr |> Js.String.trim;
+
 let decode = (binary: ArrayBuffer.t, checkFunc) => {
   let dataView = DataViewCommon.create(binary);
   let dataView = checkFunc(dataView);
@@ -10,22 +23,11 @@ let decode = (binary: ArrayBuffer.t, checkFunc) => {
     decoder
     |> TextDecoder.decodeUint8Array(
          Uint8Array.fromBufferRange(binary, ~offset=20, ~length=jsonBufSize),
-       ),
+       )
+    |> _removeAlignedEmptyChars,
     binary |> ArrayBuffer.sliceFrom(jsonBufSize + 28),
   );
 };
-
-let alignedLength = (value: int) : int =>
-  switch (value) {
-  | 0 => value
-  | value =>
-    let alignValue = 4;
-
-    switch (value mod alignValue) {
-    | 0 => value
-    | multiple => value + (alignValue - multiple)
-    };
-  };
 
 let convertBase64ToBinary = [%raw
   dataURI => {|
@@ -37,7 +39,7 @@ let convertBase64ToBinary = [%raw
     var rawLength = raw.length;
     var array = new Uint8Array(new ArrayBuffer(rawLength));
 
-    for(i = 0; i < rawLength; i++) {
+    for(var i = 0; i < rawLength; i++) {
       array[i] = raw.charCodeAt(i);
     }
     return array;

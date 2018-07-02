@@ -314,23 +314,23 @@ let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) => 
   (state, indexArr);
 };
 
-let batchCreate = (wdRecord, state) => {
-  let (state, gameObjectArr) = _batchCreateGameObject(wdRecord, state);
-  let (state, transformArr) = _batchCreateTransform(wdRecord, state);
+let batchCreate = (wd, state) => {
+  let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
+  let (state, transformArr) = _batchCreateTransform(wd, state);
   let (state, customGeometryArr) =
-    _batchCreateCustomGeometry(wdRecord, state);
+    _batchCreateCustomGeometry(wd, state);
   let (state, basicCameraViewArr) =
-    _batchCreateBasicCameraView(wdRecord, state);
+    _batchCreateBasicCameraView(wd, state);
   let (state, perspectiveCameraProjectionArr) =
-    _batchCreatePerspectiveCameraProjection(wdRecord, state);
-  let (state, lightMaterialArr) = _batchCreateLightMaterial(wdRecord, state);
+    _batchCreatePerspectiveCameraProjection(wd, state);
+  let (state, lightMaterialArr) = _batchCreateLightMaterial(wd, state);
   let (state, basicSourceTextureArr) =
-    _batchCreateBasicSourceTextureArr(wdRecord, state);
+    _batchCreateBasicSourceTextureArr(wd, state);
   /* let (state, arrayBufferViewSourceTextureArr) =
-     _batchCreateArrayBufferViewSourceTextureArr(wdRecord, state); */
+     _batchCreateArrayBufferViewSourceTextureArr(wd, state); */
   let (state, directionLightArr) =
-    _batchCreateDirectionLightArr(wdRecord, state);
-  let (state, pointLightArr) = _batchCreatePointLightArr(wdRecord, state);
+    _batchCreateDirectionLightArr(wd, state);
+  let (state, pointLightArr) = _batchCreatePointLightArr(wd, state);
 
   (
     state,

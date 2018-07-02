@@ -33,7 +33,7 @@ let _getBatchComponentGameObjectData =
         pointLightArr,
       ),
       indices,
-      wdRecord,
+      wd,
       state,
     ) => {
   let parentTransforms =
@@ -71,7 +71,7 @@ let _getBatchComponentGameObjectData =
     |> _getBatchArrByIndices(lightMaterialArr);
 
   let (state, meshRendererArr) =
-    _batchCreateMeshRendererArr(lightMaterialGameObjects, wdRecord, state);
+    _batchCreateMeshRendererArr(lightMaterialGameObjects, wd, state);
 
   (
     (
@@ -141,28 +141,28 @@ let _getBatchTextureData =
 );
 
 let _getBatchAllTypeTextureData =
-    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wdRecord) =>
+    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
   /* switch (imageBase64Arr) {
      | Some(imageBase64Arr) =>
        _getBatchTextureData(
          lightMaterialArr,
          basicSourceTextureArr,
          imageBase64Arr,
-         wdRecord,
+         wd,
        )
      | None =>
        _getBatchTextureData(
          lightMaterialArr,
          basicSourceTextureArr,
          blobObjectUrlImageArr |> OptionService.unsafeGet,
-         wdRecord,
+         wd,
        )
      }; */
   _getBatchTextureData(
     lightMaterialArr,
     basicSourceTextureArr,
     blobObjectUrlImageArr,
-    wdRecord,
+    wd,
   );
 
 let _getAccessorTypeSize = ({type_}) =>
@@ -237,22 +237,22 @@ let _getBufferData =
   createTypeArrayFunc(pointArr);
 };
 
-let _getBufferAttributeData = (accessorIndex, dataViewArr, wdRecord) =>
+let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
   _getBufferData(
-    wdRecord,
+    wd,
     (accessorIndex, dataViewArr, Float32Array._BYTES_PER_ELEMENT),
     (DataViewCommon.getFloat, Float32Array.make),
   );
 
-let _getBufferIndexData = (accessorIndex, dataViewArr, wdRecord) =>
+let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
   _getBufferData(
-    wdRecord,
+    wd,
     (accessorIndex, dataViewArr, Uint16Array._BYTES_PER_ELEMENT),
     (DataViewCommon.getUint16_1, Uint16Array.make),
   );
 
 let _batchSetCustomGeometryData =
-    ({customGeometrys} as wdRecord, customGeometryArr, bufferArr, state) => {
+    ({customGeometrys} as wd, customGeometryArr, bufferArr, state) => {
   let dataViewArr =
     bufferArr |> Js.Array.map(buffer => DataViewCommon.create(buffer));
 
@@ -268,7 +268,7 @@ let _batchSetCustomGeometryData =
            let state =
              VerticesCustomGeometryMainService.setVerticesByTypeArray(
                customGeometry,
-               _getBufferAttributeData(position, dataViewArr, wdRecord),
+               _getBufferAttributeData(position, dataViewArr, wd),
                state,
              );
            let state =
@@ -277,7 +277,7 @@ let _batchSetCustomGeometryData =
              | Some(normal) =>
                NormalsCustomGeometryMainService.setNormalsByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(normal, dataViewArr, wdRecord),
+                 _getBufferAttributeData(normal, dataViewArr, wd),
                  state,
                )
              };
@@ -287,14 +287,14 @@ let _batchSetCustomGeometryData =
              | Some(texCoord) =>
                TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(texCoord, dataViewArr, wdRecord),
+                 _getBufferAttributeData(texCoord, dataViewArr, wd),
                  state,
                )
              };
            let state =
              IndicesCustomGeometryMainService.setIndicesByTypeArray(
                customGeometry,
-               _getBufferIndexData(index, dataViewArr, wdRecord),
+               _getBufferIndexData(index, dataViewArr, wd),
                state,
              );
            state;
@@ -502,7 +502,7 @@ let batchOperate =
         gameObjects,
         basicSourceTextures,
         /* arrayBufferViewSourceTextures, */
-      } as wdRecord,
+      } as wd,
       blobObjectUrlImageArr,
       bufferArr,
       (
@@ -561,7 +561,7 @@ let batchOperate =
         pointLightArr,
       ),
       indices,
-      wdRecord,
+      wd,
       state,
     );
 
@@ -577,28 +577,28 @@ let batchOperate =
       lightMaterialArr,
       basicSourceTextureArr,
       blobObjectUrlImageArr,
-      wdRecord,
+      wd,
     );
 
   (
     state
-    |> _batchSetTransformData(wdRecord, gameObjectTransforms)
+    |> _batchSetTransformData(wd, gameObjectTransforms)
     |> _batchSetTransformParent(parentTransforms, childrenTransforms)
-    |> _batchSetCustomGeometryData(wdRecord, customGeometryArr, bufferArr)
+    |> _batchSetCustomGeometryData(wd, customGeometryArr, bufferArr)
     |> _batchSetPerspectiveCameraProjectionData(
-         wdRecord,
+         wd,
          perspectiveCameraProjectionArr,
        )
-    |> _batchSetLightMaterialData(wdRecord, lightMaterialArr)
+    |> _batchSetLightMaterialData(wd, lightMaterialArr)
     |> BatchOperateLightSystem.batchSetDirectionLightData(
-         wdRecord,
+         wd,
          directionLightArr,
        )
     |> BatchOperateLightSystem.batchSetPointLightData(
-         wdRecord,
+         wd,
          pointLightArr,
        )
-    |> BatchOperateLightSystem.setAmbientLightData(wdRecord)
+    |> BatchOperateLightSystem.setAmbientLightData(wd)
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          transformGameObjects,
          gameObjectTransforms,

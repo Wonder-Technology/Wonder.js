@@ -106,19 +106,28 @@ let _getBinBufferByteLength = binBuffer =>
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let _copyUint8ArrayToArrayBuffer = (byteOffset, uint8Array, dataView) => {
+let _copyUint8ArrayToArrayBuffer =
+    (
+      byteOffset,
+      (emptyEncodedUint8Data, uint8ArrayAlignedByteLength, uint8Array),
+      dataView,
+    ) => {
+  let resultByteOffset = byteOffset + uint8ArrayAlignedByteLength;
   let byteOffset = ref(byteOffset);
+  let uint8ArrayByteLength = uint8Array |> Uint8Array.length;
 
-  for (i in 0 to (uint8Array |> Uint8Array.length) - 1) {
-    byteOffset :=
-      DataViewCommon.writeUint8_1(.
-        TypeArrayService.getUint8_1(i, uint8Array),
-        byteOffset^,
-        dataView,
-      );
+  for (i in 0 to uint8ArrayAlignedByteLength - 1) {
+    let value =
+      if (i >= uint8ArrayByteLength) {
+        emptyEncodedUint8Data;
+      } else {
+        TypeArrayService.getUint8_1(i, uint8Array);
+      };
+
+    byteOffset := DataViewCommon.writeUint8_1(. value, byteOffset^, dataView);
   };
 
-  (byteOffset^, uint8Array, dataView);
+  (resultByteOffset, uint8Array, dataView);
 };
 
 let _buildWDBJsonUint8Array = gltf => {
@@ -167,6 +176,57 @@ let _buildWDBJsonUint8Array = gltf => {
      );
 };
 
+let _writeHeader = (totalByteLength, dataView) =>
+  dataView
+  |> DataViewCommon.writeUint32_1(0x46546C68, 0)
+  |> DataViewCommon.writeUint32_1(1, _, dataView)
+  |> DataViewCommon.writeUint32_1(totalByteLength, _, dataView);
+
+let _writeJson =
+    (
+      byteOffset,
+      (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+      dataView,
+    ) => {
+  let byteOffset =
+    byteOffset
+    |> DataViewCommon.writeUint32_1(jsonByteLength, _, dataView)
+    |> DataViewCommon.writeUint32_1(0x4E4F534A, _, dataView);
+  _copyUint8ArrayToArrayBuffer(
+    byteOffset,
+    (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+    dataView,
+  );
+};
+
+let _writeBinaryBuffer =
+    (
+      byteOffset,
+      (emptyEncodedUint8Data, binBufferByteLength, binBuffer),
+      dataView,
+    ) => {
+  let byteOffset =
+    byteOffset
+    |> DataViewCommon.writeUint32_1(binBufferByteLength, _, dataView)
+    |> DataViewCommon.writeUint32_1(0x004E4942, _, dataView);
+  _copyUint8ArrayToArrayBuffer(
+    byteOffset,
+    (
+      emptyEncodedUint8Data,
+      binBufferByteLength,
+      Uint8Array.fromBuffer(binBuffer),
+    ),
+    dataView,
+  );
+};
+
+let _getEmptyEncodedUint8Data = () => {
+  let encoder = TextEncoder.newTextEncoder();
+  let emptyUint8DataArr = encoder |> TextEncoder.encodeUint8Array(" ");
+
+  TypeArrayService.getUint8_1(0, emptyUint8DataArr);
+};
+
 let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
   let jsonUint8Array = _buildWDBJsonUint8Array(gltf);
 
@@ -186,34 +246,22 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
     + binBufferByteLength;
 
   let wdb = ArrayBuffer.make(totalByteLength);
-
   let dataView = DataViewCommon.create(wdb);
 
-  let byteOffset =
-    dataView |> DataViewCommon.writeUint32_1BigEndian(0x46546C68, 0);
-  let byteOffset =
-    dataView |> DataViewCommon.writeUint32_1BigEndian(1, byteOffset);
-  let byteOffset =
-    dataView
-    |> DataViewCommon.writeUint32_1BigEndian(totalByteLength, byteOffset);
+  let byteOffset = _writeHeader(totalByteLength, dataView);
 
-  let byteOffset =
-    dataView
-    |> DataViewCommon.writeUint32_1BigEndian(jsonByteLength, byteOffset);
-  let byteOffset =
-    dataView |> DataViewCommon.writeUint32_1BigEndian(0x4E4F534A, byteOffset);
-  let (byteOffset, uint8Array, dataView) =
-    _copyUint8ArrayToArrayBuffer(byteOffset, jsonUint8Array, dataView);
+  let emptyEncodedUint8Data = _getEmptyEncodedUint8Data();
 
-  let byteOffset =
-    dataView
-    |> DataViewCommon.writeUint32_1BigEndian(binBufferByteLength, byteOffset);
-  let byteOffset =
-    dataView |> DataViewCommon.writeUint32_1BigEndian(0x004E4942, byteOffset);
   let (byteOffset, uint8Array, dataView) =
-    _copyUint8ArrayToArrayBuffer(
+    _writeJson(
       byteOffset,
-      Uint8Array.fromBuffer(binBuffer),
+      (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+      dataView,
+    );
+  let (byteOffset, uint8Array, dataView) =
+    _writeBinaryBuffer(
+      byteOffset,
+      (emptyEncodedUint8Data, binBufferByteLength, binBuffer),
       dataView,
     );
 
@@ -273,15 +321,11 @@ let _checkGLB = dataView => {
   dataView;
 };
 
+let convertGLBData = ((gltf, binBuffer)) =>
+  _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
+
 let convertGLB = (glb: ArrayBuffer.t) => {
   let (gltfFileContent, binBuffer) = BinaryUtils.decode(glb, _checkGLB);
-  _convertGLBToWDB(
-    ConvertGLTFJsonToRecordSystem.convert(
-      gltfFileContent |> Js.Json.parseExn,
-    ),
-    binBuffer,
-  );
-};
 
-let convertGLBData = (gltf, binBuffer) =>
-  _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
+  convertGLBData((gltfFileContent |> Js.Json.parseExn, binBuffer));
+};

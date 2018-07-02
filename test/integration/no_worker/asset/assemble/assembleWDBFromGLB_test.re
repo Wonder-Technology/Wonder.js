@@ -1,4 +1,4 @@
-/* open Wonder_jest;
+open Wonder_jest;
 
 open Js.Promise;
 
@@ -34,7 +34,10 @@ let _ =
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                        diffuseMap,
@@ -128,7 +131,10 @@ let _ =
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.getBasicSourceTextureFormat(
                        diffuseMap,
@@ -145,7 +151,10 @@ let _ =
               sandbox^,
               ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
               ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
                 |> Js.Array.map(diffuseMap =>
                      BasicSourceTextureAPI.getBasicSourceTextureFormat(
                        diffuseMap,
@@ -170,4 +179,4 @@ let _ =
         });
       })
     );
-  }); */
+  });

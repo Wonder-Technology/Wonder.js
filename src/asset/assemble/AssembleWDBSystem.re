@@ -128,16 +128,16 @@ let _buildBufferArray = (buffers: array(int), binBuffer) => {
         [||],
       ); */
 
-/* let assemble = ({indices, buffers, uriImages, blobImages} as wdRecord, state) =>
+/* let assemble = ({indices, buffers, uriImages, blobImages} as wd, state) =>
    _buildImageArray(uriImages, blobImages)
    |> then_(imageArrTuple =>
-        BatchCreateSystem.batchCreate(wdRecord, state)
+        BatchCreateSystem.batchCreate(wd, state)
         |> BatchOperateSystem.batchOperate(
-             wdRecord,
+             wd,
              imageArrTuple,
              _buildBufferArray(buffers),
            )
-        |> BuildSceneGameObjectSystem.build(wdRecord)
+        |> BuildSceneGameObjectSystem.build(wd)
         |> resolve
       )
    |> Most.fromPromise; */
@@ -177,11 +177,7 @@ let _checkWDB = dataView => {
   dataView;
 };
 
-let assemble = (wdb, state) => {
-  let (wdFileContent, binBuffer) = BinaryUtils.decode(wdb, _checkWDB);
-
-  let ({buffers}: wd) as wd = wdFileContent |> Js.Json.parseExn |> Obj.magic;
-
+let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(blobObjectUrlImageArr =>
        BatchCreateSystem.batchCreate(wd, state)
@@ -194,4 +190,13 @@ let assemble = (wdb, state) => {
        |> resolve
      )
   |> Most.fromPromise;
+
+let assemble = (wdb, state) => {
+  let (wdFileContent, binBuffer) = BinaryUtils.decode(wdb, _checkWDB);
+
+  assembleGLBData(
+    wdFileContent |> Js.Json.parseExn |> Obj.magic,
+    binBuffer,
+    state,
+  );
 };

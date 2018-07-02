@@ -44,6 +44,12 @@ let writeUint16_1 =
     offset + 2;
   };
 
+let writeUint32_1 = (value, offset, dataView) => {
+  DataView.setUint32LittleEndian(dataView, offset, value);
+
+  offset + 4;
+};
+
 let writeUint32_1BigEndian = (value, offset, dataView) => {
   DataView.setUint32(dataView, offset, value);
 

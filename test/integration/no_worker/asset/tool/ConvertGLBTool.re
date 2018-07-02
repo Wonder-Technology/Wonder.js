@@ -27,12 +27,14 @@ let buildFakeTextDecoder = [%raw
     |}
 ];
 
-let buildFakeTextEncoder = [%raw
-  () => {|
+let buildFakeTextEncoder =
+  [@bs]
+  [%raw
+    () => {|
         var TextEncoder = function(){
         };
 
-        TextEncoder.prototype.encnode = (str) => {
+        TextEncoder.prototype.encode = (str) => {
           var buffer = Buffer.from(str, "utf8");
 
           return buffer;
@@ -40,7 +42,7 @@ let buildFakeTextEncoder = [%raw
 
         window.TextEncoder = TextEncoder;
     |}
-];
+  ];
 
 let buildFakeURL = [%raw
   sandbox => {|
@@ -66,7 +68,7 @@ let buildGLBFilePath = glbFileName =>
 let testResult = (sandbox, glbFilePath, testFunc) => {
   ConvertTool.buildFakeLoadImage();
   buildFakeTextDecoder(_convertUint8ArrayToBuffer);
-  buildFakeTextEncoder();
+  buildFakeTextEncoder(.);
   buildFakeURL(sandbox);
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);

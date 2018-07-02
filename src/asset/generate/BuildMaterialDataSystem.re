@@ -88,11 +88,18 @@ let _getLastBufferViewOffset = bufferViewDataArr => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = bufferViewDataArr[(
-                                                                    bufferViewDataArr
-                                                                    |> Js.Array.length
-                                                                    )
-                                                                    - 1];
+  let sortedBufferViewDataArr =
+    bufferViewDataArr
+    |> Js.Array.copy
+    |> Js.Array.sortInPlaceWith(
+         (
+           bufferViewA: GenerateSceneGraphType.bufferViewData,
+           bufferViewB: GenerateSceneGraphType.bufferViewData,
+         ) =>
+         bufferViewB.byteOffset - bufferViewA.byteOffset
+       );
+
+  let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = sortedBufferViewDataArr[0];
 
   byteOffset + byteLength;
 };
