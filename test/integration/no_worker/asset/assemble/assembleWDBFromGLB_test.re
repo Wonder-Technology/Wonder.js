@@ -34,160 +34,6 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("test lightMaterials", () =>
-      describe("test diffuseMaps", () => {
-        describe("test set texture name", () =>
-          testPromise("test", () =>
-            AssembleWDBSystemTool.testGLB(
-              sandbox^,
-              GLBTool.buildGLBFilePath("BoxTextured.glb"),
-              ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(
-                  sceneGameObject,
-                  state,
-                )
-                |> Js.Array.map(diffuseMap =>
-                     BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
-                       diffuseMap,
-                       state,
-                     )
-                   )
-                |> expect == [|"CesiumLogoFlat.png"|],
-              state^,
-            )
-          )
-        );
-
-        testPromise("set not flipY", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   BasicSourceTextureAPI.getBasicSourceTextureFlipY(
-                     diffuseMap,
-                     state,
-                   )
-                 )
-              |> Obj.magic
-              |> expect == [|false|],
-            state^,
-          )
-        );
-
-        testPromise("test set other data", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   (
-                     BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
-                       diffuseMap,
-                       state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
-                       diffuseMap,
-                       state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureWrapS(
-                       diffuseMap,
-                       state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureWrapT(
-                       diffuseMap,
-                       state,
-                     ),
-                   )
-                 )
-              |> Obj.magic
-              |>
-              expect == [|
-                          (
-                            SourceTextureType.LINEAR,
-                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                            SourceTextureType.REPEAT,
-                            SourceTextureType.REPEAT,
-                          ),
-                        |],
-            state^,
-          )
-        );
-
-        testPromise("test set source", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                     diffuseMap,
-                     state,
-                   )
-                 )
-              |> expect == [|"object_url0" |> Obj.magic|],
-            state^,
-          )
-        );
-
-        describe("test set format", () => {
-          testPromise("png source should set RGBA format", () =>
-            AssembleWDBSystemTool.testGLB(
-              sandbox^,
-              GLBTool.buildGLBFilePath("BoxTextured.glb"),
-              ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(
-                  sceneGameObject,
-                  state,
-                )
-                |> Js.Array.map(diffuseMap =>
-                     BasicSourceTextureAPI.getBasicSourceTextureFormat(
-                       diffuseMap,
-                       state,
-                     )
-                   )
-                |> expect == [|SourceTextureType.RGBA|],
-              state^,
-            )
-          );
-
-          testPromise("jpeg source should set RGB format", () =>
-            AssembleWDBSystemTool.testGLB(
-              sandbox^,
-              GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-              ((state, sceneGameObject)) =>
-                AssembleWDBSystemTool.getAllDiffuseMaps(
-                  sceneGameObject,
-                  state,
-                )
-                |> Js.Array.map(diffuseMap =>
-                     BasicSourceTextureAPI.getBasicSourceTextureFormat(
-                       diffuseMap,
-                       state,
-                     )
-                   )
-                |>
-                expect == [|
-                            SourceTextureType.RGB,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                            SourceTextureType.RGBA,
-                          |],
-              state^,
-            )
-          );
-        });
-      })
-    );
-
     describe("build scene gameObject", () => {
       testPromise("test single scene gameObject", () =>
         AssembleWDBSystemTool.testGLTF(
@@ -1220,116 +1066,314 @@ let _ =
       );
 
       describe("test diffuseMaps", () => {
-        let _getAllDiffuseMaps = (sceneGameObject, state) =>
-          AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state);
+        describe("test BoxTextured glb", () => {
+          describe("test set texture name", () =>
+            testPromise("test", () =>
+              AssembleWDBSystemTool.testGLB(
+                sandbox^,
+                GLBTool.buildGLBFilePath("BoxTextured.glb"),
+                ((state, sceneGameObject)) =>
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    sceneGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(diffuseMap =>
+                       BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
+                         diffuseMap,
+                         state,
+                       )
+                     )
+                  |> expect == [|"CesiumLogoFlat.png"|],
+                state^,
+              )
+            )
+          );
 
-        describe("test set texture name", () =>
-          testPromise("test", () =>
+          testPromise("set not flipY", () =>
             AssembleWDBSystemTool.testGLB(
               sandbox^,
-              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
-                _getAllDiffuseMaps(sceneGameObject, state)
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
                 |> Js.Array.map(diffuseMap =>
-                     BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
+                     BasicSourceTextureAPI.getBasicSourceTextureFlipY(
                        diffuseMap,
                        state,
                      )
                    )
-                |> expect == [|"texture_0", "texture_1", "texture_1"|],
+                |> Obj.magic
+                |> expect == [|false|],
               state^,
             )
-          )
-        );
+          );
 
-        testPromise("set not flipY", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, sceneGameObject)) =>
-              _getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   BasicSourceTextureAPI.getBasicSourceTextureFlipY(
-                     diffuseMap,
-                     state,
+          testPromise("test set other data", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
+              ((state, sceneGameObject)) =>
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(diffuseMap =>
+                     (
+                       BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureWrapS(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureWrapT(
+                         diffuseMap,
+                         state,
+                       ),
+                     )
                    )
-                 )
-              |> Obj.magic
-              |> expect == [|false, false, false|],
-            state^,
-          )
-        );
+                |> Obj.magic
+                |>
+                expect == [|
+                            (
+                              SourceTextureType.LINEAR,
+                              SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                              SourceTextureType.REPEAT,
+                              SourceTextureType.REPEAT,
+                            ),
+                          |],
+              state^,
+            )
+          );
 
-        testPromise("test set other data", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, sceneGameObject)) =>
-              _getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   (
-                     BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
+          testPromise("test set source", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
+              ((state, sceneGameObject)) =>
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(diffuseMap =>
+                     BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
                        diffuseMap,
                        state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
-                       diffuseMap,
-                       state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureWrapS(
-                       diffuseMap,
-                       state,
-                     ),
-                     BasicSourceTextureAPI.getBasicSourceTextureWrapT(
-                       diffuseMap,
-                       state,
-                     ),
+                     )
                    )
-                 )
-              |> Obj.magic
-              |>
-              expect == [|
-                          (
-                            SourceTextureType.LINEAR,
-                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                            SourceTextureType.REPEAT,
-                            SourceTextureType.REPEAT,
-                          ),
-                          (
-                            SourceTextureType.LINEAR,
-                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                            SourceTextureType.REPEAT,
-                            SourceTextureType.REPEAT,
-                          ),
-                          (
-                            SourceTextureType.LINEAR,
-                            SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                            SourceTextureType.REPEAT,
-                            SourceTextureType.REPEAT,
-                          ),
-                        |],
-            state^,
-          )
-        );
-        testPromise("test set source", () =>
-          AssembleWDBSystemTool.testGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, sceneGameObject)) =>
-              _getAllDiffuseMaps(sceneGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                     diffuseMap,
-                     state,
+                |> expect == [|"object_url0" |> Obj.magic|],
+              state^,
+            )
+          );
+
+          testPromise("test release blobs", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
+              ((state, sceneGameObject)) =>
+                GLBTool.getURL()##revokeObjectURL
+                |> getCallCount
+                |> expect == 1,
+              state^,
+            )
+          );
+
+          describe("test set format", () => {
+            testPromise("png source should set RGBA format", () =>
+              AssembleWDBSystemTool.testGLB(
+                sandbox^,
+                GLBTool.buildGLBFilePath("BoxTextured.glb"),
+                ((state, sceneGameObject)) =>
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    sceneGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(diffuseMap =>
+                       BasicSourceTextureAPI.getBasicSourceTextureFormat(
+                         diffuseMap,
+                         state,
+                       )
+                     )
+                  |> expect == [|SourceTextureType.RGBA|],
+                state^,
+              )
+            );
+
+            testPromise("jpeg source should set RGB format", () =>
+              AssembleWDBSystemTool.testGLB(
+                sandbox^,
+                GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+                ((state, sceneGameObject)) =>
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    sceneGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(diffuseMap =>
+                       BasicSourceTextureAPI.getBasicSourceTextureFormat(
+                         diffuseMap,
+                         state,
+                       )
+                     )
+                  |>
+                  expect == [|
+                              SourceTextureType.RGB,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                              SourceTextureType.RGBA,
+                            |],
+                state^,
+              )
+            );
+          });
+        });
+
+        describe("test truck glb", () => {
+          describe("test set texture name", () =>
+            testPromise("test", () =>
+              AssembleWDBSystemTool.testGLB(
+                sandbox^,
+                GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+                ((state, sceneGameObject)) =>
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    sceneGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(diffuseMap =>
+                       BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
+                         diffuseMap,
+                         state,
+                       )
+                     )
+                  |> expect == [|"texture_0", "texture_1", "texture_1"|],
+                state^,
+              )
+            )
+          );
+
+          testPromise("set not flipY", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              ((state, sceneGameObject)) =>
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(diffuseMap =>
+                     BasicSourceTextureAPI.getBasicSourceTextureFlipY(
+                       diffuseMap,
+                       state,
+                     )
                    )
-                 )
-              |>
-              expect == [|
-                          "object_url0" |> Obj.magic,
-                          "object_url0" |> Obj.magic,
-                          "object_url0" |> Obj.magic,
-                        |],
-            state^,
+                |> Obj.magic
+                |> expect == [|false, false, false|],
+              state^,
+            )
+          );
+
+          testPromise("test set other data", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              ((state, sceneGameObject)) =>
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(diffuseMap =>
+                     (
+                       BasicSourceTextureAPI.getBasicSourceTextureMagFilter(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureMinFilter(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureWrapS(
+                         diffuseMap,
+                         state,
+                       ),
+                       BasicSourceTextureAPI.getBasicSourceTextureWrapT(
+                         diffuseMap,
+                         state,
+                       ),
+                     )
+                   )
+                |> Obj.magic
+                |>
+                expect == [|
+                            (
+                              SourceTextureType.LINEAR,
+                              SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                              SourceTextureType.REPEAT,
+                              SourceTextureType.REPEAT,
+                            ),
+                            (
+                              SourceTextureType.LINEAR,
+                              SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                              SourceTextureType.REPEAT,
+                              SourceTextureType.REPEAT,
+                            ),
+                            (
+                              SourceTextureType.LINEAR,
+                              SourceTextureType.NEAREST_MIPMAP_LINEAR,
+                              SourceTextureType.REPEAT,
+                              SourceTextureType.REPEAT,
+                            ),
+                          |],
+              state^,
+            )
+          );
+          testPromise("test set source", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              ((state, sceneGameObject)) =>
+                AssembleWDBSystemTool.getAllDiffuseMaps(
+                  sceneGameObject,
+                  state,
+                )
+                |> Js.Array.map(diffuseMap =>
+                     BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                       diffuseMap,
+                       state,
+                     )
+                   )
+                |>
+                expect == [|
+                            "object_url0" |> Obj.magic,
+                            "object_url0" |> Obj.magic,
+                            "object_url0" |> Obj.magic,
+                          |],
+              state^,
+            )
+          );
+        });
+
+        describe("test AlphaBlendModeTest glb", () =>
+          testPromise("test release blobs", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+              ((state, sceneGameObject)) =>
+                GLBTool.getURL()##revokeObjectURL
+                |> getCallCount
+                |> expect == 4,
+              state^,
+            )
           )
         );
       });
