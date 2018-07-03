@@ -6,5 +6,5 @@ let load = jsonPathArr =>
 let loadToData = (jsonPathArr, stateData) =>
   LoaderManagerSystem.load(jsonPathArr, _fetch, stateData);
 
-let loadWD = wdPath =>
-  LoaderManagerSystem.loadWD(wdPath, _fetch, StateDataMain.stateData);
+let loadWDB = wdPath =>
+  LoaderManagerSystem.loadWDB(wdPath, _fetch, StateDataMain.stateData);

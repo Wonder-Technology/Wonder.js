@@ -15,8 +15,8 @@ throw new Error("zzz");
             })
         },
 
-        loadWD: function (wdPath, testFunc) {
-            return wd.loadWD(wdPath).forEach(function ([state, gameObject]) {
+        loadWDB: function (wdbPath, testFunc) {
+            return wd.loadWDB(wdbPath).forEach(function ([state, gameObject]) {
                 testFunc([state, gameObject])
             })
             // .then(function () {

@@ -497,7 +497,7 @@ let renderTestData = {
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
 
-                return AssetTool.loadWD("./test/e2e/asset/wd/truck_light.wd", function ([state, gameObject]) {
+                return AssetTool.loadWDB("./test/e2e/asset/wd/truck_light.wd", function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
                     });

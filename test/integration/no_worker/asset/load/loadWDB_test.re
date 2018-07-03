@@ -1,4 +1,4 @@
-/* open Wonder_jest;
+open Wonder_jest;
 
 open Js.Promise;
 
@@ -10,16 +10,21 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
 
-    let _buildFakeFetchJsonResponse = json =>
-      {"json": () => json |> Js.Promise.resolve} |> Js.Promise.resolve;
+    let _buildFakeFetchArrayBufferResponse = arrayBuffer =>
+      {"arrayBuffer": () => arrayBuffer |> Js.Promise.resolve}
+      |> Js.Promise.resolve;
 
-    let _buildFakeFetch = (sandbox, gltfJson) => {
+    let _buildFakeFetch = (sandbox, gltfJsonStr, binBuffer) => {
       let fetch = createEmptyStubWithJsObjSandbox(sandbox);
       fetch
       |> onCall(0)
       |> returns(
-           _buildFakeFetchJsonResponse(
-             ConvertGLBSystem.convert(gltfJson) |> Obj.magic,
+           _buildFakeFetchArrayBufferResponse(
+             ConvertGLBSystem.convertGLBData((
+               gltfJsonStr |> Js.Json.parseExn,
+               binBuffer,
+             ))
+             |> Obj.magic,
            ),
          );
       fetch;
@@ -29,19 +34,23 @@ let _ =
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
 
-      ConvertTool.buildFakeLoadImage();
+      GLBTool.prepare(sandbox^);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    testPromise("load wd file and assemble", () => {
+    testPromise("load wdb and assemble", () => {
       let fetchFunc =
-        _buildFakeFetch(sandbox, ConvertGLBTool.buildGLTFJsonOfSingleNode());
+        _buildFakeFetch(
+          sandbox,
+          ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+          GLBTool.buildBinBuffer(),
+        );
 
-      LoadWDBTool.load(~wdPath="../singleNode.wd", ~fetchFunc, ())
+      LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
       |> then_(((state, gameObject)) =>
            AssembleWDBSystemTool.getAllGameObjects(gameObject, state)
            |> expect == [|gameObject|]
            |> resolve
          );
     });
-  }); */
+  });

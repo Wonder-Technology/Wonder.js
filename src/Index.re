@@ -4,7 +4,7 @@ let convertGLBToWDB = ConverterAPI.convertGLBToWDB;
 
 let generateWDB = GenerateSceneGraphAPI.generateWDB;
 
-let loadWD = LoaderManagerAPI.loadWD;
+let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadToData = LoaderManagerAPI.loadToData;
 
