@@ -201,20 +201,50 @@ let _writeJson =
 
 let _writeBinaryBuffer =
     (byteOffset, (binBufferByteLength, binBuffer), dataView) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        binBufferByteLength == (binBuffer |> ArrayBuffer.byteLength)
+      );
+
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|binBuffer aligned with multiple of 4|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        binBufferByteLength mod 4 == 0
+      );
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   let byteOffset =
     byteOffset
     |> DataViewCommon.writeUint32_1(binBufferByteLength, _, dataView)
     |> DataViewCommon.writeUint32_1(0x004E4942, _, dataView);
-  _copyUint8ArrayToArrayBuffer(
-    byteOffset,
-    (
-      /* emptyEncodedUint8Data, */
-      0,
-      binBufferByteLength,
-      Uint8Array.fromBuffer(binBuffer),
+
+  let binBufferUint8Arr = Uint8Array.fromBuffer(binBuffer);
+
+  TypeArrayService.setUint8Array(
+    binBufferUint8Arr,
+    Uint8Array.fromBufferRange(
+      dataView |> DataView.buffer,
+      ~offset=byteOffset,
+      ~length=binBufferByteLength / 1,
     ),
-    dataView,
-  );
+  )
+  |> ignore;
+
+  (byteOffset + binBufferByteLength, binBufferUint8Arr, dataView);
 };
 
 let _getEmptyEncodedUint8Data = () => {
