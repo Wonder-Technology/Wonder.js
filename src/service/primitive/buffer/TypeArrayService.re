@@ -415,3 +415,19 @@ let setUint8Array = (sourceTypeArr, targetTypeArr) => {
   |> Uint8Array.setArray(sourceTypeArr |> TypeArrayType.uint8ToArrayUint8Elt);
   targetTypeArr;
 };
+
+let setUint16Array = (sourceTypeArr, targetTypeArr) => {
+  targetTypeArr
+  |> Uint16Array.setArray(
+       sourceTypeArr |> TypeArrayType.uint16ToArrayUint16Elt,
+     );
+  targetTypeArr;
+};
+
+let setFloat32Array = (sourceTypeArr, targetTypeArr) => {
+  targetTypeArr
+  |> Float32Array.setArray(
+       sourceTypeArr |> TypeArrayType.float32ToArrayFloat32Elt,
+     );
+  targetTypeArr;
+};

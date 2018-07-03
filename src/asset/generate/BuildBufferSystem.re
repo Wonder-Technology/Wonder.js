@@ -1,76 +1,75 @@
 open Js.Typed_array;
 
-/* let _getFloat1 =
-     (. typeArray, index) => Float32Array.unsafe_get(typeArray, index);
+let _fillVertexBuffer = (buffer, points, offset) => {
+  TypeArrayService.setFloat32Array(
+    points,
+    Float32Array.fromBufferRange(
+      buffer,
+      ~offset,
+      ~length=points |> Float32Array.length,
+    ),
+  )
+  |> ignore;
 
-   let _getUint16_1 =
-     (. typeArray, index) => Uint16Array.unsafe_get(typeArray, index); */
+  buffer;
+};
 
-let _getUint8_1 =
-  (. typeArray, index) => Uint8Array.unsafe_get(typeArray, index);
+let _fillIndexBuffer = (buffer, indices, offset) => {
+  TypeArrayService.setUint16Array(
+    indices,
+    Uint16Array.fromBufferRange(
+      buffer,
+      ~offset,
+      ~length=indices |> Uint16Array.length,
+    ),
+  )
+  |> ignore;
 
-let _fillBuffer =
-    (
-      (dataView, points, pointsLength, offset),
-      (writeDataViewFunc, getValueFunc),
-    ) => {
-  let offset = ref(offset);
+  buffer;
+};
 
-  for (i in 0 to pointsLength - 1) {
-    offset :=
-      writeDataViewFunc(. getValueFunc(. points, i), offset^, dataView);
-  };
+let _fillImageUint8ArrayBuffer = (buffer, uint8Array, offset) => {
+  TypeArrayService.setUint8Array(
+    uint8Array,
+    Uint8Array.fromBufferRange(
+      buffer,
+      ~offset,
+      ~length=uint8Array |> Uint8Array.length,
+    ),
+  )
+  |> ignore;
 
-  dataView;
+  buffer;
 };
 
 let build =
     (
       totalByteLength,
-      (geometryEndByteOffset, geometryDataArr),
+      (geometryEndByteOffset, (vertexDataArr, indexDataArr)),
       imageUint8DataArr,
     ) => {
   let buffer = ArrayBuffer.make(totalByteLength);
-  let dataView = DataViewCommon.create(buffer);
 
-  let dataView =
-    geometryDataArr
+  let buffer =
+    vertexDataArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (.
-           dataView,
-           (
-             bufferViewOffset,
-             points,
-             pointsLengths,
-             writeDataViewFunc,
-             getValueFunc,
-           ),
-         ) =>
-           _fillBuffer(
-             (dataView, points, pointsLengths, bufferViewOffset),
-             (writeDataViewFunc, getValueFunc),
-           ),
-         dataView,
+         (. buffer, (bufferViewOffset, points)) =>
+           _fillVertexBuffer(buffer, points, bufferViewOffset),
+         buffer,
        );
 
-  let _ =
-    imageUint8DataArr
+  let buffer =
+    indexDataArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (.
-           dataView,
-           {uint8Array, byteOffset}: GenerateSceneGraphType.imageData,
-         ) =>
-           _fillBuffer(
-             (
-               dataView,
-               uint8Array,
-               uint8Array |> Uint8Array.length,
-               byteOffset,
-             ),
-             (DataViewCommon.writeUint8_1, _getUint8_1),
-           ),
-         dataView,
+         (. buffer, (bufferViewOffset, indices)) =>
+           _fillIndexBuffer(buffer, indices, bufferViewOffset),
+         buffer,
        );
 
-  buffer;
+  imageUint8DataArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. buffer, {uint8Array, byteOffset}: GenerateSceneGraphType.imageData) =>
+         _fillImageUint8ArrayBuffer(buffer, uint8Array, byteOffset),
+       buffer,
+     );
 };
