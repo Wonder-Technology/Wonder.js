@@ -1,9 +1,9 @@
-/* open Wonder_jest;
+open Wonder_jest;
 
 open Js.Typed_array;
 
 let _ =
-  describe("generateSceneGraph by gameObject", () => {
+  describe("generateSceneGraph", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -32,9 +32,14 @@ let _ =
       testPromise("test", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          {|"asset":{"version":"2.0", "generator":"GLTF2WD"}|},
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ((gltf, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|"asset":{"version":"2.0", "generator":"GLTF2WD"}|},
+               ),
           state,
         );
       })
@@ -44,11 +49,16 @@ let _ =
       testPromise("test", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
-          {|"scene": 0, "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0]}]|},
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ((gltf, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|"scene": 0, "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0]}]|},
+               ),
           state,
         );
       })
     );
-  }); */
+  });
