@@ -84,7 +84,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        );
 
      let (_, binBuffer) =
-       BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+       BinaryUtils.decode(buffer##buffer, ConvertGLBSystem._checkGLB);
 
      binBuffer;
    }; */
@@ -104,7 +104,7 @@ let testGLTFResultByGLTF =
 
   GLBTool.prepare(sandbox);
 
-  ConvertGLTFSystem.convertGLBData((
+  ConvertGLBSystem.convertGLBData((
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   ))

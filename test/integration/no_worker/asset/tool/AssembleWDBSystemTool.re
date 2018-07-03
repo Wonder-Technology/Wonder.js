@@ -1,5 +1,5 @@
 let buildGLTFJsonOfMultiSceneGameObjects = () =>
-  ConvertGLTFTool.buildGLTFJson(
+  ConvertGLBTool.buildGLTFJson(
     ~scenes=
       {|
         [

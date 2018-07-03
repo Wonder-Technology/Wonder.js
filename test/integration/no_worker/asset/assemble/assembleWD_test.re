@@ -34,7 +34,7 @@ let _ =
     describe("build scene gameObject", () => {
       testPromise("test single scene gameObject", () =>
         AssembleWDBSystemTool.testResult(
-          ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+          ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ((state, sceneGameObject)) => sceneGameObject |> expect == 0,
           state^,
         )
@@ -63,7 +63,7 @@ let _ =
       describe("set gameObject name", () =>
         testPromise("test", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) =>
               _getAllGameObjects(sceneGameObject, state)
               |> Js.Array.map(gameObject =>
@@ -90,7 +90,7 @@ let _ =
       describe("test set parent", () => {
         testPromise("test children", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) => {
               let (state, allTransformChildren) =
                 _getAllChildrenTransform(sceneGameObject, state);
@@ -101,7 +101,7 @@ let _ =
         );
         testPromise("test parent", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) => {
               let (state, allTransformChildren) =
                 _getAllChildrenTransform(sceneGameObject, state);
@@ -126,7 +126,7 @@ let _ =
       describe("test set data", () =>
         testPromise("test set localPosition, localRotation, localScale", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) =>
               _getAllSortedTransforms(sceneGameObject, state)
               |> Js.Array.map(transform =>
@@ -192,8 +192,8 @@ let _ =
             GameObjectTool.createGameObject(state^);
           let state = TransformTool.dispose(transform, state);
 
-          ConvertGLTFTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(), data =>
+          ConvertGLBTool.testResult(
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(), data =>
             expect(() =>
               AssembleWDBSystemTool.batchCreate(data, state)
             )
@@ -210,7 +210,7 @@ let _ =
       describe("test set point data", () => {
         testPromise("test single node gltf", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ((state, sceneGameObject)) => {
               let boxGameObject = sceneGameObject;
               let geometry =
@@ -470,7 +470,7 @@ let _ =
 
         testPromise("test truck gltf", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
@@ -521,7 +521,7 @@ let _ =
         testPromise(
           "test gameObjects which has no cutomGeometry component", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+            ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
             ((state, sceneGameObject)) =>
               _getAllSortedTransforms(sceneGameObject, state)
               |> Js.Array.map(transform =>
@@ -546,8 +546,8 @@ let _ =
             CustomGeometryTool.createGameObject(state^);
           let state = GameObjectTool.disposeGameObject(gameObject, state);
 
-          ConvertGLTFTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfSingleNode(), data =>
+          ConvertGLBTool.testResult(
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(), data =>
             expect(() =>
               AssembleWDBSystemTool.batchCreate(data, state)
             )
@@ -562,7 +562,7 @@ let _ =
       describe("test add basicCameraView components", () =>
         testPromise("test", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCamera(),
+            ConvertGLBTool.buildGLTFJsonOfCamera(),
             ((state, sceneGameObject)) =>
               _getAllGameObjects(sceneGameObject, state)
               |> Js.Array.map(gameObject =>
@@ -598,7 +598,7 @@ let _ =
 
         testPromise("test set near, fovy", () =>
           AssembleWDBSystemTool.testResult(
-            ConvertGLTFTool.buildGLTFJsonOfCamera(),
+            ConvertGLBTool.buildGLTFJsonOfCamera(),
             ((state, sceneGameObject)) =>
               _getAllPerspectiveCameraProjectionComponent(
                 sceneGameObject,
@@ -624,7 +624,7 @@ let _ =
 
         describe("test set far", () => {
           let _buildGLTFJsonOfCamera = () =>
-            ConvertGLTFTool.buildGLTFJson(
+            ConvertGLBTool.buildGLTFJson(
               ~nodes=
                 {| [
         {
@@ -686,7 +686,7 @@ let _ =
 
         describe("test set aspect", () => {
           let _buildGLTFJsonOfCamera = () =>
-            ConvertGLTFTool.buildGLTFJson(
+            ConvertGLBTool.buildGLTFJson(
               ~nodes=
                 {| [
         {
@@ -782,7 +782,7 @@ let _ =
 
     describe("test lightMaterials", () => {
       let _buildGLTFJsonOfLightMaterial = () =>
-        ConvertGLTFTool.buildGLTFJson(
+        ConvertGLBTool.buildGLTFJson(
           ~nodes=
             {| [
         {
@@ -927,12 +927,12 @@ let _ =
             {|  [
         {
             "uri":"|}
-            ++ ConvertGLTFTool.buildFakeImageOfSingleNode()
+            ++ ConvertGLBTool.buildFakeImageOfSingleNode()
             ++ {|"
             },
         {
             "uri":"|}
-            ++ ConvertGLTFTool.buildFakeImageOfCesiumMilkTruck()
+            ++ ConvertGLBTool.buildFakeImageOfCesiumMilkTruck()
             ++ {|"
             }
             ]|},
@@ -1019,7 +1019,7 @@ let _ =
         describe("test set texture name", () =>
           testPromise("test", () =>
             AssembleWDBSystemTool.testResult(
-              ConvertGLTFTool.buildGLTFJsonOfTexture(),
+              ConvertGLBTool.buildGLTFJsonOfTexture(),
               ((state, sceneGameObject)) =>
                 _getAllDiffuseMaps(sceneGameObject, state)
                 |> Js.Array.map(diffuseMap =>
@@ -1128,7 +1128,7 @@ let _ =
             state^,
           )
         );
-        /* ConvertGLTFTool.testResult(_buildGLTFJsonOfLightMaterial(), data =>
+        /* ConvertGLBTool.testResult(_buildGLTFJsonOfLightMaterial(), data =>
            {
              let (state, sceneGameObject) =
                AssembleWDBSystem.assemble(data, state^);
@@ -1153,7 +1153,7 @@ let _ =
         "each gameObject with light material component should has one meshRenderer",
         () =>
         AssembleWDBSystemTool.testResult(
-          ConvertGLTFTool.buildGLTFJsonOfCesiumMilkTruck(),
+          ConvertGLBTool.buildGLTFJsonOfCesiumMilkTruck(),
           ((state, sceneGameObject)) =>
             _getAllGameObjects(sceneGameObject, state)
             |> Js.Array.filter(gameObject =>
@@ -1172,7 +1172,7 @@ let _ =
     describe("test directionLights", () =>
       testPromise("test set color, intensity", () =>
         AssembleWDBSystemTool.testResult(
-          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ConvertGLBTool.buildGLTFJsonOfLight(),
           ((state, sceneGameObject)) =>
             AssembleWDBSystemTool.getAllDirectionLightData(
               sceneGameObject,
@@ -1188,7 +1188,7 @@ let _ =
       testPromise(
         "test set color, intensity, constant, linear, quadratic, range", () =>
         AssembleWDBSystemTool.testResult(
-          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ConvertGLBTool.buildGLTFJsonOfLight(),
           ((state, sceneGameObject)) =>
             AssembleWDBSystemTool.getAllPointLightData(sceneGameObject, state)
             |> expect == [|([|0., 0., 0.|], 2.5, 1., 1.5, 0., 55.5)|],
@@ -1200,7 +1200,7 @@ let _ =
     describe("test ambientLight", () =>
       testPromise("test set color", () =>
         AssembleWDBSystemTool.testResult(
-          ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ConvertGLBTool.buildGLTFJsonOfLight(),
           ((state, sceneGameObject)) =>
             SceneAPI.getAmbientLightColor(state) |> expect == [|1., 0.5, 1.|],
           state^,

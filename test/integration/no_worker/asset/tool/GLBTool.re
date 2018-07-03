@@ -79,7 +79,7 @@ let buildBinBuffer = () => {
     NodeExtend.readFileBufferSync(buildGLBFilePath("BoxTextured.glb"));
 
   let (_, binBuffer) =
-    BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+    BinaryUtils.decode(buffer##buffer, ConvertGLBSystem._checkGLB);
 
   binBuffer;
 };

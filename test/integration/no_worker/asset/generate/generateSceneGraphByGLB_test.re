@@ -438,7 +438,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
             "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"material":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
@@ -453,7 +453,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
             "meshes":[{"primitives":[{"attributes":{"POSITION":0},"indices":1}]
@@ -468,7 +468,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
             "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":48},{"buffer":0,"byteOffset":48,"byteLength":12}],
@@ -485,7 +485,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
             "cameras":[{"type":"perspective","perspective":{"aspectRatio":1,"zfar":100,"znear":0.01,"yfov":0.7}}]
@@ -502,7 +502,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLTFTool.buildGLTFJson(
+              ConvertGLBTool.buildGLTFJson(
                 ~nodes=
                   {| [
         {
@@ -541,7 +541,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
   "scenes": [
@@ -567,7 +567,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
   "extensions": {
@@ -617,7 +617,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
   "nodes": [

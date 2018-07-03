@@ -19,7 +19,7 @@ let _ =
       |> onCall(0)
       |> returns(
            _buildFakeFetchJsonResponse(
-             ConvertGLTFSystem.convert(gltfJson) |> Obj.magic,
+             ConvertGLBSystem.convert(gltfJson) |> Obj.magic,
            ),
          );
       fetch;
@@ -35,7 +35,7 @@ let _ =
 
     testPromise("load wd file and assemble", () => {
       let fetchFunc =
-        _buildFakeFetch(sandbox, ConvertGLTFTool.buildGLTFJsonOfSingleNode());
+        _buildFakeFetch(sandbox, ConvertGLBTool.buildGLTFJsonOfSingleNode());
 
       LoadWDBTool.load(~wdPath="../singleNode.wd", ~fetchFunc, ())
       |> then_(((state, gameObject)) =>

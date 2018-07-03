@@ -25,7 +25,7 @@ let _ =
         let _prepare = () => {
           let gltf =
             ConvertGLTFJsonToRecordSystem.convert(
-              ConvertGLTFTool.buildGLTFJsonOfMultiPrimitivesWithName()
+              ConvertGLBTool.buildGLTFJsonOfMultiPrimitivesWithName()
               |> Js.Json.parseExn,
             );
           ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes(gltf);
@@ -37,11 +37,11 @@ let _ =
           gltfRecord.nodes
           |>
           expect == [|
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(
                         ~children=Some([|3, 2, 1, 4, 5|]),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(
                         ~name=Some("node1"),
                         ~mesh=Some(1),
                         ~matrix=
@@ -65,7 +65,7 @@ let _ =
                           |]),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(
                         ~name=Some("node2"),
                         ~children=Some([|1, 6, 7|]),
                         ~matrix=
@@ -89,24 +89,24 @@ let _ =
                           |]),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(
                         ~children=Some([|8, 9|]),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(~mesh=Some(3), ()),
-                      ConvertGLTFTool.buildNode(~mesh=Some(4), ()),
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(~mesh=Some(3), ()),
+                      ConvertGLBTool.buildNode(~mesh=Some(4), ()),
+                      ConvertGLBTool.buildNode(
                         ~name=Some("node2_0"),
                         ~mesh=Some(3),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(
+                      ConvertGLBTool.buildNode(
                         ~name=Some("node2_1"),
                         ~mesh=Some(4),
                         (),
                       ),
-                      ConvertGLTFTool.buildNode(~mesh=Some(5), ()),
-                      ConvertGLTFTool.buildNode(~mesh=Some(6), ()),
+                      ConvertGLBTool.buildNode(~mesh=Some(5), ()),
+                      ConvertGLBTool.buildNode(~mesh=Some(6), ()),
                     |];
         });
         test("test meshes", () => {
@@ -249,7 +249,7 @@ let _ =
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
+              ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
             ~state,
             ~testFunc=
               ({customGeometrys}) =>
@@ -285,7 +285,7 @@ let _ =
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
+                ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
               ~state,
               ~testFunc=({gameObjects}) => gameObjects.count |> expect == 7,
               (),
@@ -301,7 +301,7 @@ let _ =
                 ConvertGLBTool.testGLTFResultByGLTF(
                   ~sandbox=sandbox^,
                   ~embeddedGLTFJsonStr=
-                    ConvertGLTFTool.buildGLTFJsonOfMultiPrimitives(),
+                    ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
                   ~state,
                   ~testFunc=
                     ({indices}) =>
@@ -325,7 +325,7 @@ let _ =
       test("test default lightMaterial", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~state,
           ~testFunc=
             ({lightMaterials}) =>
@@ -334,7 +334,7 @@ let _ =
               expect == [|
                           {
                             diffuseColor:
-                              ConvertGLTFTool.getDefaultDiffuseColor(),
+                              ConvertGLBTool.getDefaultDiffuseColor(),
                             name: "defaultMaterial",
                           },
                         |],
@@ -344,7 +344,7 @@ let _ =
       test("test customGeometrys", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~state,
           ~testFunc=
             ({customGeometrys}) =>
@@ -365,13 +365,13 @@ let _ =
       test("test default material's lightMaterialGameObjectIndexData", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCameras(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~state,
           ~testFunc=
             ({indices}) =>
               indices.gameObjectIndices.lightMaterialGameObjectIndexData
               |>
-              expect == ConvertGLTFTool.buildComponentIndexData(
+              expect == ConvertGLBTool.buildComponentIndexData(
                           [|0|],
                           [|0|],
                         ),
@@ -383,7 +383,7 @@ let _ =
     test("test asset", () =>
       ConvertGLBTool.testGLTFResultByGLTF(
         ~sandbox=sandbox^,
-        ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+        ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
         ~state,
         ~testFunc=
           ({asset}) =>
@@ -396,7 +396,7 @@ let _ =
       test("test gameObjects", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=({scene}) => scene.gameObjects |> expect == [|0|],
           (),
@@ -406,7 +406,7 @@ let _ =
       test("test ambientLight", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
             ({scene}) =>
@@ -420,7 +420,7 @@ let _ =
       test("test light gltf", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
             ({directionLights}) =>
@@ -435,7 +435,7 @@ let _ =
       test("test light gltf", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
             ({pointLights}) =>
@@ -460,7 +460,7 @@ let _ =
       test("test single node gltf", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=
             ({gameObjects}) =>
@@ -497,7 +497,7 @@ let _ =
         test("test no data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ~state,
             ~testFunc=
               ({basicCameraViews}) =>
@@ -508,7 +508,7 @@ let _ =
         test("test camera gltf", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCamera(),
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
             ~state,
             ~testFunc=
               ({basicCameraViews}) =>
@@ -521,7 +521,7 @@ let _ =
         test("test no data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ~state,
             ~testFunc=
               ({perspectiveCameraProjections}) =>
@@ -532,7 +532,7 @@ let _ =
         test("test camera gltf", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCamera(),
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
             ~state,
             ~testFunc=
               ({perspectiveCameraProjections}) =>
@@ -562,7 +562,7 @@ let _ =
       test("test matrix exist", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=
             ({transforms}) =>
@@ -581,7 +581,7 @@ let _ =
       test("test transform gltf", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfTransform(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTransform(),
           ~state,
           ~testFunc=
             ({transforms}) =>
@@ -613,7 +613,7 @@ let _ =
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLTFTool.buildGLTFJson(
+              ConvertGLBTool.buildGLTFJson(
                 ~nodes=
                   {| [
         {
@@ -675,7 +675,7 @@ let _ =
             expect == [|
                         {
                           diffuseColor:
-                            ConvertGLTFTool.getDefaultDiffuseColor(),
+                            ConvertGLBTool.getDefaultDiffuseColor(),
                           name: "Texture",
                         },
                       |]
@@ -692,7 +692,7 @@ let _ =
               expect == [|
                           {
                             diffuseColor:
-                              ConvertGLTFTool.getDefaultDiffuseColor(),
+                              ConvertGLBTool.getDefaultDiffuseColor(),
                             name: "truck",
                           },
                           {
@@ -713,7 +713,7 @@ let _ =
                           },
                           {
                             diffuseColor:
-                              ConvertGLTFTool.getDefaultDiffuseColor(),
+                              ConvertGLBTool.getDefaultDiffuseColor(),
                             name: "wheels",
                           },
                         |]
@@ -959,7 +959,7 @@ let _ =
       test("test single primitive", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=
             ({customGeometrys}) =>
@@ -986,7 +986,7 @@ let _ =
           childrenTransformIndices,
         };
         let _buildComponentIndexData = (gameObjectIndices, componentIndices) =>
-          ConvertGLTFTool.buildComponentIndexData(
+          ConvertGLBTool.buildComponentIndexData(
             gameObjectIndices,
             componentIndices,
           );
@@ -994,7 +994,7 @@ let _ =
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1021,7 +1021,7 @@ let _ =
           test("test no data", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1033,7 +1033,7 @@ let _ =
           test("test camera gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCamera(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1047,7 +1047,7 @@ let _ =
           test("test no data", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1060,7 +1060,7 @@ let _ =
           test("test camera gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfCamera(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1075,7 +1075,7 @@ let _ =
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1102,7 +1102,7 @@ let _ =
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1129,7 +1129,7 @@ let _ =
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1157,7 +1157,7 @@ let _ =
           test("test light gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
               ~state,
               ~testFunc=
                 ({indices}) =>
@@ -1172,7 +1172,7 @@ let _ =
           test("test light gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLTFTool.buildGLTFJsonOfLight(),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
               ~state,
               ~testFunc=
                 ({indices}) =>
