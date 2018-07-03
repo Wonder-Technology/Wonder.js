@@ -675,9 +675,7 @@ let buildGLTFJsonOfCamera = () =>
 [
         {
             "perspective": {
-                "aspectRatio": 1.5,
                 "yfov": 0.6,
-                "zfar": 10000.0,
                 "znear": 1.0
             },
             "type": "perspective"

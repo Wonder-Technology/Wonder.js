@@ -541,8 +541,8 @@ let _ =
                 expect == [|
                             {
                               near: 1.0,
-                              far: Some(10000.0),
-                              aspect: Some(1.5),
+                              far: None,
+                              aspect: None,
                               fovy: 34.37746770784939,
                             },
                             {

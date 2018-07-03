@@ -19,16 +19,28 @@ let buildGLTFJsonOfMultiSceneGameObjects = () =>
     (),
   );
 
-/* let testResult = (gltfJson, testFunc, state) => {
-     open Js.Promise;
-     let result = ref(Obj.magic(1));
+let testGLTF =
+    (
+      ~sandbox,
+      ~embeddedGLTFJsonStr,
+      ~testFunc,
+      ~state,
+      ~binBuffer=GLBTool.buildBinBuffer(),
+      (),
+    ) => {
+  open Js.Promise;
+  let result = ref(Obj.magic(1));
 
-     ConvertTool.buildFakeLoadImage();
+  GLBTool.prepare(sandbox);
 
-     AssembleWDBAPI.assembleGLTF(gltfJson, state)
-     |> Most.forEach(data => result := data)
-     |> then_(() => testFunc(result^) |> resolve);
-   }; */
+  ConvertGLBSystem.convertGLBData((
+    embeddedGLTFJsonStr |> Js.Json.parseExn,
+    binBuffer,
+  ))
+  |. AssembleWDBSystem.assemble(state^)
+  |> Most.forEach(data => result := data)
+  |> then_(() => testFunc(result^) |> resolve);
+};
 
 let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   open Js.Promise;
