@@ -24,26 +24,6 @@ let contain = (targetJsonStr: string, json: Js.Json.t) =>
     )
   );
 
-/* Wonder_jest.(
-   Expect.(
-     Expect.Operators.( */
-/* targetJsonStr
-   |> Js.String.trim
-   |> Js.Json.parseExn
-   |> expect == (wdJson |> Obj.magic) */
-
-/* wdJson |> Js.Json.stringify
-   /* |> Js.Json.parseExn */
-   |> expect |> toContainString (
-   targetJsonStr
-   |> Js.String.replaceByRe([%re {|/\s/img|}], "") */
-
-/* )
-
-       )
-     )
-   ); */
-
 let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   open Js.Promise;
 
@@ -65,10 +45,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
            state,
          );
 
-       /* testFunc((ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer)) */
        testFunc((gltf, binBuffer)) |> resolve;
-       /* |> _contain(targetJson)
-          |> resolve; */
      });
 };
 
@@ -101,71 +78,37 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 };
 
 let _buildBinBuffer = () => {
-  let buffer = NodeExtend.readFileBufferSync(
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb")
-);
+  let buffer =
+    NodeExtend.readFileBufferSync(
+      ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+    );
 
-  let (_, binBuffer) = BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+  let (_, binBuffer) =
+    BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
 
-binBuffer;
+  binBuffer;
 };
 
-/* let testAssembleResultByGLTF = (
- ~sandbox, 
- ~embeddedGLTFJson,
-~testFunc,
-~state,
-~binBuffer = _buildBinBuffer(),
-()
-) => {
+let testGLTFResultByGLTF =
+    (
+      ~sandbox,
+      ~embeddedGLTFJsonStr,
+      ~targetJsonStr,
+      ~state,
+      ~binBuffer=_buildBinBuffer(),
+      (),
+    ) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
 
   GLBTool.prepare(sandbox);
 
-  /* let buffer = NodeExtend.readFileBufferSync(glbFilePath); */
-
-ConvertGLTFSystem.convertGLBData((embeddedGLTFJson, binBuffer))
-|.
-  AssembleWDBSystem.assemble(state)
-  |> Most.forEach(data => result := data)
-  |> then_(() => {
-       let (state, sceneGameObject) = result^;
-
-       GenerateSceneGraphAPI.generateWDB(
-         sceneGameObject,
-         WonderCommonlib.SparseMapService.createEmpty(),
-         state,
-       )
-       |> resolve;
-     })
-  |> then_(((state, data)) =>
-       AssembleWDBSystem.assemble(data, state)
-       |> Most.forEach(data => result := data)
-       |> then_(() => testFunc(result^) |> resolve)
-     );
-}; */
-
-
-
-let testGLTFResultByGLTF = ( ~sandbox, 
- ~embeddedGLTFJsonStr,
-~targetJsonStr,
-~state,
-~binBuffer = _buildBinBuffer(),
-()
-) => {
-  open Js.Promise;
-
-  let result = ref(Obj.magic(1));
-
-  GLBTool.prepare(sandbox);
-
-
-ConvertGLTFSystem.convertGLBData((embeddedGLTFJsonStr |> Js.Json.parseExn, binBuffer))
-|.
-  AssembleWDBSystem.assemble(state^)
+  ConvertGLTFSystem.convertGLBData((
+    embeddedGLTFJsonStr |> Js.Json.parseExn,
+    binBuffer,
+  ))
+  |. AssembleWDBSystem.assemble(state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
        let (state, sceneGameObject) = result^;
@@ -177,133 +120,52 @@ ConvertGLTFSystem.convertGLBData((embeddedGLTFJsonStr |> Js.Json.parseExn, binBu
            state,
          );
 
-       /* testFunc((ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer)) */
-       /* testFunc((gltf, binBuffer)) |> resolve; */
-gltf |>
-contain(targetJsonStr)
-|> resolve
-
-
-       /* |> _contain(targetJson)
-          |> resolve; */
+       gltf |> contain(targetJsonStr) |> resolve;
      });
 };
 
+let testGLTFResultByGameObject = (sceneGameObject, targetJsonStr, state) => {
+  let (gltf, binBuffer) =
+    GenerateSceneGraphAPI.generateGLBData(
+      sceneGameObject,
+      WonderCommonlib.SparseMapService.createEmpty(),
+      state,
+    );
 
+  gltf |> contain(targetJsonStr);
+};
 
+let testGLTFResultByGameObjectWithImageBase64Map =
+    (sceneGameObject, targetJsonStr, imageBase64Map, state) => {
+  let (gltf, binBuffer) =
+    GenerateSceneGraphAPI.generateGLBData(
+      sceneGameObject,
+      imageBase64Map,
+      state,
+    );
 
+  gltf |> contain(targetJsonStr);
+};
 
+let testAssembleResultByGameObject =
+    (sandbox, sceneGameObject, testFunc, state) => {
+  open Js.Promise;
 
+  GLBTool.prepare(sandbox);
 
+  let result = ref(Obj.magic(1));
 
-/* let testResult = (gltfJson, testFunc, state) =>
-     ConvertGLTFTool.testResult(gltfJson, data =>
-       testFunc(AssembleWDBSystem.assemble(data, state))
-     );
+  let (state, data) =
+    GenerateSceneGraphAPI.generateWDB(
+      sceneGameObject,
+      WonderCommonlib.SparseMapService.createEmpty(),
+      state,
+    );
 
-   let testGLTFResultByGLTF = (gltfJson, targetJson, state) => {
-     open Js.Promise;
-
-     let result = ref(Obj.magic(1));
-
-     ConvertTool.buildFakeLoadImage();
-
-     AssembleWDBAPI.assembleGLTF(gltfJson, state^)
-     |> Most.forEach(data => result := data)
-     |> then_(() => {
-          let (state, sceneGameObject) = result^;
-
-          GenerateSceneGraphAPI.generateGLBData(
-            sceneGameObject,
-            WonderCommonlib.SparseMapService.createEmpty(),
-            state,
-          )
-          |> _contain(targetJson)
-          |> resolve;
-        });
-   };
-
-   let testGLTFResultByGameObject = (sceneGameObject, targetJson, state) =>
-     GenerateSceneGraphAPI.generateGLBData(
-       sceneGameObject,
-       WonderCommonlib.SparseMapService.createEmpty(),
-       state,
-     )
-     |> _contain(targetJson);
-
-   let testGLTFResultByGameObjectWithImageBase64Map =
-       (sceneGameObject, targetJson, imageBase64Map, state) =>
-     GenerateSceneGraphSystem.generateGLBData(
-       sceneGameObject,
-       imageBase64Map,
-       state,
-     )
-     |> _contain(targetJson);
-
-   let testAssembleResultByGLTF = (gltfJson, testFunc, state) => {
-     open Js.Promise;
-
-     let result = ref(Obj.magic(1));
-
-     ConvertTool.buildFakeLoadImage();
-
-     AssembleWDBAPI.assembleGLTF(gltfJson, state^)
-     |> Most.forEach(data => result := data)
-     |> then_(() => {
-          let (state, sceneGameObject) = result^;
-
-          GenerateSceneGraphAPI.generateWDB(
-            sceneGameObject,
-            WonderCommonlib.SparseMapService.createEmpty(),
-            state,
-          )
-          |> resolve;
-        })
-     |> then_(((state, data)) =>
-          AssembleWDBSystem.assemble(data, state)
-          |> Most.forEach(data => result := data)
-          |> then_(() => testFunc(result^) |> resolve)
-        );
-   };
-
-   let testAssembleResultByGameObject = (sceneGameObject, testFunc, state) => {
-     open Js.Promise;
-
-     let result = ref(Obj.magic(1));
-
-     let (state, data) =
-       GenerateSceneGraphAPI.generateWDB(
-         sceneGameObject,
-         WonderCommonlib.SparseMapService.createEmpty(),
-         state,
-       );
-
-     AssembleWDBSystem.assemble(data, state)
-     |> Most.forEach(data => result := data)
-     |> then_(() => testFunc(result^) |> resolve);
-   }; */
-
-/* let testGLTFResultByGLB = (glb, targetJson, state) => {
-     open Js.Promise;
-
-     let result = ref(Obj.magic(1));
-
-     ConvertTool.buildFakeLoadImage();
-
-     AssembleWDBAPI.assembleGLB(glb, state^)
-     |> Most.forEach(data => result := data)
-     |> then_(() => {
-          let (state, sceneGameObject) = result^;
-
-          GenerateSceneGraphAPI.generateGLBData(
-            sceneGameObject,
-            WonderCommonlib.SparseMapService.createEmpty(),
-            state,
-          )
-          |> _contain(targetJson)
-          |> resolve;
-        });
-   }; */
+  AssembleWDBSystem.assemble(data, state)
+  |> Most.forEach(data => result := data)
+  |> then_(() => testFunc(result^) |> resolve);
+};
 
 let _buildFakeContext = sandbox => {
   "drawImage": createEmptyStubWithJsObjSandbox(sandbox),
