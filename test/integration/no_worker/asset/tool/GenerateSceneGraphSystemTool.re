@@ -77,17 +77,17 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
      );
 };
 
-let _buildBinBuffer = () => {
-  let buffer =
-    NodeExtend.readFileBufferSync(
-      ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
-    );
+/* let _buildBinBuffer = () => {
+     let buffer =
+       NodeExtend.readFileBufferSync(
+         GLBTool.buildGLBFilePath("BoxTextured.glb"),
+       );
 
-  let (_, binBuffer) =
-    BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+     let (_, binBuffer) =
+       BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
 
-  binBuffer;
-};
+     binBuffer;
+   }; */
 
 let testGLTFResultByGLTF =
     (
@@ -95,7 +95,7 @@ let testGLTFResultByGLTF =
       ~embeddedGLTFJsonStr,
       ~targetJsonStr,
       ~state,
-      ~binBuffer=_buildBinBuffer(),
+      ~binBuffer=GLBTool.buildBinBuffer(),
       (),
     ) => {
   open Js.Promise;

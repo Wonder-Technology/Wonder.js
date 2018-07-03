@@ -34,7 +34,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -51,7 +51,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(

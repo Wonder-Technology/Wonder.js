@@ -32,7 +32,7 @@ let _ =
           testPromise("test", () =>
             AssembleWDBSystemTool.testGLB(
               sandbox^,
-              ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(
                   sceneGameObject,
@@ -53,7 +53,7 @@ let _ =
         testPromise("set not flipY", () =>
           AssembleWDBSystemTool.testGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
@@ -71,7 +71,7 @@ let _ =
         testPromise("test set other data", () =>
           AssembleWDBSystemTool.testGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
@@ -111,7 +111,7 @@ let _ =
         testPromise("test set source", () =>
           AssembleWDBSystemTool.testGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
@@ -129,7 +129,7 @@ let _ =
           testPromise("png source should set RGBA format", () =>
             AssembleWDBSystemTool.testGLB(
               sandbox^,
-              ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+              GLBTool.buildGLBFilePath("BoxTextured.glb"),
               ((state, sceneGameObject)) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(
                   sceneGameObject,
@@ -149,7 +149,7 @@ let _ =
           testPromise("jpeg source should set RGB format", () =>
             AssembleWDBSystemTool.testGLB(
               sandbox^,
-              ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+              GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
               ((state, sceneGameObject)) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(
                   sceneGameObject,

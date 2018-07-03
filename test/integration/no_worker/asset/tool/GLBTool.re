@@ -62,9 +62,24 @@ let buildFakeURL = [%raw
     |}
 ];
 
-let prepare = (sandbox) => {
+let prepare = sandbox => {
   ConvertTool.buildFakeLoadImage();
   buildFakeTextDecoder(convertUint8ArrayToBuffer);
   buildFakeTextEncoder(.);
   buildFakeURL(sandbox);
-}
+};
+
+let buildGLBFilePath = glbFileName =>
+  Node.Path.join([|Node.Process.cwd(), "./test/res/", glbFileName|]);
+
+let buildBinBuffer = () => {
+  buildFakeTextDecoder(convertUint8ArrayToBuffer);
+
+  let buffer =
+    NodeExtend.readFileBufferSync(buildGLBFilePath("BoxTextured.glb"));
+
+  let (_, binBuffer) =
+    BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+
+  binBuffer;
+};

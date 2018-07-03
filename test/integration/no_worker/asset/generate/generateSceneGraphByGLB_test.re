@@ -35,7 +35,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -52,7 +52,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -69,7 +69,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -114,7 +114,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("BoxTextured.glb"),
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
@@ -136,7 +136,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+          GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -234,7 +234,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
-          ConvertGLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+          GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
@@ -253,7 +253,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             ((state, sceneGameObject)) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
@@ -308,7 +308,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testGLTFResultByGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             ((gltf, binBuffer)) =>
               gltf
               |> GenerateSceneGraphSystemTool.contain(
@@ -365,7 +365,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testGLTFResultByGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             ((gltf, binBuffer)) =>
               gltf
               |> GenerateSceneGraphSystemTool.contain(
@@ -405,7 +405,7 @@ let _ =
 
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
-            ConvertGLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+            GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
             ((state, sceneGameObject)) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
               |> Js.Array.map(diffuseMap =>
