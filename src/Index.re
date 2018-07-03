@@ -1,8 +1,12 @@
+let assembleWDB = AssembleWDBAPI.assembleWDB;
+
 let assembleGLB = AssembleWDBAPI.assembleGLB;
 
 let convertGLBToWDB = ConverterAPI.convertGLBToWDB;
 
 let generateWDB = GenerateSceneGraphAPI.generateWDB;
+
+let generateGLBData = GenerateSceneGraphAPI.generateGLBData;
 
 let loadWDB = LoaderManagerAPI.loadWDB;
 

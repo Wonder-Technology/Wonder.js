@@ -29,8 +29,8 @@
 
 
 
-    <script src="./gltfTool.js"></script>
-    <script src="./wdData.js"></script>
+    <!-- <script src="./gltfTool.js"></script> -->
+    <!-- <script src="./wdData.js"></script> -->
     <script src="./base64DataTool.js"></script>
 
     <script>
@@ -155,23 +155,14 @@
             }
 
 
-            function _testGenerateEmbededWDByGLTF(gltf, imageBase64Map, isCreateCamera, state$) {
-                let wdRecord = wd.convertGLTFToWD(gltf);
-
-                wd.assembleWD(wdRecord, state$)
-
+            function _testGenerateEmbededWDBByGLB(glb, imageBase64Map, isCreateCamera, state$) {
+                wd.assembleGLB(glb, state$)
                     .forEach(([state, sceneGameObject]) => {
-                        // var record = wd.assembleWD(wdData, state$);
-                        // var state = record[0];
-                        // var sceneGameObject = record[1];
-
-
-
-                        console.profile("generateEmbededWD");
+                        console.profile("generateWDB");
                         var n0 = performance.now();
 
 
-                        var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, imageBase64Map, state);
+                        var [state, wdb] = wd.generateWDB(sceneGameObject, imageBase64Map, state);
 
 
                         console.profileEnd();
@@ -184,9 +175,9 @@
                         //     _disposeAll(sceneGameObject, state);
 
 
-                        wd.assembleWD(wdRecord, state)
+                        wd.assembleWDB(wdb, state)
                             .forEach(([state, sceneGameObject]) => {
-                                // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+                                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
 
                                 wd.startDirector(state);
@@ -267,25 +258,27 @@
 
 
 
-                var [state, wdRecord] = wd.generateEmbededWD(sceneGameObject, wd.createSparseMap(), state);
+                var [state, wdb] = wd.generateWDB(sceneGameObject, wd.createSparseMap(), state);
 
-                console.log(
-                    JSON.stringify(wdRecord)
-                );
+                // console.log(
+                //     JSON.stringify(wdRecord)
+                // );
 
-                return state;
+                return [state, wdb];
             }
 
             function _testGenerateEmbededWDByGameObject(map1, map2, state$) {
+                var [state, wdb] = _generateWDByGameObject(map1, map2, state$);
+
+
                 // var state =
                 //     _disposeAll(sceneGameObject, state);
 
                 var state = state$;
 
-                wd.assembleWD(
-                    wdData, state)
+                wd.assembleWDB(wdb, state)
                     .forEach(([state, sceneGameObject]) => {
-                        var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
+                        // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
 
                         wd.startDirector(state);
@@ -293,11 +286,11 @@
             }
 
 
-            function _testAssembleWD(gltf, isCreateCamera, state$) {
+            function _testAssembleWD(glb, isCreateCamera, state$) {
                 console.profile("convert");
                 var n0 = performance.now();
 
-                let wdRecord = wd.convertGLTFToWD(gltf);
+                let wdb = wd.convertGLBToWDB(glb);
 
                 var state = state$;
 
@@ -307,11 +300,11 @@
 
 
 
-                console.profile("assembleWD");
+                console.profile("assembleWDB");
 
                 var n1 = performance.now();
 
-                wd.assembleWD(wdRecord, state)
+                wd.assembleWDB(wdb, state)
                     .forEach(([state, sceneGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();
@@ -349,51 +342,43 @@
 
 
             function initSample(map1, map2, state$) {
-                // wd.convertGLTFToWD(getGLTFJsonOfVC())
-                // wd.convertGLTFToWD(getGLTFJsonOfCamera())
-                // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
-                // wd.convertGLTFToWD(getGLTFJsonOfTest())
-                // wd.convertGLTFToWD(getGLTFJsonOfDuck())
+                fetch(
+                    // "../res/BoxTextured.glb"
+                    "../res/CesiumMilkTruck.glb"
+                    // "../res/VC.glb"
+                    // "../res/2CylinderEngine.glb"
+                )
+                    .then((res) => {
+                        return res.arrayBuffer();
+                    })
+                    .then((arrayBuffer) => {
+                        // var imageBase64Map = wd.createSparseMap();
+                        // imageBase64Map =
+                        //     wd.setSparseMapValue(3,
+                        //         truckImageBase64,
+                        //         imageBase64Map);
+
+                        // _testGenerateEmbededWDBByGLB(
+                        //     arrayBuffer,
+
+                        //     imageBase64Map,
+
+                        //     true,
+
+                        //     state$);
 
 
 
-                var imageBase64Map = wd.createSparseMap();
-                imageBase64Map =
-                    wd.setSparseMapValue(3,
-                        truckImageBase64,
-                        imageBase64Map);
 
-                // _testGenerateEmbededWDByGLTF(
-                //     // getGLTFJsonOfTruck(),
-                //     // getGLTFJsonOf2CylinderEngine(),
-                //     // getGLTFJsonOfVC(),
-                //     // getGLTFJsonOfCamera(),
-                //     getGLTFJsonOfDuck(),
-                //     // false,
-                //     imageBase64Map,
-
-                //     false,
-
-                //     state$);
+                        // _testGenerateEmbededWDByGameObject(map1, map2, state$);
 
 
-                _testGenerateEmbededWDByGameObject(map1, map2, state$);
 
-
-                // wd.convertGLTFToWD(_getGLTFJsonOfBoxTextured())
-                // wd.convertGLTFToWD(getGLTFJsonOfDuck())
-                // wd.convertGLTFToWD(getGLTFJsonOfTruck())
-                // wd.convertGLTFToWD(getGLTFJsonOfCamera())
-                // wd.convertGLTFToWD(getGLTFJsonOf2CylinderEngine())
-                // wd.convertGLTFToWD(getGLTFJsonOfTest())
-
-                // _testAssembleWD(
-                //     // getGLTFJsonOfDuck(),
-                //     // getGLTFJsonOf2CylinderEngine(),
-                //     // getGLTFJsonOfVC(),
-                //     getGLTFJsonOfCamera(),
-                //     false,
-                //     state$);
+                        _testAssembleWD(
+                            arrayBuffer,
+                            true,
+                            state$);
+                    })
             }
 
         };
