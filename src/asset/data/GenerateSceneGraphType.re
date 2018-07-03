@@ -63,6 +63,7 @@ type imageData = {
   bufferView: int,
   mimeType: string,
   uint8Array: Js.Typed_array.Uint8Array.t,
+  byteOffset: int
 };
 
 type materialData = {

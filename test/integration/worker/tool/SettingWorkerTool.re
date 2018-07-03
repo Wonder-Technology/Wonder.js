@@ -16,30 +16,14 @@ let addTransferControlToOffscreen = [%bs.raw
   |}
 ];
 
-let buildFakeCanvas = () => DomService.buildCanvas() |> addTransferControlToOffscreen;
+let buildFakeCanvas = () =>
+  DomService.buildCanvas() |> addTransferControlToOffscreen;
 
-let buildFakeDiv = (canvasDom) => {
-  let div = DomService.buildDom("<div></div>");
-  /* div##appendChild(canvasDom); */
-  div
-};
-
-let buildFakeCanvasForNotPassCanvasIdWithCanvas = (sandbox, canvasDom) => {
-  let div = buildFakeDiv(canvasDom);
-  let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^)), "style": {"cssText": ""}};
-  let createElementStub =
-    createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "createElement");
-  createElementStub |> withOneArg("div") |> returns(div) |> ignore;
-  createElementStub |> withOneArg("canvas") |> returns(canvasDom) |> ignore;
-  createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "querySelectorAll")
-  |> withOneArg("body")
-  |> returns([body])
-  |> ignore;
-  canvasDom
-};
-
-let buildFakeCanvasForNotPassCanvasId = (sandbox) =>
-  buildFakeCanvasForNotPassCanvasIdWithCanvas(sandbox, buildFakeCanvas());
+let buildFakeCanvasForNotPassCanvasId = sandbox =>
+  SettingTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
+    sandbox,
+    buildFakeCanvas(),
+  );
 
 let createStateAndSetToStateData =
     (
@@ -59,7 +43,7 @@ let createStateAndSetToStateData =
       ~useHardwareInstance="false",
       ~useWorker="false",
       ~buffer=SettingTool.buildBufferConfigStr(),
-      ()
+      (),
     ) =>
   SettingTool.setToStateData(
     state,
@@ -68,7 +52,7 @@ let createStateAndSetToStateData =
     context,
     useHardwareInstance,
     useWorker,
-    buffer
+    buffer,
   );
 
 let setMemory = SettingTool.setMemory;

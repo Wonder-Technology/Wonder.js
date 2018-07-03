@@ -109,7 +109,7 @@ let _getBinBufferByteLength = binBuffer =>
 let _copyUint8ArrayToArrayBuffer =
     (
       byteOffset,
-      (emptyEncodedUint8Data, uint8ArrayAlignedByteLength, uint8Array),
+      (emptyUint8Data, uint8ArrayAlignedByteLength, uint8Array),
       dataView,
     ) => {
   let resultByteOffset = byteOffset + uint8ArrayAlignedByteLength;
@@ -119,7 +119,7 @@ let _copyUint8ArrayToArrayBuffer =
   for (i in 0 to uint8ArrayAlignedByteLength - 1) {
     let value =
       if (i >= uint8ArrayByteLength) {
-        emptyEncodedUint8Data;
+        emptyUint8Data;
       } else {
         TypeArrayService.getUint8_1(i, uint8Array);
       };
@@ -200,11 +200,7 @@ let _writeJson =
 };
 
 let _writeBinaryBuffer =
-    (
-      byteOffset,
-      (emptyEncodedUint8Data, binBufferByteLength, binBuffer),
-      dataView,
-    ) => {
+    (byteOffset, (binBufferByteLength, binBuffer), dataView) => {
   let byteOffset =
     byteOffset
     |> DataViewCommon.writeUint32_1(binBufferByteLength, _, dataView)
@@ -212,7 +208,8 @@ let _writeBinaryBuffer =
   _copyUint8ArrayToArrayBuffer(
     byteOffset,
     (
-      emptyEncodedUint8Data,
+      /* emptyEncodedUint8Data, */
+      0,
       binBufferByteLength,
       Uint8Array.fromBuffer(binBuffer),
     ),
@@ -261,7 +258,7 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
   let (byteOffset, uint8Array, dataView) =
     _writeBinaryBuffer(
       byteOffset,
-      (emptyEncodedUint8Data, binBufferByteLength, binBuffer),
+      (binBufferByteLength, binBuffer),
       dataView,
     );
 

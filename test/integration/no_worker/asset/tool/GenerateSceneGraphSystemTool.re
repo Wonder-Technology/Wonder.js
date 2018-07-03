@@ -10,19 +10,19 @@ let _emptyBufferUriData = jsonStr =>
      );
 
 let contain = (targetJsonStr: string, json: Js.Json.t) =>
-   Wonder_jest.(
-     Expect.(
-       Expect.Operators.(
-         json
-         |> Js.Json.stringify
-         |> _emptyBufferUriData
-         |> expect
-         |> toContainString(
-              targetJsonStr |> Js.String.replaceByRe([%re {|/\s/img|}], ""),
-            )
-       )
-     )
-   );
+  Wonder_jest.(
+    Expect.(
+      Expect.Operators.(
+        json
+        |> Js.Json.stringify
+        |> _emptyBufferUriData
+        |> expect
+        |> toContainString(
+             targetJsonStr |> Js.String.replaceByRe([%re {|/\s/img|}], ""),
+           )
+      )
+    )
+  );
 
 /* Wonder_jest.(
    Expect.(
@@ -51,13 +51,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
-  ConvertTool.buildFakeLoadImage();
-  /* TODO refactor: not dependent on ConvertGLBTool? */
-  ConvertGLBTool.buildFakeTextDecoder(
-    ConvertGLBTool._convertUint8ArrayToBuffer,
-  );
-  ConvertGLBTool.buildFakeTextEncoder(.);
-  ConvertGLBTool.buildFakeURL(sandbox);
+  GLBTool.prepare(sandbox);
 
   AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
   |> Most.forEach(data => result := data)
@@ -77,6 +71,130 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
           |> resolve; */
      });
 };
+
+let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  GLBTool.prepare(sandbox);
+
+  let buffer = NodeExtend.readFileBufferSync(glbFilePath);
+
+  AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
+  |> Most.forEach(data => result := data)
+  |> then_(() => {
+       let (state, sceneGameObject) = result^;
+
+       GenerateSceneGraphAPI.generateWDB(
+         sceneGameObject,
+         WonderCommonlib.SparseMapService.createEmpty(),
+         state,
+       )
+       |> resolve;
+     })
+  |> then_(((state, data)) =>
+       AssembleWDBSystem.assemble(data, state)
+       |> Most.forEach(data => result := data)
+       |> then_(() => testFunc(result^) |> resolve)
+     );
+};
+
+let _buildBinBuffer = () => {
+  let buffer = NodeExtend.readFileBufferSync(
+          ConvertGLBTool.buildGLBFilePath("BoxTextured.glb")
+);
+
+  let (_, binBuffer) = BinaryUtils.decode(buffer##buffer, ConvertGLTFSystem._checkGLB);
+
+binBuffer;
+};
+
+/* let testAssembleResultByGLTF = (
+ ~sandbox, 
+ ~embeddedGLTFJson,
+~testFunc,
+~state,
+~binBuffer = _buildBinBuffer(),
+()
+) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  GLBTool.prepare(sandbox);
+
+  /* let buffer = NodeExtend.readFileBufferSync(glbFilePath); */
+
+ConvertGLTFSystem.convertGLBData((embeddedGLTFJson, binBuffer))
+|.
+  AssembleWDBSystem.assemble(state)
+  |> Most.forEach(data => result := data)
+  |> then_(() => {
+       let (state, sceneGameObject) = result^;
+
+       GenerateSceneGraphAPI.generateWDB(
+         sceneGameObject,
+         WonderCommonlib.SparseMapService.createEmpty(),
+         state,
+       )
+       |> resolve;
+     })
+  |> then_(((state, data)) =>
+       AssembleWDBSystem.assemble(data, state)
+       |> Most.forEach(data => result := data)
+       |> then_(() => testFunc(result^) |> resolve)
+     );
+}; */
+
+
+
+let testGLTFResultByGLTF = ( ~sandbox, 
+ ~embeddedGLTFJsonStr,
+~targetJsonStr,
+~state,
+~binBuffer = _buildBinBuffer(),
+()
+) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  GLBTool.prepare(sandbox);
+
+
+ConvertGLTFSystem.convertGLBData((embeddedGLTFJsonStr |> Js.Json.parseExn, binBuffer))
+|.
+  AssembleWDBSystem.assemble(state^)
+  |> Most.forEach(data => result := data)
+  |> then_(() => {
+       let (state, sceneGameObject) = result^;
+
+       let (gltf, binBuffer) =
+         GenerateSceneGraphAPI.generateGLBData(
+           sceneGameObject,
+           WonderCommonlib.SparseMapService.createEmpty(),
+           state,
+         );
+
+       /* testFunc((ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer)) */
+       /* testFunc((gltf, binBuffer)) |> resolve; */
+gltf |>
+contain(targetJsonStr)
+|> resolve
+
+
+       /* |> _contain(targetJson)
+          |> resolve; */
+     });
+};
+
+
+
+
+
+
+
 
 /* let testResult = (gltfJson, testFunc, state) =>
      ConvertGLTFTool.testResult(gltfJson, data =>
@@ -191,31 +309,30 @@ let _buildFakeContext = sandbox => {
   "drawImage": createEmptyStubWithJsObjSandbox(sandbox),
 };
 
-let _buildFakeCanvas = (sandbox, context, (base64Str1, base64Str2)) =>
-  {
-    let toDataURL =
-      createEmptyStubWithJsObjSandbox(sandbox)
-      |> onCall(0)
-      |> returns(base64Str1)
-      |> onCall(1)
-      |> returns(base64Str2);
+let _buildFakeCanvas = (sandbox, context, (base64Str1, base64Str2)) => {
+  let toDataURL =
+    createEmptyStubWithJsObjSandbox(sandbox)
+    |> onCall(0)
+    |> returns(base64Str1)
+    |> onCall(1)
+    |> returns(base64Str2);
 
-    {
-      "width": 0.,
-      "height": 0.,
-      "style": {
-        "left": "",
-        "top": "",
-        "width": "",
-        "height": "",
-        "position": "static",
-      },
-      "getContext":
-        createEmptyStubWithJsObjSandbox(sandbox) |> returns(context),
-      "toDataURL": toDataURL,
-    };
-  }
-  |> SettingWorkerTool.addTransferControlToOffscreen;
+  {
+    "width": 0.,
+    "height": 0.,
+    "style": {
+      "left": "",
+      "top": "",
+      "width": "",
+      "height": "",
+      "position": "static",
+    },
+    "getContext":
+      createEmptyStubWithJsObjSandbox(sandbox) |> returns(context),
+    "toDataURL": toDataURL,
+  };
+};
+/* |> SettingWorkerTool.addTransferControlToOffscreen; */
 
 let prepareCanvas = sandbox => {
   let context = _buildFakeContext(sandbox);
@@ -224,7 +341,7 @@ let prepareCanvas = sandbox => {
   let base64Str2 = "data:image/jpeg;base64,bbb";
 
   let canvas =
-    SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
+    SettingTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
       sandbox,
       _buildFakeCanvas(sandbox, context, (base64Str1, base64Str2)),
     );

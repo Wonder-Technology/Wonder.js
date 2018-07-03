@@ -125,7 +125,7 @@ let buildGLTFJson =
             "type": "VEC2"
         }
     ]|},
-      ~materials={| [
+      /* ~materials={| [
         {
             "pbrMetallicRoughness": {
                 "baseColorTexture": {
@@ -135,28 +135,43 @@ let buildGLTFJson =
             },
             "name": "material"
         }
+    ]|}, */
+      ~materials={| [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [0.5, 1.0, 1.0, 1.0],
+                "metallicFactor": 0.0
+            },
+            "name": "material"
+        }
     ]|},
-      ~textures={|  [
+      /* ~textures={|  [
         {
             "sampler": 0,
             "source": 0
         }
-    ]|},
-      ~images={|  [
+    ]|}, */
+      /* ~images={|  [
         {
             "uri":"|}
               ++ buildFakeImageOfSingleNode()
               ++ {|"
             }
-            ]|},
-      ~samplers={|  [
+            ]|}, */
+
+      /* ~images={|  [
+        {
+            "bufferView": 
+            }
+            ]|}, */
+      /* ~samplers={|  [
         {
             "magFilter": 9729,
             "minFilter": 9986,
             "wrapS": 10497,
             "wrapT": 10497
         }
-    ]|},
+    ]|}, */
       ~bufferViews={|  [
         {
             "buffer": 0,
@@ -181,11 +196,8 @@ let buildGLTFJson =
     ]|},
       ~buffers={| [
         {
-            "byteLength": 840,
-            "uri":"|}
-               ++ buildFakeBufferOfSingleNode()
-               ++ {|"
-            }
+            "byteLength": 840
+        }
             ]|},
       (),
     ) => {j|
@@ -198,9 +210,6 @@ let buildGLTFJson =
     "meshes": $meshes,
     "accessors": $accessors,
     "materials": $materials,
-    "textures": $textures,
-    "images": $images,
-    "samplers": $samplers,
     "bufferViews": $bufferViews,
     "buffers": $buffers,
     "extensions":$extensions,
@@ -334,7 +343,7 @@ let buildGLTFJsonOfLight = () =>
     (),
   );
 
-let buildGLTFJsonOfCesiumMilkTruck = () =>
+/* let buildGLTFJsonOfCesiumMilkTruck = () =>
   buildGLTFJson(
     /* ~asset={| {
            "version": "2.0"
@@ -882,7 +891,7 @@ let buildGLTFJsonOfCesiumMilkTruck = () =>
             }
             ]|},
     (),
-  );
+  ); */
 
 let buildGLTFJsonOfMultiPrimitives = () =>
   buildGLTFJson(
@@ -1322,7 +1331,7 @@ let buildGLTFJsonOfCameras = () => {|
 }
     |};
 
-let buildGLTFJsonOfTexture = () =>
+/* let buildGLTFJsonOfTexture = () =>
   buildGLTFJson(
     ~textures=
       {|  [
@@ -1365,7 +1374,7 @@ let buildGLTFJsonOfTexture = () =>
         }
     ]|},
     (),
-  );
+  ); */
 
 /* let testResult = (gltfJson, testFunc) => {
   ConvertTool.buildFakeLoadImage();

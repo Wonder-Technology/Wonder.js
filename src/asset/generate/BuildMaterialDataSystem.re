@@ -68,41 +68,41 @@ let _convertImageToBase64 = [%raw
     |}
 ];
 
-let _getLastBufferViewOffset = bufferViewDataArr => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|bufferViewDataArr.length >= 1|j},
-                ~actual={j|is 0|j},
-              ),
-              () =>
-              bufferViewDataArr |> Js.Array.length >= 1
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
+/* let _getLastBufferViewOffset = bufferViewDataArr => {
+     WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|bufferViewDataArr.length >= 1|j},
+                   ~actual={j|is 0|j},
+                 ),
+                 () =>
+                 bufferViewDataArr |> Js.Array.length >= 1
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
 
-  let sortedBufferViewDataArr =
-    bufferViewDataArr
-    |> Js.Array.copy
-    |> Js.Array.sortInPlaceWith(
-         (
-           bufferViewA: GenerateSceneGraphType.bufferViewData,
-           bufferViewB: GenerateSceneGraphType.bufferViewData,
-         ) =>
-         bufferViewB.byteOffset - bufferViewA.byteOffset
-       );
+     let sortedBufferViewDataArr =
+       bufferViewDataArr
+       |> Js.Array.copy
+       |> Js.Array.sortInPlaceWith(
+            (
+              bufferViewA: GenerateSceneGraphType.bufferViewData,
+              bufferViewB: GenerateSceneGraphType.bufferViewData,
+            ) =>
+            bufferViewB.byteOffset - bufferViewA.byteOffset
+          );
 
-  let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = sortedBufferViewDataArr[0];
+     let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = sortedBufferViewDataArr[0];
 
-  byteOffset + byteLength;
-};
+     byteOffset + byteLength;
+   }; */
 
 let _convertBase64MimeTypeToWDBMimeType = mimeType =>
   switch (mimeType) {
@@ -125,8 +125,26 @@ let _addImageData =
       (texture, imageMap, state),
       imageBase64Map,
       imageUint8DataArr,
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
     ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|byteOffset aligned with multiple of 4|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              byteOffset mod 4 == 0
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
   open Js.Typed_array;
 
   let source =
@@ -149,8 +167,10 @@ let _addImageData =
 
     let imageUint8Array = BinaryUtils.convertBase64ToBinary(imageBase64);
 
-    let imageUint8ArrayByteLength =
-      imageUint8Array |> Uint8Array.byteLength |> BinaryUtils.alignedLength;
+    let imageUint8ArrayByteLength = imageUint8Array |> Uint8Array.byteLength;
+
+    let imageUint8ArrayAlignedByteLength =
+      imageUint8ArrayByteLength |> BinaryUtils.alignedLength;
 
     (
       imageIndex,
@@ -163,15 +183,18 @@ let _addImageData =
                BinaryUtils.getBase64MimeType(imageBase64)
                |> _convertBase64MimeTypeToWDBMimeType,
              uint8Array: imageUint8Array,
+             byteOffset,
            }: GenerateSceneGraphType.imageData,
          ),
       (
-        totalByteLength + imageUint8ArrayByteLength,
+        totalByteLength + imageUint8ArrayAlignedByteLength,
+        byteOffset + imageUint8ArrayAlignedByteLength,
         bufferViewDataArr
         |> ArrayService.push(
              {
                buffer: 0,
-               byteOffset: _getLastBufferViewOffset(bufferViewDataArr),
+               /* byteOffset: _getLastBufferViewOffset(bufferViewDataArr), */
+               byteOffset,
                byteLength: imageUint8ArrayByteLength,
              }: GenerateSceneGraphType.bufferViewData,
            ),
@@ -181,7 +204,7 @@ let _addImageData =
       imageIndex,
       imageMap,
       imageUint8DataArr,
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
     )
   };
 };
@@ -202,7 +225,7 @@ let _buildNoDiffuseMap =
       (lightMaterial, name),
       (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
       (textureIndexMap, samplerIndexMap, imageMap),
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) => {
   let diffuseColor =
@@ -229,7 +252,7 @@ let _buildNoDiffuseMap =
       imageUint8DataArr,
     ),
     (textureIndexMap, samplerIndexMap, imageMap),
-    (totalByteLength, bufferViewDataArr),
+    (totalByteLength, byteOffset, bufferViewDataArr),
   );
 };
 
@@ -238,7 +261,7 @@ let _buildDiffuseMap =
       (diffuseMap, name),
       (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
       (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -280,7 +303,7 @@ let _buildDiffuseMap =
         imageUint8DataArr,
       ),
       (textureIndexMap, samplerIndexMap, imageMap),
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
     )
 
   | None =>
@@ -297,13 +320,13 @@ let _buildDiffuseMap =
       imageIndex,
       imageMap,
       imageUint8DataArr,
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
     ) =
       _addImageData(
         (diffuseMap, imageMap, state),
         imageBase64Map,
         imageUint8DataArr,
-        (totalByteLength, bufferViewDataArr),
+        (totalByteLength, byteOffset, bufferViewDataArr),
       );
 
     (
@@ -326,7 +349,7 @@ let _buildDiffuseMap =
         imageUint8DataArr,
       ),
       (textureIndexMap, samplerIndexMap, imageMap),
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
     );
   };
 };
@@ -335,7 +358,7 @@ let build =
     (
       materialDataMap,
       imageBase64Map,
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -351,7 +374,7 @@ let build =
   let (
     (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
     (textureIndexMap, samplerIndexMap, imageMap),
-    (totalByteLength, bufferViewDataArr),
+    (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     materialDataMap
     |> SparseMapService.reduceValid(
@@ -364,7 +387,7 @@ let build =
                imageUint8DataArr,
              ),
              (textureIndexMap, samplerIndexMap, imageMap),
-             (totalByteLength, bufferViewDataArr),
+             (totalByteLength, byteOffset, bufferViewDataArr),
            ),
            (lightMaterial, name),
          ) => {
@@ -385,7 +408,7 @@ let build =
                  imageUint8DataArr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap),
-               (totalByteLength, bufferViewDataArr),
+               (totalByteLength, byteOffset, bufferViewDataArr),
                state,
              )
 
@@ -399,7 +422,7 @@ let build =
                  imageUint8DataArr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
-               (totalByteLength, bufferViewDataArr),
+               (totalByteLength, byteOffset, bufferViewDataArr),
                state,
              )
            };
@@ -407,7 +430,7 @@ let build =
          (
            ([||], [||], [||], [||]),
            ([||], WonderCommonlib.HashMapService.createEmpty(), [||]),
-           (totalByteLength, bufferViewDataArr),
+           (totalByteLength, byteOffset, bufferViewDataArr),
          ),
        );
   (

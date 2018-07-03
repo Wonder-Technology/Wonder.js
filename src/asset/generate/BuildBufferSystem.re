@@ -1,13 +1,13 @@
 open Js.Typed_array;
 
-let _getFloat1 =
-  (. typeArray, index) => Float32Array.unsafe_get(typeArray, index);
+/* let _getFloat1 =
+     (. typeArray, index) => Float32Array.unsafe_get(typeArray, index);
+
+   let _getUint16_1 =
+     (. typeArray, index) => Uint16Array.unsafe_get(typeArray, index); */
 
 let _getUint8_1 =
   (. typeArray, index) => Uint8Array.unsafe_get(typeArray, index);
-
-let _getUint16_1 =
-  (. typeArray, index) => Uint16Array.unsafe_get(typeArray, index);
 
 let _fillBuffer =
     (
@@ -21,73 +21,55 @@ let _fillBuffer =
       writeDataViewFunc(. getValueFunc(. points, i), offset^, dataView);
   };
 
-  (dataView, offset^);
+  dataView;
 };
 
-let build = (totalByteLength, meshPointDataMap, imageUint8DataArr) => {
+let build =
+    (
+      totalByteLength,
+      (geometryEndByteOffset, geometryDataArr),
+      imageUint8DataArr,
+    ) => {
   let buffer = ArrayBuffer.make(totalByteLength);
-
   let dataView = DataViewCommon.create(buffer);
 
-  let (dataView, offset) =
-    meshPointDataMap
-    |> SparseMapService.reduceiValid(
+  let dataView =
+    geometryDataArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
-           (dataView, offset),
-           (vertices, normals, texCoords, indices),
-           meshIndex,
-         ) => {
-           let verticesLength = vertices |> Float32Array.length;
-           let normalsLength = normals |> Float32Array.length;
-           let texCoordsLength =
-             switch (texCoords) {
-             | None => 0
-             | Some(texCoords) => texCoords |> Float32Array.length
-             };
-           let indicesLength = indices |> Uint16Array.length;
-
-           let (dataView, offset) =
-             _fillBuffer(
-               (dataView, vertices, verticesLength, offset),
-               (DataViewCommon.writeFloat, _getFloat1),
-             );
-
-           let (dataView, offset) =
-             _fillBuffer(
-               (dataView, normals, normalsLength, offset),
-               (DataViewCommon.writeFloat, _getFloat1),
-             );
-
-           let (dataView, offset) =
-             switch (texCoords) {
-             | Some(texCoords) =>
-               _fillBuffer(
-                 (dataView, texCoords, texCoordsLength, offset),
-                 (DataViewCommon.writeFloat, _getFloat1),
-               )
-             | None => (dataView, offset)
-             };
-
+           dataView,
+           (
+             bufferViewOffset,
+             points,
+             pointsLengths,
+             writeDataViewFunc,
+             getValueFunc,
+           ),
+         ) =>
            _fillBuffer(
-             (dataView, indices, indicesLength, offset),
-             (DataViewCommon.writeUint16_1, _getUint16_1),
-           );
-         },
-         (dataView, 0),
+             (dataView, points, pointsLengths, bufferViewOffset),
+             (writeDataViewFunc, getValueFunc),
+           ),
+         dataView,
        );
 
-  let (dataView, offset) =
+  let _ =
     imageUint8DataArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
-           (dataView, offset),
-           {uint8Array}: GenerateSceneGraphType.imageData,
+           dataView,
+           {uint8Array, byteOffset}: GenerateSceneGraphType.imageData,
          ) =>
            _fillBuffer(
-             (dataView, uint8Array, uint8Array |> Uint8Array.length, offset),
+             (
+               dataView,
+               uint8Array,
+               uint8Array |> Uint8Array.length,
+               byteOffset,
+             ),
              (DataViewCommon.writeUint8_1, _getUint8_1),
            ),
-         (dataView, offset),
+         dataView,
        );
 
   buffer;

@@ -56,8 +56,14 @@ let generateGLBData = (sceneGameObject, imageBase64Map, state) => {
   ) =
     GetNodeDataSystem.getAllNodeData(sceneGameObject, state);
 
-  let (totalByteLength, (bufferViewDataArr, accessorDataArr, meshDataArr)) =
+  let (
+    totalByteLength,
+    (bufferViewDataArr, accessorDataArr, meshDataArr),
+    geometryDataArr,
+  ) =
     BuildGeometryDataSystem.build(meshPointDataMap);
+
+  let geometryEndByteOffset = totalByteLength;
 
   let (
     materialDataArr,
@@ -69,14 +75,14 @@ let generateGLBData = (sceneGameObject, imageBase64Map, state) => {
     BuildMaterialDataSystem.build(
       materialDataMap,
       imageBase64Map,
-      (totalByteLength, bufferViewDataArr),
+      (totalByteLength, geometryEndByteOffset, bufferViewDataArr),
       state,
     );
 
   let buffer =
     BuildBufferSystem.build(
       totalByteLength,
-      meshPointDataMap,
+      (geometryEndByteOffset, geometryDataArr),
       imageUint8DataArr,
     );
 

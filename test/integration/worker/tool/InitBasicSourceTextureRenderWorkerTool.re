@@ -38,7 +38,7 @@ let prepareState =
       (imageDataArrayBuffer1, imageDataArrayBuffer2, imageDataArrayBuffer3, imageDataArrayBuffer4)
     );
   let canvas =
-    SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
+    SettingTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
       sandbox,
       _buildFakeCanvas(sandbox, context)
     );

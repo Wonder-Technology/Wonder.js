@@ -6,11 +6,20 @@ let _addBufferViewData =
     (
       (pointsLength, pointsCount, bytes_per_element, pointType),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
     ) =>
   switch (pointsLength) {
-  | 0 => (None, accessorDataArr, bufferViewDataArr, bufferViewOffset)
+  | 0 => (
+      None,
+      accessorDataArr,
+      bufferViewDataArr,
+      bufferViewOffset,
+      totalByteLength,
+    )
   | _ =>
     let bufferViewByteLength = pointsLength * bytes_per_element;
+    let bufferViewAlignedByteLength =
+      BinaryUtils.alignedLength(bufferViewByteLength);
 
     (
       accessorDataArr |> Js.Array.length |. Some,
@@ -40,9 +49,52 @@ let _addBufferViewData =
            byteOffset: bufferViewOffset,
            byteLength: bufferViewByteLength,
          }),
-      bufferViewOffset + bufferViewByteLength,
+      bufferViewOffset + bufferViewAlignedByteLength,
+      totalByteLength + bufferViewAlignedByteLength,
     );
   };
+
+let _getFloat1 =
+  (. typeArray, index) => Float32Array.unsafe_get(typeArray, index);
+
+let _getUint16_1 =
+  (. typeArray, index) => Uint16Array.unsafe_get(typeArray, index);
+
+let _addGeometryData =
+    (
+      (bufferViewOffset, points, pointsLengths),
+      geometryDataArr,
+      writeDataViewFunc,
+      getValueFunc,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|bufferViewOffset aligned with multiple of 4|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              bufferViewOffset mod 4 == 0
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  geometryDataArr
+  |> ArrayService.push((
+       bufferViewOffset,
+       points,
+       pointsLengths,
+       writeDataViewFunc,
+       getValueFunc,
+     ));
+};
 
 let _addAllPointData =
     (
@@ -50,6 +102,7 @@ let _addAllPointData =
       (verticesLength, normalsLength, texCoordsLength, indicesLength),
       (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
       (vertices, normals, texCoords, indices),
+      (totalByteLength, geometryDataArr),
     ) => {
   open Js.Typed_array;
 
@@ -58,7 +111,21 @@ let _addAllPointData =
   let texCoordsCount = texCoordsLength / texCoordsSize;
   let indicesCount = indicesLength / indicesSize;
 
-  let (vertexIndex, accessorDataArr, bufferViewDataArr, bufferViewOffset) =
+  let geometryDataArr =
+    _addGeometryData(
+      (bufferViewOffset, vertices, verticesLength),
+      geometryDataArr,
+      DataViewCommon.writeFloat,
+      _getFloat1,
+    );
+
+  let (
+    vertexIndex,
+    accessorDataArr,
+    bufferViewDataArr,
+    bufferViewOffset,
+    totalByteLength,
+  ) =
     _addBufferViewData(
       (
         verticesLength,
@@ -67,15 +134,49 @@ let _addAllPointData =
         VERTEX,
       ),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
     );
 
-  let (normalIndex, accessorDataArr, bufferViewDataArr, bufferViewOffset) =
+  let geometryDataArr =
+     _addGeometryData(
+       (bufferViewOffset, normals, normalsLength),
+       geometryDataArr,
+       DataViewCommon.writeFloat,
+       _getFloat1,
+     );
+
+  let (
+    normalIndex,
+    accessorDataArr,
+    bufferViewDataArr,
+    bufferViewOffset,
+    totalByteLength,
+  ) =
     _addBufferViewData(
       (normalsLength, normalsCount, Float32Array._BYTES_PER_ELEMENT, NORMAL),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
     );
 
-  let (texCoordIndex, accessorDataArr, bufferViewDataArr, bufferViewOffset) =
+  let geometryDataArr =
+     switch (texCoords) {
+     | None => geometryDataArr
+     | Some(texCoords) =>
+       _addGeometryData(
+         (bufferViewOffset, texCoords, texCoordsLength),
+         geometryDataArr,
+         DataViewCommon.writeFloat,
+         _getFloat1,
+       )
+     };
+
+  let (
+    texCoordIndex,
+    accessorDataArr,
+    bufferViewDataArr,
+    bufferViewOffset,
+    totalByteLength,
+  ) =
     _addBufferViewData(
       (
         texCoordsLength,
@@ -84,18 +185,36 @@ let _addAllPointData =
         TEXCOORD,
       ),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
     );
 
-  let (indexIndex, accessorDataArr, bufferViewDataArr, bufferViewOffset) =
+  /* TODO remove Obj.magic? */
+  let geometryDataArr =
+    _addGeometryData(
+      (bufferViewOffset, indices |> Obj.magic, indicesLength),
+      geometryDataArr,
+      DataViewCommon.writeUint16_1 |> Obj.magic,
+      _getUint16_1 |> Obj.magic,
+    );
+
+  let (
+    indexIndex,
+    accessorDataArr,
+    bufferViewDataArr,
+    bufferViewOffset,
+    totalByteLength,
+  ) =
     _addBufferViewData(
       (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, INDEX),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
     );
   (
     (vertexIndex, normalIndex, texCoordIndex, indexIndex),
     accessorDataArr,
     bufferViewDataArr,
     bufferViewOffset,
+    (totalByteLength, geometryDataArr),
   );
 };
 
@@ -125,21 +244,21 @@ let _addMeshData =
        }: meshData,
      );
 
-let _setTotalByteLength =
-    (
-      (verticesLength, normalsLength, texCoordsLength, indicesLength),
-      bufferViewOffset,
-      totalByteLength,
-    ) => (
-  totalByteLength
-  + (
-    Float32Array._BYTES_PER_ELEMENT
-    * (verticesLength + normalsLength + texCoordsLength)
-    + Uint16Array._BYTES_PER_ELEMENT
-    * indicesLength
-  ),
-  bufferViewOffset,
-);
+/* let _setTotalByteLength =
+       (
+         (verticesLength, normalsLength, texCoordsLength, indicesLength),
+         bufferViewOffset,
+         totalByteLength,
+       ) => (
+     totalByteLength
+     + (
+       Float32Array._BYTES_PER_ELEMENT
+       * (verticesLength + normalsLength + texCoordsLength)
+       + Uint16Array._BYTES_PER_ELEMENT
+       * indicesLength
+     ),
+     bufferViewOffset,
+   ); */
 
 let build = meshPointDataMap => {
   WonderLog.Contract.requireCheck(
@@ -160,6 +279,7 @@ let build = meshPointDataMap => {
   let (
     (totalByteLength, bufferViewOffset),
     (bufferViewDataArr, accessorDataArr, meshDataArr),
+    geometryDataArr,
   ) =
     meshPointDataMap
     |> SparseMapService.reduceiValid(
@@ -167,6 +287,7 @@ let build = meshPointDataMap => {
            (
              (totalByteLength, bufferViewOffset),
              (bufferViewDataArr, accessorDataArr, meshDataArr),
+             geometryDataArr,
            ),
            (vertices, normals, texCoords, indices),
            meshIndex,
@@ -185,6 +306,7 @@ let build = meshPointDataMap => {
              accessorDataArr,
              bufferViewDataArr,
              bufferViewOffset,
+             (totalByteLength, geometryDataArr),
            ) =
              _addAllPointData(
                (verticesSize, normalsSize, texCoordsSize, indicesSize),
@@ -196,19 +318,11 @@ let build = meshPointDataMap => {
                ),
                (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
                (vertices, normals, texCoords, indices),
+               (totalByteLength, geometryDataArr),
              );
 
            (
-             _setTotalByteLength(
-               (
-                 verticesLength,
-                 normalsLength,
-                 texCoordsLength,
-                 indicesLength,
-               ),
-               bufferViewOffset,
-               totalByteLength,
-             ),
+             (totalByteLength, bufferViewOffset),
              (
                bufferViewDataArr,
                accessorDataArr,
@@ -218,10 +332,15 @@ let build = meshPointDataMap => {
                  meshDataArr,
                ),
              ),
+             geometryDataArr,
            );
          },
-         ((0, 0), ([||], [||], [||])),
+         ((0, 0), ([||], [||], [||]), [||]),
        );
 
-  (totalByteLength, (bufferViewDataArr, accessorDataArr, meshDataArr));
+  (
+    totalByteLength,
+    (bufferViewDataArr, accessorDataArr, meshDataArr),
+    geometryDataArr,
+  );
 };

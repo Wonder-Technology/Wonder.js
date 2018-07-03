@@ -10,7 +10,7 @@ let _buildFakeCanvas = (sandbox) =>
 
 let prepareState = (sandbox) => {
   let canvas =
-    SettingWorkerTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
+    SettingTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(
       sandbox,
       _buildFakeCanvas(sandbox)
     );
