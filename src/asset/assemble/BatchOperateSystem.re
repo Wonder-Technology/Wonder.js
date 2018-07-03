@@ -190,7 +190,6 @@ let _getBufferData =
     (
       {accessors, bufferViews, buffers},
       (accessorIndex, dataViewArr, bytes_per_element),
-      (getDataViewFunc, createTypeArrayFunc),
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -223,33 +222,34 @@ let _getBufferData =
   let bufferView = Array.unsafe_get(bufferViews, accessor.bufferView);
   let dataView = Array.unsafe_get(dataViewArr, bufferView.buffer);
 
-  let offset = ref(accessor.byteOffset + bufferView.byteOffset);
-  let pointArr = [||];
+  let offset = accessor.byteOffset + bufferView.byteOffset;
 
-  for (i in 0 to accessor.count * _getAccessorTypeSize(accessor) - 1) {
-    let (value, newOffset) = getDataViewFunc(. offset^, dataView);
-
-    offset := newOffset;
-
-    pointArr |> ArrayService.push(value) |> ignore;
-  };
-
-  createTypeArrayFunc(pointArr);
+  (
+    dataView |> DataView.buffer,
+    offset,
+    accessor.count * _getAccessorTypeSize(accessor),
+  );
 };
 
-let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
-  _getBufferData(
-    wd,
-    (accessorIndex, dataViewArr, Float32Array._BYTES_PER_ELEMENT),
-    (DataViewCommon.getFloat, Float32Array.make),
-  );
+let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) => {
+  let (arrayBuffer, offset, length) =
+    _getBufferData(
+      wd,
+      (accessorIndex, dataViewArr, Float32Array._BYTES_PER_ELEMENT),
+    );
 
-let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
-  _getBufferData(
-    wd,
-    (accessorIndex, dataViewArr, Uint16Array._BYTES_PER_ELEMENT),
-    (DataViewCommon.getUint16_1, Uint16Array.make),
-  );
+  Float32Array.fromBufferRange(arrayBuffer, ~offset, ~length);
+};
+
+let _getBufferIndexData = (accessorIndex, dataViewArr, wd) => {
+  let (arrayBuffer, offset, length) =
+    _getBufferData(
+      wd,
+      (accessorIndex, dataViewArr, Uint16Array._BYTES_PER_ELEMENT),
+    );
+
+  Uint16Array.fromBufferRange(arrayBuffer, ~offset, ~length);
+};
 
 let _batchSetCustomGeometryData =
     ({customGeometrys} as wd, customGeometryArr, bufferArr, state) => {
@@ -594,10 +594,7 @@ let batchOperate =
          wd,
          directionLightArr,
        )
-    |> BatchOperateLightSystem.batchSetPointLightData(
-         wd,
-         pointLightArr,
-       )
+    |> BatchOperateLightSystem.batchSetPointLightData(wd, pointLightArr)
     |> BatchOperateLightSystem.setAmbientLightData(wd)
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          transformGameObjects,
