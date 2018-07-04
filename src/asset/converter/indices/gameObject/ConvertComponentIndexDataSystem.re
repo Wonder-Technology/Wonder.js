@@ -27,7 +27,7 @@ let _checkGameObjectAndComponentIndicesCountShouldEqual =
   componentGameObjectIndexData;
 };
 
-let _convertToTransformGameObjectIndexData = nodes => {
+let convertToTransformGameObjectIndexData = nodes => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -62,75 +62,6 @@ let _convertToTransformGameObjectIndexData = nodes => {
      );
 };
 
-let _convertToChildrenTransformIndexData =
-    (transformGameObjectIndexData: WDType.componentGameObjectIndexData, nodes) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|every node should has one transform component|j},
-                ~actual={j|not|j},
-              ),
-              () =>
-              transformGameObjectIndexData.gameObjectIndices
-              |> Js.Array.length == (nodes |> Js.Array.length)
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  let (parentTransformIndices, childrenTransformIndices) =
-    nodes
-    |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           (parentTransformIndices, childrenTransformIndices),
-           {children}: GLTFType.node,
-           index,
-         ) =>
-           switch (children) {
-           | None => (parentTransformIndices, childrenTransformIndices)
-           | Some(children) => (
-               parentTransformIndices |> ArrayService.push(index),
-               childrenTransformIndices |> ArrayService.push(children),
-             )
-           },
-         ([||], [||]),
-       );
-  (
-    {parentTransformIndices, childrenTransformIndices}: WDType.childrenTransformIndexData
-  )
-  |> WonderLog.Contract.ensureCheck(
-       (
-         {parentTransformIndices, childrenTransformIndices}: WDType.childrenTransformIndexData,
-       ) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect=
-                     {j|parentTransformIndices' count === childrenTransformIndices' count|j},
-                   ~actual={j|not|j},
-                 ),
-                 () =>
-                 parentTransformIndices
-                 |>
-                 Js.Array.length == (
-                                      childrenTransformIndices
-                                      |> Js.Array.length
-                                    )
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-};
-
 let _checkEveryComponentShouldHasGameObject =
     (nodes, componentGameObjectIndexData) =>
   componentGameObjectIndexData
@@ -157,7 +88,7 @@ let _checkEveryComponentShouldHasGameObject =
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let _convertToBasicCameraViewGameObjectIndexData = (nodes, cameras) => {
+let convertToBasicCameraViewGameObjectIndexData = (nodes, cameras) => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -232,7 +163,7 @@ let _buildPerspectiveCameraProjectionGameObjectIndexData =
        ([||], [||]),
      );
 
-let _convertToPerspectiveCameraProjectionGameObjectIndexData =
+let convertToPerspectiveCameraProjectionGameObjectIndexData =
     (nodes, cameras)
     : WDType.componentGameObjectIndexData =>
   switch (cameras) {
@@ -281,7 +212,7 @@ let _convertToLightMaterialGameObjectIndexDataFromMesh =
     };
   };
 
-let _convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
+let convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -311,7 +242,7 @@ let _convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
-let _convertToGeometryGameObjectIndexData = nodes => {
+let convertToGeometryGameObjectIndexData = nodes => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -387,7 +318,7 @@ let _buildLightGameObjectIndexData =
        ([||], [||]),
      );
 
-let _convertToLightGameObjectIndexData =
+let convertToLightGameObjectIndexData =
     (lightType, nodes, extensions)
     : WDType.componentGameObjectIndexData =>
   switch (extensions) {
@@ -411,33 +342,3 @@ let _convertToLightGameObjectIndexData =
       |> _checkGameObjectAndComponentIndicesCountShouldEqual;
     }
   };
-
-let convertToGameObjectIndexData =
-    ({scenes, nodes, meshes, cameras, materials, extensions}: GLTFType.gltf)
-    : WDType.gameObjectIndices => {
-  let transformGameObjectIndexData =
-    _convertToTransformGameObjectIndexData(nodes);
-  {
-    transformGameObjectIndexData,
-    childrenTransformIndexData:
-      _convertToChildrenTransformIndexData(
-        transformGameObjectIndexData,
-        nodes,
-      ),
-    basicCameraViewGameObjectIndexData:
-      _convertToBasicCameraViewGameObjectIndexData(nodes, cameras),
-    perspectiveCameraProjectionGameObjectIndexData:
-      _convertToPerspectiveCameraProjectionGameObjectIndexData(
-        nodes,
-        cameras,
-      ),
-    lightMaterialGameObjectIndexData:
-      _convertToLightMaterialGameObjectIndexData(nodes, meshes, materials),
-    customGeometryGameObjectIndexData:
-      _convertToGeometryGameObjectIndexData(nodes),
-    directionLightGameObjectIndexData:
-      _convertToLightGameObjectIndexData("directional", nodes, extensions),
-    pointLightGameObjectIndexData:
-      _convertToLightGameObjectIndexData("point", nodes, extensions),
-  };
-};
