@@ -27,7 +27,7 @@ var ReplaceFetchTool = (function () {
             },
             arrayBuffer: function () {
               return new Promise((resolve, reject) => {
-                return window.readFileAsBufferData(filePath).then(function (bufferData) {
+                return window.readFileAsBufferDataSync(filePath).then(function (bufferData) {
                   try {
                     resolve(_toArrayBuffer(bufferData.data))
                   } catch (e) {
