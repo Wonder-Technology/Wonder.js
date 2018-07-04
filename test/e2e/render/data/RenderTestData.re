@@ -28,8 +28,8 @@ let renderTestData = {
     replaceForDebug: htmlStr =>
       htmlStr
       |> Js.String.replaceByRe(
-           [%re {|/\.\/test\/e2e\/render\/config\//g|}],
-           "../../../../test/e2e/render/config/",
+           [%re {|/\.\/test\/e2e\//g|}],
+           "../../../../test/e2e/",
          ),
   },
   testData: [
@@ -491,18 +491,31 @@ let renderTestData = {
       frameData: [{timePath: [16]}],
     },
     {
-      name: "load_wd",
+      name: "load_wdb",
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
                     return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
 
-                return AssetTool.loadWDB("./test/e2e/asset/wd/truck_light.wd", function ([state, gameObject]) {
+                return AssetTool.loadWDB("./test/e2e/asset/wdb/CesiumMilkTruck.wdb", function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
                     });
 
             function initSample(state, gameObject) {
+                               var state = LightTool.createLights([-10, 0, 20], [5,0,25], state);
+
+                           var data = LightBoxesTool.createCamera(state);
+                           var state = data[0];
+                           var camera = data[1];
+
+
+                           var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                           var state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
+
+
+
                 wd.startDirector(state);
             }
     |},
