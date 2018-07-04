@@ -1,8 +1,5 @@
 var AssetTool = (function () {
     return {
-        test: function(value){
-throw new Error("zzz");
-        },
         load: function (jsonPathArr, nextFunc, completeFunc) {
             return wd.load(jsonPathArr).forEach(function (state) {
                 if (!!nextFunc) {
@@ -24,6 +21,10 @@ throw new Error("zzz");
             //         return completeFunc()
             //     }
             // })
+        },
+        loadGLB: function (glbPath) {
+            return window.fetch(glbPath)
+                .then((response) => response.arrayBuffer())
         }
     }
 })()
