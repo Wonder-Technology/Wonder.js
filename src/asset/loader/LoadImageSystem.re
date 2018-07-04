@@ -15,7 +15,7 @@ window.loadImageBase64_wonder = function(base64Str, resolve, reject){
 
                     image.onerror = (function (e) {
                       console.trace();
-                              return reject("load base64Str image error. base64Str: " + base64Str);
+                              return reject(new Error("load base64Str image error. base64Str: " + base64Str));
                             });
 };
         }
@@ -43,7 +43,7 @@ window.loadImageBlob_wonder = function(objectUrl, errorInfo, resolve, reject){
 
                     image.onerror = (function (e) {
                       console.trace();
-                              return reject(errorInfo);
+                              return reject(new Error(errorInfo));
                             });
 };
         }

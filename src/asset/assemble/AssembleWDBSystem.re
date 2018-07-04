@@ -36,7 +36,10 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
 
              streamArr
              |> ArrayService.push(
-                  LoadImageSystem.loadBlobImage(blob |> Blob.createObjectURL, {j|load image error. imageIndex: $imageIndex|j})
+                  LoadImageSystem.loadBlobImage(
+                    blob |> Blob.createObjectURL,
+                    {j|load image error. imageIndex: $imageIndex|j},
+                  )
                   |> Most.tap(image => {
                        Blob.revokeObjectURL(blob);
 
@@ -148,6 +151,7 @@ let _checkWDB = dataView => {
       open WonderLog;
       open Contract;
       open Operators;
+
       test(
         Log.buildAssertMessage(
           ~expect={j|Source file to be a WDB (wd Binary) model|j},

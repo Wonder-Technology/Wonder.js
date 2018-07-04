@@ -11,7 +11,8 @@ var PrepareTool = (function () {
                         resolve(image)
                     };
                     image.onerror = function (e) {
-                        reject(e)
+                        console.trace();
+                        reject(new Error("load image error. src: " + imageSrc))
                     }
                 })
             }
