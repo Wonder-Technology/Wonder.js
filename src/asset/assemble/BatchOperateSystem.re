@@ -231,25 +231,28 @@ let _getBufferData =
   );
 };
 
-let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) => {
+let _getBufferPointData =
+    (
+      (accessorIndex, bytes_per_element, dataViewArr, wd),
+      fromBufferRangeFunc,
+    ) => {
   let (arrayBuffer, offset, length) =
-    _getBufferData(
-      wd,
-      (accessorIndex, dataViewArr, Float32Array._BYTES_PER_ELEMENT),
-    );
+    _getBufferData(wd, (accessorIndex, dataViewArr, bytes_per_element));
 
-  Float32Array.fromBufferRange(arrayBuffer, ~offset, ~length);
+  fromBufferRangeFunc(arrayBuffer, ~offset, ~length);
 };
 
-let _getBufferIndexData = (accessorIndex, dataViewArr, wd) => {
-  let (arrayBuffer, offset, length) =
-    _getBufferData(
-      wd,
-      (accessorIndex, dataViewArr, Uint16Array._BYTES_PER_ELEMENT),
-    );
+let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
+  _getBufferPointData(
+    (accessorIndex, Float32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+    Float32Array.fromBufferRange,
+  );
 
-  Uint16Array.fromBufferRange(arrayBuffer, ~offset, ~length);
-};
+let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
+  _getBufferPointData(
+    (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+    Uint16Array.fromBufferRange,
+  );
 
 let _batchSetCustomGeometryData =
     ({customGeometrys} as wd, customGeometryArr, bufferArr, state) => {
