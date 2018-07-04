@@ -27,8 +27,8 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
     switch (images) {
     | Some(images) =>
       images
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. streamArr, {bufferView, mimeType}: image) => {
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
              let arrayBuffer =
                _getArrayBuffer(binBuffer, bufferView, bufferViews);
 
@@ -36,7 +36,7 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
 
              streamArr
              |> ArrayService.push(
-                  LoadImageSystem.loadBlobImage(blob |> Blob.createObjectURL)
+                  LoadImageSystem.loadBlobImage(blob |> Blob.createObjectURL, {j|load image error. imageIndex: $imageIndex|j})
                   |> Most.tap(image => {
                        Blob.revokeObjectURL(blob);
 

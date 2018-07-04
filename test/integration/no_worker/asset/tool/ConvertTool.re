@@ -5,7 +5,7 @@ let buildFakeLoadImage = [%bs.raw
             resolve(base64Str)
         }
 
-        window.loadImageBlob_wonder = function(objectUrl, resolve, reject){
+        window.loadImageBlob_wonder = function(objectUrl, errorInfo, resolve, reject){
             resolve(objectUrl)
         }
     }

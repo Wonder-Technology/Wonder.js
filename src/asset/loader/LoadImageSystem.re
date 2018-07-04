@@ -14,7 +14,8 @@ window.loadImageBase64_wonder = function(base64Str, resolve, reject){
                       });
 
                     image.onerror = (function (e) {
-                              return reject(e);
+                      console.trace();
+                              return reject("load base64Str image error. base64Str: " + base64Str);
                             });
 };
         }
@@ -28,10 +29,10 @@ let loadBase64Image = base64Str =>
   |> Most.fromPromise;
 
 let _loadBlobImage:
-  (string, (. ImageType.image) => unit, (. 'exn) => unit) => unit = [%raw
-  (objectUrl, resolve, reject) => {|
+  (string, string, (. ImageType.image) => unit, (. 'exn) => unit) => unit = [%raw
+  (objectUrl, errorInfo, resolve, reject) => {|
         if (typeof window.loadImageBlob_wonder === "undefined") {
-window.loadImageBlob_wonder = function(objectUrl, resolve, reject){
+window.loadImageBlob_wonder = function(objectUrl, errorInfo, resolve, reject){
                     var image = new Image();
 
                     image.src = objectUrl;
@@ -41,15 +42,18 @@ window.loadImageBlob_wonder = function(objectUrl, resolve, reject){
                       });
 
                     image.onerror = (function (e) {
-                              return reject(e);
+                      console.trace();
+                              return reject(errorInfo);
                             });
 };
         }
 
-window.loadImageBlob_wonder(objectUrl, resolve, reject)
+window.loadImageBlob_wonder(objectUrl, errorInfo, resolve, reject)
   |}
 ];
 
-let loadBlobImage = objectUrl =>
-  make((~resolve, ~reject) => _loadBlobImage(objectUrl, resolve, reject))
+let loadBlobImage = (objectUrl, errorInfo) =>
+  make((~resolve, ~reject) =>
+    _loadBlobImage(objectUrl, errorInfo, resolve, reject)
+  )
   |> Most.fromPromise;
