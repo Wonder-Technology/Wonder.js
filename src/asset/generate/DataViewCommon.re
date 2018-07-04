@@ -2,7 +2,7 @@ open Js.Typed_array;
 
 let create = arrayBuffer => DataView.make(arrayBuffer);
 
-let getFloat =
+/* let getFloat =
   (. offset, dataView) => (
     DataView.getFloat32LittleEndian(dataView, offset),
     offset + 4,
@@ -12,7 +12,7 @@ let getUint16_1 =
   (. offset, dataView) => (
     DataView.getUint16LittleEndian(dataView, offset),
     offset + 2,
-  );
+  ); */
 
 let getUint32_1 =
   (. offset, dataView) => (
@@ -20,7 +20,7 @@ let getUint32_1 =
     offset + 4,
   );
 
-let getInt32_1BigEndian =
+/* let getInt32_1BigEndian =
   (. offset, dataView) => (DataView.getInt32(dataView, offset), offset + 4);
 
 let writeFloat =
@@ -28,7 +28,7 @@ let writeFloat =
     DataView.setFloat32LittleEndian(dataView, offset, value);
     /* (dataView, offset + 4); */
     offset + 4;
-  };
+  }; */
 
 let writeUint8_1 =
   (. value, offset, dataView) => {
@@ -37,12 +37,12 @@ let writeUint8_1 =
     offset + 1;
   };
 
-let writeUint16_1 =
+/* let writeUint16_1 =
   (. value, offset, dataView) => {
     DataView.setUint16LittleEndian(dataView, offset, value);
     /* (dataView, offset + 2); */
     offset + 2;
-  };
+  }; */
 
 let writeUint32_1 = (value, offset, dataView) => {
   DataView.setUint32LittleEndian(dataView, offset, value);
@@ -50,8 +50,8 @@ let writeUint32_1 = (value, offset, dataView) => {
   offset + 4;
 };
 
-let writeUint32_1BigEndian = (value, offset, dataView) => {
+/* let writeUint32_1BigEndian = (value, offset, dataView) => {
   DataView.setUint32(dataView, offset, value);
 
   offset + 4;
-};
+}; */

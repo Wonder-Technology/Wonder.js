@@ -63,25 +63,25 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
        => blobObjectUrlImageArr |> resolve);
 };
 
-let _decodeArrayBuffer = (base64Str: string) => {
-  open Js.Typed_array;
-  let arr = base64Str |> Js.String.split(",");
-  let base64 = arr |> Js.Array.length > 1 ? arr[1] : arr[0];
-  let decodedString = File.atob(base64);
-  let bufferLength = decodedString |> Js.String.length;
-  let arrayBuffer = ArrayBuffer.make(bufferLength);
-  let typeArr = Uint8Array.fromBuffer(arrayBuffer);
+/* let _decodeArrayBuffer = (base64Str: string) => {
+     open Js.Typed_array;
+     let arr = base64Str |> Js.String.split(",");
+     let base64 = arr |> Js.Array.length > 1 ? arr[1] : arr[0];
+     let decodedString = File.atob(base64);
+     let bufferLength = decodedString |> Js.String.length;
+     let arrayBuffer = ArrayBuffer.make(bufferLength);
+     let typeArr = Uint8Array.fromBuffer(arrayBuffer);
 
-  for (i in 0 to bufferLength - 1) {
-    Uint8Array.unsafe_set(
-      typeArr,
-      i,
-      decodedString |> Js.String.charCodeAt(i) |> Obj.magic,
-    );
-  };
+     for (i in 0 to bufferLength - 1) {
+       Uint8Array.unsafe_set(
+         typeArr,
+         i,
+         decodedString |> Js.String.charCodeAt(i) |> Obj.magic,
+       );
+     };
 
-  typeArr |> Uint8Array.buffer;
-};
+     typeArr |> Uint8Array.buffer;
+   }; */
 
 let _buildBufferArray = (buffers: array(int), binBuffer) => {
   WonderLog.Contract.requireCheck(

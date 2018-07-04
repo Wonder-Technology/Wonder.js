@@ -27,13 +27,13 @@ let getPrimitiveData = primitives =>
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let isBase64 = str =>
-  [%re
-    {|/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/g|}
-  ]
-  |> Js.Re.test(str)
-  || str
-  |> Js.String.substring(~from=0, ~to_=5) === "data:";
+/* let isBase64 = str =>
+   [%re
+     {|/^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/g|}
+   ]
+   |> Js.Re.test(str)
+   || str
+   |> Js.String.substring(~from=0, ~to_=5) === "data:"; */
 
 let buildDefaultName = (type_, index) => {j|$(type_)_$index|j};
 

@@ -1,8 +1,7 @@
 let _buildDefaultName = textureIndex =>
   ConvertCommon.buildDefaultName("texture", textureIndex);
 
-/* TODO support get name from image->uri if not base64 (e.g. uri: "image.png") */
-let _getNames = (textures, images) =>
+/* let _getNames = (textures, images) =>
   textures
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. nameArr, ({name, source}: GLTFType.texture) as texture, index) =>
@@ -22,14 +21,14 @@ let _getNames = (textures, images) =>
            }
          },
        [||],
-     );
+     ); */
 
-let _isBase64Image = uri =>
+/* let _isBase64Image = uri =>
   switch (uri) {
   | Some(uri) => ConvertCommon.isBase64(uri)
 
   | None => false
-  };
+  }; */
 
 let _getFormat = mimeType =>
   switch (mimeType) {
@@ -85,12 +84,13 @@ let convertToBasicSourceTextures =
                         source |> OptionService.unsafeGet,
                       );
 
-                    _isBase64Image(uri) ?
+                    /* _isBase64Image(uri) ?
                       _getFormat(
                         uri
                         |> OptionService.unsafeGet
                         |> BinaryUtils.getBase64MimeType,
-                      ) :
+                      ) : */
+
                       _getFormat(mimeType |> OptionService.unsafeGet);
                   },
                 }: WDType.basicSourceTexture,
