@@ -28,17 +28,15 @@
             ReplaceFetchTool.replaceFetchForTest();
 
 
-
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                return AssetTool.loadWD("./cameras.wd", function ([state, gameObject]) {
+                return AssetTool.loadWDB("./BoxTextured.wdb", function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
             });
 
 
             function _createLightsAndCamera(isCreateCamera, state) {
-                var record = LightTool.createAmbientLight(state);
-                var state = record[0];
+                var state = LightTool.setAmbientLight(state);
 
 
 
@@ -60,6 +58,19 @@
 
 
 
+
+                var record = LightTool.createPointLight(state);
+                var state = record[0];
+                var pointLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
                 if (isCreateCamera) {
 
                     var data = LightBoxesTool.createCamera(state);
@@ -69,6 +80,7 @@
 
                     var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
+                    // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
                     state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
 
                     state =
@@ -77,11 +89,11 @@
                         );
                 }
 
-                return state
+                return [state, directionLightObj, pointLightObj]
             }
 
             function initSample(state, gameObject) {
-                var state = _createLightsAndCamera(false, state);
+                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
 
                 wd.startDirector(state);
             }
