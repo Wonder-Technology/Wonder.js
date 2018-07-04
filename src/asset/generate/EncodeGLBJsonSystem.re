@@ -34,34 +34,7 @@ let _encodeNodeTransform = ({translation, rotation, scale}: nodeData, list) => {
   };
 };
 
-let _encodeNodeComponents =
-    ({mesh, camera, extras, extensions}: nodeData, list) => {
-  let list =
-    switch (mesh) {
-    | None => list
-    | Some(mesh) => [("mesh", mesh |> int), ...list]
-    };
-
-  let list =
-    switch (camera) {
-    | None => list
-    | Some(camera) => [("camera", camera |> int), ...list]
-    };
-
-  let list =
-    switch (extras) {
-    | None => list
-    | Some(({material}: nodeExtras)) =>
-      let extraList = [];
-      let extraList =
-        switch (material) {
-        | None => extraList
-        | Some(material) => [("material", material |> int), ...extraList]
-        };
-
-      [("extras", extraList |> object_), ...list];
-    };
-
+let _encodeNodeExtensions = (extensions, list) =>
   switch (extensions) {
   | None => list
   | Some(({khr_lights}: nodeExtensions)) =>
@@ -77,6 +50,38 @@ let _encodeNodeComponents =
 
     [("extensions", extensionList |> object_), ...list];
   };
+
+let _encodeNodeMaterial = (extras, list) =>
+  switch (extras) {
+  | None => list
+  | Some(({material}: nodeExtras)) =>
+    let extraList = [];
+    let extraList =
+      switch (material) {
+      | None => extraList
+      | Some(material) => [("material", material |> int), ...extraList]
+      };
+
+    [("extras", extraList |> object_), ...list];
+  };
+
+let _encodeNodeComponents =
+    ({mesh, camera, extras, extensions}: nodeData, list) => {
+  let list =
+    switch (mesh) {
+    | None => list
+    | Some(mesh) => [("mesh", mesh |> int), ...list]
+    };
+
+  let list =
+    switch (camera) {
+    | None => list
+    | Some(camera) => [("camera", camera |> int), ...list]
+    };
+
+  let list = _encodeNodeMaterial(extras, list);
+
+  _encodeNodeExtensions(extensions, list);
 };
 
 let _encodeNodes = (nodeDataArr, state) => (

@@ -90,10 +90,12 @@ let _addIndexData = ((bufferViewOffset, points), indexDataArr) => {
 
 let _addAllPointData =
     (
-      (verticesSize, normalsSize, texCoordsSize, indicesSize),
-      (verticesLength, normalsLength, texCoordsLength, indicesLength),
+      (
+        (vertices, normals, texCoords, indices),
+        (verticesSize, normalsSize, texCoordsSize, indicesSize),
+        (verticesLength, normalsLength, texCoordsLength, indicesLength),
+      ),
       (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
-      (vertices, normals, texCoords, indices),
       (totalByteLength, (vertexDataArr, indexDataArr)),
     ) => {
   open Js.Typed_array;
@@ -280,15 +282,17 @@ let build = meshPointDataMap => {
              (totalByteLength, (vertexDataArr, indexDataArr)),
            ) =
              _addAllPointData(
-               (verticesSize, normalsSize, texCoordsSize, indicesSize),
                (
-                 verticesLength,
-                 normalsLength,
-                 texCoordsLength,
-                 indicesLength,
+                 (vertices, normals, texCoords, indices),
+                 (verticesSize, normalsSize, texCoordsSize, indicesSize),
+                 (
+                   verticesLength,
+                   normalsLength,
+                   texCoordsLength,
+                   indicesLength,
+                 ),
                ),
                (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
-               (vertices, normals, texCoords, indices),
                (totalByteLength, (vertexDataArr, indexDataArr)),
              );
 

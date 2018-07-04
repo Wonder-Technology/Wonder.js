@@ -120,6 +120,17 @@ let _convertBase64MimeTypeToWDBMimeType = mimeType =>
     )
   };
 
+let _getImageBase64 = (texture, source, imageBase64Map) =>
+  switch (imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)) {
+  | None =>
+    _convertImageToBase64(
+      TextureSizeService.getWidth(source),
+      TextureSizeService.getHeight(source),
+      source,
+    )
+  | Some(base64Str) => base64Str
+  };
+
 let _addImageData =
     (
       (texture, imageMap, state),
@@ -154,16 +165,7 @@ let _addImageData =
   | imageIndex when imageIndex === (-1) =>
     let imageIndex = imageUint8DataArr |> Js.Array.length;
 
-    let imageBase64 =
-      switch (imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)) {
-      | None =>
-        _convertImageToBase64(
-          TextureSizeService.getWidth(source),
-          TextureSizeService.getHeight(source),
-          source,
-        )
-      | Some(base64Str) => base64Str
-      };
+    let imageBase64 = _getImageBase64(texture, source, imageBase64Map);
 
     let imageUint8Array = BinaryUtils.convertBase64ToBinary(imageBase64);
 
@@ -191,12 +193,7 @@ let _addImageData =
         byteOffset + imageUint8ArrayAlignedByteLength,
         bufferViewDataArr
         |> ArrayService.push(
-             {
-               buffer: 0,
-               /* byteOffset: _getLastBufferViewOffset(bufferViewDataArr), */
-               byteOffset,
-               byteLength: imageUint8ArrayByteLength,
-             }: GenerateSceneGraphType.bufferViewData,
+             {buffer: 0, byteOffset, byteLength: imageUint8ArrayByteLength}: GenerateSceneGraphType.bufferViewData,
            ),
       ),
     );
@@ -220,47 +217,13 @@ let _addTextureData =
        }: GenerateSceneGraphType.textureData,
      );
 
-let _buildNoDiffuseMap =
-    (
-      (lightMaterial, name),
-      (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-      (textureIndexMap, samplerIndexMap, imageMap),
-      (totalByteLength, byteOffset, bufferViewDataArr),
-      state,
-    ) => {
-  let diffuseColor =
-    OperateLightMaterialMainService.getDiffuseColor(lightMaterial, state);
-
-  (
-    (
-      materialDataArr
-      |> ArrayService.push(
-           {
-             baseColorFactor:
-               Some([|
-                 diffuseColor[0],
-                 diffuseColor[1],
-                 diffuseColor[2],
-                 1.0,
-               |]),
-             baseColorTexture: None,
-             name,
-           }: GenerateSceneGraphType.materialData,
-         ),
-      textureDataArr,
-      samplerDataArr,
-      imageUint8DataArr,
-    ),
-    (textureIndexMap, samplerIndexMap, imageMap),
-    (totalByteLength, byteOffset, bufferViewDataArr),
-  );
-};
-
-let _buildDiffuseMap =
+let build =
     (
       (diffuseMap, name),
-      (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-      (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+      (
+        (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
+        (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+      ),
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) => {
@@ -352,92 +315,4 @@ let _buildDiffuseMap =
       (totalByteLength, byteOffset, bufferViewDataArr),
     );
   };
-};
-
-let build =
-    (
-      materialDataMap,
-      imageBase64Map,
-      (totalByteLength, byteOffset, bufferViewDataArr),
-      state,
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(GenerateCommon.checkShouldHasNoSlot(materialDataMap))
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
-  let (
-    (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-    (textureIndexMap, samplerIndexMap, imageMap),
-    (totalByteLength, byteOffset, bufferViewDataArr),
-  ) =
-    materialDataMap
-    |> SparseMapService.reduceValid(
-         (.
-           (
-             (
-               materialDataArr,
-               textureDataArr,
-               samplerDataArr,
-               imageUint8DataArr,
-             ),
-             (textureIndexMap, samplerIndexMap, imageMap),
-             (totalByteLength, byteOffset, bufferViewDataArr),
-           ),
-           (lightMaterial, name),
-         ) => {
-           let diffuseMap =
-             OperateLightMaterialMainService.getDiffuseMap(
-               lightMaterial,
-               state,
-             );
-
-           switch (diffuseMap) {
-           | None =>
-             _buildNoDiffuseMap(
-               (lightMaterial, name),
-               (
-                 materialDataArr,
-                 textureDataArr,
-                 samplerDataArr,
-                 imageUint8DataArr,
-               ),
-               (textureIndexMap, samplerIndexMap, imageMap),
-               (totalByteLength, byteOffset, bufferViewDataArr),
-               state,
-             )
-
-           | Some(diffuseMap) =>
-             _buildDiffuseMap(
-               (diffuseMap, name),
-               (
-                 materialDataArr,
-                 textureDataArr,
-                 samplerDataArr,
-                 imageUint8DataArr,
-               ),
-               (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
-               (totalByteLength, byteOffset, bufferViewDataArr),
-               state,
-             )
-           };
-         },
-         (
-           ([||], [||], [||], [||]),
-           ([||], WonderCommonlib.HashMapService.createEmpty(), [||]),
-           (totalByteLength, byteOffset, bufferViewDataArr),
-         ),
-       );
-  (
-    materialDataArr,
-    textureDataArr,
-    samplerDataArr,
-    imageUint8DataArr,
-    (totalByteLength, bufferViewDataArr),
-  );
 };
