@@ -1,3 +1,26 @@
+<a name="1.0.0-alpha.21"></a>
+# [1.0.0-alpha.21](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.20...v1.0.0-alpha.21) (2018-07-04)
+
+
+### Bug Fixes
+
+* **render-worker:** fix "send u_ambient" bug ([76a1f28](https://github.com/Wonder-Technology/Wonder.js/commit/76a1f28))
+
+
+### Features
+
+* **asset:** add wdb(draft); remove gltf and wd, only remain glb and wdb ([3c94930](https://github.com/Wonder-Technology/Wonder.js/commit/3c94930))
+* **asset:** generate: add contract check->"expect map be basicSourceTexture" ([699001d](https://github.com/Wonder-Technology/Wonder.js/commit/699001d))
+* **asset:** glb: add "convert glb to wd" draft ([e85de41](https://github.com/Wonder-Technology/Wonder.js/commit/e85de41))
+* **asset:** load image->error add more error info and add trace info ([e0ecba8](https://github.com/Wonder-Technology/Wonder.js/commit/e0ecba8))
+* **asset:** load image->error add more error info and add trace info ([11cc4fb](https://github.com/Wonder-Technology/Wonder.js/commit/11cc4fb))
+* **asset:** optimize "assemble wdb"->BatchOperateSystem->"get geometry data" ([0d150b9](https://github.com/Wonder-Technology/Wonder.js/commit/0d150b9))
+* **asset:** optimize "convert glb"->_writeBinaryBuffer ([94acce7](https://github.com/Wonder-Technology/Wonder.js/commit/94acce7))
+* **asset:** optimize "generate wdb"->build buffer ([04a5a24](https://github.com/Wonder-Technology/Wonder.js/commit/04a5a24))
+* **asset:** texture format: png use RGBA, jpeg use RGB ([c7dab8c](https://github.com/Wonder-Technology/Wonder.js/commit/c7dab8c))
+
+
+
 <a name="1.0.0-alpha.20"></a>
 # [1.0.0-alpha.20](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.19...v1.0.0-alpha.20) (2018-06-22)
 
