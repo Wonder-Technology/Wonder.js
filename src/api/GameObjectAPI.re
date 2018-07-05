@@ -12,7 +12,7 @@ open HasComponentGameObjectService;
 
 open CloneComponentGameObjectMainService;
 
-open AddGameObjectComponentMainService;
+open AddComponentGameObjectMainService;
 
 open DisposeGameObjectMainService;
 

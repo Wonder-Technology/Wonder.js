@@ -27,7 +27,7 @@ let createInstance = (sourceInstance, {settingRecord, gameObjectRecord} as state
   state.objectInstanceRecord = objectInstanceRecord;
   let state =
     state
-    |> AddGameObjectComponentMainService.addTransformComponent(uid, transform)
-    |> AddGameObjectComponentMainService.addObjectInstanceComponent(uid, objectInstance);
+    |> AddComponentGameObjectMainService.addTransformComponent(uid, transform)
+    |> AddComponentGameObjectMainService.addObjectInstanceComponent(uid, objectInstance);
   (state, uid)
 };
