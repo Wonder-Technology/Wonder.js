@@ -19,9 +19,9 @@
     "test:fastRender": "gulp testFastRender",
     "test:fastPf": "gulp testFastPerformance",
     "test:render": "npm run build && gulp testRenderInLocal",
-    "test:renderCI": "gulp installPuppeteer && npm run build && gulp testRenderInCI",
+    "test:renderCI": "gulp installPuppeteerInCI && npm run build && gulp testRenderInCI",
     "test:pf": "npm run build && gulp testPerformanceInLocal",
-    "test:pfCI": "gulp installPuppeteer && npm run build && gulp testPerformanceInCI",
+    "test:pfCI": "gulp installPuppeteerInCI && npm run build && gulp testPerformanceInCI",
     "test:watch": "jest --watch --config jest.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
