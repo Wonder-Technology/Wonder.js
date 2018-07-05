@@ -17,6 +17,7 @@ install:
 jobs:
   include:
     - stage: test
+      script: gulp installPuppeteer
       script: npm run test:renderCI
     # - stage: test
     #   script: npm run test:pfCI
