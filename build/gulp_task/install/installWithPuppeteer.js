@@ -7,7 +7,7 @@ var exec = require("child_process").exec;
 
 
 gulp.task("installPuppeteerInCI", function (done) {
-    exec("sudo yarn add puppeteer", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
+    exec("yarn add puppeteer", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
         if (err) {
             throw err;
         }
