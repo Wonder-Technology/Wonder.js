@@ -3,13 +3,17 @@ open StateDataMainType;
 let getCurrentCameraGameObject = state =>
   CameraSceneMainService.getCurrentCameraGameObject(
     state.basicCameraViewRecord,
-    state.sceneRecord,
+    RecordSceneMainService.getRecord(state),
   );
 
 let setCurrentCameraGameObject = (uid, state) => {
   ...state,
   sceneRecord:
-    CameraSceneMainService.setCurrentCameraGameObject(uid, state.sceneRecord),
+    CameraSceneMainService.setCurrentCameraGameObject(
+      uid,
+      RecordSceneMainService.getRecord(state),
+    )
+    |. Some,
 };
 
 let getAmbientLightColor = state =>
@@ -17,3 +21,9 @@ let getAmbientLightColor = state =>
 
 let setAmbientLightColor = (color, state) =>
   AmbientLightSceneMainService.setAmbientLightColor(color, state);
+
+let getSceneGameObject = GameObjectSceneMainService.getSceneGameObject;
+
+let addSceneChild = GameObjectSceneMainService.addChild;
+
+let addSceneChildren = GameObjectSceneMainService.addChildren;

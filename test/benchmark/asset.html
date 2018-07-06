@@ -155,14 +155,14 @@
             }
 
 
-            function _testGenerateEmbededWDBByGLB(glb, imageBase64Map, isCreateCamera, state$) {
+            function _testGenerateWDBByGLB(glb, imageBase64Map, isCreateCamera, state$) {
                 wd.assembleGLB(glb, state$)
-                    .forEach(([state, sceneGameObject]) => {
+                    .forEach(([state, rootGameObject]) => {
                         console.profile("generateWDB");
                         var n0 = performance.now();
 
 
-                        var [state, wdb] = wd.generateWDB(sceneGameObject, imageBase64Map, state);
+                        var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
 
 
                         console.profileEnd();
@@ -172,11 +172,11 @@
 
 
                         // var state =
-                        //     _disposeAll(sceneGameObject, state);
+                        //     _disposeAll(rootGameObject, state);
 
 
                         wd.assembleWDB(wdb, state)
-                            .forEach(([state, sceneGameObject]) => {
+                            .forEach(([state, rootGameObject]) => {
                                 var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
 
@@ -216,9 +216,10 @@
                 // var newBoxes = [box];
 
 
-                var [state, sceneGameObject] = wd.createGameObject(state);
+                // var [state, rootGameObject] = wd.createGameObject(state);
+                var rootGameObject = wd.getSceneGameObject(state);
 
-                var sceneGameObjectTransform = wd.unsafeGetGameObjectTransformComponent(sceneGameObject, state);
+                // var rootGameObjectTransform = wd.unsafeGetGameObjectTransformComponent(rootGameObject, state);
 
 
                 var data = LightBoxesTool.createCamera(state);
@@ -247,10 +248,14 @@
                 ]);
 
                 var state = gameObjects.reduce((state, box) => {
-                    return wd.setTransformParent(
-                        sceneGameObjectTransform, wd.unsafeGetGameObjectTransformComponent(box, state),
-                        state
-                    );
+                    return wd.addSceneChild(
+                        wd.unsafeGetGameObjectTransformComponent(box, state), state
+                    )
+
+                    // return wd.setTransformParent(
+                    //     rootGameObjectTransform, wd.unsafeGetGameObjectTransformComponent(box, state),
+                    //     state
+                    // );
                 }, state);
 
 
@@ -258,7 +263,7 @@
 
 
 
-                var [state, wdb] = wd.generateWDB(sceneGameObject, wd.createSparseMap(), state);
+                var [state, wdb] = wd.generateWDB(rootGameObject, wd.createSparseMap(), state);
 
                 // console.log(
                 //     JSON.stringify(wdRecord)
@@ -267,17 +272,17 @@
                 return [state, wdb];
             }
 
-            function _testGenerateEmbededWDByGameObject(map1, map2, state$) {
+            function _testGenerateWDByGameObject(map1, map2, state$) {
                 var [state, wdb] = _generateWDByGameObject(map1, map2, state$);
 
 
                 // var state =
-                //     _disposeAll(sceneGameObject, state);
+                //     _disposeAll(rootGameObject, state);
 
                 var state = state$;
 
                 wd.assembleWDB(wdb, state)
-                    .forEach(([state, sceneGameObject]) => {
+                    .forEach(([state, rootGameObject]) => {
                         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
 
@@ -305,12 +310,12 @@
                 var n1 = performance.now();
 
                 wd.assembleWDB(wdb, state)
-                    .forEach(([state, sceneGameObject]) => {
+                    .forEach(([state, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();
 
 
-                        console.log([state, sceneGameObject])
+                        console.log([state, rootGameObject])
 
 
                         // console.profile("create one");
@@ -358,7 +363,7 @@
                         //         truckImageBase64,
                         //         imageBase64Map);
 
-                        // _testGenerateEmbededWDBByGLB(
+                        // _testGenerateWDBByGLB(
                         //     arrayBuffer,
 
                         //     imageBase64Map,
@@ -370,7 +375,7 @@
 
 
 
-                        // _testGenerateEmbededWDByGameObject(map1, map2, state$);
+                        // _testGenerateWDByGameObject(map1, map2, state$);
 
 
 

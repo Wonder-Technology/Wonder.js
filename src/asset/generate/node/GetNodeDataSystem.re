@@ -259,7 +259,7 @@ let rec _getNodeData =
        ),
      );
 
-let getAllNodeData = (sceneGameObject, state) => {
+let getAllNodeData = (rootGameObject, state) => {
   let (
     state,
     (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
@@ -293,7 +293,7 @@ let getAllNodeData = (sceneGameObject, state) => {
       (
         [|
           GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            sceneGameObject,
+            rootGameObject,
             state,
           ),
         |],

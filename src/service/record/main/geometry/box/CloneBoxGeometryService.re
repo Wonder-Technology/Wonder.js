@@ -1,6 +1,7 @@
 open BoxGeometryType;
 
-let handleCloneComponent = (sourceComponent, countRangeArr: array(int), record) => (
+let handleCloneComponent =
+    (sourceComponent, countRangeArr: array(int), record) => (
   record,
-  countRangeArr |> Js.Array.map((_) => sourceComponent)
+  countRangeArr |> Js.Array.map(_ => sourceComponent),
 );

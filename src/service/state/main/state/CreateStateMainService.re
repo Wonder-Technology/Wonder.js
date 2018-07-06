@@ -13,7 +13,7 @@ let createState = () => {
   deviceManagerRecord: RecordDeviceManagerService.create(),
   gameObjectRecord: RecordGameObjectService.create(),
   transformRecord: None,
-  sceneRecord: RecordSceneService.create(),
+  sceneRecord: None,
   basicCameraViewRecord: RecordBasicCameraViewService.create(),
   perspectiveCameraProjectionRecord:
     RecordPerspectiveCameraProjectionService.create(),

@@ -469,11 +469,13 @@ let _ =
       let _prepareGameObject = state => {
         open GameObjectAPI;
 
-        let (state, sceneGameObject) = state^ |> createGameObject;
+        let state = state^;
+
+        let rootGameObject = SceneAPI.getSceneGameObject(state);
 
         let sceneGameObjectTransform =
           GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            sceneGameObject,
+            rootGameObject,
             state,
           );
 
@@ -509,14 +511,8 @@ let _ =
 
         let state =
           state
-          |> TransformAPI.setTransformParent(
-               Js.Nullable.return(sceneGameObjectTransform),
-               transform1,
-             )
-          |> TransformAPI.setTransformParent(
-               Js.Nullable.return(sceneGameObjectTransform),
-               transform2,
-             )
+          |> SceneAPI.addSceneChild(transform1)
+          |> SceneAPI.addSceneChild(transform2)
           |> TransformAPI.setTransformParent(
                Js.Nullable.return(transform2),
                transform3,
@@ -527,7 +523,7 @@ let _ =
 
         (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -552,7 +548,7 @@ let _ =
       test("test nodes", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -570,7 +566,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1,"extras":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2,"extras":{"material":2}}]|j},
           state,
         );
@@ -579,7 +575,7 @@ let _ =
       test("test meshes", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -597,7 +593,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
             "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]},{"primitives":[{"attributes":{"POSITION":7,"NORMAL":8,"TEXCOORD_0":9},"indices":10}]}]
                 |j},
@@ -608,7 +604,7 @@ let _ =
       test("test materials", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -626,7 +622,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
               "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}]
                 |j},
@@ -637,7 +633,7 @@ let _ =
       test("test textures and samplers and images", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -660,7 +656,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
               "textures":[{"sampler":0,"source":0,"name":"$name2"},{"sampler":1,"source":1}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[
     {
@@ -680,7 +676,7 @@ let _ =
       test("test bufferViews", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -703,7 +699,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
   "bufferViews": [
     {
@@ -782,7 +778,7 @@ let _ =
         testPromise("test data", () => {
           let (
             state,
-            (sceneGameObject, sceneGameObjectTransform),
+            (rootGameObject, sceneGameObjectTransform),
             (gameObject1, gameObject2, gameObject3),
             (
               (transform1, (localPos1, localRotation1, localScale1)),
@@ -801,9 +797,9 @@ let _ =
 
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
-            sceneGameObject,
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllGeometryData(sceneGameObject, state)
+            rootGameObject,
+            ((state, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
               |>
               expect == [|
                           (
@@ -834,11 +830,11 @@ let _ =
       let _prepareGameObject = state => {
         open GameObjectAPI;
 
-        let (state, sceneGameObject) = state^ |> createGameObject;
+        let (state, rootGameObject) = state^ |> createGameObject;
 
         let sceneGameObjectTransform =
           GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            sceneGameObject,
+            rootGameObject,
             state,
           );
 
@@ -890,7 +886,7 @@ let _ =
 
         (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -915,7 +911,7 @@ let _ =
       test("test nodes", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -933,7 +929,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
                      "nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"material":1}}]
 
@@ -945,7 +941,7 @@ let _ =
       test("test meshes", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -963,7 +959,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
                    "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
                        |j},
@@ -974,7 +970,7 @@ let _ =
       test("test materials, textures, samplers, images", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -997,7 +993,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
        "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],
                      "textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":7,"mimeType":"image/png"}]                       |j},
@@ -1008,7 +1004,7 @@ let _ =
       test("test bufferViews", () => {
         let (
           state,
-          (sceneGameObject, sceneGameObjectTransform),
+          (rootGameObject, sceneGameObjectTransform),
           (gameObject1, gameObject2, gameObject3),
           (
             (transform1, (localPos1, localRotation1, localScale1)),
@@ -1031,7 +1027,7 @@ let _ =
           _prepareGameObject(state);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          sceneGameObject,
+          rootGameObject,
           {j|
   "bufferViews": [
     {
@@ -1081,1075 +1077,1072 @@ let _ =
       });
     });
 
+    describe("test share geometry", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
 
-       describe("test share geometry", () => {
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
+        let (state, rootGameObject) = state^ |> createGameObject;
 
-           let (state, sceneGameObject) = state^ |> createGameObject;
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
 
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          (material1, diffuseColor1),
+          meshRenderer1,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObjectWithShareGeometry(
+            geometry1,
+            GameObjectAPI.addGameObjectBoxGeometryComponent,
+            state,
+          );
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          (material3, texture3, (source3, width3, height3)),
+          meshRenderer3,
+        ) =
+          _createGameObject3(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let (
-             state,
-             gameObject1,
-             (transform1, (localPos1, localRotation1, localScale1)),
-             geometry1,
-             (material1, diffuseColor1),
-             meshRenderer1,
-           ) =
-             _createGameObject1(state);
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             geometry2,
-             (material2, diffuseColor2),
-             meshRenderer2,
-           ) =
-             _createGameObjectWithShareGeometry(
-               geometry1,
-               GameObjectAPI.addGameObjectBoxGeometryComponent,
-               state,
-             );
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            geometry2,
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          ),
+          (
+            (material1, diffuseColor1),
+            (material2, diffuseColor2),
+            (material3, texture3, (source3, width3, height3)),
+            (base64Str1, base64Str2),
+          ),
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        );
+      };
 
-           let (
-             state,
-             gameObject3,
-             (transform3, (localPos3, localRotation3, localScale3)),
-             (geometry3, (vertices3, texCoords3, normals3, indices3)),
-             (material3, texture3, (source3, width3, height3)),
-             meshRenderer3,
-           ) =
-             _createGameObject3(state);
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            geometry2,
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          ),
+          _,
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
 
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"material":2}}]|j},
+          state,
+        );
+      });
 
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+      test("test meshes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            geometry2,
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          ),
+          _,
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
 
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             (
-               geometry1,
-               geometry2,
-               (geometry3, (vertices3, texCoords3, normals3, indices3)),
-             ),
-             (
-               (material1, diffuseColor1),
-               (material2, diffuseColor2),
-               (material3, texture3, (source3, width3, height3)),
-               (base64Str1, base64Str2),
-             ),
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           );
-         };
-
-         test("test nodes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             (
-               geometry1,
-               geometry2,
-               (geometry3, (vertices3, texCoords3, normals3, indices3)),
-             ),
-             _,
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"material":2}}]|j},
-             state,
-           );
-         });
-
-         test("test meshes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             (
-               geometry1,
-               geometry2,
-               (geometry3, (vertices3, texCoords3, normals3, indices3)),
-             ),
-             _,
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
                    |j},
-             state,
-           );
-         });
+          state,
+        );
+      });
 
-         describe("test buffer", () =>
-           testPromise("test data", () => {
-             let (
-               state,
-               (sceneGameObject, sceneGameObjectTransform),
-               (gameObject1, gameObject2, gameObject3),
-               (
-                 (transform1, (localPos1, localRotation1, localScale1)),
-                 (transform2, (localPos2, localRotation2, localScale2)),
-                 (transform3, (localPos3, localRotation3, localScale3)),
-               ),
-               (
-                 geometry1,
-                 geometry2,
-                 (geometry3, (vertices3, texCoords3, normals3, indices3)),
-               ),
-               _,
-               (meshRenderer1, meshRenderer2, meshRenderer3),
-             ) =
-               _prepareGameObject(state);
+      describe("test buffer", () =>
+        testPromise("test data", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              geometry2,
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            _,
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          ) =
+            _prepareGameObject(state);
 
-             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
-               sandbox^,
-               sceneGameObject,
-               ((state, sceneGameObject)) => {
-                 let dataMap = GLTFTool.getTruckGeometryData();
+          GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+            sandbox^,
+            rootGameObject,
+            ((state, rootGameObject)) => {
+              let dataMap = GLTFTool.getTruckGeometryData();
 
-                 AssembleWDBSystemTool.getAllGeometryData(sceneGameObject, state)
-                 |>
-                 expect == [|
-                             (
-                               "gameObject_1",
-                               (
-                                 GLTFTool.getBoxMainVertices(),
-                                 GLTFTool.getBoxMainNormals(),
-                                 Float32Array.make([||]),
-                                 GLTFTool.getBoxMainIndices(),
-                               ),
-                             ),
-                             (
-                               "gameObject_2",
-                               (
-                                 GLTFTool.getBoxMainVertices(),
-                                 GLTFTool.getBoxMainNormals(),
-                                 Float32Array.make([||]),
-                                 GLTFTool.getBoxMainIndices(),
-                               ),
-                             ),
-                             (
-                               "gameObject_3",
-                               (vertices3, normals3, texCoords3, indices3),
-                             ),
-                           |];
-               },
-               state,
-             );
-           })
-         );
+              AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
+              |>
+              expect == [|
+                          (
+                            "gameObject_1",
+                            (
+                              GLTFTool.getBoxMainVertices(),
+                              GLTFTool.getBoxMainNormals(),
+                              Float32Array.make([||]),
+                              GLTFTool.getBoxMainIndices(),
+                            ),
+                          ),
+                          (
+                            "gameObject_2",
+                            (
+                              GLTFTool.getBoxMainVertices(),
+                              GLTFTool.getBoxMainNormals(),
+                              Float32Array.make([||]),
+                              GLTFTool.getBoxMainIndices(),
+                            ),
+                          ),
+                          (
+                            "gameObject_3",
+                            (vertices3, normals3, texCoords3, indices3),
+                          ),
+                        |];
+            },
+            state,
+          );
+        })
+      );
 
-         test("test materials, textures, samplers, images", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             (
-               geometry1,
-               geometry2,
-               (geometry3, (vertices3, texCoords3, normals3, indices3)),
-             ),
-             (
-               (material1, diffuseColor1),
-               (material2, diffuseColor2),
-               (material3, texture3, (source3, width3, height3)),
-               (base64Str1, base64Str2),
-             ),
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           ) =
-             _prepareGameObject(state);
+      test("test materials, textures, samplers, images", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            geometry2,
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          ),
+          (
+            (material1, diffuseColor1),
+            (material2, diffuseColor2),
+            (material3, texture3, (source3, width3, height3)),
+            (base64Str1, base64Str2),
+          ),
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[1,0.5,0.5,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":7,"mimeType":"image/png"}]
                    |j},
-             state,
-           );
-         });
-       });
+          state,
+        );
+      });
+    });
 
-       describe("test share material", () => {
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
+    describe("test share material", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
 
-           let (state, sceneGameObject) = state^ |> createGameObject;
+        let (state, rootGameObject) = state^ |> createGameObject;
 
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          (material1, diffuseColor1),
+          meshRenderer1,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          (geometry2, (vertices2, texCoords2, normals2, indices2)),
+          (material2, (texture2, name2), (source2, width2, height2)),
+          meshRenderer2,
+        ) =
+          _createGameObject2(state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          material3,
+          meshRenderer3,
+        ) =
+          _createGameObjectWithShareMaterial(material2, state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let (
-             state,
-             gameObject1,
-             (transform1, (localPos1, localRotation1, localScale1)),
-             geometry1,
-             (material1, diffuseColor1),
-             meshRenderer1,
-           ) =
-             _createGameObject1(state);
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             (geometry2, (vertices2, texCoords2, normals2, indices2)),
-             (material2, (texture2, name2), (source2, width2, height2)),
-             meshRenderer2,
-           ) =
-             _createGameObject2(state);
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            (geometry2, (vertices2, texCoords2, normals2, indices2)),
+            geometry3,
+          ),
+          (
+            (material1, diffuseColor1),
+            (material2, (texture2, name2), (source2, width2, height2)),
+            material3,
+            (base64Str1, base64Str2),
+          ),
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        );
+      };
 
-           let (
-             state,
-             gameObject3,
-             (transform3, (localPos3, localRotation3, localScale3)),
-             geometry3,
-             material3,
-             meshRenderer3,
-           ) =
-             _createGameObjectWithShareMaterial(material2, state);
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          _,
+          _,
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
 
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
-
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             (
-               geometry1,
-               (geometry2, (vertices2, texCoords2, normals2, indices2)),
-               geometry3,
-             ),
-             (
-               (material1, diffuseColor1),
-               (material2, (texture2, name2), (source2, width2, height2)),
-               material3,
-               (base64Str1, base64Str2),
-             ),
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           );
-         };
-
-         test("test nodes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             _,
-             _,
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                  "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"material":1}},{"translation":[0.5,11,12.5],"rotation":[3,1,2.5,1],"scale":[2.5,15.5,1.5],"mesh":2,"extras":{"material":1}}]
                    |j},
-             state,
-           );
-         });
+          state,
+        );
+      });
 
-         test("test materials, textures, samplers, images", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (gameObject1, gameObject2, gameObject3),
-             (
-               (transform1, (localPos1, localRotation1, localScale1)),
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (transform3, (localPos3, localRotation3, localScale3)),
-             ),
-             _,
-             (
-               (material1, diffuseColor1),
-               (material2, (texture2, name2), (source2, width2, height2)),
-               material3,
-               (base64Str1, base64Str2),
-             ),
-             (meshRenderer1, meshRenderer2, meshRenderer3),
-           ) =
-             _prepareGameObject(state);
+      test("test materials, textures, samplers, images", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          _,
+          (
+            (material1, diffuseColor1),
+            (material2, (texture2, name2), (source2, width2, height2)),
+            material3,
+            (base64Str1, base64Str2),
+          ),
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
                  "images":[{"bufferView":11,"mimeType":"image/png"}]
                    |j},
-             state,
-           );
-         });
-       });
+          state,
+        );
+      });
+    });
 
-       describe("test share texture, share sampler, share source", () => {
-         let _createGameObjectWithShareTexture = (texture, state) => {
-           open GameObjectAPI;
-           open LightMaterialAPI;
-           open MeshRendererAPI;
+    describe("test share texture, share sampler, share source", () => {
+      let _createGameObjectWithShareTexture = (texture, state) => {
+        open GameObjectAPI;
+        open LightMaterialAPI;
+        open MeshRendererAPI;
 
-           /* let (state, (texture, name), (source, width, height)) =
-              _createTexture1(state); */
+        /* let (state, (texture, name), (source, width, height)) =
+           _createTexture1(state); */
 
-           let (state, material) = createLightMaterial(state);
+        let (state, material) = createLightMaterial(state);
 
-           let state =
-             LightMaterialAPI.setLightMaterialDiffuseMap(
-               material,
-               texture,
-               state,
+        let state =
+          LightMaterialAPI.setLightMaterialDiffuseMap(
+            material,
+            texture,
+            state,
+          );
+
+        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectLightMaterialComponent(gameObject, material)
+          |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let transform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          );
+
+        let localPos = (0.5, 11., 12.5);
+        let localRotation = (3., 1., 2.5, 1.);
+        let localScale = (2.5, 15.5, 1.5);
+
+        let state =
+          state
+          |> TransformAPI.setTransformLocalPosition(transform, localPos)
+          |> TransformAPI.setTransformLocalRotation(transform, localRotation)
+          |> TransformAPI.setTransformLocalScale(transform, localScale);
+
+        (
+          state,
+          gameObject,
+          (transform, (localPos, localRotation, localScale)),
+          geometry,
+          (material, texture),
+          meshRenderer,
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, newTexture1, (source1, _, _)) = _createTexture2(state);
+
+        let (state, newTexture2, _) = _createTexture2(state);
+
+        let state =
+          BasicSourceTextureAPI.setBasicSourceTextureSource(
+            newTexture2,
+            source1,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          (material1, texture1),
+          meshRenderer1,
+        ) =
+          _createGameObjectWithShareTexture(newTexture1, state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, texture2),
+          meshRenderer2,
+        ) =
+          _createGameObjectWithShareTexture(newTexture1, state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          (material3, texture3),
+          meshRenderer3,
+        ) =
+          _createGameObjectWithShareTexture(newTexture2, state);
+
+        let (
+          state,
+          gameObject4,
+          (transform4, (localPos4, localRotation4, localScale4)),
+          geometry4,
+          material4,
+          meshRenderer4,
+        ) =
+          _createGameObjectWithShareMaterial(material3, state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform4,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-           let (state, meshRenderer) = createMeshRenderer(state);
-           let (state, gameObject) = state |> createGameObject;
-           let state =
-             state
-             |> addGameObjectLightMaterialComponent(gameObject, material)
-             |> addGameObjectBoxGeometryComponent(gameObject, geometry)
-             |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let transform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               gameObject,
-               state,
-             );
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            (material1, texture1),
+            (material2, texture2),
+            (material3, texture3),
+            material4,
+            (base64Str1, base64Str2),
+          ),
+        );
+      };
 
-           let localPos = (0.5, 11., 12.5);
-           let localRotation = (3., 1., 2.5, 1.);
-           let localScale = (2.5, 15.5, 1.5);
+      test("test materials, textures, samplers, images", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            (material1, texture1),
+            (material2, texture2),
+            (material3, texture3),
+            material4,
+            (base64Str1, base64Str2),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           let state =
-             state
-             |> TransformAPI.setTransformLocalPosition(transform, localPos)
-             |> TransformAPI.setTransformLocalRotation(transform, localRotation)
-             |> TransformAPI.setTransformLocalScale(transform, localScale);
-
-           (
-             state,
-             gameObject,
-             (transform, (localPos, localRotation, localScale)),
-             geometry,
-             (material, texture),
-             meshRenderer,
-           );
-         };
-
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
-
-           let (state, sceneGameObject) = state^ |> createGameObject;
-
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
-             );
-
-           let (state, newTexture1, (source1, _, _)) = _createTexture2(state);
-
-           let (state, newTexture2, _) = _createTexture2(state);
-
-           let state =
-             BasicSourceTextureAPI.setBasicSourceTextureSource(
-               newTexture2,
-               source1,
-               state,
-             );
-
-           let (
-             state,
-             gameObject1,
-             (transform1, (localPos1, localRotation1, localScale1)),
-             geometry1,
-             (material1, texture1),
-             meshRenderer1,
-           ) =
-             _createGameObjectWithShareTexture(newTexture1, state);
-
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             geometry2,
-             (material2, texture2),
-             meshRenderer2,
-           ) =
-             _createGameObjectWithShareTexture(newTexture1, state);
-
-           let (
-             state,
-             gameObject3,
-             (transform3, (localPos3, localRotation3, localScale3)),
-             geometry3,
-             (material3, texture3),
-             meshRenderer3,
-           ) =
-             _createGameObjectWithShareTexture(newTexture2, state);
-
-           let (
-             state,
-             gameObject4,
-             (transform4, (localPos4, localRotation4, localScale4)),
-             geometry4,
-             material4,
-             meshRenderer4,
-           ) =
-             _createGameObjectWithShareMaterial(material3, state);
-
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform4,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
-
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (
-               (material1, texture1),
-               (material2, texture2),
-               (material3, texture3),
-               material4,
-               (base64Str1, base64Str2),
-             ),
-           );
-         };
-
-         test("test materials, textures, samplers, images", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (
-               (material1, texture1),
-               (material2, texture2),
-               (material3, texture3),
-               material4,
-               (base64Str1, base64Str2),
-             ),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}],"textures":[{"sampler":0,"source":0},{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":16,"mimeType":"image/png"}]
                    |j},
-             state,
-           );
-         });
+          state,
+        );
+      });
 
-         describe("contract check", () => {
-           let _prepareGameObject = state => {
-             open GameObjectAPI;
+      describe("contract check", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
 
-             let (state, sceneGameObject) = state^ |> createGameObject;
+          let (state, rootGameObject) = state^ |> createGameObject;
 
-             let sceneGameObjectTransform =
-               GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                 sceneGameObject,
-                 state,
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              rootGameObject,
+              state,
+            );
+
+          let (state, texture) =
+            ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+              state,
+            );
+
+          let state =
+            ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+              texture,
+              Uint8Array.make([||]),
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            (transform1, (localPos1, localRotation1, localScale1)),
+            geometry1,
+            (material1, texture1),
+            meshRenderer1,
+          ) =
+            _createGameObjectWithShareTexture(texture, state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
                );
 
-             let (state, texture) =
-               ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
-                 state,
-               );
+          (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material1, texture1),
+          );
+        };
 
-             let state =
-               ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
-                 texture,
-                 Uint8Array.make([||]),
-                 state,
-               );
+        test("should only has basicSourceTexture", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material1, texture1),
+          ) =
+            _prepareGameObject(state);
+          TestTool.openContractCheck();
 
-             let (
-               state,
-               gameObject1,
-               (transform1, (localPos1, localRotation1, localScale1)),
-               geometry1,
-               (material1, texture1),
-               meshRenderer1,
-             ) =
-               _createGameObjectWithShareTexture(texture, state);
+          expect(() =>
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {||},
+              state,
+            )
+          )
+          |> toThrowMessage("expect map be basicSourceTexture");
+        });
+      });
+    });
 
-             let state =
-               state
-               |> TransformAPI.setTransformParent(
-                    Js.Nullable.return(sceneGameObjectTransform),
-                    transform1,
-                  );
+    describe("test basic material", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
 
-             (
-               state,
-               (sceneGameObject, sceneGameObjectTransform),
-               (material1, texture1),
-             );
-           };
+        let (state, rootGameObject) = state^ |> createGameObject;
 
-           test("should only has basicSourceTexture", () => {
-             let (
-               state,
-               (sceneGameObject, sceneGameObjectTransform),
-               (material1, texture1),
-             ) =
-               _prepareGameObject(state);
-             TestTool.openContractCheck();
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
 
-             expect(() =>
-               GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-                 sceneGameObject,
-                 {||},
-                 state,
-               )
+        let (state, basicMaterial) =
+          BasicMaterialAPI.createBasicMaterial(state);
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          material1,
+          meshRenderer1,
+        ) =
+          _createGameObjectWithShareMaterial(basicMaterial, state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          (material3, texture3, _),
+          meshRenderer3,
+        ) =
+          _createGameObject3(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
              )
-             |> toThrowMessage("expect map be basicSourceTexture");
-           });
-         });
-       });
-
-
-       describe("test basic material", () => {
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
-
-           let (state, sceneGameObject) = state^ |> createGameObject;
-
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let (state, basicMaterial) =
-             BasicMaterialAPI.createBasicMaterial(state);
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let (
-             state,
-             gameObject1,
-             (transform1, (localPos1, localRotation1, localScale1)),
-             geometry1,
-             material1,
-             meshRenderer1,
-           ) =
-             _createGameObjectWithShareMaterial(basicMaterial, state);
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            material1,
+            (material2, diffuseColor2),
+            (material3, texture3),
+            (base64Str1, base64Str2),
+          ),
+        );
+      };
 
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             geometry2,
-             (material2, diffuseColor2),
-             meshRenderer2,
-           ) =
-             _createGameObject1(state);
+      test("test materials, textures, samplers, images", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            material1,
+            (material2, diffuseColor2),
+            (material3, texture3),
+            (base64Str1, base64Str2),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           let (
-             state,
-             gameObject3,
-             (transform3, (localPos3, localRotation3, localScale3)),
-             geometry3,
-             (material3, texture3, _),
-             meshRenderer3,
-           ) =
-             _createGameObject3(state);
-
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
-
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (
-               material1,
-               (material2, diffuseColor2),
-               (material3, texture3),
-               (base64Str1, base64Str2),
-             ),
-           );
-         };
-
-         test("test materials, textures, samplers, images", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (
-               material1,
-               (material2, diffuseColor2),
-               (material3, texture3),
-               (base64Str1, base64Str2),
-             ),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":10,"mimeType":"image/png"}]
                    |j},
-             state,
-           );
-         });
-       });
+          state,
+        );
+      });
+    });
 
-       describe("test camera", () => {
-         let _createBasicCameraViewPerspectiveCamera = state => {
-           open BasicCameraViewAPI;
-           open PerspectiveCameraProjectionAPI;
+    describe("test camera", () => {
+      let _createBasicCameraViewPerspectiveCamera = state => {
+        open BasicCameraViewAPI;
+        open PerspectiveCameraProjectionAPI;
 
-           let (state, perspectiveCameraProjection) =
-             createPerspectiveCameraProjection(state);
-           let (state, basicCameraView) = createBasicCameraView(state);
-           let near = 0.1;
-           let far = 1000.5;
-           let fovy = 60.;
-           let aspect = 1.5;
-           let state =
-             state
-             |> setPerspectiveCameraNear(perspectiveCameraProjection, near)
-             |> setPerspectiveCameraFar(perspectiveCameraProjection, far)
-             |> setPerspectiveCameraFovy(perspectiveCameraProjection, fovy)
-             |> setPerspectiveCameraAspect(perspectiveCameraProjection, aspect);
-           (
-             state,
-             basicCameraView,
-             (perspectiveCameraProjection, near, far, fovy, aspect),
-           );
-         };
+        let (state, perspectiveCameraProjection) =
+          createPerspectiveCameraProjection(state);
+        let (state, basicCameraView) = createBasicCameraView(state);
+        let near = 0.1;
+        let far = 1000.5;
+        let fovy = 60.;
+        let aspect = 1.5;
+        let state =
+          state
+          |> setPerspectiveCameraNear(perspectiveCameraProjection, near)
+          |> setPerspectiveCameraFar(perspectiveCameraProjection, far)
+          |> setPerspectiveCameraFovy(perspectiveCameraProjection, fovy)
+          |> setPerspectiveCameraAspect(perspectiveCameraProjection, aspect);
+        (
+          state,
+          basicCameraView,
+          (perspectiveCameraProjection, near, far, fovy, aspect),
+        );
+      };
 
-         let _createCameraGameObject = state => {
-           open GameObjectAPI;
+      let _createCameraGameObject = state => {
+        open GameObjectAPI;
 
-           let (
-             state,
-             basicCameraView,
-             (perspectiveCameraProjection, near, far, fovy, aspect),
-           ) =
-             _createBasicCameraViewPerspectiveCamera(state);
-           let (state, gameObject) = state |> GameObjectAPI.createGameObject;
-           let state =
-             state
-             |> addGameObjectBasicCameraViewComponent(
-                  gameObject,
-                  basicCameraView,
-                );
-           let state =
-             state
-             |> addGameObjectPerspectiveCameraProjectionComponent(
-                  gameObject,
-                  perspectiveCameraProjection,
-                );
-           (
-             state,
-             gameObject,
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
+        let (
+          state,
+          basicCameraView,
+          (perspectiveCameraProjection, near, far, fovy, aspect),
+        ) =
+          _createBasicCameraViewPerspectiveCamera(state);
+        let (state, gameObject) = state |> GameObjectAPI.createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicCameraViewComponent(
                gameObject,
-               state,
-             ),
-             (
                basicCameraView,
-               (perspectiveCameraProjection, near, far, fovy, aspect),
-             ),
-           );
-         };
+             );
+        let state =
+          state
+          |> addGameObjectPerspectiveCameraProjectionComponent(
+               gameObject,
+               perspectiveCameraProjection,
+             );
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (
+            basicCameraView,
+            (perspectiveCameraProjection, near, far, fovy, aspect),
+          ),
+        );
+      };
 
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
 
-           let (state, sceneGameObject) = state^ |> createGameObject;
+        let (state, rootGameObject) = state^ |> createGameObject;
 
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          transform1,
+          (
+            basicCameraView1,
+            (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+          ),
+        ) =
+          _createCameraGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          transform3,
+          (
+            basicCameraView3,
+            (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+          ),
+        ) =
+          _createCameraGameObject(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let (
-             state,
-             gameObject1,
-             transform1,
-             (
-               basicCameraView1,
-               (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
-             ),
-           ) =
-             _createCameraGameObject(state);
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             geometry2,
-             (material2, diffuseColor2),
-             meshRenderer2,
-           ) =
-             _createGameObject1(state);
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        );
+      };
 
-           let (
-             state,
-             gameObject3,
-             transform3,
-             (
-               basicCameraView3,
-               (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
-             ),
-           ) =
-             _createCameraGameObject(state);
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
-
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               (
-                 basicCameraView1,
-                 (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
-               ),
-               (
-                 basicCameraView3,
-                 (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
-               ),
-             ),
-           );
-         };
-
-         test("test nodes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               (
-                 basicCameraView1,
-                 (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
-               ),
-               (
-                 basicCameraView3,
-                 (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                "nodes":[{"children":[1,2]},{"camera":0},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}},{"camera":1}]
                    |j},
-             state,
-           );
-         });
+          state,
+        );
+      });
 
-         test("test cameras", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               (
-                 basicCameraView1,
-                 (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
-               ),
-               (
-                 basicCameraView3,
-                 (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
+      test("test cameras", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
                "cameras":[{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}},{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}}]
                    |j},
-             state,
-           );
-         });
-       });
+          state,
+        );
+      });
+    });
 
+    describe("test light", () => {
+      let _createDirectionLightGameObject = state => {
+        open GameObjectAPI;
 
-       describe("test light", () => {
-         let _createDirectionLightGameObject = state => {
-           open GameObjectAPI;
+        let (state, gameObject, light) =
+          DirectionLightTool.createGameObject(state);
 
-           let (state, gameObject, light) =
-             DirectionLightTool.createGameObject(state);
+        let color = [|0., 0., 1.|];
+        let intensity = 1.5;
 
-           let color = [|0., 0., 1.|];
-           let intensity = 1.5;
+        let state =
+          state
+          |> DirectionLightAPI.setDirectionLightColor(light, color)
+          |> DirectionLightAPI.setDirectionLightIntensity(light, intensity);
 
-           let state =
-             state
-             |> DirectionLightAPI.setDirectionLightColor(light, color)
-             |> DirectionLightAPI.setDirectionLightIntensity(light, intensity);
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (light, (color, intensity)),
+        );
+      };
 
-           (
-             state,
-             gameObject,
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               gameObject,
-               state,
-             ),
-             (light, (color, intensity)),
-           );
-         };
+      let _createPointLightGameObject = state => {
+        open GameObjectAPI;
 
-         let _createPointLightGameObject = state => {
-           open GameObjectAPI;
+        let (state, gameObject, light) =
+          PointLightTool.createGameObject(state);
 
-           let (state, gameObject, light) =
-             PointLightTool.createGameObject(state);
+        let color = [|1., 0., 0.5|];
+        let intensity = 3.5;
+        let constant = 4.5;
+        let linear = 5.;
+        let quadratic = 6.5;
+        let range = 32.;
 
-           let color = [|1., 0., 0.5|];
-           let intensity = 3.5;
-           let constant = 4.5;
-           let linear = 5.;
-           let quadratic = 6.5;
-           let range = 32.;
+        let state =
+          state
+          |> PointLightAPI.setPointLightColor(light, color)
+          |> PointLightAPI.setPointLightIntensity(light, intensity)
+          |> PointLightAPI.setPointLightConstant(light, constant)
+          |> PointLightAPI.setPointLightLinear(light, linear)
+          |> PointLightAPI.setPointLightQuadratic(light, quadratic)
+          |> PointLightAPI.setPointLightRange(light, range);
 
-           let state =
-             state
-             |> PointLightAPI.setPointLightColor(light, color)
-             |> PointLightAPI.setPointLightIntensity(light, intensity)
-             |> PointLightAPI.setPointLightConstant(light, constant)
-             |> PointLightAPI.setPointLightLinear(light, linear)
-             |> PointLightAPI.setPointLightQuadratic(light, quadratic)
-             |> PointLightAPI.setPointLightRange(light, range);
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (light, (color, intensity, constant, linear, quadratic, range)),
+        );
+      };
 
-           (
-             state,
-             gameObject,
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               gameObject,
-               state,
-             ),
-             (light, (color, intensity, constant, linear, quadratic, range)),
-           );
-         };
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
 
-         let _prepareGameObject = state => {
-           open GameObjectAPI;
+        let (state, rootGameObject) = state^ |> createGameObject;
 
-           let (state, sceneGameObject) = state^ |> createGameObject;
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
 
-           let sceneGameObjectTransform =
-             GameObjectAPI.unsafeGetGameObjectTransformComponent(
-               sceneGameObject,
-               state,
+        let ambientLightColor = [|0.5, 0.5, 1.|];
+
+        let state = SceneAPI.setAmbientLightColor(ambientLightColor, state);
+
+        let (state, gameObject1, transform1, (light1, (color1, intensity1))) =
+          _createDirectionLightGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          transform3,
+          (
+            light3,
+            (color3, intensity3, constant3, linear3, quadratic3, range3),
+          ),
+        ) =
+          _createPointLightGameObject(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
              );
 
-           let ambientLightColor = [|0.5, 0.5, 1.|];
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-           let state = SceneAPI.setAmbientLightColor(ambientLightColor, state);
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        );
+      };
 
-           let (state, gameObject1, transform1, (light1, (color1, intensity1))) =
-             _createDirectionLightGameObject(state);
+      test("test extensions", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           let (
-             state,
-             gameObject2,
-             (transform2, (localPos2, localRotation2, localScale2)),
-             geometry2,
-             (material2, diffuseColor2),
-             meshRenderer2,
-           ) =
-             _createGameObject1(state);
-
-           let (
-             state,
-             gameObject3,
-             transform3,
-             (
-               light3,
-               (color3, intensity3, constant3, linear3, quadratic3, range3),
-             ),
-           ) =
-             _createPointLightGameObject(state);
-
-           let state =
-             state
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform1,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(sceneGameObjectTransform),
-                  transform2,
-                )
-             |> TransformAPI.setTransformParent(
-                  Js.Nullable.return(transform2),
-                  transform3,
-                );
-
-           let (canvas, context, (base64Str1, base64Str2)) =
-             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-           (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           );
-         };
-
-         test("test extensions", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
      "extensions": {
        "KHR_lights": {
          "lights": [
@@ -2175,28 +2168,28 @@ let _ =
        }
      },
                    |j},
-             state,
-           );
-         });
-         test("test scenes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
+          state,
+        );
+      });
+      test("test scenes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
      "scenes": [
        {
          "extensions": {
@@ -2210,28 +2203,28 @@ let _ =
        }
      ],
                    |j},
-             state,
-           );
-         });
-         test("test nodes", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
+          state,
+        );
+      });
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-             sceneGameObject,
-             {j|
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
      "nodes": [
        {
          "children": [
@@ -2280,203 +2273,201 @@ let _ =
        }
      ],
                    |j},
-             state,
-           );
-         });
+          state,
+        );
+      });
 
-         testPromise("test directionLight data", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
+      testPromise("test directionLight data", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+        GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+          sandbox^,
+          rootGameObject,
+          ((state, rootGameObject)) =>
+            AssembleWDBSystemTool.getAllDirectionLightData(
+              rootGameObject,
+              state,
+            )
+            |> expect == [|(color1, intensity1)|],
+          state,
+        );
+      });
 
-               sandbox^,
-             sceneGameObject,
-             ((state, sceneGameObject)) =>
+      testPromise("test pointLight data", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            ambientLightColor,
+            (light1, (color1, intensity1)),
+            (
+              light3,
+              (color3, intensity3, constant3, linear3, quadratic3, range3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
 
-               AssembleWDBSystemTool.getAllDirectionLightData(
-                 sceneGameObject,
-                 state,
+        GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+          sandbox^,
+          rootGameObject,
+          ((state, rootGameObject)) =>
+            AssembleWDBSystemTool.getAllPointLightData(rootGameObject, state)
+            |>
+            expect == [|
+                        (
+                          color3,
+                          intensity3,
+                          constant3,
+                          linear3,
+                          quadratic3,
+                          range3,
+                        ),
+                      |],
+          state,
+        );
+      });
+    });
+
+    describe("optimize", () =>
+      describe("get image base64 from map", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+
+          let (state, rootGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              rootGameObject,
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            (transform1, (localPos1, localRotation1, localScale1)),
+            geometry1,
+            (material1, diffuseColor1),
+            meshRenderer1,
+          ) =
+            _createGameObject1(state);
+
+          let (
+            state,
+            gameObject2,
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (geometry2, (vertices2, texCoords2, normals2, indices2)),
+            (material2, (texture2, name2), (source2, width2, height2)),
+            meshRenderer2,
+          ) =
+            _createGameObject2(state);
+
+          let (
+            state,
+            gameObject3,
+            (transform3, (localPos3, localRotation3, localScale3)),
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            (material3, texture3, (source3, width3, height3)),
+            meshRenderer3,
+          ) =
+            _createGameObject3(state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
                )
-               |> expect == [|(color1, intensity1)|],
-             state,
-           );
-         });
-
-         testPromise("test pointLight data", () => {
-           let (
-             state,
-             (sceneGameObject, sceneGameObjectTransform),
-             (material2, diffuseColor2),
-             (
-               ambientLightColor,
-               (light1, (color1, intensity1)),
-               (
-                 light3,
-                 (color3, intensity3, constant3, linear3, quadratic3, range3),
-               ),
-             ),
-           ) =
-             _prepareGameObject(state);
-
-           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
-               sandbox^,
-             sceneGameObject,
-             ((state, sceneGameObject)) =>
-               AssembleWDBSystemTool.getAllPointLightData(sceneGameObject, state)
-               |>
-               expect == [|
-                           (
-                             color3,
-                             intensity3,
-                             constant3,
-                             linear3,
-                             quadratic3,
-                             range3,
-                           ),
-                         |],
-             state,
-           );
-         });
-       });
-
-       describe("optimize", () =>
-         describe("get image base64 from map", () => {
-           let _prepareGameObject = state => {
-             open GameObjectAPI;
-
-             let (state, sceneGameObject) = state^ |> createGameObject;
-
-             let sceneGameObjectTransform =
-               GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                 sceneGameObject,
-                 state,
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform2,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(transform2),
+                 transform3,
                );
 
-             let (
-               state,
-               gameObject1,
-               (transform1, (localPos1, localRotation1, localScale1)),
-               geometry1,
-               (material1, diffuseColor1),
-               meshRenderer1,
-             ) =
-               _createGameObject1(state);
+          let (canvas, context, (base64Str1, base64Str2)) =
+            GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-             let (
-               state,
-               gameObject2,
-               (transform2, (localPos2, localRotation2, localScale2)),
-               (geometry2, (vertices2, texCoords2, normals2, indices2)),
-               (material2, (texture2, name2), (source2, width2, height2)),
-               meshRenderer2,
-             ) =
-               _createGameObject2(state);
+          (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              (geometry2, (vertices2, texCoords2, normals2, indices2)),
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (
+              (material1, diffuseColor1),
+              (material2, (texture2, name2), (source2, width2, height2)),
+              (material3, texture3, (source3, width3, height3)),
+            ),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          );
+        };
 
-             let (
-               state,
-               gameObject3,
-               (transform3, (localPos3, localRotation3, localScale3)),
-               (geometry3, (vertices3, texCoords3, normals3, indices3)),
-               (material3, texture3, (source3, width3, height3)),
-               meshRenderer3,
-             ) =
-               _createGameObject3(state);
+        test("test images", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (gameObject1, gameObject2, gameObject3),
+            (
+              (transform1, (localPos1, localRotation1, localScale1)),
+              (transform2, (localPos2, localRotation2, localScale2)),
+              (transform3, (localPos3, localRotation3, localScale3)),
+            ),
+            (
+              geometry1,
+              (geometry2, (vertices2, texCoords2, normals2, indices2)),
+              (geometry3, (vertices3, texCoords3, normals3, indices3)),
+            ),
+            (
+              (material1, diffuseColor1),
+              (material2, (texture2, name2), (source2, width2, height2)),
+              (material3, texture3, (source3, width3, height3)),
+            ),
+            (meshRenderer1, meshRenderer2, meshRenderer3),
+          ) =
+            _prepareGameObject(state);
 
-             let state =
-               state
-               |> TransformAPI.setTransformParent(
-                    Js.Nullable.return(sceneGameObjectTransform),
-                    transform1,
-                  )
-               |> TransformAPI.setTransformParent(
-                    Js.Nullable.return(sceneGameObjectTransform),
-                    transform2,
-                  )
-               |> TransformAPI.setTransformParent(
-                    Js.Nullable.return(transform2),
-                    transform3,
-                  );
+          let base64Str1 = "data:image/png;base64,a1";
+          let base64Str2 = "data:image/jpeg;base64,a2";
 
-             let (canvas, context, (base64Str1, base64Str2)) =
-               GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+          let imageBase64Map =
+            WonderCommonlib.SparseMapService.createEmpty()
+            |> WonderCommonlib.SparseMapService.set(texture2, base64Str1)
+            |> WonderCommonlib.SparseMapService.set(texture3, base64Str2);
 
-             (
-               state,
-               (sceneGameObject, sceneGameObjectTransform),
-               (gameObject1, gameObject2, gameObject3),
-               (
-                 (transform1, (localPos1, localRotation1, localScale1)),
-                 (transform2, (localPos2, localRotation2, localScale2)),
-                 (transform3, (localPos3, localRotation3, localScale3)),
-               ),
-               (
-                 geometry1,
-                 (geometry2, (vertices2, texCoords2, normals2, indices2)),
-                 (geometry3, (vertices3, texCoords3, normals3, indices3)),
-               ),
-               (
-                 (material1, diffuseColor1),
-                 (material2, (texture2, name2), (source2, width2, height2)),
-                 (material3, texture3, (source3, width3, height3)),
-               ),
-               (meshRenderer1, meshRenderer2, meshRenderer3),
-             );
-           };
-
-           test("test images", () => {
-             let (
-               state,
-               (sceneGameObject, sceneGameObjectTransform),
-               (gameObject1, gameObject2, gameObject3),
-               (
-                 (transform1, (localPos1, localRotation1, localScale1)),
-                 (transform2, (localPos2, localRotation2, localScale2)),
-                 (transform3, (localPos3, localRotation3, localScale3)),
-               ),
-               (
-                 geometry1,
-                 (geometry2, (vertices2, texCoords2, normals2, indices2)),
-                 (geometry3, (vertices3, texCoords3, normals3, indices3)),
-               ),
-               (
-                 (material1, diffuseColor1),
-                 (material2, (texture2, name2), (source2, width2, height2)),
-                 (material3, texture3, (source3, width3, height3)),
-               ),
-               (meshRenderer1, meshRenderer2, meshRenderer3),
-             ) =
-               _prepareGameObject(state);
-
-             let base64Str1 = "data:image/png;base64,a1";
-             let base64Str2 = "data:image/jpeg;base64,a2";
-
-             let imageBase64Map =
-               WonderCommonlib.SparseMapService.createEmpty()
-               |> WonderCommonlib.SparseMapService.set(texture2, base64Str1)
-               |> WonderCommonlib.SparseMapService.set(texture3, base64Str2);
-
-             GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageBase64Map(
-               sceneGameObject,
-               {j|
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageBase64Map(
+            rootGameObject,
+            {j|
                 "images":[{"bufferView":11,"mimeType":"image/png"},{"bufferView":12,"mimeType":"image/jpeg"}]
                    |j},
-               imageBase64Map,
-               state,
-             );
-           });
-         })
-       );
+            imageBase64Map,
+            state,
+          );
+        });
+      })
+    );
   });

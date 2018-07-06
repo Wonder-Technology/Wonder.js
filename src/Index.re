@@ -304,6 +304,12 @@ let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI
 
 let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
 
+let addSceneChildren = SceneAPI.addSceneChildren;
+
+let addSceneChild = SceneAPI.addSceneChild;
+
+let getSceneGameObject = SceneAPI.getSceneGameObject;
+
 let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
@@ -647,6 +653,12 @@ let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjection
 let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
 
 let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
+
+let addSceneChildren = SceneAPI.addSceneChildren;
+
+let addSceneChild = SceneAPI.addSceneChild;
+
+let getSceneGameObject = SceneAPI.getSceneGameObject;
 
 let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 

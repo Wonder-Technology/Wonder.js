@@ -1,13 +1,15 @@
 open StateDataMainType;
 
-let getAmbientLightColor = ({sceneRecord}) => sceneRecord.ambientLight.color;
+let getAmbientLightColor = state =>
+  RecordSceneMainService.getRecord(state).ambientLight.color;
 
-let setAmbientLightColor = (color, {sceneRecord} as state) => {
+let setAmbientLightColor = (color, state) => {
   ...state,
-  sceneRecord: {
-    ...sceneRecord,
-    ambientLight: {
-      color: color,
-    },
-  },
+  sceneRecord:
+    Some({
+      ...RecordSceneMainService.getRecord(state),
+      ambientLight: {
+        color: color,
+      },
+    }),
 };

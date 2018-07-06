@@ -140,7 +140,7 @@ let _buildBufferArray = (buffers: array(int), binBuffer) => {
              imageArrTuple,
              _buildBufferArray(buffers),
            )
-        |> BuildSceneGameObjectSystem.build(wd)
+        |> BuildRootGameObjectSystem.build(wd)
         |> resolve
       )
    |> Most.fromPromise; */
@@ -190,7 +190,7 @@ let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
             blobObjectUrlImageArr,
             _buildBufferArray(buffers, binBuffer),
           )
-       |> BuildSceneGameObjectSystem.build(wd)
+       |> BuildRootGameObjectSystem.build(wd)
        |> resolve
      )
   |> Most.fromPromise;

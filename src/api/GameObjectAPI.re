@@ -787,6 +787,19 @@ let cloneGameObject =
     ) =>
   clone(gameObject, count, isShareMaterial, state);
 
+let getGameObjectName =
+    (gameObject: gameObject, state: StateDataMainType.state)
+    : option(string) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameGameObjectMainService.getName(gameObject, state);
+};
+
 let unsafeGetGameObjectName =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

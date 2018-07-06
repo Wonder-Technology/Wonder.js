@@ -238,7 +238,7 @@ let _ =
                             () => {
                               open TransformAPI;
                               let (state, parent) = _prepareForTestChildrenOrder(false, state);
-                              state |> unsafeGetTransformChildren(parent) |> expect == [|3, 2|]
+                              state |> unsafeGetTransformChildren(parent) |> expect == [|4, 3|]
                             }
                           )
                         }
@@ -287,7 +287,7 @@ let _ =
                             () => {
                               open TransformAPI;
                               let (state, parent) = _prepareForTestChildrenOrder(true, state);
-                              state |> unsafeGetTransformChildren(parent) |> expect == [|2, 3|]
+                              state |> unsafeGetTransformChildren(parent) |> expect == [|3, 4|]
                             }
                           )
                         }

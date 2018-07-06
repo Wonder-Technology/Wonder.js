@@ -4,6 +4,7 @@ open WDType;
 
 let build = ({scene}, ({gameObjectRecord} as state, gameObjectArr)) => {
   let gameObjects = scene.gameObjects;
+
   switch (gameObjects |> Js.Array.length) {
   | 1 => (state, Array.unsafe_get(gameObjectArr, gameObjects[0]))
   | _ =>

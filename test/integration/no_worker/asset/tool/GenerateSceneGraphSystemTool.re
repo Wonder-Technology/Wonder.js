@@ -36,11 +36,11 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, sceneGameObject) = result^;
+       let (state, rootGameObject) = result^;
 
        let (gltf, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(
-           sceneGameObject,
+           rootGameObject,
            WonderCommonlib.SparseMapService.createEmpty(),
            state,
          );
@@ -61,10 +61,10 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, sceneGameObject) = result^;
+       let (state, rootGameObject) = result^;
 
        GenerateSceneGraphAPI.generateWDB(
-         sceneGameObject,
+         rootGameObject,
          WonderCommonlib.SparseMapService.createEmpty(),
          state,
        )
@@ -111,11 +111,11 @@ let testGLTFResultByGLTF =
   |. AssembleWDBSystem.assemble(state^)
   |> Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, sceneGameObject) = result^;
+       let (state, rootGameObject) = result^;
 
        let (gltf, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(
-           sceneGameObject,
+           rootGameObject,
            WonderCommonlib.SparseMapService.createEmpty(),
            state,
          );
@@ -124,10 +124,10 @@ let testGLTFResultByGLTF =
      });
 };
 
-let testGLTFResultByGameObject = (sceneGameObject, targetJsonStr, state) => {
+let testGLTFResultByGameObject = (rootGameObject, targetJsonStr, state) => {
   let (gltf, binBuffer) =
     GenerateSceneGraphAPI.generateGLBData(
-      sceneGameObject,
+      rootGameObject,
       WonderCommonlib.SparseMapService.createEmpty(),
       state,
     );
@@ -136,10 +136,10 @@ let testGLTFResultByGameObject = (sceneGameObject, targetJsonStr, state) => {
 };
 
 let testGLTFResultByGameObjectWithImageBase64Map =
-    (sceneGameObject, targetJsonStr, imageBase64Map, state) => {
+    (rootGameObject, targetJsonStr, imageBase64Map, state) => {
   let (gltf, binBuffer) =
     GenerateSceneGraphAPI.generateGLBData(
-      sceneGameObject,
+      rootGameObject,
       imageBase64Map,
       state,
     );
@@ -148,7 +148,7 @@ let testGLTFResultByGameObjectWithImageBase64Map =
 };
 
 let testAssembleResultByGameObject =
-    (sandbox, sceneGameObject, testFunc, state) => {
+    (sandbox, rootGameObject, testFunc, state) => {
   open Js.Promise;
 
   GLBTool.prepare(sandbox);
@@ -157,7 +157,7 @@ let testAssembleResultByGameObject =
 
   let (state, data) =
     GenerateSceneGraphAPI.generateWDB(
-      sceneGameObject,
+      rootGameObject,
       WonderCommonlib.SparseMapService.createEmpty(),
       state,
     );

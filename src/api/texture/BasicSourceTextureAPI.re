@@ -364,6 +364,24 @@ let setBasicSourceTextureFlipY =
      ); */
   OperateBasicSourceTextureMainService.setFlipY(texture, flipY, state);
 
+let getBasicSourceTextureName = (texture, state: StateDataMainType.state) =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               AliveComponentService.checkComponentShouldAlive(
+                 texture,
+                 isAlive,
+                 RecordBasicSourceTextureMainService.getRecord(state)
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+     ); */
+  NameBasicSourceTextureMainService.getName(texture, state);
+
 let unsafeGetBasicSourceTextureName =
     (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(

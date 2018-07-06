@@ -33,8 +33,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
-
-      GLBTool.prepare(sandbox^);
+      GLBTool.prepare(sandbox^) |> ignore;
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

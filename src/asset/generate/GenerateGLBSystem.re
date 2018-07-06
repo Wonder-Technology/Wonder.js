@@ -6,13 +6,13 @@ open StateDataMainType;
 
 open GenerateSceneGraphType;
 
-let generateGLBData = (sceneGameObject, imageBase64Map, state) => {
+let generateGLBData = (rootGameObject, imageBase64Map, state) => {
   let (
     state,
     (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
     nodeDataArr,
   ) =
-    GetNodeDataSystem.getAllNodeData(sceneGameObject, state);
+    GetNodeDataSystem.getAllNodeData(rootGameObject, state);
 
   let (
     totalByteLength,

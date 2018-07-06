@@ -161,7 +161,8 @@ let _createRecordWithState = (state) =>
   |> RecordArrayBufferViewSourceTextureMainService.create
   |> RecordSourceInstanceMainService.create
   |> RecordCustomGeometryMainService.create
-  |> RecordRenderMainService.create;
+  |> RecordRenderMainService.create
+  |> RecordSceneMainService.create;
 
 let _createAndSetState = (stateData) =>
   StateDataMainService.setState(stateData, CreateStateMainService.createState()) |> ignore;

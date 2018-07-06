@@ -102,7 +102,7 @@ let _ =
       test("create a new transform which is just index(int)", () => {
         let (state, transform) = createTransform(state^);
         (TransformTool.getRecord(state).index, transform)
-        |> expect == (1, 0);
+        |> expect == (2, 1);
       });
       /* describe(
            "contract check",
@@ -132,7 +132,7 @@ let _ =
         test("state->index + 1", () => {
           let (state, _) = createTransform(state^);
           TransformTool.getRecord(state)
-          |> (record => expect(record.index) == 1);
+          |> (record => expect(record.index) == 2);
         })
       );
       test("mark new transform dirty", () => {
@@ -306,7 +306,7 @@ let _ =
             |> setTransformParent(Js.Nullable.return(parent), child3);
           let state =
             state |> setTransformParent(Js.Nullable.return(child3), child1);
-          state |> unsafeGetTransformChildren(parent) |> expect == [|3, 2|];
+          state |> unsafeGetTransformChildren(parent) |> expect == [|4, 3|];
         });
       });
       describe("fix bug", () =>
@@ -370,7 +370,7 @@ let _ =
         let state =
           state
           |> setTransformParentKeepOrder(Js.Nullable.return(child3), child1);
-        state |> unsafeGetTransformChildren(parent) |> expect == [|2, 3|];
+        state |> unsafeGetTransformChildren(parent) |> expect == [|3, 4|];
       })
     );
     describe("unsafeGetTransformChildren", () =>

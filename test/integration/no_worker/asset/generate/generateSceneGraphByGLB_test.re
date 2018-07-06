@@ -115,8 +115,8 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+            ((state, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
                      diffuseMap,
@@ -254,10 +254,10 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, sceneGameObject)) => {
+            ((state, rootGameObject)) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
-              AssembleWDBSystemTool.getAllGeometryData(sceneGameObject, state)
+              AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
               |>
               expect == [|
                           (
@@ -406,8 +406,8 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-            ((state, sceneGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(sceneGameObject, state)
+            ((state, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
               |> Js.Array.map(diffuseMap =>
                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
                      diffuseMap,

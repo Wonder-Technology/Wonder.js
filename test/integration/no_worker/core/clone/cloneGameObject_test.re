@@ -33,7 +33,7 @@ let _ =
       let (state, gameObject1) = createGameObject(state^);
       let (state, clonedGameObjectArr) =
         _cloneGameObject(gameObject1, 2, state);
-      clonedGameObjectArr |> expect == [|[|1, 2|]|];
+      clonedGameObjectArr |> expect == [|[|2, 3|]|];
     });
     describe("clone components", () => {
       describe("contract check", () => {
@@ -350,8 +350,8 @@ let _ =
               let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
               clonedGeometryArr |> Js.Array.length |> expect == 2;
             });
-            test("cloned one== source one", () => {
-              let (_, geometry, _, _, clonedGeometryArr) = _prepare(state^);
+            test("cloned one == source one", () => {
+              let (_, _, geometry, _, clonedGeometryArr) = _prepare(state^);
               clonedGeometryArr |> expect == [|geometry, geometry|];
             });
             test(
@@ -400,8 +400,8 @@ let _ =
               let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
               clonedGeometryArr |> Js.Array.length |> expect == 2;
             });
-            test("cloned one== source one", () => {
-              let (_, geometry, _, _, clonedGeometryArr) = _prepare(state^);
+            test("cloned one == source one", () => {
+              let (_, _, geometry, _, clonedGeometryArr) = _prepare(state^);
               clonedGeometryArr |> expect == [|geometry, geometry|];
             });
             test(
@@ -1136,7 +1136,7 @@ let _ =
             |> setTransformParent(Js.Nullable.return(transform1), transform2);
           let (state, clonedGameObjectArr) =
             _cloneGameObject(gameObject1, 2, state);
-          clonedGameObjectArr |> expect == [|[|2, 3|], [|4, 5|]|];
+          clonedGameObjectArr |> expect == [|[|3, 4|], [|5, 6|]|];
         })
       );
       describe("cloned children's components", () => {

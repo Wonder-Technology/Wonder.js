@@ -57,7 +57,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
 let _getChildren = (parent, state) =>
   TransformAPI.unsafeGetTransformChildren(parent, state)
   |> Js.Array.sortInPlace;
-let getAllChildrenTransform = (sceneGameObject, state) => {
+let getAllChildrenTransform = (rootGameObject, state) => {
   let rec _addChildren = (parentArr, state, childrenArr) => {
     let childrenArr = childrenArr |> Js.Array.concat(parentArr);
     parentArr
@@ -70,7 +70,7 @@ let getAllChildrenTransform = (sceneGameObject, state) => {
   _addChildren(
     _getChildren(
       GameObjectAPI.unsafeGetGameObjectTransformComponent(
-        sceneGameObject,
+        rootGameObject,
         state,
       ),
       state,
@@ -79,24 +79,24 @@ let getAllChildrenTransform = (sceneGameObject, state) => {
     [||],
   );
 };
-let getAllSortedTransforms = (sceneGameObject, state) => {
+let getAllSortedTransforms = (rootGameObject, state) => {
   let (state, allTransformChildren) =
-    getAllChildrenTransform(sceneGameObject, state);
+    getAllChildrenTransform(rootGameObject, state);
   let allTransformChildren = allTransformChildren |> Js.Array.sortInPlace;
   [|
     GameObjectAPI.unsafeGetGameObjectTransformComponent(
-      sceneGameObject,
+      rootGameObject,
       state,
     ),
   |]
   |> Js.Array.concat(allTransformChildren);
 };
 
-let getAllGameObjects = (sceneGameObject, state) => {
+let getAllGameObjects = (rootGameObject, state) => {
   let (state, allTransformChildren) =
-    getAllChildrenTransform(sceneGameObject, state);
+    getAllChildrenTransform(rootGameObject, state);
 
-  [|sceneGameObject|]
+  [|rootGameObject|]
   |> Js.Array.concat(
        allTransformChildren
        |> Js.Array.map(transform =>
@@ -105,8 +105,8 @@ let getAllGameObjects = (sceneGameObject, state) => {
      );
 };
 
-let getAllDirectionLightData = (sceneGameObject, state) =>
-  getAllGameObjects(sceneGameObject, state)
+let getAllDirectionLightData = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectDirectionLightComponent(gameObject, state)
      )
@@ -123,8 +123,8 @@ let getAllDirectionLightData = (sceneGameObject, state) =>
        )
      );
 
-let getAllPointLightData = (sceneGameObject, state) =>
-  getAllGameObjects(sceneGameObject, state)
+let getAllPointLightData = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectPointLightComponent(gameObject, state)
      )
@@ -142,8 +142,8 @@ let getAllPointLightData = (sceneGameObject, state) =>
        )
      );
 
-let getAllGeometryData = (sceneGameObject, state) =>
-  getAllGameObjects(sceneGameObject, state)
+let getAllGeometryData = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectGeometryComponent(gameObject, state)
      )
@@ -177,8 +177,8 @@ let getAllGeometryData = (sceneGameObject, state) =>
 
 let batchCreate = BatchCreateSystem.batchCreate;
 
-let getAllLightMaterials = (sceneGameObject, state) =>
-  getAllGameObjects(sceneGameObject, state)
+let getAllLightMaterials = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectLightMaterialComponent(gameObject, state)
      )
@@ -189,8 +189,8 @@ let getAllLightMaterials = (sceneGameObject, state) =>
        )
      );
 
-let getAllDiffuseMaps = (sceneGameObject, state) =>
-  getAllLightMaterials(sceneGameObject, state)
+let getAllDiffuseMaps = (rootGameObject, state) =>
+  getAllLightMaterials(rootGameObject, state)
   |> Js.Array.filter(lightMaterial =>
        LightMaterialAPI.hasLightMaterialDiffuseMap(lightMaterial, state)
      )

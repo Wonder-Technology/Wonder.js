@@ -7,19 +7,23 @@ let getCameraData =
       {
         basicCameraViewRecord,
         perspectiveCameraProjectionRecord,
-        sceneRecord,
         globalTempRecord,
-        gameObjectRecord
-      } as state
+        gameObjectRecord,
+      } as state,
     ) =>
-  switch (CameraSceneMainService.getCurrentCameraGameObject(basicCameraViewRecord, sceneRecord)) {
+  switch (
+    CameraSceneMainService.getCurrentCameraGameObject(
+      basicCameraViewRecord,
+      RecordSceneMainService.getRecord(state),
+    )
+  ) {
   | None => None
   | Some(currentCameraGameObject) =>
     let transformRecord = state |> RecordTransformMainService.getRecord;
     let transform =
       GetComponentGameObjectService.unsafeGetTransformComponent(
         currentCameraGameObject,
-        gameObjectRecord
+        gameObjectRecord,
       );
     /* OperateRenderMainService.isFirstRender(state) ?
        Some({
@@ -45,22 +49,22 @@ let getCameraData =
           UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
             transform,
             globalTempRecord,
-            transformRecord
-          )
+            transformRecord,
+          ),
         ),
       pMatrix:
         PMatrixService.unsafeGetPMatrix(
           GetComponentGameObjectService.unsafeGetPerspectiveCameraProjectionComponent(
             currentCameraGameObject,
-            gameObjectRecord
+            gameObjectRecord,
           ),
-          perspectiveCameraProjectionRecord.pMatrixMap
+          perspectiveCameraProjectionRecord.pMatrixMap,
         ),
       position:
         UpdateTransformMainService.updateAndGetPositionTuple(
           transform,
           globalTempRecord,
-          transformRecord
-        )
-    })
+          transformRecord,
+        ),
+    });
   };

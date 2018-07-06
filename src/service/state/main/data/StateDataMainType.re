@@ -144,7 +144,7 @@ and state = {
   deviceManagerRecord,
   mutable gameObjectRecord,
   mutable transformRecord: option(transformRecord),
-  sceneRecord,
+  sceneRecord: option(sceneRecord),
   mutable basicCameraViewRecord,
   mutable perspectiveCameraProjectionRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),

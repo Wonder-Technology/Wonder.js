@@ -17,7 +17,7 @@ let _ =
     describe("createGameObject", () => {
       test("create a new gameObject which is just uidStr(string)", () => {
         let (_, gameObject) = createGameObject(state^);
-        expect(gameObject) == 0;
+        expect(gameObject) == 1;
       });
       test("add new transform component", () => {
         let (state, gameObject) = createGameObject(state^);
@@ -27,7 +27,7 @@ let _ =
         test("state->uid + 1", () => {
           let (state, _) = createGameObject(state^);
           GameObjectTool.getGameObjectRecord(state)
-          |> (record => expect(record.uid) == 1);
+          |> (record => expect(record.uid) == 2);
         })
       );
     });
@@ -193,7 +193,8 @@ let _ =
         describe("unsafeGetGameObjectDirectionLightComponent", () =>
           test("get light component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, light) = DirectionLightAPI.createDirectionLight(state);
+            let (state, light) =
+              DirectionLightAPI.createDirectionLight(state);
             let state =
               state |> addGameObjectDirectionLightComponent(gameObject, light);
             unsafeGetGameObjectDirectionLightComponent(gameObject, state)
@@ -203,7 +204,8 @@ let _ =
         describe("hasGameObjectDirectionLightComponent", () =>
           test("has light component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, light) = DirectionLightAPI.createDirectionLight(state);
+            let (state, light) =
+              DirectionLightAPI.createDirectionLight(state);
             let state =
               state |> addGameObjectDirectionLightComponent(gameObject, light);
             hasGameObjectDirectionLightComponent(gameObject, state)
@@ -1106,7 +1108,8 @@ let _ =
             let state =
               state |> GameObjectTool.disposeGameObject(gameObject3);
             let {aliveUidArray} = GameObjectTool.getGameObjectRecord(state);
-            aliveUidArray |> expect == [|gameObject3|];
+            aliveUidArray
+            |> expect == [|SceneAPI.getSceneGameObject(state), gameObject3|];
           });
         });
         describe("optimize: should only reallocate once in one loop", () => {

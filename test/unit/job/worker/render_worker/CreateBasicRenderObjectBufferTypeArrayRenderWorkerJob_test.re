@@ -90,7 +90,7 @@ let _ =
                             |>
                             expect == (
                                         3,
-                                        Js.Typed_array.Uint32Array.make([|0, 1, 2, 0, 0|]),
+                                        Js.Typed_array.Uint32Array.make([|1, 2, 3, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 2, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 0, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|
