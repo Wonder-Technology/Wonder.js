@@ -1,4 +1,4 @@
-open Dom;
+open DomExtend;
 
 open DomService;
 

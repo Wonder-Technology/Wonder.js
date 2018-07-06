@@ -45,7 +45,7 @@ let updateCameraProjection =
         switch (getAspect(index, perspectiveCameraProjectionRecord)) {
         | None =>
           let canvas =
-            ViewService.getCanvas(viewRecord) |> DomType.htmlElementToJsObj;
+            ViewService.getCanvas(viewRecord) |> DomExtendType.htmlElementToJsObj;
 
           let aspect = canvas##width /. canvas##height;
 

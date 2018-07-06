@@ -3,11 +3,10 @@ open StateDataMainType;
 open EventType;
 
 /* TODO move to utils */
-let _getDefaultDom = () => Dom.document##body;
+let _getDefaultDom = () => DomExtend.document##body;
 
 let fromDomEvent = eventName =>
-  /* TODO use identity */
-  Most.fromEvent(eventName, _getDefaultDom() |> Obj.magic, false);
+  Most.fromEvent(eventName, _getDefaultDom() |> bodyToEventTarget, false);
 
 let _convertMouseEventToPointEvent =
     (
@@ -63,21 +62,34 @@ let _bindDomEventToTriggerPointEvent = state => {
   state;
 };
 
+/* s.t(({.. button: int, detail: Js.nullable(int),
+  movementX: Js.nullable(int), movementY: Js.nullable(int),
+  mozMovementX: Js.nullable(int), mozMovementY: Js.nullable(int),
+  pageX: int, pageY: int, webkitMovementX: Js.nullable(int),
+  webkitMovementY: Js.nullable(int), wheelDelta: Js.nullable(int)}
+as 'a)) */
+
 let execJob = (_, state) => {
   fromDomEvent("mousedown")
-  |> Most.forEach(event =>
-  /* TODO remove magic */
-       StateDataMainService.unsafeGetState(StateDataMain.stateData)
-       |> ManageEventMainService.execDomEventHandle(MouseDown, event |> Obj.magic)
-       |> StateDataMainService.setState(StateDataMain.stateData)
-       |> ignore
-     )
+  |> Most.forEach(event
+       =>
+         StateDataMainService.unsafeGetState(StateDataMain.stateData)
+         |> ManageEventMainService.execDomEventHandle(
+              MouseDown,
+              event |> eventTargetToMouseDomEvent,
+            )
+         |> StateDataMainService.setState(StateDataMain.stateData)
+         |> ignore
+       )
   |> ignore;
 
   fromDomEvent("mouseup")
   |> Most.forEach(event =>
        StateDataMainService.unsafeGetState(StateDataMain.stateData)
-       |> ManageEventMainService.execDomEventHandle(MouseUp, event |> Obj.magic)
+       |> ManageEventMainService.execDomEventHandle(
+            MouseUp,
+            event |> Obj.magic,
+          )
        |> StateDataMainService.setState(StateDataMain.stateData)
        |> ignore
      )

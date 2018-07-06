@@ -20,4 +20,4 @@ type precisionFormat = {. "precision": int};
 
 type extension;
 
-external imageElementToTextureSource : DomType.imageElement => textureSource = "%identity";
+external imageElementToTextureSource : DomExtendType.imageElement => textureSource = "%identity";

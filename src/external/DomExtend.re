@@ -1,4 +1,4 @@
-open DomType;
+open DomExtendType;
 
 [@bs.val] external document : document = "";
 

@@ -7,7 +7,7 @@ open CanvasType;
 [@bs.new] external newUint8ClampedArray : Js.Typed_array.ArrayBuffer.t => uint8ClampedArray =
   "Uint8ClampedArray";
 
-let drawImage: (DomType.imageElement, float, float, canvasContext) => canvasContext = [%bs.raw
+let drawImage: (DomExtendType.imageElement, float, float, canvasContext) => canvasContext = [%bs.raw
   {|
     function(source, x, y, context){
       context.drawImage(source, x, y);

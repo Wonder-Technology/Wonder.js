@@ -83,7 +83,7 @@ let _ =
           let _prepareLoadWorkerConfigData = () => {
             let fakeCanvas = {"transferControlToOffscreen": Obj.magic(1)};
             let createElementStub =
-              Obj.magic(DomTool.documentToObj(Dom.document))##createElement |> Obj.magic;
+              Obj.magic(DomTool.documentToObj(DomExtend.document))##createElement |> Obj.magic;
             createElementStub |> withOneArg("canvas") |> returns(fakeCanvas) |> ignore
           };
           describe(

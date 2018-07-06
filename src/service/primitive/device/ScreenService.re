@@ -39,15 +39,15 @@ let setStyleHeight = (height, canvas) => {
 };
 
 let _setBodyMargin = (document) =>
-  switch (Dom.querySelectorAll(document, "body")) {
+  switch (DomExtend.querySelectorAll(document, "body")) {
   | bodies when Js.Array.length(bodies) === 0 => ()
   | bodies =>
-    Dom.setBatchStyle(bodies[0], "margin:0");
+    DomExtend.setBatchStyle(bodies[0], "margin:0");
     ()
   };
 
 let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) => {
-  _setBodyMargin(Dom.document);
+  _setBodyMargin(DomExtend.document);
   canvas
   |> _setAbsolutePosition
   |> setX(x)

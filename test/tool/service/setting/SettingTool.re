@@ -50,14 +50,14 @@ let buildFakeDomForNotPassCanvasId = sandbox => {
   let createElementStub =
     createMethodStub(
       refJsObjToSandbox(sandbox^),
-      documentToObj(Dom.document),
+      documentToObj(DomExtend.document),
       "createElement",
     );
   createElementStub |> withOneArg("div") |> returns(div) |> ignore;
   createElementStub |> withOneArg("canvas") |> returns(canvasDom) |> ignore;
   createMethodStub(
     refJsObjToSandbox(sandbox^),
-    documentToObj(Dom.document),
+    documentToObj(DomExtend.document),
     "querySelectorAll",
   )
   |> withOneArg("body")
@@ -84,14 +84,14 @@ let buildFakeCanvasForNotPassCanvasIdWithCanvas = (sandbox, canvasDom) => {
   let createElementStub =
     createMethodStub(
       refJsObjToSandbox(sandbox^),
-      documentToObj(Dom.document),
+      documentToObj(DomExtend.document),
       "createElement",
     );
   createElementStub |> withOneArg("div") |> returns(div) |> ignore;
   createElementStub |> withOneArg("canvas") |> returns(canvasDom) |> ignore;
   createMethodStub(
     refJsObjToSandbox(sandbox^),
-    documentToObj(Dom.document),
+    documentToObj(DomExtend.document),
     "querySelectorAll",
   )
   |> withOneArg("body")

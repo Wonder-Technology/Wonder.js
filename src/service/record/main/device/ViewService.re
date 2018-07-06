@@ -1,6 +1,6 @@
 open ViewType;
 
-open DomType;
+open DomExtendType;
 
 let getCanvas = ({canvas}) => canvas |> OptionService.unsafeGet;
 

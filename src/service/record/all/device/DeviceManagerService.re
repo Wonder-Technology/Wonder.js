@@ -2,7 +2,7 @@ open DeviceManagerType;
 
 open GlType;
 
-open DomType;
+open DomExtendType;
 
 let unsafeGetGl =
   [@bs]

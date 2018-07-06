@@ -1,6 +1,6 @@
-open DomType;
+open DomExtendType;
 
-open Dom;
+open DomExtend;
 
 open Sinon;
 

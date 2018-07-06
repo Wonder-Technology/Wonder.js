@@ -52,7 +52,7 @@ let loopBody = (time: float, state: StateDataMainType.state) =>
   state |> _run(time);
 
 let rec _noWorkerLoop = (time: float, state: StateDataMainType.state) : int =>
-  Dom.requestAnimationFrame((time: float) =>
+  DomExtend.requestAnimationFrame((time: float) =>
     state
     |> loopBody(time)
     |> StateDataMainService.setState(StateDataMain.stateData)
@@ -69,7 +69,7 @@ let startDirector = (state: StateDataMainType.state) =>
   /*
     TODO save loop id
     let rec _loop = (time: float, state: StateDataMainType.state) : int =>
-      Dom.requestAnimationFrame(
+      DomExtend.requestAnimationFrame(
         (time: float) => state |> loopBody(time) |> setState(stateData) |> _loop(time) |> ignore
       );
     state |> init(StateDataMain.stateData) |> _loop(0.) |> ignore

@@ -59,13 +59,26 @@ type mouseEventData = {
   lastY: option(int),
 };
 
-/* TODO finish */
-type mouseDomEvent = Js.t({. "button": int});
+type mouseDomEvent = {
+  .
+  "button": int,
+  "detail": Js.Nullable.t(int),
+  "movementX": Js.Nullable.t(int),
+  "movementY": Js.Nullable.t(int),
+  "mozMovementX": Js.Nullable.t(int),
+  "mozMovementY": Js.Nullable.t(int),
+  "webkitMovementX": Js.Nullable.t(int),
+  "webkitMovementY": Js.Nullable.t(int),
+  "wheelDelta": Js.Nullable.t(int),
+  "pageX": int,
+  "pageY": int,
+};
 
 external domEventNameToInt : domEventName => int = "%identity";
 
-
 external pointEventToUserData : pointEvent => userData = "%identity";
 
+external bodyToEventTarget : DomExtendType.body => Dom.eventTarget =
+  "%identity";
 
-/* external  : pointEvent => userData = "%identity"; */
+external eventTargetToMouseDomEvent : Dom.event => mouseDomEvent = "%identity";

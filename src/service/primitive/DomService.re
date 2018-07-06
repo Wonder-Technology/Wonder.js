@@ -1,6 +1,6 @@
-open Dom;
+open DomExtend;
 
 let buildDom = (domStr: string) =>
   createElement(document, "div") |> setInnerHtml(~eleStr=domStr) |> getFirstChild;
 
-let buildCanvas = () => createElement(document, "canvas") |> DomType.jsObjToHtmlElement;
+let buildCanvas = () => createElement(document, "canvas") |> DomExtendType.jsObjToHtmlElement;

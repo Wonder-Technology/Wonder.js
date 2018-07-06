@@ -62,7 +62,7 @@ let _ =
                   let querySelectorAll =
                     createMethodStub(
                       refJsObjToSandbox(sandbox^),
-                      DomTool.documentToObj(Dom.document),
+                      DomTool.documentToObj(DomExtend.document),
                       "querySelectorAll"
                     );
                   querySelectorAll |> returns([||]);
@@ -121,7 +121,7 @@ let _ =
             "test create canvas",
             () => {
               let (_, div, _) = exec();
-              Obj.magic(Dom.document)##createElement |> expect |> toCalledWith([|"canvas"|])
+              Obj.magic(DomExtend.document)##createElement |> expect |> toCalledWith([|"canvas"|])
             }
           );
           test(

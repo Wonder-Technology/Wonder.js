@@ -1,1 +1,1 @@
-type viewRecord = {canvas: option(DomType.htmlElement)};
+type viewRecord = {canvas: option(DomExtendType.htmlElement)};
