@@ -16,6 +16,7 @@ let _getLocation = (mouseDomEvent, {browserDetectRecord}) => {
 };
 
 let _getLocationInView = (mouseDomEvent, {viewRecord} as state) => {
+  WonderLog.Log.print(viewRecord.canvas) |> ignore;
   let (offsetX, offsetY) =
     ViewService.getOffset(ViewService.getCanvas(viewRecord));
 
@@ -62,7 +63,7 @@ let _getWheel = (mouseDomEvent, state) =>
 
 let _isPointerLocked = [%raw
   () => {|
-  !!(
+  return !!(
     document.pointerLockElement
     || document.mozPointerLockElement
     || document.webkitPointerLockElement
@@ -121,11 +122,13 @@ let _convertMouseDomEventToMouseEvent =
     (eventName, mouseDomEvent, state)
     : mouseEvent => {
   name: eventName,
-  location: _getLocation(mouseDomEvent, state),
-  locationInView: _getLocationInView(mouseDomEvent, state),
-  button: _getButton(mouseDomEvent, state),
-  wheel: _getWheel(mouseDomEvent, state),
-  movementDelta: _getMovementDelta(mouseDomEvent, state),
+  location: _getLocation(mouseDomEvent, state) |> WonderLog.Log.print,
+  locationInView:
+    _getLocationInView(mouseDomEvent, state) |> WonderLog.Log.print,
+  button: _getButton(mouseDomEvent, state) |> WonderLog.Log.print,
+  wheel: _getWheel(mouseDomEvent, state) |> WonderLog.Log.print,
+  movementDelta:
+    _getMovementDelta(mouseDomEvent, state) |> WonderLog.Log.print,
   /* type_: Mouse, */
 };
 
