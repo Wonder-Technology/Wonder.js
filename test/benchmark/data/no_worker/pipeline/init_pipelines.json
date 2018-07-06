@@ -18,6 +18,9 @@
           "name": "detect_gl"
         },
         {
+          "name": "init_event"
+        },
+        {
           "name": "init_camera"
         },
         {

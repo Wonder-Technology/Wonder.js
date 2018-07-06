@@ -15,7 +15,8 @@ let createState = () => {
   transformRecord: None,
   sceneRecord: RecordSceneService.create(),
   basicCameraViewRecord: RecordBasicCameraViewService.create(),
-  perspectiveCameraProjectionRecord: RecordPerspectiveCameraProjectionService.create(),
+  perspectiveCameraProjectionRecord:
+    RecordPerspectiveCameraProjectionService.create(),
   basicMaterialRecord: None,
   lightMaterialRecord: None,
   sourceTextureRecord: None,
@@ -39,5 +40,6 @@ let createState = () => {
   typeArrayPoolRecord: RecordTypeArrayPoolService.create(),
   workerInstanceRecord: RecordWorkerInstanceService.create(),
   workerDetectRecord: RecordWorkerDetectService.create(),
-  browserDetectRecord: RecordBrowserDetectAllService.create()
+  browserDetectRecord: RecordBrowserDetectAllService.create(),
+  eventRecord: RecordEventMainService.create(),
 };

@@ -1,8 +1,14 @@
 type htmlElement;
 
-type imageElement = {. "width": int, "height": int};
+type imageElement = {
+  .
+  "width": int,
+  "height": int,
+};
 
-type document;
+type body;
+
+type document = {. "body": body};
 
 external htmlElementToJsObj : htmlElement => Js.t({..}) = "%identity";
 

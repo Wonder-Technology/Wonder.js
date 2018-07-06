@@ -88,21 +88,48 @@ open BrowserDetectType;
 
 open ViewType;
 
+open EventType;
+
 type stateData = {
   mutable state: option(state),
-  mutable isDebug: bool
+  mutable isDebug: bool,
 }
 and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, state => state)),
   workerCustomMainInitTargetJobMap:
-    WonderCommonlib.HashMapService.t((string, JobType.workerCustomJobAction, stateData => unit)),
+    WonderCommonlib.HashMapService.t(
+      (string, JobType.workerCustomJobAction, stateData => unit),
+    ),
   workerCustomMainInitSourceJobMap: WonderCommonlib.HashMapService.t(string),
-  workerCustomMainInitRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool),
+  workerCustomMainInitRemovedDefaultJobMap:
+    WonderCommonlib.HashMapService.t(bool),
   workerCustomMainLoopTargetJobMap:
-    WonderCommonlib.HashMapService.t((string, JobType.workerCustomJobAction, stateData => unit)),
+    WonderCommonlib.HashMapService.t(
+      (string, JobType.workerCustomJobAction, stateData => unit),
+    ),
   workerCustomMainLoopSourceJobMap: WonderCommonlib.HashMapService.t(string),
-  workerCustomMainLoopRemovedDefaultJobMap: WonderCommonlib.HashMapService.t(bool)
+  workerCustomMainLoopRemovedDefaultJobMap:
+    WonderCommonlib.HashMapService.t(bool),
+}
+and domEventData = {
+  priority: int,
+  handleFunc: (EventType.mouseEvent, state) => state,
+}
+and customEventData = {
+  priority: int,
+  handleFunc: (EventType.customEvent, state) => state,
+}
+and eventRecord = {
+  domEventDataListMap:
+    WonderCommonlib.SparseMapService.t(list(domEventData)),
+  customGlobalEventListMap:
+    WonderCommonlib.HashMapService.t(list(customEventData)),
+  customGameObjectEventListMap:
+    WonderCommonlib.HashMapService.t(
+      WonderCommonlib.SparseMapService.t(list(customEventData)),
+    ),
+  mouseEventData: EventType.mouseEventData,
 }
 and state = {
   settingRecord,
@@ -124,7 +151,8 @@ and state = {
   mutable lightMaterialRecord: option(lightMaterialRecord),
   mutable sourceTextureRecord: option(sourceTextureRecord),
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
-  mutable arrayBufferViewSourceTextureRecord: option(arrayBufferViewSourceTextureRecord),
+  mutable arrayBufferViewSourceTextureRecord:
+    option(arrayBufferViewSourceTextureRecord),
   mutable directionLightRecord,
   mutable pointLightRecord,
   mutable boxGeometryRecord,
@@ -143,11 +171,12 @@ and state = {
   typeArrayPoolRecord,
   mutable workerInstanceRecord,
   workerDetectRecord,
-  browserDetectRecord
+  browserDetectRecord,
+  eventRecord,
 };
 
 type sharedDataForRestoreState = {
   gl: webgl1Context,
   float32ArrayPoolMap,
-  uint16ArrayPoolMap
+  uint16ArrayPoolMap,
 };

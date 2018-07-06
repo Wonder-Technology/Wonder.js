@@ -31,21 +31,19 @@ let _createImageBitmap = (texture, imageData, state) => {
     let {flipYs} =
       RecordBasicSourceTextureRenderWorkerService.getRecord(state);
     let flipY =
-      OperateTypeArrayBasicSourceTextureService.isFlipY(texture, flipYs |> OptionService.unsafeGet);
+      OperateTypeArrayBasicSourceTextureService.isFlipY(
+        texture,
+        flipYs |> OptionService.unsafeGet,
+      );
     _createImageBitmapForChrome(
       imageData,
       {"imageOrientation": flipY === true ? "flipY" : "none"},
     );
   | Firefox => _createImageBitmapForFirefox(imageData)
   | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_createImageBitmap",
-        ~description={j|unknown browser|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j|browser: $browser|j},
-      ),
+    RecordBrowserDetectAllService.fatalUnknownBrowser(
+      "_createImageBitmap",
+      browser,
     )
   };
 };

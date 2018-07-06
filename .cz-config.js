@@ -37,6 +37,7 @@ module.exports = {
     { name: "gameObject" },
     { name: "microservice" },
     { name: "arraybuffer" },
+    { name: "event" },
     { name: "detect" }
   ],
 
