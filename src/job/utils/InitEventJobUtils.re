@@ -61,6 +61,22 @@ let _execMouseEventHandle = (mouseEventName, event) => {
   ();
 };
 
+let _execMouseMoveEventHandle = (mouseEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleMouseEventMainService.execEventHandle(
+       mouseEventName,
+       event |> eventTargetToMouseDomEvent,
+     )
+  |> HandleMouseEventMainService.setLastXYWhenMouseMove(
+       mouseEventName,
+       event |> eventTargetToMouseDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
 let _execKeyboardEventHandle = (keyboardEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleKeyboardEventMainService.execEventHandle(
@@ -82,7 +98,7 @@ let fromDomEvent = () =>
     _fromDomEvent("mouseup")
     |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
     _fromDomEvent("mousemove")
-    |> Most.tap(event => _execMouseEventHandle(MouseMove, event)),
+    |> Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
     _fromDomEvent("mousewheel")
     |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
     _fromDomEvent("mousedown")

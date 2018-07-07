@@ -35,24 +35,6 @@ let _removeFromEventArrMapByHandleFunc =
        )
   };
 
-let _wrapHandleFunc = (eventName, handleFunc) =>
-  switch (eventName) {
-  | MouseMove => (
-      (. ({location}: mouseEvent) as mouseEvent, state) => {
-        let {eventRecord} as state = handleFunc(. mouseEvent, state);
-
-        let (x, y) = location;
-
-        {
-          ...state,
-          eventRecord:
-            MouseEventService.setLastXY(Some(x), Some(y), eventRecord),
-        };
-      }
-    )
-  | _ => handleFunc
-  };
-
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
   let {mouseDomEventDataArrMap} = eventRecord;
 
@@ -63,7 +45,7 @@ let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
       mouseDomEventDataArrMap:
         _addToEventArr(
           eventName |> domEventNameToInt,
-          {priority, handleFunc: _wrapHandleFunc(eventName, handleFunc)},
+          {priority, handleFunc},
           mouseDomEventDataArrMap,
         ),
     },

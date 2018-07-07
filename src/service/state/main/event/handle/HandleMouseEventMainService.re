@@ -153,3 +153,16 @@ let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
        )
   };
 };
+
+let setLastXYWhenMouseMove =
+    (eventName, mouseDomEvent, {eventRecord} as state) => {
+  let {location}: mouseEvent =
+    _convertMouseDomEventToMouseEvent(eventName, mouseDomEvent, state);
+
+  let (x, y) = location;
+
+  {
+    ...state,
+    eventRecord: MouseEventService.setLastXY(Some(x), Some(y), eventRecord),
+  };
+};
