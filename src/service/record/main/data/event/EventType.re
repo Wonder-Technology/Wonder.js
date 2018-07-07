@@ -1,10 +1,18 @@
 type pointEventName =
+  | PointTap
   | PointDown
-  | PointUp;
+  | PointUp
+  | PointMove
+  | PointScale
+  | PointDrag;
 
 type domEventName =
+  | Click
   | MouseDown
-  | MouseUp;
+  | MouseUp
+  | MouseMove
+  | MouseWheel
+  | MouseDrag;
 
 type mouseButton =
   | Left

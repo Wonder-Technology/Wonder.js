@@ -153,14 +153,3 @@ let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
        )
   };
 };
-
-let setLastXY = (lastX, lastY, {eventRecord} as state) => {
-  ...state,
-  eventRecord: {
-    ...eventRecord,
-    mouseEventData: {
-      lastX,
-      lastY,
-    },
-  },
-};

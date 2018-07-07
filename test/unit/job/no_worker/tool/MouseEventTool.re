@@ -1,4 +1,9 @@
-let setLastXY = HandleMouseEventMainService.setLastXY;
+open StateDataMainType;
+
+let setLastXY = (lastX, lastY, {eventRecord} as state) => {
+  ...state,
+  eventRecord: MouseEventService.setLastXY(lastX, lastY, eventRecord),
+};
 
 let buildMouseEvent =
     (

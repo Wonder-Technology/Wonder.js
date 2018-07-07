@@ -21,68 +21,63 @@ let _convertMouseEventToPointEvent =
   /* type_: Point, */
 };
 
-let bindDomEventToTriggerPointEvent = state => {
-  let state =
-    ManageEventMainService.onDomEvent(
-      ~eventName=MouseDown,
-      ~handleFunc=
-        (. mouseEvent, state) =>
-          ManageEventMainService.triggerCustomGlobalEvent(
-            CreateCustomEventMainService.create(
-              NameEventService.getPointDownEventName(),
-              _convertMouseEventToPointEvent(PointDown, mouseEvent)
-              |> pointEventToUserData
-              |. Some,
-            ),
-            state,
+let _bindMouseEventToTriggerPointEvent =
+    (mouseEventName, pointEventName, state) =>
+  ManageEventMainService.onDomEvent(
+    ~eventName=mouseEventName,
+    ~handleFunc=
+      (. mouseEvent, state) =>
+        ManageEventMainService.triggerCustomGlobalEvent(
+          CreateCustomEventMainService.create(
+            NameEventService.getPointDownEventName(),
+            _convertMouseEventToPointEvent(pointEventName, mouseEvent)
+            |> pointEventToUserData
+            |. Some,
           ),
-      ~state,
-      (),
-    );
+          state,
+        ),
+    ~state,
+    (),
+  );
 
-  let state =
-    ManageEventMainService.onDomEvent(
-      ~eventName=MouseUp,
-      ~handleFunc=
-        (. mouseEvent, state) =>
-          ManageEventMainService.triggerCustomGlobalEvent(
-            CreateCustomEventMainService.create(
-              NameEventService.getPointUpEventName(),
-              _convertMouseEventToPointEvent(PointUp, mouseEvent)
-              |> pointEventToUserData
-              |. Some,
-            ),
-            state,
-          ),
-      ~state,
-      (),
-    );
+let bindDomEventToTriggerPointEvent = state =>
+  state
+  |> _bindMouseEventToTriggerPointEvent(Click, PointTap)
+  |> _bindMouseEventToTriggerPointEvent(MouseUp, PointUp)
+  |> _bindMouseEventToTriggerPointEvent(MouseDown, PointDown)
+  |> _bindMouseEventToTriggerPointEvent(MouseWheel, PointScale)
+  |> _bindMouseEventToTriggerPointEvent(MouseMove, PointMove)
+  |> _bindMouseEventToTriggerPointEvent(MouseDrag, PointDrag);
 
-  state;
+let _execMouseEventHandle = (mouseEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> ManageEventMainService.execDomEventHandle(
+       mouseEventName,
+       event |> eventTargetToMouseDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
 };
 
 let fromDomEvent = () =>
   Most.mergeArray([|
+    _fromDomEvent("click")
+    |> Most.tap(event => _execMouseEventHandle(Click, event)),
     _fromDomEvent("mousedown")
-    |> Most.tap(event =>
-         StateDataMainService.unsafeGetState(StateDataMain.stateData)
-         |> ManageEventMainService.execDomEventHandle(
-              MouseDown,
-              event |> eventTargetToMouseDomEvent,
-            )
-         |> StateDataMainService.setState(StateDataMain.stateData)
-         |> ignore
-       ),
+    |> Most.tap(event => _execMouseEventHandle(MouseDown, event)),
     _fromDomEvent("mouseup")
-    |> Most.tap(event =>
-         StateDataMainService.unsafeGetState(StateDataMain.stateData)
-         |> ManageEventMainService.execDomEventHandle(
-              MouseUp,
-              event |> eventTargetToMouseDomEvent,
-            )
-         |> StateDataMainService.setState(StateDataMain.stateData)
-         |> ignore
-       ),
+    |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
+    _fromDomEvent("mousemove")
+    |> Most.tap(event => _execMouseEventHandle(MouseMove, event)),
+    _fromDomEvent("mousewheel")
+    |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
+    _fromDomEvent("mousedown")
+    |> Most.flatMap(event =>
+         _fromDomEvent("mousemove") |> Most.until(_fromDomEvent("mouseup"))
+       )
+    |> Most.tap(event => _execMouseEventHandle(MouseDrag, event)),
   |]);
 
 let handleDomEventStreamError = e => {
