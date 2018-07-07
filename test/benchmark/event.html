@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+
+
+    <script src="../../dist/wd.js"></script>
+
+
+
+    <script>
+        window.onload = function () {
+            ReplaceFetchTool.replaceFetchForTest();
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+                return initSample(wd.unsafeGetState());
+            });
+
+
+            function initSample(state) {
+                wd.startDirector(state);
+
+                var state = wd.unsafeGetState();
+
+                var state =
+                    wd.onDomEvent(0, 0, (event, state) => {
+                        console.log("mousedown");
+
+                        return state;
+                    }, state);
+
+
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointdown", 0, (event, state) => {
+                            console.log("pointdown");
+
+                            return state;
+                        }, state);
+
+
+                var [state, gameObject1] = wd.createGameObject(state);
+
+                var [state, gameObject2] = wd.createGameObject(state);
+
+
+                var state =
+                    wd.onCustomGameObjectEvent(
+                        "a1", gameObject1, 0, (event, state) => {
+                            console.log(0);
+
+                            return state;
+                        }, state);
+
+
+                var state =
+                    wd.onCustomGameObjectEvent(
+                        "a1", gameObject1, 1, (event, state) => {
+                            console.log(1);
+
+                            return state;
+                        }, state);
+
+
+                var state =
+                    wd.triggerCustomGameObjectEvent(
+                        wd.createCustomEvent("a1"),
+
+                        gameObject1, state
+                    )
+            }
+        };
+    </script>
+</body>
+
+</html>

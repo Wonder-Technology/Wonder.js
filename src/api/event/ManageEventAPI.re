@@ -82,3 +82,9 @@ let emitCustomGameObjectEvent = (customEvent, target, state) =>
     target,
     state,
   );
+
+let createCustomEvent = (eventName, userData) =>
+  CreateCustomEventMainService.create(
+    eventName,
+    Js.Nullable.to_opt(userData),
+  );

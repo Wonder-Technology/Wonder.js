@@ -26,9 +26,37 @@ let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
 
+let createCustomEvent = ManageEventAPI.createCustomEvent;
+
+let emitCustomGameObjectEvent = ManageEventAPI.emitCustomGameObjectEvent;
+
+let broadcastCustomGameObjectEvent = ManageEventAPI.broadcastCustomGameObjectEvent;
+
+let triggerCustomGameObjectEvent = ManageEventAPI.triggerCustomGameObjectEvent;
+
+let triggerCustomGlobalEvent = ManageEventAPI.triggerCustomGlobalEvent;
+
+let offCustomGameObjectEventByHandleFunc = ManageEventAPI.offCustomGameObjectEventByHandleFunc;
+
+let offCustomGameObjectEventByTarget = ManageEventAPI.offCustomGameObjectEventByTarget;
+
+let onCustomGameObjectEvent = ManageEventAPI.onCustomGameObjectEvent;
+
+let offCustomGlobalEventByHandleFunc = ManageEventAPI.offCustomGlobalEventByHandleFunc;
+
+let offCustomGlobalEventByEventName = ManageEventAPI.offCustomGlobalEventByEventName;
+
+let onCustomGlobalEvent = ManageEventAPI.onCustomGlobalEvent;
+
+let offDomEventByHandleFunc = ManageEventAPI.offDomEventByHandleFunc;
+
+let onDomEvent = ManageEventAPI.onDomEvent;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
+
+let getGameObjectName = GameObjectAPI.getGameObjectName;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
@@ -410,6 +438,8 @@ let setBasicSourceTextureName = BasicSourceTextureAPI.setBasicSourceTextureName;
 
 let unsafeGetBasicSourceTextureName = BasicSourceTextureAPI.unsafeGetBasicSourceTextureName;
 
+let getBasicSourceTextureName = BasicSourceTextureAPI.getBasicSourceTextureName;
+
 let setBasicSourceTextureFlipY = BasicSourceTextureAPI.setBasicSourceTextureFlipY;
 
 let getBasicSourceTextureFlipY = BasicSourceTextureAPI.getBasicSourceTextureFlipY;
@@ -503,6 +533,8 @@ let initDirector = DirectorAPI.initDirector;
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
+
+let getGameObjectName = GameObjectAPI.getGameObjectName;
 
 let cloneGameObject = GameObjectAPI.cloneGameObject;
 
