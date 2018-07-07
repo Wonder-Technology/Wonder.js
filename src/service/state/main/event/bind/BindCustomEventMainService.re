@@ -5,12 +5,12 @@ open EventType;
 let _addEventDataByPriority = (eventData, list) =>
   [eventData, ...list]
   |> List.sort((eventDataA, eventDataB) =>
-       eventDataA.priority - eventDataB.priority
+       eventDataB.priority - eventDataA.priority
      );
 
 let _addToEventList = (eventName, eventData, eventListMap) =>
   switch (eventListMap |> WonderCommonlib.HashMapService.get(eventName)) {
-  | None => eventListMap |> WonderCommonlib.HashMapService.set(eventName, [])
+  | None => eventListMap |> WonderCommonlib.HashMapService.set(eventName, [eventData])
   | Some(list) =>
     eventListMap
     |> WonderCommonlib.HashMapService.set(

@@ -117,7 +117,5 @@ let buildFakeCanvas = ((offsetLeft, offsetTop, offsetParent)) => {
   "offsetParent": offsetParent,
 };
 
-let buildMouseEvent = (~pageX=10, ~pageY=20, ()) => {
-  "pageX": pageX,
-  "pageY": pageY,
-};
+let restore = state =>
+  ManageEventMainService.unsubscribeDomEventStream(state);

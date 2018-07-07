@@ -4,7 +4,17 @@ open EventType;
 
 /* TODO change job to stream job? */
 let execJob = (_, state) => {
-  InitEventJobUtils.fromDomEvent() |> Most.drain |> ignore;
+  let domEventStreamSubscription =
+    InitEventJobUtils.fromDomEvent()
+    |> Most.subscribe({
+         "next": _ => (),
+         "error": e => WonderLog.Log.log(e),
+         "complete": () => (),
+       });
 
-  InitEventJobUtils.bindDomEventToTriggerPointEvent(state);
+  state
+  |> ManageEventMainService.setDomEventStreamSubscription(
+       domEventStreamSubscription,
+     )
+  |> InitEventJobUtils.bindDomEventToTriggerPointEvent;
 };

@@ -1,3 +1,5 @@
+open StateDataMainType;
+
 open GameObjectType;
 
 open ComponentType;
@@ -246,3 +248,32 @@ let disposeGameObjectObjectInstanceComponent =
     state,
     [|component|],
   );
+
+let addChild =
+    (parentGameObject, childGameObject, {gameObjectRecord} as state) => {
+  ...state,
+  transformRecord:
+    Some(
+      HierachyTransformService.setParent(.
+        GetComponentGameObjectService.unsafeGetTransformComponent(
+          parentGameObject,
+          gameObjectRecord,
+        )
+        |. Some,
+        GetComponentGameObjectService.unsafeGetTransformComponent(
+          childGameObject,
+          gameObjectRecord,
+        ),
+        RecordTransformMainService.getRecord(state),
+      ),
+    ),
+};
+
+let addChildren =
+    (parentGameObject, childGameObjectArr, {gameObjectRecord} as state) =>
+  childGameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, childGameObject) =>
+         addChild(parentGameObject, childGameObject, state),
+       state,
+     );

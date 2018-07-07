@@ -59,6 +59,8 @@ type mouseEventData = {
   lastY: option(int),
 };
 
+type domEvent;
+
 type mouseDomEvent = {
   .
   "button": int,

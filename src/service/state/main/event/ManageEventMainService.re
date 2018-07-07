@@ -78,3 +78,27 @@ let emitCustomGameObjectEvent = (customEvent, target, state) =>
     customEvent,
     state,
   );
+
+let setDomEventStreamSubscription =
+    (domEventStreamSubscription, {eventRecord} as state) => {
+  ...state,
+  eventRecord: {
+    ...eventRecord,
+    domEventStreamSubscription: Some(domEventStreamSubscription),
+  },
+};
+
+let _unsubscribeDomEventStream = [%raw domEventStreamSubscription => {|
+  domEventStreamSubscription.unsubscribe();
+  |}];
+
+let unsubscribeDomEventStream = ({eventRecord} as state) =>
+  switch (eventRecord.domEventStreamSubscription) {
+  | None => state
+  | Some(domEventStreamSubscription) =>
+    /* let unsubscribe = domEventStreamSubscription##unsubscribe;
+    unsubscribe(); */
+    _unsubscribeDomEventStream(domEventStreamSubscription);
+
+    state;
+  };

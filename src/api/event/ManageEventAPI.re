@@ -26,6 +26,13 @@ let onCustomGlobalEvent = (eventName, priority, handleFunc, state) =>
 let offCustomGlobalEventByEventName = (eventName, state) =>
   ManageEventMainService.offCustomGlobalEventByEventName(~eventName, ~state);
 
+let offCustomGlobalEventByHandleFunc = (eventName, handleFunc, state) =>
+  ManageEventMainService.offCustomGlobalEventByHandleFunc(
+    ~eventName,
+    ~handleFunc,
+    ~state,
+  );
+
 let onCustomGameObjectEvent = (eventName, target, priority, handleFunc, state) =>
   ManageEventMainService.onCustomGameObjectEvent(
     ~eventName,

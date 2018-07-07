@@ -121,6 +121,7 @@ and customEventData = {
   handleFunc: (EventType.customEvent, state) => state,
 }
 and eventRecord = {
+  domEventStreamSubscription: option(Most.subscription),
   domEventDataListMap:
     WonderCommonlib.SparseMapService.t(list(domEventData)),
   customGlobalEventListMap:

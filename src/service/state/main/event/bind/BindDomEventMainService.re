@@ -5,14 +5,15 @@ open EventType;
 let _addToEventList = (eventName, eventData, eventListMap) =>
   switch (eventListMap |> WonderCommonlib.SparseMapService.get(eventName)) {
   | None =>
-    eventListMap |> WonderCommonlib.SparseMapService.set(eventName, [])
+    eventListMap
+    |> WonderCommonlib.SparseMapService.set(eventName, [eventData])
   | Some(list) =>
     eventListMap
     |> WonderCommonlib.SparseMapService.set(
          eventName,
          [eventData, ...list]
          |> List.sort((eventDataA: domEventData, eventDataB: domEventData) =>
-              eventDataA.priority - eventDataB.priority
+              eventDataB.priority - eventDataA.priority
             ),
        )
   };
