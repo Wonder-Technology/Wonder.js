@@ -43,6 +43,8 @@
 
                 var state = wd.unsafeGetState();
 
+
+
                 var state =
                     wd.onDomEvent(0, 0, (event, state) => {
                         console.log("mousedown");
@@ -66,22 +68,56 @@
                 var [state, gameObject2] = wd.createGameObject(state);
 
 
-                var state =
-                    wd.onCustomGameObjectEvent(
-                        "a1", gameObject1, 0, (event, state) => {
-                            console.log(0);
 
+
+
+                var count = 1000;
+
+                var state = state;
+
+
+                var value = 0;
+
+                console.profile("onCustomGameObjectEvent");
+                var n0 = performance.now();
+
+                for (var i = 0; i < count; i++) {
+                    state =
+                        wd.onDomEvent(0, 0, (event, state) => {
                             return state;
                         }, state);
 
 
-                var state =
-                    wd.onCustomGameObjectEvent(
-                        "a1", gameObject1, 1, (event, state) => {
-                            console.log(1);
 
-                            return state;
-                        }, state);
+
+
+                    state =
+                        wd.onCustomGameObjectEvent(
+                            "a1", gameObject1, 0, (event, state) => {
+                                value += 1;
+
+                                return state;
+                            }, state);
+
+                    state =
+                        wd.onCustomGameObjectEvent(
+                            "a1", gameObject1, 1, (event, state) => {
+                                value += 1;
+
+                                return state;
+                            }, state);
+                }
+
+
+
+                var n1 = performance.now();
+                console.profileEnd();
+
+
+
+                console.profile("triggerCustomGameObjectEvent");
+
+                var n2 = performance.now();
 
 
                 var state =
@@ -89,7 +125,13 @@
                         wd.createCustomEvent("a1"),
 
                         gameObject1, state
-                    )
+                    );
+
+                var n3 = performance.now();
+                console.profileEnd();
+
+                console.log(n1 - n0, n3 - n2)
+                // console.log(n1 - n0, n2 - n1)
             }
         };
     </script>

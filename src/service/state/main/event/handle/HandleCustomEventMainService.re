@@ -2,31 +2,31 @@ open StateDataMainType;
 
 open EventType;
 
-let _triggerHandleFunc = (customEvent, list, state) =>
-  list
-  |> List.fold_left(
-       (state, {handleFunc}) => handleFunc(customEvent, state),
+let _triggerHandleFunc = (customEvent, arr, state) =>
+  arr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, {handleFunc}) => handleFunc(. customEvent, state),
        state,
      );
 
 let triggerGlobalEvent =
     (({name}: customEvent) as customEvent, {eventRecord} as state) => {
-  let {customGlobalEventListMap} = eventRecord;
+  let {customGlobalEventArrMap} = eventRecord;
 
   switch (
-    customGlobalEventListMap |> WonderCommonlib.HashMapService.get(name)
+    customGlobalEventArrMap |> WonderCommonlib.HashMapService.get(name)
   ) {
   | None => state
-  | Some(list) => _triggerHandleFunc(customEvent, list, state)
+  | Some(arr) => _triggerHandleFunc(customEvent, arr, state)
   };
 };
 
 let triggerGameObjectEvent =
     (target, ({name}: customEvent) as customEvent, {eventRecord} as state) => {
-  let {customGameObjectEventListMap} = eventRecord;
+  let {customGameObjectEventArrMap} = eventRecord;
 
   switch (
-    customGameObjectEventListMap |> WonderCommonlib.HashMapService.get(name)
+    customGameObjectEventArrMap |> WonderCommonlib.HashMapService.get(name)
   ) {
   | None => state
   | Some(gameObjectEventListMap) =>
@@ -34,12 +34,8 @@ let triggerGameObjectEvent =
       gameObjectEventListMap |> WonderCommonlib.SparseMapService.get(target)
     ) {
     | None => state
-    | Some(list) =>
-      _triggerHandleFunc(
-        {...customEvent, target: Some(target)},
-        list,
-        state,
-      )
+    | Some(arr) =>
+      _triggerHandleFunc({...customEvent, target: Some(target)}, arr, state)
     }
   };
 };

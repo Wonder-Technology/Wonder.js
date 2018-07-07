@@ -26,7 +26,7 @@ let bindDomEventToTriggerPointEvent = state => {
     ManageEventMainService.onDomEvent(
       ~eventName=MouseDown,
       ~handleFunc=
-        (mouseEvent, state) =>
+        (. mouseEvent, state) =>
           ManageEventMainService.triggerCustomGlobalEvent(
             CreateCustomEventMainService.create(
               NameEventService.getPointDownEventName(),
@@ -44,7 +44,7 @@ let bindDomEventToTriggerPointEvent = state => {
     ManageEventMainService.onDomEvent(
       ~eventName=MouseUp,
       ~handleFunc=
-        (mouseEvent, state) =>
+        (. mouseEvent, state) =>
           ManageEventMainService.triggerCustomGlobalEvent(
             CreateCustomEventMainService.create(
               NameEventService.getPointUpEventName(),

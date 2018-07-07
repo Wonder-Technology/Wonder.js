@@ -25,7 +25,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := 1;
                 state;
               },
@@ -54,7 +54,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ * 2;
                 state;
               },
@@ -65,7 +65,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject2,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ * 3;
                 state;
               },
@@ -76,7 +76,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject2,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ * 4;
                 state;
               },
@@ -109,7 +109,7 @@ let _ =
         test("test", () => {
           let (state, gameObject) = GameObjectAPI.createGameObject(state^);
           let value = ref(0);
-          let handleFunc = (event, state) => {
+          let handleFunc = (. event, state) => {
             value := value^ + 1;
             state;
           };
@@ -127,7 +127,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 10;
                 state;
               },
@@ -158,7 +158,7 @@ let _ =
         test("test", () => {
           let (state, gameObject1) = GameObjectAPI.createGameObject(state^);
           let value = ref(0);
-          let handleFunc = (event, state) => {
+          let handleFunc = (. event, state) => {
             value := value^ + 1;
             state;
           };
@@ -176,7 +176,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 10;
                 state;
               },
@@ -212,7 +212,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               1,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ - 3;
                 state;
               },
@@ -223,7 +223,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ * 2;
                 state;
               },
@@ -260,7 +260,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 1;
                 state;
               },
@@ -271,7 +271,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject2,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 2;
                 state;
               },
@@ -282,7 +282,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject3,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 3;
                 state;
               },
@@ -319,7 +319,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject1,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 1;
                 state;
               },
@@ -330,7 +330,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject2,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ + 2;
                 state;
               },
@@ -341,7 +341,7 @@ let _ =
               CustomEventTool.getPointDownEventName(),
               gameObject3,
               0,
-              (event, state) => {
+              (. event, state) => {
                 value := value^ * 3;
                 state;
               },

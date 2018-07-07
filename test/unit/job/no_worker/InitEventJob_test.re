@@ -77,7 +77,7 @@ let _ =
               ManageEventAPI.onDomEvent(
                 MouseDown,
                 0,
-                (event: mouseEvent, state) => {
+                (. event: mouseEvent, state) => {
                   value := 1;
                   state;
                 },
@@ -99,7 +99,7 @@ let _ =
               let state = MouseEventTool.prepare(~sandbox, ());
               let state = state |> NoWorkerJobTool.execInitJobs;
               let value = ref(0);
-              let handleFunc = (event: mouseEvent, state) => {
+              let handleFunc = (. event: mouseEvent, state) => {
                 value := value^ + 1;
                 state;
               };
@@ -126,7 +126,7 @@ let _ =
               let state = MouseEventTool.prepare(~sandbox, ());
               let state = state |> NoWorkerJobTool.execInitJobs;
               let value = ref(0);
-              let handleFunc = (event: mouseEvent, state) => {
+              let handleFunc = (. event: mouseEvent, state) => {
                 value := value^ + 1;
                 state;
               };
@@ -136,7 +136,7 @@ let _ =
                 ManageEventAPI.onDomEvent(
                   MouseDown,
                   0,
-                  (event: mouseEvent, state) => {
+                  (. event: mouseEvent, state) => {
                     value := value^ + 10;
                     state;
                   },
@@ -172,7 +172,7 @@ let _ =
                   ManageEventAPI.onDomEvent(
                     MouseDown,
                     0,
-                    (event: mouseEvent, state) => {
+                    (. event: mouseEvent, state) => {
                       let (x, y) = event.locationInView;
                       valueX := x;
                       valueY := y;
@@ -210,7 +210,7 @@ let _ =
                   ManageEventAPI.onDomEvent(
                     MouseDown,
                     0,
-                    (event: mouseEvent, state) => {
+                    (. event: mouseEvent, state) => {
                       let (x, y) = event.locationInView;
                       valueX := x;
                       valueY := y;
@@ -240,7 +240,7 @@ let _ =
                   ManageEventAPI.onDomEvent(
                     MouseDown,
                     0,
-                    (event: mouseEvent, state) => {
+                    (. event: mouseEvent, state) => {
                       button := event.button;
                       state;
                     },
@@ -281,7 +281,7 @@ let _ =
                   ManageEventAPI.onDomEvent(
                     MouseDown,
                     0,
-                    (event: mouseEvent, state) => {
+                    (. event: mouseEvent, state) => {
                       let (x, y) = event.movementDelta;
                       valueX := x;
                       valueY := y;
@@ -317,7 +317,7 @@ let _ =
                   ManageEventAPI.onDomEvent(
                     MouseDown,
                     0,
-                    (event: mouseEvent, state) => {
+                    (. event: mouseEvent, state) => {
                       let (x, y) = event.movementDelta;
                       valueX := x;
                       valueY := y;
@@ -355,7 +355,7 @@ let _ =
                 ManageEventAPI.onDomEvent(
                   MouseDown,
                   0,
-                  (event: mouseEvent, state) => {
+                  (. event: mouseEvent, state) => {
                     wheel := event.wheel;
                     state;
                   },
@@ -413,7 +413,7 @@ let _ =
                 ManageEventAPI.onDomEvent(
                   MouseDown,
                   0,
-                  (event: mouseEvent, state) => {
+                  (. event: mouseEvent, state) => {
                     let (x, y) = event.location;
                     valueX := x;
                     valueY := y;
@@ -444,7 +444,7 @@ let _ =
                 ManageEventAPI.onDomEvent(
                   MouseDown,
                   0,
-                  (event: mouseEvent, state) => {
+                  (. event: mouseEvent, state) => {
                     value := value^ - 2;
                     state;
                   },
@@ -454,7 +454,7 @@ let _ =
                 ManageEventAPI.onDomEvent(
                   MouseDown,
                   1,
-                  (event: mouseEvent, state) => {
+                  (. event: mouseEvent, state) => {
                     value := value^ * 2;
                     state;
                   },
@@ -482,7 +482,7 @@ let _ =
               ManageEventAPI.onDomEvent(
                 MouseDown,
                 0,
-                (event: mouseEvent, state) => {
+                (. event: mouseEvent, state) => {
                   value := 1;
                   state;
                 },
@@ -522,7 +522,7 @@ let _ =
                 ManageEventAPI.onCustomGlobalEvent(
                   CustomEventTool.getPointDownEventName(),
                   0,
-                  (event, state) => {
+                  (. event, state) => {
                     value := 1;
                     state;
                   },
@@ -544,7 +544,7 @@ let _ =
                 let state = MouseEventTool.prepare(~sandbox, ());
                 let state = state |> NoWorkerJobTool.execInitJobs;
                 let value = ref(0);
-                let handleFunc = (event, state) => {
+                let handleFunc = (. event, state) => {
                   value := value^ + 1;
                   state;
                 };
@@ -560,7 +560,7 @@ let _ =
                   ManageEventAPI.onCustomGlobalEvent(
                     CustomEventTool.getPointDownEventName(),
                     0,
-                    (event, state) => {
+                    (. event, state) => {
                       value := value^ + 10;
                       state;
                     },
@@ -589,7 +589,7 @@ let _ =
                 let state = MouseEventTool.prepare(~sandbox, ());
                 let state = state |> NoWorkerJobTool.execInitJobs;
                 let value = ref(0);
-                let handleFunc = (event, state) => {
+                let handleFunc = (. event, state) => {
                   value := value^ + 1;
                   state;
                 };
@@ -605,7 +605,7 @@ let _ =
                   ManageEventAPI.onCustomGlobalEvent(
                     CustomEventTool.getPointDownEventName(),
                     0,
-                    (event, state) => {
+                    (. event, state) => {
                       value := value^ + 10;
                       state;
                     },
@@ -647,7 +647,7 @@ let _ =
                   ManageEventAPI.onCustomGlobalEvent(
                     CustomEventTool.getPointDownEventName(),
                     0,
-                    (event, state) => {
+                    (. event, state) => {
                       refEvent :=
                         event.userData |> OptionService.unsafeGet |> Obj.magic;
                       state;
@@ -694,7 +694,7 @@ let _ =
                   ManageEventAPI.onCustomGlobalEvent(
                     CustomEventTool.getPointDownEventName(),
                     0,
-                    (event, state) => {
+                    (. event, state) => {
                       value := value^ - 2;
                       state;
                     },
@@ -704,7 +704,7 @@ let _ =
                   ManageEventAPI.onCustomGlobalEvent(
                     CustomEventTool.getPointDownEventName(),
                     1,
-                    (event, state) => {
+                    (. event, state) => {
                       value := value^ * 2;
                       state;
                     },

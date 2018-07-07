@@ -114,21 +114,21 @@ and jobRecord = {
 }
 and domEventData = {
   priority: int,
-  handleFunc: (EventType.mouseEvent, state) => state,
+  handleFunc: (. EventType.mouseEvent, state) => state,
 }
 and customEventData = {
   priority: int,
-  handleFunc: (EventType.customEvent, state) => state,
+  handleFunc: (. EventType.customEvent, state) => state,
 }
 and eventRecord = {
   domEventStreamSubscription: option(Most.subscription),
-  domEventDataListMap:
-    WonderCommonlib.SparseMapService.t(list(domEventData)),
-  customGlobalEventListMap:
-    WonderCommonlib.HashMapService.t(list(customEventData)),
-  customGameObjectEventListMap:
+  domEventDataArrMap:
+    WonderCommonlib.SparseMapService.t(array(domEventData)),
+  customGlobalEventArrMap:
+    WonderCommonlib.HashMapService.t(array(customEventData)),
+  customGameObjectEventArrMap:
     WonderCommonlib.HashMapService.t(
-      WonderCommonlib.SparseMapService.t(list(customEventData)),
+      WonderCommonlib.SparseMapService.t(array(customEventData)),
     ),
   mouseEventData: EventType.mouseEventData,
 }
