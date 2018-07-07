@@ -74,7 +74,7 @@ let _ =
             let value = ref(0);
 
             let state =
-              ManageEventAPI.onDomEvent(
+              ManageEventAPI.onMouseEvent(
                 MouseDown,
                 0,
                 (. event: mouseEvent, state) => {
@@ -104,10 +104,10 @@ let _ =
                 state;
               };
               let state =
-                ManageEventAPI.onDomEvent(MouseDown, 0, handleFunc, state);
+                ManageEventAPI.onMouseEvent(MouseDown, 0, handleFunc, state);
 
               let state =
-                ManageEventAPI.offDomEventByHandleFunc(
+                ManageEventAPI.offMouseEventByHandleFunc(
                   MouseDown,
                   handleFunc,
                   state,
@@ -131,9 +131,9 @@ let _ =
                 state;
               };
               let state =
-                ManageEventAPI.onDomEvent(MouseDown, 0, handleFunc, state);
+                ManageEventAPI.onMouseEvent(MouseDown, 0, handleFunc, state);
               let state =
-                ManageEventAPI.onDomEvent(
+                ManageEventAPI.onMouseEvent(
                   MouseDown,
                   0,
                   (. event: mouseEvent, state) => {
@@ -144,7 +144,7 @@ let _ =
                 );
 
               let state =
-                ManageEventAPI.offDomEventByHandleFunc(
+                ManageEventAPI.offMouseEventByHandleFunc(
                   MouseDown,
                   handleFunc,
                   state,
@@ -169,7 +169,7 @@ let _ =
                 let (valueX, valueY) = (ref(0), ref(0));
 
                 let state =
-                  ManageEventAPI.onDomEvent(
+                  ManageEventAPI.onMouseEvent(
                     MouseDown,
                     0,
                     (. event: mouseEvent, state) => {
@@ -207,7 +207,7 @@ let _ =
                 let (valueX, valueY) = (ref(0), ref(0));
 
                 let state =
-                  ManageEventAPI.onDomEvent(
+                  ManageEventAPI.onMouseEvent(
                     MouseDown,
                     0,
                     (. event: mouseEvent, state) => {
@@ -237,7 +237,7 @@ let _ =
                 let button = ref(Right);
 
                 let state =
-                  ManageEventAPI.onDomEvent(
+                  ManageEventAPI.onMouseEvent(
                     MouseDown,
                     0,
                     (. event: mouseEvent, state) => {
@@ -278,7 +278,7 @@ let _ =
                 let (valueX, valueY) = (ref(0), ref(0));
 
                 let state =
-                  ManageEventAPI.onDomEvent(
+                  ManageEventAPI.onMouseEvent(
                     MouseDown,
                     0,
                     (. event: mouseEvent, state) => {
@@ -314,7 +314,7 @@ let _ =
                 let (valueX, valueY) = (ref(0), ref(0));
 
                 let state =
-                  ManageEventAPI.onDomEvent(
+                  ManageEventAPI.onMouseEvent(
                     MouseDown,
                     0,
                     (. event: mouseEvent, state) => {
@@ -352,7 +352,7 @@ let _ =
               let wheel = ref(0);
 
               let state =
-                ManageEventAPI.onDomEvent(
+                ManageEventAPI.onMouseEvent(
                   MouseDown,
                   0,
                   (. event: mouseEvent, state) => {
@@ -410,7 +410,7 @@ let _ =
               let (valueX, valueY) = (ref(0), ref(0));
 
               let state =
-                ManageEventAPI.onDomEvent(
+                ManageEventAPI.onMouseEvent(
                   MouseDown,
                   0,
                   (. event: mouseEvent, state) => {
@@ -441,7 +441,7 @@ let _ =
               let value = ref(2);
 
               let state =
-                ManageEventAPI.onDomEvent(
+                ManageEventAPI.onMouseEvent(
                   MouseDown,
                   0,
                   (. event: mouseEvent, state) => {
@@ -451,7 +451,7 @@ let _ =
                   state,
                 );
               let state =
-                ManageEventAPI.onDomEvent(
+                ManageEventAPI.onMouseEvent(
                   MouseDown,
                   1,
                   (. event: mouseEvent, state) => {
@@ -479,7 +479,7 @@ let _ =
             let value = ref(0);
 
             let state =
-              ManageEventAPI.onDomEvent(
+              ManageEventAPI.onMouseEvent(
                 MouseDown,
                 0,
                 (. event: mouseEvent, state) => {

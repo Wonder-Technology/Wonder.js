@@ -48,9 +48,9 @@ let offCustomGlobalEventByEventName = ManageEventAPI.offCustomGlobalEventByEvent
 
 let onCustomGlobalEvent = ManageEventAPI.onCustomGlobalEvent;
 
-let offDomEventByHandleFunc = ManageEventAPI.offDomEventByHandleFunc;
+let offMouseEventByHandleFunc = ManageEventAPI.offMouseEventByHandleFunc;
 
-let onDomEvent = ManageEventAPI.onDomEvent;
+let onMouseEvent = ManageEventAPI.onMouseEvent;
 
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 

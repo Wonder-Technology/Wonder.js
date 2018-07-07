@@ -23,7 +23,7 @@ let _convertMouseEventToPointEvent =
 
 let _bindMouseEventToTriggerPointEvent =
     (mouseEventName, pointEventName, state) =>
-  ManageEventMainService.onDomEvent(
+  ManageEventMainService.onMouseEvent(
     ~eventName=mouseEventName,
     ~handleFunc=
       (. mouseEvent, state) =>
@@ -51,9 +51,21 @@ let bindDomEventToTriggerPointEvent = state =>
 
 let _execMouseEventHandle = (mouseEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
-  |> ManageEventMainService.execDomEventHandle(
+  |> HandleMouseEventMainService.execEventHandle(
        mouseEventName,
        event |> eventTargetToMouseDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execKeyboardEventHandle = (keyboardEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleKeyboardEventMainService.execEventHandle(
+       keyboardEventName,
+       event |> eventTargetToKeyboardDomEvent,
      )
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
@@ -78,6 +90,12 @@ let fromDomEvent = () =>
          _fromDomEvent("mousemove") |> Most.until(_fromDomEvent("mouseup"))
        )
     |> Most.tap(event => _execMouseEventHandle(MouseDrag, event)),
+    _fromDomEvent("keyup")
+    |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
+    _fromDomEvent("keydown")
+    |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
+    _fromDomEvent("keypress")
+    |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
   |]);
 
 let handleDomEventStreamError = e => {

@@ -112,9 +112,13 @@ and jobRecord = {
   workerCustomMainLoopRemovedDefaultJobMap:
     WonderCommonlib.HashMapService.t(bool),
 }
-and domEventData = {
+and mouseDomEventData = {
   priority: int,
   handleFunc: (. EventType.mouseEvent, state) => state,
+}
+and keyboardDomEventData = {
+  priority: int,
+  handleFunc: (. EventType.keyboardEvent, state) => state,
 }
 and customEventData = {
   priority: int,
@@ -122,8 +126,10 @@ and customEventData = {
 }
 and eventRecord = {
   domEventStreamSubscription: option(Most.subscription),
-  domEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(domEventData)),
+  mouseDomEventDataArrMap:
+    WonderCommonlib.SparseMapService.t(array(mouseDomEventData)),
+  keyboardDomEventDataArrMap:
+    WonderCommonlib.SparseMapService.t(array(keyboardDomEventData)),
   customGlobalEventArrMap:
     WonderCommonlib.HashMapService.t(array(customEventData)),
   customGameObjectEventArrMap:
@@ -131,6 +137,7 @@ and eventRecord = {
       WonderCommonlib.SparseMapService.t(array(customEventData)),
     ),
   mouseEventData: EventType.mouseEventData,
+  keyboardEventData: EventType.keyboardEventData,
 }
 and state = {
   settingRecord,

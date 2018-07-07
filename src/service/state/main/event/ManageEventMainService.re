@@ -2,11 +2,30 @@ open StateDataMainType;
 
 open EventType;
 
-let onDomEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
-  BindDomEventMainService.bind(eventName, priority, handleFunc, state);
+let onMouseEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
+  BindMouseDomEventMainService.bind(eventName, priority, handleFunc, state);
 
-let offDomEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
-  BindDomEventMainService.unbindByHandleFunc(eventName, handleFunc, state);
+let onKeyboardEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
+  BindKeyboardDomEventMainService.bind(
+    eventName,
+    priority,
+    handleFunc,
+    state,
+  );
+
+let offMouseEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
+  BindMouseDomEventMainService.unbindByHandleFunc(
+    eventName,
+    handleFunc,
+    state,
+  );
+
+let offKeyboardEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
+  BindKeyboardDomEventMainService.unbindByHandleFunc(
+    eventName,
+    handleFunc,
+    state,
+  );
 
 let onCustomGlobalEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
   BindCustomEventMainService.bindGlobalEvent(
@@ -48,12 +67,12 @@ let offCustomGameObjectEventByHandleFunc =
     state,
   );
 
-let execDomEventHandle = (eventName, domEvent, state) =>
-  switch (eventName) {
-  | MouseDown
-  | MouseUp =>
-    HandleMouseEventMainService.execEventHandle(eventName, domEvent, state)
-  };
+/* let execDomEventHandle = (eventName, domEvent, state) =>
+   switch (eventName) {
+   | MouseDown
+   | MouseUp =>
+     HandleMouseEventMainService.execEventHandle(eventName, domEvent, state)
+   }; */
 
 let triggerCustomGlobalEvent = (customEvent, state) =>
   HandleCustomEventMainService.triggerGlobalEvent(customEvent, state);
@@ -88,16 +107,18 @@ let setDomEventStreamSubscription =
   },
 };
 
-let _unsubscribeDomEventStream = [%raw domEventStreamSubscription => {|
+let _unsubscribeDomEventStream = [%raw
+  domEventStreamSubscription => {|
   domEventStreamSubscription.unsubscribe();
-  |}];
+  |}
+];
 
 let unsubscribeDomEventStream = ({eventRecord} as state) =>
   switch (eventRecord.domEventStreamSubscription) {
   | None => state
   | Some(domEventStreamSubscription) =>
     /* let unsubscribe = domEventStreamSubscription##unsubscribe;
-    unsubscribe(); */
+       unsubscribe(); */
     _unsubscribeDomEventStream(domEventStreamSubscription);
 
     state;

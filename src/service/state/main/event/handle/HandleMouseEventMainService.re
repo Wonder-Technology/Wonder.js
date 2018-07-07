@@ -130,17 +130,17 @@ let _convertMouseDomEventToMouseEvent =
 };
 
 let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
-  let {domEventDataArrMap} = eventRecord;
+  let {mouseDomEventDataArrMap} = eventRecord;
 
   switch (
-    domEventDataArrMap
+    mouseDomEventDataArrMap
     |> WonderCommonlib.SparseMapService.get(eventName |> domEventNameToInt)
   ) {
   | None => state
   | Some(arr) =>
     arr
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. state, {handleFunc}: domEventData) =>
+         (. state, {handleFunc}: mouseDomEventData) =>
            handleFunc(.
              _convertMouseDomEventToMouseEvent(
                eventName,

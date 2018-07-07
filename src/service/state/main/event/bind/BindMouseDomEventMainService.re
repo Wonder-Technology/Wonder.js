@@ -14,7 +14,7 @@ let _addToEventArr = (eventName, eventData, eventArrMap) =>
          arr
          |> ArrayService.push(eventData)
          |> Js.Array.sortInPlaceWith(
-              (eventDataA: domEventData, eventDataB: domEventData) =>
+              (eventDataA: mouseDomEventData, eventDataB: mouseDomEventData) =>
               eventDataB.priority - eventDataA.priority
             ),
        )
@@ -29,7 +29,7 @@ let _removeFromEventArrMapByHandleFunc =
     |> WonderCommonlib.SparseMapService.set(
          eventName,
          arr
-         |> Js.Array.filter(({handleFunc}: domEventData) =>
+         |> Js.Array.filter(({handleFunc}: mouseDomEventData) =>
               handleFunc !== targetHandleFunc
             ),
        )
@@ -54,34 +54,34 @@ let _wrapHandleFunc = (eventName, handleFunc) =>
   };
 
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
-  let {domEventDataArrMap} = eventRecord;
+  let {mouseDomEventDataArrMap} = eventRecord;
 
   {
     ...state,
     eventRecord: {
       ...eventRecord,
-      domEventDataArrMap:
+      mouseDomEventDataArrMap:
         _addToEventArr(
           eventName |> domEventNameToInt,
           {priority, handleFunc: _wrapHandleFunc(eventName, handleFunc)},
-          domEventDataArrMap,
+          mouseDomEventDataArrMap,
         ),
     },
   };
 };
 
 let unbindByHandleFunc = (eventName, handleFunc, {eventRecord} as state) => {
-  let {domEventDataArrMap} = eventRecord;
+  let {mouseDomEventDataArrMap} = eventRecord;
 
   {
     ...state,
     eventRecord: {
       ...eventRecord,
-      domEventDataArrMap:
+      mouseDomEventDataArrMap:
         _removeFromEventArrMapByHandleFunc(
           eventName |> domEventNameToInt,
           handleFunc,
-          domEventDataArrMap,
+          mouseDomEventDataArrMap,
         ),
     },
   };

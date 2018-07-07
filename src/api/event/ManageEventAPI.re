@@ -1,5 +1,5 @@
-let onDomEvent = (eventName, priority, handleFunc, state) =>
-  ManageEventMainService.onDomEvent(
+let onMouseEvent = (eventName, priority, handleFunc, state) =>
+  ManageEventMainService.onMouseEvent(
     ~eventName,
     ~handleFunc,
     ~state,
@@ -7,8 +7,8 @@ let onDomEvent = (eventName, priority, handleFunc, state) =>
     (),
   );
 
-let offDomEventByHandleFunc = (eventName, handleFunc, state) =>
-  ManageEventMainService.offDomEventByHandleFunc(
+let offMouseEventByHandleFunc = (eventName, handleFunc, state) =>
+  ManageEventMainService.offMouseEventByHandleFunc(
     ~eventName,
     ~handleFunc,
     ~state,

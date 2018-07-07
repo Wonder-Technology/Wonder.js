@@ -51,14 +51,14 @@ let _ =
 
       beforeEach(() => value := 0);
 
-      test("test restore domEventDataArrMap", () => {
+      test("test restore mouseDomEventDataArrMap", () => {
         let state = MouseEventTool.prepare(~sandbox, ());
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
           _prepare(
             value,
             (handleFunc, state) =>
-              ManageEventAPI.onDomEvent(MouseDown, 0, handleFunc, state),
+              ManageEventAPI.onMouseEvent(MouseDown, 0, handleFunc, state),
             state,
           );
 
@@ -138,7 +138,7 @@ let _ =
           state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
         let state =
-          ManageEventAPI.onDomEvent(
+          ManageEventAPI.onMouseEvent(
             MouseDown,
             0,
             (. event: mouseEvent, state) => {
@@ -153,7 +153,7 @@ let _ =
         let copiedState = state |> MainStateTool.deepCopyForRestore;
 
         let state =
-          ManageEventAPI.onDomEvent(
+          ManageEventAPI.onMouseEvent(
             MouseDown,
             0,
             (. event, state) => {

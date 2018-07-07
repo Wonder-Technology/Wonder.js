@@ -12,7 +12,10 @@ type domEventName =
   | MouseUp
   | MouseMove
   | MouseWheel
-  | MouseDrag;
+  | MouseDrag
+  | KeyUp
+  | KeyDown
+  | KeyPress;
 
 type mouseButton =
   | Left
@@ -20,11 +23,6 @@ type mouseButton =
   | Center;
 
 type pointData('a) = ('a, 'a);
-
-/* type eventType =
-   | Point
-   | Mouse
-   | Custom; */
 
 type phaseType =
   | Broadcast
@@ -37,7 +35,16 @@ type mouseEvent = {
   button: mouseButton,
   wheel: int,
   movementDelta: pointData(int),
-  /* type_: eventType, */
+};
+
+type keyboardEvent = {
+  name: domEventName,
+  keyCode: int,
+  ctrlKey: bool,
+  altKey: bool,
+  shiftKey: bool,
+  metaKey: bool,
+  key: string,
 };
 
 type userData;
@@ -67,6 +74,11 @@ type mouseEventData = {
   lastY: option(int),
 };
 
+type keyboardEventData = {
+  specialKeyMap: WonderCommonlib.SparseMapService.t(string),
+  shiftKeyMap: WonderCommonlib.HashMapService.t(string),
+};
+
 type domEvent;
 
 type mouseDomEvent = {
@@ -84,6 +96,15 @@ type mouseDomEvent = {
   "pageY": int,
 };
 
+type keyboardDomEvent = {
+  .
+  "keyCode": int,
+  "ctrlKey": bool,
+  "altKey": bool,
+  "shiftKey": bool,
+  "metaKey": bool,
+};
+
 external domEventNameToInt : domEventName => int = "%identity";
 
 external pointEventToUserData : pointEvent => userData = "%identity";
@@ -92,3 +113,6 @@ external bodyToEventTarget : DomExtendType.body => Dom.eventTarget =
   "%identity";
 
 external eventTargetToMouseDomEvent : Dom.event => mouseDomEvent = "%identity";
+
+external eventTargetToKeyboardDomEvent : Dom.event => keyboardDomEvent =
+  "%identity";
