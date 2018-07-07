@@ -22,14 +22,14 @@ let _convertMouseEventToPointEvent =
 };
 
 let _bindMouseEventToTriggerPointEvent =
-    (mouseEventName, pointEventName, state) =>
+    (mouseEventName, customEventName, pointEventName, state) =>
   ManageEventMainService.onMouseEvent(
     ~eventName=mouseEventName,
     ~handleFunc=
       (. mouseEvent, state) =>
         ManageEventMainService.triggerCustomGlobalEvent(
           CreateCustomEventMainService.create(
-            NameEventService.getPointDownEventName(),
+            customEventName,
             _convertMouseEventToPointEvent(pointEventName, mouseEvent)
             |> pointEventToUserData
             |. Some,
@@ -42,12 +42,36 @@ let _bindMouseEventToTriggerPointEvent =
 
 let bindDomEventToTriggerPointEvent = state =>
   state
-  |> _bindMouseEventToTriggerPointEvent(Click, PointTap)
-  |> _bindMouseEventToTriggerPointEvent(MouseUp, PointUp)
-  |> _bindMouseEventToTriggerPointEvent(MouseDown, PointDown)
-  |> _bindMouseEventToTriggerPointEvent(MouseWheel, PointScale)
-  |> _bindMouseEventToTriggerPointEvent(MouseMove, PointMove)
-  |> _bindMouseEventToTriggerPointEvent(MouseDrag, PointDrag);
+  |> _bindMouseEventToTriggerPointEvent(
+       Click,
+       NameEventService.getPointTapEventName(),
+       PointTap,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       MouseUp,
+       NameEventService.getPointUpEventName(),
+       PointUp,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       MouseDown,
+       NameEventService.getPointDownEventName(),
+       PointDown,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       MouseWheel,
+       NameEventService.getPointScaleEventName(),
+       PointScale,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       MouseMove,
+       NameEventService.getPointMoveEventName(),
+       PointMove,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       MouseDrag,
+       NameEventService.getPointDragEventName(),
+       PointDrag,
+     );
 
 let _execMouseEventHandle = (mouseEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)

@@ -474,19 +474,19 @@ let _ =
           });
         });
 
-        describe({j|bind mouseup event|j}, () =>
+        describe("bind mouseup event", () =>
           _testMouseEvent(MouseUp, "mouseup")
         );
 
-        describe({j|bind click event|j}, () =>
+        describe("bind click event", () =>
           _testMouseEvent(Click, "click")
         );
 
-        describe({j|bind mousewheel event|j}, () =>
+        describe("bind mousewheel event", () =>
           _testMouseEvent(MouseWheel, "mousewheel")
         );
 
-        describe({j|bind mousemove event|j}, () => {
+        describe("bind mousemove event", () => {
           _testMouseEvent(MouseMove, "mousemove");
 
           describe("test mouse event", () =>
@@ -530,7 +530,7 @@ let _ =
           );
         });
 
-        describe({j|bind mousedrag event|j}, () => {
+        describe("bind mousedrag event", () => {
           test("test trigger event when mousemove after mousedown", () => {
             let state = MouseEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
@@ -648,8 +648,8 @@ let _ =
     );
 
     describe("bind dom event to trigger point event", () =>
-      describe("bind mouse event to trigger point event", () =>
-        describe("test trigger pointdown event", () => {
+      describe("bind mouse event to trigger point event", () => {
+        let _testPointEvent = (pointEventName, mouseDomEventName) => {
           test("test bind", () => {
             let state = MouseEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
@@ -657,7 +657,7 @@ let _ =
 
             let state =
               ManageEventAPI.onCustomGlobalEvent(
-                CustomEventTool.getPointDownEventName(),
+                pointEventName,
                 0,
                 (. event, state) => {
                   value := 1;
@@ -667,7 +667,7 @@ let _ =
               );
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
-              "mousedown",
+              mouseDomEventName,
               EventTool.getBody(),
               MouseEventTool.buildMouseEvent(),
             );
@@ -689,14 +689,14 @@ let _ =
 
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   0,
                   handleFunc,
                   state,
                 );
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   0,
                   (. event, state) => {
                     value := value^ + 10;
@@ -706,13 +706,13 @@ let _ =
                 );
               let state =
                 ManageEventAPI.offCustomGlobalEventByHandleFunc(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   handleFunc,
                   state,
                 );
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
-                "mousedown",
+                mouseDomEventName,
                 EventTool.getBody(),
                 MouseEventTool.buildMouseEvent(),
               );
@@ -735,14 +735,14 @@ let _ =
 
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   0,
                   handleFunc,
                   state,
                 );
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   0,
                   (. event, state) => {
                     value := value^ + 10;
@@ -752,12 +752,12 @@ let _ =
                 );
               let state =
                 ManageEventAPI.offCustomGlobalEventByEventName(
-                  CustomEventTool.getPointDownEventName(),
+                  pointEventName,
                   state,
                 );
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
-                "mousedown",
+                mouseDomEventName,
                 EventTool.getBody(),
                 MouseEventTool.buildMouseEvent(),
               );
@@ -765,6 +765,13 @@ let _ =
 
               value^ |> expect == 0;
             })
+          );
+        };
+
+        describe("test trigger pointdown event", () => {
+          _testPointEvent(
+            CustomEventTool.getPointDownEventName(),
+            "mousedown",
           );
 
           describe("test point event", () =>
@@ -861,8 +868,68 @@ let _ =
               value^ |> expect == 2 * 2 - 2;
             })
           );
-        })
-      )
+        });
+
+        describe("test trigger pointup event", () =>
+          _testPointEvent(CustomEventTool.getPointUpEventName(), "mouseup")
+        );
+
+        describe("test trigger pointtap event", () =>
+          _testPointEvent(CustomEventTool.getPointTapEventName(), "click")
+        );
+
+        describe("test trigger pointscale event", () =>
+          _testPointEvent(
+            CustomEventTool.getPointScaleEventName(),
+            "mousewheel",
+          )
+        );
+
+        describe("test trigger pointmove event", () =>
+          _testPointEvent(
+            CustomEventTool.getPointMoveEventName(),
+            "mousemove",
+          )
+        );
+
+        describe("test trigger pointdrag event", () =>
+          test("test trigger event when trigger mousedrag event", () => {
+            let state = MouseEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onCustomGlobalEvent(
+                CustomEventTool.getPointDragEventName(),
+                0,
+                (. event, state) => {
+                  value := value^ + 1;
+                  state;
+                },
+                state,
+              );
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getBody(),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mousemove",
+              EventTool.getBody(),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mousemove",
+              EventTool.getBody(),
+              MouseEventTool.buildMouseEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 2;
+          })
+        );
+      })
     );
-    /* TODO test pointup */
   });
