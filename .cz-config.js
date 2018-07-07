@@ -43,6 +43,9 @@ module.exports = {
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
+    perf: [
+      { name: "compile" }
+    ],
     refactor: [
       { name: "duplication" },
       { name: "rename" },
