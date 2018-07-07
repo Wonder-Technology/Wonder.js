@@ -15,6 +15,9 @@
         ]
     },
     {
+        "name": "init_event"
+    },
+    {
         "name": "create_canvas"
     },
     {

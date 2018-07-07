@@ -1,13 +1,17 @@
 open StateDataMainType;
 
 let _getMainInitJobHandles = () => [
+  ("init_event", InitEventMainWorkerJob.execJob),
   ("create_worker_instance", CreateWorkerInstanceMainWorkerJob.execJob),
   ("send_job_data", SendJobDataMainWorkerJob.execJob),
   ("create_canvas", CreateCanvasMainWorkerJob.execJob),
   ("set_full_screen", SetFullScreenMainWorkerJob.execJob),
   ("get_finish_send_job_data", GetFinishSendJobDataMainWorkerJob.execJob),
   ("send_init_render_data", SendInitRenderDataMainWorkerJob.execJob),
-  ("get_finish_init_render_data", GetFinishInitRenderDataMainWorkerJob.execJob)
+  (
+    "get_finish_init_render_data",
+    GetFinishInitRenderDataMainWorkerJob.execJob,
+  ),
 ];
 
 let _getMainLoopJobHandles = () => [
@@ -15,14 +19,23 @@ let _getMainLoopJobHandles = () => [
   ("update_transform", UpdateTransformMainWorkerJob.execJob),
   ("update_camera", UpdateCameraMainWorkerJob.execJob),
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
-  ("dispose_and_send_dispose_data", DisposeAndSendDisposeDataMainWorkerJob.execJob),
+  (
+    "dispose_and_send_dispose_data",
+    DisposeAndSendDisposeDataMainWorkerJob.execJob,
+  ),
   ("reallocate_cpu_memory", ReallocateCPUMemoryMainWorkerJob.execJob),
-  ("create_basic_render_object_buffer", CreateBasicRenderObjectBufferMainWorkerJob.execJob),
-  ("create_light_render_object_buffer", CreateLightRenderObjectBufferMainWorkerJob.execJob),
+  (
+    "create_basic_render_object_buffer",
+    CreateBasicRenderObjectBufferMainWorkerJob.execJob,
+  ),
+  (
+    "create_light_render_object_buffer",
+    CreateLightRenderObjectBufferMainWorkerJob.execJob,
+  ),
   ("send_render_data", SendRenderDataMainWorkerJob.execJob),
   ("copy_transform", CopyTransformMainWorkerJob.execJob),
   ("get_finish_render_data", GetFinishRenderDataMainWorkerJob.execJob),
-  ("get_finish_dispose_data", GetFinishDisposeDataMainWorkerJob.execJob)
+  ("get_finish_dispose_data", GetFinishDisposeDataMainWorkerJob.execJob),
 ];
 
 let _getWorkerJobHandles = () => [
@@ -48,7 +61,10 @@ let _getWorkerJobHandles = () => [
   ("init_point_light", InitPointLightRenderWorkerJob.execJob),
   ("init_light_material", InitLightMaterialRenderWorkerJob.execJob),
   ("init_texture", InitTextureRenderWorkerJob.execJob),
-  ("send_finish_init_render_data", SendFinishInitRenderDataRenderWorkerJob.execJob),
+  (
+    "send_finish_init_render_data",
+    SendFinishInitRenderDataRenderWorkerJob.execJob,
+  ),
   ("get_render_data", GetRenderDataRenderWorkerJob.execJob),
   ("get_instance_data", GetInstanceDataRenderWorkerJob.execJob),
   ("get_ambient_light_data", GetAmbientLightDataRenderWorkerJob.execJob),
@@ -58,14 +74,17 @@ let _getWorkerJobHandles = () => [
   ("init_texture_for_render", InitTextureForRenderRenderWorkerJob.execJob),
   ("clear_color", ClearColorRenderWorkerJob.execJob),
   ("clear_buffer", ClearBufferRenderWorkerJob.execJob),
-  ("clear_last_send_component", ClearLastSendComponentRenderWorkerJob.execJob),
+  (
+    "clear_last_send_component",
+    ClearLastSendComponentRenderWorkerJob.execJob,
+  ),
   (
     "create_basic_render_object_typeArray",
-    CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob
+    CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob,
   ),
   (
     "create_light_render_object_typeArray",
-    CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob
+    CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob,
   ),
   ("get_camera_data", GetCameraDataRenderWorkerJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
@@ -76,7 +95,7 @@ let _getWorkerJobHandles = () => [
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob),
   ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob),
-  ("send_finish_dispose_data", SendFinishDisposeDataRenderWorkerJob.execJob)
+  ("send_finish_dispose_data", SendFinishDisposeDataRenderWorkerJob.execJob),
 ];
 
 let createMainInitJobHandleMap = () =>
@@ -85,7 +104,8 @@ let createMainInitJobHandleMap = () =>
 let createMainLoopJobHandleMap = () =>
   HandleJobService.createJobHandleMap(_getMainLoopJobHandles());
 
-let createWorkerJobHandleMap = () => HandleJobService.createJobHandleMap(_getWorkerJobHandles());
+let createWorkerJobHandleMap = () =>
+  HandleJobService.createJobHandleMap(_getWorkerJobHandles());
 
 let _getJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
@@ -93,8 +113,11 @@ let _getJobHandle = (name, jobHandleMap) =>
   | Some(handleFunc) => handleFunc
   };
 
-let getMainInitJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);
+let getMainInitJobHandle = (name, jobHandleMap) =>
+  _getJobHandle(name, jobHandleMap);
 
-let getMainLoopJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);
+let getMainLoopJobHandle = (name, jobHandleMap) =>
+  _getJobHandle(name, jobHandleMap);
 
-let getWorkerJobHandle = (name, jobHandleMap) => _getJobHandle(name, jobHandleMap);
+let getWorkerJobHandle = (name, jobHandleMap) =>
+  _getJobHandle(name, jobHandleMap);

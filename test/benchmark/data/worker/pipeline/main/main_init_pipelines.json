@@ -19,6 +19,9 @@
           "link": "concat",
           "jobs": [
             {
+              "name": "init_event"
+            },
+            {
               "name": "transfer_job_data"
             },
             {
