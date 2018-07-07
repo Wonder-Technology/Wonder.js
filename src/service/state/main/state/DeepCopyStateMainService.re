@@ -3,6 +3,7 @@ open StateDataMainType;
 let deepCopyForRestore = (state: StateDataMainType.state) => {
   let state =
     state
+    |> RecordEventMainService.deepCopyForRestore
     |> RecordTransformMainService.deepCopyForRestore
     |> RecordBasicMaterialMainService.deepCopyForRestore
     |> RecordLightMaterialMainService.deepCopyForRestore

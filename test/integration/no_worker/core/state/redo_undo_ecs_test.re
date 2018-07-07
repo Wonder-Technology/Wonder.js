@@ -3,7 +3,7 @@ open Wonder_jest;
 open Js.Typed_array;
 
 let _ =
-  describe("test redo,undo component record", () => {
+  describe("test redo,undo component data", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
