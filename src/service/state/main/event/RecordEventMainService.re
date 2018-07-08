@@ -225,7 +225,6 @@ let _deepCopyCustomGlobalEventArrMap = customGlobalEventArrMap =>
   |> Js.Dict.map((. arr) => arr |> SparseMapService.copy);
 
 let _deepCopyCustomGameObjectEventArrMap = customGameObjectEventArrMap =>
-  /* let copiedMap = customGameObjectEventArrMap |> HashMapService.copy; */
   customGameObjectEventArrMap
   |> Js.Dict.map((. eventArrMap) =>
        eventArrMap
@@ -248,7 +247,6 @@ let deepCopyForRestore = ({eventRecord} as state) => {
       ...eventRecord,
       mouseDomEventDataArrMap:
         mouseDomEventDataArrMap |> _deepCopyDomEventArrMap,
-      /* TODO test */
       keyboardDomEventDataArrMap:
         keyboardDomEventDataArrMap |> _deepCopyDomEventArrMap,
       customGlobalEventArrMap:

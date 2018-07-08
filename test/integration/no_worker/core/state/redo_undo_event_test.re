@@ -72,6 +72,27 @@ let _ =
 
         value^ |> expect == 1;
       });
+      test("test restore keyboardDomEventDataArrMap", () => {
+        let state = KeyboardEventTool.prepare(~sandbox, ());
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let restoredState =
+          _prepare(
+            value,
+            (handleFunc, state) =>
+              ManageEventAPI.onKeyboardEvent(KeyDown, 0, handleFunc, state),
+            state,
+          );
+
+        let restoredState = MainStateTool.setState(restoredState);
+        EventTool.triggerDomEvent(
+          "keydown",
+          EventTool.getBody(),
+          KeyboardEventTool.buildKeyboardEvent(),
+        );
+        let restoredState = EventTool.restore(restoredState);
+
+        value^ |> expect == 1;
+      });
       test("test restore customGlobalEventArrMap", () => {
         let restoredState =
           _prepare(
