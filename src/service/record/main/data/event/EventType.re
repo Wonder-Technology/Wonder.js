@@ -15,7 +15,12 @@ type domEventName =
   | MouseDrag
   | KeyUp
   | KeyDown
-  | KeyPress;
+  | KeyPress
+  | TouchTap
+  | TouchEnd
+  | TouchMove
+  | TouchStart
+  | TouchDrag;
 
 type mouseButton =
   | Left
@@ -45,6 +50,43 @@ type keyboardEvent = {
   shiftKey: bool,
   metaKey: bool,
   key: string,
+};
+
+type touchDataJsObj = {
+  .
+  "clientX": int,
+  "clientY": int,
+  "pageX": int,
+  "pageY": int,
+  "identifier": int,
+  "screenX": int,
+  "screenY": int,
+  "radiusX": int,
+  "radiusY": int,
+  "rotationAngle": int,
+  "force": int,
+};
+
+type touchData = {
+  clientX: int,
+  clientY: int,
+  pageX: int,
+  pageY: int,
+  identifier: int,
+  screenX: int,
+  screenY: int,
+  radiusX: int,
+  radiusY: int,
+  rotationAngle: int,
+  force: int,
+};
+
+type touchEvent = {
+  name: domEventName,
+  location: pointData(int),
+  locationInView: pointData(int),
+  touchData,
+  movementDelta: pointData(int),
 };
 
 type userData;
@@ -80,6 +122,11 @@ type keyboardEventData = {
   shiftKeyByCharCodeMap: WonderCommonlib.HashMapService.t(string),
 };
 
+type touchEventData = {
+  lastX: option(int),
+  lastY: option(int),
+};
+
 type domEvent;
 
 type mouseDomEvent = {
@@ -106,6 +153,13 @@ type keyboardDomEvent = {
   "metaKey": bool,
 };
 
+type touchDomEvent = {
+  .
+  "touches": array(touchDataJsObj),
+  "changedTouches": array(touchDataJsObj),
+  "targetTouches": array(touchDataJsObj),
+};
+
 external domEventNameToInt : domEventName => int = "%identity";
 
 external pointEventToUserData : pointEvent => userData = "%identity";
@@ -117,3 +171,5 @@ external eventTargetToMouseDomEvent : Dom.event => mouseDomEvent = "%identity";
 
 external eventTargetToKeyboardDomEvent : Dom.event => keyboardDomEvent =
   "%identity";
+
+external eventTargetToTouchDomEvent : Dom.event => touchDomEvent = "%identity";

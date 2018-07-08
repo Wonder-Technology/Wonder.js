@@ -202,6 +202,7 @@ let create = () => {
   domEventStreamSubscription: None,
   mouseDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
   keyboardDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
+  touchDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
   customGlobalEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
   customGameObjectEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
   mouseEventData: {
@@ -212,6 +213,10 @@ let create = () => {
     specialKeyMap: _createSpecialKeyMap(.),
     shiftKeyByKeyCodeMap: _createShiftKeyByKeyCodeMap(.),
     shiftKeyByCharCodeMap: _createShiftKeyByCharCodeMap(.),
+  },
+  touchEventData: {
+    lastX: None,
+    lastY: None,
   },
 };
 
@@ -237,6 +242,7 @@ let deepCopyForRestore = ({eventRecord} as state) => {
     domEventStreamSubscription,
     mouseDomEventDataArrMap,
     keyboardDomEventDataArrMap,
+    touchDomEventDataArrMap,
     customGlobalEventArrMap,
     customGameObjectEventArrMap,
     mouseEventData,
@@ -249,11 +255,19 @@ let deepCopyForRestore = ({eventRecord} as state) => {
         mouseDomEventDataArrMap |> _deepCopyDomEventArrMap,
       keyboardDomEventDataArrMap:
         keyboardDomEventDataArrMap |> _deepCopyDomEventArrMap,
+      /* TODO test */
+      touchDomEventDataArrMap:
+        touchDomEventDataArrMap |> _deepCopyDomEventArrMap,
       customGlobalEventArrMap:
         customGlobalEventArrMap |> _deepCopyCustomGlobalEventArrMap,
       customGameObjectEventArrMap:
         customGameObjectEventArrMap |> _deepCopyCustomGameObjectEventArrMap,
       mouseEventData: {
+        lastX: None,
+        lastY: None,
+      },
+      /* TODO test */
+      touchEventData: {
         lastX: None,
         lastY: None,
       },

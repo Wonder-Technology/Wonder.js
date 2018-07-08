@@ -16,16 +16,11 @@ let _getLocation = (mouseDomEvent, {browserDetectRecord}) => {
 };
 
 let _getLocationInView = (mouseDomEvent, {viewRecord} as state) =>
-  switch (ViewService.getCanvas(viewRecord)) {
-  | None => (0, 0)
-  | Some(canvas) =>
-    let (offsetX, offsetY) =
-      ViewService.getOffset(ViewService.unsafeGetCanvas(viewRecord));
-
-    let (x, y) = _getLocation(mouseDomEvent, state);
-
-    (x - offsetX, y - offsetY);
-  };
+  HandlePointDomEventMainService.getLocationInView(
+    mouseDomEvent,
+    _getLocation,
+    state,
+  );
 
 let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   let {browser} = browserDetectRecord;
@@ -101,24 +96,11 @@ let _getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
         }
       },
     ) :
-    {
-      let (x, y) = _getLocation(mouseDomEvent, state);
-
-      switch (MouseEventService.getLastXY(eventRecord)) {
-      | (None, None) => (0, 0)
-      | (Some(lastX), Some(lastY)) => (x - lastX, y - lastY)
-      | _ =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_getMovementDelta",
-            ~description={j|lastX, lastY should all be None or all be Some|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        )
-      };
-    };
+    HandlePointDomEventMainService.getMovementDelta(
+      _getLocation(mouseDomEvent, state),
+      MouseEventService.getLastXY(eventRecord),
+      state,
+    );
 
 let _convertMouseDomEventToMouseEvent =
     (eventName, mouseDomEvent, state)

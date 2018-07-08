@@ -71,6 +71,31 @@ let bindDomEventToTriggerPointEvent = state =>
        MouseDrag,
        NameEventService.getPointDragEventName(),
        PointDrag,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       TouchTap,
+       NameEventService.getPointTapEventName(),
+       PointTap,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       TouchEnd,
+       NameEventService.getPointUpEventName(),
+       PointUp,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       TouchStart,
+       NameEventService.getPointDownEventName(),
+       PointDown,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       TouchMove,
+       NameEventService.getPointMoveEventName(),
+       PointMove,
+     )
+  |> _bindMouseEventToTriggerPointEvent(
+       TouchDrag,
+       NameEventService.getPointDragEventName(),
+       PointDrag,
      );
 
 let _execMouseEventHandle = (mouseEventName, event) => {
@@ -94,6 +119,34 @@ let _execMouseMoveEventHandle = (mouseEventName, event) => {
   |> HandleMouseEventMainService.setLastXYWhenMouseMove(
        mouseEventName,
        event |> eventTargetToMouseDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execTouchEventHandle = (touchEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.execEventHandle(
+       touchEventName,
+       event |> eventTargetToTouchDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execTouchMoveEventHandle = (touchEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.execEventHandle(
+       touchEventName,
+       event |> eventTargetToTouchDomEvent,
+     )
+  |> HandleTouchEventMainService.setLastXYWhenTouchMove(
+       touchEventName,
+       event |> eventTargetToTouchDomEvent,
      )
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
@@ -136,6 +189,20 @@ let fromDomEvent = () =>
     |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
     _fromDomEvent("keypress")
     |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
+    _fromDomEvent("touchend")
+    |> Most.since(_fromDomEvent("touchstart"))
+    |> Most.tap(event => _execTouchEventHandle(TouchTap, event)),
+    _fromDomEvent("touchend")
+    |> Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
+    _fromDomEvent("touchstart")
+    |> Most.tap(event => _execTouchEventHandle(TouchStart, event)),
+    _fromDomEvent("touchmove")
+    |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
+    _fromDomEvent("touchstart")
+    |> Most.flatMap(event =>
+         _fromDomEvent("touchmove") |> Most.until(_fromDomEvent("touchend"))
+       )
+    |> Most.tap(event => _execTouchEventHandle(TouchDrag, event)),
   |]);
 
 let handleDomEventStreamError = e => {

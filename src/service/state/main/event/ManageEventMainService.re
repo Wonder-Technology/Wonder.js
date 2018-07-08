@@ -13,6 +13,15 @@ let onKeyboardEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
     state,
   );
 
+let onTouchEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
+  BindTouchDomEventMainService.bind(
+    eventName,
+    priority,
+    handleFunc,
+    state,
+  );
+
+
 let offMouseEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
   BindMouseDomEventMainService.unbindByHandleFunc(
     eventName,
@@ -26,6 +35,14 @@ let offKeyboardEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
     handleFunc,
     state,
   );
+
+let offTouchEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
+  BindTouchDomEventMainService.unbindByHandleFunc(
+    eventName,
+    handleFunc,
+    state,
+  );
+
 
 let onCustomGlobalEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
   BindCustomEventMainService.bindGlobalEvent(

@@ -120,6 +120,10 @@ and keyboardDomEventData = {
   priority: int,
   handleFunc: (. EventType.keyboardEvent, state) => state,
 }
+and touchDomEventData = {
+  priority: int,
+  handleFunc: (. EventType.touchEvent, state) => state,
+}
 and customEventData = {
   priority: int,
   handleFunc: (. EventType.customEvent, state) => state,
@@ -130,6 +134,8 @@ and eventRecord = {
     WonderCommonlib.SparseMapService.t(array(mouseDomEventData)),
   keyboardDomEventDataArrMap:
     WonderCommonlib.SparseMapService.t(array(keyboardDomEventData)),
+  touchDomEventDataArrMap:
+    WonderCommonlib.SparseMapService.t(array(touchDomEventData)),
   customGlobalEventArrMap:
     WonderCommonlib.HashMapService.t(array(customEventData)),
   customGameObjectEventArrMap:
@@ -138,6 +144,7 @@ and eventRecord = {
     ),
   mouseEventData: EventType.mouseEventData,
   keyboardEventData: EventType.keyboardEventData,
+  touchEventData: EventType.touchEventData,
 }
 and state = {
   settingRecord,
