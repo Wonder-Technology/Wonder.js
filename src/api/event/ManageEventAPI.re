@@ -16,6 +16,15 @@ let onKeyboardEvent = (eventName, priority, handleFunc, state) =>
     (),
   );
 
+let onTouchEvent = (eventName, priority, handleFunc, state) =>
+  ManageEventMainService.onTouchEvent(
+    ~eventName,
+    ~handleFunc,
+    ~state,
+    ~priority,
+    (),
+  );
+
 let offMouseEventByHandleFunc = (eventName, handleFunc, state) =>
   ManageEventMainService.offMouseEventByHandleFunc(
     ~eventName,
@@ -25,6 +34,13 @@ let offMouseEventByHandleFunc = (eventName, handleFunc, state) =>
 
 let offKeyboardEventByHandleFunc = (eventName, handleFunc, state) =>
   ManageEventMainService.offKeyboardEventByHandleFunc(
+    ~eventName,
+    ~handleFunc,
+    ~state,
+  );
+
+let offTouchEventByHandleFunc = (eventName, handleFunc, state) =>
+  ManageEventMainService.offTouchEventByHandleFunc(
     ~eventName,
     ~handleFunc,
     ~state,

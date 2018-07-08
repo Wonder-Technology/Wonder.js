@@ -15,8 +15,8 @@ let _convertMouseEventToPointEvent =
   name: eventName,
   location,
   locationInView,
-  button,
-  wheel,
+  button: Some(button),
+  wheel: Some(wheel),
   movementDelta,
   /* type_: Point, */
 };
@@ -31,6 +31,38 @@ let _bindMouseEventToTriggerPointEvent =
           CreateCustomEventMainService.create(
             customEventName,
             _convertMouseEventToPointEvent(pointEventName, mouseEvent)
+            |> pointEventToUserData
+            |. Some,
+          ),
+          state,
+        ),
+    ~state,
+    (),
+  );
+
+let _convertTouchEventToPointEvent =
+    (
+      eventName,
+      {location, locationInView, touchData, movementDelta}: touchEvent,
+    ) => {
+  name: eventName,
+  location,
+  locationInView,
+  button: None,
+  wheel: None,
+  movementDelta,
+};
+
+let _bindTouchEventToTriggerPointEvent =
+    (touchEventName, customEventName, pointEventName, state) =>
+  ManageEventMainService.onTouchEvent(
+    ~eventName=touchEventName,
+    ~handleFunc=
+      (. touchEvent, state) =>
+        ManageEventMainService.triggerCustomGlobalEvent(
+          CreateCustomEventMainService.create(
+            customEventName,
+            _convertTouchEventToPointEvent(pointEventName, touchEvent)
             |> pointEventToUserData
             |. Some,
           ),
@@ -72,27 +104,27 @@ let bindDomEventToTriggerPointEvent = state =>
        NameEventService.getPointDragEventName(),
        PointDrag,
      )
-  |> _bindMouseEventToTriggerPointEvent(
+  |> _bindTouchEventToTriggerPointEvent(
        TouchTap,
        NameEventService.getPointTapEventName(),
        PointTap,
      )
-  |> _bindMouseEventToTriggerPointEvent(
+  |> _bindTouchEventToTriggerPointEvent(
        TouchEnd,
        NameEventService.getPointUpEventName(),
        PointUp,
      )
-  |> _bindMouseEventToTriggerPointEvent(
+  |> _bindTouchEventToTriggerPointEvent(
        TouchStart,
        NameEventService.getPointDownEventName(),
        PointDown,
      )
-  |> _bindMouseEventToTriggerPointEvent(
+  |> _bindTouchEventToTriggerPointEvent(
        TouchMove,
        NameEventService.getPointMoveEventName(),
        PointMove,
      )
-  |> _bindMouseEventToTriggerPointEvent(
+  |> _bindTouchEventToTriggerPointEvent(
        TouchDrag,
        NameEventService.getPointDragEventName(),
        PointDrag,

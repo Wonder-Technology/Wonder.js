@@ -105,8 +105,8 @@ type pointEvent = {
   name: pointEventName,
   location: pointData(int),
   locationInView: pointData(int),
-  button: mouseButton,
-  wheel: int,
+  button: option(mouseButton),
+  wheel: option(int),
   movementDelta: pointData(int),
   /* type_: eventType, */
 };
