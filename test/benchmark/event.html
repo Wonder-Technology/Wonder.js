@@ -46,7 +46,7 @@
 
 
                 var state =
-                    wd.onDomEvent(0, 0, (event, state) => {
+                    wd.onMouseEvent(1, 0, (event, state) => {
                         console.log("mousedown");
 
                         return state;
@@ -56,34 +56,84 @@
 
                 var state =
                     wd.onCustomGlobalEvent(
-                        "wd_pointdown", 0, (event, state) => {
+                        "wd_pointdown", 1, (event, state) => {
                             console.log("pointdown");
 
                             return state;
                         }, state);
 
 
-                var [state, gameObject1] = wd.createGameObject(state);
 
-                var [state, gameObject2] = wd.createGameObject(state);
+                var state =
+                    wd.onMouseEvent(0, 0, (event, state) => {
+                        console.log("click");
 
-
-
-
-
-                var count = 1000;
-
-                var state = state;
+                        return state;
+                    }, state);
 
 
-                var value = 0;
 
-                console.profile("onCustomGameObjectEvent");
-                var n0 = performance.now();
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointtap", 0, (event, state) => {
+                            console.log("pointtap");
 
-                for (var i = 0; i < count; i++) {
-                    state =
-                        wd.onDomEvent(0, 0, (event, state) => {
+                            return state;
+                        }, state);
+
+
+
+                // var state =
+                //     wd.onMouseEvent(3, 0, (event, state) => {
+                //         console.log("mousemove");
+
+                //         return state;
+                //     }, state);
+
+
+
+                // var state =
+                //     wd.onCustomGlobalEvent(
+                //         "wd_pointmove", 3, (event, state) => {
+                //             console.log("pointmove");
+
+                //             return state;
+                //         }, state);
+
+
+                var state =
+                    wd.onMouseEvent(4, 0, (event, state) => {
+                        console.log("mousewheel");
+
+                        return state;
+                    }, state);
+
+
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointscale", 4, (event, state) => {
+                            console.log("pointscale");
+
+                            return state;
+                        }, state);
+
+
+
+                var state =
+                    wd.onMouseEvent(5, 0, (event, state) => {
+                        console.log("mousedrag");
+
+                        return state;
+                    }, state);
+
+
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointdrag", 5, (event, state) => {
+                            console.log("pointdrag");
+
                             return state;
                         }, state);
 
@@ -91,46 +141,89 @@
 
 
 
-                    state =
-                        wd.onCustomGameObjectEvent(
-                            "a1", gameObject1, 0, (event, state) => {
-                                value += 1;
-
-                                return state;
-                            }, state);
-
-                    state =
-                        wd.onCustomGameObjectEvent(
-                            "a1", gameObject1, 1, (event, state) => {
-                                value += 1;
-
-                                return state;
-                            }, state);
-                }
-
-
-
-                var n1 = performance.now();
-                console.profileEnd();
-
-
-
-                console.profile("triggerCustomGameObjectEvent");
-
-                var n2 = performance.now();
-
-
                 var state =
-                    wd.triggerCustomGameObjectEvent(
-                        wd.createCustomEvent("a1"),
+                    wd.onKeyboardEvent(6, 0, (event, state) => {
+                        console.log("keyup", event);
 
-                        gameObject1, state
-                    );
+                        return state;
+                    }, state);
 
-                var n3 = performance.now();
-                console.profileEnd();
 
-                console.log(n1 - n0, n3 - n2)
+
+
+
+
+
+
+
+                // var [state, gameObject1] = wd.createGameObject(state);
+
+                // var [state, gameObject2] = wd.createGameObject(state);
+
+
+
+
+
+                // var count = 1000;
+
+                // var state = state;
+
+
+                // var value = 0;
+
+                // console.profile("onCustomGameObjectEvent");
+                // var n0 = performance.now();
+
+                // for (var i = 0; i < count; i++) {
+                //     state =
+                //         wd.onMouseEvent(0, 0, (event, state) => {
+                //             return state;
+                //         }, state);
+
+
+
+
+
+                //     state =
+                //         wd.onCustomGameObjectEvent(
+                //             "a1", gameObject1, 0, (event, state) => {
+                //                 value += 1;
+
+                //                 return state;
+                //             }, state);
+
+                //     state =
+                //         wd.onCustomGameObjectEvent(
+                //             "a1", gameObject1, 1, (event, state) => {
+                //                 value += 1;
+
+                //                 return state;
+                //             }, state);
+                // }
+
+
+
+                // var n1 = performance.now();
+                // console.profileEnd();
+
+
+
+                // console.profile("triggerCustomGameObjectEvent");
+
+                // var n2 = performance.now();
+
+
+                // var state =
+                //     wd.triggerCustomGameObjectEvent(
+                //         wd.createCustomEvent("a1"),
+
+                //         gameObject1, state
+                //     );
+
+                // var n3 = performance.now();
+                // console.profileEnd();
+
+                // console.log(n1 - n0, n3 - n2)
                 // console.log(n1 - n0, n2 - n1)
             }
         };
