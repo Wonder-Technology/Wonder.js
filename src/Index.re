@@ -48,9 +48,13 @@ let offCustomGlobalEventByEventName = ManageEventAPI.offCustomGlobalEventByEvent
 
 let onCustomGlobalEvent = ManageEventAPI.onCustomGlobalEvent;
 
+let offTouchEventByHandleFunc = ManageEventAPI.offTouchEventByHandleFunc;
+
 let offKeyboardEventByHandleFunc = ManageEventAPI.offKeyboardEventByHandleFunc;
 
 let offMouseEventByHandleFunc = ManageEventAPI.offMouseEventByHandleFunc;
+
+let onTouchEvent = ManageEventAPI.onTouchEvent;
 
 let onKeyboardEvent = ManageEventAPI.onKeyboardEvent;
 

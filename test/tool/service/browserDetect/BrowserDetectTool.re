@@ -22,6 +22,17 @@ let setFirefox = () => {
   MainStateTool.setState(state);
 };
 
+let setAndroid = () => {
+  let state = MainStateTool.unsafeGetState();
+  let state = {
+    ...state,
+    browserDetectRecord: {
+      browser: Android,
+    },
+  };
+  MainStateTool.setState(state);
+};
+
 let setUnknown = () => {
   let state = MainStateTool.unsafeGetState();
   let state = {

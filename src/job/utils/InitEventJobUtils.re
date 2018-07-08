@@ -72,63 +72,80 @@ let _bindTouchEventToTriggerPointEvent =
     (),
   );
 
-let bindDomEventToTriggerPointEvent = state =>
-  state
-  |> _bindMouseEventToTriggerPointEvent(
-       Click,
-       NameEventService.getPointTapEventName(),
-       PointTap,
-     )
-  |> _bindMouseEventToTriggerPointEvent(
-       MouseUp,
-       NameEventService.getPointUpEventName(),
-       PointUp,
-     )
-  |> _bindMouseEventToTriggerPointEvent(
-       MouseDown,
-       NameEventService.getPointDownEventName(),
-       PointDown,
-     )
-  |> _bindMouseEventToTriggerPointEvent(
-       MouseWheel,
-       NameEventService.getPointScaleEventName(),
-       PointScale,
-     )
-  |> _bindMouseEventToTriggerPointEvent(
-       MouseMove,
-       NameEventService.getPointMoveEventName(),
-       PointMove,
-     )
-  |> _bindMouseEventToTriggerPointEvent(
-       MouseDrag,
-       NameEventService.getPointDragEventName(),
-       PointDrag,
-     )
-  |> _bindTouchEventToTriggerPointEvent(
-       TouchTap,
-       NameEventService.getPointTapEventName(),
-       PointTap,
-     )
-  |> _bindTouchEventToTriggerPointEvent(
-       TouchEnd,
-       NameEventService.getPointUpEventName(),
-       PointUp,
-     )
-  |> _bindTouchEventToTriggerPointEvent(
-       TouchStart,
-       NameEventService.getPointDownEventName(),
-       PointDown,
-     )
-  |> _bindTouchEventToTriggerPointEvent(
-       TouchMove,
-       NameEventService.getPointMoveEventName(),
-       PointMove,
-     )
-  |> _bindTouchEventToTriggerPointEvent(
-       TouchDrag,
-       NameEventService.getPointDragEventName(),
-       PointDrag,
-     );
+let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
+  switch (browserDetectRecord.browser) {
+  | Chrome
+  | Firefox =>
+    state
+    |> _bindMouseEventToTriggerPointEvent(
+         Click,
+         NameEventService.getPointTapEventName(),
+         PointTap,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseUp,
+         NameEventService.getPointUpEventName(),
+         PointUp,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDown,
+         NameEventService.getPointDownEventName(),
+         PointDown,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseWheel,
+         NameEventService.getPointScaleEventName(),
+         PointScale,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseMove,
+         NameEventService.getPointMoveEventName(),
+         PointMove,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDrag,
+         NameEventService.getPointDragEventName(),
+         PointDrag,
+       )
+  | Android
+  | IOS =>
+    state
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchTap,
+         NameEventService.getPointTapEventName(),
+         PointTap,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchEnd,
+         NameEventService.getPointUpEventName(),
+         PointUp,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchStart,
+         NameEventService.getPointDownEventName(),
+         PointDown,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchMove,
+         NameEventService.getPointMoveEventName(),
+         PointMove,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchDrag,
+         NameEventService.getPointDragEventName(),
+         PointDrag,
+       )
+  | browser =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="bindDomEventToTriggerPointEvent",
+        ~description={j|unknown browser|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|browser:$browser|j},
+      ),
+    )
+  };
 
 let _execMouseEventHandle = (mouseEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
@@ -198,44 +215,64 @@ let _execKeyboardEventHandle = (keyboardEventName, event) => {
   ();
 };
 
-let fromDomEvent = () =>
-  Most.mergeArray([|
-    _fromDomEvent("click")
-    |> Most.tap(event => _execMouseEventHandle(Click, event)),
-    _fromDomEvent("mousedown")
-    |> Most.tap(event => _execMouseEventHandle(MouseDown, event)),
-    _fromDomEvent("mouseup")
-    |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
-    _fromDomEvent("mousemove")
-    |> Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
-    _fromDomEvent("mousewheel")
-    |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
-    _fromDomEvent("mousedown")
-    |> Most.flatMap(event =>
-         _fromDomEvent("mousemove") |> Most.until(_fromDomEvent("mouseup"))
-       )
-    |> Most.tap(event => _execMouseEventHandle(MouseDrag, event)),
-    _fromDomEvent("keyup")
-    |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
-    _fromDomEvent("keydown")
-    |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
-    _fromDomEvent("keypress")
-    |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
-    _fromDomEvent("touchend")
-    |> Most.since(_fromDomEvent("touchstart"))
-    |> Most.tap(event => _execTouchEventHandle(TouchTap, event)),
-    _fromDomEvent("touchend")
-    |> Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
-    _fromDomEvent("touchstart")
-    |> Most.tap(event => _execTouchEventHandle(TouchStart, event)),
-    _fromDomEvent("touchmove")
-    |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
-    _fromDomEvent("touchstart")
-    |> Most.flatMap(event =>
-         _fromDomEvent("touchmove") |> Most.until(_fromDomEvent("touchend"))
-       )
-    |> Most.tap(event => _execTouchEventHandle(TouchDrag, event)),
-  |]);
+let fromDomEvent = ({browserDetectRecord}) =>
+  Most.mergeArray(
+    switch (browserDetectRecord.browser) {
+    | Chrome
+    | Firefox => [|
+        _fromDomEvent("click")
+        |> Most.tap(event => _execMouseEventHandle(Click, event)),
+        _fromDomEvent("mousedown")
+        |> Most.tap(event => _execMouseEventHandle(MouseDown, event)),
+        _fromDomEvent("mouseup")
+        |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
+        _fromDomEvent("mousemove")
+        |> Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
+        _fromDomEvent("mousewheel")
+        |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
+        _fromDomEvent("mousedown")
+        |> Most.flatMap(event =>
+             _fromDomEvent("mousemove")
+             |> Most.until(_fromDomEvent("mouseup"))
+           )
+        |> Most.tap(event => _execMouseEventHandle(MouseDrag, event)),
+        _fromDomEvent("keyup")
+        |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
+        _fromDomEvent("keydown")
+        |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
+        _fromDomEvent("keypress")
+        |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
+      |]
+    | Android
+    | IOS => [|
+        _fromDomEvent("touchend")
+        |> Most.since(_fromDomEvent("touchstart"))
+        |> Most.tap(event => _execTouchEventHandle(TouchTap, event)),
+        _fromDomEvent("touchend")
+        |> Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
+        _fromDomEvent("touchstart")
+        |> Most.tap(event => _execTouchEventHandle(TouchStart, event)),
+        _fromDomEvent("touchmove")
+        |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
+        _fromDomEvent("touchstart")
+        |> Most.flatMap(event =>
+             _fromDomEvent("touchmove")
+             |> Most.until(_fromDomEvent("touchend"))
+           )
+        |> Most.tap(event => _execTouchEventHandle(TouchDrag, event)),
+      |]
+    | browser =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="fromDomEvent",
+          ~description={j|unknown browser|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j|browser:$browser|j},
+        ),
+      )
+    },
+  );
 
 let handleDomEventStreamError = e => {
   let message = Obj.magic(e)##message;
@@ -261,7 +298,7 @@ let handleDomEventStreamError = e => {
 
 let initEvent = state => {
   let domEventStreamSubscription =
-    fromDomEvent()
+    fromDomEvent(state)
     |> Most.subscribe({
          "next": _ => (),
          "error": e => handleDomEventStreamError(e),

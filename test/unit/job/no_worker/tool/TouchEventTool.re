@@ -39,7 +39,7 @@ let prepare =
       ~offsetLeft=1,
       ~offsetTop=2,
       ~offsetParent=Js.Nullable.undefined,
-      ~setBrowserFunc=BrowserDetectTool.setChrome,
+      ~setBrowserFunc=BrowserDetectTool.setAndroid,
       (),
     ) => {
   let canvasDom =

@@ -155,6 +155,30 @@
 
 
 
+                var state =
+                    wd.onTouchEvent(10, 0, (event, state) => {
+                        console.log("touchend");
+
+                        return state;
+                    }, state);
+
+
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointup", 2, (event, state) => {
+                            console.log("pointup");
+
+                            return state;
+                        }, state);
+
+
+
+
+
+
+
+
 
                 // var [state, gameObject1] = wd.createGameObject(state);
 

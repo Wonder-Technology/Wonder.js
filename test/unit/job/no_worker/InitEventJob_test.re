@@ -442,35 +442,19 @@ let _ =
               value^ |> expect == 2 * 2 - 2;
             })
           );
-          test("if browser is not chrome or firefox, not exec handleFunc", () => {
+          test("if browser is unknown, fatal", () => {
             let state =
               MouseEventTool.prepare(
                 ~sandbox,
                 ~setBrowserFunc=BrowserDetectTool.setUnknown,
                 (),
               );
-            let state = state |> NoWorkerJobTool.execInitJobs;
-            let value = ref(0);
 
-            let state =
-              ManageEventAPI.onMouseEvent(
-                MouseDown,
-                0,
-                (. event: mouseEvent, state) => {
-                  value := 1;
-                  state;
-                },
-                state,
-              );
-            let state = MainStateTool.setState(state);
-            EventTool.triggerDomEvent(
-              "mousedown",
-              EventTool.getBody(),
-              MouseEventTool.buildMouseEvent(),
-            );
-            let state = EventTool.restore(state);
-
-            value^ |> expect == 0;
+            expect(() => {
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              ();
+            })
+            |> toThrowMessage("unknown browser");
           });
         });
 
@@ -1922,9 +1906,89 @@ let _ =
           _testPointEvent(CustomEventTool.getPointUpEventName(), "touchend")
         );
 
-        describe("test trigger pointtap event", () =>
-          _testPointEvent(CustomEventTool.getPointTapEventName(), "click")
-        );
+        describe("test trigger pointtap event", () => {
+          test("test bind", () => {
+            let state = TouchEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onCustomGlobalEvent(
+                CustomEventTool.getPointTapEventName(),
+                0,
+                (. event, state) => {
+                  value := 1;
+                  state;
+                },
+                state,
+              );
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "touchstart",
+              EventTool.getBody(),
+              TouchEventTool.buildTouchEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "touchend",
+              EventTool.getBody(),
+              TouchEventTool.buildTouchEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+
+          describe("test unbind by handleFunc", () =>
+            test("test unbind one handleFunc of the eventName", () => {
+              let state = TouchEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(0);
+              let handleFunc =
+                (. event, state) => {
+                  value := value^ + 1;
+                  state;
+                };
+
+              let state =
+                ManageEventAPI.onCustomGlobalEvent(
+                  CustomEventTool.getPointTapEventName(),
+                  0,
+                  handleFunc,
+                  state,
+                );
+              let state =
+                ManageEventAPI.onCustomGlobalEvent(
+                  CustomEventTool.getPointTapEventName(),
+                  0,
+                  (. event, state) => {
+                    value := value^ + 10;
+                    state;
+                  },
+                  state,
+                );
+              let state =
+                ManageEventAPI.offCustomGlobalEventByHandleFunc(
+                  CustomEventTool.getPointTapEventName(),
+                  handleFunc,
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "touchstart",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(),
+              );
+              EventTool.triggerDomEvent(
+                "touchend",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(),
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 10;
+            })
+          );
+        });
 
         describe("test trigger pointmove event", () =>
           _testPointEvent(
