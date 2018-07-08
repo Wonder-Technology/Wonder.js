@@ -142,15 +142,22 @@ let handleDomEventStreamError = e => {
   let message = Obj.magic(e)##message;
   let stack = Obj.magic(e)##stack;
 
-  WonderLog.Log.fatal(
-    WonderLog.Log.buildFatalMessage(
-      ~title="InitEventJob",
+  WonderLog.Log.debug(
+    WonderLog.Log.buildDebugMessage(
       ~description={j|from dom event stream error|j},
-      ~reason="",
-      ~solution={j||j},
       ~params={j|message:$message\nstack:$stack|j},
     ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+  /* WonderLog.Log.fatal(
+       WonderLog.Log.buildFatalMessage(
+         ~title="InitEventJob",
+         ~description={j|from dom event stream error|j},
+         ~reason="",
+         ~solution={j||j},
+         ~params={j|message:$message\nstack:$stack|j},
+       ),
+     ); */
 };
 
 let initEvent = state => {
@@ -162,6 +169,12 @@ let initEvent = state => {
          "complete": () => (),
        });
 
+  state
+  |> ManageEventMainService.setDomEventStreamSubscription(
+       domEventStreamSubscription,
+     )
+  |> bindDomEventToTriggerPointEvent;
+};
   state
   |> ManageEventMainService.setDomEventStreamSubscription(
        domEventStreamSubscription,
