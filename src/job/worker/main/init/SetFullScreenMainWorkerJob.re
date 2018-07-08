@@ -9,7 +9,7 @@ let execJob = (_, stateData) =>
         |> ViewService.setCanvas(
              ScreenService.setToFullScreen(
                ScreenService.queryFullScreenData(),
-               ViewService.getCanvas(viewRecord) |> Obj.magic
+               ViewService.unsafeGetCanvas(viewRecord) |> Obj.magic
              )
            );
       StateDataMainService.setState(stateData, state);

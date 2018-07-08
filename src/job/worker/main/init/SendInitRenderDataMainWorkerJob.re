@@ -174,7 +174,7 @@ let execJob = (flags, stateData) =>
           } as state =
         StateDataMainService.unsafeGetState(stateData);
       let operateType = JobConfigUtils.getOperateType(flags);
-      let offscreen = ViewService.getCanvas(viewRecord) |> Worker.transferControlToOffscreen;
+      let offscreen = ViewService.unsafeGetCanvas(viewRecord) |> Worker.transferControlToOffscreen;
       WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
       |> WorkerService.postMessageWithTransferData(
            _buildData(operateType, offscreen, stateData),

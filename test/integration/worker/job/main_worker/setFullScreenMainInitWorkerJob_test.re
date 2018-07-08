@@ -32,7 +32,7 @@ let _ =
           SettingWorkerTool.buildFakeCanvasForNotPassCanvasId(sandbox);
           RenderJobsRenderWorkerTool.init(
             (state) => {
-              let canvasDom = ViewTool.getCanvas(state) |> Obj.magic;
+              let canvasDom = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
               (
                 canvasDom##width,
                 canvasDom##height,

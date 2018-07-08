@@ -15,14 +15,17 @@ let _getLocation = (mouseDomEvent, {browserDetectRecord}) => {
   };
 };
 
-let _getLocationInView = (mouseDomEvent, {viewRecord} as state) => {
-  let (offsetX, offsetY) =
-    ViewService.getOffset(ViewService.getCanvas(viewRecord));
+let _getLocationInView = (mouseDomEvent, {viewRecord} as state) =>
+  switch (ViewService.getCanvas(viewRecord)) {
+  | None => (0, 0)
+  | Some(canvas) =>
+    let (offsetX, offsetY) =
+      ViewService.getOffset(ViewService.unsafeGetCanvas(viewRecord));
 
-  let (x, y) = _getLocation(mouseDomEvent, state);
+    let (x, y) = _getLocation(mouseDomEvent, state);
 
-  (x - offsetX, y - offsetY);
-};
+    (x - offsetX, y - offsetY);
+  };
 
 let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   let {browser} = browserDetectRecord;

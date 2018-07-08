@@ -2,7 +2,9 @@ open ViewType;
 
 open DomExtendType;
 
-let getCanvas = ({canvas}) => canvas |> OptionService.unsafeGet;
+let getCanvas = ({canvas}) => canvas;
+
+let unsafeGetCanvas = record => getCanvas(record) |> OptionService.unsafeGet;
 
 let setCanvas = (canvas: htmlElement, record) => {
   ...record,

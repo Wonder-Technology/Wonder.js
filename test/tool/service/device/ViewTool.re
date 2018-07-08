@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let getCanvas = state => state.viewRecord |> ViewService.getCanvas;
+let unsafeGetCanvas = state => state.viewRecord |> ViewService.unsafeGetCanvas;
 
 let setCanvas = (canvas, state) => {
   ...state,

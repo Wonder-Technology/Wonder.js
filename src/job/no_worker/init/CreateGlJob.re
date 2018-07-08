@@ -7,7 +7,7 @@ let execJob = (_, state) => {
   deviceManagerRecord:
     state.deviceManagerRecord
     |> DeviceManagerService.setGl(
-         ViewService.getCanvas(state.viewRecord)
+         ViewService.unsafeGetCanvas(state.viewRecord)
          |> GlService.createGl(
               ContextConfigSettingService.convertContextConfigDataToJsObj(
                 OperateSettingService.unsafeGetContext(state.settingRecord)
