@@ -175,9 +175,3 @@ let initEvent = state => {
      )
   |> bindDomEventToTriggerPointEvent;
 };
-  state
-  |> ManageEventMainService.setDomEventStreamSubscription(
-       domEventStreamSubscription,
-     )
-  |> bindDomEventToTriggerPointEvent;
-};

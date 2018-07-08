@@ -7,8 +7,24 @@ let onMouseEvent = (eventName, priority, handleFunc, state) =>
     (),
   );
 
+let onKeyboardEvent = (eventName, priority, handleFunc, state) =>
+  ManageEventMainService.onKeyboardEvent(
+    ~eventName,
+    ~handleFunc,
+    ~state,
+    ~priority,
+    (),
+  );
+
 let offMouseEventByHandleFunc = (eventName, handleFunc, state) =>
   ManageEventMainService.offMouseEventByHandleFunc(
+    ~eventName,
+    ~handleFunc,
+    ~state,
+  );
+
+let offKeyboardEventByHandleFunc = (eventName, handleFunc, state) =>
+  ManageEventMainService.offKeyboardEventByHandleFunc(
     ~eventName,
     ~handleFunc,
     ~state,

@@ -13,7 +13,7 @@ let _ =
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("bind dom event", () =>
+    describe("bind dom event", () => {
       describe("bind mouse event", () => {
         let _testMouseEvent = (mouseEventName, mouseDomEventName) => {
           test("test bind", () => {
@@ -644,8 +644,275 @@ let _ =
             })
           );
         });
-      })
-    );
+      });
+
+      describe("bind keyboard event", () => {
+        let _testKeyboardEvent = (keyboardEventName, keyboardDomEventName) => {
+          test("test bind", () => {
+            let state = KeyboardEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onKeyboardEvent(
+                keyboardEventName,
+                0,
+                (. event: keyboardEvent, state) => {
+                  value := 1;
+                  state;
+                },
+                state,
+              );
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              {j|$keyboardDomEventName|j},
+              EventTool.getBody(),
+              KeyboardEventTool.buildKeyboardEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+
+          describe("test unbind by handleFunc", () => {
+            test("test", () => {
+              let state = KeyboardEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(0);
+              let handleFunc =
+                (. event: keyboardEvent, state) => {
+                  value := value^ + 1;
+                  state;
+                };
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  keyboardEventName,
+                  0,
+                  handleFunc,
+                  state,
+                );
+
+              let state =
+                ManageEventAPI.offKeyboardEventByHandleFunc(
+                  keyboardEventName,
+                  handleFunc,
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                {j|$keyboardDomEventName|j},
+                EventTool.getBody(),
+                KeyboardEventTool.buildKeyboardEvent(),
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 0;
+            });
+            test("test unbind one handleFunc of the eventName", () => {
+              let state = KeyboardEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(0);
+              let handleFunc =
+                (. event: keyboardEvent, state) => {
+                  value := value^ + 1;
+                  state;
+                };
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  keyboardEventName,
+                  0,
+                  handleFunc,
+                  state,
+                );
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  keyboardEventName,
+                  0,
+                  (. event: keyboardEvent, state) => {
+                    value := value^ + 10;
+                    state;
+                  },
+                  state,
+                );
+
+              let state =
+                ManageEventAPI.offKeyboardEventByHandleFunc(
+                  keyboardEventName,
+                  handleFunc,
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                {j|$keyboardDomEventName|j},
+                EventTool.getBody(),
+                KeyboardEventTool.buildKeyboardEvent(),
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 10;
+            });
+          });
+        };
+
+        describe("bind keyup event", () => {
+          _testKeyboardEvent(KeyUp, "keyup");
+
+          describe("test keyboard event", () => {
+            test("test name, ctrlKey, altKey, shiftKey, metaKey,  keyCode", () => {
+              let state = KeyboardEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let refEvent = ref(Obj.magic(-1));
+
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  KeyUp,
+                  0,
+                  (. event: keyboardEvent, state) => {
+                    refEvent := event;
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "keyup",
+                EventTool.getBody(),
+                KeyboardEventTool.buildKeyboardEvent(
+                  ~ctrlKey=true,
+                  ~altKey=true,
+                  ~shiftKey=true,
+                  ~metaKey=true,
+                  ~keyCode=9,
+                  (),
+                ),
+              );
+              let state = EventTool.restore(state);
+
+              let {name, keyCode, ctrlKey, altKey, shiftKey, metaKey} =
+                refEvent^;
+
+              (name, ctrlKey, altKey, shiftKey, metaKey, keyCode)
+              |> expect == (KeyUp, true, true, true, true, 9);
+            });
+
+            describe("test key", () => {
+              test("test keyCode is in specialKeyMap", () => {
+                let state = KeyboardEventTool.prepare(~sandbox, ());
+                let state = state |> NoWorkerJobTool.execInitJobs;
+                let key = ref("");
+
+                let state =
+                  ManageEventAPI.onKeyboardEvent(
+                    KeyUp,
+                    0,
+                    (. event: keyboardEvent, state) => {
+                      key := event.key;
+                      state;
+                    },
+                    state,
+                  );
+                let state = MainStateTool.setState(state);
+                EventTool.triggerDomEvent(
+                  "keyup",
+                  EventTool.getBody(),
+                  KeyboardEventTool.buildKeyboardEvent(~keyCode=9, ()),
+                );
+                let state = EventTool.restore(state);
+
+                key^ |> expect == "tab";
+              });
+
+              describe("else", () =>
+                test("if shiftKey=true, get key from shiftKeyMap", () => {
+                  let state = KeyboardEventTool.prepare(~sandbox, ());
+                  let state = state |> NoWorkerJobTool.execInitJobs;
+                  let keyArr = [||];
+
+                  let state =
+                    ManageEventAPI.onKeyboardEvent(
+                      KeyUp,
+                      0,
+                      (. event: keyboardEvent, state) => {
+                        keyArr |> ArrayService.push(event.key) |> ignore;
+                        state;
+                      },
+                      state,
+                    );
+                  let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "keyup",
+                    EventTool.getBody(),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~shiftKey=true,
+                      ~keyCode=51,
+                      (),
+                    ),
+                  );
+                  EventTool.triggerDomEvent(
+                    "keyup",
+                    EventTool.getBody(),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~shiftKey=true,
+                      ~keyCode=52,
+                      (),
+                    ),
+                  );
+                  let state = EventTool.restore(state);
+
+                  keyArr |> expect == [|"#", "$"|];
+                })
+              );
+            });
+          });
+
+          describe("test priority", () =>
+            test("the higher priority handleFunc is executed first", () => {
+              let state = KeyboardEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(5);
+
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  KeyUp,
+                  0,
+                  (. event: keyboardEvent, state) => {
+                    value := value^ + 1;
+                    state;
+                  },
+                  state,
+                );
+              let state =
+                ManageEventAPI.onKeyboardEvent(
+                  KeyUp,
+                  1,
+                  (. event: keyboardEvent, state) => {
+                    value := value^ * 2;
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "keyup",
+                EventTool.getBody(),
+                KeyboardEventTool.buildKeyboardEvent(),
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 11;
+            })
+          );
+        });
+
+        describe("bind keydown event", () =>
+          _testKeyboardEvent(KeyDown, "keydown")
+        );
+
+        describe("bind keypress event", () =>
+          _testKeyboardEvent(KeyPress, "keypress")
+        );
+      });
+    });
 
     describe("bind dom event to trigger point event", () =>
       describe("bind mouse event to trigger point event", () => {

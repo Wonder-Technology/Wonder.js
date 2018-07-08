@@ -143,8 +143,8 @@ let create = () => {
     lastY: None,
   },
   keyboardEventData: {
-    specialKeyMap: _createSpecialKeyMap(),
-    shiftKeyMap: _createShiftKeyMap(),
+    specialKeyMap: _createSpecialKeyMap(.),
+    shiftKeyMap: _createShiftKeyMap(.),
   },
 };
 

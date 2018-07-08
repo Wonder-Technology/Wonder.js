@@ -16,8 +16,14 @@ let _getKey = (keyboardDomEvent, {eventRecord}) => {
   | None =>
     let char = Js.String.fromCharCode(keyCode) |> Js.String.toLowerCase;
 
+    WonderLog.Log.print(("char: ", char)) |> ignore;
+
     _getShiftKey(keyboardDomEvent) ?
-      shiftKeyMap |> WonderCommonlib.HashMapService.unsafeGet(char) : char;
+      switch (shiftKeyMap |> WonderCommonlib.HashMapService.get(char)) {
+      | None => char
+      | Some(upperCaseChar) => upperCaseChar
+      } :
+      char;
   };
 };
 
