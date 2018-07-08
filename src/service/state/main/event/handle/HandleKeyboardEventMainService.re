@@ -6,25 +6,25 @@ let _getKeyCode = keyboardDomEvent => keyboardDomEvent##keyCode;
 
 let _getShiftKey = keyboardDomEvent => keyboardDomEvent##shiftKey;
 
+let _getKeyFromSpecialKeyMap = (keyCode, char, specialKeyMap) =>
+  switch (specialKeyMap |> WonderCommonlib.SparseMapService.get(keyCode)) {
+  | None => char
+  | Some(key) => key
+  };
+
 let _getKey = (keyboardDomEvent, {eventRecord}) => {
   let {keyboardEventData} = eventRecord;
   let {specialKeyMap, shiftKeyMap} = keyboardEventData;
   let keyCode = _getKeyCode(keyboardDomEvent);
 
-  switch (specialKeyMap |> WonderCommonlib.SparseMapService.get(keyCode)) {
-  | Some(key) => key
-  | None =>
-    let char = Js.String.fromCharCode(keyCode) |> Js.String.toLowerCase;
+  let char = Js.String.fromCharCode(keyCode) |> Js.String.toLowerCase;
 
-    WonderLog.Log.print(("char: ", char)) |> ignore;
-
-    _getShiftKey(keyboardDomEvent) ?
-      switch (shiftKeyMap |> WonderCommonlib.HashMapService.get(char)) {
-      | None => char
-      | Some(upperCaseChar) => upperCaseChar
-      } :
-      char;
-  };
+  _getShiftKey(keyboardDomEvent) ?
+    switch (shiftKeyMap |> WonderCommonlib.HashMapService.get(char)) {
+    | None => _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap)
+    | Some(upperCaseChar) => upperCaseChar
+    } :
+    _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap);
 };
 
 let _convertKeyboardDomEventToKeyboardEvent =
