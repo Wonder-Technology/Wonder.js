@@ -76,7 +76,8 @@ type mouseEventData = {
 
 type keyboardEventData = {
   specialKeyMap: WonderCommonlib.SparseMapService.t(string),
-  shiftKeyMap: WonderCommonlib.HashMapService.t(string),
+  shiftKeyByKeyCodeMap: WonderCommonlib.SparseMapService.t(string),
+  shiftKeyByCharCodeMap: WonderCommonlib.HashMapService.t(string),
 };
 
 type domEvent;

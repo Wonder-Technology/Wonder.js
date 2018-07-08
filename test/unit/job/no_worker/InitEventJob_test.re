@@ -823,7 +823,7 @@ let _ =
               });
 
               describe("else", () =>
-                test("if shiftKey=true, get key from shiftKeyMap", () => {
+                test("if shiftKey=true, get key from shiftKeyByCharCodeMap", () => {
                   let state = KeyboardEventTool.prepare(~sandbox, ());
                   let state = state |> NoWorkerJobTool.execInitJobs;
                   let keyArr = [||];
@@ -857,9 +857,18 @@ let _ =
                       (),
                     ),
                   );
+                  EventTool.triggerDomEvent(
+                    "keyup",
+                    EventTool.getBody(),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~shiftKey=true,
+                      ~keyCode=187,
+                      (),
+                    ),
+                  );
                   let state = EventTool.restore(state);
 
-                  keyArr |> expect == [|"#", "$"|];
+                  keyArr |> expect == [|"#", "$", "+"|];
                 })
               );
             });

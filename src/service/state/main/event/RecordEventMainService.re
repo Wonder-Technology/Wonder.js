@@ -106,7 +106,73 @@ resultMap[key] = special_key_map[key];
   |}
 ];
 
-let _createShiftKeyMap = [%raw
+let _createShiftKeyByKeyCodeMap = [%raw
+  () => {|
+  var resultMap = [];
+  var map = {
+            59: ":",
+            61: "+",
+            65: "A",
+            66: "B",
+            67: "C",
+            68: "D",
+            69: "E",
+            70: "F",
+            71: "G",
+            72: "H",
+            73: "I",
+            74: "J",
+            75: "K",
+            76: "L",
+            77: "M",
+            78: "N",
+            79: "O",
+            80: "P",
+            81: "Q",
+            82: "R",
+            83: "S",
+            84: "T",
+            85: "U",
+            86: "V",
+            87: "W",
+            88: "X",
+            89: "Y",
+            90: "Z",
+            96: ")",
+            97: "!",
+            98: "@",
+            99: "#",
+            100: "$",
+            101: "%",
+            102: "^",
+            103: "&",
+            104: "*",
+            105: "(",
+            173: "_",
+            186: ":",
+            187: "+",
+            188: "<",
+            189: "_",
+            190: ">",
+            191: "?",
+            192: "~",
+            219: "{",
+            220: "|",
+            221: "}",
+            222: "\""
+        };
+
+        for(let key in map){
+          if(map.hasOwnProperty(key)){
+resultMap[key] = map[key];
+          }
+        }
+
+        return resultMap;
+  |}
+];
+
+let _createShiftKeyByCharCodeMap = [%raw
   () => {|
   return {
             "`": "~",
@@ -122,7 +188,7 @@ let _createShiftKeyMap = [%raw
             "0": ")",
             "-": "_",
             "=": "+",
-            ";": ": ",
+            ";": ":",
             "'": "\"",
             ",": "<",
             ".": ">",
@@ -144,7 +210,8 @@ let create = () => {
   },
   keyboardEventData: {
     specialKeyMap: _createSpecialKeyMap(.),
-    shiftKeyMap: _createShiftKeyMap(.),
+    shiftKeyByKeyCodeMap: _createShiftKeyByKeyCodeMap(.),
+    shiftKeyByCharCodeMap: _createShiftKeyByCharCodeMap(.),
   },
 };
 

@@ -14,14 +14,21 @@ let _getKeyFromSpecialKeyMap = (keyCode, char, specialKeyMap) =>
 
 let _getKey = (keyboardDomEvent, {eventRecord}) => {
   let {keyboardEventData} = eventRecord;
-  let {specialKeyMap, shiftKeyMap} = keyboardEventData;
+  let {specialKeyMap, shiftKeyByKeyCodeMap, shiftKeyByCharCodeMap} = keyboardEventData;
   let keyCode = _getKeyCode(keyboardDomEvent);
 
   let char = Js.String.fromCharCode(keyCode) |> Js.String.toLowerCase;
 
   _getShiftKey(keyboardDomEvent) ?
-    switch (shiftKeyMap |> WonderCommonlib.HashMapService.get(char)) {
-    | None => _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap)
+    switch (shiftKeyByKeyCodeMap |> WonderCommonlib.SparseMapService.get(keyCode)) {
+    | None =>
+      switch (
+        shiftKeyByCharCodeMap |> WonderCommonlib.HashMapService.get(char)
+      ) {
+      | None => _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap)
+      | Some(upperCaseChar) => upperCaseChar
+      }
+
     | Some(upperCaseChar) => upperCaseChar
     } :
     _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap);
