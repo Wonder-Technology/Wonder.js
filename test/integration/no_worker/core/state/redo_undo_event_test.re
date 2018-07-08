@@ -93,6 +93,27 @@ let _ =
 
         value^ |> expect == 1;
       });
+      test("test restore touchDomEventDataArrMap", () => {
+        let state = TouchEventTool.prepare(~sandbox, ());
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let restoredState =
+          _prepare(
+            value,
+            (handleFunc, state) =>
+              ManageEventAPI.onTouchEvent(TouchStart, 0, handleFunc, state),
+            state,
+          );
+
+        let restoredState = MainStateTool.setState(restoredState);
+        EventTool.triggerDomEvent(
+          "touchstart",
+          EventTool.getBody(),
+          TouchEventTool.buildTouchEvent(),
+        );
+        let restoredState = EventTool.restore(restoredState);
+
+        value^ |> expect == 1;
+      });
       test("test restore customGlobalEventArrMap", () => {
         let restoredState =
           _prepare(
@@ -192,6 +213,61 @@ let _ =
           "mousedown",
           EventTool.getBody(),
           MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+        );
+        let restoredState = EventTool.restore(restoredState);
+
+        (valueX^, valueY^) |> expect == (0, 0);
+      })
+    );
+
+    describe("test redo/undo touchEventData", () =>
+      test("test lastX, lastY", () => {
+        let (valueX, valueY) = (ref(0), ref(0));
+        let state = TouchEventTool.prepare(~sandbox, ());
+        let state = TouchEventTool.setLastXY(Some(1), Some(2), state);
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+        let state =
+          ManageEventAPI.onTouchEvent(
+            TouchStart,
+            0,
+            (. event: touchEvent, state) => {
+              let (x, y) = event.movementDelta;
+              valueX := valueX^ + x;
+              valueY := valueX^ + y;
+              state;
+            },
+            state,
+          );
+
+        let copiedState = state |> MainStateTool.deepCopyForRestore;
+
+        let state =
+          ManageEventAPI.onTouchEvent(
+            TouchStart,
+            0,
+            (. event, state) => {
+              valueX := 100;
+              valueY := 110;
+              state;
+            },
+            state,
+          );
+
+        let restoredState = MainStateTool.restore(state, copiedState);
+
+        let restoredState = MainStateTool.setState(restoredState);
+        EventTool.triggerDomEvent(
+          "touchstart",
+          EventTool.getBody(),
+          TouchEventTool.buildTouchEvent(
+            ~changedTouches=[|
+              TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
+            |],
+            (),
+          ),
         );
         let restoredState = EventTool.restore(restoredState);
 

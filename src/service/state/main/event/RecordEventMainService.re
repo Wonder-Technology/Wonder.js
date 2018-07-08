@@ -255,7 +255,6 @@ let deepCopyForRestore = ({eventRecord} as state) => {
         mouseDomEventDataArrMap |> _deepCopyDomEventArrMap,
       keyboardDomEventDataArrMap:
         keyboardDomEventDataArrMap |> _deepCopyDomEventArrMap,
-      /* TODO test */
       touchDomEventDataArrMap:
         touchDomEventDataArrMap |> _deepCopyDomEventArrMap,
       customGlobalEventArrMap:
@@ -266,7 +265,6 @@ let deepCopyForRestore = ({eventRecord} as state) => {
         lastX: None,
         lastY: None,
       },
-      /* TODO test */
       touchEventData: {
         lastX: None,
         lastY: None,
