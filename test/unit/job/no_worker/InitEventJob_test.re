@@ -1527,9 +1527,41 @@ let _ =
             "mousedown",
           );
 
-          describe("test point event", () =>
+          describe("test point event", () => {
+            test("test event", () => {
+              let state = MouseEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(0);
+
+              let state =
+                ManageEventAPI.onCustomGlobalEvent(
+                  CustomEventTool.getPointDownEventName(),
+                  0,
+                  (. event, state) => {
+                    let {event} =
+                      event.userData |> OptionService.unsafeGet |> Obj.magic;
+
+                    value := Obj.magic(event)##pageX;
+
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              let mouseDomEvent =
+                MouseEventTool.buildMouseEvent(~pageX=10, ());
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getBody(),
+                mouseDomEvent,
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 10;
+            });
+
             test(
-              "test name, location, locationInView, button, wheel, movementDelta, event",
+              "test name, location, locationInView, button, wheel, movementDelta",
               () => {
               let state =
                 MouseEventTool.prepare(
@@ -1541,15 +1573,33 @@ let _ =
                 );
               MouseEventTool.setPointerLocked(.);
               let state = state |> NoWorkerJobTool.execInitJobs;
-              let refEvent: ref(pointEvent) = ref(Obj.magic(1));
+              let resultArr = [||];
 
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
                   CustomEventTool.getPointDownEventName(),
                   0,
                   (. event, state) => {
-                    refEvent :=
+                    let {
+                      name,
+                      location,
+                      locationInView,
+                      button,
+                      wheel,
+                      movementDelta,
+                    } =
                       event.userData |> OptionService.unsafeGet |> Obj.magic;
+
+                    resultArr
+                    |> Js.Array.pushMany([|
+                         name,
+                         location |> Obj.magic,
+                         locationInView |> Obj.magic,
+                         button |> Obj.magic,
+                         wheel |> Obj.magic,
+                         movementDelta |> Obj.magic,
+                       |]);
+
                     state;
                   },
                   state,
@@ -1573,19 +1623,18 @@ let _ =
               );
               let state = EventTool.restore(state);
 
-              refEvent^
+              resultArr
               |>
-              expect == {
-                          name: PointDown,
-                          location: (10, 20),
-                          locationInView: (10 - 1, 20 - 2),
-                          button: Some(Left),
-                          wheel: Some((-1) * 2),
-                          movementDelta: (1, 2),
-                          event: mouseDomEvent |> Obj.magic,
-                        };
-            })
-          );
+              expect == [|
+                          PointDown,
+                          (10, 20) |> Obj.magic,
+                          (10 - 1, 20 - 2) |> Obj.magic,
+                          Some(Left) |> Obj.magic,
+                          Some((-1) * 2) |> Obj.magic,
+                          (1, 2) |> Obj.magic,
+                        |];
+            });
+          });
 
           describe("test priority", () =>
             test("the higher priority handleFunc is executed first", () => {
@@ -1814,9 +1863,47 @@ let _ =
             "touchstart",
           );
 
-          describe("test point event", () =>
+          describe("test point event", () => {
+            test("test event", () => {
+              let state = TouchEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let value = ref(0);
+
+              let state =
+                ManageEventAPI.onCustomGlobalEvent(
+                  CustomEventTool.getPointDownEventName(),
+                  0,
+                  (. event, state) => {
+                    let {event} =
+                      event.userData |> OptionService.unsafeGet |> Obj.magic;
+                    let changedTouches = Obj.magic(event)##changedTouches;
+
+                    value := changedTouches[0]##pageX;
+
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              let touchDomEvent =
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=10, ()),
+                  |],
+                  (),
+                );
+              EventTool.triggerDomEvent(
+                "touchstart",
+                EventTool.getBody(),
+                touchDomEvent,
+              );
+              let state = EventTool.restore(state);
+
+              value^ |> expect == 10;
+            });
+
             test(
-              "test name, location, locationInView, button, wheel, movementDelta, event",
+              "test name, location, locationInView, button, wheel, movementDelta",
               () => {
               let state =
                 TouchEventTool.prepare(
@@ -1827,15 +1914,33 @@ let _ =
                   (),
                 );
               let state = state |> NoWorkerJobTool.execInitJobs;
-              let refEvent: ref(pointEvent) = ref(Obj.magic(1));
+              let resultArr = [||];
 
               let state =
                 ManageEventAPI.onCustomGlobalEvent(
                   CustomEventTool.getPointDownEventName(),
                   0,
                   (. event, state) => {
-                    refEvent :=
+                    let {
+                      name,
+                      location,
+                      locationInView,
+                      button,
+                      wheel,
+                      movementDelta,
+                    } =
                       event.userData |> OptionService.unsafeGet |> Obj.magic;
+
+                    resultArr
+                    |> Js.Array.pushMany([|
+                         name,
+                         location |> Obj.magic,
+                         locationInView |> Obj.magic,
+                         button |> Obj.magic,
+                         wheel |> Obj.magic,
+                         movementDelta |> Obj.magic,
+                       |]);
+
                     state;
                   },
                   state,
@@ -1848,6 +1953,7 @@ let _ =
                   |],
                   (),
                 );
+
               EventTool.triggerDomEvent(
                 "touchstart",
                 EventTool.getBody(),
@@ -1855,19 +1961,18 @@ let _ =
               );
               let state = EventTool.restore(state);
 
-              refEvent^
+              resultArr
               |>
-              expect == {
-                          name: PointDown,
-                          location: (10, 20),
-                          locationInView: (10 - 1, 20 - 2),
-                          button: None,
-                          wheel: None,
-                          movementDelta: (0, 0),
-                          event: touchDomEvent |> Obj.magic,
-                        };
-            })
-          );
+              expect == [|
+                          PointDown,
+                          (10, 20) |> Obj.magic,
+                          (10 - 1, 20 - 2) |> Obj.magic,
+                          None |> Obj.magic,
+                          None |> Obj.magic,
+                          (0, 0) |> Obj.magic,
+                        |];
+            });
+          });
 
           describe("test priority", () =>
             test("the higher priority handleFunc is executed first", () => {
