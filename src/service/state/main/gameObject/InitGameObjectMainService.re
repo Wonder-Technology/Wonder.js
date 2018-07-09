@@ -41,6 +41,21 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
 
   let state =
     switch (
+      GetComponentGameObjectService.getPerspectiveCameraProjectionComponent(.
+        uid,
+        gameObjectRecord,
+      )
+    ) {
+    | Some(cameraProjection) =>
+      InitPerspectiveCameraProjectionMainService.initPerspepctiveCameraProjection(
+        cameraProjection,
+        state,
+      )
+    | None => state
+    };
+
+  let state =
+    switch (
       GetComponentGameObjectService.getArcballCameraControllerComponent(.
         uid,
         gameObjectRecord,

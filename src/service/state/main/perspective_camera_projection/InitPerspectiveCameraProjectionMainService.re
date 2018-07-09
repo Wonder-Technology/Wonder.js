@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open PerspectiveCameraProjectionType;
 
-let _init = (index: int, state) =>
+let initPerspepctiveCameraProjection = (index: int, state) =>
   UpdatePerspectiveCameraProjectionMainService.updateCameraProjection(
     index,
     state,
@@ -17,7 +17,7 @@ let init = ({perspectiveCameraProjectionRecord} as state) => {
     dirtyArray
     |> WonderCommonlib.ArrayService.removeDuplicateItems
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. state, dirtyIndex) => _init(dirtyIndex, state),
+         (. state, dirtyIndex) => initPerspepctiveCameraProjection(dirtyIndex, state),
          state,
        )
   };

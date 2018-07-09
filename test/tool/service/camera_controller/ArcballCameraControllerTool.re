@@ -1,13 +1,11 @@
 open StateDataMainType;
 
-
 let isArcballCameraController = cameraController => {
   open Wonder_jest;
   open Expect;
   open! Expect.Operators;
   expect(cameraController) >= 0;
 };
-
 
 let createGameObject = state => {
   open GameObjectAPI;
@@ -39,6 +37,10 @@ let createGameObject = state => {
 };
 
 let getDirtyArray = state => state.arcballCameraControllerRecord.dirtyArray;
+
+let getPointDragEventHandleFuncMap =
+    ({arcballCameraControllerRecord} as state) =>
+  arcballCameraControllerRecord.pointDragEventHandleFuncMap;
 
 let setPointDragEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {

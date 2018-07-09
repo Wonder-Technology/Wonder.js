@@ -1752,6 +1752,7 @@ let _ =
           let state = state |> initGameObject(gameObject);
           getCallCount(attachShader) |> expect == 2;
         });
+
         describe("init maps", () => {
           describe("init basic material->map", () => {
             test("if has no map, not init map", () => {
@@ -1845,6 +1846,61 @@ let _ =
               })
             );
           });
+        });
+
+        test("init perspectiveCameraProjection component", () => {
+          let (state, gameObject, _, (_, cameraProjection)) =
+            CameraTool.createCameraGameObject(state^);
+
+          let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()),
+               );
+          let state = AllMaterialTool.prepareForInit(state);
+          let state = state |> initGameObject(gameObject);
+
+          PerspectiveCameraProjectionTool.unsafeGetPMatrix(
+            cameraProjection,
+            state,
+          )
+          |>
+          expect == Js.Typed_array.Float32Array.make([|
+                      1.7320507764816284,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.7320507764816284,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      (-1.0002000331878662),
+                      (-1.),
+                      0.,
+                      0.,
+                      (-0.20002000033855438),
+                      0.,
+                    |]);
+        });
+        test("init arcballCameraController component", () => {
+          let (state, gameObject, _, (cameraController, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state^);
+
+          let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()),
+               );
+          let state = AllMaterialTool.prepareForInit(state);
+          let state = state |> initGameObject(gameObject);
+
+          ArcballCameraControllerTool.getPointDragEventHandleFuncMap(state)
+          |> SparseMapService.length
+          |> expect == 1;
         });
       })
     );
