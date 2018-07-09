@@ -14,14 +14,11 @@ let _ =
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe
-    ("init perspectiveCameraProjection",
-    (
-    () => {
-    let _buildNoWorkerJobConfig = () =>
-      NoWorkerJobConfigTool.buildNoWorkerJobConfig(
-        ~initPipelines=
-          {|
+    describe("init perspectiveCameraProjection", () => {
+      let _buildNoWorkerJobConfig = () =>
+        NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+          ~initPipelines=
+            {|
         [
     {
       "name": "default",
@@ -33,29 +30,27 @@ let _ =
     }
   ]
         |},
-        ~initJobs=
-          {|
+          ~initJobs=
+            {|
 [
         {
           "name": "init_camera"
         }
 ]
         |},
-        (),
-      );
-    
-    CameraTool.testBuildPMatrix(
-      () =>
-        TestTool.initWithJobConfigWithoutBuildFakeDom(
-          ~sandbox,
-          ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
           (),
-        ),
-      state => state |> DirectorTool.init,
-    );
-    })
-    );
+        );
 
+      CameraTool.testBuildPMatrix(
+        () =>
+          TestTool.initWithJobConfigWithoutBuildFakeDom(
+            ~sandbox,
+            ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
+            (),
+          ),
+        state => state |> DirectorTool.init,
+      );
+    });
 
     describe("init arcballCameraController", () => {
       let _prepare = () => {
@@ -218,6 +213,12 @@ let _ =
 
               let state = state |> NoWorkerJobTool.execInitJobs;
 
+              let originDistance =
+                unsafeGetArcballCameraControllerDistance(
+                  cameraController,
+                  state,
+                );
+
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousewheel",
@@ -231,7 +232,8 @@ let _ =
 
               state
               |> unsafeGetArcballCameraControllerDistance(cameraController)
-              |> expect == wheelSpeed
+              |> expect == originDistance
+              -. wheelSpeed
               *. 3.;
             });
           });

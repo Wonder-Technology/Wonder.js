@@ -63,7 +63,8 @@ let setDistanceByEvent =
   | Some(wheel) =>
     setDistance(
       cameraController,
-      unsafeGetWheelSpeed(cameraController, record)
+      unsafeGetDistance(cameraController, record)
+      -. unsafeGetWheelSpeed(cameraController, record)
       *. (wheel |> NumberType.intToFloat),
       record,
     )
