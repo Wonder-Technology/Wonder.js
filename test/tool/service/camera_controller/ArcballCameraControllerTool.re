@@ -1,5 +1,14 @@
 open StateDataMainType;
 
+
+let isArcballCameraController = cameraController => {
+  open Wonder_jest;
+  open Expect;
+  open! Expect.Operators;
+  expect(cameraController) >= 0;
+};
+
+
 let createGameObject = state => {
   open GameObjectAPI;
 

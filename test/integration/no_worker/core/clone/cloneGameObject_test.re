@@ -987,6 +987,7 @@ let _ =
           clonedBasicCameraViewArr |> Js.Array.length |> expect == 2;
         });
       });
+
       describe("test clone perspectiveCameraProjection component", () => {
         let _prepare = state => {
           open StateDataMainType;
@@ -1120,6 +1121,67 @@ let _ =
              )
           |> expect == [|sourceAspect, sourceAspect|];
         });
+      });
+
+      describe("test clone cameraController component", () => {
+        let _prepare = state => {
+          open StateDataMainType;
+          let (state, _) =
+            ArcballCameraControllerAPI.createArcballCameraController(state);
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
+
+          let distance = 2.2;
+          ArcballCameraControllerAPI.setArcballCameraControllerDistance(
+            cameraController1,
+            distance,
+            state,
+          );
+
+          let (state, clonedGameObjectArr) =
+            _cloneGameObject(gameObject1, 2, state);
+          (
+            state,
+            gameObject1,
+            cameraController1,
+            clonedGameObjectArr,
+            clonedGameObjectArr
+            |> CloneTool.getFlattenClonedGameObjectArr
+            |> Js.Array.map(clonedGameObject =>
+                 unsafeGetGameObjectArcballCameraControllerComponent(
+                   clonedGameObject,
+                   state,
+                 )
+               ),
+            distance,
+          );
+        };
+        test("test clone specific count of cameraControllers", () => {
+          let (_, _, _, _, clonedArcballCameraControllerArr, _) =
+            _prepare(state^);
+          clonedArcballCameraControllerArr |> Js.Array.length |> expect == 2;
+        });
+        test(
+          "set cloned cameraController's distance by source one's distance", () => {
+          let (
+            state,
+            _,
+            cameraController1,
+            _,
+            clonedArcballCameraControllerArr,
+            distance,
+          ) =
+            _prepare(state^);
+          clonedArcballCameraControllerArr
+          |> Js.Array.map(cameraController =>
+               ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDistance(
+                 cameraController,
+                 state,
+               )
+             )
+          |> expect == [|distance, distance|];
+        });
+        /* TODO test other data */
       });
     });
     describe("clone children", () => {

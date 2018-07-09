@@ -335,6 +335,70 @@ let _ =
           })
         );
       });
+
+      describe("test arcballCameraController component", () => {
+        let _prepare = () => {
+          open ArcballCameraControllerAPI;
+          let (state, gameObject) = createGameObject(state^);
+          let (state, arcballCameraController) =
+            createArcballCameraController(state);
+          let state =
+            state
+            |> addGameObjectArcballCameraControllerComponent(
+                 gameObject,
+                 arcballCameraController,
+               );
+          (state, gameObject, arcballCameraController);
+        };
+        describe("addGameObjectArcballCameraControllerComponent", () => {
+          test("if this type of component is already exist, error", () => {
+            open ArcballCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            expect(() => {
+              let (state, arcballCameraController) =
+                createArcballCameraController(state);
+              addGameObjectArcballCameraControllerComponent(
+                gameObject,
+                arcballCameraController,
+                state,
+              );
+            })
+            |> toThrowMessage(
+                 "expect this type of the component shouldn't be added before, but actual not",
+               );
+          });
+          test("can get component's gameObject", () => {
+            open ArcballCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            state
+            |> unsafeGetArcballCameraControllerGameObject(
+                 unsafeGetGameObjectArcballCameraControllerComponent(
+                   gameObject,
+                   state,
+                 ),
+               )
+            |> expect == gameObject;
+          });
+        });
+        describe("unsafeGetGameObjectArcballCameraControllerComponent", () =>
+          test("get arcballCameraController component", () => {
+            let (state, gameObject, _) = _prepare();
+            state
+            |> unsafeGetGameObjectArcballCameraControllerComponent(
+                 gameObject,
+               )
+            |> ArcballCameraControllerTool.isArcballCameraController;
+          })
+        );
+        describe("hasGameObjectArcballCameraControllerComponent", () =>
+          test("has arcballCameraController component", () => {
+            let (state, gameObject, _) = _prepare();
+            state
+            |> hasGameObjectArcballCameraControllerComponent(gameObject)
+            |> expect == true;
+          })
+        );
+      });
     });
 
     describe("unsafeGetGameObjectName", () =>
@@ -579,6 +643,22 @@ let _ =
             |> Js.Array.includes(perspectiveCameraProjection1),
             disposedIndexArray
             |> Js.Array.includes(perspectiveCameraProjection2),
+          )
+          |> expect == (true, false);
+        });
+        test("dispose arcballCameraController component", () => {
+          open StateDataMainType;
+            let (state, gameObject1, _, (cameraController1, _, _)) =
+              ArcballCameraControllerTool.createGameObject(state^);
+            let (state, gameObject2, _, (cameraController2, _, _)) =
+              ArcballCameraControllerTool.createGameObject(state);
+          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+          let {disposedIndexArray} = state.arcballCameraControllerRecord;
+          (
+            disposedIndexArray
+            |> Js.Array.includes(cameraController1),
+            disposedIndexArray
+            |> Js.Array.includes(cameraController2),
           )
           |> expect == (true, false);
         });
