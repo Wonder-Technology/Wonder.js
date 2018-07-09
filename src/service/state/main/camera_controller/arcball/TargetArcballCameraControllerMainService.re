@@ -28,7 +28,7 @@ let setTargetByKeyboardEvent =
     | "d"
     | "right" => (moveSpeedX, 0.)
     | "w"
-    | "up" => (0., moveSpeedX)
+    | "up" => (0., moveSpeedY)
     | "s"
     | "down" => (0., -. moveSpeedY)
     | _ => (0., 0.)

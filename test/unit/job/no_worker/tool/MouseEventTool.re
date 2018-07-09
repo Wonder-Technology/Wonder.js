@@ -15,6 +15,7 @@ let buildMouseEvent =
       ~movementY=2,
       ~detail=Js.Nullable.undefined,
       ~wheelDelta=Js.Nullable.undefined,
+      ~preventDefaultFunc=() => (),
       (),
     ) => {
   "pageX": pageX,
@@ -24,6 +25,7 @@ let buildMouseEvent =
   "movementY": movementY,
   "detail": detail,
   "wheelDelta": wheelDelta,
+  "preventDefault": preventDefaultFunc,
 };
 
 let setPointerLocked = [%raw () => {|
@@ -36,9 +38,10 @@ let setNotPointerLocked = [%raw
   |}
 ];
 
-let prepare =
+let prepareWithState =
     (
       ~sandbox,
+      ~state,
       ~offsetLeft=1,
       ~offsetTop=2,
       ~offsetParent=Js.Nullable.undefined,
@@ -48,13 +51,37 @@ let prepare =
   let canvasDom =
     EventTool.buildFakeCanvas((offsetLeft, offsetTop, offsetParent));
 
-  let state =
-    TestTool.initWithJobConfigWithoutBuildFakeDom(
+  let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
+
+  MainStateTool.setState(state) |> ignore;
+
+  setBrowserFunc();
+
+  MainStateTool.unsafeGetState();
+};
+
+let prepare =
+    (
       ~sandbox,
-      ~noWorkerJobRecord=
-        NoWorkerJobConfigTool.buildNoWorkerJobConfig(
-          ~initPipelines=
-            {|
+      ~offsetLeft=1,
+      ~offsetTop=2,
+      ~offsetParent=Js.Nullable.undefined,
+      ~setBrowserFunc=BrowserDetectTool.setChrome,
+      (),
+    ) =>
+  prepareWithState(
+    ~sandbox,
+    ~offsetLeft,
+    ~offsetTop,
+    ~offsetParent,
+    ~setBrowserFunc,
+    ~state=
+      TestTool.initWithJobConfigWithoutBuildFakeDom(
+        ~sandbox,
+        ~noWorkerJobRecord=
+          NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+            ~initPipelines=
+              {|
         [
     {
       "name": "default",
@@ -66,8 +93,8 @@ let prepare =
     }
   ]
         |},
-          ~initJobs=
-            {j|
+            ~initJobs=
+              {j|
 [
 
     {
@@ -75,16 +102,9 @@ let prepare =
     }
 ]
         |j},
-          (),
-        ),
-      (),
-    );
-
-  let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
-
-  MainStateTool.setState(state) |> ignore;
-
-  setBrowserFunc();
-
-  MainStateTool.unsafeGetState();
-};
+            (),
+          ),
+        (),
+      ),
+    (),
+  );
