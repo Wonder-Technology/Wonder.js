@@ -33,7 +33,12 @@ let getMovementDelta = (location, lastXYTuple, {eventRecord} as state) => {
 
 let preventDefault: EventType.pointDomEvent => unit = [%raw
   event => {|
-  event.preventDefault();
+    if (event.cancelable) {
+      if (!event.defaultPrevented) {
+          event.preventDefault();
+      }
+  }
+
   event.stopPropagation();
   |}
 ];
