@@ -51,6 +51,7 @@ let _convertTouchDomEventToTouchEvent =
   locationInView: _getLocationInView(touchDomEvent, state),
   touchData: _getTouchData(touchDomEvent),
   movementDelta: _getMovementDelta(touchDomEvent, state),
+  event: touchDomEvent,
 };
 
 let execEventHandle = (eventName, touchDomEvent, {eventRecord} as state) => {

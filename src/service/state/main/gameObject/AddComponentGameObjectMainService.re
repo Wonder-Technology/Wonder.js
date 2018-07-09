@@ -61,6 +61,21 @@ let addPerspectiveCameraProjectionComponent =
   state;
 };
 
+let addArcballCameraControllerComponent =
+    (
+      uid: int,
+      component: component,
+      {arcballCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  ...state,
+  arcballCameraControllerRecord:
+    _addComponent(
+      (uid, component, gameObjectRecord.arcballCameraControllerMap),
+      AddArcballCameraControllerService.handleAddComponent,
+      arcballCameraControllerRecord,
+    ),
+};
+
 let addTransformComponent =
     (
       uid: int,

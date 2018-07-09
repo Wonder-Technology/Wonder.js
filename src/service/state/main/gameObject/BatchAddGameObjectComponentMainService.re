@@ -95,6 +95,21 @@ let _batchAddPerspectiveCameraProjectionComponent =
 
 let batchAddPerspectiveCameraProjectionComponentForClone = _batchAddPerspectiveCameraProjectionComponent;
 
+let batchAddArcballCameraControllerComponentForClone =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {arcballCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  ...state,
+  arcballCameraControllerRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.arcballCameraControllerMap),
+      AddArcballCameraControllerService.handleAddComponent,
+      arcballCameraControllerRecord,
+    ),
+};
+
 let _batchAddTransformComponent =
     (
       uidArr: array(int),

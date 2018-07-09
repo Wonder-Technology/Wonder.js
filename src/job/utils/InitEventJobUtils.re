@@ -10,7 +10,7 @@ let _fromDomEvent = eventName =>
 let _convertMouseEventToPointEvent =
     (
       eventName,
-      {location, locationInView, button, wheel, movementDelta}: mouseEvent,
+      {location, locationInView, button, wheel, movementDelta, event}: mouseEvent,
     ) => {
   name: eventName,
   location,
@@ -18,7 +18,7 @@ let _convertMouseEventToPointEvent =
   button: Some(button),
   wheel: Some(wheel),
   movementDelta,
-  /* type_: Point, */
+  event: event |> mouseDomEventToPointDomEvent,
 };
 
 let _bindMouseEventToTriggerPointEvent =
@@ -43,7 +43,7 @@ let _bindMouseEventToTriggerPointEvent =
 let _convertTouchEventToPointEvent =
     (
       eventName,
-      {location, locationInView, touchData, movementDelta}: touchEvent,
+      {location, locationInView, touchData, movementDelta, event}: touchEvent,
     ) => {
   name: eventName,
   location,
@@ -51,6 +51,7 @@ let _convertTouchEventToPointEvent =
   button: None,
   wheel: None,
   movementDelta,
+  event: event |> touchDomEventToPointDomEvent,
 };
 
 let _bindTouchEventToTriggerPointEvent =

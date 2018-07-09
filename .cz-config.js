@@ -38,6 +38,7 @@ module.exports = {
     { name: "microservice" },
     { name: "arraybuffer" },
     { name: "event" },
+    { name: "camera" },
     { name: "detect" }
   ],
 

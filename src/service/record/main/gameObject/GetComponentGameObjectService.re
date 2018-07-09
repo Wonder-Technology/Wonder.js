@@ -24,6 +24,14 @@ let unsafeGetPerspectiveCameraProjectionComponent =
     (uid: int, {perspectiveCameraProjectionMap}) =>
   perspectiveCameraProjectionMap |> unsafeGetComponent(uid);
 
+let getArcballCameraControllerComponent =
+  (. uid: int, {arcballCameraControllerMap}) =>
+    arcballCameraControllerMap |> getComponent(uid);
+
+let unsafeGetArcballCameraControllerComponent =
+    (uid: int, {arcballCameraControllerMap}) =>
+  arcballCameraControllerMap |> unsafeGetComponent(uid);
+
 let getTransformComponent =
   (. uid: int, {transformMap}) => transformMap |> getComponent(uid);
 

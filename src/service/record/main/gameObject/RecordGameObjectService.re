@@ -13,6 +13,8 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedPerspectiveCameraProjectionArray:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedArcballCameraControllerArray:
+    WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedBoxGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -30,6 +32,7 @@ let create = () => {
   basicCameraViewMap: WonderCommonlib.SparseMapService.createEmpty(),
   perspectiveCameraProjectionMap:
     WonderCommonlib.SparseMapService.createEmpty(),
+  arcballCameraControllerMap: WonderCommonlib.SparseMapService.createEmpty(),
   meshRendererMap: WonderCommonlib.SparseMapService.createEmpty(),
   basicMaterialMap: WonderCommonlib.SparseMapService.createEmpty(),
   lightMaterialMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -52,6 +55,7 @@ let deepCopyForRestore =
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
         disposedPerspectiveCameraProjectionArray,
+        disposedArcballCameraControllerArray,
         disposedBasicMaterialArray,
         disposedLightMaterialArray,
         disposedBoxGeometryArray,
@@ -67,6 +71,7 @@ let deepCopyForRestore =
         transformMap,
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
+        arcballCameraControllerMap,
         meshRendererMap,
         basicMaterialMap,
         lightMaterialMap,
@@ -90,6 +95,9 @@ let deepCopyForRestore =
   disposedTransformArrayForKeepOrder:
     disposedTransformArrayForKeepOrder |> SparseMapService.copy,
   disposedPerspectiveCameraProjectionArray:
+    disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
+  /* TODO test */
+  disposedArcballCameraControllerArray:
     disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
   disposedBasicMaterialArray:
     disposedBasicMaterialArray |> SparseMapService.copy,
@@ -115,6 +123,9 @@ let deepCopyForRestore =
   basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
   perspectiveCameraProjectionMap:
     perspectiveCameraProjectionMap |> SparseMapService.copy,
+  /* TODO test */
+  arcballCameraControllerMap:
+    arcballCameraControllerMap |> SparseMapService.copy,
   meshRendererMap: meshRendererMap |> SparseMapService.copy,
   basicMaterialMap: basicMaterialMap |> SparseMapService.copy,
   lightMaterialMap: lightMaterialMap |> SparseMapService.copy,

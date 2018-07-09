@@ -1,4 +1,6 @@
 open StateDataMainType;
 
-let execJob = (_, {perspectiveCameraProjectionRecord} as state) =>
-  InitPerspectiveCameraProjectionMainService.init(state);
+let execJob = (_, state) =>
+  state
+  |> InitPerspectiveCameraProjectionMainService.init
+  |> InitArcballCameraControllerMainService.init;

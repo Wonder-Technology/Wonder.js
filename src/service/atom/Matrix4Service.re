@@ -77,6 +77,24 @@ let fromTranslationRotationScale =
   resultFloat32Arr;
 };
 
+let getX = matTypeArr => (
+  Float32Array.unsafe_get(matTypeArr, 0),
+  Float32Array.unsafe_get(matTypeArr, 1),
+  Float32Array.unsafe_get(matTypeArr, 2),
+);
+
+let getY = matTypeArr => (
+  Float32Array.unsafe_get(matTypeArr, 4),
+  Float32Array.unsafe_get(matTypeArr, 5),
+  Float32Array.unsafe_get(matTypeArr, 6),
+);
+
+let getZ = matTypeArr => (
+  Float32Array.unsafe_get(matTypeArr, 8),
+  Float32Array.unsafe_get(matTypeArr, 9),
+  Float32Array.unsafe_get(matTypeArr, 10),
+);
+
 let getTranslationTypeArray =
   (. matTypeArr) =>
     Float32Array.make([|
@@ -85,12 +103,11 @@ let getTranslationTypeArray =
       Float32Array.unsafe_get(matTypeArr, 14),
     |]);
 
-let getTranslationTuple =
-  (matTypeArr) => (
-    Float32Array.unsafe_get(matTypeArr, 12),
-    Float32Array.unsafe_get(matTypeArr, 13),
-    Float32Array.unsafe_get(matTypeArr, 14),
-  );
+let getTranslationTuple = matTypeArr => (
+  Float32Array.unsafe_get(matTypeArr, 12),
+  Float32Array.unsafe_get(matTypeArr, 13),
+  Float32Array.unsafe_get(matTypeArr, 14),
+);
 
 let getRotationTuple = matTypeArr => {
   let trace =
@@ -609,4 +626,33 @@ let transposeSelf = (mat: Float32Array.t) => {
   Float32Array.unsafe_set(mat, 13, a13);
   Float32Array.unsafe_set(mat, 14, a23);
   mat;
+};
+
+let setLookAt = (eye, center, up) => {
+  let (z1, z2, z3) as z =
+    Vector3Service.sub(Vector3Type.Float, eye, center)
+    |> Vector3Service.normalize;
+  let y = up |> Vector3Service.normalize;
+  let (x1, x2, x3) as x = Vector3Service.cross(y, z) |> Vector3Service.normalize;
+  let (y1, y2, y3) = Vector3Service.cross(z, x);
+  let (eyeX, eyeY, eyeZ) = eye;
+
+  Js.Typed_array.Float32Array.make([|
+    x1,
+    x2,
+    x3,
+    0.,
+    y1,
+    y2,
+    y3,
+    0.,
+    z1,
+    z2,
+    z3,
+    0.,
+    eyeX,
+    eyeY,
+    eyeZ,
+    1.,
+  |]);
 };

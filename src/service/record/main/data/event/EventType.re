@@ -33,23 +33,32 @@ type phaseType =
   | Broadcast
   | Emit;
 
-type mouseEvent = {
-  name: domEventName,
-  location: pointData(int),
-  locationInView: pointData(int),
-  button: mouseButton,
-  wheel: int,
-  movementDelta: pointData(int),
+type domEvent;
+
+type mouseDomEvent = {
+  .
+  "button": int,
+  "detail": Js.Nullable.t(int),
+  "movementX": Js.Nullable.t(int),
+  "movementY": Js.Nullable.t(int),
+  "mozMovementX": Js.Nullable.t(int),
+  "mozMovementY": Js.Nullable.t(int),
+  "webkitMovementX": Js.Nullable.t(int),
+  "webkitMovementY": Js.Nullable.t(int),
+  "wheelDelta": Js.Nullable.t(int),
+  "pageX": int,
+  "pageY": int,
+  "preventDefault": unit => unit,
 };
 
-type keyboardEvent = {
-  name: domEventName,
-  keyCode: int,
-  ctrlKey: bool,
-  altKey: bool,
-  shiftKey: bool,
-  metaKey: bool,
-  key: string,
+type keyboardDomEvent = {
+  .
+  "keyCode": int,
+  "ctrlKey": bool,
+  "altKey": bool,
+  "shiftKey": bool,
+  "metaKey": bool,
+  "preventDefault": unit => unit,
 };
 
 type touchDataJsObj = {
@@ -65,6 +74,35 @@ type touchDataJsObj = {
   "radiusY": int,
   "rotationAngle": int,
   "force": int,
+};
+
+type touchDomEvent = {
+  .
+  "touches": array(touchDataJsObj),
+  "changedTouches": array(touchDataJsObj),
+  "targetTouches": array(touchDataJsObj),
+  "preventDefault": unit => unit,
+};
+
+type mouseEvent = {
+  name: domEventName,
+  location: pointData(int),
+  locationInView: pointData(int),
+  button: mouseButton,
+  wheel: int,
+  movementDelta: pointData(int),
+  event: mouseDomEvent,
+};
+
+type keyboardEvent = {
+  name: domEventName,
+  keyCode: int,
+  ctrlKey: bool,
+  altKey: bool,
+  shiftKey: bool,
+  metaKey: bool,
+  key: string,
+  event: keyboardDomEvent,
 };
 
 type touchData = {
@@ -87,6 +125,7 @@ type touchEvent = {
   locationInView: pointData(int),
   touchData,
   movementDelta: pointData(int),
+  event: touchDomEvent,
 };
 
 type userData;
@@ -101,6 +140,8 @@ type customEvent = {
   userData: option(userData),
 };
 
+type pointDomEvent = {. "preventDefault": (. unit) => unit};
+
 type pointEvent = {
   name: pointEventName,
   location: pointData(int),
@@ -108,7 +149,7 @@ type pointEvent = {
   button: option(mouseButton),
   wheel: option(int),
   movementDelta: pointData(int),
-  /* type_: eventType, */
+  event: pointDomEvent,
 };
 
 type mouseEventData = {
@@ -126,43 +167,11 @@ type touchEventData = {
   lastX: option(int),
   lastY: option(int),
 };
-
-type domEvent;
-
-type mouseDomEvent = {
-  .
-  "button": int,
-  "detail": Js.Nullable.t(int),
-  "movementX": Js.Nullable.t(int),
-  "movementY": Js.Nullable.t(int),
-  "mozMovementX": Js.Nullable.t(int),
-  "mozMovementY": Js.Nullable.t(int),
-  "webkitMovementX": Js.Nullable.t(int),
-  "webkitMovementY": Js.Nullable.t(int),
-  "wheelDelta": Js.Nullable.t(int),
-  "pageX": int,
-  "pageY": int,
-};
-
-type keyboardDomEvent = {
-  .
-  "keyCode": int,
-  "ctrlKey": bool,
-  "altKey": bool,
-  "shiftKey": bool,
-  "metaKey": bool,
-};
-
-type touchDomEvent = {
-  .
-  "touches": array(touchDataJsObj),
-  "changedTouches": array(touchDataJsObj),
-  "targetTouches": array(touchDataJsObj),
-};
-
 external domEventNameToInt : domEventName => int = "%identity";
 
 external pointEventToUserData : pointEvent => userData = "%identity";
+
+external userDataToPointEvent : userData => pointEvent = "%identity";
 
 external bodyToEventTarget : DomExtendType.body => Dom.eventTarget =
   "%identity";
@@ -173,3 +182,9 @@ external eventTargetToKeyboardDomEvent : Dom.event => keyboardDomEvent =
   "%identity";
 
 external eventTargetToTouchDomEvent : Dom.event => touchDomEvent = "%identity";
+
+external mouseDomEventToPointDomEvent : mouseDomEvent => pointDomEvent =
+  "%identity";
+
+external touchDomEventToPointDomEvent : touchDomEvent => pointDomEvent =
+  "%identity";

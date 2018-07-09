@@ -12,6 +12,8 @@ open MaterialType;
 
 open InstanceType;
 
+open CameraControllerType;
+
 type gameObject = int;
 
 type gameObjectDisposedUidMap = WonderCommonlib.SparseMapService.t(bool);
@@ -24,21 +26,29 @@ type gameObjectTransformMap = WonderCommonlib.SparseMapService.t(transform);
 
 type gameObjectCameraViewMap = WonderCommonlib.SparseMapService.t(component);
 
-type gameObjectCameraProjectionMap = WonderCommonlib.SparseMapService.t(component);
+type gameObjectCameraProjectionMap =
+  WonderCommonlib.SparseMapService.t(component);
+
+type gameObjectCameraControllerMap =
+  WonderCommonlib.SparseMapService.t(cameraController);
 
 type gameObjectGeometryMap = WonderCommonlib.SparseMapService.t(geometry);
 
-type gameObjectMeshRendererMap = WonderCommonlib.SparseMapService.t(meshRenderer);
+type gameObjectMeshRendererMap =
+  WonderCommonlib.SparseMapService.t(meshRenderer);
 
 type gameObjectMaterialMap = WonderCommonlib.SparseMapService.t(material);
 
-type gameObjectSourceInstanceMap = WonderCommonlib.SparseMapService.t(sourceInstance);
+type gameObjectSourceInstanceMap =
+  WonderCommonlib.SparseMapService.t(sourceInstance);
 
-type gameObjectObjectInstanceMap = WonderCommonlib.SparseMapService.t(objectInstance);
+type gameObjectObjectInstanceMap =
+  WonderCommonlib.SparseMapService.t(objectInstance);
 
 type gameObjectLightMap = WonderCommonlib.SparseMapService.t(int);
 
-type gameObjectCurrentGeometryDataMap = WonderCommonlib.SparseMapService.t((geometry, int));
+type gameObjectCurrentGeometryDataMap =
+  WonderCommonlib.SparseMapService.t((geometry, int));
 
 type gameObjectRecord = {
   mutable uid: int,
@@ -51,6 +61,7 @@ type gameObjectRecord = {
   mutable disposedTransformArray: array(int),
   mutable disposedTransformArrayForKeepOrder: array(int),
   mutable disposedPerspectiveCameraProjectionArray: array(int),
+  mutable disposedArcballCameraControllerArray: array(int),
   mutable disposedBasicMaterialArray: array(int),
   mutable disposedLightMaterialArray: array(int),
   mutable disposedBoxGeometryArray: array(int),
@@ -66,11 +77,12 @@ type gameObjectRecord = {
   mutable transformMap: gameObjectTransformMap,
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
+  mutable arcballCameraControllerMap: gameObjectCameraControllerMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,
   mutable sourceInstanceMap: gameObjectSourceInstanceMap,
   mutable objectInstanceMap: gameObjectObjectInstanceMap,
   mutable directionLightMap: gameObjectLightMap,
-  mutable pointLightMap: gameObjectLightMap
+  mutable pointLightMap: gameObjectLightMap,
 };

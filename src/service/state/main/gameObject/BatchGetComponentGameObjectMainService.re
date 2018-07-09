@@ -17,6 +17,10 @@ let batchGetPerspectiveCameraProjectionComponent =
     gameObjectRecord.perspectiveCameraProjectionMap,
   );
 
+let batchGetArcballCameraControllerComponent =
+    (uidArray: array(int), {gameObjectRecord} as state) =>
+  batchGetComponent(uidArray, gameObjectRecord.arcballCameraControllerMap);
+
 let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.transformMap);
 

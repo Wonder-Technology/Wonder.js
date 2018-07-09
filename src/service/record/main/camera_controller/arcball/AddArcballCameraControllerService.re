@@ -1,11 +1,11 @@
-open PerspectiveCameraProjectionType;
+open StateDataMainType;
 
 let handleAddComponent =
-  (. cameraProjection, gameObjectUid: int, {gameObjectMap} as record) => {
+  (. cameraController, gameObjectUid: int, {gameObjectMap} as record) => {
     ...record,
     gameObjectMap:
       AddComponentService.addComponentToGameObjectMap(
-        cameraProjection,
+        cameraController,
         gameObjectUid,
         gameObjectMap,
       ),

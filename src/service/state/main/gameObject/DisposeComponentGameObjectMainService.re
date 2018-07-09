@@ -34,6 +34,19 @@ let deferDisposePerspectiveCameraProjectionComponent =
     },
   };
 
+let deferDisposeArcballCameraControllerComponent =
+  (. uid, component: component, {gameObjectRecord} as state) => {
+    ...state,
+    gameObjectRecord: {
+      ...gameObjectRecord,
+      arcballCameraControllerMap:
+        _removeComponent(uid, gameObjectRecord.arcballCameraControllerMap),
+      disposedArcballCameraControllerArray:
+        gameObjectRecord.disposedArcballCameraControllerArray
+        |> ArrayService.push(component),
+    },
+  };
+
 let deferDisposeTransformComponent =
   (. uid, component: component, {gameObjectRecord} as state) => {
     ...state,
@@ -201,6 +214,16 @@ let batchDisposePerspectiveCameraProjectionComponent =
       componentArray,
     ),
 };
+
+let batchDisposeArcballCameraControllerComponent =
+    (
+      {arcballCameraControllerRecord} as state,
+      componentArray: array(component),
+    ) =>
+  DisposeArcballCameraControllerMainService.handleBatchDisposeComponent(.
+    componentArray,
+    state,
+  );
 
 let batchDisposeMeshRendererComponent =
     (

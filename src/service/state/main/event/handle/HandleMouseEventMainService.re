@@ -111,7 +111,7 @@ let _convertMouseDomEventToMouseEvent =
   button: _getButton(mouseDomEvent, state),
   wheel: _getWheel(mouseDomEvent, state),
   movementDelta: _getMovementDelta(mouseDomEvent, state),
-  /* type_: Mouse, */
+  event: mouseDomEvent,
 };
 
 let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {

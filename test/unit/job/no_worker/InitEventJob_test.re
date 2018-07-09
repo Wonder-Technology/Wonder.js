@@ -1529,7 +1529,7 @@ let _ =
 
           describe("test point event", () =>
             test(
-              "test name, location, locationInView, button, wheel, movementDelta",
+              "test name, location, locationInView, button, wheel, movementDelta, event",
               () => {
               let state =
                 MouseEventTool.prepare(
@@ -1555,9 +1555,7 @@ let _ =
                   state,
                 );
               let state = MainStateTool.setState(state);
-              EventTool.triggerDomEvent(
-                "mousedown",
-                EventTool.getBody(),
+              let mouseDomEvent =
                 MouseEventTool.buildMouseEvent(
                   ~pageX=10,
                   ~pageY=20,
@@ -1567,7 +1565,11 @@ let _ =
                   ~detail=Js.Nullable.return(2),
                   ~wheelDelta=Js.Nullable.undefined,
                   (),
-                ),
+                );
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getBody(),
+                mouseDomEvent,
               );
               let state = EventTool.restore(state);
 
@@ -1580,6 +1582,7 @@ let _ =
                           button: Some(Left),
                           wheel: Some((-1) * 2),
                           movementDelta: (1, 2),
+                          event: mouseDomEvent |> Obj.magic,
                         };
             })
           );
@@ -1813,7 +1816,7 @@ let _ =
 
           describe("test point event", () =>
             test(
-              "test name, location, locationInView, button, wheel, movementDelta",
+              "test name, location, locationInView, button, wheel, movementDelta, event",
               () => {
               let state =
                 TouchEventTool.prepare(
@@ -1838,15 +1841,17 @@ let _ =
                   state,
                 );
               let state = MainStateTool.setState(state);
-              EventTool.triggerDomEvent(
-                "touchstart",
-                EventTool.getBody(),
+              let touchDomEvent =
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
                   |],
                   (),
-                ),
+                );
+              EventTool.triggerDomEvent(
+                "touchstart",
+                EventTool.getBody(),
+                touchDomEvent,
               );
               let state = EventTool.restore(state);
 
@@ -1859,6 +1864,7 @@ let _ =
                           button: None,
                           wheel: None,
                           movementDelta: (0, 0),
+                          event: touchDomEvent |> Obj.magic,
                         };
             })
           );

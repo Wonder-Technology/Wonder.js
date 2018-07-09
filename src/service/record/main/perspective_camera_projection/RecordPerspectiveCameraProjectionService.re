@@ -9,7 +9,7 @@ let create = () => {
   farMap: WonderCommonlib.SparseMapService.createEmpty(),
   fovyMap: WonderCommonlib.SparseMapService.createEmpty(),
   aspectMap: WonderCommonlib.SparseMapService.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -23,16 +23,16 @@ let deepCopyForRestore =
         fovyMap,
         aspectMap,
         pMatrixMap,
-        dirtyArray
-      }
+        dirtyArray,
+      },
     ) => {
   index,
   pMatrixMap: pMatrixMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
-  dirtyArray: dirtyArray |> Js.Array.copy,
-  nearMap: nearMap |> Js.Array.copy,
-  farMap: farMap |> Js.Array.copy,
-  fovyMap: fovyMap |> Js.Array.copy,
-  aspectMap: aspectMap |> Js.Array.copy,
+  dirtyArray: dirtyArray |> SparseMapService.copy,
+  nearMap: nearMap |> SparseMapService.copy,
+  farMap: farMap |> SparseMapService.copy,
+  fovyMap: fovyMap |> SparseMapService.copy,
+  aspectMap: aspectMap |> SparseMapService.copy,
   gameObjectMap: gameObjectMap |> SparseMapService.copy,
-  disposedIndexArray: disposedIndexArray |> Js.Array.copy
+  disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

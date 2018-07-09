@@ -22,6 +22,7 @@ let _setNewDataToState =
   nameMap: newNameMap,
   disposedUidMap: WonderCommonlib.SparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
+  /* TODO add perspectiveCameraProjectionMap, arcballCameraControllerMap */
   geometryDataMap: newCurrentGeometryDataMap,
   transformMap: newTransformMap,
   meshRendererMap: newMeshRendererMap,

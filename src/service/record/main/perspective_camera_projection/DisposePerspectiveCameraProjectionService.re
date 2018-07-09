@@ -1,7 +1,7 @@
 open PerspectiveCameraProjectionType;
 
-let isAlive = (cameraView, {disposedIndexArray}) =>
-  DisposeComponentService.isAlive(cameraView, disposedIndexArray);
+let isAlive = (cameraProjection, {disposedIndexArray}) =>
+  DisposeComponentService.isAlive(cameraProjection, disposedIndexArray);
 
 let _disposeData =
     (

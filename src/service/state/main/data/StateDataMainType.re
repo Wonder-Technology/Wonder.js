@@ -146,6 +146,33 @@ and eventRecord = {
   keyboardEventData: EventType.keyboardEventData,
   touchEventData: EventType.touchEventData,
 }
+and pointEventHandleFuncMap =
+  WonderCommonlib.SparseMapService.t(
+    (. EventType.customEvent, state) => state,
+  )
+and keyboardEventHandleFuncMap =
+  WonderCommonlib.SparseMapService.t(
+    (. EventType.keyboardEvent, state) => state,
+  )
+and arcballCameraControllerRecord = {
+  index: int,
+  pointDragEventHandleFuncMap: pointEventHandleFuncMap,
+  pointScaleEventHandleFuncMap: pointEventHandleFuncMap,
+  keydownEventHandleFuncMap: keyboardEventHandleFuncMap,
+  dirtyArray: ArcballCameraControllerType.dirtyArray,
+  distanceMap: WonderCommonlib.SparseMapService.t(float),
+  minDistanceMap: WonderCommonlib.SparseMapService.t(float),
+  phiMap: WonderCommonlib.SparseMapService.t(float),
+  thetaMap: WonderCommonlib.SparseMapService.t(float),
+  thetaMarginMap: WonderCommonlib.SparseMapService.t(float),
+  targetMap: WonderCommonlib.SparseMapService.t(PositionType.position),
+  moveSpeedXMap: WonderCommonlib.SparseMapService.t(float),
+  moveSpeedYMap: WonderCommonlib.SparseMapService.t(float),
+  rotateSpeedMap: WonderCommonlib.SparseMapService.t(float),
+  wheelSpeedMap: WonderCommonlib.SparseMapService.t(float),
+  gameObjectMap,
+  disposedIndexArray: array(component),
+}
 and state = {
   settingRecord,
   jobRecord,
@@ -173,6 +200,7 @@ and state = {
   mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
   mutable meshRendererRecord,
+  arcballCameraControllerRecord,
   shaderRecord,
   glslRecord,
   programRecord,

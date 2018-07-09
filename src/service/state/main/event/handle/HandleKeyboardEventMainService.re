@@ -20,7 +20,9 @@ let _getKey = (keyboardDomEvent, {eventRecord}) => {
   let char = Js.String.fromCharCode(keyCode) |> Js.String.toLowerCase;
 
   _getShiftKey(keyboardDomEvent) ?
-    switch (shiftKeyByKeyCodeMap |> WonderCommonlib.SparseMapService.get(keyCode)) {
+    switch (
+      shiftKeyByKeyCodeMap |> WonderCommonlib.SparseMapService.get(keyCode)
+    ) {
     | None =>
       switch (
         shiftKeyByCharCodeMap |> WonderCommonlib.HashMapService.get(char)
@@ -44,6 +46,7 @@ let _convertKeyboardDomEventToKeyboardEvent =
   metaKey: keyboardDomEvent##metaKey,
   keyCode: _getKeyCode(keyboardDomEvent),
   key: _getKey(keyboardDomEvent, state),
+  event: keyboardDomEvent,
 };
 
 let execEventHandle = (eventName, keyboardDomEvent, {eventRecord} as state) => {
