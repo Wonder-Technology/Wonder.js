@@ -5,7 +5,9 @@ open BrowserDetectType;
 let _isFirefox: unit => bool = [%bs.raw
   {|
     function(){
-        return navigator.userAgent.toLowerCase().indexOf("firefox") > -1 ;
+      var userAgent = navigator.userAgent.toLowerCase();
+
+        return userAgent.indexOf("firefox") > -1 && userAgent.indexOf("mobile") === -1;
     }
     |}
 ];
@@ -13,7 +15,9 @@ let _isFirefox: unit => bool = [%bs.raw
 let _isChrome: unit => bool = [%bs.raw
   {|
     function(){
-        return navigator.userAgent.toLowerCase().indexOf("chrome") > -1 ;
+      var userAgent = navigator.userAgent.toLowerCase();
+
+        return userAgent.indexOf("chrome") > -1 && userAgent.indexOf("mobile") === -1;
     }
     |}
 ];
