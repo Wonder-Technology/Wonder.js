@@ -59,7 +59,7 @@ let unsafeGetPerspectiveCameraProjectionGameObject = (cameraProjection, state) =
 let unsafeGetPerspectiveCameraFovy = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetFovy(cameraProjection);
 
-let setPerspectiveCameraFovy = (cameraProjection, fovy: float, state) => {
+let setPerspectiveCameraProjectionFovy = (cameraProjection, fovy: float, state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     setFovy(cameraProjection, fovy, state.perspectiveCameraProjectionRecord)
@@ -68,7 +68,7 @@ let setPerspectiveCameraFovy = (cameraProjection, fovy: float, state) => {
 let unsafeGetPerspectiveCameraAspect = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetAspect(cameraProjection);
 
-let setPerspectiveCameraAspect = (cameraProjection, aspect: float, state) => {
+let setPerspectiveCameraProjectionAspect = (cameraProjection, aspect: float, state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     setAspect(cameraProjection, aspect, state.perspectiveCameraProjectionRecord)
@@ -77,7 +77,7 @@ let setPerspectiveCameraAspect = (cameraProjection, aspect: float, state) => {
 let unsafeGetPerspectiveCameraNear = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetNear(cameraProjection);
 
-let setPerspectiveCameraNear = (cameraProjection, near: float, state) => {
+let setPerspectiveCameraProjectionNear = (cameraProjection, near: float, state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     setNear(cameraProjection, near, state.perspectiveCameraProjectionRecord)
@@ -86,7 +86,7 @@ let setPerspectiveCameraNear = (cameraProjection, near: float, state) => {
 let unsafeGetPerspectiveCameraFar = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetFar(cameraProjection);
 
-let setPerspectiveCameraFar = (cameraProjection, far: float, state) => {
+let setPerspectiveCameraProjectionFar = (cameraProjection, far: float, state) => {
   ...state,
   perspectiveCameraProjectionRecord:
     setFar(cameraProjection, far, state.perspectiveCameraProjectionRecord)

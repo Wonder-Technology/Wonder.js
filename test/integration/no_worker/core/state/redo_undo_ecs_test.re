@@ -86,12 +86,12 @@ let _ =
         CameraTool.createCameraGameObject(state);
       let (state, gameObject3, _, (basicCameraView3, _)) =
         CameraTool.createCameraGameObject(state);
-      /* let state = state |> setPerspectiveCameraNear(basicCameraView2, 0.2);
-         let state = state |> setPerspectiveCameraFar(basicCameraView2, 100.);
-         let state = state |> setPerspectiveCameraFar(basicCameraView3, 100.);
-         let state = state |> setPerspectiveCameraAspect(basicCameraView1, 1.);
-         let state = state |> setPerspectiveCameraAspect(basicCameraView2, 2.);
-         let state = state |> setPerspectiveCameraFovy(basicCameraView2, 60.); */
+      /* let state = state |> setPerspectiveCameraProjectionNear(basicCameraView2, 0.2);
+         let state = state |> setPerspectiveCameraProjectionFar(basicCameraView2, 100.);
+         let state = state |> setPerspectiveCameraProjectionFar(basicCameraView3, 100.);
+         let state = state |> setPerspectiveCameraProjectionAspect(basicCameraView1, 1.);
+         let state = state |> setPerspectiveCameraProjectionAspect(basicCameraView2, 2.);
+         let state = state |> setPerspectiveCameraProjectionFovy(basicCameraView2, 60.); */
       /* let state = state |> BasicCameraViewTool.update; */
       let state =
         state
@@ -118,17 +118,17 @@ let _ =
       let (state, gameObject3, _, (_, perspectiveCameraProjection3)) =
         CameraTool.createCameraGameObject(state);
       let state =
-        state |> setPerspectiveCameraNear(perspectiveCameraProjection2, 0.2);
+        state |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection2, 0.2);
       let state =
-        state |> setPerspectiveCameraFar(perspectiveCameraProjection2, 100.);
+        state |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection2, 100.);
       let state =
-        state |> setPerspectiveCameraFar(perspectiveCameraProjection3, 100.);
+        state |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection3, 100.);
       let state =
-        state |> setPerspectiveCameraAspect(perspectiveCameraProjection1, 1.);
+        state |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection1, 1.);
       let state =
-        state |> setPerspectiveCameraAspect(perspectiveCameraProjection2, 2.);
+        state |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection2, 2.);
       let state =
-        state |> setPerspectiveCameraFovy(perspectiveCameraProjection2, 60.);
+        state |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection2, 60.);
       let state = state |> PerspectiveCameraProjectionTool.update;
       let state =
         state

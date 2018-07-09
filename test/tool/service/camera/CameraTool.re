@@ -5,10 +5,10 @@ let createBasicCameraViewPerspectiveCamera = (state) => {
   let (state, basicCameraView) = createBasicCameraView(state);
   let state =
     state
-    |> setPerspectiveCameraNear(perspectiveCameraProjection, 0.1)
-    |> setPerspectiveCameraFar(perspectiveCameraProjection, 1000.)
-    |> setPerspectiveCameraFovy(perspectiveCameraProjection, 60.)
-    |> setPerspectiveCameraAspect(perspectiveCameraProjection, 1.);
+    |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection, 0.1)
+    |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection, 1000.)
+    |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection, 60.)
+    |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, 1.);
   (state, basicCameraView, perspectiveCameraProjection)
 };
 

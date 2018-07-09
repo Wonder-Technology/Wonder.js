@@ -318,19 +318,19 @@ let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameO
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 
-let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
+let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
 
 let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
 
-let setPerspectiveCameraNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraNear;
+let setPerspectiveCameraProjectionNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear;
 
 let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
 
-let setPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraAspect;
+let setPerspectiveCameraProjectionAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect;
 
 let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
 
-let setPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraFovy;
+let setPerspectiveCameraProjectionFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFovy;
 
 let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
 
@@ -672,19 +672,19 @@ let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameO
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 
-let setPerspectiveCameraFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraFar;
+let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
 
 let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
 
-let setPerspectiveCameraNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraNear;
+let setPerspectiveCameraProjectionNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear;
 
 let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
 
-let setPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraAspect;
+let setPerspectiveCameraProjectionAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect;
 
 let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
 
-let setPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraFovy;
+let setPerspectiveCameraProjectionFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFovy;
 
 let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
 

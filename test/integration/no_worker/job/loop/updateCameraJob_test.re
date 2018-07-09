@@ -52,7 +52,7 @@ let _ =
           let (state, basicCameraView, perspectiveCameraProjection) =
             CameraTool.createBasicCameraViewPerspectiveCamera(state^);
           let state = state |> DirectorTool.runWithDefaultTime;
-          let state = state |> setPerspectiveCameraNear(basicCameraView, 0.2);
+          let state = state |> setPerspectiveCameraProjectionNear(basicCameraView, 0.2);
           let state = state |> DirectorTool.runWithDefaultTime;
           state
           |> unsafeGetPerspectiveCameraProjectionPMatrix(basicCameraView)

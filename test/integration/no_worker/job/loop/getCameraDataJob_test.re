@@ -71,7 +71,7 @@ let _ =
             let state =
               state
               |> TransformAPI.setTransformLocalPosition(transform3, (10., 11., 12.))
-              |> PerspectiveCameraProjectionAPI.setPerspectiveCameraNear(
+              |> PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear(
                    perspectiveCameraProjection3,
                    11.
                  )

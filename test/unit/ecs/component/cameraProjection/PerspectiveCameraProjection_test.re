@@ -305,7 +305,7 @@ let _ =
             () => {
               let (state, cameraProjection) = createPerspectiveCameraProjection(state^);
               let fovy = 65.;
-              let state = state |> setPerspectiveCameraFovy(cameraProjection, fovy);
+              let state = state |> setPerspectiveCameraProjectionFovy(cameraProjection, fovy);
               state |> unsafeGetPerspectiveCameraFovy(cameraProjection) |> expect == fovy
             }
           )
@@ -318,7 +318,7 @@ let _ =
             () => {
               let (state, cameraProjection) = createPerspectiveCameraProjection(state^);
               let aspect = 1.;
-              let state = state |> setPerspectiveCameraAspect(cameraProjection, aspect);
+              let state = state |> setPerspectiveCameraProjectionAspect(cameraProjection, aspect);
               state |> unsafeGetPerspectiveCameraAspect(cameraProjection) |> expect == aspect
             }
           )
@@ -331,7 +331,7 @@ let _ =
             () => {
               let (state, cameraProjection) = createPerspectiveCameraProjection(state^);
               let near = 0.1;
-              let state = state |> setPerspectiveCameraNear(cameraProjection, near);
+              let state = state |> setPerspectiveCameraProjectionNear(cameraProjection, near);
               state |> unsafeGetPerspectiveCameraNear(cameraProjection) |> expect == near
             }
           )
@@ -344,7 +344,7 @@ let _ =
             () => {
               let (state, cameraProjection) = createPerspectiveCameraProjection(state^);
               let far = 1000.;
-              let state = state |> setPerspectiveCameraFar(cameraProjection, far);
+              let state = state |> setPerspectiveCameraProjectionFar(cameraProjection, far);
               state |> unsafeGetPerspectiveCameraFar(cameraProjection) |> expect == far
             }
           )

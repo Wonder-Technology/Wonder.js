@@ -1813,10 +1813,10 @@ let _ =
         let aspect = 1.5;
         let state =
           state
-          |> setPerspectiveCameraNear(perspectiveCameraProjection, near)
-          |> setPerspectiveCameraFar(perspectiveCameraProjection, far)
-          |> setPerspectiveCameraFovy(perspectiveCameraProjection, fovy)
-          |> setPerspectiveCameraAspect(perspectiveCameraProjection, aspect);
+          |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection, near)
+          |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection, far)
+          |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection, fovy)
+          |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, aspect);
         (
           state,
           basicCameraView,

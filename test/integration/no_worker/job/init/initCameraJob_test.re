@@ -35,6 +35,7 @@ let _ =
         );
       beforeEach(() => sandbox := createSandbox());
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
       CameraTool.testBuildPMatrix(
         () =>
           TestTool.initWithJobConfigWithoutBuildFakeDom(
@@ -43,6 +44,89 @@ let _ =
             ()
           ),
         (state) => state |> DirectorTool.init
-      )
+      );
+
+      describe
+      ("init arcballCameraController",
+      (
+      () => {
+describe
+("test init one arcballCameraController",
+(
+() => {
+describe
+("bind event",
+(
+() => {
+describe
+("bind point drag event",
+(
+() => {
+
+describe
+("change orbit",
+(
+() => {
+
+  test(
+  "set phi",
+  (
+  () => {
+  
+  })
+  );
+
+
+     /* test(
+     "set theta",
+     (
+     () => {
+     
+
+     })
+     );  */
+
+
+
+})
+);
+
+
+})
+);
+
+
+
+
+
+})
+);
+
+/* describe
+("add event handleFunc to state",
+(
+() => {
+TODO test unbind
+})
+); */
+
+
+
+
+})
+);
+
+
+/* describe
+("test init two arcballCameraControllers",
+(
+() => {
+
+})
+); */
+
+
+      })
+      );
     }
   );
