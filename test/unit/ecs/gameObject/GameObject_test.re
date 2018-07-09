@@ -648,17 +648,15 @@ let _ =
         });
         test("dispose arcballCameraController component", () => {
           open StateDataMainType;
-            let (state, gameObject1, _, (cameraController1, _, _)) =
-              ArcballCameraControllerTool.createGameObject(state^);
-            let (state, gameObject2, _, (cameraController2, _, _)) =
-              ArcballCameraControllerTool.createGameObject(state);
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state^);
+          let (state, gameObject2, _, (cameraController2, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
           let state = state |> GameObjectTool.disposeGameObject(gameObject1);
           let {disposedIndexArray} = state.arcballCameraControllerRecord;
           (
-            disposedIndexArray
-            |> Js.Array.includes(cameraController1),
-            disposedIndexArray
-            |> Js.Array.includes(cameraController2),
+            disposedIndexArray |> Js.Array.includes(cameraController1),
+            disposedIndexArray |> Js.Array.includes(cameraController2),
           )
           |> expect == (true, false);
         });
@@ -1075,6 +1073,63 @@ let _ =
               )
               |> expect == (false, false, true);
             });
+
+            test(
+              "new perspectiveCameraProjectionMap should only has alive data",
+              () => {
+              open GameObjectType;
+              let state =
+                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+              let (state, gameObject1, _, perspectiveCameraProjection1) =
+                CameraTool.createCameraGameObject(state);
+              let (state, gameObject2, _, perspectiveCameraProjection2) =
+                CameraTool.createCameraGameObject(state);
+              let (state, gameObject3, _, perspectiveCameraProjection3) =
+                CameraTool.createCameraGameObject(state);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject1);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject2);
+              let {perspectiveCameraProjectionMap} =
+                GameObjectTool.getGameObjectRecord(state);
+              (
+                perspectiveCameraProjectionMap
+                |> WonderCommonlib.SparseMapService.has(gameObject1),
+                perspectiveCameraProjectionMap
+                |> WonderCommonlib.SparseMapService.has(gameObject2),
+                perspectiveCameraProjectionMap
+                |> WonderCommonlib.SparseMapService.has(gameObject3),
+              )
+              |> expect == (false, false, true);
+            });
+            test(
+              "new arcballCameraControllerMap should only has alive data", () => {
+              open GameObjectType;
+              let state =
+                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+              let (state, gameObject1, _, _) =
+                ArcballCameraControllerTool.createGameObject(state);
+              let (state, gameObject2, _, _) =
+                ArcballCameraControllerTool.createGameObject(state);
+              let (state, gameObject3, _, _) =
+                ArcballCameraControllerTool.createGameObject(state);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject1);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject2);
+              let {arcballCameraControllerMap} =
+                GameObjectTool.getGameObjectRecord(state);
+              (
+                arcballCameraControllerMap
+                |> WonderCommonlib.SparseMapService.has(gameObject1),
+                arcballCameraControllerMap
+                |> WonderCommonlib.SparseMapService.has(gameObject2),
+                arcballCameraControllerMap
+                |> WonderCommonlib.SparseMapService.has(gameObject3),
+              )
+              |> expect == (false, false, true);
+            });
+
             test("new sourceInstanceMap should only has alive data", () => {
               open GameObjectType;
               let state =
