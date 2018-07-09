@@ -51,14 +51,17 @@ let _run = (time: float, state: StateDataMainType.state) =>
 let loopBody = (time: float, state: StateDataMainType.state) =>
   state |> _run(time);
 
-let rec _noWorkerLoop = (time: float, state: StateDataMainType.state) : int =>
+let rec _noWorkerLoop = (time: float, state: StateDataMainType.state) : int => {
+  StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
+
   DomExtend.requestAnimationFrame((time: float) =>
-    state
+    StateDataMainService.unsafeGetState(StateDataMain.stateData)
     |> loopBody(time)
     |> StateDataMainService.setState(StateDataMain.stateData)
     |> _noWorkerLoop(time)
     |> ignore
   );
+};
 
 /*
   TODO save loop id
