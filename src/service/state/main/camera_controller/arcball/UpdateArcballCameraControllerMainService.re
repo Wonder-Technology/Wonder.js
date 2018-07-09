@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-open StateDataMainType;
-
 open OperateArcballCameraControllerService;
 
 let _updateTransform =
@@ -10,12 +8,6 @@ let _updateTransform =
       {arcballCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
-
-  let target =
-    OperateArcballCameraControllerService.unsafeGetTarget(
-      cameraController,
-      arcballCameraControllerRecord,
-    );
 
   let transform =
     GetComponentGameObjectService.unsafeGetTransformComponent(
@@ -33,7 +25,7 @@ let _updateTransform =
 
   let theta = unsafeGetTheta(cameraController, arcballCameraControllerRecord);
 
-  let (x, y, z) =
+  let (x, y, z) as target =
     unsafeGetTarget(cameraController, arcballCameraControllerRecord);
 
   let state = {
