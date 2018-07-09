@@ -10,6 +10,7 @@ let getLastXY = ({touchEventData}) => (
 let setLastXY = (lastX, lastY, {touchEventData} as eventRecord) => {
   ...eventRecord,
   touchEventData: {
+    ...touchEventData,
     lastX,
     lastY,
   },

@@ -640,6 +640,85 @@ let _ =
               value^ |> expect == 0;
             })
           );
+
+          describe("test movement", () => {
+            let _prepare = () => {
+              let state = MouseEventTool.prepare(~sandbox, ());
+              MouseEventTool.setNotPointerLocked(.);
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let movementX = ref(0);
+              let movementY = ref(0);
+
+              let state =
+                ManageEventAPI.onMouseEvent(
+                  MouseDrag,
+                  0,
+                  (. event: mouseEvent, state) => {
+                    let (x, y) = event.movementDelta;
+                    movementX := x;
+                    movementY := y;
+                    state;
+                  },
+                  state,
+                );
+
+              (state, (movementX, movementY));
+            };
+
+            test(
+              "if not set lastXY on mousemove event if mousedrag event is triggering",
+              () => {
+              let (state, (movementX, movementY)) = _prepare();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(~pageX=1, ~pageY=2, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=70, ()),
+              );
+              let state = EventTool.restore(state);
+
+              (movementX^, movementY^) |> expect == (50 - 10, 70 - 20);
+            });
+            test("reset lastX,lastY when drag start", () => {
+              let (state, (movementX, movementY)) = _prepare();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(~pageX=1, ~pageY=2, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getBody(),
+                MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=80, ()),
+              );
+              let state = EventTool.restore(state);
+
+              (movementX^, movementY^) |> expect == (0, 0);
+            });
+          });
         });
       });
 
@@ -1409,6 +1488,109 @@ let _ =
               value^ |> expect == 0;
             })
           );
+
+          describe("test movement", () => {
+            let _prepare = () => {
+              let state = TouchEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let movementX = ref(0);
+              let movementY = ref(0);
+
+              let state =
+                ManageEventAPI.onTouchEvent(
+                  TouchDrag,
+                  0,
+                  (. event: touchEvent, state) => {
+                    let (x, y) = event.movementDelta;
+                    movementX := x;
+                    movementY := y;
+                    state;
+                  },
+                  state,
+                );
+
+              (state, (movementX, movementY));
+            };
+
+            test(
+              "if not set lastXY on touchmove event if touchdrag event is triggering",
+              () => {
+              let (state, (movementX, movementY)) = _prepare();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "touchmove",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=1, ~pageY=2, ()),
+                  |],
+                  (),
+                ),
+              );
+              EventTool.triggerDomEvent(
+                "touchstart",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(),
+              );
+              EventTool.triggerDomEvent(
+                "touchmove",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
+                  |],
+                  (),
+                ),
+              );
+              EventTool.triggerDomEvent(
+                "touchmove",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=50, ~pageY=70, ()),
+                  |],
+                  (),
+                ),
+              );
+              let state = EventTool.restore(state);
+
+              (movementX^, movementY^) |> expect == (50 - 10, 70 - 20);
+            });
+            test("reset lastX,lastY when drag start", () => {
+              let (state, (movementX, movementY)) = _prepare();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "touchmove",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=1, ~pageY=2, ()),
+                  |],
+                  (),
+                ),
+              );
+              EventTool.triggerDomEvent(
+                "touchstart",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(),
+              );
+              EventTool.triggerDomEvent(
+                "touchmove",
+                EventTool.getBody(),
+                TouchEventTool.buildTouchEvent(
+                  ~changedTouches=[|
+                    TouchEventTool.buildTouchData(~pageX=50, ~pageY=80, ()),
+                  |],
+                  (),
+                ),
+              );
+              let state = EventTool.restore(state);
+
+              (movementX^, movementY^) |> expect == (0, 0);
+            });
+          });
         });
       });
     });

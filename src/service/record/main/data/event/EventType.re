@@ -140,7 +140,11 @@ type customEvent = {
   userData: option(userData),
 };
 
-type pointDomEvent = {. "preventDefault": (. unit) => unit};
+type pointDomEvent = {
+  .
+  "preventDefault": (. unit) => unit,
+  "stopPropagation": (. unit) => unit,
+};
 
 type pointEvent = {
   name: pointEventName,
@@ -155,6 +159,7 @@ type pointEvent = {
 type mouseEventData = {
   lastX: option(int),
   lastY: option(int),
+  isDrag: bool,
 };
 
 type keyboardEventData = {
@@ -166,6 +171,7 @@ type keyboardEventData = {
 type touchEventData = {
   lastX: option(int),
   lastY: option(int),
+  isDrag: bool,
 };
 external domEventNameToInt : domEventName => int = "%identity";
 

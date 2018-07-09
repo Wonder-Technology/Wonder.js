@@ -20,6 +20,50 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let setArcballCameraControllerRotateSpeed = ArcballCameraControllerAPI.setArcballCameraControllerRotateSpeed;
+
+let unsafeGetArcballCameraControllerRotateSpeed = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerRotateSpeed;
+
+let setArcballCameraControllerMoveSpeedY = ArcballCameraControllerAPI.setArcballCameraControllerMoveSpeedY;
+
+let unsafeGetArcballCameraControllerMoveSpeedY = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerMoveSpeedY;
+
+let setArcballCameraControllerMoveSpeedX = ArcballCameraControllerAPI.setArcballCameraControllerMoveSpeedX;
+
+let unsafeGetArcballCameraControllerMoveSpeedX = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerMoveSpeedX;
+
+let setArcballCameraControllerTarget = ArcballCameraControllerAPI.setArcballCameraControllerTarget;
+
+let unsafeGetArcballCameraControllerTarget = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerTarget;
+
+let setArcballCameraControllerThetaMargin = ArcballCameraControllerAPI.setArcballCameraControllerThetaMargin;
+
+let unsafeGetArcballCameraControllerThetaMargin = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerThetaMargin;
+
+let setArcballCameraControllerTheta = ArcballCameraControllerAPI.setArcballCameraControllerTheta;
+
+let unsafeGetArcballCameraControllerTheta = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerTheta;
+
+let setArcballCameraControllerPhi = ArcballCameraControllerAPI.setArcballCameraControllerPhi;
+
+let unsafeGetArcballCameraControllerPhi = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerPhi;
+
+let setArcballCameraControllerWheelSpeed = ArcballCameraControllerAPI.setArcballCameraControllerWheelSpeed;
+
+let unsafeGetArcballCameraControllerWheelSpeed = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerWheelSpeed;
+
+let setArcballCameraControllerMinDistance = ArcballCameraControllerAPI.setArcballCameraControllerMinDistance;
+
+let unsafeGetArcballCameraControllerMinDistance = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerMinDistance;
+
+let setArcballCameraControllerDistance = ArcballCameraControllerAPI.setArcballCameraControllerDistance;
+
+let unsafeGetArcballCameraControllerDistance = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDistance;
+
+let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerGameObject;
+
+let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
+
 let startDirector = DirectorAPI.startDirector;
 
 let loopBody = DirectorAPI.loopBody;
@@ -155,6 +199,14 @@ let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTra
 let disposeGameObjectTransformComponent = GameObjectAPI.disposeGameObjectTransformComponent;
 
 let addGameObjectTransformComponent = GameObjectAPI.addGameObjectTransformComponent;
+
+let hasGameObjectArcballCameraControllerComponent = GameObjectAPI.hasGameObjectArcballCameraControllerComponent;
+
+let unsafeGetGameObjectArcballCameraControllerComponent = GameObjectAPI.unsafeGetGameObjectArcballCameraControllerComponent;
+
+let disposeGameObjectArcballCameraControllerComponent = GameObjectAPI.disposeGameObjectArcballCameraControllerComponent;
+
+let addGameObjectArcballCameraControllerComponent = GameObjectAPI.addGameObjectArcballCameraControllerComponent;
 
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 
@@ -490,6 +542,10 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let lookAtWithUp = TransformAPI.lookAtWithUp;
+
+let lookAt = TransformAPI.lookAt;
+
 let setTransformScale = TransformAPI.setTransformScale;
 
 let getTransformScale = TransformAPI.getTransformScale;
@@ -634,6 +690,14 @@ let disposeGameObjectTransformComponent = GameObjectAPI.disposeGameObjectTransfo
 
 let addGameObjectTransformComponent = GameObjectAPI.addGameObjectTransformComponent;
 
+let hasGameObjectArcballCameraControllerComponent = GameObjectAPI.hasGameObjectArcballCameraControllerComponent;
+
+let unsafeGetGameObjectArcballCameraControllerComponent = GameObjectAPI.unsafeGetGameObjectArcballCameraControllerComponent;
+
+let disposeGameObjectArcballCameraControllerComponent = GameObjectAPI.disposeGameObjectArcballCameraControllerComponent;
+
+let addGameObjectArcballCameraControllerComponent = GameObjectAPI.addGameObjectArcballCameraControllerComponent;
+
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent;
@@ -741,6 +805,10 @@ let deepCopyForRestore = StateAPI.deepCopyForRestore;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let lookAtWithUp = TransformAPI.lookAtWithUp;
+
+let lookAt = TransformAPI.lookAt;
 
 let setTransformScale = TransformAPI.setTransformScale;
 

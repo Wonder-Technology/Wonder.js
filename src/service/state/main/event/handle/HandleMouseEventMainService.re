@@ -139,15 +139,35 @@ let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
   };
 };
 
-let setLastXYWhenMouseMove =
-    (eventName, mouseDomEvent, {eventRecord} as state) => {
+let setLastXY = (lastX, lastY, {eventRecord} as state) => {
+  ...state,
+  eventRecord: MouseEventService.setLastXY(lastX, lastY, eventRecord),
+};
+
+let setLastXYByLocation = (eventName, mouseDomEvent, {eventRecord} as state) => {
   let {location}: mouseEvent =
     _convertMouseDomEventToMouseEvent(eventName, mouseDomEvent, state);
 
   let (x, y) = location;
 
-  {
-    ...state,
-    eventRecord: MouseEventService.setLastXY(Some(x), Some(y), eventRecord),
-  };
+  setLastXY(Some(x), Some(y), state);
 };
+
+let getIsDrag = ({eventRecord} as state) =>
+  eventRecord.mouseEventData.isDrag;
+
+let setIsDrag = (isDrag, {eventRecord} as state) => {
+  ...state,
+  eventRecord: {
+    ...eventRecord,
+    mouseEventData: {
+      ...eventRecord.mouseEventData,
+      isDrag,
+    },
+  },
+};
+
+let setLastXYWhenMouseMove = (eventName, mouseDomEvent, state) =>
+  getIsDrag(state) ?
+    state : setLastXYByLocation(eventName, mouseDomEvent, state);
+/* setLastXYByLocation(eventName, mouseDomEvent, state) */

@@ -158,10 +158,6 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
   hasPerspectiveCameraProjectionComponent(gameObject, state.gameObjectRecord);
 };
 
-
-
-
-
 let addGameObjectArcballCameraControllerComponent =
     (
       gameObject: gameObject,

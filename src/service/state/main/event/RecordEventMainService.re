@@ -208,6 +208,7 @@ let create = () => {
   mouseEventData: {
     lastX: None,
     lastY: None,
+    isDrag: false,
   },
   keyboardEventData: {
     specialKeyMap: _createSpecialKeyMap(.),
@@ -217,6 +218,7 @@ let create = () => {
   touchEventData: {
     lastX: None,
     lastY: None,
+    isDrag: false,
   },
 };
 
@@ -264,10 +266,14 @@ let deepCopyForRestore = ({eventRecord} as state) => {
       mouseEventData: {
         lastX: None,
         lastY: None,
+        /* TODO test */
+        isDrag: false,
       },
       touchEventData: {
         lastX: None,
         lastY: None,
+        /* TODO test */
+        isDrag: false,
       },
     },
   };

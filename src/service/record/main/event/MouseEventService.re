@@ -10,6 +10,7 @@ let getLastXY = ({mouseEventData}) => (
 let setLastXY = (lastX, lastY, {mouseEventData} as eventRecord) => {
   ...eventRecord,
   mouseEventData: {
+    ...mouseEventData,
     lastX,
     lastY,
   },

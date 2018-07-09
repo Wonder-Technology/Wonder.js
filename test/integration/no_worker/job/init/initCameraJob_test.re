@@ -178,16 +178,26 @@ let _ =
               let state = state |> NoWorkerJobTool.execInitJobs;
               let preventDefaultFunc =
                 createEmptyStubWithJsObjSandbox(sandbox);
+              let stopPropagationFunc =
+                createEmptyStubWithJsObjSandbox(sandbox);
 
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousewheel",
                 EventTool.getBody(),
-                MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
+                MouseEventTool.buildMouseEvent(
+                  ~preventDefaultFunc,
+                  ~stopPropagationFunc,
+                  (),
+                ),
               );
               let state = EventTool.restore(state);
 
-              preventDefaultFunc |> expect |> toCalledOnce;
+              (
+                preventDefaultFunc |> getCallCount,
+                stopPropagationFunc |> getCallCount,
+              )
+              |> expect == (1, 1);
             });
 
             test("set distance", () => {

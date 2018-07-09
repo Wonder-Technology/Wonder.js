@@ -176,6 +176,41 @@ let _execMouseMoveEventHandle = (mouseEventName, event) => {
   ();
 };
 
+let _execMouseDragingEventHandle = (mouseEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleMouseEventMainService.execEventHandle(
+       mouseEventName,
+       event |> eventTargetToMouseDomEvent,
+     )
+  |> HandleMouseEventMainService.setLastXYByLocation(
+       mouseEventName,
+       event |> eventTargetToMouseDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execMouseDragStartEventHandle = () => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleMouseEventMainService.setIsDrag(true)
+  |> HandleMouseEventMainService.setLastXY(None, None)
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execMouseDragEndEventHandle = () => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleMouseEventMainService.setIsDrag(false)
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
 let _execTouchEventHandle = (touchEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.execEventHandle(
@@ -198,6 +233,41 @@ let _execTouchMoveEventHandle = (touchEventName, event) => {
        touchEventName,
        event |> eventTargetToTouchDomEvent,
      )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execTouchDragingEventHandle = (touchEventName, event) => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.execEventHandle(
+       touchEventName,
+       event |> eventTargetToTouchDomEvent,
+     )
+  |> HandleTouchEventMainService.setLastXYByLocation(
+       touchEventName,
+       event |> eventTargetToTouchDomEvent,
+     )
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execTouchDragStartEventHandle = () => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.setIsDrag(true)
+  |> HandleTouchEventMainService.setLastXY(None, None)
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
+  ();
+};
+
+let _execTouchDragEndEventHandle = () => {
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.setIsDrag(false)
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
@@ -232,11 +302,15 @@ let fromDomEvent = ({browserDetectRecord}) =>
         _fromDomEvent("mousewheel")
         |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
         _fromDomEvent("mousedown")
+        |> Most.tap(event => _execMouseDragStartEventHandle())
         |> Most.flatMap(event =>
              _fromDomEvent("mousemove")
-             |> Most.until(_fromDomEvent("mouseup"))
+             |> Most.until(
+                  _fromDomEvent("mouseup")
+                  |> Most.tap(event => _execMouseDragEndEventHandle()),
+                )
            )
-        |> Most.tap(event => _execMouseEventHandle(MouseDrag, event)),
+        |> Most.tap(event => _execMouseDragingEventHandle(MouseDrag, event)),
         _fromDomEvent("keyup")
         |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
         _fromDomEvent("keydown")
@@ -256,11 +330,15 @@ let fromDomEvent = ({browserDetectRecord}) =>
         _fromDomEvent("touchmove")
         |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
         _fromDomEvent("touchstart")
+        |> Most.tap(event => _execTouchDragStartEventHandle())
         |> Most.flatMap(event =>
              _fromDomEvent("touchmove")
-             |> Most.until(_fromDomEvent("touchend"))
+             |> Most.until(
+                  _fromDomEvent("touchend")
+                  |> Most.tap(event => _execTouchDragEndEventHandle()),
+                )
            )
-        |> Most.tap(event => _execTouchEventHandle(TouchDrag, event)),
+        |> Most.tap(event => _execTouchDragingEventHandle(TouchDrag, event)),
       |]
     | browser =>
       WonderLog.Log.fatal(

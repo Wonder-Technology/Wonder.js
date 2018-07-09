@@ -57,6 +57,10 @@ let _convertTouchDomEventToTouchEvent =
 let execEventHandle = (eventName, touchDomEvent, {eventRecord} as state) => {
   let {touchDomEventDataArrMap} = eventRecord;
 
+  HandlePointDomEventMainService.preventDefault(
+    touchDomEvent |> touchDomEventToPointDomEvent,
+  );
+
   switch (
     touchDomEventDataArrMap
     |> WonderCommonlib.SparseMapService.get(eventName |> domEventNameToInt)
@@ -79,15 +83,34 @@ let execEventHandle = (eventName, touchDomEvent, {eventRecord} as state) => {
   };
 };
 
-let setLastXYWhenTouchMove =
-    (eventName, touchDomEvent, {eventRecord} as state) => {
+let setLastXY = (lastX, lastY, {eventRecord} as state) => {
+  ...state,
+  eventRecord: TouchEventService.setLastXY(lastX, lastY, eventRecord),
+};
+
+let setLastXYByLocation = (eventName, touchDomEvent, {eventRecord} as state) => {
   let {location}: touchEvent =
     _convertTouchDomEventToTouchEvent(eventName, touchDomEvent, state);
 
   let (x, y) = location;
 
-  {
-    ...state,
-    eventRecord: TouchEventService.setLastXY(Some(x), Some(y), eventRecord),
-  };
+  setLastXY(Some(x), Some(y), state);
 };
+
+let getIsDrag = ({eventRecord} as state) =>
+  eventRecord.touchEventData.isDrag;
+
+let setIsDrag = (isDrag, {eventRecord} as state) => {
+  ...state,
+  eventRecord: {
+    ...eventRecord,
+    touchEventData: {
+      ...eventRecord.touchEventData,
+      isDrag,
+    },
+  },
+};
+
+let setLastXYWhenTouchMove = (eventName, touchDomEvent, state) =>
+  getIsDrag(state) ?
+    state : setLastXYByLocation(eventName, touchDomEvent, state);
