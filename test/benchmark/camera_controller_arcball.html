@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>arcball camera controller</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+
+
+    <script src="../../dist/wd.js"></script>
+
+
+
+    <script src="./base64DataTool.js"></script>
+
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+
+                var image1 = new Image();
+                image1.src = "./1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./2.jpg";
+
+                    image2.onload = function () {
+                        var state = wd.unsafeGetState();
+
+
+                        var record = wd.createBasicSourceTexture(state)
+                        var state = record[0];
+                        var texture1 = record[1];
+
+                        var state = wd.setBasicSourceTextureSource(texture1, image1, state);
+
+
+
+                        var record = wd.createBasicSourceTexture(state)
+                        var state = record[0];
+                        var texture2 = record[1];
+
+                        var state = wd.setBasicSourceTextureSource(texture2, image2, state);
+
+
+
+                        return initSample(texture1, texture2, wd.unsafeGetState());
+                    }
+                }
+            });
+
+
+
+
+            function _createLights(state) {
+                var state = LightTool.setAmbientLight(state);
+
+
+
+                var record = LightTool.createDirectionLight(state);
+                var state = record[0];
+                var directionLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+                var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+
+                var record = LightTool.createPointLight(state);
+                var state = record[0];
+                var pointLightObj = record[1];
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
+
+                state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+
+
+
+                return [state, directionLightObj, pointLightObj]
+            }
+
+            function _testAssembleWD(glb, state$) {
+                console.profile("convert");
+                var n0 = performance.now();
+
+                let wdb = wd.convertGLBToWDB(glb);
+
+                var state = state$;
+
+
+                console.log(performance.now() - n0);
+                console.profileEnd();
+
+
+
+                console.profile("assembleWDB");
+
+                var n1 = performance.now();
+
+                wd.assembleWDB(wdb, state)
+                    .forEach(([state, rootGameObject]) => {
+                        console.log(performance.now() - n1);
+                        console.profileEnd();
+
+
+                        console.log([state, rootGameObject])
+
+
+                        // console.profile("create one");
+
+
+
+                        // var n2 = performance.now();
+
+
+                        // var [state, child] = BasicBoxesTool.createBox(state);
+
+
+
+                        var [state, directionLightObj, pointLightObj] = _createLights(state);
+
+
+
+
+                        var data = LightBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
+
+
+                        var [state, cameraController] = wd.createArcballCameraController(state);
+
+                        var state =
+                            wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                        // var state =
+                        //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                        var state =
+                            wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                        var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                        state =
+                            wd.setCurrentCameraGameObject(
+                                camera, state
+                            );
+
+
+
+
+
+                        wd.startDirector(state);
+
+                    })
+
+
+            }
+
+
+
+
+            function initSample(map1, map2, state) {
+                fetch(
+                    // "../res/BoxTextured.glb"
+                    "../res/CesiumMilkTruck.glb"
+                    // "../res/VC.glb"
+                    // "../res/2CylinderEngine.glb"
+                )
+                    .then((res) => {
+                        return res.arrayBuffer();
+                    })
+                    .then((arrayBuffer) => {
+                        _testAssembleWD(
+                            arrayBuffer,
+                            state);
+                    })
+
+
+                // var record = LightBoxesTool.createBoxWithMap(map1, map2, state);
+                // var state = record[0];
+                // var box = record[1];
+
+
+                // var [state, directionLightObj, pointLightObj] = _createLights(state);
+
+
+                // var data = LightBoxesTool.createCamera(state);
+                // var state = data[0];
+                // var camera = data[1];
+
+
+                // var [state, cameraController] = wd.createArcballCameraController(state);
+
+                // var state =
+                //     wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+                // var state =
+                //     wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                // var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                // // var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+                // // // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
+                // // state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
+
+                // state =
+                //     wd.setCurrentCameraGameObject(
+                //         camera, state
+                //     );
+
+
+
+
+
+                // wd.startDirector(state);
+
+            }
+
+        };
+    </script>
+</body>
+
+</html>
