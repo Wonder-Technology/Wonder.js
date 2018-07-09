@@ -64,7 +64,7 @@ let setFromMatrix = [%raw
             tr = m00 + m11 + m22;
             if (tr >= 0) {
                 s = Math.sqrt(tr + 1);
-                this.w = s * 0.5;
+                w = s * 0.5;
                 s = 0.5 / s;
                 x = (m12 - m21) * s;
                 y = (m20 - m02) * s;
@@ -118,3 +118,39 @@ let setFromMatrix = [%raw
             return [x,y,z,w]
   |}
 ];
+
+let _getEulerAngles = [%raw
+  quat => {|
+            var x, y, z, qx, qy, qz, qw, a2;
+
+            qx = quat[0];
+            qy = quat[1];
+            qz = quat[2];
+            qw = quat[3];
+
+            a2 = 2 * (qw * qy - qx * qz);
+            if (a2 <= -0.99999) {
+                x = 2 * Math.atan2(qx, qw);
+                y = -Math.PI / 2;
+                z = 0;
+            } else if (a2 >= 0.99999) {
+                x = 2 * Math.atan2(qx, qw);
+                y = Math.PI / 2;
+                z = 0;
+            } else {
+                x = Math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy));
+                y = Math.asin(a2);
+                z = Math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz));
+            }
+
+            //return Vector3.create(x, y, z).scale(RAD_TO_DEG);
+            return [x, y, z];
+    |}
+];
+
+let getEulerAngles = quat => {
+  let rad_to_deg = 180. /. Js.Math._PI;
+
+  _getEulerAngles(quat)
+  |> Vector3Service.scale(Vector3Type.Float, rad_to_deg);
+};

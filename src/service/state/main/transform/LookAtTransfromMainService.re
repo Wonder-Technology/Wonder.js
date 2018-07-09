@@ -1,9 +1,8 @@
 open StateDataMainType;
 
-/* TODO test */
-let lookAt = (transform, target, {globalTempRecord} as state) => {
+let lookAt = (~transform, ~target, ~state, ~up=(0., 1., 0.), ()) => {
+  let {globalTempRecord} = state;
   let transformRecord = RecordTransformMainService.getRecord(state);
-  let up = (0., 1., 0.);
 
   state.transformRecord =
     Matrix4Service.setLookAt(

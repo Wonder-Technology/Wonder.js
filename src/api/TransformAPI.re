@@ -384,7 +384,7 @@ let getTransformLocalScale =
 };
 
 let setTransformLocalScale =
-    (transform: transform, localScale:scale, state: StateDataMainType.state) => {
+    (transform: transform, localScale: scale, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -461,4 +461,45 @@ let setTransformScale =
       ),
     );
   state;
+};
+
+let lookAt = (transform: transform, target, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  LookAtTransfromMainService.lookAt(~transform, ~target, ~state, ());
+};
+
+let lookAtWithUp =
+    (transform: transform, target, up, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  LookAtTransfromMainService.lookAt(~transform, ~target, ~up, ~state, ());
 };

@@ -36,7 +36,7 @@ let _updateTransform =
   let (x, y, z) =
     unsafeGetTarget(cameraController, arcballCameraControllerRecord);
 
-  {
+  let state = {
     ...state,
     transformRecord:
       Some(
@@ -50,8 +50,9 @@ let _updateTransform =
           transformRecord,
         ),
       ),
-  }
-  |> LookAtTransfromMainService.lookAt(transform, target);
+  };
+
+  LookAtTransfromMainService.lookAt(~transform, ~target, ~state, ());
 };
 
 let _clearDirtyArray = ({arcballCameraControllerRecord} as state) => {

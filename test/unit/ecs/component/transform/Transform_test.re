@@ -1562,6 +1562,75 @@ let _ =
         })
       );
     });
+
+    describe("lookAt", () =>
+      test(
+        "if viewPoint to target is default up axis, should specify the new up direction",
+        () => {
+          let (state, tra1) = createTransform(state^);
+          let (state, tra2) = createTransform(state);
+          let pos1 = (0., 1., 0.);
+          let pos2 = (0., 2., 0.);
+
+          let state =
+            state
+            |> setTransformLocalPosition(tra1, pos1)
+            |> setTransformLocalPosition(tra2, pos2);
+          let state = state |> lookAt(tra1, pos2);
+          let tra1EulerAngles1 =
+            QuaternionTool.getEulerAngles(
+              getTransformLocalRotation(tra1, state),
+            );
+          let state =
+            state
+            |> setTransformLocalPosition(tra1, pos1)
+            |> setTransformLocalPosition(tra2, pos2);
+          let state = state |> lookAtWithUp(tra1, pos2, (0., 0., 1.));
+          let tra1EulerAngles2 =
+            QuaternionTool.getEulerAngles(
+              getTransformLocalRotation(tra1, state),
+            );
+
+          (tra1EulerAngles1, tra1EulerAngles2)
+          |> expect == ((nan, nan, nan), (89.99999803884896, 0., 0.));
+        },
+      )
+    );
+
+    describe("lookAtWithUp", () =>
+      test(
+        "if viewPoint to target is default up axis, should specify the new up direction",
+        () => {
+          let (state, tra1) = createTransform(state^);
+          let (state, tra2) = createTransform(state);
+          let pos1 = (0., 1., 0.);
+          let pos2 = (0., 2., 0.);
+
+          let state =
+            state
+            |> setTransformLocalPosition(tra1, pos1)
+            |> setTransformLocalPosition(tra2, pos2);
+          let state = state |> lookAt(tra1, pos2);
+          let tra1EulerAngles1 =
+            QuaternionTool.getEulerAngles(
+              getTransformLocalRotation(tra1, state),
+            );
+          let state =
+            state
+            |> setTransformLocalPosition(tra1, pos1)
+            |> setTransformLocalPosition(tra2, pos2);
+          let state = state |> lookAtWithUp(tra1, pos2, (0., 0., 1.));
+          let tra1EulerAngles2 =
+            QuaternionTool.getEulerAngles(
+              getTransformLocalRotation(tra1, state),
+            );
+
+          (tra1EulerAngles1, tra1EulerAngles2)
+          |> expect == ((nan, nan, nan), (89.99999803884896, 0., 0.));
+        },
+      )
+    );
+
     describe("contract check: is alive", () =>
       describe("if transform is disposed", () => {
         let _testGetFunc = getFunc => {

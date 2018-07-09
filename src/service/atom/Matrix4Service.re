@@ -633,7 +633,8 @@ let setLookAt = (eye, center, up) => {
     Vector3Service.sub(Vector3Type.Float, eye, center)
     |> Vector3Service.normalize;
   let y = up |> Vector3Service.normalize;
-  let (x1, x2, x3) as x = Vector3Service.cross(y, z) |> Vector3Service.normalize;
+  let (x1, x2, x3) as x =
+    Vector3Service.cross(y, z) |> Vector3Service.normalize;
   let (y1, y2, y3) = Vector3Service.cross(z, x);
   let (eyeX, eyeY, eyeZ) = eye;
 
