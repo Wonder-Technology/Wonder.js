@@ -118,6 +118,17 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
     [|component|],
   );
 
+let disposeGameObjectArcballCameraControllerComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) =>
+  DisposeComponentGameObjectMainService.batchDisposeArcballCameraControllerComponent(
+    state,
+    [|component|],
+  );
+
 let disposeGameObjectTransformComponent =
     (
       gameObject: gameObject,

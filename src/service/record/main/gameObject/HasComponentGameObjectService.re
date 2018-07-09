@@ -12,6 +12,9 @@ let hasPerspectiveCameraProjectionComponent =
     : bool =>
   hasComponent(uid, gameObjectRecord.perspectiveCameraProjectionMap);
 
+let hasArcballCameraControllerComponent = (uid: int, gameObjectRecord) : bool =>
+  hasComponent(uid, gameObjectRecord.arcballCameraControllerMap);
+
 let hasMeshRendererComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.meshRendererMap);
 

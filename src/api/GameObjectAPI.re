@@ -158,6 +158,81 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
   hasPerspectiveCameraProjectionComponent(gameObject, state.gameObjectRecord);
 };
 
+
+
+
+
+let addGameObjectArcballCameraControllerComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  addArcballCameraControllerComponent(gameObject, component, state);
+};
+
+let disposeGameObjectArcballCameraControllerComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeArcballCameraControllerComponent(.
+    gameObject,
+    component,
+    state,
+  );
+};
+
+let unsafeGetGameObjectArcballCameraControllerComponent =
+    (gameObject: gameObject, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  unsafeGetArcballCameraControllerComponent(
+    gameObject,
+    state.gameObjectRecord,
+  );
+};
+
+let hasGameObjectArcballCameraControllerComponent =
+    (gameObject: gameObject, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasArcballCameraControllerComponent(gameObject, state.gameObjectRecord);
+};
+
+
+
+
+
+
+
+
+
 let addGameObjectTransformComponent =
     (
       gameObject: gameObject,

@@ -118,14 +118,24 @@ let unsafeGetThetaMargin = (cameraController, record) =>
   getThetaMargin(cameraController, record) |> OptionService.unsafeGet;
 
 let setThetaMargin =
-    (cameraController, thetaMargin, {thetaMarginMap, dirtyArray} as record) => {
+    (
+      cameraController,
+      thetaMargin,
+      {thetaMarginMap, thetaMap, dirtyArray} as record,
+    ) => {
   ...record,
   dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   thetaMarginMap:
     WonderCommonlib.SparseMapService.set(
       cameraController,
-      _constrainTheta(unsafeGetTheta(cameraController, record), thetaMargin),
+      thetaMargin,
       thetaMarginMap,
+    ),
+  thetaMap:
+    WonderCommonlib.SparseMapService.set(
+      cameraController,
+      _constrainTheta(unsafeGetTheta(cameraController, record), thetaMargin),
+      thetaMap,
     ),
 };
 

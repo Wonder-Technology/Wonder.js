@@ -1,10 +1,13 @@
-open Wonder_jest;
+/* TODO finish! */
+/* open Wonder_jest;
 
 open BasicCameraViewAPI;
 
+open ArcballCameraControllerAPI;
+
 let _ =
   describe(
-    "test init basicCameraView job",
+    "test init camera job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -72,7 +75,26 @@ describe
   "set phi",
   (
   () => {
-  
+  let (
+    state,
+    gameObject,
+    transform,
+    (cameraController, basicCameraView, perspectiveCameraProjection),
+  ) =
+  ArcballCameraControllerTool.createGameObject(state^);
+
+
+  let rotateSpeed = 2.5;
+
+  let state = state |>
+setArcballCameraControllerRotateSpeed(
+  cameraController, rotateSpeed 
+)
+|> 
+setArcballCameraControllerRotateSpeed(
+  cameraController, rotateSpeed 
+)
+
   })
   );
 
@@ -129,4 +151,4 @@ TODO test unbind
       })
       );
     }
-  );
+  ); */
