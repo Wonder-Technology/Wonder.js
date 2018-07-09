@@ -50,8 +50,8 @@ let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
 
 let _getWheel = (mouseDomEvent, state) =>
   switch (Js.toOption(mouseDomEvent##detail)) {
-  | Some(detail) => (-1) * detail
-  | None =>
+  | Some(detail) when detail !== 0 => (-1) * detail
+  | _ =>
     switch (Js.toOption(mouseDomEvent##wheelDelta)) {
     | Some(wheelData) => wheelData / 120
     | None => 0

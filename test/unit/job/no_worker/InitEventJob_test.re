@@ -342,15 +342,28 @@ let _ =
                 wheel^ |> expect == targetWheel;
               };
 
-              test("if event.detail exist, use it", () =>
-                _test(
-                  MouseEventTool.buildMouseEvent(
-                    ~detail=Js.Nullable.return(2),
-                    (),
-                  ),
-                  (-1) * 2,
-                )
-              );
+              describe("if event.detail exist", () => {
+                test("if event.detail !== 0, use it", () =>
+                  _test(
+                    MouseEventTool.buildMouseEvent(
+                      ~detail=Js.Nullable.return(2),
+                      (),
+                    ),
+                    (-1) * 2,
+                  )
+                );
+                test("else, use event.wheelDelta", () =>
+                  _test(
+                    MouseEventTool.buildMouseEvent(
+                      ~detail=Js.Nullable.return(0),
+                      ~wheelDelta=Js.Nullable.return(120),
+                      (),
+                    ),
+                    120 / 120,
+                  )
+                );
+              });
+
               test("else, use event.wheelDelta", () =>
                 _test(
                   MouseEventTool.buildMouseEvent(
