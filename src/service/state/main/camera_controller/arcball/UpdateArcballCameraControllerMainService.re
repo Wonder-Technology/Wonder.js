@@ -36,8 +36,8 @@ let _updateTransform =
           transform,
           (
             distance *. Js.Math.cos(phi) *. Js.Math.sin(theta) +. x,
-            distance *. Js.Math.sin(phi) *. Js.Math.sin(theta) +. z,
             distance *. Js.Math.cos(theta) +. y,
+            distance *. Js.Math.sin(phi) *. Js.Math.sin(theta) +. z,
           ),
           transformRecord,
         ),
