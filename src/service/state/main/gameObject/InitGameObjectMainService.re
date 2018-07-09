@@ -2,29 +2,57 @@ open StateDataMainType;
 
 let initGameObject = (uid: int, {gameObjectRecord} as state) => {
   let state =
-    switch ([@bs] GetComponentGameObjectService.getBasicMaterialComponent(uid, gameObjectRecord)) {
+    switch (
+      GetComponentGameObjectService.getBasicMaterialComponent(.
+        uid,
+        gameObjectRecord,
+      )
+    ) {
     | Some(material) =>
-      let state = InitBasicMaterialMainService.handleInitComponent(material, state);
+      let state =
+        InitBasicMaterialMainService.handleInitComponent(material, state);
       InitSourceTextureMainService.initTexture(
         OperateBasicMaterialMainService.getMap(material, state),
-        state
-      )
+        state,
+      );
     | None => state
     };
   let state =
-    switch ([@bs] GetComponentGameObjectService.getLightMaterialComponent(uid, gameObjectRecord)) {
+    switch (
+      GetComponentGameObjectService.getLightMaterialComponent(.
+        uid,
+        gameObjectRecord,
+      )
+    ) {
     | Some(material) =>
-      let state = state |> InitLightMaterialMainService.handleInitComponent(material);
+      let state =
+        state |> InitLightMaterialMainService.handleInitComponent(material);
       let state =
         state
         |> InitSourceTextureMainService.initTexture(
-             OperateLightMaterialMainService.getDiffuseMap(material, state)
+             OperateLightMaterialMainService.getDiffuseMap(material, state),
            );
       state
       |> InitSourceTextureMainService.initTexture(
-           OperateLightMaterialMainService.getSpecularMap(material, state)
-         )
+           OperateLightMaterialMainService.getSpecularMap(material, state),
+         );
     | None => state
     };
-  state
+
+  let state =
+    switch (
+      GetComponentGameObjectService.getArcballCameraControllerComponent(.
+        uid,
+        gameObjectRecord,
+      )
+    ) {
+    | Some(cameraController) =>
+      InitArcballCameraControllerMainService.initArcballCameraController(
+        cameraController,
+        state,
+      )
+    | None => state
+    };
+
+  state;
 };

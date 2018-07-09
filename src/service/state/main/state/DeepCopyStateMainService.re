@@ -26,6 +26,10 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
       RecordPerspectiveCameraProjectionService.deepCopyForRestore(
         state.perspectiveCameraProjectionRecord,
       ),
+    arcballCameraControllerRecord:
+      RecordArcballCameraControllerService.deepCopyForRestore(
+        state.arcballCameraControllerRecord,
+      ),
     meshRendererRecord:
       RecordMeshRendererService.deepCopyForRestore(state.meshRendererRecord),
     typeArrayPoolRecord:

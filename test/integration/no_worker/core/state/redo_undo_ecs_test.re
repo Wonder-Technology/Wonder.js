@@ -1543,7 +1543,7 @@ let _ =
           )
         )
       );
-      describe("deep copy basicCameraView record", () => {
+      describe("deep copy perspectiveCameraProjection record", () => {
         test(
           "shadow copy dirtyArray, nearMap, farMap, fovyMap, aspectMap, gameObjectMap, disposedIndexArray",
           () =>
