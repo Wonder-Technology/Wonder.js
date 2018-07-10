@@ -321,8 +321,12 @@ let _ =
               MeshRendererTool.createBasicMaterialGameObject(state^);
             let (state, gameObject2, meshRenderer2) =
               MeshRendererTool.createBasicMaterialGameObject(state);
-            let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-            /* state |> MeshRendererTool.getBasicMaterialRenderArray |> expect == [|gameObject2|] */
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectMeshRendererComponent(
+                   gameObject1,
+                   meshRenderer1,
+                 );
             (
               state,
               (gameObject1, gameObject2),
@@ -495,6 +499,175 @@ let _ =
             })
           )
         );
+
+        describe("test disposeGameObjectObjectInstanceComponent", () => {
+          open StateDataMainType;
+          open ObjectInstanceType;
+
+          let _prepare = state => {
+            let (state, _, _, gameObject1, objectInstance1) =
+              ObjectInstanceTool.createObjectInstanceGameObject(state^);
+            let (state, _, _, gameObject2, objectInstance2) =
+              ObjectInstanceTool.createObjectInstanceGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectObjectInstanceComponent(
+                   gameObject1,
+                   objectInstance1,
+                 );
+            (
+              state,
+              (gameObject1, gameObject2),
+              (objectInstance1, objectInstance2),
+            );
+          };
+          test("shouldn't dispose data", () => {
+            let (
+              state,
+              (gameObject1, gameObject2),
+              (objectInstance1, objectInstance2),
+            ) =
+              _prepare(state);
+
+            let {disposedIndexArray} = state.objectInstanceRecord;
+            (
+              disposedIndexArray |> Js.Array.includes(objectInstance1),
+              disposedIndexArray |> Js.Array.includes(objectInstance2),
+            )
+            |> expect == (false, false);
+          });
+          test("dispose data in dispose job", () => {
+            let (
+              state,
+              (gameObject1, gameObject2),
+              (objectInstance1, objectInstance2),
+            ) =
+              _prepare(state);
+            let state = state |> DisposeJob.execJob(None);
+            let {disposedIndexArray} = state.objectInstanceRecord;
+            (
+              disposedIndexArray |> Js.Array.includes(objectInstance1),
+              disposedIndexArray |> Js.Array.includes(objectInstance2),
+            )
+            |> expect == (true, false);
+          });
+        });
+
+        describe("test disposeGameObjectDirectionLightComponent", () => {
+          open DirectionLightType;
+          let _prepare = state => {
+            let (state, gameObject1, directionLight1) =
+              DirectionLightTool.createGameObject(state^);
+            let (state, gameObject2, directionLight2) =
+              DirectionLightTool.createGameObject(state);
+            let (state, gameObject3, directionLight3) =
+              DirectionLightTool.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectDirectionLightComponent(
+                   gameObject1,
+                   directionLight1,
+                 )
+              |> GameObjectAPI.disposeGameObjectDirectionLightComponent(
+                   gameObject3,
+                   directionLight3,
+                 );
+            (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (directionLight1, directionLight2, directionLight3),
+            );
+          };
+          test("shouldn't dispose data", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (directionLight1, directionLight2, directionLight3),
+            ) =
+              _prepare(state);
+            let {gameObjectMap} = state.directionLightRecord;
+            (
+              gameObjectMap |> Js.Array.includes(gameObject1),
+              gameObjectMap |> Js.Array.includes(gameObject2),
+              gameObjectMap |> Js.Array.includes(gameObject3),
+            )
+            |> expect == (true, true, true);
+          });
+          test("dispose data in dispose job", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (directionLight1, directionLight2, directionLight3),
+            ) =
+              _prepare(state);
+            let state = state |> DisposeJob.execJob(None);
+            let {gameObjectMap} = state.directionLightRecord;
+            (
+              gameObjectMap |> Js.Array.includes(gameObject1),
+              gameObjectMap |> Js.Array.includes(gameObject2),
+              gameObjectMap |> Js.Array.includes(gameObject3),
+            )
+            |> expect == (false, true, false);
+          });
+        });
+
+        describe("test disposeGameObjectPointLightComponent", () => {
+          open PointLightType;
+          let _prepare = state => {
+            let (state, gameObject1, pointLight1) =
+              PointLightTool.createGameObject(state^);
+            let (state, gameObject2, pointLight2) =
+              PointLightTool.createGameObject(state);
+            let (state, gameObject3, pointLight3) =
+              PointLightTool.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectPointLightComponent(
+                   gameObject1,
+                   pointLight1,
+                 )
+              |> GameObjectAPI.disposeGameObjectPointLightComponent(
+                   gameObject3,
+                   pointLight3,
+                 );
+            (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (pointLight1, pointLight2, pointLight3),
+            );
+          };
+          test("shouldn't dispose data", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (pointLight1, pointLight2, pointLight3),
+            ) =
+              _prepare(state);
+            let {gameObjectMap} = state.pointLightRecord;
+            (
+              gameObjectMap |> Js.Array.includes(gameObject1),
+              gameObjectMap |> Js.Array.includes(gameObject2),
+              gameObjectMap |> Js.Array.includes(gameObject3),
+            )
+            |> expect == (true, true, true);
+          });
+          test("dispose data in dispose job", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (pointLight1, pointLight2, pointLight3),
+            ) =
+              _prepare(state);
+            let state = state |> DisposeJob.execJob(None);
+            let {gameObjectMap} = state.pointLightRecord;
+            (
+              gameObjectMap |> Js.Array.includes(gameObject1),
+              gameObjectMap |> Js.Array.includes(gameObject2),
+              gameObjectMap |> Js.Array.includes(gameObject3),
+            )
+            |> expect == (false, true, false);
+          });
+        });
       });
       describe("dispose gameObjects", () => {
         let _prepare = state =>

@@ -90,7 +90,7 @@ let _disposeComponents =
        );
   let state =
     disposedPointLightArray
-    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+    |> DisposeComponentGameObjectMainService.batchDisposePointLightComponent(
          state,
        );
   let state =
