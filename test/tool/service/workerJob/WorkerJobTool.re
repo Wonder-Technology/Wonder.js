@@ -81,6 +81,9 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
           "name": "init",
           "link": "concat",
           "jobs": [
+            {
+              "name": "detect_environment"
+            },
     {
         "name": "create_canvas"
     },
@@ -248,7 +251,9 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
             "FINISH_SEND_JOB_DATA"
         ]
     },
-
+            {
+              "name": "detect_environment"
+            },
     {
         "name": "create_canvas"
     },

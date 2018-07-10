@@ -48,3 +48,19 @@ let detect = state => {
           Chrome : _isAndroid() ? Android : _isIOS() ? IOS : Unknown,
   },
 };
+
+let detectMobileNotSupportWorker = state =>
+  switch (state.browserDetectRecord.browser) {
+  | Android
+  | IOS =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="DetectEnvironmentWorkerJob->execJob",
+        ~description={j|mobile not support worker|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  | _ => ()
+  };

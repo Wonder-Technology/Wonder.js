@@ -33,6 +33,17 @@ let setAndroid = () => {
   MainStateTool.setState(state);
 };
 
+let setIOS = () => {
+  let state = MainStateTool.unsafeGetState();
+  let state = {
+    ...state,
+    browserDetectRecord: {
+      browser: IOS,
+    },
+  };
+  MainStateTool.setState(state);
+};
+
 let setUnknown = () => {
   let state = MainStateTool.unsafeGetState();
   let state = {
