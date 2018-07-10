@@ -27,6 +27,7 @@ module.exports = {
     { name: "redo-undo" },
     { name: "job" },
     { name: "transform" },
+    { name: "worker" },
     { name: "render-worker" },
     { name: "basicMaterial" },
     { name: "lightMaterial" },

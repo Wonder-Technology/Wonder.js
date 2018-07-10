@@ -6,10 +6,9 @@ let execJob = (flags, stateData) =>
 
     let state =
       state
-      |> UpdatePerspectiveCameraProjectionMainService.update
-      |> UpdateArcballCameraControllerMainService.update;
+      |> InitPerspectiveCameraProjectionMainService.init
+      |> InitArcballCameraControllerMainService.init;
 
     StateDataMainService.setState(stateData, state);
-
     None;
   });
