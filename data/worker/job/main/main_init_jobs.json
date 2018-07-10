@@ -15,6 +15,12 @@
         ]
     },
     {
+        "name": "init_event"
+    },
+    {
+        "name": "init_camera"
+    },
+    {
         "name": "create_canvas"
     },
     {
