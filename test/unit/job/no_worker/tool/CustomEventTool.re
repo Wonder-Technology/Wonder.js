@@ -11,4 +11,7 @@ let getPointScaleEventName = NameEventService.getPointScaleEventName;
 let getPointDragEventName = NameEventService.getPointDragEventName;
 
 let createCustomEvent = (~eventName, ~userData=None, ()) =>
-  CreateCustomEventMainService.create(eventName, userData);
+  ManageEventAPI.createCustomEvent(
+    eventName,
+    Js.Nullable.fromOption(userData),
+  );
