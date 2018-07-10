@@ -26,7 +26,7 @@ let _ =
                 None,
                 RenderWorkerStateTool.getStateData()
               )
-              |> Most.drain
+              |> WonderBsMost.Most.drain
               |> then_(
                    () =>
                      postMessageToWorker

@@ -129,7 +129,7 @@ and customEventData = {
   handleFunc: (. EventType.customEvent, state) => state,
 }
 and eventRecord = {
-  domEventStreamSubscription: option(Most.subscription),
+  domEventStreamSubscription: option(WonderBsMost.Most.subscription),
   mouseDomEventDataArrMap:
     WonderCommonlib.SparseMapService.t(array(mouseDomEventData)),
   keyboardDomEventDataArrMap:

@@ -38,7 +38,7 @@ let testGLTF =
     binBuffer,
   ))
   |. AssembleWDBSystem.assemble(state^)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
 
@@ -49,7 +49,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, ((wd, binBuffer)) =>
     AssembleWDBSystem.assembleGLBData(wd, binBuffer, state)
-    |> Most.forEach(data => result := data)
+    |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );
 };

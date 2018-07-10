@@ -75,8 +75,8 @@ let _addSource = (texture, imageBitmap, state) => {
 
 let _convertImageSrcToImageBitmapStream =
     (imageArrayBufferIndexSizeDataArr, state) =>
-  Most.from(imageArrayBufferIndexSizeDataArr)
-  |> Most.flatMap(((arrayBuffer, width, height, texture)) =>
+  WonderBsMost.Most.from(imageArrayBufferIndexSizeDataArr)
+  |> WonderBsMost.Most.flatMap(((arrayBuffer, width, height, texture)) =>
        _createImageBitmap(
          texture,
          Canvas.newImageData(
@@ -86,8 +86,8 @@ let _convertImageSrcToImageBitmapStream =
          ),
          state,
        )
-       |> Most.fromPromise
-       |> Most.map(imageBitmap => _addSource(texture, imageBitmap, state))
+       |> WonderBsMost.Most.fromPromise
+       |> WonderBsMost.Most.map(imageBitmap => _addSource(texture, imageBitmap, state))
      );
 
 let addSourceFromImageDataStream = (imageArrayBufferIndexSizeDataArr, state) =>

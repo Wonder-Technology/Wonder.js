@@ -1,4 +1,4 @@
-open Json;
+open WonderBsJson.Json;
 
 open Encode;
 

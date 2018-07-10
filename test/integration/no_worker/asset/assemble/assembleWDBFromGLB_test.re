@@ -36,6 +36,7 @@ let _ =
 
     describe("build scene gameObject", () => {
       testPromise("test single scene gameObject", () =>
+
         AssembleWDBSystemTool.testGLTF(
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),

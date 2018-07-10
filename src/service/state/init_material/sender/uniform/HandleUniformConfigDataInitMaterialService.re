@@ -17,7 +17,7 @@ let _setToUniformSendMap =
         uniformShaderSendNoCachableDataMap,
         uniformShaderSendCachableDataMap,
         uniformShaderSendCachableFunctionDataMap,
-        uniformInstanceSendNoCachableDataMap
+        uniformInstanceSendNoCachableDataMap,
       },
       (
         renderObjectSendModelDataArr,
@@ -25,66 +25,69 @@ let _setToUniformSendMap =
         shaderSendNoCachableDataArr,
         shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
-        instanceSendNoCachableDataArr
-      )
+        instanceSendNoCachableDataArr,
+      ),
     ) => {
   HandleUniformRenderObjectModelService.setToUniformSendMap(
     shaderIndex,
     uniformRenderObjectSendModelDataMap,
-    renderObjectSendModelDataArr
+    renderObjectSendModelDataArr,
   )
   |> ignore;
   HandleUniformRenderObjectMaterialService.setToUniformSendMap(
     shaderIndex,
     uniformRenderObjectSendMaterialDataMap,
-    renderObjectSendMaterialDataArr
+    renderObjectSendMaterialDataArr,
   )
   |> ignore;
   HandleUniformShaderNoCachableService.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendNoCachableDataMap,
-    shaderSendNoCachableDataArr
+    shaderSendNoCachableDataArr,
   )
   |> ignore;
   HandleUniformShaderCachableService.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendCachableDataMap,
-    shaderSendCachableDataArr
+    shaderSendCachableDataArr,
   )
   |> ignore;
   HandleUniformShaderCachableFunctionService.setToUniformSendMap(
     shaderIndex,
     uniformShaderSendCachableFunctionDataMap,
-    shaderSendCachableFunctionDataArr
+    shaderSendCachableFunctionDataArr,
   )
   |> ignore;
   HandleUniformInstanceNoCachableService.setToUniformSendMap(
     shaderIndex,
     uniformInstanceSendNoCachableDataMap,
-    instanceSendNoCachableDataArr
+    instanceSendNoCachableDataArr,
   )
-  |> ignore
+  |> ignore;
 };
 
 let readUniformSendData =
-    (shaderLibDataArr, (gl, program), readUniformsFunc, (uniformLocationMap, uniformCacheMap)) =>
+    (
+      shaderLibDataArr,
+      (gl, program),
+      readUniformsFunc,
+      (uniformLocationMap, uniformCacheMap),
+    ) =>
   shaderLibDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (sendDataArrTuple, {variables}) =>
-           switch variables {
-           | None => sendDataArrTuple
-           | Some({uniforms}) =>
-             [@bs]
-             readUniformsFunc(
+       (. sendDataArrTuple, {variables}) =>
+         variables |> OptionService.isJsonSerializedValueNone ?
+           sendDataArrTuple :
+           {
+             let {uniforms} = variables |> OptionService.unsafeGet;
+
+             readUniformsFunc(.
                (gl, program, uniformLocationMap, uniformCacheMap),
                sendDataArrTuple,
-               uniforms
-             )
-           }
-       ),
-       ([||], [||], [||], [||], [||], [||])
+               uniforms,
+             );
+           },
+       ([||], [||], [||], [||], [||], [||]),
      );
 
 let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>
@@ -94,16 +97,19 @@ let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>
         Contract.(
           Operators.(
             test(
-              Log.buildAssertMessage(~expect={j|not be added before|j}, ~actual={j|be|j}),
+              Log.buildAssertMessage(
+                ~expect={j|not be added before|j},
+                ~actual={j|be|j},
+              ),
               () =>
-                glslSenderRecord.uniformRenderObjectSendModelDataMap
-                |> WonderCommonlib.SparseMapService.get(shaderIndex)
-                |> assertNotExist
+              glslSenderRecord.uniformRenderObjectSendModelDataMap
+              |> WonderCommonlib.SparseMapService.get(shaderIndex)
+              |> assertNotExist
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
 let addUniformSendData =
@@ -111,28 +117,32 @@ let addUniformSendData =
       gl,
       (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
       readUniformSendDataFunc,
-      (glslSenderRecord, glslLocationRecord)
+      (glslSenderRecord, glslLocationRecord),
     ) => {
   _checkShouldNotAddBefore(shaderIndex, glslSenderRecord);
   let uniformLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
-      glslLocationRecord |> GLSLLocationService.getUniformLocationMap(shaderIndex)
+      glslLocationRecord
+      |> GLSLLocationService.getUniformLocationMap(shaderIndex),
     );
   (
-    [@bs]
-    readUniformSendDataFunc(
+    readUniformSendDataFunc(.
       shaderLibDataArr,
       gl,
       program,
       (
         uniformLocationMap,
         HandleShaderConfigDataMapService.getOrCreateHashMap(
-          glslSenderRecord.uniformCacheMap |> SendGLSLDataService.getCacheMap(shaderIndex)
-        )
-      )
+          glslSenderRecord.uniformCacheMap
+          |> SendGLSLDataService.getCacheMap(shaderIndex),
+        ),
+      ),
     )
     |> _setToUniformSendMap(shaderIndex, glslSenderRecord),
     glslLocationRecord
-    |> GLSLLocationService.setUniformLocationMap(shaderIndex, uniformLocationMap)
-  )
+    |> GLSLLocationService.setUniformLocationMap(
+         shaderIndex,
+         uniformLocationMap,
+       ),
+  );
 };

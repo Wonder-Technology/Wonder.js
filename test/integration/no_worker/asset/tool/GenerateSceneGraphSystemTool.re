@@ -34,7 +34,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   GLBTool.prepare(sandbox);
 
   AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;
 
@@ -59,7 +59,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
   AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;
 
@@ -72,7 +72,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
      })
   |> then_(((state, data)) =>
        AssembleWDBSystem.assemble(data, state)
-       |> Most.forEach(data => result := data)
+       |> WonderBsMost.Most.forEach(data => result := data)
        |> then_(() => testFunc(result^) |> resolve)
      );
 };
@@ -109,7 +109,7 @@ let testGLTFResultByGLTF =
     binBuffer,
   ))
   |. AssembleWDBSystem.assemble(state^)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;
 
@@ -163,7 +163,7 @@ let testAssembleResultByGameObject =
     );
 
   AssembleWDBSystem.assemble(data, state)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
 

@@ -42,7 +42,7 @@ let _ =
               let state = MainStateTool.setState(state);
               WorkerMainWorkerTool.buildFakeWorker();
               CreateWorkerInstanceMainWorkerJob.execJob(None, MainStateTool.getStateData())
-              |> Most.drain
+              |> WonderBsMost.Most.drain
               |> then_(
                    () => {
                      let state = MainStateTool.unsafeGetState();

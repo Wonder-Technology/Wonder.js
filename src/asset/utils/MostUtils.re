@@ -1,4 +1,4 @@
-open Most;
+open WonderBsMost.Most;
 
 [@bs.module "most"]
 external fromWorkerEvent : (string, WorkerType.worker) => stream({.. "operateType": string}) =
@@ -15,7 +15,7 @@ let _isFromEventStream = [%bs.raw
 
 let concatArray = (streamArr) =>
   switch (Js.Array.length(streamArr)) {
-  | 0 => Most.just(Obj.magic(1))
+  | 0 => WonderBsMost.Most.just(Obj.magic(1))
   | _ =>
     streamArr
     |> Js.Array.sliceFrom(1)

@@ -11,3 +11,5 @@ let buildFakeLoadImage = [%bs.raw
     }
     |}
 ];
+
+let getJsonSerializedNone = () => Js.Nullable.null |> Obj.magic;

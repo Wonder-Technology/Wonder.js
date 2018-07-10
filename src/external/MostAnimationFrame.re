@@ -1,5 +1,5 @@
 /* TODO move to bs- */
-open Most;
+open WonderBsMost.Most;
 
 [@bs.module "wonder-most-animation-frame"] external animationFrames : unit => stream(float) = "";
 

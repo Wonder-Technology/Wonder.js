@@ -20,8 +20,8 @@ let _createAndSetWorkerState = () =>
   |> ignore;
 
 MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
-|> Most.filter(e => e##data##operateType === "SEND_JOB_DATA")
-|> Most.concatMap(e =>
+|> WonderBsMost.Most.filter(e => e##data##operateType === "SEND_JOB_DATA")
+|> WonderBsMost.Most.concatMap(e =>
      {
        _createAndSetWorkerState();
        WorkerJobMainService.getRenderWorkerJobStreamArr(
@@ -34,6 +34,6 @@ MostUtils.fromWorkerEvent("message", WorkerService.getSelf())
          StateDataRenderWorker.renderWorkerStateData,
        );
      }
-     |> Most.mergeArray
+     |> WonderBsMost.Most.mergeArray
    )
-|> Most.drain;
+|> WonderBsMost.Most.drain;

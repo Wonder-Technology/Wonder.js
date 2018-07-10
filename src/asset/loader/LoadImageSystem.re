@@ -28,4 +28,4 @@ let loadBlobImage = (objectUrl, errorInfo) =>
   make((~resolve, ~reject) =>
     _loadBlobImage(objectUrl, errorInfo, resolve, reject)
   )
-  |> Most.fromPromise;
+  |> WonderBsMost.Most.fromPromise;

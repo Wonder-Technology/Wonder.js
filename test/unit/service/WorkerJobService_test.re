@@ -73,8 +73,8 @@ let _ =
                 ),
                 RenderWorkerStateTool.getStateData()
               )
-              |> Most.mergeArray
-              |> Most.drain
+              |> WonderBsMost.Most.mergeArray
+              |> WonderBsMost.Most.drain
               |> then_(
                    () =>
                      postMessageToWorker
@@ -128,8 +128,8 @@ let _ =
                 ),
                 RenderWorkerStateTool.getStateData()
               )
-              |> Most.mergeArray
-              |> Most.forEach((record) => callCount := callCount^ + 1)
+              |> WonderBsMost.Most.mergeArray
+              |> WonderBsMost.Most.forEach((record) => callCount := callCount^ + 1)
               |> then_(() => callCount^ |> expect == 2 |> resolve)
             }
           )

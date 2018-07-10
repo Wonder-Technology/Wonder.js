@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open Js.Promise;
 
-open Most;
+open WonderBsMost.Most;
 
 open SettingType;
 
@@ -181,9 +181,9 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
          |> BrowserDetectMainService.detect
          |> _createRecordWithState
          |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
-         |> Most.concatMap(
+         |> WonderBsMost.Most.concatMap(
               (state) => state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)
             )
-         |> Most.tap((state) => state |> StateDataMainService.setState(stateData) |> ignore)
+         |> WonderBsMost.Most.tap((state) => state |> StateDataMainService.setState(stateData) |> ignore)
      )
 };

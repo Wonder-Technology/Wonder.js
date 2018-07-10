@@ -16,34 +16,38 @@ let _generateAttributeSource = (shaderLibDataArr: shaderLibs) =>
   shaderLibDataArr
   |> Js.Array.reduce(
        (result: string, {variables}) =>
-         switch variables {
-         | None => result
-         | Some(variables) =>
-           switch variables.attributes {
-           | None => result
-           | Some(attributes) =>
-             result
-             ++ (
-               attributes
-               |> Js.Array.reduce(
-                    (result: string, {name, type_}: attribute) =>
-                      switch (name, type_) {
-                      | (Some(name), Some(type_)) => result ++ {j|attribute $type_ $name;
+         variables |> OptionService.isJsonSerializedValueNone ?
+           result :
+           {
+             let optionalAttributes =
+               OptionService.unsafeGet(variables).attributes;
+
+             optionalAttributes |> OptionService.isJsonSerializedValueNone ?
+               result :
+               result
+               ++ (
+                 optionalAttributes
+                 |> OptionService.unsafeGet
+                 |> Js.Array.reduce(
+                      (result: string, {name, type_}: attribute) =>
+                        switch (name, type_) {
+                        | (Some(name), Some(type_)) =>
+                          result ++ {j|attribute $type_ $name;
   |j}
-                      | (_, _) => result
-                      },
-                    ""
-                  )
-             )
-           }
-         },
-       ""
+                        | (_, _) => result
+                        },
+                      "",
+                    )
+               );
+           },
+       "",
      );
 
-let _isInSource = (key: string, source: string) => Js.String.indexOf(key, source) > (-1);
+let _isInSource = (key: string, source: string) =>
+  Js.String.indexOf(key, source) > (-1);
 
 let _generateUniformSourceType = (type_: string) =>
-  switch type_ {
+  switch (type_) {
   | "float3" => "vec3"
   | _ => type_
   };
@@ -53,38 +57,39 @@ let _generateUniformSource =
       shaderLibDataArr: shaderLibs,
       sourceVarDeclare: string,
       sourceFuncDefine: string,
-      sourceBody: string
+      sourceBody: string,
     ) =>
   shaderLibDataArr
   |> Js.Array.reduce(
        (result: string, {variables}) =>
-         switch variables {
-         | None => result
-         | Some(variables) =>
-           switch variables.uniforms {
-           | None => result
-           | Some(uniforms) =>
-             result
-             ++ (
-               uniforms
-               |> Js.Array.filter(
-                    ({name}: uniform) =>
+         variables |> OptionService.isJsonSerializedValueNone ?
+           result :
+           {
+             let optionalUniforms =
+               OptionService.unsafeGet(variables).uniforms;
+
+             optionalUniforms |> OptionService.isJsonSerializedValueNone ?
+               result :
+               result
+               ++ (
+                 optionalUniforms
+                 |> OptionService.unsafeGet
+                 |> Js.Array.filter(({name}: uniform) =>
                       _isInSource(name, sourceVarDeclare)
                       || _isInSource(name, sourceFuncDefine)
                       || _isInSource(name, sourceBody)
-                  )
-               |> Js.Array.reduce(
-                    (result: string, {name, type_}: uniform) => {
-                      let type_ = _generateUniformSourceType(type_);
-                      result ++ {j|uniform $type_ $name;
-|j}
-                    },
-                    ""
-                  )
-             )
-           }
-         },
-       ""
+                    )
+                 |> Js.Array.reduce(
+                      (result: string, {name, type_}: uniform) => {
+                        let type_ = _generateUniformSourceType(type_);
+                        result ++ {j|uniform $type_ $name;
+|j};
+                      },
+                      "",
+                    )
+               );
+           },
+       "",
      );
 
 let _setSource =
@@ -95,9 +100,9 @@ let _setSource =
         varDeclare: sourceVarDeclare,
         funcDeclare: sourceFuncDeclare,
         funcDefine: sourceFuncDefine,
-        body: sourceBody
+        body: sourceBody,
       } as sourceChunk,
-      {top, define, varDeclare, funcDeclare, funcDefine, body}
+      {top, define, varDeclare, funcDeclare, funcDefine, body},
     ) => {
   sourceChunk.top = sourceTop ++ top;
   sourceChunk.define = sourceDefine ++ define;
@@ -105,15 +110,19 @@ let _setSource =
   sourceChunk.funcDeclare = sourceFuncDeclare ++ funcDeclare;
   sourceChunk.funcDefine = sourceFuncDefine ++ funcDefine;
   sourceChunk.body = sourceBody ++ body;
-  sourceChunk
+  sourceChunk;
 };
 
 let _buildBody = ({body}, webgl1_main_end) => body ++ webgl1_main_end;
 
-let _buildVarDeclare = ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
-  varDeclare ++ "\n" ++ _generateUniformSource(shaderLibDataArr, varDeclare, funcDefine, body);
+let _buildVarDeclare =
+    ({top, varDeclare, funcDefine, body}, shaderLibDataArr) =>
+  varDeclare
+  ++ "\n"
+  ++ _generateUniformSource(shaderLibDataArr, varDeclare, funcDefine, body);
 
-let _addAlllParts = ({top, define, varDeclare, funcDeclare, funcDefine, body}) =>
+let _addAlllParts =
+    ({top, define, varDeclare, funcDeclare, funcDefine, body}) =>
   top ++ define ++ varDeclare ++ funcDeclare ++ funcDefine ++ body;
 
 let _execHandle = (name, execHandleFunc) => execHandleFunc(name);
@@ -124,11 +133,12 @@ let _createEmptyChunk = () => {
   varDeclare: "",
   funcDeclare: "",
   funcDefine: "",
-  body: ""
+  body: "",
 };
 
-let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRecord) =>
-  switch type_ {
+let _buildVsAndFsByType =
+    ((vs, fs), (type_, name), execHandleFunc, glslChunkRecord) =>
+  switch (type_) {
   | "vs" => (_setSource(vs, getChunk(name, glslChunkRecord)), fs)
   | "vs_function" => (_setSource(vs, execHandleFunc(name)), fs)
   | "fs" => (vs, _setSource(fs, getChunk(name, glslChunkRecord)))
@@ -140,62 +150,60 @@ let _buildVsAndFsByType = ((vs, fs), (type_, name), execHandleFunc, glslChunkRec
         ~description={j|unknown glsl type: $type_|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j|name: $name|j}
-      )
+        ~params={j|name: $name|j},
+      ),
     )
   };
 
-let _buildVsAndFs = ((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord) =>
+let _buildVsAndFs =
+    ((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord) =>
   shaderLibDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (glslTuple, {glsls}) =>
-           switch glsls {
-           | None => glslTuple
-           | Some(glsls) =>
-             glsls
-             |> WonderCommonlib.ArrayService.reduceOneParam(
-                  [@bs]
-                  (
-                    (sourceTuple, {type_, name}: glsl) =>
-                      _buildVsAndFsByType(
-                        sourceTuple,
-                        (type_, name),
-                        execHandleFunc,
-                        glslChunkRecord
-                      )
+       (. glslTuple, {glsls}) =>
+         OptionService.isJsonSerializedValueNone(glsls) ?
+           glslTuple :
+           glsls
+           |> OptionService.unsafeGet
+           |> WonderCommonlib.ArrayService.reduceOneParam(
+                (. sourceTuple, {type_, name}: glsl) =>
+                  _buildVsAndFsByType(
+                    sourceTuple,
+                    (type_, name),
+                    execHandleFunc,
+                    glslChunkRecord,
                   ),
-                  glslTuple
-                )
-           }
-       ),
-       (vs, fs)
+                glslTuple,
+              ),
+       (vs, fs),
      );
 
 let buildGLSLSource =
-  [@bs]
-  (
-    (
-      materialIndex: int,
-      shaderLibDataArr: shaderLibs,
-      execHandleFunc,
-      (glslRecord, glslChunkRecord)
-    ) => {
-      let {precision} = glslRecord;
-      let vs: glslChunk = _createEmptyChunk();
-      let fs: glslChunk = _createEmptyChunk();
-      vs.body = vs.body ++ webgl1_main_begin;
-      fs.body = fs.body ++ webgl1_main_begin;
-      let precision = precision |> OptionService.unsafeGet;
-      vs.top = precision ++ vs.top;
-      fs.top = precision ++ fs.top;
-      let (vs, fs) = _buildVsAndFs((vs, fs), shaderLibDataArr, execHandleFunc, glslChunkRecord);
-      vs.body = _buildBody(vs, webgl1_main_end);
-      fs.body = _buildBody(fs, webgl1_main_end);
-      vs.varDeclare = "\n" ++ _generateAttributeSource(shaderLibDataArr) ++ vs.varDeclare;
-      vs.varDeclare = _buildVarDeclare(vs, shaderLibDataArr);
-      fs.varDeclare = _buildVarDeclare(fs, shaderLibDataArr);
-      (_addAlllParts(vs), _addAlllParts(fs))
-    }
-  );
+  (.
+    materialIndex: int,
+    shaderLibDataArr: shaderLibs,
+    execHandleFunc,
+    (glslRecord, glslChunkRecord),
+  ) => {
+    let {precision} = glslRecord;
+    let vs: glslChunk = _createEmptyChunk();
+    let fs: glslChunk = _createEmptyChunk();
+    vs.body = vs.body ++ webgl1_main_begin;
+    fs.body = fs.body ++ webgl1_main_begin;
+    let precision = precision |> OptionService.unsafeGet;
+    vs.top = precision ++ vs.top;
+    fs.top = precision ++ fs.top;
+    let (vs, fs) =
+      _buildVsAndFs(
+        (vs, fs),
+        shaderLibDataArr,
+        execHandleFunc,
+        glslChunkRecord,
+      );
+    vs.body = _buildBody(vs, webgl1_main_end);
+    fs.body = _buildBody(fs, webgl1_main_end);
+    vs.varDeclare =
+      "\n" ++ _generateAttributeSource(shaderLibDataArr) ++ vs.varDeclare;
+    vs.varDeclare = _buildVarDeclare(vs, shaderLibDataArr);
+    fs.varDeclare = _buildVarDeclare(fs, shaderLibDataArr);
+    (_addAlllParts(vs), _addAlllParts(fs));
+  };

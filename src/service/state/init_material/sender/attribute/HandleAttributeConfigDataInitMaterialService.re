@@ -7,57 +7,80 @@ open RenderConfigType;
 open StateRenderType;
 
 let addModelMatrixInstanceArrayBufferSendData =
-    ((gl, program, name, attributeLocationMap), (sendDataArr, instanceSendNoCachableDataArr)) => (
+    (
+      (gl, program, name, attributeLocationMap),
+      (sendDataArr, instanceSendNoCachableDataArr),
+    ) => (
   sendDataArr,
   instanceSendNoCachableDataArr
   |> ArrayService.push({
-       pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
+       pos:
+         GLSLLocationService.getAttribLocation(
+           program,
+           name,
+           attributeLocationMap,
+           gl,
+         ),
        size: 4,
-       getOffsetFunc: [@bs] ((index) => index * 16)
-     })
+       getOffsetFunc: (. index) => index * 16,
+     }),
 );
 
 let addOtherArrayBufferSendData =
     (
       (gl, program, name, buffer, type_, attributeLocationMap),
-      (sendDataArr, instanceSendNoCachableDataArr)
+      (sendDataArr, instanceSendNoCachableDataArr),
     ) => (
   sendDataArr
   |> ArrayService.push({
-       pos: GLSLLocationService.getAttribLocation(program, name, attributeLocationMap, gl),
+       pos:
+         GLSLLocationService.getAttribLocation(
+           program,
+           name,
+           attributeLocationMap,
+           gl,
+         ),
        size: SendGLSLDataService.getBufferSizeByType(type_),
        buffer,
-       sendFunc: SendGLSLDataAllService.sendBuffer
+       sendFunc: SendGLSLDataAllService.sendBuffer,
      }),
-  instanceSendNoCachableDataArr
+  instanceSendNoCachableDataArr,
 );
 
-let addElementBufferSendData = (buffer, (sendDataArr, instanceSendNoCachableDataArr)) => (
+let addElementBufferSendData =
+    (buffer, (sendDataArr, instanceSendNoCachableDataArr)) => (
   sendDataArr
   |> ArrayService.push({
        pos: 0,
        size: 0,
        buffer,
-       sendFunc: DrawGLSLInitMaterialService.bindElementArrayBuffer
+       sendFunc: DrawGLSLInitMaterialService.bindElementArrayBuffer,
      }),
-  instanceSendNoCachableDataArr
+  instanceSendNoCachableDataArr,
 );
 
 let readAttributeSendData =
-    (shaderLibDataArr, (gl, program), readAttributesFunc, attributeLocationMap) =>
+    (
+      shaderLibDataArr,
+      (gl, program),
+      readAttributesFunc,
+      attributeLocationMap,
+    ) =>
   shaderLibDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (sendDataArrTuple, {variables}) =>
-           switch variables {
-           | None => sendDataArrTuple
-           | Some({attributes}) =>
-             [@bs]
-             readAttributesFunc((gl, program, attributeLocationMap), sendDataArrTuple, attributes)
-           }
-       ),
-       ([||], [||])
+       (. sendDataArrTuple, {variables}) =>
+         variables |> OptionService.isJsonSerializedValueNone ?
+           sendDataArrTuple :
+           {
+             let {attributes} = variables |> OptionService.unsafeGet;
+
+             readAttributesFunc(.
+               (gl, program, attributeLocationMap),
+               sendDataArrTuple,
+               attributes,
+             );
+           },
+       ([||], [||]),
      );
 
 let _setToAttributeSendMap =
@@ -65,14 +88,19 @@ let _setToAttributeSendMap =
       shaderIndex,
       attributeLocationMap,
       glslSenderRecord,
-      (sendDataArr, instanceSendNoCachableDataArr)
+      (sendDataArr, instanceSendNoCachableDataArr),
     ) => {
   let {attributeSendDataMap, instanceAttributeSendDataMap} = glslSenderRecord;
-  attributeSendDataMap |> WonderCommonlib.SparseMapService.set(shaderIndex, sendDataArr) |> ignore;
-  instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, instanceSendNoCachableDataArr)
+  attributeSendDataMap
+  |> WonderCommonlib.SparseMapService.set(shaderIndex, sendDataArr)
   |> ignore;
-  glslSenderRecord
+  instanceAttributeSendDataMap
+  |> WonderCommonlib.SparseMapService.set(
+       shaderIndex,
+       instanceSendNoCachableDataArr,
+     )
+  |> ignore;
+  glslSenderRecord;
 };
 
 let addAttributeSendData =
@@ -80,7 +108,7 @@ let addAttributeSendData =
       (gl, shaderIndex: int, program: program),
       shaderLibDataArr: shaderLibs,
       readAttributeSendDataFunc,
-      (glslSenderRecord, glslLocationRecord)
+      (glslSenderRecord, glslLocationRecord),
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -88,25 +116,41 @@ let addAttributeSendData =
         Contract.(
           Operators.(
             test(
-              Log.buildAssertMessage(~expect={j|not be added before|j}, ~actual={j|be|j}),
+              Log.buildAssertMessage(
+                ~expect={j|not be added before|j},
+                ~actual={j|be|j},
+              ),
               () =>
-                glslSenderRecord.attributeSendDataMap
-                |> WonderCommonlib.SparseMapService.get(shaderIndex)
-                |> assertNotExist
+              glslSenderRecord.attributeSendDataMap
+              |> WonderCommonlib.SparseMapService.get(shaderIndex)
+              |> assertNotExist
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
-      glslLocationRecord |> GLSLLocationService.getAttributeLocationMap(shaderIndex)
+      glslLocationRecord
+      |> GLSLLocationService.getAttributeLocationMap(shaderIndex),
     );
   (
-    [@bs] readAttributeSendDataFunc(shaderLibDataArr, gl, program, attributeLocationMap)
-    |> _setToAttributeSendMap(shaderIndex, attributeLocationMap, glslSenderRecord),
+    readAttributeSendDataFunc(.
+      shaderLibDataArr,
+      gl,
+      program,
+      attributeLocationMap,
+    )
+    |> _setToAttributeSendMap(
+         shaderIndex,
+         attributeLocationMap,
+         glslSenderRecord,
+       ),
     glslLocationRecord
-    |> GLSLLocationService.setAttributeLocationMap(shaderIndex, attributeLocationMap)
-  )
+    |> GLSLLocationService.setAttributeLocationMap(
+         shaderIndex,
+         attributeLocationMap,
+       ),
+  );
 };

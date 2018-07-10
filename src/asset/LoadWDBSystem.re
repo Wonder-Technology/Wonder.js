@@ -1,4 +1,4 @@
-open Most;
+open WonderBsMost.Most;
 
 let load = (wdPath, fetchFunc, stateData) =>
   FetchCommon.createFetchArrayBufferStream(wdPath, fetchFunc)

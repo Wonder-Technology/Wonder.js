@@ -842,31 +842,19 @@ browser-resolve@^1.11.0, browser-resolve@^1.11.2:
   dependencies:
     resolve "1.1.7"
 
-bs-fetch@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.2.1.tgz#165bed867009f2e91efb959ca1c0ff940d8cd19a"
+bs-fetch@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.3.0.tgz#60c64457359d0c7e0798d5a04db8987d16c4f8f3"
 
-"bs-glob@github:reasonml-community/bs-glob", bs-glob@reasonml-community/bs-glob:
+bs-glob@reasonml-community/bs-glob:
   version "0.1.1"
-  uid "5a6f38370d1c0abd12480b1f7bbcbd577dd45bf9"
   resolved "https://codeload.github.com/reasonml-community/bs-glob/tar.gz/5a6f38370d1c0abd12480b1f7bbcbd577dd45bf9"
   dependencies:
     glob "^7.1.2"
 
-bs-json@^0.2.3:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/bs-json/-/bs-json-0.2.4.tgz#dc09dad32ebb27ba71ed587ed76366f193fb96e8"
-
-bs-most@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/bs-most/-/bs-most-0.1.2.tgz#703f81c38e0fdf409a241b0f6f270d639b6cd0fe"
-  dependencies:
-    most "^1.7.0"
-    most-subject "^5.3.0"
-
-bs-platform@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-3.1.4.tgz#fe8495443b35aff73dfb61cba1e6d7b88311910b"
+bs-platform@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-4.0.0.tgz#4190460550414eecff92f1e2bbaf4d9c557b60af"
 
 bser@^2.0.0:
   version "2.0.0"
@@ -2088,8 +2076,8 @@ homedir-polyfill@^1.0.1:
     parse-passwd "^1.0.0"
 
 hosted-git-info@^2.1.4:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.6.1.tgz#6e4cee78b01bb849dcf93527708c69fdbee410df"
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
 
 html-encoding-sniffer@^1.0.1:
   version "1.0.2"
@@ -3000,8 +2988,8 @@ lodash@~1.0.1:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-1.0.2.tgz#8f57560c83b59fc270bd3d561b690043430e2551"
 
 lolex@^2.2.0, lolex@^2.3.2:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.7.0.tgz#9c087a69ec440e39d3f796767cf1b2cdc43d5ea5"
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.7.1.tgz#e40a8c4d1f14b536aa03e42a537c7adbaf0c20be"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -3275,7 +3263,7 @@ ndarray@^1.0.13:
     iota-array "^1.0.0"
     is-buffer "^1.0.2"
 
-needle@^2.2.0:
+needle@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/needle/-/needle-2.2.1.tgz#b5e325bd3aae8c2678902fa296f729455d1d3a7d"
   dependencies:
@@ -3315,12 +3303,12 @@ node-notifier@^5.0.2:
     which "^1.3.0"
 
 node-pre-gyp@^0.10.0:
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.10.2.tgz#e8945c20ef6795a20aac2b44f036eb13cf5146e3"
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.10.3.tgz#3070040716afdc778747b61b6887bf78880b80fc"
   dependencies:
     detect-libc "^1.0.2"
     mkdirp "^0.5.1"
-    needle "^2.2.0"
+    needle "^2.2.1"
     nopt "^4.0.1"
     npm-packlist "^1.1.6"
     npmlog "^4.0.2"
@@ -4890,16 +4878,16 @@ winston@2.1.0:
     pkginfo "0.3.x"
     stack-trace "0.0.x"
 
-wonder-benchmark@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.2.7.tgz#33f405a51504ff9c413d4735e6505c934cf1ec0f"
+wonder-benchmark@^0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/wonder-benchmark/-/wonder-benchmark-0.2.11.tgz#b3ef6139cbf167242c30a7c382593fe298634029"
   dependencies:
-    bs-json "^0.2.3"
     get-pixels "^3.3.0"
     mime "^2.3.1"
-    wonder-bs-puppeteer "^0.1.3"
+    wonder-bs-json "^0.0.1"
+    wonder-bs-puppeteer "^0.1.6"
     wonder-commonlib "^0.2.23"
-    wonder-log "^0.1.1"
+    wonder-log "^0.2.2"
 
 wonder-bs-jest@0.2.17, wonder-bs-jest@latest:
   version "0.2.17"
@@ -4907,13 +4895,24 @@ wonder-bs-jest@0.2.17, wonder-bs-jest@latest:
   dependencies:
     wonder-jest latest
 
-wonder-bs-puppeteer@^0.1.3, wonder-bs-puppeteer@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/wonder-bs-puppeteer/-/wonder-bs-puppeteer-0.1.5.tgz#8d5f7e41919e37058aa95534fd249bc4e7e1d3f8"
+wonder-bs-json@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/wonder-bs-json/-/wonder-bs-json-0.0.1.tgz#e780dcfc5699642dd6a47f50ba50f074974faa80"
 
-wonder-bs-sinon@^0.1.6:
+wonder-bs-most@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/wonder-bs-most/-/wonder-bs-most-0.0.3.tgz#571f2f9ddf13c80a756350d9d813694d08c640cf"
+  dependencies:
+    most "^1.7.0"
+    most-subject "^5.3.0"
+
+wonder-bs-puppeteer@^0.1.6:
   version "0.1.6"
-  resolved "https://registry.yarnpkg.com/wonder-bs-sinon/-/wonder-bs-sinon-0.1.6.tgz#2535e4423a6755ce4ecc03249741afaca5df1e10"
+  resolved "https://registry.yarnpkg.com/wonder-bs-puppeteer/-/wonder-bs-puppeteer-0.1.6.tgz#984e6d95d8bc6c76e5958a40cd575e016652c556"
+
+wonder-bs-sinon@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/wonder-bs-sinon/-/wonder-bs-sinon-0.1.7.tgz#4e28953602cc2ca2bbc75f1bf363a43354af0005"
   dependencies:
     sinon "^4.1.2"
     wonder-bs-jest latest
@@ -5031,13 +5030,9 @@ wonder-jest@latest:
   dependencies:
     wonder-jest-cli latest
 
-wonder-log@^0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.1.3.tgz#41c1dfc35756c100e94f26bbdbfbe776d7c6dcb6"
-
-wonder-log@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.2.1.tgz#38bddba548412f534a6d20e39ba81423dd2cc822"
+wonder-log@^0.2.2, wonder-log@latest:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.2.2.tgz#3f890fc67f77bd7675d0707c041a90b19bbd6705"
 
 wonder-most-animation-frame@0.0.3:
   version "0.0.3"
@@ -5045,16 +5040,16 @@ wonder-most-animation-frame@0.0.3:
   dependencies:
     "@most/disposable" "^1.1.0"
 
-wonder-render-test@^0.1.24:
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.24.tgz#10aa9698c34af5ee842c62bc047d81168af65330"
+wonder-render-test@^0.1.26:
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/wonder-render-test/-/wonder-render-test-0.1.26.tgz#ef2721063550ddb66bc167206cb9fa10960e370c"
   dependencies:
-    bs-json "^0.2.3"
     get-pixels "^3.3.0"
     jimp "^0.2.28"
-    wonder-bs-puppeteer "^0.1.3"
+    wonder-bs-json "^0.0.1"
+    wonder-bs-puppeteer "^0.1.6"
     wonder-commonlib "^0.2.23"
-    wonder-log "^0.1.1"
+    wonder-log latest
 
 word-wrap@1.1.0:
   version "1.1.0"

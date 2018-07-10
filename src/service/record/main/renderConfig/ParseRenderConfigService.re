@@ -1,7 +1,7 @@
 open RenderConfigType;
 
 /* let convertRenderSettingToRecord = (render_setting) => {
-     open Json;
+     open WonderBsJson.Json;
      open Decode;
      let json = render_setting;
      {
@@ -31,7 +31,7 @@ open RenderConfigType;
      }
    }; */
 let _convertShaderMapData = json =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       json
       |> array(json =>
@@ -44,7 +44,7 @@ let _convertShaderMapData = json =>
   );
 
 let _convertDynamicBranchData = json =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       json
       |> array(json =>
@@ -59,7 +59,7 @@ let _convertDynamicBranchData = json =>
   );
 
 let convertShadersToRecord = shaders => {
-  open Json;
+  open WonderBsJson.Json;
   open Decode;
   let json = shaders;
   {
@@ -96,7 +96,7 @@ let convertShadersToRecord = shaders => {
 };
 
 let _convertGlslToRecord = json =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       json
       |> optional(
@@ -114,7 +114,7 @@ let _convertGlslToRecord = json =>
   );
 
 let _convertVariableToRecord = json =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       json
       |> optional(
@@ -160,7 +160,7 @@ let _convertVariableToRecord = json =>
   );
 
 let convertShaderLibsToRecord = shaderLibs =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       shaderLibs
       |> array(json =>

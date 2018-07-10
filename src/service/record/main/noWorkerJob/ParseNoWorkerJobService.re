@@ -1,7 +1,7 @@
 open NoWorkerJobType;
 
 let convertSettingToRecord = (loop_setting) => {
-  open Json;
+  open WonderBsJson.Json;
   open Decode;
   let json = loop_setting;
   {
@@ -11,7 +11,7 @@ let convertSettingToRecord = (loop_setting) => {
 };
 
 let _convertPipelinesToRecord = (pipelines) =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       pipelines
       |> array(
@@ -24,7 +24,7 @@ let _convertPipelinesToRecord = (pipelines) =>
   );
 
 let _convertJobsToRecord = (jobs) =>
-  Json.(
+  WonderBsJson.Json.(
     Decode.(
       jobs
       |> array(

@@ -89,10 +89,7 @@ let _ =
                           |]),
                         (),
                       ),
-                      ConvertGLBTool.buildNode(
-                        ~children=Some([|8, 9|]),
-                        (),
-                      ),
+                      ConvertGLBTool.buildNode(~children=Some([|8, 9|]), ()),
                       ConvertGLBTool.buildNode(~mesh=Some(3), ()),
                       ConvertGLBTool.buildNode(~mesh=Some(4), ()),
                       ConvertGLBTool.buildNode(
@@ -252,27 +249,27 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
             ~state,
             ~testFunc=
-              ({customGeometrys}) =>
+              ({customGeometrys, images}) =>
                 customGeometrys
                 |>
                 expect == [|
-                            None,
+                            ConvertTool.getJsonSerializedNone(),
                             Some({
                               position: 9,
-                              normal: None,
-                              texCoord: None,
+                              normal: ConvertTool.getJsonSerializedNone(),
+                              texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 7,
                             }),
                             Some({
                               position: 2,
-                              normal: None,
-                              texCoord: None,
+                              normal: ConvertTool.getJsonSerializedNone(),
+                              texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 0,
                             }),
                             Some({
                               position: 6,
-                              normal: None,
-                              texCoord: None,
+                              normal: ConvertTool.getJsonSerializedNone(),
+                              texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 4,
                             }),
                           |],
@@ -353,8 +350,8 @@ let _ =
               expect == [|
                           Some({
                             position: 1,
-                            normal: None,
-                            texCoord: None,
+                            normal: ConvertTool.getJsonSerializedNone(),
+                            texCoord: ConvertTool.getJsonSerializedNone(),
                             index: 0,
                           }),
                         |],
@@ -371,10 +368,7 @@ let _ =
             ({indices}) =>
               indices.gameObjectIndices.lightMaterialGameObjectIndexData
               |>
-              expect == ConvertGLBTool.buildComponentIndexData(
-                          [|0|],
-                          [|0|],
-                        ),
+              expect == ConvertGLBTool.buildComponentIndexData([|0|], [|0|]),
           (),
         )
       );
@@ -541,8 +535,8 @@ let _ =
                 expect == [|
                             {
                               near: 1.0,
-                              far: None,
-                              aspect: None,
+                              far: ConvertTool.getJsonSerializedNone(),
+                              aspect: ConvertTool.getJsonSerializedNone(),
                               fovy: 34.37746770784939,
                             },
                             {
@@ -590,8 +584,8 @@ let _ =
               expect == [|
                           {
                             translation: Some((11., 0.5, (-10.5))),
-                            rotation: None,
-                            scale: None,
+                            rotation: ConvertTool.getJsonSerializedNone(),
+                            scale: ConvertTool.getJsonSerializedNone(),
                           },
                           {
                             translation: Some((10., 30., 50.)),
@@ -599,7 +593,7 @@ let _ =
                             scale: Some((1., 1., 1.)),
                           },
                           {
-                            translation: None,
+                            translation: ConvertTool.getJsonSerializedNone(),
                             rotation: Some((1., 0.1, 1.5, 0.5)),
                             scale: Some((2.5, 2.5, 3.)),
                           },
@@ -674,8 +668,7 @@ let _ =
             |>
             expect == [|
                         {
-                          diffuseColor:
-                            ConvertGLBTool.getDefaultDiffuseColor(),
+                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
                           name: "Texture",
                         },
                       |]
@@ -826,7 +819,7 @@ let _ =
                         buffer: 0,
                         byteOffset: 768,
                         byteLength: 72,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                       {
                         buffer: 0,
@@ -844,7 +837,7 @@ let _ =
                         buffer: 0,
                         byteOffset: 840,
                         byteLength: 23516,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                     |]
         )
@@ -869,25 +862,25 @@ let _ =
                         buffer: 0,
                         byteOffset: 6776,
                         byteLength: 1216267,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                       {
                         buffer: 0,
                         byteOffset: 1223044,
                         byteLength: 1013673,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                       {
                         buffer: 0,
                         byteOffset: 2236720,
                         byteLength: 702714,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                       {
                         buffer: 0,
                         byteOffset: 2939436,
                         byteLength: 65522,
-                        byteStride: None,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                     )
         )

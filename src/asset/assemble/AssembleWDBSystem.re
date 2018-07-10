@@ -24,9 +24,10 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
 
   (
-    switch (images) {
-    | Some(images) =>
+    images |> OptionService.isJsonSerializedValueNone ?
+      blobObjectUrlImageArr :
       images
+      |> OptionService.unsafeGet
       |> WonderCommonlib.ArrayService.reduceOneParami(
            (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
              let arrayBuffer =
@@ -40,7 +41,7 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
                     blob |> Blob.createObjectURL,
                     {j|load image error. imageIndex: $imageIndex|j},
                   )
-                  |> Most.tap(image => {
+                  |> WonderBsMost.Most.tap(image => {
                        Blob.revokeObjectURL(blob);
 
                        blobObjectUrlImageArr
@@ -51,16 +52,10 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
            },
            [||],
          )
-    | None => blobObjectUrlImageArr
-    }
   )
-  |> Most.mergeArray
-  |> Most.drain
-  |> then_(()
-       /* (imageBase64Arr, blobObjectUrlImageArr)
-          |> AssembleCommon.getOnlyHasOneTypeImage(uriImages, blobImages)
-          |> resolve */
-       => blobObjectUrlImageArr |> resolve);
+  |> WonderBsMost.Most.mergeArray
+  |> WonderBsMost.Most.drain
+  |> then_(() => blobObjectUrlImageArr |> resolve);
 };
 
 /* let _decodeArrayBuffer = (base64Str: string) => {
@@ -143,7 +138,7 @@ let _buildBufferArray = (buffers: array(int), binBuffer) => {
         |> BuildRootGameObjectSystem.build(wd)
         |> resolve
       )
-   |> Most.fromPromise; */
+   |> WonderBsMost.Most.fromPromise; */
 
 let _checkWDB = dataView => {
   WonderLog.Contract.requireCheck(
@@ -193,7 +188,7 @@ let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
        |> BuildRootGameObjectSystem.build(wd)
        |> resolve
      )
-  |> Most.fromPromise;
+  |> WonderBsMost.Most.fromPromise;
 
 let assemble = (wdb, state) => {
   let (wdFileContent, binBuffer) = BinaryUtils.decode(wdb, _checkWDB);

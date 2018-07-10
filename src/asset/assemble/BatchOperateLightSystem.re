@@ -78,8 +78,15 @@ let batchSetPointLightData = ({pointLights}, pointLightArr, state) =>
        state,
      );
 
-let setAmbientLightData = ({scene}, state) =>
-  switch (scene.ambientLight) {
-  | None => state
-  | Some({color}) => SceneAPI.setAmbientLightColor(color, state)
-  };
+let setAmbientLightData = ({scene}, state) => {
+  let optionalAmbientLight = scene.ambientLight;
+
+  optionalAmbientLight |> OptionService.isJsonSerializedValueNone ?
+    state :
+    {
+      let {color}: ambientLight =
+        optionalAmbientLight |> OptionService.unsafeGet;
+
+      SceneAPI.setAmbientLightColor(color, state);
+    };
+};

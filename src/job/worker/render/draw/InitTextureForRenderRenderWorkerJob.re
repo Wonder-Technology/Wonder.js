@@ -69,7 +69,7 @@ let execJob = (flags, e, stateData) => {
     _buildInitTextureStream(e, stateData)
   |]
   |> MostUtils.concatArray
-  |> Most.forEach((state) => state |> StateRenderWorkerService.setState(stateData) |> ignore)
+  |> WonderBsMost.Most.forEach((state) => state |> StateRenderWorkerService.setState(stateData) |> ignore)
   |> then_(() => e |> resolve)
-  |> Most.fromPromise
+  |> WonderBsMost.Most.fromPromise
 };

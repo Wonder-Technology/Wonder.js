@@ -25,7 +25,7 @@ let _computeElapseTime = (time, state) => {
 /* TODO unit test */
 let rec _createWorkerLoopStream = () =>
   MostAnimationFrame.nextAnimationFrame()
-  |> Most.flatMap(time => {
+  |> WonderBsMost.Most.flatMap(time => {
        /* WonderLog.Log.log({j|time: $time|j}); */
        let state =
          _computeElapseTime(
@@ -40,9 +40,9 @@ let rec _createWorkerLoopStream = () =>
          ),
          state,
        )
-       |> Most.map(e => ());
+       |> WonderBsMost.Most.map(e => ());
      })
-  |> Most.continueWith(() => _createWorkerLoopStream());
+  |> WonderBsMost.Most.continueWith(() => _createWorkerLoopStream());
 
 let _run = (time: float, state: StateDataMainType.state) =>
   _computeElapseTime(time, state)
@@ -83,7 +83,7 @@ let startDirector = (state: StateDataMainType.state) =>
     state
     |> StateDataMainService.setState(StateDataMain.stateData)
     |> _workerInit(StateDataMain.stateData)
-    |> Most.concat(_createWorkerLoopStream())
-    |> Most.drain
+    |> WonderBsMost.Most.concat(_createWorkerLoopStream())
+    |> WonderBsMost.Most.drain
     |> ignore :
     state |> _noWorkerInit |> _noWorkerLoop(0.) |> ignore;

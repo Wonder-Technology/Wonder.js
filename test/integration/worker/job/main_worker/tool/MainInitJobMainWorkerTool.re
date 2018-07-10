@@ -14,7 +14,7 @@ let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
          WorkerJobHandleSystem.getMainInitJobHandle
        )
      )
-  |> Most.forEach(
+  |> WonderBsMost.Most.forEach(
        (record) =>
          switch record {
          | Some("SEND_JOB_DATA") =>

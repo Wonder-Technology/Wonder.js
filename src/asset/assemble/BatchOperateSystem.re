@@ -203,14 +203,14 @@ let _getBufferData =
               ),
               () => {
                 let accessor = Array.unsafe_get(accessors, accessorIndex);
-                let bufferView =
+                let {byteStride} =
                   Array.unsafe_get(bufferViews, accessor.bufferView);
-                switch (bufferView.byteStride) {
-                | Some(byteStride) =>
-                  byteStride == _getAccessorTypeSize(accessor)
-                  * bytes_per_element
-                | None => ()
-                };
+
+                byteStride |> OptionService.isJsonSerializedValueNone ?
+                  () :
+                  byteStride
+                  |> OptionService.unsafeGet == _getAccessorTypeSize(accessor)
+                  * bytes_per_element;
               },
             )
           )
@@ -263,45 +263,52 @@ let _batchSetCustomGeometryData =
   customGeometrys
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, geometryData, geometryIndex) =>
-         switch (geometryData) {
-         | None => state
-         | Some(({position, normal, texCoord, index}: WDType.customGeometry)) =>
-           let customGeometry =
-             Array.unsafe_get(customGeometryArr, geometryIndex);
-           let state =
-             VerticesCustomGeometryMainService.setVerticesByTypeArray(
-               customGeometry,
-               _getBufferAttributeData(position, dataViewArr, wd),
-               state,
-             );
-           let state =
-             switch (normal) {
-             | None => state
-             | Some(normal) =>
-               NormalsCustomGeometryMainService.setNormalsByTypeArray(
+         geometryData |> OptionService.isJsonSerializedValueNone ?
+           state :
+           {
+             let {position, normal, texCoord, index}: WDType.customGeometry =
+               geometryData |> OptionService.unsafeGet;
+
+             let customGeometry =
+               Array.unsafe_get(customGeometryArr, geometryIndex);
+             let state =
+               VerticesCustomGeometryMainService.setVerticesByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(normal, dataViewArr, wd),
+                 _getBufferAttributeData(position, dataViewArr, wd),
                  state,
-               )
-             };
-           let state =
-             switch (texCoord) {
-             | None => state
-             | Some(texCoord) =>
-               TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
+               );
+             let state =
+               normal |> OptionService.isJsonSerializedValueNone ?
+                 state :
+                 NormalsCustomGeometryMainService.setNormalsByTypeArray(
+                   customGeometry,
+                   _getBufferAttributeData(
+                     normal |> OptionService.unsafeGet,
+                     dataViewArr,
+                     wd,
+                   ),
+                   state,
+                 );
+             let state =
+               texCoord |> OptionService.isJsonSerializedValueNone ?
+                 state :
+                 TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
+                   customGeometry,
+                   _getBufferAttributeData(
+                     texCoord |> OptionService.unsafeGet,
+                     dataViewArr,
+                     wd,
+                   ),
+                   state,
+                 );
+             let state =
+               IndicesCustomGeometryMainService.setIndicesByTypeArray(
                  customGeometry,
-                 _getBufferAttributeData(texCoord, dataViewArr, wd),
+                 _getBufferIndexData(index, dataViewArr, wd),
                  state,
-               )
-             };
-           let state =
-             IndicesCustomGeometryMainService.setIndicesByTypeArray(
-               customGeometry,
-               _getBufferIndexData(index, dataViewArr, wd),
-               state,
-             );
-           state;
-         },
+               );
+             state;
+           },
        state,
      );
 };
@@ -340,48 +347,48 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localPositions, {translation}, index) =>
-                 switch (translation) {
-                 | None => localPositions
-                 | Some(translation) =>
-                   let transform = gameObjectTransforms[index];
-                   OperateTypeArrayTransformService.setLocalPositionByTuple(
-                     transform,
-                     translation,
-                     localPositions,
-                   );
-                 },
+                 translation |> OptionService.isJsonSerializedValueNone ?
+                   localPositions :
+                   {
+                     let transform = gameObjectTransforms[index];
+                     OperateTypeArrayTransformService.setLocalPositionByTuple(
+                       transform,
+                       translation |> OptionService.unsafeGet,
+                       localPositions,
+                     );
+                   },
                localPositions,
              ),
         localRotations:
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localRotations, {rotation}, index) =>
-                 switch (rotation) {
-                 | None => localRotations
-                 | Some(rotation) =>
-                   let transform = gameObjectTransforms[index];
-                   OperateTypeArrayTransformService.setLocalRotationByTuple(
-                     transform,
-                     rotation,
-                     localRotations,
-                   );
-                 },
+                 rotation |> OptionService.isJsonSerializedValueNone ?
+                   localRotations :
+                   {
+                     let transform = gameObjectTransforms[index];
+                     OperateTypeArrayTransformService.setLocalRotationByTuple(
+                       transform,
+                       rotation |> OptionService.unsafeGet,
+                       localRotations,
+                     );
+                   },
                localRotations,
              ),
         localScales:
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localScales, {scale}, index) =>
-                 switch (scale) {
-                 | None => localScales
-                 | Some(scale) =>
-                   let transform = gameObjectTransforms[index];
-                   OperateTypeArrayTransformService.setLocalScaleByTuple(
-                     transform,
-                     scale,
-                     localScales,
-                   );
-                 },
+                 scale |> OptionService.isJsonSerializedValueNone ?
+                   localScales :
+                   {
+                     let transform = gameObjectTransforms[index];
+                     OperateTypeArrayTransformService.setLocalScaleByTuple(
+                       transform,
+                       scale |> OptionService.unsafeGet,
+                       localScales,
+                     );
+                   },
                localScales,
              ),
       }),
@@ -410,20 +417,17 @@ let _batchSetPerspectiveCameraProjectionData =
                 near,
               );
          let perspectiveCameraProjectionRecord =
-           switch (far) {
-           | None =>
+           far |> OptionService.isJsonSerializedValueNone ?
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setFar(
                   cameraProjection,
                   FrustumPerspectiveCameraProjectionService.getInfiniteFar(),
-                )
-           | Some(far) =>
+                ) :
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setFar(
                   cameraProjection,
-                  far,
-                )
-           };
+                  far |> OptionService.unsafeGet,
+                );
          let perspectiveCameraProjectionRecord =
            perspectiveCameraProjectionRecord
            |> FrustumPerspectiveCameraProjectionService.setFovy(
@@ -431,15 +435,14 @@ let _batchSetPerspectiveCameraProjectionData =
                 fovy,
               );
          let perspectiveCameraProjectionRecord =
-           switch (aspect) {
-           | None => perspectiveCameraProjectionRecord
-           | Some(aspect) =>
+           aspect |> OptionService.isJsonSerializedValueNone ?
+             perspectiveCameraProjectionRecord :
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setAspect(
                   cameraProjection,
-                  aspect,
-                )
-           };
+                  aspect |> OptionService.unsafeGet,
+                );
+
          perspectiveCameraProjectionRecord;
        },
        perspectiveCameraProjectionRecord,

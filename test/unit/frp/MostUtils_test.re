@@ -33,7 +33,7 @@ let _ =
                     () =>
                       MostUtils.concatStreamFuncArray(
                         Obj.magic(1),
-                        [|Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic|]
+                        [|WonderBsMost.Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic|]
                       )
                   )
                   |> toThrowMessage("expect stream count >= 2")
@@ -51,8 +51,8 @@ let _ =
                       MostUtils.concatStreamFuncArray(
                         Obj.magic(1),
                         [|
-                          Most.just(1) |> Obj.magic,
-                          Most.just(2) |> Obj.magic
+                          WonderBsMost.Most.just(1) |> Obj.magic,
+                          WonderBsMost.Most.just(2) |> Obj.magic
                         |]
                       )
                   )
@@ -71,8 +71,8 @@ let _ =
                       MostUtils.concatStreamFuncArray(
                         Obj.magic(1),
                         [|
-                          Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic,
-                          Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic
+                          WonderBsMost.Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic,
+                          WonderBsMost.Most.fromEvent("click", fakeDom |> Obj.magic, true) |> Obj.magic
                         |]
                       )
                   )

@@ -3,7 +3,7 @@ open SettingType;
 open SettingGPUType;
 
 let convertToRecord = (setting) => {
-  open Json;
+  open WonderBsJson.Json;
   open Decode;
   let json = setting;
   {

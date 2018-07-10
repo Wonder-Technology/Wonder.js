@@ -5,6 +5,6 @@ let load = (~wdbPath, ~fetchFunc, ()) => {
 
   MainStateTool.getStateData()
   |> LoaderManagerSystem.loadWDB(wdbPath, fetchFunc)
-  |> Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => result^ |> resolve);
 };

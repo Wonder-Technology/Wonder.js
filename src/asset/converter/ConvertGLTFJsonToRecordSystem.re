@@ -1,6 +1,6 @@
 open GLTFType;
 
-open Json;
+open WonderBsJson.Json;
 
 open Decode;
 

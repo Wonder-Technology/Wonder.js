@@ -8,35 +8,37 @@ open StateRenderType;
 
 let _readAttributes =
   (. (gl, program, attributeLocationMap), sendDataArrTuple, attributes) =>
-    switch (attributes) {
-    | None => sendDataArrTuple
-    | Some(attributes) =>
+    attributes |> OptionService.isJsonSerializedValueNone ?
+      sendDataArrTuple :
       attributes
+      |> OptionService.unsafeGet
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. sendDataArrTuple, {name, buffer, type_}) =>
-             switch (name, type_) {
-             | (Some(name), Some(type_)) =>
-               switch (buffer) {
-               | VboBufferType.INSTANCE_M_MATRIX =>
-                 HandleAttributeConfigDataInitMaterialService.addModelMatrixInstanceArrayBufferSendData(
-                   (gl, program, name, attributeLocationMap),
-                   sendDataArrTuple,
-                 )
-               | _ =>
-                 HandleAttributeConfigDataInitMaterialService.addOtherArrayBufferSendData(
-                   (gl, program, name, buffer, type_, attributeLocationMap),
-                   sendDataArrTuple,
-                 )
-               }
-             | (_, _) =>
+             ! (name |> OptionService.isJsonSerializedValueNone)
+             && ! (type_ |> OptionService.isJsonSerializedValueNone) ?
+               {
+                 let name = name |> OptionService.unsafeGet;
+                 let type_ = type_ |> OptionService.unsafeGet;
+
+                 switch (buffer) {
+                 | VboBufferType.INSTANCE_M_MATRIX =>
+                   HandleAttributeConfigDataInitMaterialService.addModelMatrixInstanceArrayBufferSendData(
+                     (gl, program, name, attributeLocationMap),
+                     sendDataArrTuple,
+                   )
+                 | _ =>
+                   HandleAttributeConfigDataInitMaterialService.addOtherArrayBufferSendData(
+                     (gl, program, name, buffer, type_, attributeLocationMap),
+                     sendDataArrTuple,
+                   )
+                 };
+               } :
                HandleAttributeConfigDataInitMaterialService.addElementBufferSendData(
                  buffer,
                  sendDataArrTuple,
-               )
-             },
+               ),
            sendDataArrTuple,
-         )
-    };
+         );
 
 let _readAttributeSendData =
   (. shaderLibDataArr, gl, program, attributeLocationMap) =>
