@@ -32,6 +32,28 @@ var CameraTool = (function () {
             state = wd.setTransformLocalPosition(transform, [0, 0, 1500], state);
 
             return [state, obj];
+        },
+        createArcballCamera: function (cameraData, state) {
+            var [state, camera] = CameraTool.createCamera(state);
+
+            var [state, cameraController] = wd.createArcballCameraController(state);
+
+            var state =
+                wd.setArcballCameraControllerDistance(cameraController, cameraData.distance || 50, state);
+
+
+
+            var state =
+                wd.setArcballCameraControllerPhi(cameraController, cameraData.phi || Math.PI / 2, state);
+
+
+            var state =
+                wd.setArcballCameraControllerTheta(cameraController, cameraData.theta || Math.PI / 2, state);
+
+
+            var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+            return [state, camera]
         }
     }
 })();

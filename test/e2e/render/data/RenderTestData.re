@@ -525,5 +525,63 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}],
     },
+    {
+      name: "camera_controller_arcball_front",
+      bodyFuncStr: {|
+                   PrepareTool.prepareForTest();
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                        return initSample(wd.unsafeGetState());
+                    });
+
+                    function initSample(state) {
+                        var data = BasicBoxesTool.createBox(state);
+
+                        var state = data[0];
+                        var box = data[1];
+
+
+                        var [state, camera] = CameraTool.createArcballCamera({phi: 0, theta: Math.PI / 2}, state);
+
+
+
+                        return wd.startDirector(state);
+                    }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}],
+    },
+    {
+      name: "camera_controller_arcball_top",
+      bodyFuncStr: {|
+                   PrepareTool.prepareForTest();
+
+                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                        return initSample(wd.unsafeGetState());
+                    });
+
+                    function initSample(state) {
+                        var data = BasicBoxesTool.createBox(state);
+
+                        var state = data[0];
+                        var box = data[1];
+
+
+                        var [state, camera] = CameraTool.createArcballCamera({phi: 0, theta: Math.PI / 8}, state);
+
+
+
+                        return wd.startDirector(state);
+                    }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}],
+    },
   ],
 };
