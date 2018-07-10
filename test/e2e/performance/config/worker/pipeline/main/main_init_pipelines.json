@@ -19,6 +19,12 @@
           "link": "concat",
           "jobs": [
             {
+              "name": "init_event"
+            },
+            {
+              "name": "init_camera"
+            },
+            {
               "name": "transfer_job_data"
             },
             {
