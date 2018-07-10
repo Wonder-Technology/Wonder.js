@@ -1,10 +1,10 @@
 open StateDataMainType;
 
-let setLastXY = (lastX, lastY, {eventRecord} as state) => {
-  ...state,
-  eventRecord: MouseEventService.setLastXY(lastX, lastY, eventRecord),
-  /* HandleMouseEventMainService.setLastXY(lastX, lastY, state) */
-};
+let setLastXY = HandleMouseEventMainService.setLastXY;
+
+let getIsDrag = HandleMouseEventMainService.getIsDrag;
+
+let setIsDrag = HandleMouseEventMainService.setIsDrag;
 
 let buildMouseEvent =
     (

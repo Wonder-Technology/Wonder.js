@@ -169,6 +169,34 @@ let _ =
       });
     });
 
+    describe("test copy mouseEventData", () =>
+      test("set isDrag to false", () => {
+        let state = MouseEventTool.prepare(~sandbox, ());
+        let state = MouseEventTool.setIsDrag(true, state);
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+        let copiedState = state |> MainStateTool.deepCopyForRestore;
+
+        MouseEventTool.getIsDrag(copiedState) |> expect == false;
+      })
+    );
+
+    describe("test copy touchEventData", () =>
+      test("set isDrag to false", () => {
+        let state = TouchEventTool.prepare(~sandbox, ());
+        let state = TouchEventTool.setIsDrag(true, state);
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+        let copiedState = state |> MainStateTool.deepCopyForRestore;
+
+        TouchEventTool.getIsDrag(copiedState) |> expect == false;
+      })
+    );
+
     describe("test redo/undo mouseEventData", () =>
       test("test lastX, lastY", () => {
         let (valueX, valueY) = (ref(0), ref(0));

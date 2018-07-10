@@ -2,10 +2,11 @@ open StateDataMainType;
 
 open EventType;
 
-let setLastXY = (lastX, lastY, {eventRecord} as state) => {
-  ...state,
-  eventRecord: TouchEventService.setLastXY(lastX, lastY, eventRecord),
-};
+let setLastXY = HandleTouchEventMainService.setLastXY;
+
+let getIsDrag = HandleTouchEventMainService.getIsDrag;
+
+let setIsDrag = HandleTouchEventMainService.setIsDrag;
 
 let buildTouchData = (~pageX=10, ~pageY=20, ()) => {
   "clientX": 0,

@@ -96,7 +96,6 @@ let deepCopyForRestore =
     disposedTransformArrayForKeepOrder |> SparseMapService.copy,
   disposedPerspectiveCameraProjectionArray:
     disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
-  /* TODO test */
   disposedArcballCameraControllerArray:
     disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
   disposedBasicMaterialArray:
@@ -123,7 +122,6 @@ let deepCopyForRestore =
   basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
   perspectiveCameraProjectionMap:
     perspectiveCameraProjectionMap |> SparseMapService.copy,
-  /* TODO test */
   arcballCameraControllerMap:
     arcballCameraControllerMap |> SparseMapService.copy,
   meshRendererMap: meshRendererMap |> SparseMapService.copy,

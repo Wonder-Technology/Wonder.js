@@ -55,7 +55,6 @@ let _unbindKeyboardEvent = (eventName, handleFunc, state) =>
     ~state,
   );
 
-/* TODO test */
 let _disposePointDragEventHandleFuncMap =
     (cameraController, {arcballCameraControllerRecord} as state) => {
   let {pointDragEventHandleFuncMap} = arcballCameraControllerRecord;

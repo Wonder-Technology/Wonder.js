@@ -266,13 +266,11 @@ let deepCopyForRestore = ({eventRecord} as state) => {
       mouseEventData: {
         lastX: None,
         lastY: None,
-        /* TODO test */
         isDrag: false,
       },
       touchEventData: {
         lastX: None,
         lastY: None,
-        /* TODO test */
         isDrag: false,
       },
     },
