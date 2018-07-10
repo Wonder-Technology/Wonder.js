@@ -11,14 +11,14 @@ let _readAttributes =
     attributes |> OptionService.isJsonSerializedValueNone ?
       sendDataArrTuple :
       attributes
-      |> OptionService.unsafeGet
+      |> OptionService.unsafeGetJsonSerializedValue
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. sendDataArrTuple, {name, buffer, type_}) =>
              ! (name |> OptionService.isJsonSerializedValueNone)
              && ! (type_ |> OptionService.isJsonSerializedValueNone) ?
                {
-                 let name = name |> OptionService.unsafeGet;
-                 let type_ = type_ |> OptionService.unsafeGet;
+                 let name = name |> OptionService.unsafeGetJsonSerializedValue;
+                 let type_ = type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                  switch (buffer) {
                  | VboBufferType.INSTANCE_M_MATRIX =>

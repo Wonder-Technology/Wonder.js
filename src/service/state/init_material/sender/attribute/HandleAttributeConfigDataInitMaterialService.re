@@ -72,7 +72,7 @@ let readAttributeSendData =
          variables |> OptionService.isJsonSerializedValueNone ?
            sendDataArrTuple :
            {
-             let {attributes} = variables |> OptionService.unsafeGet;
+             let {attributes} = variables |> OptionService.unsafeGetJsonSerializedValue;
 
              readAttributesFunc(.
                (gl, program, attributeLocationMap),

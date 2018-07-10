@@ -27,7 +27,7 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
     images |> OptionService.isJsonSerializedValueNone ?
       blobObjectUrlImageArr :
       images
-      |> OptionService.unsafeGet
+      |> OptionService.unsafeGetJsonSerializedValue
       |> WonderCommonlib.ArrayService.reduceOneParami(
            (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
              let arrayBuffer =

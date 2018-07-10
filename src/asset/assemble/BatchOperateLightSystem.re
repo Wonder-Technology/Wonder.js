@@ -85,7 +85,8 @@ let setAmbientLightData = ({scene}, state) => {
     state :
     {
       let {color}: ambientLight =
-        optionalAmbientLight |> OptionService.unsafeGet;
+        optionalAmbientLight |> OptionService.unsafeGetJsonSerializedValue
+;
 
       SceneAPI.setAmbientLightColor(color, state);
     };

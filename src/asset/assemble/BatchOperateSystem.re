@@ -209,7 +209,10 @@ let _getBufferData =
                 byteStride |> OptionService.isJsonSerializedValueNone ?
                   () :
                   byteStride
-                  |> OptionService.unsafeGet == _getAccessorTypeSize(accessor)
+                  |>
+                  OptionService.unsafeGetJsonSerializedValue == _getAccessorTypeSize(
+                                                                  accessor,
+                                                                )
                   * bytes_per_element;
               },
             )
@@ -267,7 +270,7 @@ let _batchSetCustomGeometryData =
            state :
            {
              let {position, normal, texCoord, index}: WDType.customGeometry =
-               geometryData |> OptionService.unsafeGet;
+               geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
              let customGeometry =
                Array.unsafe_get(customGeometryArr, geometryIndex);
@@ -283,7 +286,7 @@ let _batchSetCustomGeometryData =
                  NormalsCustomGeometryMainService.setNormalsByTypeArray(
                    customGeometry,
                    _getBufferAttributeData(
-                     normal |> OptionService.unsafeGet,
+                     normal |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
                      wd,
                    ),
@@ -295,7 +298,7 @@ let _batchSetCustomGeometryData =
                  TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
                    customGeometry,
                    _getBufferAttributeData(
-                     texCoord |> OptionService.unsafeGet,
+                     texCoord |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
                      wd,
                    ),
@@ -353,7 +356,8 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
                      let transform = gameObjectTransforms[index];
                      OperateTypeArrayTransformService.setLocalPositionByTuple(
                        transform,
-                       translation |> OptionService.unsafeGet,
+                       translation
+                       |> OptionService.unsafeGetJsonSerializedValue,
                        localPositions,
                      );
                    },
@@ -369,7 +373,7 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
                      let transform = gameObjectTransforms[index];
                      OperateTypeArrayTransformService.setLocalRotationByTuple(
                        transform,
-                       rotation |> OptionService.unsafeGet,
+                       rotation |> OptionService.unsafeGetJsonSerializedValue,
                        localRotations,
                      );
                    },
@@ -385,7 +389,7 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
                      let transform = gameObjectTransforms[index];
                      OperateTypeArrayTransformService.setLocalScaleByTuple(
                        transform,
-                       scale |> OptionService.unsafeGet,
+                       scale |> OptionService.unsafeGetJsonSerializedValue,
                        localScales,
                      );
                    },
@@ -426,7 +430,7 @@ let _batchSetPerspectiveCameraProjectionData =
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setFar(
                   cameraProjection,
-                  far |> OptionService.unsafeGet,
+                  far |> OptionService.unsafeGetJsonSerializedValue,
                 );
          let perspectiveCameraProjectionRecord =
            perspectiveCameraProjectionRecord
@@ -440,7 +444,7 @@ let _batchSetPerspectiveCameraProjectionData =
              perspectiveCameraProjectionRecord
              |> FrustumPerspectiveCameraProjectionService.setAspect(
                   cameraProjection,
-                  aspect |> OptionService.unsafeGet,
+                  aspect |> OptionService.unsafeGetJsonSerializedValue,
                 );
 
          perspectiveCameraProjectionRecord;

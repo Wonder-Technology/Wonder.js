@@ -80,7 +80,8 @@ let getMaterialShaderLibDataArrByDynamicBranch =
     resultDataArr
     |> ArrayService.push(
          findFirstShaderData(
-           dynamicBranchShaderLibNameOption |> OptionService.unsafeGet,
+           dynamicBranchShaderLibNameOption
+           |> OptionService.unsafeGetJsonSerializedValue,
            shaderLibs,
          ),
        );
@@ -165,7 +166,7 @@ let getMaterialShaderLibDataArr =
            getMaterialShaderLibDataArrByType(
              (
                materialIndex,
-               type_ |> OptionService.unsafeGet,
+               type_ |> OptionService.unsafeGetJsonSerializedValue,
                groups,
                name,
                isSourceInstance,

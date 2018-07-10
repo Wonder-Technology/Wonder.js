@@ -20,14 +20,15 @@ let _generateAttributeSource = (shaderLibDataArr: shaderLibs) =>
            result :
            {
              let optionalAttributes =
-               OptionService.unsafeGet(variables).attributes;
+               OptionService.unsafeGetJsonSerializedValue(variables).
+                 attributes;
 
              optionalAttributes |> OptionService.isJsonSerializedValueNone ?
                result :
                result
                ++ (
                  optionalAttributes
-                 |> OptionService.unsafeGet
+                 |> OptionService.unsafeGetJsonSerializedValue
                  |> Js.Array.reduce(
                       (result: string, {name, type_}: attribute) =>
                         switch (name, type_) {
@@ -66,14 +67,14 @@ let _generateUniformSource =
            result :
            {
              let optionalUniforms =
-               OptionService.unsafeGet(variables).uniforms;
+               OptionService.unsafeGetJsonSerializedValue(variables).uniforms;
 
              optionalUniforms |> OptionService.isJsonSerializedValueNone ?
                result :
                result
                ++ (
                  optionalUniforms
-                 |> OptionService.unsafeGet
+                 |> OptionService.unsafeGetJsonSerializedValue
                  |> Js.Array.filter(({name}: uniform) =>
                       _isInSource(name, sourceVarDeclare)
                       || _isInSource(name, sourceFuncDefine)
@@ -163,7 +164,7 @@ let _buildVsAndFs =
          OptionService.isJsonSerializedValueNone(glsls) ?
            glslTuple :
            glsls
-           |> OptionService.unsafeGet
+           |> OptionService.unsafeGetJsonSerializedValue
            |> WonderCommonlib.ArrayService.reduceOneParam(
                 (. sourceTuple, {type_, name}: glsl) =>
                   _buildVsAndFsByType(

@@ -17,7 +17,7 @@ let _readUniforms =
     uniforms |> OptionService.isJsonSerializedValueNone ?
       sendDataArrTuple :
       uniforms
-      |> OptionService.unsafeGet
+      |> OptionService.unsafeGetJsonSerializedValue
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. sendDataArrTuple, {name, field, type_, from}) =>
              switch (from) {

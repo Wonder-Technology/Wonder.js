@@ -79,7 +79,7 @@ let readUniformSendData =
          variables |> OptionService.isJsonSerializedValueNone ?
            sendDataArrTuple :
            {
-             let {uniforms} = variables |> OptionService.unsafeGet;
+             let {uniforms} = variables |> OptionService.unsafeGetJsonSerializedValue;
 
              readUniformsFunc(.
                (gl, program, uniformLocationMap, uniformCacheMap),
