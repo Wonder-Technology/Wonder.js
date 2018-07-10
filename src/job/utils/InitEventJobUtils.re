@@ -293,60 +293,64 @@ let _execKeyboardEventHandle = (keyboardEventName, event) => {
   ();
 };
 
+let _fromPCDomEventArr = () => [|
+  _fromDomEvent("click")
+  |> Most.tap(event => _execMouseEventHandle(Click, event)),
+  _fromDomEvent("mousedown")
+  |> Most.tap(event => _execMouseEventHandle(MouseDown, event)),
+  _fromDomEvent("mouseup")
+  |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
+  _fromDomEvent("mousemove")
+  |> Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
+  _fromDomEvent("mousewheel")
+  |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
+  _fromDomEvent("mousedown")
+  |> Most.tap(event => _execMouseDragStartEventHandle())
+  |> Most.flatMap(event =>
+       _fromDomEvent("mousemove")
+       |> Most.until(
+            _fromDomEvent("mouseup")
+            |> Most.tap(event => _execMouseDragEndEventHandle()),
+          )
+     )
+  |> Most.tap(event => _execMouseDragingEventHandle(MouseDrag, event)),
+  _fromDomEvent("keyup")
+  |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
+  _fromDomEvent("keydown")
+  |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
+  _fromDomEvent("keypress")
+  |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
+|];
+
+let _fromMobileDomEventArr = () => [|
+  _fromDomEvent("touchend")
+  |> Most.since(_fromDomEvent("touchstart"))
+  |> Most.tap(event => _execTouchEventHandle(TouchTap, event)),
+  _fromDomEvent("touchend")
+  |> Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
+  _fromDomEvent("touchstart")
+  |> Most.tap(event => _execTouchEventHandle(TouchStart, event)),
+  _fromDomEvent("touchmove")
+  |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
+  _fromDomEvent("touchstart")
+  |> Most.tap(event => _execTouchDragStartEventHandle())
+  |> Most.flatMap(event =>
+       _fromDomEvent("touchmove")
+       |> Most.until(
+            _fromDomEvent("touchend")
+            |> Most.tap(event => _execTouchDragEndEventHandle()),
+          )
+     )
+  |> Most.tap(event => _execTouchDragingEventHandle(TouchDrag, event)),
+|];
+
 let fromDomEvent = ({browserDetectRecord}) =>
   Most.mergeArray(
     switch (browserDetectRecord.browser) {
     | Chrome
-    | Firefox => [|
-        _fromDomEvent("click")
-        |> Most.tap(event => _execMouseEventHandle(Click, event)),
-        _fromDomEvent("mousedown")
-        |> Most.tap(event => _execMouseEventHandle(MouseDown, event)),
-        _fromDomEvent("mouseup")
-        |> Most.tap(event => _execMouseEventHandle(MouseUp, event)),
-        _fromDomEvent("mousemove")
-        |> Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
-        _fromDomEvent("mousewheel")
-        |> Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
-        _fromDomEvent("mousedown")
-        |> Most.tap(event => _execMouseDragStartEventHandle())
-        |> Most.flatMap(event =>
-             _fromDomEvent("mousemove")
-             |> Most.until(
-                  _fromDomEvent("mouseup")
-                  |> Most.tap(event => _execMouseDragEndEventHandle()),
-                )
-           )
-        |> Most.tap(event => _execMouseDragingEventHandle(MouseDrag, event)),
-        _fromDomEvent("keyup")
-        |> Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
-        _fromDomEvent("keydown")
-        |> Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
-        _fromDomEvent("keypress")
-        |> Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
-      |]
+    | Firefox => _fromPCDomEventArr()
     | Android
-    | IOS => [|
-        _fromDomEvent("touchend")
-        |> Most.since(_fromDomEvent("touchstart"))
-        |> Most.tap(event => _execTouchEventHandle(TouchTap, event)),
-        _fromDomEvent("touchend")
-        |> Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
-        _fromDomEvent("touchstart")
-        |> Most.tap(event => _execTouchEventHandle(TouchStart, event)),
-        _fromDomEvent("touchmove")
-        |> Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
-        _fromDomEvent("touchstart")
-        |> Most.tap(event => _execTouchDragStartEventHandle())
-        |> Most.flatMap(event =>
-             _fromDomEvent("touchmove")
-             |> Most.until(
-                  _fromDomEvent("touchend")
-                  |> Most.tap(event => _execTouchDragEndEventHandle()),
-                )
-           )
-        |> Most.tap(event => _execTouchDragingEventHandle(TouchDrag, event)),
-      |]
+    | IOS => _fromMobileDomEventArr()
     | browser =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(

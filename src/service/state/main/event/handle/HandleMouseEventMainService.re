@@ -48,14 +48,16 @@ let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   };
 };
 
-let _getWheel = (mouseDomEvent, state) =>
+let _getFromWheelDelta = mouseDomEvent =>
+  switch (Js.toOption(mouseDomEvent##wheelDelta)) {
+  | Some(wheelData) => wheelData / 120
+  | None => 0
+  };
+
+let _getWheel = mouseDomEvent =>
   switch (Js.toOption(mouseDomEvent##detail)) {
   | Some(detail) when detail !== 0 => (-1) * detail
-  | _ =>
-    switch (Js.toOption(mouseDomEvent##wheelDelta)) {
-    | Some(wheelData) => wheelData / 120
-    | None => 0
-    }
+  | _ => _getFromWheelDelta(mouseDomEvent)
   };
 
 let _isPointerLocked = [%raw
@@ -68,34 +70,37 @@ let _isPointerLocked = [%raw
     |}
 ];
 
+let _getMovementDeltaWhenPointerLocked =
+    (mouseDomEvent, {eventRecord} as state) => (
+  switch (Js.toOption(mouseDomEvent##movementX)) {
+  | Some(movementX) => movementX
+  | None =>
+    switch (Js.toOption(mouseDomEvent##webkitMovementX)) {
+    | Some(webkitMovementX) => webkitMovementX
+    | None =>
+      switch (Js.toOption(mouseDomEvent##mozMovementX)) {
+      | Some(mozMovementX) => mozMovementX
+      | None => 0
+      }
+    }
+  },
+  switch (Js.toOption(mouseDomEvent##movementY)) {
+  | Some(movementY) => movementY
+  | None =>
+    switch (Js.toOption(mouseDomEvent##webkitMovementY)) {
+    | Some(webkitMovementY) => webkitMovementY
+    | None =>
+      switch (Js.toOption(mouseDomEvent##mozMovementY)) {
+      | Some(mozMovementY) => mozMovementY
+      | None => 0
+      }
+    }
+  },
+);
+
 let _getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
   _isPointerLocked(.) ?
-    (
-      switch (Js.toOption(mouseDomEvent##movementX)) {
-      | Some(movementX) => movementX
-      | None =>
-        switch (Js.toOption(mouseDomEvent##webkitMovementX)) {
-        | Some(webkitMovementX) => webkitMovementX
-        | None =>
-          switch (Js.toOption(mouseDomEvent##mozMovementX)) {
-          | Some(mozMovementX) => mozMovementX
-          | None => 0
-          }
-        }
-      },
-      switch (Js.toOption(mouseDomEvent##movementY)) {
-      | Some(movementY) => movementY
-      | None =>
-        switch (Js.toOption(mouseDomEvent##webkitMovementY)) {
-        | Some(webkitMovementY) => webkitMovementY
-        | None =>
-          switch (Js.toOption(mouseDomEvent##mozMovementY)) {
-          | Some(mozMovementY) => mozMovementY
-          | None => 0
-          }
-        }
-      },
-    ) :
+    _getMovementDeltaWhenPointerLocked(mouseDomEvent, state) :
     HandlePointDomEventMainService.getMovementDelta(
       _getLocation(mouseDomEvent, state),
       MouseEventService.getLastXY(eventRecord),
@@ -109,7 +114,7 @@ let _convertMouseDomEventToMouseEvent =
   location: _getLocation(mouseDomEvent, state),
   locationInView: _getLocationInView(mouseDomEvent, state),
   button: _getButton(mouseDomEvent, state),
-  wheel: _getWheel(mouseDomEvent, state),
+  wheel: _getWheel(mouseDomEvent),
   movementDelta: _getMovementDelta(mouseDomEvent, state),
   event: mouseDomEvent,
 };

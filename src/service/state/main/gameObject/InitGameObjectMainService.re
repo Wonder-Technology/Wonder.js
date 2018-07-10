@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let initGameObject = (uid: int, {gameObjectRecord} as state) => {
+let _initMaterialComponent = (uid, {gameObjectRecord} as state) => {
   let state =
     switch (
       GetComponentGameObjectService.getBasicMaterialComponent(.
@@ -38,6 +38,12 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
          );
     | None => state
     };
+
+  state;
+};
+
+let initGameObject = (uid: int, {gameObjectRecord} as state) => {
+  let state = state |> _initMaterialComponent(uid);
 
   let state =
     switch (

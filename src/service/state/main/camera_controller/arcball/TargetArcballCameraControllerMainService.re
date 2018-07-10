@@ -4,6 +4,50 @@ open TransformType;
 
 open EventType;
 
+let _computeTarget =
+    (
+      cameraController,
+      (dx, dy),
+      {arcballCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  let target =
+    OperateArcballCameraControllerService.unsafeGetTarget(
+      cameraController,
+      arcballCameraControllerRecord,
+    );
+
+  let transform =
+    GetComponentGameObjectService.unsafeGetTransformComponent(
+      GameObjectArcballCameraControllerService.unsafeGetGameObject(
+        cameraController,
+        arcballCameraControllerRecord,
+      ),
+      gameObjectRecord,
+    );
+
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    RecordTransformMainService.getRecord(state);
+
+  let localToWorldMatrixTypeArray =
+    ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(.
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap,
+    );
+
+  let (x1, x2, x3) =
+    Matrix4Service.getX(localToWorldMatrixTypeArray)
+    |> Vector3Service.normalize;
+
+  let (y1, y2, y3) =
+    Matrix4Service.getY(localToWorldMatrixTypeArray)
+    |> Vector3Service.normalize;
+
+  target
+  |> Vector3Service.add(Vector3Type.Float, _, (x1 *. dx, 0., x3 *. dx))
+  |> Vector3Service.add(Vector3Type.Float, _, (y1 *. dy, y2 *. dy, 0.));
+};
+
 let setTargetByKeyboardEvent =
     (
       cameraController,
@@ -36,58 +80,14 @@ let setTargetByKeyboardEvent =
 
   switch (dx, dy) {
   | (0., 0.) => state
-  | (dx, dy) =>
-    let target =
-      OperateArcballCameraControllerService.unsafeGetTarget(
-        cameraController,
-        arcballCameraControllerRecord,
-      );
-
-    let transform =
-      GetComponentGameObjectService.unsafeGetTransformComponent(
-        GameObjectArcballCameraControllerService.unsafeGetGameObject(
-          cameraController,
-          arcballCameraControllerRecord,
-        ),
-        gameObjectRecord,
-      );
-
-    let {localToWorldMatrices, localToWorldMatrixCacheMap} =
-      RecordTransformMainService.getRecord(state);
-
-    let localToWorldMatrixTypeArray =
-      ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(.
-        transform,
-        localToWorldMatrices,
-        localToWorldMatrixCacheMap,
-      );
-
-    let (x1, x2, x3) =
-      Matrix4Service.getX(localToWorldMatrixTypeArray)
-      |> Vector3Service.normalize;
-
-    let (y1, y2, y3) =
-      Matrix4Service.getY(localToWorldMatrixTypeArray)
-      |> Vector3Service.normalize;
-
-    {
+  | (dx, dy) => {
       ...state,
       arcballCameraControllerRecord:
         OperateArcballCameraControllerService.setTarget(
           cameraController,
-          target
-          |> Vector3Service.add(
-               Vector3Type.Float,
-               _,
-               (x1 *. dx, 0., x3 *. dx),
-             )
-          |> Vector3Service.add(
-               Vector3Type.Float,
-               _,
-               (y1 *. dy, y2 *. dy, 0.),
-             ),
+          _computeTarget(cameraController, (dx, dy), state),
           arcballCameraControllerRecord,
         ),
-    };
+    }
   };
 };
