@@ -26,7 +26,8 @@
     "wonder-commonlib"
   ],
   "package-specs": [
-    "es6-global"
+    "es6-global",
+    "commonjs"
   ],
   "namespace": true,
   "warnings": {
