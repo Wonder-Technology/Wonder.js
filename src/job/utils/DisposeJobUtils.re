@@ -6,13 +6,14 @@ let _disposeComponents =
     (
       batchDisposeBasicMaterialComponentFunc,
       batchDisposeLightMaterialComponentFunc,
-      {settingRecord, gameObjectRecord} as state
+      {settingRecord, gameObjectRecord} as state,
     ) => {
   let {
     disposedBasicCameraViewArray,
     disposedTransformArray,
     disposedTransformArrayForKeepOrder,
     disposedPerspectiveCameraProjectionArray,
+    disposedArcballCameraControllerArray,
     disposedBasicMaterialArray,
     disposedLightMaterialArray,
     disposedBoxGeometryArray,
@@ -22,30 +23,51 @@ let _disposeComponents =
     disposedDirectionLightArray,
     disposedPointLightArray,
     disposedMeshRendererComponentArray,
-    disposedMeshRendererUidArray
+    disposedMeshRendererUidArray,
   } = gameObjectRecord;
   let state =
     disposedBasicCameraViewArray
-    |> DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(
+         state,
+       );
   let state =
     disposedPerspectiveCameraProjectionArray
     |> DisposeComponentGameObjectMainService.batchDisposePerspectiveCameraProjectionComponent(
-         state
+         state,
+       );
+  let state =
+    disposedArcballCameraControllerArray
+    |> DisposeComponentGameObjectMainService.batchDisposeArcballCameraControllerComponent(
+         state,
        );
   let state =
     disposedTransformArray
-    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state, false);
+    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(
+         state,
+         false,
+       );
   let state =
     disposedTransformArrayForKeepOrder
-    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(state, true);
-  let state = disposedBasicMaterialArray |> batchDisposeBasicMaterialComponentFunc(state);
-  let state = disposedLightMaterialArray |> batchDisposeLightMaterialComponentFunc(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeTransformComponent(
+         state,
+         true,
+       );
+  let state =
+    disposedBasicMaterialArray
+    |> batchDisposeBasicMaterialComponentFunc(state);
+  let state =
+    disposedLightMaterialArray
+    |> batchDisposeLightMaterialComponentFunc(state);
   let (state, boxGeometryNeedDisposeVboBufferArr) =
     disposedBoxGeometryArray
-    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
+         state,
+       );
   let (state, customGeometryNeedDisposeVboBufferArr) =
     disposedCustomGeometryArray
-    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
+         state,
+       );
   let (state, sourceInstanceNeedDisposeVboBufferArr) =
     disposedSourceInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
@@ -53,65 +75,77 @@ let _disposeComponents =
          false,
          DisposeGameObjectMainService.batchDispose((
            batchDisposeLightMaterialComponentFunc,
-           batchDisposeLightMaterialComponentFunc
-         ))
+           batchDisposeLightMaterialComponentFunc,
+         )),
        );
   let state =
     disposedObjectInstanceArray
-    |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(
+         state,
+       );
   let state =
     disposedDirectionLightArray
-    |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeDirectionLightComponent(
+         state,
+       );
   let state =
     disposedPointLightArray
-    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(state);
+    |> DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+         state,
+       );
   let state =
     disposedMeshRendererComponentArray
     |> DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
          DisposeECSService.buildMapFromArray(
            disposedMeshRendererUidArray,
-           WonderCommonlib.SparseMapService.createEmpty()
+           WonderCommonlib.SparseMapService.createEmpty(),
          ),
-         state
+         state,
        );
   (
     state,
     boxGeometryNeedDisposeVboBufferArr,
     customGeometryNeedDisposeVboBufferArr,
-    sourceInstanceNeedDisposeVboBufferArr
-  )
+    sourceInstanceNeedDisposeVboBufferArr,
+  );
 };
 
 let _disposeGameObjects =
     (
       batchDisposeBasicMaterialComponentFunc,
       batchDisposeLightMaterialComponentFunc,
-      {gameObjectRecord} as state
+      {gameObjectRecord} as state,
     ) => {
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrForNotKeepOrder,
     customGeometryNeedDisposeVboBufferArrForNotKeepOrder,
-    sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
+    sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder,
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
-         (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc),
+         (
+           batchDisposeBasicMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc,
+         ),
          disposedUidArray,
-         false
+         false,
        );
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrForKeepOrder,
     customGeometryNeedDisposeVboBufferArrForKeepOrder,
-    sourceInstanceNeedDisposeVboBufferArrForKeepOrder
+    sourceInstanceNeedDisposeVboBufferArrForKeepOrder,
   ) =
     state
     |> DisposeGameObjectMainService.batchDispose(
-         (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc),
+         (
+           batchDisposeBasicMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc,
+         ),
          disposedUidArrayForKeepOrder,
-         true
+         true,
        );
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
   (
@@ -121,33 +155,37 @@ let _disposeGameObjects =
     customGeometryNeedDisposeVboBufferArrForNotKeepOrder
     |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrForKeepOrder),
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
-    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrForKeepOrder)
-  )
+    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrForKeepOrder),
+  );
 };
- 
+
 let execJob =
-    (batchDisposeBasicMaterialComponentFunc, batchDisposeLightMaterialComponentFunc, state) => {
+    (
+      batchDisposeBasicMaterialComponentFunc,
+      batchDisposeLightMaterialComponentFunc,
+      state,
+    ) => {
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromComponent,
     customGeometryNeedDisposeVboBufferArrFromComponent,
-    sourceInstanceNeedDisposeVboBufferArrFromComponent
+    sourceInstanceNeedDisposeVboBufferArrFromComponent,
   ) =
     state
     |> _disposeComponents(
          batchDisposeBasicMaterialComponentFunc,
-         batchDisposeLightMaterialComponentFunc
+         batchDisposeLightMaterialComponentFunc,
        );
   let (
     state,
     boxGeometryNeedDisposeVboBufferArrFromGameObject,
     customGeometryNeedDisposeVboBufferArrFromGameObject,
-    sourceInstanceNeedDisposeVboBufferArrFromGameObject
+    sourceInstanceNeedDisposeVboBufferArrFromGameObject,
   ) =
     state
     |> _disposeGameObjects(
          batchDisposeBasicMaterialComponentFunc,
-         batchDisposeLightMaterialComponentFunc
+         batchDisposeLightMaterialComponentFunc,
        );
   (
     state,
@@ -156,6 +194,6 @@ let execJob =
     customGeometryNeedDisposeVboBufferArrFromComponent
     |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrFromGameObject),
     sourceInstanceNeedDisposeVboBufferArrFromComponent
-    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrFromGameObject)
-  )
+    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrFromGameObject),
+  );
 };
