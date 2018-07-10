@@ -16,6 +16,13 @@ gulp.task("testPerformanceInLocal", function (done) {
     test.testInLocal("generate benchmark...", reportFilePath, "performance", testPerformance.generateBenchmark, testPerformance.generateReport, testPerformance.runTest, done);
 });
 
+gulp.task("testFastPerformance", function (done) {
+    var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));
+
+    var reportFilePath = path.join(process.cwd(), "./test/e2e/performance/report/report.html");
+
+    test.fastTest("generate correct image...", reportFilePath, "performance", testPerformance.generateCorrectImage, testPerformance.generateReport, testPerformance.runTest, done);
+});
 
 
 function _fail(message, done) {
