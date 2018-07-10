@@ -3,37 +3,20 @@ open StateDataMainType;
 open EventType;
 
 let _addToEventArr = (eventName, eventData, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(eventName, [|eventData|])
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> ArrayService.push(eventData)
-         |> Js.Array.sortInPlaceWith(
-              (eventDataA: mouseDomEventData, eventDataB: mouseDomEventData) =>
-              eventDataB.priority - eventDataA.priority
-            ),
-       )
-  };
+  BindDomEventMainService.addToEventArr(
+    eventName,
+    eventData,
+    ({priority}: mouseDomEventData) => priority,
+    eventArrMap,
+  );
 
 let _removeFromEventArrMapByHandleFunc =
     (eventName, targetHandleFunc, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None => eventArrMap
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> Js.Array.filter(({handleFunc}: mouseDomEventData) =>
-              handleFunc !== targetHandleFunc
-            ),
-       )
-  };
+  BindDomEventMainService.removeFromEventArrMapByHandleFunc(
+    eventName,
+    (({handleFunc}: mouseDomEventData) => handleFunc, targetHandleFunc),
+    eventArrMap,
+  );
 
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
   let {mouseDomEventDataArrMap} = eventRecord;

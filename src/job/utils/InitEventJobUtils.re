@@ -21,16 +21,20 @@ let _convertMouseEventToPointEvent =
   event: event |> mouseDomEventToPointDomEvent,
 };
 
-let _bindMouseEventToTriggerPointEvent =
-    (mouseEventName, customEventName, pointEventName, state) =>
-  ManageEventMainService.onMouseEvent(
-    ~eventName=mouseEventName,
+let _bindDomEventToTriggerPointEvent =
+    (
+      (domEventName, customEventName, pointEventName),
+      (onDomEventFunc, convertDomEventToPointEventFunc),
+      state,
+    ) =>
+  onDomEventFunc(
+    ~eventName=domEventName,
     ~handleFunc=
       (. mouseEvent, state) =>
         ManageEventMainService.triggerCustomGlobalEvent(
           CreateCustomEventMainService.create(
             customEventName,
-            _convertMouseEventToPointEvent(pointEventName, mouseEvent)
+            convertDomEventToPointEventFunc(pointEventName, mouseEvent)
             |> pointEventToUserData
             |. Some,
           ),
@@ -38,6 +42,17 @@ let _bindMouseEventToTriggerPointEvent =
         ),
     ~state,
     (),
+  );
+
+let _bindMouseEventToTriggerPointEvent =
+    (mouseEventName, customEventName, pointEventName, state) =>
+  _bindDomEventToTriggerPointEvent(
+    (mouseEventName, customEventName, pointEventName),
+    (
+      ManageEventMainService.onMouseEvent(~priority=0),
+      _convertMouseEventToPointEvent,
+    ),
+    state,
   );
 
 let _convertTouchEventToPointEvent =
@@ -56,21 +71,13 @@ let _convertTouchEventToPointEvent =
 
 let _bindTouchEventToTriggerPointEvent =
     (touchEventName, customEventName, pointEventName, state) =>
-  ManageEventMainService.onTouchEvent(
-    ~eventName=touchEventName,
-    ~handleFunc=
-      (. touchEvent, state) =>
-        ManageEventMainService.triggerCustomGlobalEvent(
-          CreateCustomEventMainService.create(
-            customEventName,
-            _convertTouchEventToPointEvent(pointEventName, touchEvent)
-            |> pointEventToUserData
-            |. Some,
-          ),
-          state,
-        ),
-    ~state,
-    (),
+  _bindDomEventToTriggerPointEvent(
+    (touchEventName, customEventName, pointEventName),
+    (
+      ManageEventMainService.onTouchEvent(~priority=0),
+      _convertTouchEventToPointEvent,
+    ),
+    state,
   );
 
 let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>

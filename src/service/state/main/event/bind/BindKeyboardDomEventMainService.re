@@ -3,40 +3,33 @@ open StateDataMainType;
 open EventType;
 
 let _addToEventArr = (eventName, eventData, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(eventName, [|eventData|])
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> ArrayService.push(eventData)
-         |> Js.Array.sortInPlaceWith(
-              (
-                eventDataA: keyboardDomEventData,
-                eventDataB: keyboardDomEventData,
-              ) =>
-              eventDataB.priority - eventDataA.priority
-            ),
-       )
-  };
+  BindDomEventMainService.addToEventArr(
+    eventName,
+    eventData,
+    ({priority}: keyboardDomEventData) => priority,
+    eventArrMap,
+  );
 
 let _removeFromEventArrMapByHandleFunc =
     (eventName, targetHandleFunc, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None => eventArrMap
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> Js.Array.filter(({handleFunc}: keyboardDomEventData) =>
-              handleFunc !== targetHandleFunc
-            ),
-       )
-  };
+  BindDomEventMainService.removeFromEventArrMapByHandleFunc(
+    eventName,
+    (({handleFunc}: keyboardDomEventData) => handleFunc, targetHandleFunc),
+    eventArrMap,
+  );
+
+/* switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
+   | None => eventArrMap
+   | Some(arr) =>
+     eventArrMap
+     |> WonderCommonlib.SparseMapService.set(
+          eventName,
+          arr
+          |> Js.Array.filter(({handleFunc}: keyboardDomEventData) =>
+               handleFunc !== targetHandleFunc
+             ),
+        )
+   }; */
 
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
   let {keyboardDomEventDataArrMap} = eventRecord;
@@ -48,7 +41,7 @@ let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
       keyboardDomEventDataArrMap:
         _addToEventArr(
           eventName |> domEventNameToInt,
-          {priority, handleFunc},
+          {priority, handleFunc}: keyboardDomEventData,
           keyboardDomEventDataArrMap,
         ),
     },

@@ -3,37 +3,20 @@ open StateDataMainType;
 open EventType;
 
 let _addToEventArr = (eventName, eventData, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(eventName, [|eventData|])
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> ArrayService.push(eventData)
-         |> Js.Array.sortInPlaceWith(
-              (eventDataA: touchDomEventData, eventDataB: touchDomEventData) =>
-              eventDataB.priority - eventDataA.priority
-            ),
-       )
-  };
+  BindDomEventMainService.addToEventArr(
+    eventName,
+    eventData,
+    ({priority}: touchDomEventData) => priority,
+    eventArrMap,
+  );
 
 let _removeFromEventArrMapByHandleFunc =
     (eventName, targetHandleFunc, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
-  | None => eventArrMap
-  | Some(arr) =>
-    eventArrMap
-    |> WonderCommonlib.SparseMapService.set(
-         eventName,
-         arr
-         |> Js.Array.filter(({handleFunc}: touchDomEventData) =>
-              handleFunc !== targetHandleFunc
-            ),
-       )
-  };
+  BindDomEventMainService.removeFromEventArrMapByHandleFunc(
+    eventName,
+    (({handleFunc}: touchDomEventData) => handleFunc, targetHandleFunc),
+    eventArrMap,
+  );
 
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
   let {touchDomEventDataArrMap} = eventRecord;

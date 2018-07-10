@@ -170,4 +170,3 @@ let setIsDrag = (isDrag, {eventRecord} as state) => {
 let setLastXYWhenMouseMove = (eventName, mouseDomEvent, state) =>
   getIsDrag(state) ?
     state : setLastXYByLocation(eventName, mouseDomEvent, state);
-/* setLastXYByLocation(eventName, mouseDomEvent, state) */
