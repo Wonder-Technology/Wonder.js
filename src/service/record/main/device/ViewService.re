@@ -1,6 +1,6 @@
 open ViewType;
 
-open DomExtendType;
+open WonderWebgl.DomExtendType;
 
 let getCanvas = ({canvas}) => canvas;
 

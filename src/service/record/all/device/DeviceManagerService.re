@@ -1,8 +1,8 @@
 open DeviceManagerType;
 
-open GlType;
+open WonderWebgl.GlType;
 
-open DomExtendType;
+open WonderWebgl.DomExtendType;
 
 let unsafeGetGl =
   [@bs]
@@ -47,7 +47,7 @@ let setColorWrite =
         && oldWriteBlue === writeBlue
         && oldWriteAlpha === writeAlpha => record
   | _ =>
-    Gl.colorMask(
+    WonderWebgl.Gl.colorMask(
       writeRed: bool,
       writeGreen: bool,
       writeBlue: bool,
@@ -61,15 +61,15 @@ let _setSide = (gl, targetSide) =>
   DeviceManagerType.(
     switch targetSide {
     | NONE =>
-      gl |> Gl.enable(Gl.getCullFace(gl));
-      gl |> Gl.cullFace(Gl.getFrontAndBack(gl))
-    | BOTH => gl |> Gl.disable(Gl.getCullFace(gl))
+      gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getCullFace(gl));
+      gl |> WonderWebgl.Gl.cullFace(WonderWebgl.Gl.getFrontAndBack(gl))
+    | BOTH => gl |> WonderWebgl.Gl.disable(WonderWebgl.Gl.getCullFace(gl))
     | FRONT =>
-      gl |> Gl.enable(Gl.getCullFace(gl));
-      gl |> Gl.cullFace(Gl.getBack(gl))
+      gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getCullFace(gl));
+      gl |> WonderWebgl.Gl.cullFace(WonderWebgl.Gl.getBack(gl))
     | BACK =>
-      gl |> Gl.enable(Gl.getCullFace(gl));
-      gl |> Gl.cullFace(Gl.getFront(gl))
+      gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getCullFace(gl));
+      gl |> WonderWebgl.Gl.cullFace(WonderWebgl.Gl.getFront(gl))
     | _ =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -92,7 +92,7 @@ let setSide = (gl, targetSide, {side} as record) =>
   };
 
 let _setDepthTest = (gl, targetDepthTest) =>
-  targetDepthTest ? gl |> Gl.enable(Gl.getDepthTest(gl)) : gl |> Gl.disable(Gl.getDepthTest(gl));
+  targetDepthTest ? gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getDepthTest(gl)) : gl |> WonderWebgl.Gl.disable(WonderWebgl.Gl.getDepthTest(gl));
 
 let setDepthTest = (gl, targetDepthTest, {depthTest} as record) =>
   switch depthTest {
@@ -114,7 +114,7 @@ let clearBuffer = (gl, bit: int, record) => {
 
     One of the subtle differences between the Direct3D APIs and the GL APIs is that in the former, clear calls ignore scissors and masks, while the latter applies both to clears [Koch 12]. This means that if a clear is performed with the scissors test enabled, or with a color or stencil mask in use, ANGLE must draw a quad with the requested clear values, rather than using clear. This introduces some state management overhead, as ANGLE must switch out all the cached state such as shaders, sampler and texture bindings, and vertex record related to the draw call stream. It then must set up all the appropriate state for the clear, perform the clear itself, and then reset all of the affected state back to its prior settings once the clear is complete. If multiple draw buffers are currently in use, using WEBGL_draw_ buffers, then the performance implications of this emulated clear are com- pounded, as the draw must be performed once for each target. Clearing buffers without scissors or masks enabled avoids this overhead.
     */
-  Gl.clear(bit, gl);
+  WonderWebgl.Gl.clear(bit, gl);
   record
 };
 
@@ -122,7 +122,7 @@ let clearColor = (gl, (r: float, g: float, b: float, a: float), {clearColor} as 
   switch clearColor {
   | Some((oldR, oldG, oldB, oldA)) when oldR === r && oldG === g && oldB === b && oldA === a => record
   | _ =>
-    Gl.clearColor(r, g, b, a, gl);
+    WonderWebgl.Gl.clearColor(r, g, b, a, gl);
     {...record, clearColor: Some((r, g, b, a))}
   };
 
@@ -136,6 +136,6 @@ let setViewportOfGl = (gl, (x, y, width, height), {viewport} as record) =>
   | Some((oldX, oldY, oldWidth, oldHeight))
       when oldX === x && oldY === y && oldWidth === width && oldHeight === height => record
   | _ =>
-    Gl.viewport(x, y, width, height, gl);
+    WonderWebgl.Gl.viewport(x, y, width, height, gl);
     {...record, viewport: Some((x, y, width, height))}
   };

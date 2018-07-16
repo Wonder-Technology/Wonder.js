@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open Gl;
+open WonderWebgl.Gl;
 
 let disableVertexAttribArray = (gl, {glslSenderRecord} as state) => {
   glslSenderRecord.vertexAttribHistoryArray =

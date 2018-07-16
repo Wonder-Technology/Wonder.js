@@ -8,6 +8,8 @@ let generateWDB = GenerateSceneGraphAPI.generateWDB;
 
 let generateGLBData = GenerateSceneGraphAPI.generateGLBData;
 
+let loadIMGUIAsset = LoaderManagerAPI.loadIMGUIAsset;
+
 let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;
@@ -259,6 +261,12 @@ let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
 let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
+
+let image = FixedLayoutControlIMGUIAPI.image;
+
+let label = FixedLayoutControlIMGUIAPI.label;
+
+let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
 
 let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
 

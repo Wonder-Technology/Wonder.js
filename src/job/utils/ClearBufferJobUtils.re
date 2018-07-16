@@ -8,9 +8,9 @@ let _getBitFromFlags = (gl, (flag, flags), getBufferBitFunc, bit) =>
 
 let getBit = (gl, flags) =>
   switch (
-    _getBitFromFlags(gl, ("COLOR_BUFFER", flags), Gl.getColorBufferBit, None)
-    |> _getBitFromFlags(gl, ("DEPTH_BUFFER", flags), Gl.getDepthBufferBit)
-    |> _getBitFromFlags(gl, ("STENCIL_BUFFER", flags), Gl.getStencilBufferBit)
+    _getBitFromFlags(gl, ("COLOR_BUFFER", flags), WonderWebgl.Gl.getColorBufferBit, None)
+    |> _getBitFromFlags(gl, ("DEPTH_BUFFER", flags), WonderWebgl.Gl.getDepthBufferBit)
+    |> _getBitFromFlags(gl, ("STENCIL_BUFFER", flags), WonderWebgl.Gl.getStencilBufferBit)
   ) {
   | None =>
     WonderLog.Log.fatal(

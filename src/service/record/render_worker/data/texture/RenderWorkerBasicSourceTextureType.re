@@ -1,6 +1,6 @@
 type imageBitmap;
 
-external sparseMapImageBitmapToSparseMapImageElement : WonderCommonlib.SparseMapService.t(imageBitmap) => WonderCommonlib.SparseMapService.t(DomExtendType.imageElement) = "%identity";
+external sparseMapImageBitmapToSparseMapImageElement : WonderCommonlib.SparseMapService.t(imageBitmap) => WonderCommonlib.SparseMapService.t(WonderWebgl.DomExtendType.imageElement) = "%identity";
 
 type basicSourceTextureRecord = {
   wrapSs: option(Js.Typed_array.Uint8Array.t),
@@ -12,6 +12,6 @@ type basicSourceTextureRecord = {
   isNeedUpdates: option(Js.Typed_array.Uint8Array.t),
   flipYs: option(Js.Typed_array.Uint8Array.t),
   sourceMap: WonderCommonlib.SparseMapService.t(imageBitmap),
-  glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
+  glTextureMap: WonderCommonlib.SparseMapService.t(WonderWebgl.GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int)
 };

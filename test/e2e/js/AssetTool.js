@@ -22,6 +22,12 @@ var AssetTool = (function () {
             //     }
             // })
         },
+        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, state, testFunc) {
+            return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, state)
+                .then((state) => {
+                    testFunc(state)
+                })
+        },
         loadGLB: function (glbPath) {
             return window.fetch(glbPath)
                 .then((response) => response.arrayBuffer())

@@ -23,9 +23,9 @@ let _bind = (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap) as dataT
       {
         let bindTextureUnitCacheMap =
           CacheTextureService.addActiveTexture(unit, texture, bindTextureUnitCacheMap);
-        let target = Gl.getTexture2D(gl);
-        gl |> Gl.activeTexture(Gl.getTextureUnit0(gl) + unit);
-        gl |> Gl.bindTexture(target, glTexture);
+        let target = WonderWebgl.Gl.getTexture2D(gl);
+        gl |> WonderWebgl.Gl.activeTexture(WonderWebgl.Gl.getTextureUnit0(gl) + unit);
+        gl |> WonderWebgl.Gl.bindTexture(target, glTexture);
         (bindTextureUnitCacheMap, glTextureMap)
       }
   }

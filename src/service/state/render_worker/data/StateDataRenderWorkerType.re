@@ -28,7 +28,7 @@ open RenderWorkerRenderType;
 
 open RenderWorkerWorkerDetectType;
 
-open GlType;
+open WonderWebgl.GlType;
 
 open ComponentType;
 

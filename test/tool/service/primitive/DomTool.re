@@ -1,4 +1,4 @@
-open DomExtendType;
+open WonderWebgl.DomExtendType;
 
 open DomExtend;
 

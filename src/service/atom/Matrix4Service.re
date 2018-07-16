@@ -1,24 +1,7 @@
 open Js.Typed_array;
 
 let createIdentityMatrix4 = () =>
-  Js.Typed_array.Float32Array.make([|
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-  |]);
+  WonderWebgl.Matrix4Service.createIdentityMatrix4();
 
 let fromTranslation = ((x, y, z), resultFloat32Arr) => {
   Float32Array.unsafe_set(resultFloat32Arr, 0, 1.);

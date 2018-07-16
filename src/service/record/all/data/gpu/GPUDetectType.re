@@ -5,7 +5,7 @@ type gpuPrecision =
 
 type extensionInstancedArrays = {
   .
-  "vertexAttribDivisorANGLE": [@bs] ((GlType.attributeLocation, int) => unit),
+  "vertexAttribDivisorANGLE": [@bs] ((WonderWebgl.GlType.attributeLocation, int) => unit),
   "drawElementsInstancedANGLE": [@bs] ((int, int, int, int, int) => unit)
 };
 

@@ -10,6 +10,7 @@ let _getInitJobHandles = () => [
   ("init_camera", InitCameraJob.execJob),
   ("start_time", StartTimeJob.execJob),
   ("preget_glslData", PregetGLSLDataJob.execJob),
+  ("init_imgui", InitIMGUIJob.execJob),
   ("init_texture", InitTextureJob.execJob),
   ("init_state", InitStateJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
@@ -37,6 +38,7 @@ let _getLoopJobHandles = () => [
   ("reallocate_cpu_memory", ReallocateCPUMemoryJob.execJob),
   ("render_basic", RenderBasicJob.execJob),
   ("front_render_light", FrontRenderLightJob.execJob),
+  ("render_imgui", RenderIMGUIJob.execJob),
 ];
 
 let createInitJobHandleMap = () =>

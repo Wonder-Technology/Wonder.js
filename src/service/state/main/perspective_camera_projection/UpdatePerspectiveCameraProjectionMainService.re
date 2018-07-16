@@ -45,7 +45,7 @@ let updateCameraProjection =
         switch (getAspect(index, perspectiveCameraProjectionRecord)) {
         | None =>
           let canvas =
-            ViewService.unsafeGetCanvas(viewRecord) |> DomExtendType.htmlElementToJsObj;
+            ViewService.unsafeGetCanvas(viewRecord) |> WonderWebgl.DomExtendType.htmlElementToJsObj;
 
           let aspect = canvas##width /. canvas##height;
 

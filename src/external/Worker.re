@@ -28,7 +28,7 @@ external postMessageWithTransferData :
   (Js.t({..}), array('transferData)) => unit =
   "postMessage";
 
-[@bs.send.pipe: DomExtendType.htmlElement]
+[@bs.send.pipe: WonderWebgl.DomExtendType.htmlElement]
 external transferControlToOffscreen : offscreen = "";
 
 let newSharedArrayBuffer = totalByteLength =>

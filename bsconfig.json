@@ -19,6 +19,8 @@
   ],
   "refmt": 3,
   "bs-dependencies": [
+    "wonder-webgl",
+    "wonder-imgui",
     "wonder-bs-json",
     "wonder-bs-most",
     "bs-fetch",

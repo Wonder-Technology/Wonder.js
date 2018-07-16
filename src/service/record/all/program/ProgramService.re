@@ -1,8 +1,8 @@
 open ProgramType;
 
-open Gl;
+open WonderWebgl.Gl;
 
-open GlType;
+open WonderWebgl.GlType;
 
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);

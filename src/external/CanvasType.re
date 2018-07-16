@@ -4,7 +4,7 @@ type uint8ClampedArray;
 
 /* type canvasContext = {
      .
-     "drawImage": (DomExtendType.imageElement, float, float) => unit,
+     "drawImage": (WonderWebgl.DomExtendType.imageElement, float, float) => unit,
      "getImageData": (float, float, int, int) => imageData
    }; */
 type canvasContext;

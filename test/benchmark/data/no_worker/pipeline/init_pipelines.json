@@ -40,6 +40,9 @@
         },
         {
           "name": "init_texture"
+        },
+        {
+          "name": "init_imgui"
         }
       ]
     }

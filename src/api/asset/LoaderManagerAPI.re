@@ -9,3 +9,6 @@ let loadConfig = jsonPathArr =>
 
 let loadWDB = (wdPath, state) =>
   LoaderManagerSystem.loadWDB(wdPath, _fetch, state);
+
+let loadIMGUIAsset = (fntFilePath, bitmapFilePath, state) =>
+  LoaderManagerSystem.loadIMGUIAsset(fntFilePath, bitmapFilePath, state);
