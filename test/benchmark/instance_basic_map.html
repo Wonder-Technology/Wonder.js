@@ -31,7 +31,7 @@
 
 
 
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
 
                 TextureTool.loadTwoImages("./1.jpg", "./2.jpg", (image1, image2) => {
                     return initSample(image1, image2, wd.unsafeGetState());

@@ -128,7 +128,7 @@
 
 
         window.onload = function () {
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 initSample(wd.unsafeGetState());
             });
         }

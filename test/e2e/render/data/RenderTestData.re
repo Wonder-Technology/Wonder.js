@@ -38,7 +38,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -74,7 +74,7 @@ let renderTestData = {
                       PrepareTool.prepareForTest();
 
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -111,7 +111,7 @@ let renderTestData = {
 
 
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -160,7 +160,7 @@ let renderTestData = {
 
 
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -203,7 +203,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -256,7 +256,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -317,7 +317,7 @@ let renderTestData = {
 
 
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -362,7 +362,7 @@ let renderTestData = {
        PrepareTool.prepareForTest();
 
 
-        return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
+        return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
             return window.loadImageSrc("./test/e2e/asset/1.jpg")
                 .then((image1DataArr) => {
                     return window.loadImageSrc("./test/e2e/asset/2.jpg")
@@ -428,7 +428,7 @@ let renderTestData = {
 
 
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
             return window.loadImageSrc("./test/e2e/asset/1.jpg")
                 .then((image1DataArr) => {
                     return window.loadImageSrc("./test/e2e/asset/2.jpg")
@@ -495,7 +495,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
 
                 return AssetTool.loadWDB("./test/e2e/asset/wdb/CesiumMilkTruck.wdb", function ([state, gameObject]) {
                     return initSample(state, gameObject);
@@ -530,7 +530,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 
@@ -559,7 +559,7 @@ let renderTestData = {
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
-                    return AssetTool.load(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
                         return initSample(wd.unsafeGetState());
                     });
 

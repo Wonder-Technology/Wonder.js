@@ -28,9 +28,8 @@
             ReplaceFetchTool.replaceFetchForTest();
 
 
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                // return AssetTool.loadWDB("./BoxTextured.wdb", function ([state, gameObject]) {
-                return AssetTool.loadWDB("./gameObject.wdb", function ([state, gameObject]) {
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+                return AssetTool.loadWDB("./BoxTextured.wdb", function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
             });

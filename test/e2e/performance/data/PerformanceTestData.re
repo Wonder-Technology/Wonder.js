@@ -52,7 +52,7 @@ let performanceTestData = {
                                      PrepareTool.prepareForTest();
 
 
-                                     return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                     return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                              return window.loadImageSrc("./test/e2e/asset/1.jpg")
                              .then((imageDataArr) => {
                                   return initSample(
@@ -113,7 +113,7 @@ let performanceTestData = {
 
 
 
-                                return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                                return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -178,7 +178,7 @@ let performanceTestData = {
 
 
 
-                                        return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                        return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                                             return initSample(wd.unsafeGetState());
                                         });
 
@@ -246,7 +246,7 @@ let performanceTestData = {
 
 
 
-                                        return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                        return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                                             return initSample(wd.unsafeGetState());
                                         });
 
@@ -318,7 +318,7 @@ let performanceTestData = {
 
 
 
-                                        return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                        return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                              return window.loadImageSrc("./test/e2e/asset/1.jpg")
                              .then((imageDataArr) => {
                                   return initSample(
@@ -399,7 +399,7 @@ let performanceTestData = {
 
 
 
-                                        return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                                        return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                                             return initSample(wd.unsafeGetState());
                                         });
 
@@ -482,7 +482,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_static_instance.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_static_instance.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -536,7 +536,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_batch.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_batch.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -584,7 +584,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -641,7 +641,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -701,7 +701,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -764,7 +764,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose2.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose2.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -832,7 +832,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
 
                              return window.loadImageSrc("./test/e2e/asset/1.jpg")
                              .then((image1DataArr) => {
@@ -914,7 +914,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
                              return window.loadImageSrc("./test/e2e/asset/1.jpg")
                              .then((image1DataArr) => {
 
@@ -1011,7 +1011,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_static_instance.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_static_instance.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1072,7 +1072,7 @@ let performanceTestData = {
                                      PrepareTool.prepareForTest();
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_batch.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_batch.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1127,7 +1127,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1191,7 +1191,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1260,7 +1260,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose2.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting_dynamic_instance_create_dispose2.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1334,7 +1334,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1436,7 +1436,7 @@ let performanceTestData = {
 
 
 
-                             return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
+                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
 
 
 
@@ -1496,7 +1496,7 @@ let performanceTestData = {
                               PrepareTool.prepareForTest();
 
 
-               return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
+               return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
 
                return AssetTool.loadGLB(
                "./test/e2e/asset/glb/CesiumMilkTruck.glb"
@@ -1541,7 +1541,7 @@ let performanceTestData = {
 
 
 
-            return AssetTool.load(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
+            return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function () {
                 var state = wd.unsafeGetState();
 
 

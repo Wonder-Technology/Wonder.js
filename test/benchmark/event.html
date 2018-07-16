@@ -33,7 +33,7 @@
         window.onload = function () {
             ReplaceFetchTool.replaceFetchForTest();
 
-            return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 return initSample(wd.unsafeGetState());
             });
 

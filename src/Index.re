@@ -10,9 +10,7 @@ let generateGLBData = GenerateSceneGraphAPI.generateGLBData;
 
 let loadWDB = LoaderManagerAPI.loadWDB;
 
-let loadToData = LoaderManagerAPI.loadToData;
-
-let load = LoaderManagerAPI.load;
+let loadConfig = LoaderManagerAPI.loadConfig;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 

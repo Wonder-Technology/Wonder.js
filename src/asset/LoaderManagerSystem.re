@@ -1,4 +1,4 @@
-let load = (jsonPathArr, fetchFunc, stateData) =>
+let loadConfig = (jsonPathArr, fetchFunc, stateData) =>
   ConfigDataLoaderSystem.load(jsonPathArr, fetchFunc, stateData);
 
 let loadWDB = (wdPath, fetchFunc, stateData) =>
