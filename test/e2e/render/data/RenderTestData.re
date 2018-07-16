@@ -497,7 +497,7 @@ let renderTestData = {
 
                     return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
 
-                return AssetTool.loadWDB("./test/e2e/asset/wdb/CesiumMilkTruck.wdb", function ([state, gameObject]) {
+                return AssetTool.loadWDB("./test/e2e/asset/wdb/CesiumMilkTruck.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
                     });
