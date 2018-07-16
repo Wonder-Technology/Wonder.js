@@ -4935,9 +4935,9 @@ wonder-glsl-compiler@^0.1.11:
     bs-glob reasonml-community/bs-glob
     wonder-commonlib "0.2.23"
 
-wonder-imgui@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/wonder-imgui/-/wonder-imgui-0.0.2.tgz#9786d6a6e561c7afb4562fb7eb0c1214cb72e896"
+wonder-imgui@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/wonder-imgui/-/wonder-imgui-0.0.3.tgz#d8269307ff6e5112a01f2acdd30f4b15c14f3101"
   dependencies:
     bs-fetch "^0.3.0"
     wonder-bs-most "^0.0.3"
